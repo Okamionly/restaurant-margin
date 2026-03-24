@@ -90,6 +90,27 @@ export interface Recipe {
   updatedAt: string;
 }
 
+export interface InventoryItem {
+  id: number;
+  ingredientId: number;
+  ingredient: Ingredient;
+  currentStock: number;
+  unit: string;
+  minStock: number;
+  maxStock: number | null;
+  lastRestockDate: string | null;
+  lastRestockQuantity: number | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InventoryValue {
+  totalValue: number;
+  byCategory: { category: string; value: number }[];
+  itemCount: number;
+}
+
 export const ALLERGENS = [
   'Gluten',
   'Crustacés',

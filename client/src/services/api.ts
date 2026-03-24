@@ -1,4 +1,4 @@
-import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData } from '../types';
+import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData, InventoryItem, InventoryValue } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -241,4 +241,82 @@ export async function linkSupplierIngredients(id: number): Promise<{ linked: num
     headers: authHeaders(),
   });
   return handleResponse<{ linked: number; supplierName: string }>(res);
+}
+
+// --- Inventory ---
+
+export async function fetchInventory(): Promise<InventoryItem[]> {
+  const res = await fetch(`${API_BASE}/inventory`, { headers: authHeaders() });
+  return handleResponse<InventoryItem[]>(res);
+}
+
+export async function fetchInventoryAlerts(): Promise<InventoryItem[]> {
+  const res = await fetch(`${API_BASE}/inventory/alerts`, { headers: authHeaders() });
+  return handleResponse<InventoryItem[]>(res);
+}
+
+export async function fetchInventoryValue(): Promise<InventoryValue> {
+  const res = await fetch(`${API_BASE}/inventory/value`, { headers: authHeaders() });
+  return handleResponse<InventoryValue>(res);
+}
+
+export async function fetchInventorySuggestions(): Promise<Ingredient[]> {
+  const res = await fetch(`${API_BASE}/inventory/suggest`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  return handleResponse<Ingredient[]>(res);
+}
+
+export async function addToInventory(data: {
+  ingredientId: number;
+  currentStock?: number;
+  unit?: string;
+  minStock?: number;
+  maxStock?: number | null;
+  notes?: string;
+}): Promise<InventoryItem> {
+  const res = await fetch(`${API_BASE}/inventory`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<InventoryItem>(res);
+}
+
+export async function updateInventoryItem(id: number, data: Partial<{
+  currentStock: number;
+  minStock: number;
+  maxStock: number | null;
+  unit: string;
+  notes: string;
+}>): Promise<InventoryItem> {
+  const res = await fetch(`${API_BASE}/inventory/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<InventoryItem>(res);
+}
+
+export async function restockInventoryItem(id: number, quantity: number): Promise<InventoryItem> {
+  const res = await fetch(`${API_BASE}/inventory/${id}/restock`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ quantity }),
+  });
+  return handleResponse<InventoryItem>(res);
+}
+
+export async function deleteInventoryItem(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/inventory/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (res.status === 401) {
+    removeToken();
+    window.location.href = '/login';
+    throw new Error('Non authentifié');
+  }
+  if (!res.ok) throw new Error('Erreur suppression inventaire');
 }

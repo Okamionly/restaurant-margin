@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ChefHat,
@@ -15,8 +15,15 @@ import {
   Utensils,
   Zap,
   Star,
-  ChevronDown,
+  Play,
+  Package,
+  Users,
+  Quote,
+  Menu,
+  X,
 } from 'lucide-react';
+
+/* ───────────────────────── Hooks ───────────────────────── */
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -26,7 +33,7 @@ function useInView(threshold = 0.15) {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold }
+      { threshold },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -34,12 +41,30 @@ function useInView(threshold = 0.15) {
   return { ref, visible };
 }
 
+function useAnimatedCounter(target: number, duration = 2000, trigger = false) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!trigger) return;
+    let start = 0;
+    const step = Math.ceil(target / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [target, duration, trigger]);
+  return count;
+}
+
+/* ───────────────────────── Components ───────────────────────── */
+
 function FadeIn({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const { ref, visible } = useInView();
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${className}`}
+      className={`transition-all duration-700 ease-out ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -47,69 +72,113 @@ function FadeIn({ children, delay = 0, className = '' }: { children: React.React
   );
 }
 
+function AnimatedStat({ value, suffix = '', label, icon: Icon }: { value: number; suffix?: string; label: string; icon: React.ElementType }) {
+  const { ref, visible } = useInView(0.3);
+  const count = useAnimatedCounter(value, 1800, visible);
+  return (
+    <div ref={ref} className="text-center">
+      <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 mb-4">
+        <Icon className="w-7 h-7 text-blue-200" />
+      </div>
+      <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+        {count}{suffix}
+      </div>
+      <div className="text-sm text-blue-200/80 mt-2 font-medium">{label}</div>
+    </div>
+  );
+}
+
+/* ───────────────────────── Data ───────────────────────── */
+
 const features = [
   {
-    icon: Calculator,
-    title: 'Calcul de marge automatique',
-    desc: "Calculez instantanement vos couts matiere et marges sur chaque plat de votre carte.",
-  },
-  {
     icon: ClipboardList,
-    title: 'Fiches techniques completes',
-    desc: "Creez des fiches techniques detaillees avec ingredients, quantites et couts a jour.",
+    title: 'Fiches techniques professionnelles',
+    desc: 'Créez des fiches techniques détaillées avec ingrédients, quantités, étapes de préparation et coûts actualisés automatiquement.',
   },
   {
-    icon: Sparkles,
-    title: 'Suggestions de recettes intelligentes',
-    desc: "Recevez des suggestions basees sur vos ingredients disponibles et vos objectifs de marge.",
+    icon: Calculator,
+    title: 'Calcul de marge en temps réel',
+    desc: 'Visualisez instantanément vos coûts matière, marges brutes et prix de vente recommandés sur chaque plat.',
   },
   {
     icon: Truck,
     title: 'Gestion des fournisseurs',
-    desc: "Centralisez vos fournisseurs, comparez les prix et optimisez vos approvisionnements.",
+    desc: 'Centralisez vos fournisseurs, comparez les prix, suivez les évolutions tarifaires et optimisez vos achats.',
   },
   {
-    icon: BarChart3,
-    title: 'Tableau de bord analytics',
-    desc: "Visualisez vos performances en temps reel avec des graphiques clairs et actionnables.",
+    icon: Package,
+    title: 'Inventaire et stock',
+    desc: 'Suivez vos stocks en temps réel, anticipez les ruptures et réduisez le gaspillage alimentaire.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Suggestions intelligentes (IA)',
+    desc: "L'intelligence artificielle analyse vos données pour suggérer des optimisations de recettes et de prix.",
   },
   {
     icon: Smartphone,
-    title: 'Application installable PWA',
-    desc: "Accedez a RestauMargin depuis n'importe quel appareil, meme hors connexion.",
+    title: 'Application installable (PWA)',
+    desc: "Accédez à RestauMargin depuis n'importe quel appareil — smartphone, tablette ou ordinateur, même hors connexion.",
   },
 ];
 
 const steps = [
+  { num: '01', title: 'Créez votre compte gratuitement', desc: 'Inscription en 30 secondes, sans carte bancaire.', icon: Users },
+  { num: '02', title: 'Ajoutez vos ingrédients et fournisseurs', desc: 'Importez ou saisissez votre catalogue avec les prix.', icon: Utensils },
+  { num: '03', title: 'Composez vos recettes', desc: 'Créez vos fiches techniques avec calcul automatique.', icon: BookOpen },
+  { num: '04', title: 'Analysez et optimisez', desc: 'Pilotez vos marges avec des données précises.', icon: TrendingUp },
+];
+
+const testimonials = [
   {
-    num: '1',
-    title: 'Ajoutez vos ingredients et fournisseurs',
-    desc: "Importez ou saisissez votre catalogue d'ingredients avec les prix fournisseurs.",
-    icon: Utensils,
+    quote: "RestauMargin a transformé notre façon de gérer les coûts. On a gagné 4 points de marge en 3 mois simplement en ajustant nos fiches techniques.",
+    name: 'Laurent Dubois',
+    role: 'Chef de cuisine',
+    place: 'Restaurant gastronomique, Lyon',
+    rating: 5,
   },
   {
-    num: '2',
-    title: 'Creez vos recettes avec suggestions automatiques',
-    desc: "Composez vos fiches techniques et laissez l'IA vous suggerer des optimisations.",
-    icon: BookOpen,
+    quote: "Enfin un outil pensé pour les restaurateurs. L'interface est intuitive et le calcul de marge en temps réel est un vrai game-changer pour notre brasserie.",
+    name: 'Sophie Martin',
+    role: 'Directrice',
+    place: 'Brasserie Le Comptoir, Paris',
+    rating: 5,
   },
   {
-    num: '3',
-    title: 'Analysez vos marges et optimisez votre carte',
-    desc: "Identifiez les plats les plus rentables et ajustez votre carte en consequence.",
-    icon: TrendingUp,
+    quote: "Avec mon food truck, chaque centime compte. RestauMargin m'aide à optimiser mes recettes et à garder mes prix compétitifs tout en restant rentable.",
+    name: 'Karim Benali',
+    role: 'Gérant',
+    place: 'Food truck Street Flavors, Bordeaux',
+    rating: 5,
   },
 ];
 
-const stats = [
-  { value: '+200', label: "ingredients references", icon: Utensils },
-  { value: '+60', label: 'recettes templates', icon: BookOpen },
-  { value: '12', label: 'fournisseurs', icon: Truck },
-  { value: '< 1s', label: 'calcul instantane', icon: Zap },
+const pricingFeaturesFree = [
+  'Calcul de marge illimité',
+  'Fiches techniques complètes',
+  'Suggestions intelligentes (IA)',
+  'Gestion fournisseurs',
+  'Tableau de bord analytics',
+  'Application PWA installable',
+  'Support par email',
 ];
+
+const pricingFeaturesPro = [
+  'Tout du plan Gratuit',
+  'Multi-restaurant',
+  'Export avancé (PDF, Excel)',
+  'Support prioritaire 24/7',
+  'Intégrations fournisseurs',
+  'API & webhooks',
+  'Formation personnalisée',
+];
+
+/* ───────────────────────── Page ───────────────────────── */
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -117,107 +186,173 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const scrollTo = useCallback((id: string) => {
+    setMobileMenuOpen(false);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
-      {/* ── Navbar ── */}
+    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden scroll-smooth">
+
+      {/* ════════════════ Navbar ════════════════ */}
       <nav
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/90 backdrop-blur-md shadow-sm'
+            ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-900/5 border-b border-slate-100'
             : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-700 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-800/20 group-hover:shadow-blue-800/40 transition-shadow">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-700/25 group-hover:shadow-blue-700/40 transition-shadow">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">
               RestauMargin
             </span>
           </Link>
-          <div className="flex items-center gap-3">
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-8">
+            <button onClick={() => scrollTo('features')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
+              Fonctionnalités
+            </button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
+              Tarifs
+            </button>
+            <button onClick={() => scrollTo('testimonials')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
+              Témoignages
+            </button>
+          </div>
+
+          {/* Desktop CTAs */}
+          <div className="hidden md:flex items-center gap-3">
             <Link
               to="/login"
-              className="hidden sm:inline-flex text-sm font-medium text-slate-600 hover:text-blue-800 transition-colors"
+              className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors px-3 py-2"
             >
               Connexion
             </Link>
             <Link
               to="/login"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-800 text-white text-sm font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-800/25"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
             >
-              Commencer
+              Essai gratuit
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-slate-600 hover:text-blue-700"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-xl">
+            <div className="px-4 py-4 space-y-3">
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
+                Fonctionnalités
+              </button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
+                Tarifs
+              </button>
+              <button onClick={() => scrollTo('testimonials')} className="block w-full text-left text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
+                Témoignages
+              </button>
+              <hr className="border-slate-100" />
+              <Link to="/login" className="block text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
+                Connexion
+              </Link>
+              <Link
+                to="/login"
+                className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all"
+              >
+                Essai gratuit
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
-      {/* ── Hero ── */}
-      <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-hidden">
-        {/* Background decorations */}
+      {/* ════════════════ Hero ════════════════ */}
+      <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-28 overflow-hidden">
+        {/* Background */}
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-gradient-to-b from-blue-50 to-transparent opacity-80" />
-          <div className="absolute top-20 right-0 w-72 h-72 rounded-full bg-blue-100/50 blur-3xl" />
-          <div className="absolute top-40 -left-20 w-60 h-60 rounded-full bg-indigo-100/40 blur-3xl" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] rounded-full bg-gradient-to-b from-blue-50 to-transparent opacity-80" />
+          <div className="absolute top-20 right-0 w-96 h-96 rounded-full bg-blue-100/40 blur-3xl" />
+          <div className="absolute top-48 -left-20 w-72 h-72 rounded-full bg-indigo-100/30 blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Text */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left */}
             <div className="text-center lg:text-left">
               <FadeIn>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-800 text-xs font-semibold mb-6">
-                  <Star className="w-3.5 h-3.5" />
-                  Gratuit pendant la beta
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-6 tracking-wide">
+                  <Star className="w-3.5 h-3.5 fill-blue-700" />
+                  GRATUIT PENDANT LA BETA
                 </div>
               </FadeIn>
+
               <FadeIn delay={100}>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
-                  <span className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-600 bg-clip-text text-transparent">
-                    Maitrisez vos marges,
+                <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight">
+                  <span className="bg-gradient-to-r from-blue-800 via-blue-700 to-blue-500 bg-clip-text text-transparent">
+                    La solution complète
                   </span>
                   <br />
-                  <span className="text-slate-900">boostez votre rentabilite</span>
+                  <span className="text-slate-900">
+                    de gestion des marges
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+                    pour la restauration
+                  </span>
                 </h1>
               </FadeIn>
+
               <FadeIn delay={200}>
                 <p className="mt-6 text-lg sm:text-xl text-slate-500 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  L'outil de calcul de marge et de gestion des fiches techniques
-                  <span className="text-blue-800 font-semibold"> concu par et pour les restaurateurs</span>.
+                  Calculez vos coûts, optimisez vos prix, maîtrisez votre rentabilité.
+                  <span className="text-blue-700 font-semibold"> Utilisé par +100 restaurateurs en France.</span>
                 </p>
               </FadeIn>
+
               <FadeIn delay={300}>
                 <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                   <Link
                     to="/login"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-800 text-white font-semibold text-base hover:bg-blue-700 transition-all shadow-xl shadow-blue-800/25 hover:shadow-blue-800/40 hover:-translate-y-0.5"
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-xl shadow-blue-700/25 hover:shadow-blue-700/40 hover:-translate-y-0.5"
                   >
-                    Commencer gratuitement
+                    Démarrer gratuitement
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                   <a
-                    href="#features"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white border-2 border-slate-200 text-slate-700 font-semibold text-base hover:border-blue-300 hover:text-blue-800 transition-all"
+                    href="#how-it-works"
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white border-2 border-slate-200 text-slate-700 font-semibold text-base hover:border-blue-300 hover:text-blue-700 transition-all"
                   >
-                    Voir la demo
-                    <ChevronDown className="w-5 h-5" />
+                    <Play className="w-4 h-4" />
+                    Voir une démo
                   </a>
                 </div>
               </FadeIn>
             </div>
 
-            {/* Right: Hero illustration */}
+            {/* Right — Mock dashboard */}
             <FadeIn delay={400} className="hidden lg:block">
               <div className="relative">
                 {/* Main card */}
-                <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/60 border border-slate-100 p-6 relative z-10">
-                  {/* Fake dashboard header */}
+                <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/60 border border-slate-100/80 p-6 relative z-10">
+                  {/* Header */}
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-800 flex items-center justify-center">
-                        <ChefHat className="w-4.5 h-4.5 text-white" />
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                        <ChefHat className="w-4 h-4 text-white" />
                       </div>
                       <span className="font-bold text-sm text-slate-800">Tableau de bord</span>
                     </div>
@@ -228,35 +363,35 @@ export default function Landing() {
                     </div>
                   </div>
 
-                  {/* Fake stats row */}
+                  {/* Stats row */}
                   <div className="grid grid-cols-3 gap-3 mb-5">
                     {[
-                      { label: 'Marge moyenne', val: '68%', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                      { label: 'Cout matiere', val: '32%', color: 'text-blue-600', bg: 'bg-blue-50' },
-                      { label: 'Recettes', val: '47', color: 'text-violet-600', bg: 'bg-violet-50' },
+                      { label: 'Marge moyenne', val: '68%', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+                      { label: 'Coût matière', val: '32%', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+                      { label: 'Recettes', val: '47', color: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-100' },
                     ].map((s) => (
-                      <div key={s.label} className={`${s.bg} rounded-xl p-3`}>
+                      <div key={s.label} className={`${s.bg} border ${s.border} rounded-xl p-3`}>
                         <div className={`text-2xl font-extrabold ${s.color}`}>{s.val}</div>
-                        <div className="text-[11px] text-slate-500 mt-0.5">{s.label}</div>
+                        <div className="text-[11px] text-slate-500 mt-0.5 font-medium">{s.label}</div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Fake chart bars */}
-                  <div className="bg-slate-50 rounded-xl p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-3">Marges par categorie</div>
+                  {/* Chart bars */}
+                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    <div className="text-xs font-semibold text-slate-500 mb-3">Marges par catégorie</div>
                     <div className="space-y-2.5">
                       {[
-                        { name: 'Entrees', pct: 72, color: 'bg-blue-500' },
+                        { name: 'Entrées', pct: 72, color: 'bg-blue-500' },
                         { name: 'Plats', pct: 65, color: 'bg-blue-600' },
                         { name: 'Desserts', pct: 78, color: 'bg-blue-700' },
                         { name: 'Boissons', pct: 85, color: 'bg-blue-800' },
                       ].map((bar) => (
                         <div key={bar.name} className="flex items-center gap-3">
-                          <span className="text-xs text-slate-500 w-16">{bar.name}</span>
+                          <span className="text-xs text-slate-500 w-16 font-medium">{bar.name}</span>
                           <div className="flex-1 h-3 bg-slate-200 rounded-full overflow-hidden">
                             <div
-                              className={`h-full ${bar.color} rounded-full`}
+                              className={`h-full ${bar.color} rounded-full transition-all duration-1000`}
                               style={{ width: `${bar.pct}%` }}
                             />
                           </div>
@@ -268,22 +403,22 @@ export default function Landing() {
                 </div>
 
                 {/* Floating cards */}
-                <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-lg border border-slate-100 px-4 py-3 flex items-center gap-2 animate-bounce" style={{ animationDuration: '3s' }}>
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3 flex items-center gap-2.5 animate-bounce" style={{ animationDuration: '3s' }}>
+                  <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
+                    <TrendingUp className="w-4.5 h-4.5 text-emerald-600" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-emerald-600">+12%</div>
+                    <div className="text-sm font-bold text-emerald-600">+12%</div>
                     <div className="text-[10px] text-slate-400">ce mois</div>
                   </div>
                 </div>
 
-                <div className="absolute -bottom-3 -left-4 bg-white rounded-xl shadow-lg border border-slate-100 px-4 py-3 flex items-center gap-2" style={{ animation: 'bounce 3.5s infinite' }}>
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Calculator className="w-4 h-4 text-blue-600" />
+                <div className="absolute -bottom-3 -left-4 bg-white rounded-xl shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3 flex items-center gap-2.5" style={{ animation: 'bounce 3.5s infinite' }}>
+                  <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <Calculator className="w-4.5 h-4.5 text-blue-600" />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-blue-800">Marge: 68%</div>
+                    <div className="text-sm font-bold text-blue-800">Marge: 68%</div>
                     <div className="text-[10px] text-slate-400">Risotto truffe</div>
                   </div>
                 </div>
@@ -293,38 +428,38 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Stats ── */}
-      <section className="py-12 bg-gradient-to-r from-blue-800 to-blue-900">
+      {/* ════════════════ Trusted By ════════════════ */}
+      <section className="py-10 border-y border-slate-100 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {stats.map((s, i) => (
-              <FadeIn key={s.label} delay={i * 100}>
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/10 mb-3">
-                    <s.icon className="w-6 h-6 text-blue-200" />
-                  </div>
-                  <div className="text-3xl sm:text-4xl font-extrabold text-white">{s.value}</div>
-                  <div className="text-sm text-blue-200 mt-1">{s.label}</div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <FadeIn>
+            <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
+              Compatible avec vos fournisseurs
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14">
+              {['Metro', 'Transgourmet', 'Pomona', 'Sysco', 'Brake'].map((name) => (
+                <span key={name} className="text-xl sm:text-2xl font-bold text-slate-300 hover:text-slate-400 transition-colors tracking-tight">
+                  {name}
+                </span>
+              ))}
+            </div>
+          </FadeIn>
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section id="features" className="py-20 sm:py-28 bg-slate-50">
+      {/* ════════════════ Features ════════════════ */}
+      <section id="features" className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Fonctionnalités</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
                 Tout ce dont vous avez besoin pour{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">
                   piloter vos marges
                 </span>
               </h2>
               <p className="mt-4 text-lg text-slate-500">
-                Une suite d'outils puissants et simples pour optimiser la rentabilite de votre restaurant.
+                Une suite d'outils puissants et simples pour optimiser la rentabilité de votre restaurant.
               </p>
             </div>
           </FadeIn>
@@ -332,9 +467,9 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
               <FadeIn key={f.title} delay={i * 80}>
-                <div className="group bg-white rounded-2xl p-6 border border-slate-100 hover:border-blue-200 hover:shadow-xl hover:shadow-blue-50 transition-all duration-300 h-full">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-800 flex items-center justify-center mb-4 transition-colors duration-300">
-                    <f.icon className="w-6 h-6 text-blue-800 group-hover:text-white transition-colors duration-300" />
+                <div className="group relative bg-white rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-50 transition-all duration-300 h-full cursor-default">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-blue-800 flex items-center justify-center mb-5 transition-all duration-300">
+                    <f.icon className="w-6 h-6 text-blue-700 group-hover:text-white transition-colors duration-300" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 mb-2">{f.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
@@ -345,39 +480,110 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── How It Works ── */}
-      <section className="py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ════════════════ How It Works ════════════════ */}
+      <section id="how-it-works" className="py-20 sm:py-28 bg-slate-900 relative overflow-hidden">
+        {/* Background decorations */}
+        <div className="absolute inset-0 -z-0">
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-                Demarrez en{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">
-                  3 etapes simples
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Comment ça marche</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+                Démarrez en{' '}
+                <span className="bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
+                  4 étapes simples
                 </span>
               </h2>
-              <p className="mt-4 text-lg text-slate-500">
-                Configurez votre espace en quelques minutes et commencez a optimiser vos marges.
+              <p className="mt-4 text-lg text-slate-400">
+                Configurez votre espace en quelques minutes et commencez à optimiser vos marges.
               </p>
             </div>
           </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connector line - desktop */}
-            <div className="hidden md:block absolute top-24 left-[16.67%] right-[16.67%] h-0.5 bg-gradient-to-r from-blue-200 via-blue-300 to-blue-200" />
+          {/* Timeline */}
+          <div className="relative">
+            {/* Connector line — desktop */}
+            <div className="hidden lg:block absolute top-20 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-blue-800 via-blue-600 to-blue-800" />
 
-            {steps.map((step, i) => (
-              <FadeIn key={step.num} delay={i * 150}>
-                <div className="relative text-center">
-                  {/* Step number circle */}
-                  <div className="relative z-10 mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-700 to-blue-900 flex items-center justify-center shadow-xl shadow-blue-800/25 mb-6">
-                    <span className="text-2xl font-extrabold text-white">{step.num}</span>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {steps.map((step, i) => (
+                <FadeIn key={step.num} delay={i * 150}>
+                  <div className="relative text-center group">
+                    <div className="relative z-10 mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-xl shadow-blue-700/30 mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-lg font-extrabold text-white">{step.num}</span>
+                    </div>
+                    <div className="mx-auto w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center mb-4">
+                      <step.icon className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed max-w-xs mx-auto">{step.desc}</p>
                   </div>
-                  <div className="mx-auto w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-                    <step.icon className="w-6 h-6 text-blue-800" />
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════ Statistics ════════════════ */}
+      <section className="py-16 sm:py-20 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            <AnimatedStat value={239} suffix="+" label="Ingrédients référencés" icon={Utensils} />
+            <AnimatedStat value={60} suffix="+" label="Templates de recettes" icon={BookOpen} />
+            <AnimatedStat value={50} suffix="+" label="Fournisseurs français" icon={Truck} />
+            <AnimatedStat value={1} suffix="s" label="Calcul instantané" icon={Zap} />
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════ Testimonials ════════════════ */}
+      <section id="testimonials" className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Témoignages</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
+                Ils nous font{' '}
+                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">
+                  confiance
+                </span>
+              </h2>
+              <p className="mt-4 text-lg text-slate-500">
+                Découvrez comment RestauMargin aide les professionnels de la restauration au quotidien.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <FadeIn key={t.name} delay={i * 120}>
+                <div className="bg-white rounded-2xl p-7 border border-slate-100 hover:shadow-xl hover:shadow-slate-100 transition-all duration-300 h-full flex flex-col">
+                  {/* Stars */}
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    ))}
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">{step.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">{step.desc}</p>
+
+                  <div className="relative mb-5 flex-1">
+                    <Quote className="absolute -top-1 -left-1 w-8 h-8 text-blue-100" />
+                    <p className="text-sm text-slate-600 leading-relaxed relative z-10 pl-2">{t.quote}</p>
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold text-sm">
+                      {t.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-slate-900">{t.name}</div>
+                      <div className="text-xs text-slate-500">{t.role} — {t.place}</div>
+                    </div>
+                  </div>
                 </div>
               </FadeIn>
             ))}
@@ -385,51 +591,43 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Pricing ── */}
-      <section className="py-20 sm:py-28 bg-slate-50">
+      {/* ════════════════ Pricing ════════════════ */}
+      <section id="pricing" className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-                Un seul plan,{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">
-                  tout inclus
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Tarifs</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
+                Des tarifs{' '}
+                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">
+                  simples et transparents
                 </span>
               </h2>
               <p className="mt-4 text-lg text-slate-500">
-                Profitez de toutes les fonctionnalites gratuitement pendant la phase beta.
+                Profitez de toutes les fonctionnalités gratuitement pendant la phase bêta.
               </p>
             </div>
           </FadeIn>
 
-          <FadeIn delay={150}>
-            <div className="max-w-md mx-auto">
-              <div className="relative bg-white rounded-3xl border-2 border-blue-800 shadow-2xl shadow-blue-100 overflow-hidden">
-                {/* Badge */}
-                <div className="absolute top-0 right-0 bg-blue-800 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
-                  BETA
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Free plan */}
+            <FadeIn delay={100}>
+              <div className="relative bg-white rounded-3xl border-2 border-blue-700 shadow-2xl shadow-blue-100/50 overflow-hidden h-full flex flex-col">
+                <div className="absolute top-0 right-0 bg-blue-700 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
+                  Populaire
                 </div>
-
-                <div className="p-8 text-center">
-                  <h3 className="text-xl font-bold text-slate-900">Acces complet</h3>
-                  <div className="mt-4 flex items-baseline justify-center gap-1">
-                    <span className="text-5xl font-extrabold text-blue-800">0&euro;</span>
+                <div className="p-8 flex-1 flex flex-col">
+                  <h3 className="text-xl font-bold text-slate-900">Gratuit</h3>
+                  <p className="text-sm text-slate-500 mt-1">Accès complet pendant la bêta</p>
+                  <div className="mt-6 flex items-baseline gap-1">
+                    <span className="text-5xl font-extrabold text-blue-700">0&euro;</span>
                     <span className="text-slate-400 text-lg">/mois</span>
                   </div>
-                  <p className="mt-2 text-sm text-slate-500">Gratuit pendant toute la duree de la beta</p>
 
-                  <div className="mt-8 space-y-3 text-left">
-                    {[
-                      'Calcul de marge illimite',
-                      'Fiches techniques completes',
-                      'Suggestions intelligentes',
-                      'Gestion fournisseurs',
-                      'Tableau de bord analytics',
-                      'Application PWA installable',
-                      'Support prioritaire',
-                    ].map((item) => (
+                  <div className="mt-8 space-y-3 flex-1">
+                    {pricingFeaturesFree.map((item) => (
                       <div key={item} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-blue-800 flex-shrink-0" />
+                        <CheckCircle2 className="w-5 h-5 text-blue-700 flex-shrink-0" />
                         <span className="text-sm text-slate-700">{item}</span>
                       </div>
                     ))}
@@ -437,61 +635,136 @@ export default function Landing() {
 
                   <Link
                     to="/login"
-                    className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-800 text-white font-semibold text-base hover:bg-blue-700 transition-all shadow-lg shadow-blue-800/25 hover:shadow-blue-800/40"
+                    className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
                   >
-                    S'inscrire maintenant
+                    Démarrer gratuitement
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </div>
               </div>
-            </div>
-          </FadeIn>
+            </FadeIn>
+
+            {/* Pro plan */}
+            <FadeIn delay={200}>
+              <div className="relative bg-slate-50 rounded-3xl border-2 border-slate-200 overflow-hidden h-full flex flex-col opacity-80">
+                <div className="absolute top-0 right-0 bg-slate-400 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
+                  Bientôt
+                </div>
+                <div className="p-8 flex-1 flex flex-col">
+                  <h3 className="text-xl font-bold text-slate-900">Pro</h3>
+                  <p className="text-sm text-slate-500 mt-1">Pour les multi-restaurants</p>
+                  <div className="mt-6 flex items-baseline gap-1">
+                    <span className="text-5xl font-extrabold text-slate-400">--&euro;</span>
+                    <span className="text-slate-400 text-lg">/mois</span>
+                  </div>
+
+                  <div className="mt-8 space-y-3 flex-1">
+                    {pricingFeaturesPro.map((item) => (
+                      <div key={item} className="flex items-center gap-3">
+                        <CheckCircle2 className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                        <span className="text-sm text-slate-500">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    disabled
+                    className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-200 text-slate-400 font-semibold text-base cursor-not-allowed"
+                  >
+                    Bientôt disponible
+                  </button>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
-      {/* ── CTA Banner ── */}
-      <section className="py-20 bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 relative overflow-hidden">
+      {/* ════════════════ CTA Banner ════════════════ */}
+      <section className="py-20 sm:py-24 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 relative overflow-hidden">
         <div className="absolute inset-0 -z-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl" />
         </div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <FadeIn>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
-              Pret a optimiser la rentabilite de votre restaurant ?
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight">
+              Prêt à optimiser vos marges ?
             </h2>
-            <p className="text-lg text-blue-200 mb-8 max-w-2xl mx-auto">
-              Rejoignez les restaurateurs qui utilisent RestauMargin pour maitriser leurs couts et augmenter leurs marges.
+            <p className="text-lg text-blue-200/90 mb-10 max-w-2xl mx-auto">
+              Rejoignez les restaurateurs qui utilisent RestauMargin pour maîtriser leurs coûts et augmenter leurs marges. Gratuit, sans engagement.
             </p>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-white text-blue-800 font-bold text-lg hover:bg-blue-50 transition-all shadow-xl hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-xl bg-white text-blue-700 font-bold text-lg hover:bg-blue-50 transition-all shadow-2xl hover:-translate-y-0.5"
             >
-              Commencer gratuitement
+              Démarrer gratuitement
               <ArrowRight className="w-5 h-5" />
             </Link>
           </FadeIn>
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="bg-slate-900 text-slate-400 py-10">
+      {/* ════════════════ Footer ════════════════ */}
+      <footer className="bg-slate-900 text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-800 flex items-center justify-center">
-                <ChefHat className="w-4 h-4 text-white" />
+          {/* Top */}
+          <div className="py-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Brand */}
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                  <ChefHat className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-lg font-bold text-white">RestauMargin</span>
               </div>
-              <span className="font-bold text-white">RestauMargin</span>
-              <span className="text-sm">&copy; {new Date().getFullYear()}</span>
+              <p className="text-sm text-slate-500 leading-relaxed max-w-xs">
+                La solution complète de gestion des marges pour les professionnels de la restauration.
+              </p>
             </div>
-            <div className="flex items-center gap-6 text-sm">
-              <Link to="/login" className="hover:text-white transition-colors">
-                Connexion
-              </Link>
-              <a href="mailto:contact@restaumargin.fr" className="hover:text-white transition-colors">
-                Contact
-              </a>
+
+            {/* Produit */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Produit</h4>
+              <ul className="space-y-2.5">
+                <li><button onClick={() => scrollTo('features')} className="text-sm hover:text-white transition-colors">Fonctionnalités</button></li>
+                <li><button onClick={() => scrollTo('pricing')} className="text-sm hover:text-white transition-colors">Tarifs</button></li>
+                <li><button onClick={() => scrollTo('testimonials')} className="text-sm hover:text-white transition-colors">Témoignages</button></li>
+              </ul>
+            </div>
+
+            {/* Ressources */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Ressources</h4>
+              <ul className="space-y-2.5">
+                <li><a href="mailto:contact@restaumargin.fr" className="text-sm hover:text-white transition-colors">Contact</a></li>
+                <li><a href="mailto:support@restaumargin.fr" className="text-sm hover:text-white transition-colors">Support</a></li>
+              </ul>
+            </div>
+
+            {/* Légal */}
+            <div>
+              <h4 className="text-sm font-semibold text-white mb-4">Légal</h4>
+              <ul className="space-y-2.5">
+                <li><span className="text-sm text-slate-500">Mentions légales</span></li>
+                <li><span className="text-sm text-slate-500">CGU</span></li>
+                <li><span className="text-sm text-slate-500">Politique de confidentialité</span></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom */}
+          <div className="border-t border-slate-800 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-slate-500">
+              &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
+            </p>
+            <div className="flex items-center gap-4">
+              {/* Social placeholders */}
+              {['Twitter', 'LinkedIn', 'Instagram'].map((social) => (
+                <span key={social} className="text-xs text-slate-600 hover:text-white transition-colors cursor-pointer">
+                  {social}
+                </span>
+              ))}
             </div>
           </div>
         </div>

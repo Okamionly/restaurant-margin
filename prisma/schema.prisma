@@ -56,6 +56,7 @@ model Ingredient {
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   recipes      RecipeIngredient[]
+  inventoryItem InventoryItem?
 
   @@map("ingredients")
 }
@@ -88,4 +89,22 @@ model RecipeIngredient {
 
   @@unique([recipeId, ingredientId])
   @@map("recipe_ingredients")
+}
+
+model InventoryItem {
+  id                  Int        @id @default(autoincrement())
+  ingredientId        Int
+  ingredient          Ingredient @relation(fields: [ingredientId], references: [id])
+  currentStock        Float      @default(0)
+  unit                String
+  minStock            Float      @default(0)
+  maxStock            Float?
+  lastRestockDate     DateTime?
+  lastRestockQuantity Float?
+  notes               String?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  @@unique([ingredientId])
+  @@map("inventory_items")
 }

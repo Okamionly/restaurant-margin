@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package } from 'lucide-react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import Dashboard from './pages/Dashboard';
@@ -8,6 +8,7 @@ import Ingredients from './pages/Ingredients';
 import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
 import Suppliers from './pages/Suppliers';
+import Inventory from './pages/Inventory';
 import MenuBuilder from './pages/MenuBuilder';
 import SettingsPage from './pages/Settings';
 import UserManagement from './pages/UserManagement';
@@ -81,6 +82,7 @@ function AppLayout() {
     { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
     { to: '/menu', icon: BookOpen, label: 'La Carte' },
     { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
+    { to: '/inventory', icon: Package, label: 'Inventaire' },
   ];
 
   const secondaryNavItems = [
@@ -233,6 +235,7 @@ function AppLayout() {
           <Route path="/recipes/:id" element={<RecipeDetail />} />
           <Route path="/menu" element={<MenuBuilder />} />
           <Route path="/suppliers" element={<Suppliers />} />
+          <Route path="/inventory" element={<Inventory />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />
         </Routes>

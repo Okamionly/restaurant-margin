@@ -78,32 +78,4 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .dark body,
-  .dark * {
-    background: white !important;
-    color: black !important;
-  }
-  #fiche-technique {
-    box-shadow: none !important;
-    border-radius: 0 !important;
-  }
-  #fiche-technique .bg-blue-800,
-  #fiche-technique .dark\:bg-blue-900 {
-    background-color: #1e40af !important;
-    color: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  table {
-    border-collapse: collapse;
-  }
-  th, td {
-    border: 1px solid #e2e8f0;
-    padding: 8px;
-  }
-  .bg-amber-50 {
-    background-color: #fffbeb !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
 }

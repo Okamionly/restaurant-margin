@@ -9,7 +9,7 @@
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm run build",
     "build": "npm run build:server && npm run build:client",
-    "build:vercel": "cd server && npx prisma generate && cd ../client && npm run build",
+    "build:vercel": "cd server && npx prisma generate && cd ../client && npx vite build",
     "seed": "cd server && npx tsx src/seed.ts"
   },
   "devDependencies": {

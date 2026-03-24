@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <clipPath id="rounded">
+      <rect width="512" height="512" rx="64" ry="64"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rounded)">
+    <!-- Background -->
+    <rect width="512" height="512" fill="#1e40af"/>
+
+    <!-- Chef hat - main dome -->
+    <ellipse cx="256" cy="180" rx="120" ry="100" fill="white"/>
+
+    <!-- Chef hat - three puffs on top -->
+    <circle cx="200" cy="140" r="55" fill="white"/>
+    <circle cx="256" cy="115" r="60" fill="white"/>
+    <circle cx="312" cy="140" r="55" fill="white"/>
+
+    <!-- Chef hat - band -->
+    <rect x="160" y="230" width="192" height="50" rx="5" ry="5" fill="white"/>
+
+    <!-- Chef hat - band line -->
+    <line x1="170" y1="255" x2="342" y2="255" stroke="#1e40af" stroke-width="2" opacity="0.3"/>
+
+    <!-- Dollar / Euro sign for margin calculator -->
+    <g transform="translate(256, 380)" fill="white">
+      <!-- Percentage symbol -->
+      <text x="0" y="15" font-family="Arial, sans-serif" font-size="80" font-weight="bold" text-anchor="middle" fill="white" opacity="0.95">%</text>
+    </g>
+
+    <!-- Subtle plate circle behind percentage -->
+    <circle cx="256" cy="375" r="65" fill="none" stroke="white" stroke-width="3" opacity="0.3"/>
+  </g>
+</svg>

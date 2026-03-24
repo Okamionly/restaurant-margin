@@ -18,12 +18,39 @@ model User {
   @@map("users")
 }
 
+model Supplier {
+  id           Int      @id @default(autoincrement())
+  name         String
+  phone        String?
+  email        String?
+  address      String?
+  city         String?
+  postalCode   String?
+  region       String?
+  country      String   @default("France")
+  siret        String?
+  website      String?
+  notes        String?
+  categories   String[]
+  contactName  String?
+  delivery     Boolean  @default(true)
+  minOrder     String?
+  paymentTerms String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  ingredients  Ingredient[]
+
+  @@map("suppliers")
+}
+
 model Ingredient {
   id           Int                @id @default(autoincrement())
   name         String
   unit         String
   pricePerUnit Float
   supplier     String?
+  supplierId   Int?
+  supplierRef  Supplier?          @relation(fields: [supplierId], references: [id])
   category     String
   allergens    String[]           @default([])
   createdAt    DateTime           @default(now())

@@ -1,4 +1,4 @@
-import type { Ingredient, Recipe, User, LoginCredentials, RegisterData } from '../types';
+import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -187,4 +187,58 @@ export async function cloneRecipe(id: number): Promise<Recipe> {
     headers: authHeaders(),
   });
   return handleResponse<Recipe>(res);
+}
+
+// --- Suppliers ---
+
+export async function fetchSuppliers(): Promise<Supplier[]> {
+  const res = await fetch(`${API_BASE}/suppliers`, { headers: authHeaders() });
+  return handleResponse<Supplier[]>(res);
+}
+
+export async function fetchSupplier(id: number): Promise<Supplier> {
+  const res = await fetch(`${API_BASE}/suppliers/${id}`, { headers: authHeaders() });
+  return handleResponse<Supplier>(res);
+}
+
+export async function createSupplier(data: Omit<Supplier, 'id' | 'createdAt' | 'updatedAt' | '_count' | 'ingredients'>): Promise<Supplier> {
+  const res = await fetch(`${API_BASE}/suppliers`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Supplier>(res);
+}
+
+export async function updateSupplier(id: number, data: Partial<Supplier>): Promise<Supplier> {
+  const res = await fetch(`${API_BASE}/suppliers/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Supplier>(res);
+}
+
+export async function deleteSupplier(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/suppliers/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  if (res.status === 401) {
+    removeToken();
+    window.location.href = '/login';
+    throw new Error('Non authentifié');
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || 'Erreur suppression fournisseur');
+  }
+}
+
+export async function linkSupplierIngredients(id: number): Promise<{ linked: number; supplierName: string }> {
+  const res = await fetch(`${API_BASE}/suppliers/${id}/link-ingredients`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  return handleResponse<{ linked: number; supplierName: string }>(res);
 }

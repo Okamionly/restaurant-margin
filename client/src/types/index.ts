@@ -18,12 +18,37 @@ export interface RegisterData {
   role?: string;
 }
 
+export interface Supplier {
+  id: number;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  city: string | null;
+  postalCode: string | null;
+  region: string | null;
+  country: string;
+  siret: string | null;
+  website: string | null;
+  notes: string | null;
+  categories: string[];
+  contactName: string | null;
+  delivery: boolean;
+  minOrder: string | null;
+  paymentTerms: string | null;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { ingredients: number };
+  ingredients?: Pick<Ingredient, 'id' | 'name' | 'unit' | 'pricePerUnit' | 'category'>[];
+}
+
 export interface Ingredient {
   id: number;
   name: string;
   unit: string;
   pricePerUnit: number;
   supplier: string | null;
+  supplierId: number | null;
   category: string;
   allergens: string[];
   createdAt: string;

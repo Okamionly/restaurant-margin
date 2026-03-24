@@ -252,4 +252,89 @@ app.delete('/api/recipes/:id', authMiddleware, async (req, res) => {
   try { await prisma.recipe.delete({ where: { id: parseInt(req.params.id) } }); res.status(204).send(); } catch { res.status(500).json({ error: 'Erreur suppression' }); }
 });
 
+// ============ SUPPLIERS ============
+app.get('/api/suppliers', authMiddleware, async (_req, res) => {
+  try {
+    const suppliers = await prisma.supplier.findMany({
+      orderBy: { name: 'asc' },
+      include: { _count: { select: { ingredients: true } } },
+    });
+    res.json(suppliers);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération fournisseurs' }); }
+});
+
+app.get('/api/suppliers/:id', authMiddleware, async (req, res) => {
+  try {
+    const supplier = await prisma.supplier.findUnique({
+      where: { id: parseInt(req.params.id) },
+      include: {
+        ingredients: {
+          orderBy: { name: 'asc' },
+          select: { id: true, name: true, unit: true, pricePerUnit: true, category: true },
+        },
+      },
+    });
+    if (!supplier) return res.status(404).json({ error: 'Fournisseur non trouvé' });
+    res.json(supplier);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+app.post('/api/suppliers', authMiddleware, async (req, res) => {
+  try {
+    const { name, phone, email, address, city, postalCode, region, country, siret, website, notes, categories, contactName, delivery, minOrder, paymentTerms } = req.body;
+    if (!name?.trim()) return res.status(400).json({ error: 'Le nom est requis' });
+    const supplier = await prisma.supplier.create({
+      data: {
+        name: name.trim(), phone: phone || null, email: email || null, address: address || null,
+        city: city || null, postalCode: postalCode || null, region: region || null, country: country || 'France',
+        siret: siret || null, website: website || null, notes: notes || null,
+        categories: Array.isArray(categories) ? categories : [], contactName: contactName || null,
+        delivery: delivery !== undefined ? delivery : true, minOrder: minOrder || null, paymentTerms: paymentTerms || null,
+      },
+    });
+    res.status(201).json(supplier);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création fournisseur' }); }
+});
+
+app.put('/api/suppliers/:id', authMiddleware, async (req, res) => {
+  try {
+    const { name, phone, email, address, city, postalCode, region, country, siret, website, notes, categories, contactName, delivery, minOrder, paymentTerms } = req.body;
+    if (!name?.trim()) return res.status(400).json({ error: 'Le nom est requis' });
+    const supplier = await prisma.supplier.update({
+      where: { id: parseInt(req.params.id) },
+      data: {
+        name: name.trim(), phone: phone || null, email: email || null, address: address || null,
+        city: city || null, postalCode: postalCode || null, region: region || null, country: country || 'France',
+        siret: siret || null, website: website || null, notes: notes || null,
+        categories: Array.isArray(categories) ? categories : [], contactName: contactName || null,
+        delivery: delivery !== undefined ? delivery : true, minOrder: minOrder || null, paymentTerms: paymentTerms || null,
+      },
+    });
+    res.json(supplier);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour fournisseur' }); }
+});
+
+app.delete('/api/suppliers/:id', authMiddleware, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const count = await prisma.ingredient.count({ where: { supplierId: id } });
+    if (count > 0) return res.status(400).json({ error: `Impossible de supprimer : ${count} ingrédient(s) lié(s)` });
+    await prisma.supplier.delete({ where: { id } });
+    res.status(204).send();
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression fournisseur' }); }
+});
+
+app.post('/api/suppliers/:id/link-ingredients', authMiddleware, async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const supplier = await prisma.supplier.findUnique({ where: { id } });
+    if (!supplier) return res.status(404).json({ error: 'Fournisseur non trouvé' });
+    const result = await prisma.ingredient.updateMany({
+      where: { supplier: { equals: supplier.name, mode: 'insensitive' }, supplierId: null },
+      data: { supplierId: id },
+    });
+    res.json({ linked: result.count, supplierName: supplier.name });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur lien ingrédients' }); }
+});
+
 export default app;

@@ -1,25 +1,27 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Truck, Package, TrendingUp, Search, ExternalLink, Check, X, Filter, Globe, MapPin, Tag, Building2 } from 'lucide-react';
-import { fetchIngredients } from '../services/api';
-import type { Ingredient } from '../types';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import {
+  Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
+  Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
+  ChevronUp, FileText, ToggleLeft, ToggleRight,
+} from 'lucide-react';
+import {
+  fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
+  linkSupplierIngredients, fetchIngredients,
+} from '../services/api';
+import type { Supplier, Ingredient } from '../types';
+import { INGREDIENT_CATEGORIES } from '../types';
 import {
   FRENCH_SUPPLIERS,
   FRENCH_REGIONS,
   SUPPLIER_CATEGORIES,
   searchSuppliers,
-  getSuppliersByRegion,
-  getSuppliersByCategory,
 } from '../data/frenchSuppliers';
 import type { FrenchSupplier } from '../data/frenchSuppliers';
+import Modal from '../components/Modal';
+import ConfirmDialog from '../components/ConfirmDialog';
+import { useToast } from '../hooks/useToast';
 
-interface SupplierData {
-  name: string;
-  ingredientCount: number;
-  ingredients: Ingredient[];
-  categories: string[];
-  avgPrice: number;
-  totalValue: number;
-}
+// ── helpers ──────────────────────────────────────────────────────────────────
 
 const TYPE_COLORS: Record<FrenchSupplier['type'], { bg: string; text: string; label: string }> = {
   grossiste: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', label: 'Grossiste' },
@@ -30,12 +32,91 @@ const TYPE_COLORS: Record<FrenchSupplier['type'], { bg: string; text: string; la
 
 type TabId = 'mes-fournisseurs' | 'annuaire';
 
+interface SupplierFormData {
+  name: string;
+  contactName: string;
+  phone: string;
+  email: string;
+  address: string;
+  postalCode: string;
+  city: string;
+  region: string;
+  country: string;
+  siret: string;
+  website: string;
+  categories: string[];
+  delivery: boolean;
+  minOrder: string;
+  paymentTerms: string;
+  notes: string;
+}
+
+const emptyForm: SupplierFormData = {
+  name: '',
+  contactName: '',
+  phone: '',
+  email: '',
+  address: '',
+  postalCode: '',
+  city: '',
+  region: '',
+  country: 'France',
+  siret: '',
+  website: '',
+  categories: [],
+  delivery: false,
+  minOrder: '',
+  paymentTerms: '',
+  notes: '',
+};
+
+function supplierToForm(s: Supplier): SupplierFormData {
+  return {
+    name: s.name,
+    contactName: s.contactName || '',
+    phone: s.phone || '',
+    email: s.email || '',
+    address: s.address || '',
+    postalCode: s.postalCode || '',
+    city: s.city || '',
+    region: s.region || '',
+    country: s.country || 'France',
+    siret: s.siret || '',
+    website: s.website || '',
+    categories: s.categories || [],
+    delivery: s.delivery,
+    minOrder: s.minOrder || '',
+    paymentTerms: s.paymentTerms || '',
+    notes: s.notes || '',
+  };
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
+
 export default function Suppliers() {
+  const { showToast } = useToast();
+
+  // Tab
   const [activeTab, setActiveTab] = useState<TabId>('mes-fournisseurs');
+
+  // Data
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Mes fournisseurs filters
   const [search, setSearch] = useState('');
-  const [selectedSupplier, setSelectedSupplier] = useState<string | null>(null);
+  const [filterRegion, setFilterRegion] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+
+  // Expand / form / delete
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
+  const [form, setForm] = useState<SupplierFormData>(emptyForm);
+  const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Supplier | null>(null);
+  const [linking, setLinking] = useState<number | null>(null);
 
   // Annuaire filters
   const [annuaireSearch, setAnnuaireSearch] = useState('');
@@ -44,275 +125,432 @@ export default function Suppliers() {
   const [annuaireType, setAnnuaireType] = useState<'' | FrenchSupplier['type']>('');
   const [deliveryOnly, setDeliveryOnly] = useState(false);
 
-  useEffect(() => {
-    fetchIngredients()
-      .then(setIngredients)
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  // ── data loading ───────────────────────────────────────────────────────────
 
-  const suppliers = useMemo(() => {
-    const map = new Map<string, SupplierData>();
+  const loadData = useCallback(async () => {
+    try {
+      const [s, i] = await Promise.all([fetchSuppliers(), fetchIngredients()]);
+      setSuppliers(s);
+      setIngredients(i);
+    } catch {
+      showToast('Erreur de chargement', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [showToast]);
 
-    ingredients.forEach((ing) => {
-      const supplierName = ing.supplier || 'Sans fournisseur';
-      const existing = map.get(supplierName) || {
-        name: supplierName,
-        ingredientCount: 0,
-        ingredients: [],
-        categories: [],
-        avgPrice: 0,
-        totalValue: 0,
-      };
-      existing.ingredientCount++;
-      existing.ingredients.push(ing);
-      existing.totalValue += ing.pricePerUnit;
-      if (!existing.categories.includes(ing.category)) {
-        existing.categories.push(ing.category);
-      }
-      map.set(supplierName, existing);
+  useEffect(() => { loadData(); }, [loadData]);
+
+  // ── Mes fournisseurs: stats ────────────────────────────────────────────────
+
+  const stats = useMemo(() => {
+    const totalSuppliers = suppliers.length;
+    const totalLinked = suppliers.reduce((n, s) => n + (s._count?.ingredients ?? 0), 0);
+    const withDelivery = suppliers.filter((s) => s.delivery).length;
+    const withoutSupplier = ingredients.filter((i) => !i.supplierId).length;
+    return { totalSuppliers, totalLinked, withDelivery, withoutSupplier };
+  }, [suppliers, ingredients]);
+
+  // ── Mes fournisseurs: filtering ────────────────────────────────────────────
+
+  const filtered = useMemo(() => {
+    return suppliers.filter((s) => {
+      if (search && !s.name.toLowerCase().includes(search.toLowerCase())) return false;
+      if (filterRegion && s.region !== filterRegion) return false;
+      if (filterCategory && !(s.categories || []).includes(filterCategory)) return false;
+      return true;
     });
+  }, [suppliers, search, filterRegion, filterCategory]);
 
-    return Array.from(map.values())
-      .map((s) => ({ ...s, avgPrice: s.totalValue / s.ingredientCount }))
-      .sort((a, b) => b.ingredientCount - a.ingredientCount);
-  }, [ingredients]);
+  // ── CRUD handlers ──────────────────────────────────────────────────────────
 
-  const filtered = suppliers.filter((s) =>
-    s.name.toLowerCase().includes(search.toLowerCase())
-  );
+  function openAdd() {
+    setEditingSupplier(null);
+    setForm(emptyForm);
+    setModalOpen(true);
+  }
 
-  const selectedData = selectedSupplier
-    ? suppliers.find((s) => s.name === selectedSupplier)
-    : null;
+  function openEdit(s: Supplier) {
+    setEditingSupplier(s);
+    setForm(supplierToForm(s));
+    setModalOpen(true);
+  }
 
-  // Annuaire filtered results
+  async function handleSave() {
+    if (!form.name.trim()) {
+      showToast('Le nom du fournisseur est requis', 'error');
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        ...form,
+        contactName: form.contactName || null,
+        phone: form.phone || null,
+        email: form.email || null,
+        address: form.address || null,
+        postalCode: form.postalCode || null,
+        city: form.city || null,
+        region: form.region || null,
+        siret: form.siret || null,
+        website: form.website || null,
+        minOrder: form.minOrder || null,
+        paymentTerms: form.paymentTerms || null,
+        notes: form.notes || null,
+      };
+      if (editingSupplier) {
+        await updateSupplier(editingSupplier.id, payload);
+        showToast('Fournisseur mis à jour', 'success');
+      } else {
+        await createSupplier(payload as any);
+        showToast('Fournisseur créé', 'success');
+      }
+      setModalOpen(false);
+      await loadData();
+    } catch (e: any) {
+      showToast(e.message || 'Erreur', 'error');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteTarget) return;
+    try {
+      await deleteSupplier(deleteTarget.id);
+      showToast('Fournisseur supprimé', 'success');
+      setDeleteTarget(null);
+      await loadData();
+    } catch (e: any) {
+      showToast(e.message || 'Erreur', 'error');
+    }
+  }
+
+  async function handleLink(s: Supplier) {
+    setLinking(s.id);
+    try {
+      const result = await linkSupplierIngredients(s.id);
+      showToast(`${result.linked} ingrédient(s) lié(s) à ${result.supplierName}`, 'success');
+      await loadData();
+    } catch (e: any) {
+      showToast(e.message || 'Erreur', 'error');
+    } finally {
+      setLinking(null);
+    }
+  }
+
+  // ── form helpers ───────────────────────────────────────────────────────────
+
+  function setField<K extends keyof SupplierFormData>(key: K, value: SupplierFormData[K]) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function toggleCategory(cat: string) {
+    setForm((prev) => ({
+      ...prev,
+      categories: prev.categories.includes(cat)
+        ? prev.categories.filter((c) => c !== cat)
+        : [...prev.categories, cat],
+    }));
+  }
+
+  // ── Annuaire ───────────────────────────────────────────────────────────────
+
   const annuaireResults = useMemo(() => {
     let results = searchSuppliers(
       annuaireSearch || undefined,
       annuaireRegion || undefined,
       undefined,
-      annuaireCategory || undefined
+      annuaireCategory || undefined,
     );
-
-    if (annuaireType) {
-      results = results.filter((s) => s.type === annuaireType);
-    }
-
-    if (deliveryOnly) {
-      results = results.filter((s) => s.delivery);
-    }
-
+    if (annuaireType) results = results.filter((s) => s.type === annuaireType);
+    if (deliveryOnly) results = results.filter((s) => s.delivery);
     return results;
   }, [annuaireSearch, annuaireRegion, annuaireCategory, annuaireType, deliveryOnly]);
 
   const annuaireStats = useMemo(() => {
-    const withDelivery = annuaireResults.filter((s) => s.delivery).length;
+    const withDel = annuaireResults.filter((s) => s.delivery).length;
     const byType = annuaireResults.reduce((acc, s) => {
       acc[s.type] = (acc[s.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    return { total: annuaireResults.length, withDelivery, byType };
+    return { total: annuaireResults.length, withDelivery: withDel, byType };
   }, [annuaireResults]);
+
+  // ── render ─────────────────────────────────────────────────────────────────
 
   if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">Chargement...</div>;
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Fournisseurs</h2>
-      </div>
-
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 w-fit">
-        <button
-          onClick={() => setActiveTab('mes-fournisseurs')}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'mes-fournisseurs'
-              ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
-          }`}
-        >
-          <Truck className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
-          Mes fournisseurs
-        </button>
-        <button
-          onClick={() => setActiveTab('annuaire')}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-            activeTab === 'annuaire'
-              ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
-          }`}
-        >
-          <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
-          Annuaire fournisseurs France
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 w-fit">
+          <button
+            onClick={() => setActiveTab('mes-fournisseurs')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'mes-fournisseurs'
+                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+            }`}
+          >
+            <Truck className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
+            Mes fournisseurs
+          </button>
+          <button
+            onClick={() => setActiveTab('annuaire')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'annuaire'
+                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+            }`}
+          >
+            <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
+            Annuaire fournisseurs France
+          </button>
+        </div>
       </div>
 
-      {/* ============================================================== */}
-      {/* TAB: Mes fournisseurs */}
-      {/* ============================================================== */}
+      {/* ================================================================== */}
+      {/* TAB: Mes fournisseurs (CRUD)                                       */}
+      {/* ================================================================== */}
       {activeTab === 'mes-fournisseurs' && (
         <>
-          <div className="flex gap-3 items-center mb-6">
-            <span className="text-sm text-slate-500 dark:text-slate-400">
-              {suppliers.length} fournisseur{suppliers.length > 1 ? 's' : ''} &bull; {ingredients.length} ingrédient{ingredients.length > 1 ? 's' : ''}
-            </span>
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Fournisseurs</h2>
+            <button onClick={openAdd} className="btn btn-primary flex items-center gap-2 w-fit">
+              <Plus className="w-4 h-4" />
+              Ajouter un fournisseur
+            </button>
           </div>
 
-          {/* Stats */}
+          {/* Stats cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Fournisseurs</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">Total fournisseurs</span>
                 <div className="p-2 rounded-lg bg-blue-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{suppliers.filter((s) => s.name !== 'Sans fournisseur').length}</div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalSuppliers}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Produits référencés</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">Ingrédients liés</span>
                 <div className="p-2 rounded-lg bg-green-600"><Package className="w-5 h-5 text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{ingredients.length}</div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalLinked}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Prix moyen</span>
-                <div className="p-2 rounded-lg bg-purple-600"><TrendingUp className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-slate-500 dark:text-slate-400">Avec livraison</span>
+                <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                {ingredients.length > 0 ? (ingredients.reduce((s, i) => s + i.pricePerUnit, 0) / ingredients.length).toFixed(2) : '0.00'} &euro;
-              </div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withDelivery}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-500 dark:text-slate-400">Sans fournisseur</span>
                 <div className="p-2 rounded-lg bg-amber-500"><Package className="w-5 h-5 text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                {ingredients.filter((i) => !i.supplier).length}
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withoutSupplier}</div>
+            </div>
+          </div>
+
+          {/* Search / filter bar */}
+          <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-600 dark:text-slate-300">
+              <Filter className="w-4 h-4" />
+              Filtres
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher par nom..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="input pl-10 w-full"
+                />
+              </div>
+              <div className="relative">
+                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <select
+                  value={filterRegion}
+                  onChange={(e) => setFilterRegion(e.target.value)}
+                  className="input pl-10 w-full appearance-none"
+                >
+                  <option value="">Toutes les régions</option>
+                  {FRENCH_REGIONS.map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="relative">
+                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="input pl-10 w-full appearance-none"
+                >
+                  <option value="">Toutes catégories</option>
+                  {INGREDIENT_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
 
-          {/* Search */}
-          <div className="relative mb-4 max-w-md">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Rechercher un fournisseur..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="input pl-10 w-full"
-            />
-          </div>
+          {/* Supplier card grid */}
+          {filtered.length === 0 ? (
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
+              <Truck className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+              <p className="text-slate-400 dark:text-slate-500">Aucun fournisseur trouvé</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {filtered.map((supplier) => {
+                const ingCount = supplier._count?.ingredients ?? 0;
+                const isExpanded = expandedId === supplier.id;
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Suppliers List */}
-            <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-slate-800 rounded-lg shadow divide-y dark:divide-slate-700">
-                {filtered.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400">Aucun fournisseur trouvé</div>
-                ) : (
-                  filtered.map((supplier) => (
-                    <button
-                      key={supplier.name}
-                      onClick={() => setSelectedSupplier(supplier.name)}
-                      className={`w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${
-                        selectedSupplier === supplier.name ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600' : ''
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium text-slate-800 dark:text-slate-200">
-                            {supplier.name === 'Sans fournisseur' ? (
-                              <span className="text-slate-400 italic">{supplier.name}</span>
-                            ) : supplier.name}
-                          </div>
-                          <div className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                            {supplier.ingredientCount} produit{supplier.ingredientCount > 1 ? 's' : ''}
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap gap-1 ml-2">
-                          {supplier.categories.slice(0, 2).map((cat) => (
-                            <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium">
+                return (
+                  <div
+                    key={supplier.id}
+                    className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col"
+                  >
+                    {/* Card header */}
+                    <div className="p-5 flex-1">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">
+                          {supplier.name}
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 whitespace-nowrap">
+                          {ingCount} ing.
+                        </span>
+                      </div>
+
+                      {/* Contact info */}
+                      {supplier.contactName && (
+                        <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+                          <Building2 className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
+                          {supplier.contactName}
+                        </p>
+                      )}
+                      {supplier.phone && (
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-0.5">
+                          <Phone className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
+                          {supplier.phone}
+                        </p>
+                      )}
+                      {supplier.email && (
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-0.5 truncate">
+                          <Mail className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
+                          {supplier.email}
+                        </p>
+                      )}
+                      {(supplier.city || supplier.postalCode) && (
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
+                          <MapPin className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
+                          {[supplier.city, supplier.postalCode].filter(Boolean).join(' ')}
+                        </p>
+                      )}
+
+                      {/* Categories */}
+                      {supplier.categories.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {supplier.categories.map((cat) => (
+                            <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
                               {cat}
                             </span>
                           ))}
-                          {supplier.categories.length > 2 && (
-                            <span className="text-[10px] text-slate-400">+{supplier.categories.length - 2}</span>
-                          )}
                         </div>
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
+                      )}
 
-            {/* Supplier Detail */}
-            <div className="lg:col-span-2">
-              {selectedData ? (
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow">
-                  <div className="px-5 py-4 border-b dark:border-slate-700">
-                    <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                      <Truck className="w-5 h-5 text-blue-600" />
-                      {selectedData.name}
-                    </h3>
-                    <div className="flex gap-4 mt-2 text-sm text-slate-500 dark:text-slate-400">
-                      <span>{selectedData.ingredientCount} produit{selectedData.ingredientCount > 1 ? 's' : ''}</span>
-                      <span>Prix moyen : {selectedData.avgPrice.toFixed(2)} &euro;</span>
-                      <span>Catégories : {selectedData.categories.join(', ')}</span>
+                      {/* Delivery + website */}
+                      <div className="flex flex-wrap items-center gap-3 text-xs mt-2">
+                        <span className={`flex items-center gap-1 ${supplier.delivery ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                          {supplier.delivery ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+                          Livraison
+                        </span>
+                        {supplier.website && (
+                          <a
+                            href={supplier.website.startsWith('http') ? supplier.website : `https://${supplier.website}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            Site web
+                          </a>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Action buttons */}
+                    <div className="border-t dark:border-slate-700 px-5 py-3 flex items-center gap-2">
+                      <button
+                        onClick={() => openEdit(supplier)}
+                        className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
+                        title="Modifier"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setDeleteTarget(supplier)}
+                        className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500"
+                        title="Supprimer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleLink(supplier)}
+                        disabled={linking === supplier.id}
+                        className="p-1.5 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 disabled:opacity-50"
+                        title="Lier les ingrédients"
+                      >
+                        <Link2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setExpandedId(isExpanded ? null : supplier.id)}
+                        className="ml-auto p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
+                        title="Voir les ingrédients"
+                      >
+                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </button>
+                    </div>
+
+                    {/* Expanded ingredients list */}
+                    {isExpanded && (
+                      <div className="border-t dark:border-slate-700 px-5 py-3 bg-slate-50 dark:bg-slate-900/30 rounded-b-lg">
+                        {supplier.ingredients && supplier.ingredients.length > 0 ? (
+                          <ul className="space-y-1">
+                            {supplier.ingredients.map((ing) => (
+                              <li key={ing.id} className="flex items-center justify-between text-sm">
+                                <span className="text-slate-700 dark:text-slate-300">{ing.name}</span>
+                                <span className="text-xs text-slate-400">
+                                  {ing.pricePerUnit.toFixed(2)} &euro;/{ing.unit}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-slate-400 italic">Aucun ingrédient lié</p>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                        <tr>
-                          <th className="px-5 py-3 text-left font-medium">Produit</th>
-                          <th className="px-5 py-3 text-left font-medium">Catégorie</th>
-                          <th className="px-5 py-3 text-right font-medium">Prix unitaire</th>
-                          <th className="px-5 py-3 text-center font-medium">Unité</th>
-                          <th className="px-5 py-3 text-left font-medium">Allergènes</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                        {selectedData.ingredients.map((ing) => (
-                          <tr key={ing.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                            <td className="px-5 py-3 font-medium text-slate-800 dark:text-slate-200">{ing.name}</td>
-                            <td className="px-5 py-3">
-                              <span className="px-2 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">{ing.category}</span>
-                            </td>
-                            <td className="px-5 py-3 text-right font-mono text-slate-700 dark:text-slate-300">{ing.pricePerUnit.toFixed(2)} &euro;</td>
-                            <td className="px-5 py-3 text-center text-slate-600 dark:text-slate-400">{ing.unit}</td>
-                            <td className="px-5 py-3">
-                              <div className="flex flex-wrap gap-1">
-                                {(ing.allergens || []).map((a) => (
-                                  <span key={a} className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium">{a}</span>
-                                ))}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
-                  <Truck className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-                  <p className="text-slate-400 dark:text-slate-500">Sélectionnez un fournisseur pour voir ses produits</p>
-                </div>
-              )}
+                );
+              })}
             </div>
-          </div>
+          )}
         </>
       )}
 
-      {/* ============================================================== */}
-      {/* TAB: Annuaire fournisseurs France */}
-      {/* ============================================================== */}
+      {/* ================================================================== */}
+      {/* TAB: Annuaire fournisseurs France (kept as-is)                     */}
+      {/* ================================================================== */}
       {activeTab === 'annuaire' && (
         <>
           {/* Stats bar */}
@@ -340,7 +578,6 @@ export default function Suppliers() {
               Filtres
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              {/* Search */}
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
@@ -351,8 +588,6 @@ export default function Suppliers() {
                   className="input pl-10 w-full"
                 />
               </div>
-
-              {/* Region */}
               <div className="relative">
                 <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <select
@@ -366,8 +601,6 @@ export default function Suppliers() {
                   ))}
                 </select>
               </div>
-
-              {/* Category */}
               <div className="relative">
                 <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <select
@@ -381,8 +614,6 @@ export default function Suppliers() {
                   ))}
                 </select>
               </div>
-
-              {/* Type */}
               <div className="relative">
                 <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <select
@@ -397,8 +628,6 @@ export default function Suppliers() {
                   <option value="national">National</option>
                 </select>
               </div>
-
-              {/* Delivery toggle */}
               <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-700/50 cursor-pointer select-none">
                 <input
                   type="checkbox"
@@ -427,7 +656,6 @@ export default function Suppliers() {
                     key={supplier.name}
                     className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow p-5 flex flex-col"
                   >
-                    {/* Header: Name + Type badge */}
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">
                         {supplier.name}
@@ -436,32 +664,21 @@ export default function Suppliers() {
                         {tc.label}
                       </span>
                     </div>
-
-                    {/* Description */}
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">
                       {supplier.description}
                     </p>
-
-                    {/* Categories */}
                     <div className="flex flex-wrap gap-1 mb-3">
                       {supplier.categories.map((cat) => (
-                        <span
-                          key={cat}
-                          className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium"
-                        >
+                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
                           {cat}
                         </span>
                       ))}
                     </div>
-
-                    {/* Speciality */}
                     {supplier.speciality && (
                       <p className="text-xs text-purple-600 dark:text-purple-400 mb-2 italic">
                         {supplier.speciality}
                       </p>
                     )}
-
-                    {/* Regions */}
                     <div className="text-xs text-slate-400 dark:text-slate-500 mb-3 flex items-start gap-1">
                       <MapPin className="w-3 h-3 mt-0.5 shrink-0" />
                       <span className="line-clamp-1">
@@ -470,23 +687,14 @@ export default function Suppliers() {
                           : supplier.regions.join(', ')}
                       </span>
                     </div>
-
-                    {/* Footer details */}
                     <div className="mt-auto pt-3 border-t dark:border-slate-700 flex flex-wrap items-center gap-3 text-xs">
-                      {/* Delivery */}
                       <span className={`flex items-center gap-1 ${supplier.delivery ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
                         {supplier.delivery ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
                         Livraison
                       </span>
-
-                      {/* Min order */}
                       {supplier.minOrder && (
-                        <span className="text-slate-500 dark:text-slate-400">
-                          Min: {supplier.minOrder}
-                        </span>
+                        <span className="text-slate-500 dark:text-slate-400">Min: {supplier.minOrder}</span>
                       )}
-
-                      {/* Website */}
                       {supplier.website && (
                         <a
                           href={supplier.website}
@@ -506,6 +714,260 @@ export default function Suppliers() {
           )}
         </>
       )}
+
+      {/* ================================================================== */}
+      {/* Add / Edit Modal                                                   */}
+      {/* ================================================================== */}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editingSupplier ? 'Modifier le fournisseur' : 'Ajouter un fournisseur'}
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+          {/* Nom */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Nom du fournisseur <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setField('name', e.target.value)}
+              className="input w-full"
+              placeholder="Ex: Metro, Transgourmet..."
+            />
+          </div>
+
+          {/* Contact name */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nom du contact</label>
+            <input
+              type="text"
+              value={form.contactName}
+              onChange={(e) => setField('contactName', e.target.value)}
+              className="input w-full"
+            />
+          </div>
+
+          {/* Phone + Email */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Téléphone</label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setField('phone', e.target.value)}
+                className="input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+              <input
+                type="email"
+                value={form.email}
+                onChange={(e) => setField('email', e.target.value)}
+                className="input w-full"
+              />
+            </div>
+          </div>
+
+          {/* Address */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Adresse</label>
+            <input
+              type="text"
+              value={form.address}
+              onChange={(e) => setField('address', e.target.value)}
+              className="input w-full"
+            />
+          </div>
+
+          {/* Postal code + City */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Code postal</label>
+              <input
+                type="text"
+                value={form.postalCode}
+                onChange={(e) => setField('postalCode', e.target.value)}
+                className="input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Ville</label>
+              <input
+                type="text"
+                value={form.city}
+                onChange={(e) => setField('city', e.target.value)}
+                className="input w-full"
+              />
+            </div>
+          </div>
+
+          {/* Region + Country */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Région</label>
+              <select
+                value={form.region}
+                onChange={(e) => setField('region', e.target.value)}
+                className="input w-full"
+              >
+                <option value="">-- Sélectionner --</option>
+                {FRENCH_REGIONS.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Pays</label>
+              <input
+                type="text"
+                value={form.country}
+                onChange={(e) => setField('country', e.target.value)}
+                className="input w-full"
+              />
+            </div>
+          </div>
+
+          {/* SIRET + Website */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">SIRET</label>
+              <input
+                type="text"
+                value={form.siret}
+                onChange={(e) => setField('siret', e.target.value)}
+                className="input w-full"
+                placeholder="14 chiffres"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Site web</label>
+              <input
+                type="url"
+                value={form.website}
+                onChange={(e) => setField('website', e.target.value)}
+                className="input w-full"
+                placeholder="https://..."
+              />
+            </div>
+          </div>
+
+          {/* Categories multi-select */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Catégories</label>
+            <div className="flex flex-wrap gap-2">
+              {INGREDIENT_CATEGORIES.map((cat) => (
+                <label
+                  key={cat}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm cursor-pointer select-none border transition-colors ${
+                    form.categories.includes(cat)
+                      ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
+                      : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={form.categories.includes(cat)}
+                    onChange={() => toggleCategory(cat)}
+                  />
+                  {form.categories.includes(cat) && <Check className="w-3.5 h-3.5" />}
+                  {cat}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Delivery toggle */}
+          <div>
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <button
+                type="button"
+                onClick={() => setField('delivery', !form.delivery)}
+                className="focus:outline-none"
+              >
+                {form.delivery
+                  ? <ToggleRight className="w-8 h-8 text-green-500" />
+                  : <ToggleLeft className="w-8 h-8 text-slate-400" />}
+              </button>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Livraison disponible</span>
+            </label>
+          </div>
+
+          {/* Min order + Payment terms */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Commande minimum</label>
+              <input
+                type="text"
+                value={form.minOrder}
+                onChange={(e) => setField('minOrder', e.target.value)}
+                className="input w-full"
+                placeholder="Ex: 150 EUR"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Conditions de paiement</label>
+              <input
+                type="text"
+                value={form.paymentTerms}
+                onChange={(e) => setField('paymentTerms', e.target.value)}
+                className="input w-full"
+                placeholder="Ex: 30 jours fin de mois"
+              />
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Notes</label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => setField('notes', e.target.value)}
+              rows={3}
+              className="input w-full resize-none"
+              placeholder="Informations complémentaires..."
+            />
+          </div>
+        </div>
+
+        {/* Modal footer */}
+        <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-slate-700">
+          <button
+            onClick={() => setModalOpen(false)}
+            className="px-4 py-2 rounded-lg font-medium border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="btn btn-primary flex items-center gap-2 disabled:opacity-50"
+          >
+            {saving ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Enregistrement...
+              </>
+            ) : (
+              editingSupplier ? 'Mettre à jour' : 'Créer'
+            )}
+          </button>
+        </div>
+      </Modal>
+
+      {/* ================================================================== */}
+      {/* Delete confirmation                                                */}
+      {/* ================================================================== */}
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        title="Supprimer le fournisseur"
+        message={`Voulez-vous vraiment supprimer "${deleteTarget?.name}" ? Cette action est irréversible.`}
+      />
     </div>
   );
 }

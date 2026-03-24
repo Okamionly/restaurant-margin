@@ -77,7 +77,7 @@ app.get('/api/auth/first-user', async (_req, res) => {
   try {
     const count = await prisma.user.count();
     res.json({ isFirstUser: count === 0 });
-  } catch (e) { res.status(500).json({ error: 'Erreur serveur' }); }
+  } catch (e: any) { console.error('DB Error:', e.message); res.status(500).json({ error: 'Erreur serveur', detail: e.message }); }
 });
 
 app.post('/api/auth/register', async (req: any, res) => {

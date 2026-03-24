@@ -109,17 +109,17 @@ export default function Recipes() {
     setForm({
       name: template.name,
       category: template.category,
-      sellingPrice: String(template.sellingPrice),
+      sellingPrice: String(template.suggestedSellingPrice),
       nbPortions: String(template.nbPortions),
       description: template.description,
-      prepTimeMinutes: String(template.prepTimeMinutes),
-      cookTimeMinutes: String(template.cookTimeMinutes),
-      laborCostPerHour: String(template.laborCostPerHour),
+      prepTimeMinutes: String(template.suggestedPrepTime),
+      cookTimeMinutes: String(template.suggestedCookTime),
+      laborCostPerHour: '',
     });
 
     // Map template ingredients to actual ingredients in DB
-    const mapped = template.ingredients
-      .map((ti) => {
+    const mapped = template.suggestedIngredients
+      .map((ti: { name: string; quantity: number; wastePercent: number }) => {
         const found = ingredients.find((i) => i.name === ti.name);
         if (!found) return null;
         return {
@@ -324,9 +324,9 @@ export default function Recipes() {
                           <span className="font-medium text-slate-800 dark:text-slate-200">{tpl.name}</span>
                           <span className="ml-2 text-xs text-slate-400">{tpl.category}</span>
                         </div>
-                        <span className="text-sm font-mono text-slate-500">{tpl.sellingPrice} &euro;</span>
+                        <span className="text-sm font-mono text-slate-500">{tpl.suggestedSellingPrice} &euro;</span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-0.5">{tpl.description} &bull; {tpl.ingredients.length} ingrédients</div>
+                      <div className="text-xs text-slate-400 mt-0.5">{tpl.description} &bull; {tpl.suggestedIngredients.length} ingrédients</div>
                     </button>
                   ))}
                   <button

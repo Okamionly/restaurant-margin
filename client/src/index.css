@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600;
+  }
+  .btn-secondary {
+    @apply bg-white text-slate-700 px-4 py-2 rounded-lg font-medium border border-slate-300 hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600;
+  }
+  .input {
+    @apply border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-400;
+  }
+  .label {
+    @apply block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1;
+  }
+}
+
+/* Toast slide-in animation */
+@keyframes toast-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-in {
+  from {
+    transform: translateY(-20px) scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-modal-in {
+  animation: modal-in 0.25s ease-out;
+}
+
+/* Print styles */
+@media print {
+  header, nav, .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .dark body,
+  .dark * {
+    background: white !important;
+    color: black !important;
+  }
+  #fiche-technique {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  #fiche-technique .bg-blue-800,
+  #fiche-technique .dark\:bg-blue-900 {
+    background-color: #1e40af !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #e2e8f0;
+    padding: 8px;
+  }
+  .bg-amber-50 {
+    background-color: #fffbeb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

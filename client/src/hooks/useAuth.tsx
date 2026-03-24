@@ -1,0 +1,71 @@
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import type { User, LoginCredentials, RegisterData } from '../types';
+import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken } from '../services/api';
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const checkAuth = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const me = await getMe();
+      setUser(me);
+    } catch {
+      removeToken();
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  const login = async (credentials: LoginCredentials) => {
+    const result = await apiLogin(credentials);
+    setToken(result.token);
+    setUser(result.user);
+  };
+
+  const register = async (data: RegisterData) => {
+    const result = await apiRegister(data);
+    setToken(result.token);
+    setUser(result.user);
+  };
+
+  const logout = () => {
+    removeToken();
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth(): AuthContextType {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth doit être utilisé dans un AuthProvider');
+  }
+  return context;
+}

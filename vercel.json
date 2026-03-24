@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "client/dist",
+  "installCommand": "npm install && cd client && npm install && cd ../server && npm install && npx prisma generate",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node@3"
+    }
+  }
+}

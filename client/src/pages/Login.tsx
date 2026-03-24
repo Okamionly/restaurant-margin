@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChefHat, Mail, Lock, User } from 'lucide-react';
+import { ChefHat, Mail, Lock, User, KeyRound, Shield } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { checkFirstUser } from '../services/api';
 
@@ -16,10 +16,12 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [role, setRole] = useState('chef');
+  const [invitationCode, setInvitationCode] = useState('');
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -36,11 +38,16 @@ export default function Login() {
     setLoading(true);
     try {
       if (isRegisterMode) {
-        await register({ email, password, name });
+        await register({
+          email,
+          password,
+          name,
+          ...(isFirstUser ? {} : { invitationCode, role }),
+        });
       } else {
         await login({ email, password });
       }
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setError(err.message || 'Erreur de connexion');
     } finally {
@@ -126,6 +133,43 @@ export default function Login() {
                 />
               </div>
             </div>
+
+            {isRegisterMode && !isFirstUser && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rôle</label>
+                  <div className="relative">
+                    <Shield className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <select
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="input w-full pl-10 appearance-none"
+                    >
+                      <option value="chef">Chef de cuisine</option>
+                      <option value="admin">Directeur</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Code d'invitation</label>
+                  <div className="relative">
+                    <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      required
+                      value={invitationCode}
+                      onChange={(e) => setInvitationCode(e.target.value)}
+                      className="input w-full pl-10"
+                      placeholder="Code d'invitation"
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    Demandez le code d'invitation à votre administrateur
+                  </p>
+                </div>
+              </>
+            )}
 
             <button
               type="submit"

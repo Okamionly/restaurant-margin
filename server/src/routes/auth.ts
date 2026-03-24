@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 export const authRouter = Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'restau-margin-secret-key-change-in-production';
+const INVITATION_CODE = process.env.INVITATION_CODE || 'RESTAUMARGIN2024';
 const TOKEN_EXPIRY = '7d';
 
 function generateToken(payload: JwtPayload): string {
@@ -27,7 +28,7 @@ authRouter.get('/first-user', async (_req: AuthRequest, res: Response) => {
 // POST /register
 authRouter.post('/register', async (req: AuthRequest, res: Response) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, invitationCode, role: requestedRole } = req.body;
 
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Email, mot de passe et nom sont requis' });
@@ -41,19 +42,28 @@ authRouter.post('/register', async (req: AuthRequest, res: Response) => {
     const userCount = await prisma.user.count();
 
     if (userCount > 0) {
-      // Users exist: only an authenticated admin can create new users
+      // Users exist: check invitation code or admin token
       const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(403).json({ error: 'Seul un administrateur peut créer de nouveaux utilisateurs' });
-      }
+      const hasAdminToken = authHeader && authHeader.startsWith('Bearer ');
 
-      try {
-        const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
-        if (decoded.role !== 'admin') {
-          return res.status(403).json({ error: 'Seul un administrateur peut créer de nouveaux utilisateurs' });
+      if (hasAdminToken) {
+        // Admin creating a user (existing behavior)
+        try {
+          const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
+          if (decoded.role !== 'admin') {
+            return res.status(403).json({ error: 'Seul un administrateur peut créer de nouveaux utilisateurs' });
+          }
+        } catch {
+          return res.status(403).json({ error: 'Token invalide' });
         }
-      } catch {
-        return res.status(403).json({ error: 'Token invalide' });
+      } else {
+        // Self-registration: require invitation code
+        if (!invitationCode) {
+          return res.status(400).json({ error: "Le code d'invitation est requis" });
+        }
+        if (invitationCode !== INVITATION_CODE) {
+          return res.status(403).json({ error: "Code d'invitation invalide" });
+        }
       }
     }
 
@@ -64,7 +74,7 @@ authRouter.post('/register', async (req: AuthRequest, res: Response) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const role = userCount === 0 ? 'admin' : 'chef';
+    const role = userCount === 0 ? 'admin' : (requestedRole === 'admin' || requestedRole === 'chef' ? requestedRole : 'chef');
 
     const user = await prisma.user.create({
       data: { email, passwordHash, name, role },

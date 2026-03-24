@@ -12,6 +12,7 @@ import MenuBuilder from './pages/MenuBuilder';
 import SettingsPage from './pages/Settings';
 import UserManagement from './pages/UserManagement';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -75,7 +76,7 @@ function AppLayout() {
   }, [location.pathname]);
 
   const navItems = [
-    { to: '/', icon: BarChart3, label: 'Tableau de bord' },
+    { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
     { to: '/ingredients', icon: ShoppingBasket, label: 'Ingrédients' },
     { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
     { to: '/menu', icon: BookOpen, label: 'La Carte' },
@@ -152,7 +153,7 @@ function AppLayout() {
               <NavLink
                 key={to}
                 to={to}
-                end={to === '/'}
+                end={to === '/dashboard'}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
@@ -187,7 +188,7 @@ function AppLayout() {
               <NavLink
                 key={to}
                 to={to}
-                end={to === '/'}
+                end={to === '/dashboard'}
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                     isActive
@@ -226,6 +227,7 @@ function AppLayout() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/ingredients" element={<Ingredients />} />
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/recipes/:id" element={<RecipeDetail />} />
@@ -244,11 +246,27 @@ function AppLayout() {
   );
 }
 
+function PublicHome() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center text-slate-500 dark:text-slate-400">Chargement...</div>;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Landing />;
+}
+
 function App() {
   return (
     <AuthProvider>
       <ToastProvider>
         <Routes>
+          <Route path="/" element={<PublicHome />} />
+          <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/*"

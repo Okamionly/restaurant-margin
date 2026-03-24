@@ -8,6 +8,7 @@ const app = express();
 const prisma = new PrismaClient();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'restau-margin-secret-key';
+const INVITATION_CODE = process.env.INVITATION_CODE || 'RESTAUMARGIN2024';
 const TOKEN_EXPIRY = '7d';
 
 app.use(cors());
@@ -82,19 +83,24 @@ app.get('/api/auth/first-user', async (_req, res) => {
 
 app.post('/api/auth/register', async (req: any, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, invitationCode, role: requestedRole } = req.body;
     if (!email || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
     if (password.length < 6) return res.status(400).json({ error: 'Min. 6 caractères' });
     const userCount = await prisma.user.count();
     if (userCount > 0) {
       const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(403).json({ error: 'Seul un administrateur peut créer de nouveaux utilisateurs' });
-      try { const d = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload; if (d.role !== 'admin') return res.status(403).json({ error: 'Admin requis' }); } catch { return res.status(403).json({ error: 'Token invalide' }); }
+      const hasAdminToken = authHeader && authHeader.startsWith('Bearer ');
+      if (hasAdminToken) {
+        try { const d = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload; if (d.role !== 'admin') return res.status(403).json({ error: 'Admin requis' }); } catch { return res.status(403).json({ error: 'Token invalide' }); }
+      } else {
+        if (!invitationCode) return res.status(400).json({ error: "Le code d'invitation est requis" });
+        if (invitationCode !== INVITATION_CODE) return res.status(403).json({ error: "Code d'invitation invalide" });
+      }
     }
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
     const passwordHash = await bcrypt.hash(password, 12);
-    const role = userCount === 0 ? 'admin' : 'chef';
+    const role = userCount === 0 ? 'admin' : (requestedRole === 'admin' || requestedRole === 'chef' ? requestedRole : 'chef');
     const user = await prisma.user.create({ data: { email, passwordHash, name, role } });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });

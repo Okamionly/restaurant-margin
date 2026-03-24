@@ -14,6 +14,8 @@ export interface RegisterData {
   email: string;
   password: string;
   name: string;
+  invitationCode?: string;
+  role?: string;
 }
 
 export interface Ingredient {

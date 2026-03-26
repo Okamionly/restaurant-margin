@@ -480,6 +480,70 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ════════════════ Kit Station Balance ════════════════ */}
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Image */}
+              <div className="relative">
+                <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
+                  <img
+                    src="/kit-station.jpg"
+                    alt="Kit Station RestauMargin — Tablette + Balance connectée"
+                    className="w-full h-auto"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                </div>
+                <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg font-bold text-lg">
+                  À partir de 1 200 €
+                </div>
+              </div>
+              {/* Content */}
+              <div>
+                <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-3">Nouveau</p>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight mb-6">
+                  Kit Station{' '}
+                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">RestauMargin</span>
+                </h2>
+                <p className="text-lg text-slate-600 dark:text-slate-300 mb-8">
+                  La première station cuisine connectée. Pesez vos ingrédients, contrôlez vos coûts en temps réel et mettez à jour votre inventaire automatiquement.
+                </p>
+                <div className="space-y-4 mb-8">
+                  {[
+                    { title: 'Tablette 10" enveloppée', desc: 'Interface cuisine tactile, résistante aux éclaboussures' },
+                    { title: 'Balance ultra-compacte', desc: 'Bluetooth, plateau inox, précision professionnelle' },
+                    { title: 'Support pliable intégré', desc: 'Posé sur plan de travail ou fixé au mur' },
+                    { title: 'Logiciel RestauMargin Pro inclus', desc: '29€/mois — toutes les fonctionnalités illimitées' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mt-0.5">
+                        <svg className="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-900 dark:text-white">{item.title}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <a
+                  href="#pricing"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all"
+                >
+                  Commander le Kit
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* ════════════════ How It Works ════════════════ */}
       <section id="how-it-works" className="py-20 sm:py-28 bg-slate-900 relative overflow-hidden">
         {/* Background decorations */}

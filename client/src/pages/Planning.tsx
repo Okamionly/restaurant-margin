@@ -44,8 +44,8 @@ const ROLE_LABELS: Record<EmployeeRole, string> = {
   Serveuse: 'Serveuse',
   Plongeur: 'Plongeur',
   Plongeuse: 'Plongeuse',
-  Patissier: 'P\u00e2tissier',
-  Patissiere: 'P\u00e2tissi\u00e8re',
+  Patissier: 'Pâtissier',
+  Patissiere: 'Pâtissière',
 };
 
 const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> = {

@@ -2,11 +2,11 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
-  ChevronUp, FileText, ToggleLeft, ToggleRight,
+  ChevronUp, FileText, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
-  linkSupplierIngredients, fetchIngredients,
+  linkSupplierIngredients, fetchIngredients, updateIngredient, createIngredient,
 } from '../services/api';
 import type { Supplier, Ingredient } from '../types';
 import { INGREDIENT_CATEGORIES } from '../types';
@@ -17,6 +17,7 @@ import {
   searchSuppliers,
 } from '../data/frenchSuppliers';
 import type { FrenchSupplier } from '../data/frenchSuppliers';
+import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
@@ -124,6 +125,25 @@ export default function Suppliers() {
   const [annuaireCategory, setAnnuaireCategory] = useState('');
   const [annuaireType, setAnnuaireType] = useState<'' | FrenchSupplier['type']>('');
   const [deliveryOnly, setDeliveryOnly] = useState(false);
+
+  // Interactive ingredient management
+  const [editingPrice, setEditingPrice] = useState<{ id: number; value: string } | null>(null);
+  const [ingSearch, setIngSearch] = useState('');
+  const [compareIds, setCompareIds] = useState<Set<number>>(new Set());
+  const [showCompare, setShowCompare] = useState(false);
+
+  // Catalogue Transgourmet
+  const [catalogData, setCatalogData] = useState<CatalogProduct[]>([]);
+  const [catalogSearch, setCatalogSearch] = useState('');
+  const [catalogCat, setCatalogCat] = useState('');
+  const [catalogPage, setCatalogPage] = useState(0);
+  const [catalogSelected, setCatalogSelected] = useState<Set<number>>(new Set());
+  const [addingCatalog, setAddingCatalog] = useState(false);
+
+  // Load catalog for annuaire
+  useEffect(() => {
+    fetch('/catalog.json').then(r => r.json()).then(setCatalogData).catch(() => {});
+  }, []);
 
   // ── data loading ───────────────────────────────────────────────────────────
 
@@ -521,20 +541,127 @@ export default function Suppliers() {
                       </button>
                     </div>
 
-                    {/* Expanded ingredients list */}
+                    {/* Expanded ingredients — interactive table */}
                     {isExpanded && (
-                      <div className="border-t dark:border-slate-700 px-5 py-3 bg-slate-50 dark:bg-slate-900/30 rounded-b-lg">
+                      <div className="border-t dark:border-slate-700 px-5 py-3 bg-slate-50 dark:bg-slate-900/30 rounded-b-lg space-y-3">
                         {supplier.ingredients && supplier.ingredients.length > 0 ? (
-                          <ul className="space-y-1">
-                            {supplier.ingredients.map((ing) => (
-                              <li key={ing.id} className="flex items-center justify-between text-sm">
-                                <span className="text-slate-700 dark:text-slate-300">{ing.name}</span>
-                                <span className="text-xs text-slate-400">
-                                  {ing.pricePerUnit.toFixed(2)} &euro;/{ing.unit}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
+                          <>
+                            {/* Search + Compare bar */}
+                            <div className="flex items-center gap-2">
+                              <div className="relative flex-1">
+                                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                <input
+                                  type="text" placeholder="Filtrer les ingrédients..." value={ingSearch}
+                                  onChange={e => setIngSearch(e.target.value)}
+                                  className="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                />
+                              </div>
+                              {compareIds.size > 0 && (
+                                <button
+                                  onClick={() => setShowCompare(true)}
+                                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                                >
+                                  <BarChart3 className="w-3.5 h-3.5" /> Comparer ({compareIds.size})
+                                </button>
+                              )}
+                              <span className="text-xs text-slate-400">{supplier.ingredients.length} produits</span>
+                            </div>
+                            {/* Ingredient rows */}
+                            <div className="max-h-80 overflow-y-auto space-y-0.5">
+                              {supplier.ingredients
+                                .filter((ing: any) => !ingSearch || ing.name.toLowerCase().includes(ingSearch.toLowerCase()))
+                                .map((ing: any) => (
+                                <div key={ing.id} className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-white dark:hover:bg-slate-800 group text-sm">
+                                  <input
+                                    type="checkbox"
+                                    checked={compareIds.has(ing.id)}
+                                    onChange={() => setCompareIds(prev => {
+                                      const next = new Set(prev);
+                                      next.has(ing.id) ? next.delete(ing.id) : next.add(ing.id);
+                                      return next;
+                                    })}
+                                    className="accent-blue-600 shrink-0"
+                                  />
+                                  <span className="flex-1 text-slate-700 dark:text-slate-300 truncate">{ing.name}</span>
+                                  <span className="text-xs text-slate-400 w-20 shrink-0">{ing.category}</span>
+                                  {/* Editable price */}
+                                  {editingPrice?.id === ing.id ? (
+                                    <div className="flex items-center gap-1">
+                                      <input
+                                        type="number" step="0.01" min="0" autoFocus
+                                        value={editingPrice!.value}
+                                        onChange={e => setEditingPrice({ id: ing.id, value: e.target.value })}
+                                        onKeyDown={async e => {
+                                          if (e.key === 'Enter') {
+                                            await updateIngredient(ing.id, { pricePerUnit: parseFloat(editingPrice!.value) } as any);
+                                            setEditingPrice(null);
+                                            loadData();
+                                            showToast('Prix mis à jour', 'success');
+                                          } else if (e.key === 'Escape') setEditingPrice(null);
+                                        }}
+                                        className="w-20 px-2 py-0.5 text-xs border border-blue-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-slate-700"
+                                      />
+                                      <span className="text-xs text-slate-400">€/{ing.unit}</span>
+                                    </div>
+                                  ) : (
+                                    <span
+                                      className="text-xs font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline w-24 text-right shrink-0"
+                                      onClick={() => setEditingPrice({ id: ing.id, value: ing.pricePerUnit.toFixed(2) })}
+                                      title="Cliquer pour modifier le prix"
+                                    >
+                                      {ing.pricePerUnit.toFixed(2)} €/{ing.unit}
+                                    </span>
+                                  )}
+                                  {/* Unlink button */}
+                                  <button
+                                    onClick={async () => {
+                                      await updateIngredient(ing.id, { supplierId: null, supplier: '' } as any);
+                                      loadData();
+                                      showToast(`${ing.name} délié`, 'success');
+                                    }}
+                                    className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-400 hover:text-red-600 transition-all shrink-0"
+                                    title="Délier du fournisseur"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Compare panel */}
+                            {showCompare && compareIds.size > 0 && (
+                              <div className="border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Comparaison prix catalogue</span>
+                                  <button onClick={() => { setShowCompare(false); setCompareIds(new Set()); }} className="text-blue-400 hover:text-blue-600"><X className="w-4 h-4" /></button>
+                                </div>
+                                <div className="text-xs space-y-1">
+                                  <div className="grid grid-cols-6 gap-2 font-medium text-slate-500 dark:text-slate-400 pb-1 border-b dark:border-blue-800">
+                                    <span className="col-span-2">Produit</span>
+                                    <span>Mon prix</span>
+                                    <span>Cat. min</span>
+                                    <span>Cat. moy</span>
+                                    <span>Écart</span>
+                                  </div>
+                                  {supplier.ingredients.filter((i: any) => compareIds.has(i.id)).map((ing: any) => {
+                                    const match = searchCatalog(ing.name, 1)[0];
+                                    const ecart = match ? Math.round(((ing.pricePerUnit - match.prixMoy) / match.prixMoy) * 100) : null;
+                                    return (
+                                      <div key={ing.id} className="grid grid-cols-6 gap-2 py-1">
+                                        <span className="col-span-2 truncate text-slate-700 dark:text-slate-300">{ing.name}</span>
+                                        <span className="font-medium">{ing.pricePerUnit.toFixed(2)}€</span>
+                                        <span className="text-green-600">{match ? match.prixMin.toFixed(2) + '€' : '—'}</span>
+                                        <span>{match ? match.prixMoy.toFixed(2) + '€' : '—'}</span>
+                                        <span className={ecart !== null ? (ecart > 15 ? 'text-red-600 font-bold' : ecart < -10 ? 'text-green-600 font-bold' : 'text-orange-500') : 'text-slate-400'}>
+                                          {ecart !== null ? (ecart > 0 ? '+' : '') + ecart + '%' : '—'}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </>
                         ) : (
                           <p className="text-sm text-slate-400 italic">Aucun ingrédient lié</p>
                         )}
@@ -712,6 +839,159 @@ export default function Suppliers() {
               })}
             </div>
           )}
+
+          {/* ── Catalogue Transgourmet ─────────────────────────────────── */}
+          <div className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5 text-red-500" />
+                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Catalogue Transgourmet</h3>
+                <span className="text-xs text-slate-400 ml-2">{catalogData.length} produits disponibles</span>
+              </div>
+              {catalogSelected.size > 0 && (
+                <button
+                  disabled={addingCatalog}
+                  onClick={async () => {
+                    setAddingCatalog(true);
+                    let added = 0;
+                    const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
+                    const fc = catalogData.filter(p => (!catalogSearch || p.name.toLowerCase().includes(catalogSearch.toLowerCase())) && (!catalogCat || p.category === catalogCat));
+                    for (const idx of catalogSelected) {
+                      const p = fc[idx];
+                      if (p && !existingNames.has(p.name.toLowerCase())) {
+                        try {
+                          await createIngredient({ name: p.name, unit: p.unit, pricePerUnit: p.prixMoy, category: p.category, allergens: [] } as any);
+                          added++;
+                          existingNames.add(p.name.toLowerCase());
+                        } catch {}
+                      }
+                    }
+                    setCatalogSelected(new Set());
+                    await loadData();
+                    showToast(`${added} produit${added > 1 ? 's' : ''} ajouté${added > 1 ? 's' : ''}`, 'success');
+                    setAddingCatalog(false);
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50"
+                >
+                  <Plus className="w-4 h-4" />
+                  {addingCatalog ? 'Ajout en cours...' : `Ajouter ${catalogSelected.size} produit${catalogSelected.size > 1 ? 's' : ''}`}
+                </button>
+              )}
+            </div>
+            {/* Filters */}
+            <div className="flex gap-2 mb-3">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text" placeholder="Rechercher un produit..." value={catalogSearch}
+                  onChange={e => { setCatalogSearch(e.target.value); setCatalogPage(0); }}
+                  className="input pl-10 w-full"
+                />
+              </div>
+              <select
+                value={catalogCat} onChange={e => { setCatalogCat(e.target.value); setCatalogPage(0); }}
+                className="input w-48"
+              >
+                <option value="">Toutes catégories</option>
+                {[...new Set(catalogData.map(p => p.category))].sort().map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+            {/* Table */}
+            {(() => {
+              const filtered = catalogData.filter(p =>
+                (!catalogSearch || p.name.toLowerCase().includes(catalogSearch.toLowerCase())) &&
+                (!catalogCat || p.category === catalogCat)
+              );
+              const pageSize = 50;
+              const totalPages = Math.ceil(filtered.length / pageSize);
+              const page = filtered.slice(catalogPage * pageSize, (catalogPage + 1) * pageSize);
+              const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
+              return (
+                <>
+                  <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-500 dark:text-slate-400">
+                          <th className="px-3 py-2 w-8">
+                            <input type="checkbox"
+                              checked={page.length > 0 && page.every((_, i) => catalogSelected.has(catalogPage * pageSize + i))}
+                              onChange={e => {
+                                const next = new Set(catalogSelected);
+                                page.forEach((_, i) => e.target.checked ? next.add(catalogPage * pageSize + i) : next.delete(catalogPage * pageSize + i));
+                                setCatalogSelected(next);
+                              }}
+                              className="accent-blue-600"
+                            />
+                          </th>
+                          <th className="px-3 py-2">Produit</th>
+                          <th className="px-3 py-2">Catégorie</th>
+                          <th className="px-3 py-2">Prix estimé</th>
+                          <th className="px-3 py-2">Unité</th>
+                          <th className="px-3 py-2 w-20">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y dark:divide-slate-700">
+                        {page.map((p, i) => {
+                          const globalIdx = catalogPage * pageSize + i;
+                          const exists = existingNames.has(p.name.toLowerCase());
+                          return (
+                            <tr key={globalIdx} className={`hover:bg-slate-50 dark:hover:bg-slate-700/30 ${exists ? 'opacity-50' : ''}`}>
+                              <td className="px-3 py-2">
+                                <input type="checkbox" disabled={exists}
+                                  checked={catalogSelected.has(globalIdx)}
+                                  onChange={() => setCatalogSelected(prev => {
+                                    const next = new Set(prev);
+                                    next.has(globalIdx) ? next.delete(globalIdx) : next.add(globalIdx);
+                                    return next;
+                                  })}
+                                  className="accent-blue-600"
+                                />
+                              </td>
+                              <td className="px-3 py-2 text-slate-700 dark:text-slate-300">{p.name}</td>
+                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">{p.category}</span></td>
+                              <td className="px-3 py-2 font-medium text-blue-600 dark:text-blue-400">{p.prixMoy.toFixed(2)} €</td>
+                              <td className="px-3 py-2 text-slate-400">{p.unit}</td>
+                              <td className="px-3 py-2">
+                                {exists ? (
+                                  <span className="text-xs text-green-500">✓ Ajouté</span>
+                                ) : (
+                                  <button
+                                    onClick={async () => {
+                                      try {
+                                        await createIngredient({ name: p.name, unit: p.unit, pricePerUnit: p.prixMoy, category: p.category, allergens: [] } as any);
+                                        await loadData();
+                                        showToast(`${p.name} ajouté`, 'success');
+                                      } catch { showToast('Erreur', 'error'); }
+                                    }}
+                                    className="text-xs px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white"
+                                  >
+                                    + Ajouter
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-between mt-3">
+                      <span className="text-xs text-slate-400">{filtered.length} résultats</span>
+                      <div className="flex gap-1">
+                        <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">←</button>
+                        <span className="px-3 py-1 text-xs text-slate-500">{catalogPage + 1} / {totalPages}</span>
+                        <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">→</button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
         </>
       )}
 

@@ -221,7 +221,7 @@ export default function MenuBuilder() {
         })),
       });
       setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? updated : r)));
-      showToast('Sauvegard\u00e9', 'success');
+      showToast('Sauvegardé', 'success');
     } catch {
       showToast('Erreur lors de la sauvegarde', 'error');
     }

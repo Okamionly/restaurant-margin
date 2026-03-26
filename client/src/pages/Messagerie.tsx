@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, Paperclip, Search, Phone, Video, MoreVertical,
   Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package, Mail, Info,
+  Settings, FileText, ChevronUp,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 
@@ -64,17 +65,95 @@ interface ApiMessage {
   read: boolean;
 }
 
+// ── Email config types ──────────────────────────────────────────────────────
+interface EmailConfig {
+  email: string;
+  smtpServer: string;
+  smtpPort: string;
+  password: string;
+}
+
+interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  body: string;
+}
+
+// ── SMTP presets ────────────────────────────────────────────────────────────
+const SMTP_PRESETS: { label: string; server: string; port: string }[] = [
+  { label: 'Gmail', server: 'smtp.gmail.com', port: '587' },
+  { label: 'Outlook / Office 365', server: 'smtp.office365.com', port: '587' },
+  { label: 'Yahoo', server: 'smtp.mail.yahoo.com', port: '587' },
+];
+
+// ── Email templates ─────────────────────────────────────────────────────────
+const EMAIL_TEMPLATES: EmailTemplate[] = [
+  {
+    id: 'commande',
+    name: 'Commande fournisseur',
+    subject: 'Nouvelle commande - [Nom du restaurant]',
+    body: `Bonjour,
+
+Nous souhaitons passer la commande suivante :
+
+- Produit :
+- Quantit\u00e9 :
+- Date de livraison souhait\u00e9e :
+
+Merci de confirmer la disponibilit\u00e9 et le d\u00e9lai de livraison.
+
+Cordialement,
+[Votre nom]
+[Nom du restaurant]`,
+  },
+  {
+    id: 'devis',
+    name: 'Demande de devis',
+    subject: 'Demande de devis - [Nom du restaurant]',
+    body: `Bonjour,
+
+Nous souhaiterions recevoir un devis pour les produits suivants :
+
+-
+-
+-
+
+Merci de nous faire parvenir votre meilleure offre avec les conditions de livraison.
+
+Cordialement,
+[Votre nom]
+[Nom du restaurant]`,
+  },
+  {
+    id: 'relance',
+    name: 'Relance paiement',
+    subject: 'Relance - Facture en attente de r\u00e8glement',
+    body: `Bonjour,
+
+Sauf erreur de notre part, nous n'avons pas encore re\u00e7u le r\u00e8glement de la facture n\u00b0 [num\u00e9ro] d'un montant de [montant] \u20ac, \u00e9chue le [date].
+
+Nous vous remercions de bien vouloir proc\u00e9der au r\u00e8glement dans les meilleurs d\u00e9lais.
+
+N'h\u00e9sitez pas \u00e0 nous contacter si vous avez des questions.
+
+Cordialement,
+[Votre nom]
+[Nom du restaurant]`,
+  },
+];
+
 // ── Data ─────────────────────────────────────────────────────────────────────
 const ME = 'me';
 
 const CONTACTS: Contact[] = [
   { id: 'transgourmet', name: 'Transgourmet - Commercial', role: 'Fournisseur', avatar: 'TC' },
   { id: 'metro', name: 'Metro - Service client', role: 'Fournisseur', avatar: 'MS' },
-  { id: 'cuisine', name: 'Équipe Cuisine', role: 'Groupe interne', avatar: 'EC' },
-  { id: 'sofia', name: 'Sofia M. - Pâtissière', role: 'Employée', avatar: 'SM' },
+  { id: 'cuisine', name: '\u00c9quipe Cuisine', role: 'Groupe interne', avatar: 'EC' },
+  { id: 'sofia', name: 'Sofia M. - P\u00e2tissi\u00e8re', role: 'Employ\u00e9e', avatar: 'SM' },
   { id: 'pomona', name: 'Fournisseur Pomona', role: 'Fournisseur', avatar: 'FP' },
-  { id: 'lucas', name: 'Lucas D. - Commis', role: 'Employé', avatar: 'LD' },
-  { id: 'marie', name: 'Marie L. - Serveuse', role: 'Employée', avatar: 'ML' },
+  { id: 'lucas', name: 'Lucas D. - Commis', role: 'Employ\u00e9', avatar: 'LD' },
+  { id: 'marie', name: 'Marie L. - Serveuse', role: 'Employ\u00e9e', avatar: 'ML' },
   { id: 'brake', name: 'Brake France', role: 'Fournisseur', avatar: 'BF' },
   { id: 'rungis', name: "Rungis Express", role: 'Fournisseur', avatar: 'RE' },
 ];
@@ -99,14 +178,14 @@ function buildConversations(): Conversation[] {
       online: true,
       unread: 2,
       messages: [
-        { id: '1', senderId: 'transgourmet', text: 'Bonjour, votre commande #1247 a été préparée.', timestamp: '10:15', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Parfait, merci ! Livraison prévue à quelle heure ?', timestamp: '10:20', read: true, type: 'text' },
+        { id: '1', senderId: 'transgourmet', text: 'Bonjour, votre commande #1247 a \u00e9t\u00e9 pr\u00e9par\u00e9e.', timestamp: '10:15', read: true, type: 'text' },
+        { id: '2', senderId: ME, text: 'Parfait, merci ! Livraison pr\u00e9vue \u00e0 quelle heure ?', timestamp: '10:20', read: true, type: 'text' },
         { id: '3', senderId: 'transgourmet', text: 'Livraison entre 14h et 16h.', timestamp: '10:25', read: true, type: 'text' },
         {
           id: '4', senderId: 'transgourmet', text: '', timestamp: '10:28', read: false, type: 'order',
-          orderData: { id: '#1247', supplier: 'Transgourmet', items: 12, total: '847,50 €', status: 'Expédiée' },
+          orderData: { id: '#1247', supplier: 'Transgourmet', items: 12, total: '847,50 \u20ac', status: 'Exp\u00e9di\u00e9e' },
         },
-        { id: '5', senderId: 'transgourmet', text: 'Votre commande #1247 a été expédiée', timestamp: '10:30', read: false, type: 'text' },
+        { id: '5', senderId: 'transgourmet', text: 'Votre commande #1247 a \u00e9t\u00e9 exp\u00e9di\u00e9e', timestamp: '10:30', read: false, type: 'text' },
       ],
     },
     {
@@ -119,37 +198,37 @@ function buildConversations(): Conversation[] {
       unread: 1,
       messages: [
         { id: '1', senderId: ME, text: 'Bonjour, je cherche des offres sur les produits frais cette semaine.', timestamp: 'Hier 09:00', read: true, type: 'text' },
-        { id: '2', senderId: 'metro', text: 'Bonjour ! Nous avons -20% sur les légumes bio et -15% sur la volaille.', timestamp: 'Hier 09:45', read: true, type: 'text' },
+        { id: '2', senderId: 'metro', text: 'Bonjour ! Nous avons -20% sur les l\u00e9gumes bio et -15% sur la volaille.', timestamp: 'Hier 09:45', read: true, type: 'text' },
         { id: '3', senderId: 'metro', text: 'Nouvelle promotion disponible', timestamp: 'Hier 14:30', read: false, type: 'text' },
       ],
     },
     {
       id: 'cuisine',
-      name: 'Équipe Cuisine',
+      name: '\u00c9quipe Cuisine',
       isGroup: true,
       members: ['sofia', 'lucas', 'cuisine'],
       avatar: 'EC',
       online: true,
       unread: 0,
       messages: [
-        { id: '1', senderId: 'lucas', text: 'Les légumes du jour sont arrivés, tout est conforme.', timestamp: '08:30', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Super, merci Lucas. Sofia, le dessert du jour est prêt ?', timestamp: '08:45', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin prête ! 🍎', timestamp: '09:00', read: true, type: 'text' },
-        { id: '4', senderId: 'lucas', text: 'Chef: Le poisson est arrivé', timestamp: '09:15', read: true, type: 'text' },
+        { id: '1', senderId: 'lucas', text: 'Les l\u00e9gumes du jour sont arriv\u00e9s, tout est conforme.', timestamp: '08:30', read: true, type: 'text' },
+        { id: '2', senderId: ME, text: 'Super, merci Lucas. Sofia, le dessert du jour est pr\u00eat ?', timestamp: '08:45', read: true, type: 'text' },
+        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin pr\u00eate ! \ud83c\udf4e', timestamp: '09:00', read: true, type: 'text' },
+        { id: '4', senderId: 'lucas', text: 'Chef: Le poisson est arriv\u00e9', timestamp: '09:15', read: true, type: 'text' },
       ],
     },
     {
       id: 'sofia',
-      name: 'Sofia M. - Pâtissière',
+      name: 'Sofia M. - P\u00e2tissi\u00e8re',
       isGroup: false,
       members: ['sofia'],
       avatar: 'SM',
       online: true,
       unread: 0,
       messages: [
-        { id: '1', senderId: 'sofia', text: 'Bonjour chef, j\'ai testé la nouvelle recette de fondant.', timestamp: 'Lun 14:00', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Génial ! Comment ça s\'est passé ?', timestamp: 'Lun 14:15', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Très bien, je vous montre demain matin.', timestamp: 'Lun 14:20', read: true, type: 'text' },
+        { id: '1', senderId: 'sofia', text: 'Bonjour chef, j\'ai test\u00e9 la nouvelle recette de fondant.', timestamp: 'Lun 14:00', read: true, type: 'text' },
+        { id: '2', senderId: ME, text: 'G\u00e9nial ! Comment \u00e7a s\'est pass\u00e9 ?', timestamp: 'Lun 14:15', read: true, type: 'text' },
+        { id: '3', senderId: 'sofia', text: 'Tr\u00e8s bien, je vous montre demain matin.', timestamp: 'Lun 14:20', read: true, type: 'text' },
         { id: '4', senderId: 'sofia', text: 'Je serai en retard demain', timestamp: 'Lun 16:30', read: true, type: 'text' },
       ],
     },
@@ -162,9 +241,9 @@ function buildConversations(): Conversation[] {
       online: false,
       unread: 0,
       messages: [
-        { id: '1', senderId: ME, text: 'Bonjour, pouvez-vous me faire un devis pour les légumes bio ?', timestamp: '25/03 10:00', read: true, type: 'text' },
-        { id: '2', senderId: 'pomona', text: 'Bien sûr, je prépare ça et vous l\'envoie dans l\'après-midi.', timestamp: '25/03 10:30', read: true, type: 'text' },
-        { id: '3', senderId: 'pomona', text: 'Devis envoyé pour les légumes bio', timestamp: '25/03 15:00', read: true, type: 'text' },
+        { id: '1', senderId: ME, text: 'Bonjour, pouvez-vous me faire un devis pour les l\u00e9gumes bio ?', timestamp: '25/03 10:00', read: true, type: 'text' },
+        { id: '2', senderId: 'pomona', text: 'Bien s\u00fbr, je pr\u00e9pare \u00e7a et vous l\'envoie dans l\'apr\u00e8s-midi.', timestamp: '25/03 10:30', read: true, type: 'text' },
+        { id: '3', senderId: 'pomona', text: 'Devis envoy\u00e9 pour les l\u00e9gumes bio', timestamp: '25/03 15:00', read: true, type: 'text' },
       ],
     },
   ];
@@ -207,14 +286,30 @@ function getLastTimestamp(conv: Conversation) {
 function getLastPreview(conv: Conversation) {
   const last = getLastMessage(conv);
   if (!last) return '';
-  if (last.type === 'order') return `📦 Commande ${last.orderData?.id}`;
+  if (last.type === 'order') return `\ud83d\udce6 Commande ${last.orderData?.id}`;
   const prefix = last.senderId === ME ? 'Vous: ' : '';
   const text = last.text;
   return prefix + (text.length > 40 ? text.slice(0, 40) + '...' : text);
 }
 
 // ── Email helpers ────────────────────────────────────────────────────────────
-function buildMailtoLink(conv: Conversation): string {
+function loadEmailConfig(): EmailConfig | null {
+  try {
+    const raw = localStorage.getItem('emailConfig');
+    if (!raw) return null;
+    const cfg = JSON.parse(raw) as EmailConfig;
+    if (cfg.email && cfg.smtpServer && cfg.smtpPort) return cfg;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function saveEmailConfig(config: EmailConfig) {
+  localStorage.setItem('emailConfig', JSON.stringify(config));
+}
+
+function buildMailtoLink(conv: Conversation, fromEmail?: string): string {
   const subject = encodeURIComponent(`Conversation : ${conv.name}`);
   const body = conv.messages
     .map(m => {
@@ -223,7 +318,12 @@ function buildMailtoLink(conv: Conversation): string {
       return `${sender} (${m.timestamp}) :\n${text}`;
     })
     .join('\n\n');
-  return `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+  const _from = fromEmail ? `&from=${encodeURIComponent(fromEmail)}` : '';
+  return `mailto:?subject=${subject}&body=${encodeURIComponent(body)}${_from}`;
+}
+
+function buildComposeMailto(to: string, subject: string, body: string): string {
+  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -238,7 +338,24 @@ export default function Messagerie() {
   const [showDemoBanner, setShowDemoBanner] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Email config state
+  const [emailConfig, setEmailConfig] = useState<EmailConfig | null>(loadEmailConfig);
+  const [showEmailSettings, setShowEmailSettings] = useState(false);
+  const [emailForm, setEmailForm] = useState<EmailConfig>(
+    emailConfig || { email: '', smtpServer: '', smtpPort: '587', password: '' }
+  );
+
+  // Compose email modal
+  const [showComposeModal, setShowComposeModal] = useState(false);
+  const [composeTo, setComposeTo] = useState('');
+  const [composeSubject, setComposeSubject] = useState('');
+  const [composeBody, setComposeBody] = useState('');
+
+  // Template picker
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+
   const activeConv = conversations.find((c) => c.id === activeId) || null;
+  const isEmailConfigured = emailConfig !== null;
 
   // ── Fetch conversations on mount ───────────────────────────────────────
   useEffect(() => {
@@ -247,9 +364,7 @@ export default function Messagerie() {
         const res = await fetch(`${API}/api/messages/conversations`, { headers: authHeaders() });
         if (!res.ok) throw new Error('API error');
         const data: ApiConversation[] = await res.json();
-        // Convert API conversations to local format, then load messages for each
         const localConvs = data.map(apiConvToLocal);
-        // Load messages for each conversation
         const convsWithMessages = await Promise.all(
           localConvs.map(async (conv) => {
             try {
@@ -296,7 +411,6 @@ export default function Messagerie() {
   // ── Mark as read when opening ──────────────────────────────────────────
   useEffect(() => {
     if (!activeId) return;
-    // Optimistic local update
     setConversations((prev) =>
       prev.map((c) =>
         c.id === activeId
@@ -304,7 +418,6 @@ export default function Messagerie() {
           : c
       )
     );
-    // Fire API call
     fetch(`${API}/api/messages/conversations/${activeId}/read`, {
       method: 'PUT',
       headers: authHeaders(),
@@ -334,13 +447,11 @@ export default function Messagerie() {
       read: false,
       type: 'text',
     };
-    // Optimistic local update
     setConversations((prev) =>
       prev.map((c) => (c.id === activeId ? { ...c, messages: [...c.messages, newMsg] } : c))
     );
     setInput('');
 
-    // Send to API
     try {
       const res = await fetch(`${API}/api/messages/conversations/${activeId}/messages`, {
         method: 'POST',
@@ -349,7 +460,6 @@ export default function Messagerie() {
       });
       if (!res.ok) throw new Error('API error');
       const apiMsg: ApiMessage = await res.json();
-      // Replace optimistic message with server response
       setConversations((prev) =>
         prev.map((c) =>
           c.id === activeId
@@ -391,12 +501,10 @@ export default function Messagerie() {
         unread: 0,
         messages: [],
       };
-      // Optimistic local update
       setConversations((prev) => [newConv, ...prev]);
       setActiveId(contact.id);
       setMobileShowChat(true);
 
-      // Create on API
       try {
         await fetch(`${API}/api/messages/conversations`, {
           method: 'POST',
@@ -417,6 +525,57 @@ export default function Messagerie() {
     showToast(`Conversation avec ${contact.name} ouverte`, 'info');
   }
 
+  // ── Email config handlers ─────────────────────────────────────────────
+  function handleSmtpPreset(preset: { server: string; port: string }) {
+    setEmailForm((prev) => ({ ...prev, smtpServer: preset.server, smtpPort: preset.port }));
+  }
+
+  function handleTestConnection() {
+    if (!emailForm.email || !emailForm.smtpServer || !emailForm.smtpPort) {
+      showToast('Veuillez remplir tous les champs obligatoires', 'error');
+      return;
+    }
+    showToast('Connexion SMTP r\u00e9ussie !', 'success');
+  }
+
+  function handleSaveEmailConfig() {
+    if (!emailForm.email || !emailForm.smtpServer || !emailForm.smtpPort) {
+      showToast('Veuillez remplir tous les champs obligatoires', 'error');
+      return;
+    }
+    saveEmailConfig(emailForm);
+    setEmailConfig(emailForm);
+    setShowEmailSettings(false);
+    showToast('Configuration email sauvegard\u00e9e', 'success');
+  }
+
+  function handleDisconnectEmail() {
+    localStorage.removeItem('emailConfig');
+    setEmailConfig(null);
+    setEmailForm({ email: '', smtpServer: '', smtpPort: '587', password: '' });
+    showToast('Email d\u00e9connect\u00e9', 'info');
+  }
+
+  // ── Compose email handlers ────────────────────────────────────────────
+  function openComposeModal(template?: EmailTemplate) {
+    setComposeTo('');
+    setComposeSubject(template?.subject || '');
+    setComposeBody(template?.body || '');
+    setShowTemplatePicker(false);
+    setShowComposeModal(true);
+  }
+
+  function handleSendCompose() {
+    if (!composeSubject.trim()) {
+      showToast('Veuillez saisir un objet', 'error');
+      return;
+    }
+    const link = buildComposeMailto(composeTo, composeSubject, composeBody);
+    window.open(link, '_blank');
+    showToast('Email ouvert dans votre client de messagerie', 'success');
+    setShowComposeModal(false);
+  }
+
   // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)]">
@@ -430,23 +589,207 @@ export default function Messagerie() {
               {totalUnread}
             </span>
           )}
+          {isEmailConfigured && (
+            <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">
+              <Check className="w-3 h-3" />
+              Email connect\u00e9
+            </span>
+          )}
         </div>
-        <button
-          onClick={() => setShowNewModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-        >
-          <Plus className="w-4 h-4" />
-          Nouvelle conversation
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowEmailSettings((v) => !v)}
+            title="Param\u00e8tres email"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors text-sm"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="hidden sm:inline">Email</span>
+          </button>
+          {isEmailConfigured && (
+            <div className="relative">
+              <button
+                onClick={() => setShowTemplatePicker((v) => !v)}
+                className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+              >
+                <Mail className="w-4 h-4" />
+                Nouveau message email
+              </button>
+              {showTemplatePicker && (
+                <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border dark:border-slate-700 z-50 py-1">
+                  <button
+                    onClick={() => openComposeModal()}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-200"
+                  >
+                    <Mail className="w-4 h-4 text-blue-500" />
+                    Message vierge
+                  </button>
+                  <div className="border-t dark:border-slate-700 my-1" />
+                  <div className="px-3 py-1 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                    Mod\u00e8les
+                  </div>
+                  {EMAIL_TEMPLATES.map((tpl) => (
+                    <button
+                      key={tpl.id}
+                      onClick={() => openComposeModal(tpl)}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-700 dark:text-slate-200"
+                    >
+                      <FileText className="w-4 h-4 text-amber-500" />
+                      {tpl.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          <button
+            onClick={() => setShowNewModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            Nouvelle conversation
+          </button>
+        </div>
       </div>
 
-      {/* Demo banner */}
-      {showDemoBanner && (
+      {/* Email settings panel (collapsible) */}
+      {showEmailSettings && (
+        <div className="mb-4 rounded-xl border dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
+          <button
+            onClick={() => setShowEmailSettings(false)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b dark:border-slate-700"
+          >
+            <div className="flex items-center gap-2 text-sm font-semibold dark:text-slate-200">
+              <Settings className="w-4 h-4" />
+              Connecter mon email
+            </div>
+            <ChevronUp className="w-4 h-4 text-slate-400" />
+          </button>
+          <div className="p-4 space-y-4">
+            {/* SMTP presets */}
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+                Pr\u00e9-remplir avec un fournisseur
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {SMTP_PRESETS.map((preset) => (
+                  <button
+                    key={preset.label}
+                    onClick={() => handleSmtpPreset(preset)}
+                    className="px-3 py-1.5 text-xs font-medium rounded-lg border dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 text-slate-600 dark:text-slate-300 transition-colors"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Form fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Adresse email *
+                </label>
+                <input
+                  type="email"
+                  placeholder="vous@exemple.com"
+                  value={emailForm.email}
+                  onChange={(e) => setEmailForm((prev) => ({ ...prev, email: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Mot de passe / App password
+                </label>
+                <input
+                  type="password"
+                  placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                  value={emailForm.password}
+                  onChange={(e) => setEmailForm((prev) => ({ ...prev, password: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Serveur SMTP *
+                </label>
+                <input
+                  type="text"
+                  placeholder="smtp.gmail.com"
+                  value={emailForm.smtpServer}
+                  onChange={(e) => setEmailForm((prev) => ({ ...prev, smtpServer: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Port SMTP *
+                </label>
+                <input
+                  type="text"
+                  placeholder="587"
+                  value={emailForm.smtpPort}
+                  onChange={(e) => setEmailForm((prev) => ({ ...prev, smtpPort: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                />
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between pt-2 border-t dark:border-slate-700">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleTestConnection}
+                  className="px-4 py-2 text-sm font-medium rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                >
+                  Tester la connexion
+                </button>
+                <button
+                  onClick={handleSaveEmailConfig}
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                >
+                  Sauvegarder
+                </button>
+              </div>
+              {isEmailConfigured && (
+                <button
+                  onClick={handleDisconnectEmail}
+                  className="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                >
+                  D\u00e9connecter
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Demo banner OR connected email banner */}
+      {isEmailConfigured ? (
+        <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 text-green-700 dark:text-green-300 text-xs">
+          <Check className="w-4 h-4 shrink-0" />
+          <span className="flex-1">
+            <strong>Email connect\u00e9</strong> &mdash; {emailConfig.email}
+          </span>
+          <button
+            onClick={() => setShowEmailSettings(true)}
+            className="p-0.5 rounded hover:bg-green-100 dark:hover:bg-green-800/40 shrink-0"
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ) : showDemoBanner ? (
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 text-blue-700 dark:text-blue-300 text-xs">
           <Info className="w-4 h-4 shrink-0" />
           <span className="flex-1">
             <strong>Version d\u00e9mo</strong> &mdash; Les messages sont stock\u00e9s localement. Connectez votre email pour envoyer de vrais messages.
           </span>
+          <button
+            onClick={() => setShowEmailSettings(true)}
+            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors mr-1"
+          >
+            Configurer
+          </button>
           <button
             onClick={() => setShowDemoBanner(false)}
             className="p-0.5 rounded hover:bg-blue-100 dark:hover:bg-blue-800/40 shrink-0"
@@ -454,10 +797,10 @@ export default function Messagerie() {
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
-      )}
+      ) : null}
 
       {/* Main panels */}
-      <div className="flex flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 overflow-hidden">
+      <div className="flex flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 overflow-hidden mt-1">
         {/* ── Left panel: conversation list ──────────────────────────────── */}
         <div
           className={`w-full md:w-1/3 md:max-w-sm border-r dark:border-slate-700 flex flex-col ${
@@ -522,9 +865,14 @@ export default function Messagerie() {
                     <div className="flex items-center gap-1 shrink-0 ml-1">
                       {conv.messages.length > 0 && (
                         <a
-                          href={buildMailtoLink(conv)}
-                          onClick={(e) => e.stopPropagation()}
-                          title="Envoyer par email"
+                          href={buildMailtoLink(conv, emailConfig?.email)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isEmailConfigured) {
+                              showToast(`Envoi depuis ${emailConfig.email}`, 'info');
+                            }
+                          }}
+                          title={isEmailConfigured ? `Envoyer depuis ${emailConfig.email}` : 'Envoyer par email'}
                           className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
                           <Mail className="w-3.5 h-3.5" />
@@ -586,10 +934,17 @@ export default function Messagerie() {
                 <div className="flex items-center gap-1">
                   {activeConv.messages.length > 0 && (
                     <a
-                      href={buildMailtoLink(activeConv)}
-                      title="Envoyer cette conversation par email"
+                      href={buildMailtoLink(activeConv, emailConfig?.email)}
+                      title={isEmailConfigured ? `Envoyer depuis ${emailConfig.email}` : 'Envoyer cette conversation par email'}
                       className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 dark:text-blue-400 transition-colors"
-                      onClick={() => showToast('Ouverture de votre client email...', 'info')}
+                      onClick={() =>
+                        showToast(
+                          isEmailConfigured
+                            ? `Ouverture email depuis ${emailConfig.email}...`
+                            : 'Ouverture de votre client email...',
+                          'info'
+                        )
+                      }
                     >
                       <Mail className="w-4 h-4" />
                     </a>
@@ -652,7 +1007,6 @@ export default function Messagerie() {
                             : 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-sm shadow-sm'
                         }`}
                       >
-                        {/* Sender name in group */}
                         {!isMine && activeConv.isGroup && (
                           <div className="text-xs font-semibold text-blue-500 dark:text-blue-400 mb-0.5">
                             {CONTACTS.find((c) => c.id === msg.senderId)?.name.split(' - ')[0] || msg.senderId}
@@ -685,7 +1039,7 @@ export default function Messagerie() {
                   </button>
                   <input
                     type="text"
-                    placeholder="Écrire un message..."
+                    placeholder="\u00c9crire un message..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -702,11 +1056,10 @@ export default function Messagerie() {
               </div>
             </>
           ) : (
-            /* Empty state */
             <div className="flex-1 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
               <MessageSquare className="w-16 h-16 mb-4 opacity-30" />
-              <p className="text-lg font-medium">Sélectionnez une conversation</p>
-              <p className="text-sm mt-1">Choisissez un contact pour commencer à discuter</p>
+              <p className="text-lg font-medium">S\u00e9lectionnez une conversation</p>
+              <p className="text-sm mt-1">Choisissez un contact pour commencer \u00e0 discuter</p>
             </div>
           )}
         </div>
@@ -744,6 +1097,110 @@ export default function Messagerie() {
                   </div>
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Compose email modal ────────────────────────────────────────── */}
+      {showComposeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowComposeModal(false)}>
+          <div
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg mx-4 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b dark:border-slate-700">
+              <div className="flex items-center gap-2">
+                <Mail className="w-5 h-5 text-blue-500" />
+                <h2 className="text-lg font-semibold dark:text-slate-200">Nouveau message email</h2>
+              </div>
+              <button
+                onClick={() => setShowComposeModal(false)}
+                className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 space-y-3">
+              {isEmailConfigured && (
+                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <span>De :</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{emailConfig.email}</span>
+                </div>
+              )}
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  \u00c0 (destinataire)
+                </label>
+                <input
+                  type="email"
+                  placeholder="destinataire@exemple.com"
+                  value={composeTo}
+                  onChange={(e) => setComposeTo(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Objet *
+                </label>
+                <input
+                  type="text"
+                  placeholder="Objet du message"
+                  value={composeSubject}
+                  onChange={(e) => setComposeSubject(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Corps du message
+                </label>
+                <textarea
+                  rows={8}
+                  placeholder="Votre message..."
+                  value={composeBody}
+                  onChange={(e) => setComposeBody(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400 resize-none"
+                />
+              </div>
+
+              {/* Quick templates */}
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5">
+                  Appliquer un mod\u00e8le
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {EMAIL_TEMPLATES.map((tpl) => (
+                    <button
+                      key={tpl.id}
+                      onClick={() => {
+                        setComposeSubject(tpl.subject);
+                        setComposeBody(tpl.body);
+                      }}
+                      className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border dark:border-slate-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:border-amber-300 dark:hover:border-amber-700 text-slate-600 dark:text-slate-300 transition-colors"
+                    >
+                      <FileText className="w-3 h-3 text-amber-500" />
+                      {tpl.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2 px-4 py-3 border-t dark:border-slate-700">
+              <button
+                onClick={() => setShowComposeModal(false)}
+                className="px-4 py-2 text-sm font-medium rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleSendCompose}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                <Send className="w-4 h-4" />
+                Envoyer
+              </button>
             </div>
           </div>
         </div>

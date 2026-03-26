@@ -345,7 +345,7 @@ export default function InvoiceScanner() {
           { label: 'Ce mois', value: thisMonth, icon: Calendar, color: 'text-green-600' },
           {
             label: 'Volume total',
-            value: `${volumeTotal.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} \u20ac`,
+            value: `${volumeTotal.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`,
             icon: Euro,
             color: 'text-amber-600',
           },

@@ -334,7 +334,7 @@ export default function Dashboard() {
     const allByMargin = [...recipes]
       .sort((a, b) => b.margin.marginPercent - a.margin.marginPercent)
       .map(r => ({
-        name: r.name.length > 20 ? r.name.slice(0, 18) + '...' : r.name,
+        name: r.name.length > 30 ? r.name.slice(0, 27) + '...' : r.name,
         fullName: r.name,
         margin: r.margin.marginPercent,
         category: r.category,
@@ -892,32 +892,52 @@ export default function Dashboard() {
                   <Utensils className="w-5 h-5 text-blue-600" />
                   <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition</h3>
                 </div>
-                <ResponsiveContainer width="100%" height={240}>
+                <ResponsiveContainer width="100%" height={280}>
                   <PieChart>
                     <Pie
                       data={stats.categoryData}
                       cx="50%"
                       cy="50%"
                       innerRadius={40}
-                      outerRadius={95}
+                      outerRadius={110}
                       paddingAngle={2}
                       dataKey="count"
                       nameKey="name"
                       label={(props: any) => {
                         const { cx, cy, midAngle, innerRadius, outerRadius, name, count, percent } = props;
                         const RADIAN = Math.PI / 180;
+                        const label = String(name || '');
+                        // Small segments (<8%): show label outside with connector line
+                        if ((percent || 0) < 0.08) {
+                          const outerR = (outerRadius || 0) + 30;
+                          const x = (cx || 0) + outerR * Math.cos(-(midAngle || 0) * RADIAN);
+                          const y = (cy || 0) + outerR * Math.sin(-(midAngle || 0) * RADIAN);
+                          return (
+                            <text x={x} y={y} fill="#334155" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                              {label} ({count})
+                            </text>
+                          );
+                        }
+                        // Large segments: show label inside
                         const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.55;
                         const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
                         const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
-                        if ((percent || 0) < 0.08) return null;
-                        const label = String(name || '');
                         return (
-                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '11px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                            {label.length > 12 ? label.slice(0, 11) + '…' : label} ({count})
+                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                            {label} ({count})
                           </text>
                         );
                       }}
-                      labelLine={false}
+                      labelLine={(props: any) => {
+                        const { cx, cy, midAngle, outerRadius, percent } = props;
+                        if ((percent || 0) >= 0.08) return <path d="" />;
+                        const RADIAN = Math.PI / 180;
+                        const startX = (cx || 0) + (outerRadius || 0) * Math.cos(-(midAngle || 0) * RADIAN);
+                        const startY = (cy || 0) + (outerRadius || 0) * Math.sin(-(midAngle || 0) * RADIAN);
+                        const endX = (cx || 0) + ((outerRadius || 0) + 22) * Math.cos(-(midAngle || 0) * RADIAN);
+                        const endY = (cy || 0) + ((outerRadius || 0) + 22) * Math.sin(-(midAngle || 0) * RADIAN);
+                        return <path d={`M${startX},${startY}L${endX},${endY}`} stroke="#94a3b8" fill="none" strokeWidth={1} />;
+                      }}
                     >
                       {stats.categoryData.map((_entry, index) => (
                         <Cell key={index} fill={COLORS[index % COLORS.length]} />
@@ -993,11 +1013,11 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={Math.max(300, stats.allByMargin.length * 28)}>
-              <BarChart data={marginSort === 'name' ? [...stats.allByMargin].sort((a, b) => a.fullName.localeCompare(b.fullName)) : stats.allByMargin} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
+            <ResponsiveContainer width="100%" height={Math.max(400, stats.allByMargin.length * 34)}>
+              <BarChart data={marginSort === 'name' ? [...stats.allByMargin].sort((a, b) => a.fullName.localeCompare(b.fullName)) : stats.allByMargin} layout="vertical" margin={{ top: 5, right: 60, bottom: 5, left: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} unit="%" tick={{ fontSize: 11 }} />
-                <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" width={200} tick={{ fontSize: 11 }} />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null;
@@ -1015,6 +1035,7 @@ export default function Dashboard() {
                   {stats.allByMargin.map((entry, index) => (
                     <Cell key={index} fill={entry.fill} />
                   ))}
+                  <LabelList dataKey="margin" position="right" formatter={(v: number) => `${v.toFixed(1)}%`} style={{ fontSize: '10px', fontWeight: 600, fill: '#475569' }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -1083,38 +1104,57 @@ export default function Dashboard() {
                 </span>
               </div>
               {stats.foodCostData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={320}>
+                <ResponsiveContainer width="100%" height={360}>
                   <PieChart>
                     <Pie
                       data={stats.foodCostData}
                       cx="50%"
                       cy="50%"
                       innerRadius={0}
-                      outerRadius={130}
+                      outerRadius={140}
                       paddingAngle={1}
                       dataKey="value"
                       nameKey="name"
                       label={(props: any) => {
                         const { cx, cy, midAngle, innerRadius, outerRadius, name, percent } = props;
                         const RADIAN = Math.PI / 180;
+                        const pctStr = ((percent || 0) * 100).toFixed(0);
+                        const label = String(name || '');
+                        // Small segments (<8%): show label outside with connector line
+                        if ((percent || 0) < 0.08) {
+                          const outerR = (outerRadius || 0) + 30;
+                          const x = (cx || 0) + outerR * Math.cos(-(midAngle || 0) * RADIAN);
+                          const y = (cy || 0) + outerR * Math.sin(-(midAngle || 0) * RADIAN);
+                          return (
+                            <text x={x} y={y} fill="#334155" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                              {label} ({pctStr}%)
+                            </text>
+                          );
+                        }
                         const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.5;
                         const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
                         const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
-                        if ((percent || 0) < 0.05) return null;
-                        const pctStr = ((percent || 0) * 100).toFixed(0);
-                        const label = String(name || '');
                         return (
                           <g>
-                            <text x={x} y={y - 6} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '10px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                              {label.length > 10 ? label.slice(0, 9) + '…' : label}
+                            <text x={x} y={y - 7} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                              {label}
                             </text>
-                            <text x={x} y={y + 8} fill="rgba(255,255,255,0.85)" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '9px', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                            <text x={x} y={y + 9} fill="rgba(255,255,255,0.85)" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '11px', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
                               {pctStr}%
                             </text>
                           </g>
                         );
                       }}
-                      labelLine={false}
+                      labelLine={(props: any) => {
+                        const { cx, cy, midAngle, outerRadius, percent } = props;
+                        if ((percent || 0) >= 0.08) return <path d="" />;
+                        const RADIAN = Math.PI / 180;
+                        const startX = (cx || 0) + (outerRadius || 0) * Math.cos(-(midAngle || 0) * RADIAN);
+                        const startY = (cy || 0) + (outerRadius || 0) * Math.sin(-(midAngle || 0) * RADIAN);
+                        const endX = (cx || 0) + ((outerRadius || 0) + 22) * Math.cos(-(midAngle || 0) * RADIAN);
+                        const endY = (cy || 0) + ((outerRadius || 0) + 22) * Math.sin(-(midAngle || 0) * RADIAN);
+                        return <path d={`M${startX},${startY}L${endX},${endY}`} stroke="#94a3b8" fill="none" strokeWidth={1} />;
+                      }}
                     >
                       {stats.foodCostData.map((entry, index) => (
                         <Cell key={index} fill={entry.fill} />
@@ -1336,11 +1376,11 @@ export default function Dashboard() {
               <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Projections sur 6 mois</h3>
               <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">Revenus vs Coûts</span>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={stats.projectionData} margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
+            <ResponsiveContainer width="100%" height={340}>
+              <LineChart data={stats.projectionData} margin={{ top: 10, right: 30, bottom: 10, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`} />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} tickMargin={8} />
+                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`} width={55} />
                 <Tooltip
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;

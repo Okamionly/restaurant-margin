@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
+import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
 import Dashboard from './pages/Dashboard';
 import Ingredients from './pages/Ingredients';
 import Recipes from './pages/Recipes';
@@ -22,6 +23,7 @@ import AutoOrders from './pages/AutoOrders';
 import Subscription from './pages/Subscription';
 import Planning from './pages/Planning';
 import Messagerie from './pages/Messagerie';
+import Restaurants from './pages/Restaurants';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 
@@ -38,6 +40,68 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   return <>{children}</>;
+}
+
+
+function RestaurantSelector() {
+  const { restaurants, selectedRestaurant, switchRestaurant } = useRestaurant();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  if (!selectedRestaurant) return null;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-700/60 hover:bg-blue-700 text-white text-sm font-medium transition-colors max-w-[200px]"
+      >
+        <Building2 className="w-4 h-4 flex-shrink-0" />
+        <span className="truncate hidden sm:inline">{selectedRestaurant.nom}</span>
+        <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 py-1">
+          {restaurants.map((r) => (
+            <button
+              key={r.id}
+              onClick={() => { switchRestaurant(r.id); setOpen(false); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors ${
+                r.id === selectedRestaurant.id
+                  ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+              }`}
+            >
+              <Building2 className="w-4 h-4 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="font-medium truncate">{r.nom}</div>
+                <div className="text-xs text-slate-400 dark:text-slate-500 truncate">{r.typeCuisine}</div>
+              </div>
+              {r.id === selectedRestaurant.id && <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />}
+            </button>
+          ))}
+          <div className="border-t border-slate-100 dark:border-slate-700 mt-1 pt-1">
+            <NavLink
+              to="/restaurants"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              <Settings className="w-4 h-4" />
+              Gérer les restaurants
+            </NavLink>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function AppLayout() {
@@ -104,6 +168,7 @@ function AppLayout() {
   ];
 
   const secondaryNavItems = [
+    { to: '/restaurants', icon: Building2, label: 'Restaurants' },
     ...(user?.role === 'admin' ? [{ to: '/users', icon: Users, label: 'Utilisateurs' }] : []),
     { to: '/settings', icon: Settings, label: 'Paramètres' },
   ];
@@ -116,6 +181,10 @@ function AppLayout() {
           <div className="flex items-center gap-3">
             <ChefHat className="w-8 h-8" />
             <h1 className="text-xl font-bold">RestauMargin</h1>
+            {/* Restaurant selector */}
+            <div className="hidden sm:block ml-2">
+              <RestaurantSelector />
+            </div>
           </div>
           <div className="flex items-center gap-3">
             {/* Station Balance button */}
@@ -172,6 +241,10 @@ function AppLayout() {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
+        </div>
+        {/* Mobile restaurant selector */}
+        <div className="sm:hidden px-4 pb-2">
+          <RestaurantSelector />
         </div>
       </header>
 
@@ -280,6 +353,7 @@ function AppLayout() {
           <Route path="/commandes" element={<AutoOrders />} />
           <Route path="/planning" element={<Planning />} />
           <Route path="/messagerie" element={<Messagerie />} />
+          <Route path="/restaurants" element={<Restaurants />} />
           <Route path="/abonnement" element={<Subscription />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />
@@ -312,8 +386,9 @@ function App() {
   return (
     <AuthProvider>
       <ToastProvider>
-        <Routes>
-          <Route path="/" element={<PublicHome />} />
+        <RestaurantProvider>
+          <Routes>
+            <Route path="/" element={<PublicHome />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route
@@ -332,7 +407,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Routes>
+          </Routes>
+        </RestaurantProvider>
       </ToastProvider>
     </AuthProvider>
   );

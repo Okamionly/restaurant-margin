@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale } from 'lucide-react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import Dashboard from './pages/Dashboard';
@@ -9,9 +9,11 @@ import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
 import Suppliers from './pages/Suppliers';
 import Inventory from './pages/Inventory';
+import RFQPage from './pages/RFQ';
 import MenuBuilder from './pages/MenuBuilder';
 import SettingsPage from './pages/Settings';
 import UserManagement from './pages/UserManagement';
+import WeighStation from './pages/WeighStation';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 
@@ -83,6 +85,7 @@ function AppLayout() {
     { to: '/menu', icon: BookOpen, label: 'La Carte' },
     { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
     { to: '/inventory', icon: Package, label: 'Inventaire' },
+    { to: '/rfqs', icon: FileSearch, label: 'Appels d\'offres' },
   ];
 
   const secondaryNavItems = [
@@ -100,6 +103,16 @@ function AppLayout() {
             <h1 className="text-xl font-bold">RestauMargin</h1>
           </div>
           <div className="flex items-center gap-3">
+            {/* Station Balance button */}
+            <a
+              href="/station"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
+              title="Station Balance"
+            >
+              <Scale className="w-4 h-4" />
+              <span className="hidden sm:inline">Station</span>
+            </a>
+
             {/* Install PWA button */}
             {installPrompt && !isInstalled && (
               <button
@@ -236,6 +249,7 @@ function AppLayout() {
           <Route path="/menu" element={<MenuBuilder />} />
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/rfqs" element={<RFQPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />
         </Routes>
@@ -271,6 +285,14 @@ function App() {
           <Route path="/" element={<PublicHome />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/station"
+            element={
+              <ProtectedRoute>
+                <WeighStation />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/*"
             element={

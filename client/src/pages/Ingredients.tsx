@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Loader2, Check, ChevronDown, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Loader2, Check, ChevronDown, X, BookOpen } from 'lucide-react';
+import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier } from '../services/api';
 import type { Ingredient, Supplier } from '../types';
 import { INGREDIENT_CATEGORIES, UNITS, ALLERGENS } from '../types';
@@ -62,7 +63,14 @@ export default function Ingredients() {
   const nameSuggestions = useMemo(() => {
     if (!nameQuery || nameQuery.length < 2) return [];
     const q = nameQuery.toLowerCase();
-    return ingredients.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 8);
+    return ingredients.filter((i) => i.name.toLowerCase().includes(q)).slice(0, 5);
+  }, [nameQuery, ingredients]);
+
+  // Catalog suggestions (new products with reference prices)
+  const catalogSuggestions = useMemo(() => {
+    if (!nameQuery || nameQuery.length < 2) return [];
+    const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
+    return searchCatalog(nameQuery, 10).filter(p => !existingNames.has(p.name.toLowerCase()));
   }, [nameQuery, ingredients]);
 
   // Close dropdowns on outside click
@@ -164,7 +172,7 @@ export default function Ingredients() {
   function handleNameChange(value: string) {
     setNameQuery(value);
     setForm({ ...form, name: value });
-    setShowNameSuggestions(value.length >= 2 && nameSuggestions.length > 0);
+    setShowNameSuggestions(value.length >= 2 && (nameSuggestions.length > 0 || catalogSuggestions.length > 0));
     if (formErrors.name && value.trim()) {
       setFormErrors((prev) => ({ ...prev, name: false }));
     }
@@ -179,6 +187,19 @@ export default function Ingredients() {
       category: ing.category,
     });
     setNameQuery(ing.name);
+    setShowNameSuggestions(false);
+  }
+
+  // Auto-fill from catalog product (new product with reference price)
+  function selectCatalogProduct(product: CatalogProduct) {
+    setForm({
+      ...form,
+      name: product.name,
+      unit: product.unit,
+      pricePerUnit: String(product.prixMoy),
+      category: product.category,
+    });
+    setNameQuery(product.name);
     setShowNameSuggestions(false);
   }
 
@@ -494,26 +515,58 @@ export default function Ingredients() {
               autoComplete="off"
             />
             {formErrors.name && <p className="text-xs text-red-500 mt-1">Le nom est requis</p>}
-            {/* Name suggestions dropdown */}
-            {showNameSuggestions && nameSuggestions.length > 0 && (
-              <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 rounded-lg shadow-xl border dark:border-slate-600 max-h-48 overflow-y-auto">
-                <div className="px-3 py-1.5 text-xs text-slate-400 border-b dark:border-slate-600">
-                  Ingrédients existants (cliquez pour auto-remplir)
-                </div>
-                {nameSuggestions.map((ing) => (
-                  <button
-                    key={ing.id}
-                    type="button"
-                    onClick={() => selectNameSuggestion(ing)}
-                    className="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-800 dark:text-slate-200">{ing.name}</span>
-                      <span className="text-xs text-slate-400">{ing.category} - {ing.pricePerUnit.toFixed(2)}&euro;/{ing.unit}</span>
+            {/* Name suggestions dropdown — existing + catalog */}
+            {showNameSuggestions && (nameSuggestions.length > 0 || catalogSuggestions.length > 0) && (
+              <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 rounded-lg shadow-xl border dark:border-slate-600 max-h-64 overflow-y-auto">
+                {nameSuggestions.length > 0 && (
+                  <>
+                    <div className="px-3 py-1.5 text-xs text-slate-400 border-b dark:border-slate-600 bg-slate-50 dark:bg-slate-800">
+                      Ingrédients existants
                     </div>
-                    {ing.supplier && <div className="text-xs text-slate-400 mt-0.5">Fournisseur : {ing.supplier}</div>}
-                  </button>
-                ))}
+                    {nameSuggestions.map((ing) => (
+                      <button
+                        key={ing.id}
+                        type="button"
+                        onClick={() => selectNameSuggestion(ing)}
+                        className="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-slate-800 dark:text-slate-200">{ing.name}</span>
+                          <span className="text-xs text-slate-400">{ing.category} - {ing.pricePerUnit.toFixed(2)}&euro;/{ing.unit}</span>
+                        </div>
+                        {ing.supplier && <div className="text-xs text-slate-400 mt-0.5">Fournisseur : {ing.supplier}</div>}
+                      </button>
+                    ))}
+                  </>
+                )}
+                {catalogSuggestions.length > 0 && (
+                  <>
+                    <div className="px-3 py-1.5 text-xs text-blue-500 border-b dark:border-slate-600 bg-blue-50 dark:bg-blue-900/20 flex items-center gap-1.5">
+                      <BookOpen className="w-3 h-3" /> Catalogue Metro / Transgourmet (prix de référence)
+                    </div>
+                    {catalogSuggestions.map((product, idx) => (
+                      <button
+                        key={`cat-${idx}`}
+                        type="button"
+                        onClick={() => selectCatalogProduct(product)}
+                        className="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-slate-800 dark:text-slate-200">{product.name}</span>
+                          <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{product.prixMoy.toFixed(2)}&euro;/{product.unit}</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-slate-400">{product.category}</span>
+                          <span className="text-xs text-slate-400">|</span>
+                          <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}&euro;</span>
+                          <span className="text-xs text-slate-400">—</span>
+                          <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}&euro;</span>
+                          <span className="text-xs text-slate-400 ml-auto">{product.fournisseurs.join(', ')}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </>
+                )}
               </div>
             )}
           </div>

@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   TrendingUp, TrendingDown, DollarSign, ChefHat, Eye, Briefcase,
   PieChart as PieChartIcon, AlertTriangle, Plus, Download, ShieldAlert,
-  Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight,
-  ChevronDown, ChevronRight, Package, ClipboardList, FileText,
+  Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight, ArrowUpRight, ArrowDownRight,
+  ChevronDown, ChevronRight, Package, ClipboardList, FileText, ShoppingCart,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -36,7 +36,7 @@ const MARGIN_BAR_COLORS: Record<string, string> = {
   'Accompagnement': '#0891b2',
 };
 
-// ── Allergen color map (matching fiche technique) ─────────────────────────
+// ── Allergen color map ─────────────────────────────────────────────────────
 const ALLERGEN_COLORS: Record<string, string> = {
   Gluten: 'bg-yellow-200 text-yellow-900 dark:bg-yellow-800/50 dark:text-yellow-200',
   'Crustacés': 'bg-orange-200 text-orange-900 dark:bg-orange-800/50 dark:text-orange-200',
@@ -54,14 +54,24 @@ const ALLERGEN_COLORS: Record<string, string> = {
   Mollusques: 'bg-cyan-200 text-cyan-900 dark:bg-cyan-800/50 dark:text-cyan-200',
 };
 
-// ── Tab definitions ───────────────────────────────────────────────────────
+// ── Tab definitions with descriptions ──────────────────────────────────────
 type TabKey = 'overview' | 'margins' | 'costs' | 'profitability';
-const TABS: { key: TabKey; label: string; icon: any }[] = [
-  { key: 'overview', label: "Vue d'ensemble", icon: BarChart3 },
-  { key: 'margins', label: 'Analyse des marges', icon: TrendingUp },
-  { key: 'costs', label: 'Coûts matière', icon: PieChartIcon },
-  { key: 'profitability', label: 'Rentabilité', icon: DollarSign },
+const TABS: { key: TabKey; label: string; desc: string; icon: any }[] = [
+  { key: 'overview', label: "Vue d'ensemble", desc: 'Résumé global et catégories', icon: BarChart3 },
+  { key: 'margins', label: 'Analyse des marges', desc: 'Marges par recette et classement', icon: TrendingUp },
+  { key: 'costs', label: 'Coûts matière', desc: 'Répartition des coûts ingrédients', icon: ShoppingCart },
+  { key: 'profitability', label: 'Rentabilité', desc: 'Projections et seuils', icon: DollarSign },
 ];
+
+// ── Stat card color configs ────────────────────────────────────────────────
+const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
+  blue:   { gradient: 'from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800',   border: 'border-t-blue-500' },
+  green:  { gradient: 'from-green-50 to-white dark:from-green-950/30 dark:to-slate-800',  border: 'border-t-green-500' },
+  amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',  border: 'border-t-amber-500' },
+  purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800', border: 'border-t-purple-500' },
+  cyan:   { gradient: 'from-cyan-50 to-white dark:from-cyan-950/30 dark:to-slate-800',    border: 'border-t-cyan-500' },
+  slate:  { gradient: 'from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-800',   border: 'border-t-slate-500' },
+};
 
 // ── Animated Number Counter ────────────────────────────────────────────────
 function AnimatedNumber({ value, decimals = 1, suffix = '', prefix = '', duration = 800 }: {
@@ -89,25 +99,33 @@ function AnimatedNumber({ value, decimals = 1, suffix = '', prefix = '', duratio
   return <span>{prefix}{display.toFixed(decimals)}{suffix}</span>;
 }
 
-// ── Compact Stat Card (5 in a row) ────────────────────────────────────────
-function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, decimals = 1, suffix = '', prefix = '' }: {
+// ── Enhanced Stat Card ─────────────────────────────────────────────────────
+function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, colorKey, decimals = 1, suffix = '', prefix = '', trend }: {
   title: string; value?: string; numericValue?: number; subtitle?: string; icon: any; color: string;
-  decimals?: number; suffix?: string; prefix?: string;
+  colorKey: string; decimals?: number; suffix?: string; prefix?: string; trend?: 'up' | 'down' | null;
 }) {
+  const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.blue;
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-3 sm:p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{title}</span>
-        <div className={`p-1.5 rounded-lg ${color}`}>
-          <Icon className="w-3.5 h-3.5 text-white" />
+    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-md transition-shadow`}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 truncate">{title}</span>
+        <div className={`p-2 rounded-lg ${color}`}>
+          <Icon className="w-4 h-4 text-white" />
         </div>
       </div>
-      <div className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100">
-        {numericValue !== undefined
-          ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
-          : value}
+      <div className="flex items-end gap-2">
+        <div className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">
+          {numericValue !== undefined
+            ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
+            : value}
+        </div>
+        {trend && (
+          <div className={`flex items-center gap-0.5 mb-1 ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+            {trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+          </div>
+        )}
       </div>
-      {subtitle && <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">{subtitle}</p>}
     </div>
   );
 }
@@ -185,27 +203,41 @@ function TreemapContent({ x, y, width, height, name, value, totalFoodCost }: any
   );
 }
 
-// ── Collapsible Section ───────────────────────────────────────────────────
-function Collapsible({ title, icon: Icon, badge, defaultOpen = false, children, className = '' }: {
-  title: string; icon: any; badge?: number; defaultOpen?: boolean; children: React.ReactNode; className?: string;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
+// ── Alert Ticker Banner ───────────────────────────────────────────────────
+function AlertTicker({ alerts }: { alerts: Recipe[] }) {
+  if (alerts.length === 0) return null;
+  // Duplicate items for seamless loop
+  const items = [...alerts, ...alerts];
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 ${className}`}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-5 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors rounded-xl"
-      >
-        <Icon className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-        <span className="font-semibold text-sm text-slate-800 dark:text-slate-100 flex-1">{title}</span>
-        {badge !== undefined && badge > 0 && (
-          <span className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-bold px-2 py-0.5 rounded-full">
-            {badge}
-          </span>
-        )}
-        {open ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
-      </button>
-      {open && <div className="px-5 pb-4">{children}</div>}
+    <div className="relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 rounded-xl shadow-sm">
+      <div className="flex items-center gap-2 px-4 py-2.5">
+        <AlertTriangle className="w-4 h-4 text-white flex-shrink-0" />
+        <span className="text-xs font-bold text-white/90 flex-shrink-0 uppercase tracking-wide">
+          Alertes ({alerts.length})
+        </span>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex gap-6 animate-[ticker_20s_linear_infinite]">
+            {items.map((r, i) => (
+              <Link
+                key={`${r.id}-${i}`}
+                to={`/recipes/${r.id}`}
+                className="flex items-center gap-2 flex-shrink-0 text-white/90 hover:text-white transition-colors"
+              >
+                <span className="text-sm font-medium whitespace-nowrap">{r.name}</span>
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${r.margin.marginPercent < 50 ? 'bg-white/25' : 'bg-white/15'}`}>
+                  {r.margin.marginPercent.toFixed(1)}%
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+      <style>{`
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -252,7 +284,7 @@ export default function Dashboard() {
     const dailyProfit = dailyRevenue - dailyCost;
 
     // Breakeven
-    const fixedCostsEstimate = 0; // Could be user-configurable
+    const fixedCostsEstimate = 0;
     const profitPerCouvert = avgPricePerCouvert * (1 - avgCostRatio);
     const seuilRentabilite = profitPerCouvert > 0 ? Math.ceil(fixedCostsEstimate / profitPerCouvert) : 0;
 
@@ -304,6 +336,7 @@ export default function Dashboard() {
         fullName: r.name,
         margin: r.margin.marginPercent,
         category: r.category,
+        id: r.id,
         fill: r.margin.marginPercent >= 70 ? '#059669' : r.margin.marginPercent >= 60 ? '#d97706' : '#dc2626',
       }));
 
@@ -327,11 +360,21 @@ export default function Dashboard() {
 
     // Food cost by ingredient category
     const foodCostMap = new Map<string, number>();
+    const ingredientCostMap = new Map<string, { name: string; cost: number; unit: string; category: string }>();
     recipes.forEach(r => {
       r.ingredients.forEach(ri => {
         const cat = ri.ingredient.category || 'Autres';
         const cost = ri.ingredient.pricePerUnit * ri.quantity * (1 + ri.wastePercent / 100);
         foodCostMap.set(cat, (foodCostMap.get(cat) || 0) + cost);
+        // Track individual ingredient costs
+        const key = ri.ingredient.name;
+        const existing = ingredientCostMap.get(key);
+        ingredientCostMap.set(key, {
+          name: ri.ingredient.name,
+          cost: (existing?.cost || 0) + cost,
+          unit: ri.ingredient.unit,
+          category: cat,
+        });
       });
     });
     const foodCostData = Array.from(foodCostMap.entries())
@@ -342,6 +385,11 @@ export default function Dashboard() {
       }))
       .sort((a, b) => b.value - a.value);
     const totalFoodCostAll = foodCostData.reduce((s, d) => s + d.value, 0);
+
+    // Top 10 most expensive ingredients
+    const topIngredients = Array.from(ingredientCostMap.values())
+      .sort((a, b) => b.cost - a.cost)
+      .slice(0, 10);
 
     // Allergen summary
     const allergenMap = new Map<string, Set<number>>();
@@ -358,6 +406,25 @@ export default function Dashboard() {
       .filter(a => a.count > 0)
       .sort((a, b) => b.count - a.count);
 
+    // Coefficient distribution for profitability tab
+    const coeffBuckets = [
+      { name: '< 2.0', count: 0, color: '#dc2626' },
+      { name: '2.0-2.5', count: 0, color: '#ea580c' },
+      { name: '2.5-3.0', count: 0, color: '#d97706' },
+      { name: '3.0-3.5', count: 0, color: '#65a30d' },
+      { name: '3.5-4.0', count: 0, color: '#059669' },
+      { name: '> 4.0', count: 0, color: '#047857' },
+    ];
+    recipes.forEach(r => {
+      const c = r.margin.coefficient;
+      if (c < 2.0) coeffBuckets[0].count++;
+      else if (c < 2.5) coeffBuckets[1].count++;
+      else if (c < 3.0) coeffBuckets[2].count++;
+      else if (c < 3.5) coeffBuckets[3].count++;
+      else if (c < 4.0) coeffBuckets[4].count++;
+      else coeffBuckets[5].count++;
+    });
+
     return {
       totalRecipes, avgMargin, avgCoefficient, bestMargin, worstMargin,
       avgFoodCost, avgLaborCost, avgTotalCost,
@@ -365,15 +432,15 @@ export default function Dashboard() {
       avgCostRatio, profitPerCouvert,
       categoryData, categoryMarginData, marginBuckets, allByMargin,
       top10Margin, top10Coeff, worst5, alertRecipes,
-      foodCostData, totalFoodCostAll,
-      allergenSummary,
+      foodCostData, totalFoodCostAll, topIngredients,
+      allergenSummary, coeffBuckets,
     };
   }, [recipes, couverts, serviceMode, avgPricePerCouvert]);
 
   // ── Export CSV helper ──────────────────────────────────────────────────
   const handleExportCSV = useCallback(() => {
     if (recipes.length === 0) return;
-    const header = 'Nom,Cat\u00e9gorie,Prix vente,Co\u00fbt mati\u00e8re,Co\u00fbt MO,Co\u00fbt total,Marge €,Marge %,Coefficient\n';
+    const header = 'Nom,Catégorie,Prix vente,Coût matière,Coût MO,Coût total,Marge €,Marge %,Coefficient\n';
     const rows = recipes.map(r =>
       `"${r.name}","${r.category}",${r.sellingPrice.toFixed(2)},${r.margin.costPerPortion.toFixed(2)},${(r.margin.laborCostPerPortion || 0).toFixed(2)},${(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)},${r.margin.marginAmount.toFixed(2)},${r.margin.marginPercent.toFixed(1)},${r.margin.coefficient.toFixed(2)}`
     ).join('\n');
@@ -398,13 +465,13 @@ export default function Dashboard() {
     return (
       <div>
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Tableau de bord</h2>
-        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
           <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
           <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Bienvenue sur RestauMargin</h3>
-          <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingredients puis cr&eacute;ez vos fiches techniques.</p>
+          <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingrédients puis créez vos fiches techniques.</p>
           <div className="flex gap-4 justify-center">
-            <Link to="/ingredients" className="btn-primary">Ajouter des ingredients</Link>
-            <Link to="/recipes" className="btn-secondary">Cr&eacute;er une recette</Link>
+            <Link to="/ingredients" className="btn-primary">Ajouter des ingrédients</Link>
+            <Link to="/recipes" className="btn-secondary">Créer une recette</Link>
           </div>
         </div>
       </div>
@@ -414,13 +481,13 @@ export default function Dashboard() {
   const sortedByMargin = [...recipes].sort((a, b) => a.margin.marginPercent - b.margin.marginPercent);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* ── Header + Quick Actions ────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            {stats.totalRecipes} recette{stats.totalRecipes > 1 ? 's' : ''} &middot; {ingredients.length} ingr&eacute;dient{ingredients.length > 1 ? 's' : ''}
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {stats.totalRecipes} recette{stats.totalRecipes > 1 ? 's' : ''} · {ingredients.length} ingrédient{ingredients.length > 1 ? 's' : ''}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -434,7 +501,7 @@ export default function Dashboard() {
             onClick={() => navigate('/ingredients?action=new')}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
-            <Package className="w-4 h-4" /> Ajouter ingr&eacute;dient
+            <Package className="w-4 h-4" /> Ajouter ingrédient
           </button>
           <Link
             to="/recipes"
@@ -443,7 +510,7 @@ export default function Dashboard() {
             <ClipboardList className="w-4 h-4" /> Voir les recettes
           </Link>
           <Link
-            to="/ingredients"
+            to="/inventory"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
             <FileText className="w-4 h-4" /> Voir l'inventaire
@@ -457,9 +524,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Stat Cards (5 in a row, compact) ──────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <StatCard title="Recettes" value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" />
+      {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <StatCard title="Recettes" value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" colorKey="blue" />
         <StatCard
           title="Marge moyenne"
           numericValue={stats.avgMargin}
@@ -467,6 +534,8 @@ export default function Dashboard() {
           subtitle={stats.avgMargin >= 70 ? 'Objectif atteint' : 'Objectif : > 70%'}
           icon={TrendingUp}
           color={stats.avgMargin >= 70 ? 'bg-green-600' : 'bg-amber-500'}
+          colorKey={stats.avgMargin >= 70 ? 'green' : 'amber'}
+          trend={stats.avgMargin >= 70 ? 'up' : 'down'}
         />
         <StatCard
           title="Coefficient moyen"
@@ -475,68 +544,33 @@ export default function Dashboard() {
           subtitle="Objectif : > 3.3"
           icon={DollarSign}
           color="bg-purple-600"
+          colorKey="purple"
+          trend={stats.avgCoefficient >= 3.3 ? 'up' : 'down'}
         />
         <StatCard
-          title="Co\u00fbt moyen total"
+          title="Coût moyen total"
           numericValue={stats.avgTotalCost}
           decimals={2}
           suffix=" €"
-          subtitle={stats.avgLaborCost > 0 ? `Mat. ${stats.avgFoodCost.toFixed(2)}€ + MO ${stats.avgLaborCost.toFixed(2)}€` : 'Mati\u00e8re seule'}
+          subtitle={stats.avgLaborCost > 0 ? `Mat. ${stats.avgFoodCost.toFixed(2)}€ + MO ${stats.avgLaborCost.toFixed(2)}€` : 'Matière seule'}
           icon={Briefcase}
           color="bg-cyan-600"
+          colorKey="cyan"
         />
         <StatCard
           title="Min / Max"
           value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
           icon={TrendingDown}
           color="bg-slate-600"
+          colorKey="slate"
         />
       </div>
 
-      {/* ── Alerts (collapsible, collapsed by default) ─────────────────── */}
-      {stats.alertRecipes.length > 0 && (
-        <Collapsible
-          title={`Alertes \u2014 ${stats.alertRecipes.length} recette${stats.alertRecipes.length > 1 ? 's' : ''} sous 60% de marge`}
-          icon={AlertTriangle}
-          badge={stats.alertRecipes.length}
-          defaultOpen={false}
-          className="border-red-200 dark:border-red-800/50"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {stats.alertRecipes.map(r => (
-              <Link
-                key={r.id}
-                to={`/recipes/${r.id}`}
-                className="flex items-center justify-between bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-100 dark:border-red-800/50"
-              >
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate pr-2">{r.name}</span>
-                <span className={`text-sm font-bold tabular-nums ${r.margin.marginPercent < 50 ? 'text-red-600' : 'text-amber-600'}`}>
-                  {r.margin.marginPercent.toFixed(1)}%
-                </span>
-              </Link>
-            ))}
-          </div>
-        </Collapsible>
-      )}
+      {/* ── Alert Ticker Banner ──────────────────────────────────────── */}
+      <AlertTicker alerts={stats.alertRecipes} />
 
-      {/* ── Allergen Strip (compact horizontal scroll) ─────────────────── */}
-      {stats.allergenSummary.length > 0 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
-          <ShieldAlert className="w-4 h-4 text-amber-500 flex-shrink-0" />
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">Allerg&egrave;nes :</span>
-          {stats.allergenSummary.map(a => (
-            <span
-              key={a.name}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0 ${ALLERGEN_COLORS[a.name] || 'bg-amber-200 text-amber-800 dark:bg-amber-800/50 dark:text-amber-200'}`}
-            >
-              {a.name} <span className="opacity-70">{a.count}</span>
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* ── Tab Navigation ─────────────────────────────────────────────── */}
-      <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 overflow-x-auto">
+      {/* ── Tab Navigation (card-style) ──────────────────────────────── */}
+      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
         {TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;
@@ -544,14 +578,23 @@ export default function Dashboard() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium transition-all whitespace-nowrap flex-shrink-0
+              className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px]
                 ${isActive
-                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  ? 'bg-white dark:bg-slate-800 border-l-4 border-l-blue-600 border border-slate-200 dark:border-slate-700 shadow-md'
+                  : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm opacity-75 hover:opacity-100'
                 }`}
             >
-              <Icon className="w-4 h-4" />
-              {tab.label}
+              <div className={`p-2 rounded-lg ${isActive ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-slate-100 dark:bg-slate-700'}`}>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
+              </div>
+              <div>
+                <div className={`text-sm font-semibold ${isActive ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                  {tab.label}
+                </div>
+                <div className={`text-xs ${isActive ? 'text-slate-500 dark:text-slate-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {tab.desc}
+                </div>
+              </div>
             </button>
           );
         })}
@@ -561,140 +604,138 @@ export default function Dashboard() {
       {/* TAB: Vue d'ensemble                                               */}
       {/* ══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'overview' && (
-        <div className="space-y-4">
-          {/* Revenue Estimation */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-2">
-                <Calculator className="w-5 h-5" />
-                <h3 className="font-semibold text-lg">Estimation de revenus</h3>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-6">
+            {/* LEFT SIDE */}
+            <div className="space-y-6">
+              {/* Revenue Estimation */}
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Calculator className="w-5 h-5" />
+                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 text-white">Estimation de revenus</h3>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
+                      {([['all', 'Jour'], ['lunch', 'Déj.'], ['dinner', 'Dîn.']] as const).map(([key, label]) => (
+                        <button
+                          key={key}
+                          onClick={() => setServiceMode(key)}
+                          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
+                            serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs text-blue-100">Couverts :</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={500}
+                        value={couverts}
+                        onChange={e => setCouverts(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs text-blue-100">Ticket moy. :</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={500}
+                        value={avgPricePerCouvert}
+                        onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                      />
+                      <span className="text-xs text-blue-200">€</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <p className="text-xs text-blue-200 mb-1">CA / jour</p>
+                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
+                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <p className="text-xs text-blue-200 mb-1">CA / mois</p>
+                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-3">
+                    <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
+                    <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-blue-200">
+                  <span>{stats.dailyCouverts} couverts/jour ({serviceMode === 'all' ? '2 services' : serviceMode === 'lunch' ? 'déjeuner' : 'dîner'})</span>
+                  <span>Coût ratio : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
+                  <span>Profit/couvert : {stats.profitPerCouvert.toFixed(2)} €</span>
+                  {stats.seuilRentabilite > 0 && (
+                    <span className="text-yellow-300 font-medium">Seuil de rentabilité : {stats.seuilRentabilite} couverts/jour</span>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                {/* Service mode selector */}
-                <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
-                  {([['all', 'Jour'], ['lunch', 'D\u00e9j.'], ['dinner', 'D\u00een.']] as const).map(([key, label]) => (
-                    <button
-                      key={key}
-                      onClick={() => setServiceMode(key)}
-                      className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-                        serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
-                      }`}
+
+              {/* Category cards with colored dots */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {stats.categoryData.map((cat, i) => (
+                  <div key={cat.name} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{cat.name}</span>
+                    </div>
+                    <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{cat.count}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Marge :{' '}
+                      <span className={
+                        cat.avgMargin >= 70 ? 'text-green-600 font-semibold'
+                          : cat.avgMargin >= 60 ? 'text-amber-600 font-semibold'
+                          : 'text-red-600 font-semibold'
+                      }>
+                        {cat.avgMargin}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* RIGHT SIDE */}
+            <div className="space-y-6">
+              {/* Donut chart for category distribution */}
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Utensils className="w-5 h-5 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition</h3>
+                </div>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={stats.categoryData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={85}
+                      paddingAngle={3}
+                      dataKey="count"
+                      nameKey="name"
                     >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-xs text-blue-100">Couverts/service :</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={500}
-                    value={couverts}
-                    onChange={e => setCouverts(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="text-xs text-blue-100">Ticket moy. :</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={500}
-                    value={avgPricePerCouvert}
-                    onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
-                  />
-                  <span className="text-xs text-blue-200">&euro;</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Projections grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-blue-200 mb-1">CA / jour</p>
-                <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
-                <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-blue-200 mb-1">CA / mois</p>
-                <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
-              </div>
-              <div className="bg-white/10 rounded-lg p-3">
-                <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
-                <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
-              </div>
-            </div>
-
-            {/* Info line */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-blue-200">
-              <span>{stats.dailyCouverts} couverts/jour ({serviceMode === 'all' ? '2 services' : serviceMode === 'lunch' ? 'd\u00e9jeuner' : 'd\u00eener'})</span>
-              <span>Co\u00fbt ratio : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
-              <span>Profit/couvert : {stats.profitPerCouvert.toFixed(2)} €</span>
-              {stats.seuilRentabilite > 0 && (
-                <span className="text-yellow-300 font-medium">Seuil de rentabilit\u00e9 : {stats.seuilRentabilite} couverts/jour</span>
-              )}
-            </div>
-          </div>
-
-          {/* Category Summary */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {stats.categoryData.map((cat, i) => (
-              <div key={cat.name} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-3 hover:shadow-md transition-shadow">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">{cat.name}</span>
-                </div>
-                <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{cat.count}</div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  Marge :{' '}
-                  <span className={
-                    cat.avgMargin >= 70 ? 'text-green-600 font-semibold'
-                      : cat.avgMargin >= 60 ? 'text-amber-600 font-semibold'
-                      : 'text-red-600 font-semibold'
-                  }>
-                    {cat.avgMargin}%
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Charts side by side: Category Donut + Margin by Category */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Category Distribution - Clean donut with side legend */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Utensils className="w-5 h-5 text-blue-600" />
-                <h3 className="font-semibold text-slate-800 dark:text-slate-100">R&eacute;partition par cat&eacute;gorie</h3>
-              </div>
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="w-full sm:w-1/2">
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={stats.categoryData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={50}
-                        outerRadius={85}
-                        paddingAngle={3}
-                        dataKey="count"
-                        nameKey="name"
-                      >
-                        {stats.categoryData.map((_entry, index) => (
-                          <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<ChartTooltip />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="w-full sm:w-1/2 space-y-2">
+                      {stats.categoryData.map((_entry, index) => (
+                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="space-y-2 mt-2">
                   {stats.categoryData.map((cat, i) => (
                     <div key={cat.name} className="flex items-center gap-2 text-sm">
                       <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
@@ -704,32 +745,26 @@ export default function Dashboard() {
                   ))}
                 </div>
               </div>
-            </div>
 
-            {/* Margin by Category Bar */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="w-5 h-5 text-green-600" />
-                <h3 className="font-semibold text-slate-800 dark:text-slate-100">Marge moyenne par cat&eacute;gorie</h3>
-              </div>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={stats.categoryMarginData} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
-                  <Tooltip content={<ChartTooltip />} />
-                  <Bar dataKey="avgMargin" name="Marge moy." radius={[6, 6, 0, 0]}>
-                    {stats.categoryMarginData.map((entry, index) => (
-                      <Cell key={index} fill={entry.fill} />
+              {/* Allergen badges */}
+              {stats.allergenSummary.length > 0 && (
+                <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <ShieldAlert className="w-5 h-5 text-amber-500" />
+                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Allergènes</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {stats.allergenSummary.map(a => (
+                      <span
+                        key={a.name}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${ALLERGEN_COLORS[a.name] || 'bg-amber-200 text-amber-800 dark:bg-amber-800/50 dark:text-amber-200'}`}
+                      >
+                        {a.name} <span className="opacity-70">{a.count}</span>
+                      </span>
                     ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-              <div className="flex items-center justify-center gap-4 mt-1 text-xs text-slate-400 dark:text-slate-500">
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-600 inline-block" /> &ge; 70%</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 60-70%</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> &lt; 60%</span>
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -739,12 +774,17 @@ export default function Dashboard() {
       {/* TAB: Analyse des marges                                           */}
       {/* ══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'margins' && (
-        <div className="space-y-4">
-          {/* Distribution des marges - Horizontal bar chart sorted by margin */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+        <div className="space-y-6">
+          {/* Full width horizontal bar chart of ALL recipes sorted by margin */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-green-600" />
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">Distribution des marges (toutes recettes)</h3>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Toutes les recettes par marge</h3>
+              <div className="flex items-center gap-4 ml-auto text-xs text-slate-400 dark:text-slate-500">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-600 inline-block" /> &ge; 70%</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 60-70%</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> &lt; 60%</span>
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={Math.max(300, stats.allByMargin.length * 28)}>
               <BarChart data={stats.allByMargin} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
@@ -773,33 +813,12 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </div>
 
-          {/* Margin Buckets */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">R&eacute;partition par tranche de marge</h3>
-            </div>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={stats.marginBuckets}>
-                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="count" name="Nb recettes" radius={[4, 4, 0, 0]}>
-                  {stats.marginBuckets.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Top 10 Margin + Top 10 Coefficient */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+          {/* Top 10 + Bottom 5 side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Trophy className="w-5 h-5 text-yellow-500" />
-                <h3 className="font-semibold text-slate-800 dark:text-slate-100">Top 10 par marge</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Top 10 par marge</h3>
               </div>
               <div className="space-y-3">
                 {stats.top10Margin.map((r, i) => (
@@ -816,27 +835,24 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Target className="w-5 h-5 text-purple-500" />
-                <h3 className="font-semibold text-slate-800 dark:text-slate-100">Top 10 par coefficient</h3>
+                <ShieldAlert className="w-5 h-5 text-red-500" />
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">5 marges les plus basses</h3>
+                <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">Action requise</span>
               </div>
               <div className="space-y-3">
-                {stats.top10Coeff.map((r, i) => {
-                  const maxCoeff = stats.top10Coeff[0]?.margin.coefficient || 1;
-                  return (
-                    <RankBar
-                      key={r.id}
-                      rank={i + 1}
-                      name={r.name}
-                      value={r.margin.coefficient}
-                      maxValue={maxCoeff * 1.1}
-                      unit="x"
-                      color={r.margin.coefficient >= 3.3 ? '#7c3aed' : r.margin.coefficient >= 2.5 ? '#d97706' : '#dc2626'}
-                      link={`/recipes/${r.id}`}
-                    />
-                  );
-                })}
+                {stats.worst5.map((r, i) => (
+                  <RankBar
+                    key={r.id}
+                    rank={i + 1}
+                    name={r.name}
+                    value={r.margin.marginPercent}
+                    maxValue={100}
+                    color={r.margin.marginPercent < 50 ? '#dc2626' : '#d97706'}
+                    link={`/recipes/${r.id}`}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -844,106 +860,283 @@ export default function Dashboard() {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* TAB: Co\u00fbts mati\u00e8re                                                        */}
+      {/* TAB: Coûts matière                                                */}
       {/* ══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'costs' && (
-        <div className="space-y-4">
-          {/* Food Cost Treemap */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <PieChartIcon className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">R&eacute;partition co\u00fbt mati&egrave;re</h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
-                Total : {stats.totalFoodCostAll.toFixed(2)} &euro;
-              </span>
+        <div className="space-y-6">
+          {/* Treemap + Stacked bar side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Food Cost Treemap */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <PieChartIcon className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition coût matière</h3>
+                <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
+                  Total : {stats.totalFoodCostAll.toFixed(2)} €
+                </span>
+              </div>
+              {stats.foodCostData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={320}>
+                  <Treemap
+                    data={stats.foodCostData.map(d => ({ ...d, totalFoodCost: stats.totalFoodCostAll }))}
+                    dataKey="value"
+                    nameKey="name"
+                    content={<TreemapContent totalFoodCost={stats.totalFoodCostAll} />}
+                  >
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (!active || !payload?.length) return null;
+                        const d = payload[0]?.payload;
+                        const pct = stats.totalFoodCostAll > 0 ? ((d?.value / stats.totalFoodCostAll) * 100).toFixed(1) : '0';
+                        return (
+                          <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
+                            <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
+                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} € ({pct}%)</p>
+                          </div>
+                        );
+                      }}
+                    />
+                  </Treemap>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-center text-slate-400 py-12">Aucune donnée</p>
+              )}
             </div>
-            {stats.foodCostData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={320}>
-                <Treemap
-                  data={stats.foodCostData.map(d => ({ ...d, totalFoodCost: stats.totalFoodCostAll }))}
-                  dataKey="value"
-                  nameKey="name"
-                  content={<TreemapContent totalFoodCost={stats.totalFoodCostAll} />}
-                >
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (!active || !payload?.length) return null;
-                      const d = payload[0]?.payload;
-                      const pct = stats.totalFoodCostAll > 0 ? ((d?.value / stats.totalFoodCostAll) * 100).toFixed(1) : '0';
-                      return (
-                        <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
-                          <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                          <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} &euro; ({pct}%)</p>
-                        </div>
-                      );
-                    }}
-                  />
-                </Treemap>
-              </ResponsiveContainer>
-            ) : (
-              <p className="text-center text-slate-400 py-12">Aucune donn&eacute;e</p>
+
+            {/* Cost by category bar */}
+            {stats.foodCostData.length > 0 && (
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <BarChart3 className="w-5 h-5 text-orange-600" />
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Détail par catégorie</h3>
+                </div>
+                <ResponsiveContainer width="100%" height={Math.max(200, stats.foodCostData.length * 36)}>
+                  <BarChart data={stats.foodCostData} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 11 }} unit=" €" />
+                    <YAxis type="category" dataKey="name" width={150} tick={{ fontSize: 11 }} />
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (!active || !payload?.length) return null;
+                        const d = payload[0]?.payload;
+                        const pct = stats.totalFoodCostAll > 0 ? ((d?.value / stats.totalFoodCostAll) * 100).toFixed(1) : '0';
+                        return (
+                          <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
+                            <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
+                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
+                            <p className="text-slate-500 dark:text-slate-400">{pct}% du coût total</p>
+                          </div>
+                        );
+                      }}
+                    />
+                    <Bar dataKey="value" name="Coût" radius={[0, 4, 4, 0]}>
+                      {stats.foodCostData.map((entry, index) => (
+                        <Cell key={index} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             )}
           </div>
 
-          {/* Stacked bar alternative view */}
-          {stats.foodCostData.length > 0 && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+          {/* Top 10 most expensive ingredients table */}
+          {stats.topIngredients.length > 0 && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="w-5 h-5 text-orange-600" />
-                <h3 className="font-semibold text-slate-800 dark:text-slate-100">D&eacute;tail par cat&eacute;gorie de co\u00fbt</h3>
+                <ShoppingCart className="w-5 h-5 text-red-500" />
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Top 10 ingrédients les plus coûteux</h3>
               </div>
-              <ResponsiveContainer width="100%" height={Math.max(200, stats.foodCostData.length * 36)}>
-                <BarChart data={stats.foodCostData} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" horizontal={false} />
-                  <XAxis type="number" tick={{ fontSize: 11 }} unit=" €" />
-                  <YAxis type="category" dataKey="name" width={150} tick={{ fontSize: 11 }} />
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (!active || !payload?.length) return null;
-                      const d = payload[0]?.payload;
-                      const pct = stats.totalFoodCostAll > 0 ? ((d?.value / stats.totalFoodCostAll) * 100).toFixed(1) : '0';
-                      return (
-                        <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
-                          <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                          <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} &euro;</p>
-                          <p className="text-slate-500 dark:text-slate-400">{pct}% du co\u00fbt total</p>
-                        </div>
-                      );
-                    }}
-                  />
-                  <Bar dataKey="value" name="Co\u00fbt" radius={[0, 4, 4, 0]}>
-                    {stats.foodCostData.map((entry, index) => (
-                      <Cell key={index} fill={entry.fill} />
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                      <th className="pb-2 font-medium">#</th>
+                      <th className="pb-2 font-medium">Ingrédient</th>
+                      <th className="pb-2 font-medium">Catégorie</th>
+                      <th className="pb-2 text-right font-medium">Coût total</th>
+                      <th className="pb-2 text-right font-medium">% du total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                    {stats.topIngredients.map((ing, i) => (
+                      <tr key={ing.name} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <td className="py-2.5 text-slate-400 font-bold">{i + 1}</td>
+                        <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">{ing.name}</td>
+                        <td className="py-2.5 text-slate-500 dark:text-slate-400">
+                          <span className="inline-flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: FOOD_CATEGORY_COLORS[ing.category] || '#64748b' }} />
+                            {ing.category}
+                          </span>
+                        </td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-slate-700 dark:text-slate-300">{ing.cost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">
+                          {stats.totalFoodCostAll > 0 ? ((ing.cost / stats.totalFoodCostAll) * 100).toFixed(1) : '0'}%
+                        </td>
+                      </tr>
                     ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
       )}
 
       {/* ══════════════════════════════════════════════════════════════════ */}
-      {/* TAB: Rentabilit\u00e9                                                     */}
+      {/* TAB: Rentabilité                                                  */}
       {/* ══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'profitability' && (
-        <div className="space-y-4">
-          {/* Worst 5 Recipes */}
+        <div className="space-y-6">
+          {/* Revenue projection with service selector */}
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2">
+                <Calculator className="w-5 h-5" />
+                <h3 className="text-lg font-semibold text-white">Projections de revenus</h3>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
+                  {([['all', 'Jour'], ['lunch', 'Déj.'], ['dinner', 'Dîn.']] as const).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => setServiceMode(key)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                        serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs text-blue-100">Couverts :</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={500}
+                    value={couverts}
+                    onChange={e => setCouverts(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs text-blue-100">Ticket moy. :</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={500}
+                    value={avgPricePerCouvert}
+                    onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                  />
+                  <span className="text-xs text-blue-200">€</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-white/10 rounded-lg p-4">
+                <p className="text-xs text-blue-200 mb-1">CA / jour</p>
+                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4">
+                <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
+                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4">
+                <p className="text-xs text-blue-200 mb-1">CA / mois</p>
+                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
+              </div>
+              <div className="bg-white/10 rounded-lg p-4">
+                <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
+                <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+              </div>
+            </div>
+          </div>
+
+          {/* Break-even analysis + coefficient distribution side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Break-even analysis */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Target className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Analyse de rentabilité</h3>
+              </div>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Coût ratio moyen</p>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                      <AnimatedNumber value={stats.avgCostRatio * 100} decimals={1} suffix="%" />
+                    </p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Profit / couvert</p>
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                      <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
+                    </p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Couverts / jour</p>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Coût matière moy.</p>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                      <AnimatedNumber value={stats.avgFoodCost} decimals={2} suffix=" €" />
+                    </p>
+                  </div>
+                </div>
+                {stats.seuilRentabilite > 0 && (
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
+                      <AlertTriangle className="w-4 h-4" />
+                      <span className="text-sm font-semibold">Seuil de rentabilité : {stats.seuilRentabilite} couverts/jour</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Coefficient distribution chart */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <BarChart3 className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Distribution des coefficients</h3>
+              </div>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={stats.coeffBuckets}>
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                  <Tooltip content={<ChartTooltip />} />
+                  <Bar dataKey="count" name="Nb recettes" radius={[4, 4, 0, 0]}>
+                    {stats.coeffBuckets.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Worst 5 Recipes table */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
             <div className="flex items-center gap-2 mb-4">
               <ShieldAlert className="w-5 h-5 text-red-500" />
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">5 recettes les moins rentables</h3>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">5 recettes les moins rentables</h3>
               <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">Action requise</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-700">
+                  <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                     <th className="pb-2 font-medium">#</th>
                     <th className="pb-2 font-medium">Recette</th>
-                    <th className="pb-2 font-medium">Cat&eacute;gorie</th>
+                    <th className="pb-2 font-medium">Catégorie</th>
                     <th className="pb-2 text-right font-medium">Prix vente</th>
-                    <th className="pb-2 text-right font-medium">Co\u00fbt total</th>
+                    <th className="pb-2 text-right font-medium">Coût total</th>
                     <th className="pb-2 text-right font-medium">Marge</th>
                     <th className="pb-2 text-right font-medium">Coeff.</th>
                     <th className="pb-2 text-center font-medium">Action</th>
@@ -955,8 +1148,8 @@ export default function Dashboard() {
                       <td className="py-2.5 text-red-500 font-bold">{i + 1}</td>
                       <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">{r.name}</td>
                       <td className="py-2.5 text-slate-500 dark:text-slate-400">{r.category}</td>
-                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.sellingPrice.toFixed(2)} &euro;</td>
-                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} &euro;</td>
+                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
+                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
                       <td className={`py-2.5 text-right font-mono font-bold ${r.margin.marginPercent < 50 ? 'text-red-600' : 'text-amber-600'}`}>
                         {r.margin.marginPercent.toFixed(1)}%
                       </td>
@@ -974,10 +1167,10 @@ export default function Dashboard() {
           </div>
 
           {/* Full Recipes Table */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
-            <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">D&eacute;tail par plat</h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500">Tri&eacute; par marge croissante</span>
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Détail par plat</h3>
+              <span className="text-xs text-slate-400 dark:text-slate-500">Trié par marge croissante</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -986,10 +1179,10 @@ export default function Dashboard() {
                     <th className="px-4 py-2.5 text-left font-medium">Plat</th>
                     <th className="px-4 py-2.5 text-left font-medium">Cat.</th>
                     <th className="px-4 py-2.5 text-right font-medium">Prix</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Co\u00fbt mat.</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Co\u00fbt MO</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Co\u00fbt total</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Marge &euro;</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Coût mat.</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Coût MO</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Coût total</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Marge €</th>
                     <th className="px-4 py-2.5 text-right font-medium">Marge %</th>
                     <th className="px-4 py-2.5 text-right font-medium">Coeff.</th>
                     <th className="px-4 py-2.5 text-center font-medium">Fiche</th>
@@ -1006,11 +1199,11 @@ export default function Dashboard() {
                           {r.name}
                         </td>
                         <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{r.category}</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.sellingPrice.toFixed(2)} &euro;</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.costPerPortion.toFixed(2)} &euro;</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">{(r.margin.laborCostPerPortion || 0).toFixed(2)} &euro;</td>
-                        <td className="px-4 py-2.5 text-right font-mono font-medium text-slate-800 dark:text-slate-200">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} &euro;</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.marginAmount.toFixed(2)} &euro;</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.costPerPortion.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">{(r.margin.laborCostPerPortion || 0).toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono font-medium text-slate-800 dark:text-slate-200">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.marginAmount.toFixed(2)} €</td>
                         <td className={`px-4 py-2.5 text-right font-mono font-semibold ${mc}`}>{r.margin.marginPercent.toFixed(1)}%</td>
                         <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
                         <td className="px-4 py-2.5 text-center">

@@ -39,6 +39,8 @@ model Supplier {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   ingredients  Ingredient[]
+  rfqSuppliers RFQSupplier[]
+  rfqQuotes    RFQQuote[]
 
   @@map("suppliers")
 }
@@ -57,8 +59,61 @@ model Ingredient {
   updatedAt    DateTime           @updatedAt
   recipes      RecipeIngredient[]
   inventoryItem InventoryItem?
+  rfqItems     RFQItem[]
 
   @@map("ingredients")
+}
+
+model RFQ {
+  id          Int           @id @default(autoincrement())
+  title       String
+  status      String        @default("draft") // draft, sent, closed
+  dueDate     DateTime?
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  items       RFQItem[]
+  suppliers   RFQSupplier[]
+
+  @@map("rfqs")
+}
+
+model RFQItem {
+  id           Int        @id @default(autoincrement())
+  rfqId        Int
+  ingredientId Int
+  quantity     Float
+  rfq          RFQ        @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  quotes       RFQQuote[]
+
+  @@unique([rfqId, ingredientId])
+  @@map("rfq_items")
+}
+
+model RFQSupplier {
+  id         Int      @id @default(autoincrement())
+  rfqId      Int
+  supplierId Int
+  rfq        RFQ      @relation(fields: [rfqId], references: [id], onDelete: Cascade)
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  @@unique([rfqId, supplierId])
+  @@map("rfq_suppliers")
+}
+
+model RFQQuote {
+  id         Int      @id @default(autoincrement())
+  rfqItemId  Int
+  supplierId Int
+  unitPrice  Float?
+  notes      String?
+  selected   Boolean  @default(false)
+  rfqItem    RFQItem  @relation(fields: [rfqItemId], references: [id], onDelete: Cascade)
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+
+  @@unique([rfqItemId, supplierId])
+  @@map("rfq_quotes")
 }
 
 model Recipe {

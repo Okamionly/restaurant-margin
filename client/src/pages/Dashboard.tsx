@@ -654,8 +654,8 @@ export default function Dashboard() {
           colorKey="cyan"
         />
         <StatCard
-          title="Min / Max"
-          value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
+          title={`Min\u00A0/\u00A0Max`}
+          value={`${stats.worstMargin.toFixed(0)}%\u00A0/\u00A0${stats.bestMargin.toFixed(0)}%`}
           icon={TrendingDown}
           color="bg-slate-600"
           colorKey="slate"
@@ -833,19 +833,19 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">CA / jour</p>
+                    <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0jour"}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
+                    <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0semaine"}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">CA / mois</p>
+                    <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0mois"}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
+                    <p className="text-xs text-blue-200 mb-1">{"Profit\u00A0/\u00A0jour"}</p>
                     <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
                   </div>
                 </div>
@@ -1351,19 +1351,19 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">CA / jour</p>
+                <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0jour"}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
+                <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0semaine"}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">CA / mois</p>
+                <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0mois"}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
+                <p className="text-xs text-blue-200 mb-1">{"Profit\u00A0/\u00A0jour"}</p>
                 <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
               </div>
             </div>
@@ -1438,13 +1438,13 @@ export default function Dashboard() {
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Profit / couvert</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Profit\u00A0/\u00A0couvert"}</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                       <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Couverts / jour</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Couverts\u00A0/\u00A0jour"}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">

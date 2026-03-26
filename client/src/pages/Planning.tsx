@@ -633,7 +633,7 @@ export default function Planning() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Heures contrat / semaine</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{"Heures contrat\u00A0/\u00A0semaine"}</label>
               <input
                 type="number"
                 min="0"

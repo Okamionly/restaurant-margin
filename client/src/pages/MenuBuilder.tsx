@@ -1,80 +1,78 @@
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Eye,
-  TrendingUp,
   ChefHat,
-  DollarSign,
   Printer,
-  EyeOff,
-  ArrowUpDown,
-  Filter,
   Star,
-  ToggleLeft,
-  ToggleRight,
   X,
-  BarChart3,
   Utensils,
-  ChevronUp,
-  ChevronDown,
   Plus,
-  Check,
   Pencil,
+  BookOpen,
+  Save,
+  ChevronDown,
 } from 'lucide-react';
-import { fetchRecipes, updateRecipe } from '../services/api';
+import { fetchRecipes } from '../services/api';
 import { useToast } from '../hooks/useToast';
 import type { Recipe } from '../types';
-import { RECIPE_CATEGORIES, ALLERGENS } from '../types';
 
-// --- Category display config ---
-const CATEGORY_ORDER = ['Entree', 'Plat', 'Dessert', 'Accompagnement', 'Boisson'] as const;
-const CATEGORY_LABELS: Record<string, string> = {
-  'Entree': 'Entrees',
-  'Entrée': 'Entrees',
-  'Plat': 'Plats',
-  'Dessert': 'Desserts',
-  'Accompagnement': 'Accompagnements',
-  'Boisson': 'Boissons',
-};
-const CATEGORY_ICONS: Record<string, string> = {
-  'Entree': '',
-  'Entrée': '',
-  'Plat': '',
-  'Dessert': '',
-  'Accompagnement': '',
-  'Boisson': '',
-};
-
-function getCategoryLabel(cat: string) {
-  return CATEGORY_LABELS[cat] || cat;
+// ─── Menu structure definition ───
+interface MenuSection {
+  key: string;
+  label: string;
+  category: string;      // matches recipe.category
+  maxSlots: number;
 }
 
-type SortKey = 'name' | 'price' | 'margin';
+const CARTE_SECTIONS: MenuSection[] = [
+  { key: 'entrees',     label: 'Entrées',              category: 'Entrée', maxSlots: 4 },
+  { key: 'plats',       label: 'Plats',                category: 'Plat',   maxSlots: 6 },
+  { key: 'desserts',    label: 'Desserts',             category: 'Dessert', maxSlots: 4 },
+  { key: 'suggestions', label: 'Suggestions du Chef',  category: '',       maxSlots: 2 },
+];
 
-// --- Decorative separator ---
-function MenuDivider() {
-  return (
-    <div className="flex items-center justify-center my-1 print:my-2" aria-hidden>
-      <div className="h-px flex-1 bg-amber-300/40 dark:bg-amber-700/30 print:bg-amber-800/20" />
-      <svg viewBox="0 0 24 12" className="w-8 h-4 mx-3 text-amber-400 dark:text-amber-600 print:text-amber-800/40" fill="currentColor">
-        <path d="M12 0C8 0 5 3 2 6c3 3 6 6 10 6s7-3 10-6c-3-3-6-6-10-6zm0 10a4 4 0 110-8 4 4 0 010 8z" />
-      </svg>
-      <div className="h-px flex-1 bg-amber-300/40 dark:bg-amber-700/30 print:bg-amber-800/20" />
-    </div>
-  );
+const MENU_DU_JOUR_SECTIONS: MenuSection[] = [
+  { key: 'mdj_entree',  label: 'Entrée',  category: 'Entrée',  maxSlots: 1 },
+  { key: 'mdj_plat',    label: 'Plat',    category: 'Plat',    maxSlots: 1 },
+  { key: 'mdj_dessert', label: 'Dessert', category: 'Dessert', maxSlots: 1 },
+];
+
+// ─── localStorage persistence ───
+const STORAGE_KEY = 'menuBuilderSelections';
+const STORAGE_KEY_PRICE = 'menuBuilderMDJPrice';
+
+interface MenuSelections {
+  entrees: number[];
+  plats: number[];
+  desserts: number[];
+  suggestions: number[];
+  mdj_entree: number[];
+  mdj_plat: number[];
+  mdj_dessert: number[];
 }
 
-function MenuOrnament() {
-  return (
-    <div className="flex items-center justify-center py-2 print:py-1" aria-hidden>
-      <span className="text-amber-400/60 dark:text-amber-600/60 print:text-amber-800/30 text-lg tracking-[0.5em] font-serif select-none">
-        &#10043; &#10043; &#10043;
-      </span>
-    </div>
-  );
+function loadSelections(): MenuSelections {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return { entrees: [], plats: [], desserts: [], suggestions: [], mdj_entree: [], mdj_plat: [], mdj_dessert: [] };
 }
 
-// --- Helper: collect all allergens from a recipe ---
+function saveSelections(sel: MenuSelections) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sel));
+}
+
+function loadMDJPrice(): string {
+  return localStorage.getItem(STORAGE_KEY_PRICE) || '18.90';
+}
+
+function saveMDJPrice(p: string) {
+  localStorage.setItem(STORAGE_KEY_PRICE, p);
+}
+
+// ─── Helper: collect all allergens from a recipe ───
 function getRecipeAllergens(recipe: Recipe): string[] {
   const set = new Set<string>();
   recipe.ingredients?.forEach((ri) => {
@@ -83,1008 +81,747 @@ function getRecipeAllergens(recipe: Recipe): string[] {
   return Array.from(set);
 }
 
-// --- localStorage helpers ---
-function loadExcluded(): Set<number> {
-  try {
-    const raw = localStorage.getItem('menuExcluded');
-    if (raw) return new Set(JSON.parse(raw));
-  } catch {}
-  return new Set();
-}
-function saveExcluded(set: Set<number>) {
-  localStorage.setItem('menuExcluded', JSON.stringify([...set]));
-}
-function loadOrder(): Record<string, number[]> {
-  try {
-    const raw = localStorage.getItem('menuOrder');
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return {};
-}
-function saveOrder(order: Record<string, number[]>) {
-  localStorage.setItem('menuOrder', JSON.stringify(order));
+// ─── Decorative components ───
+function MenuDivider() {
+  return (
+    <div className="flex items-center justify-center my-2" aria-hidden>
+      <div className="h-px flex-1 bg-amber-300/40 dark:bg-amber-700/30" />
+      <svg viewBox="0 0 24 12" className="w-6 h-3 mx-2 text-amber-400 dark:text-amber-600" fill="currentColor">
+        <path d="M12 0C8 0 5 3 2 6c3 3 6 6 10 6s7-3 10-6c-3-3-6-6-10-6zm0 10a4 4 0 110-8 4 4 0 010 8z" />
+      </svg>
+      <div className="h-px flex-1 bg-amber-300/40 dark:bg-amber-700/30" />
+    </div>
+  );
 }
 
+function MenuOrnament() {
+  return (
+    <div className="flex items-center justify-center py-1" aria-hidden>
+      <span className="text-amber-400/60 dark:text-amber-600/60 text-sm tracking-[0.5em] font-serif select-none">
+        &#10043; &#10043; &#10043;
+      </span>
+    </div>
+  );
+}
+
+// ─── Main component ───
 export default function MenuBuilder() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  // UI toggles
-  const [showPrices, setShowPrices] = useState(true);
-  const [showMargins, setShowMargins] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>('name');
-  const [excludedAllergens, setExcludedAllergens] = useState<Set<string>>(new Set());
-  const [allergenFilterOpen, setAllergenFilterOpen] = useState(false);
+  // Mode: 'edit' or 'preview'
+  const [mode, setMode] = useState<'edit' | 'preview'>('edit');
 
-  // Menu builder: excluded dishes + menu du jour mode
-  const [excludedDishes, setExcludedDishes] = useState<Set<number>>(loadExcluded);
-  const [menuDuJourMode, setMenuDuJourMode] = useState(false);
-  const [menuDuJourIds, setMenuDuJourIds] = useState<Set<number>>(new Set());
-  const [menuDuJourPrice, setMenuDuJourPrice] = useState<string>('');
-  const [editingMenuPrice, setEditingMenuPrice] = useState(false);
+  // Selections
+  const [selections, setSelections] = useState<MenuSelections>(loadSelections);
+  const [mdjPrice, setMdjPrice] = useState<string>(loadMDJPrice);
+  const [editingPrice, setEditingPrice] = useState(false);
 
-  // Reorder state
-  const [categoryOrder, setCategoryOrder] = useState<Record<string, number[]>>(loadOrder);
-
-  // Inline price editing
-  const [editingPriceId, setEditingPriceId] = useState<number | null>(null);
-  const [editingPriceValue, setEditingPriceValue] = useState('');
-  const priceInputRef = useRef<HTMLInputElement>(null);
-
-  // Quick add dropdown
-  const [quickAddCategory, setQuickAddCategory] = useState<string | null>(null);
-
-  // Print options
-  const [printWithPrices, setPrintWithPrices] = useState(true);
-
-  // Stats panel visibility
-  const [showStats, setShowStats] = useState(true);
-
-  const printRef = useRef<HTMLDivElement>(null);
+  // Dropdown open state for each section
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRecipes()
       .then(setRecipes)
-      .catch(() => {})
+      .catch(() => showToast('Erreur lors du chargement des recettes', 'error'))
       .finally(() => setLoading(false));
+  }, [showToast]);
+
+  // Persist selections
+  const updateSelections = useCallback((next: MenuSelections) => {
+    setSelections(next);
+    saveSelections(next);
   }, []);
 
-  // Focus price input when editing
-  useEffect(() => {
-    if (editingPriceId !== null && priceInputRef.current) {
-      priceInputRef.current.focus();
-      priceInputRef.current.select();
-    }
-  }, [editingPriceId]);
-
-  // --- Allergen filter ---
-  const toggleAllergen = useCallback((a: string) => {
-    setExcludedAllergens((prev) => {
-      const next = new Set(prev);
-      if (next.has(a)) next.delete(a);
-      else next.add(a);
-      return next;
-    });
+  const updateMDJPrice = useCallback((p: string) => {
+    setMdjPrice(p);
+    saveMDJPrice(p);
   }, []);
 
-  // --- Dish exclusion toggle (persisted) ---
-  const toggleExcluded = useCallback((id: number) => {
-    setExcludedDishes((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      saveExcluded(next);
-      return next;
-    });
-  }, []);
+  // Recipe lookup
+  const recipeMap = useMemo(() => {
+    const map = new Map<number, Recipe>();
+    recipes.forEach((r) => map.set(r.id, r));
+    return map;
+  }, [recipes]);
 
-  const toggleMenuDuJour = useCallback((id: number) => {
-    setMenuDuJourIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
-
-  // --- Inline price editing ---
-  const startEditPrice = useCallback((recipe: Recipe) => {
-    setEditingPriceId(recipe.id);
-    setEditingPriceValue(recipe.sellingPrice.toFixed(2));
-  }, []);
-
-  const savePrice = useCallback(async (recipe: Recipe) => {
-    const newPrice = parseFloat(editingPriceValue);
-    if (isNaN(newPrice) || newPrice <= 0) {
-      setEditingPriceId(null);
-      return;
-    }
-    if (newPrice === recipe.sellingPrice) {
-      setEditingPriceId(null);
-      return;
-    }
-    try {
-      const updated = await updateRecipe(recipe.id, {
-        name: recipe.name,
-        category: recipe.category,
-        sellingPrice: newPrice,
-        nbPortions: recipe.nbPortions,
-        description: recipe.description || undefined,
-        prepTimeMinutes: recipe.prepTimeMinutes,
-        cookTimeMinutes: recipe.cookTimeMinutes,
-        laborCostPerHour: recipe.laborCostPerHour,
-        ingredients: recipe.ingredients.map((ri) => ({
-          ingredientId: ri.ingredientId,
-          quantity: ri.quantity,
-          wastePercent: ri.wastePercent,
-        })),
-      });
-      setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? updated : r)));
-      showToast('Sauvegardé', 'success');
-    } catch {
-      showToast('Erreur lors de la sauvegarde', 'error');
-    }
-    setEditingPriceId(null);
-  }, [editingPriceValue, showToast]);
-
-  // --- Reorder within category ---
-  const moveRecipe = useCallback((category: string, recipeId: number, direction: 'up' | 'down') => {
-    setCategoryOrder((prev) => {
-      const currentRecipesInCat = recipes
-        .filter((r) => r.category === category && !excludedDishes.has(r.id))
-        .map((r) => r.id);
-      const order = prev[category] || currentRecipesInCat;
-      const idx = order.indexOf(recipeId);
-      if (idx === -1) return prev;
-      const newIdx = direction === 'up' ? idx - 1 : idx + 1;
-      if (newIdx < 0 || newIdx >= order.length) return prev;
-      const next = [...order];
-      [next[idx], next[newIdx]] = [next[newIdx], next[idx]];
-      const updated = { ...prev, [category]: next };
-      saveOrder(updated);
-      return updated;
-    });
-  }, [recipes, excludedDishes]);
-
-  // --- Active recipes (non-excluded) ---
-  const activeRecipes = useMemo(() => {
-    let list = recipes.filter((r) => !excludedDishes.has(r.id));
-    if (excludedAllergens.size > 0) {
-      list = list.filter((r) => {
-        const ra = getRecipeAllergens(r);
-        return !ra.some((a) => excludedAllergens.has(a));
-      });
-    }
-    return list;
-  }, [recipes, excludedDishes, excludedAllergens]);
-
-  // --- Excluded recipes ---
-  const excludedRecipesList = useMemo(() => {
-    return recipes.filter((r) => excludedDishes.has(r.id));
-  }, [recipes, excludedDishes]);
-
-  // --- Grouped by category (with custom ordering) ---
-  const grouped = useMemo(() => {
+  // Available recipes by category
+  const recipesByCategory = useMemo(() => {
     const map = new Map<string, Recipe[]>();
-    RECIPE_CATEGORIES.forEach((cat) => map.set(cat, []));
-    activeRecipes.forEach((r) => {
+    recipes.forEach((r) => {
       const list = map.get(r.category) || [];
       list.push(r);
       map.set(r.category, list);
     });
+    return map;
+  }, [recipes]);
 
-    const result: {
-      category: string;
-      recipes: Recipe[];
-      avgMargin: number;
-      avgPrice: number;
-      minPrice: number;
-      maxPrice: number;
-      totalRevenue: number;
-    }[] = [];
+  // All recipes for "suggestions" (any category)
+  const allRecipesSorted = useMemo(() => {
+    return [...recipes].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+  }, [recipes]);
 
-    RECIPE_CATEGORIES.forEach((category) => {
-      let recipeList = map.get(category) || [];
-      if (recipeList.length > 0) {
-        // Apply custom order if exists
-        const order = categoryOrder[category];
-        if (order && order.length > 0) {
-          const orderMap = new Map(order.map((id, idx) => [id, idx]));
-          recipeList = [...recipeList].sort((a, b) => {
-            const ai = orderMap.get(a.id) ?? 999;
-            const bi = orderMap.get(b.id) ?? 999;
-            if (ai !== 999 || bi !== 999) return ai - bi;
-            // Fallback to sortBy
-            if (sortBy === 'price') return a.sellingPrice - b.sellingPrice;
-            if (sortBy === 'margin') return b.margin.marginPercent - a.margin.marginPercent;
-            return a.name.localeCompare(b.name, 'fr');
-          });
-        } else {
-          recipeList = [...recipeList].sort((a, b) => {
-            if (sortBy === 'price') return a.sellingPrice - b.sellingPrice;
-            if (sortBy === 'margin') return b.margin.marginPercent - a.margin.marginPercent;
-            return a.name.localeCompare(b.name, 'fr');
-          });
-        }
-        const avgMargin = recipeList.reduce((s, r) => s + r.margin.marginPercent, 0) / recipeList.length;
-        const avgPrice = recipeList.reduce((s, r) => s + r.sellingPrice, 0) / recipeList.length;
-        const prices = recipeList.map((r) => r.sellingPrice);
-        result.push({
-          category,
-          recipes: recipeList,
-          avgMargin,
-          avgPrice,
-          minPrice: Math.min(...prices),
-          maxPrice: Math.max(...prices),
-          totalRevenue: recipeList.reduce((s, r) => s + r.sellingPrice, 0),
-        });
+  // ─── Selection handlers ───
+  const addToSection = useCallback((sectionKey: string, recipeId: number, maxSlots: number) => {
+    setSelections((prev) => {
+      const current = prev[sectionKey as keyof MenuSelections] || [];
+      if (current.includes(recipeId)) return prev;
+      if (current.length >= maxSlots) {
+        showToast(`Maximum ${maxSlots} élément${maxSlots > 1 ? 's' : ''} pour cette section`, 'error');
+        return prev;
       }
+      const next = { ...prev, [sectionKey]: [...current, recipeId] };
+      saveSelections(next);
+      return next;
     });
-    return result;
-  }, [activeRecipes, sortBy, categoryOrder]);
+    setOpenDropdown(null);
+  }, [showToast]);
 
-  // --- Menu du jour filtered ---
-  const menuDuJourGroups = useMemo(() => {
-    if (!menuDuJourMode) return grouped;
-    return grouped
-      .map((g) => ({
-        ...g,
-        recipes: g.recipes.filter((r) => menuDuJourIds.has(r.id)),
-      }))
-      .filter((g) => g.recipes.length > 0);
-  }, [grouped, menuDuJourMode, menuDuJourIds]);
+  const removeFromSection = useCallback((sectionKey: string, recipeId: number) => {
+    setSelections((prev) => {
+      const current = prev[sectionKey as keyof MenuSelections] || [];
+      const next = { ...prev, [sectionKey]: current.filter((id) => id !== recipeId) };
+      saveSelections(next);
+      return next;
+    });
+  }, []);
 
-  const displayGroups = menuDuJourMode ? menuDuJourGroups : grouped;
+  const clearSection = useCallback((sectionKey: string) => {
+    setSelections((prev) => {
+      const next = { ...prev, [sectionKey]: [] };
+      saveSelections(next);
+      return next;
+    });
+  }, []);
 
-  // --- Menu du jour course count ---
-  const menuDuJourCount = useMemo(() => menuDuJourIds.size, [menuDuJourIds]);
+  // Get available recipes for a section (not already selected in that section)
+  const getAvailable = useCallback((section: MenuSection) => {
+    const selected = new Set(selections[section.key as keyof MenuSelections] || []);
+    if (section.category === '') {
+      // Suggestions: any recipe
+      return allRecipesSorted.filter((r) => !selected.has(r.id));
+    }
+    return (recipesByCategory.get(section.category) || [])
+      .filter((r) => !selected.has(r.id))
+      .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+  }, [selections, recipesByCategory, allRecipesSorted]);
 
-  // --- Global stats (active only) ---
-  const totalItems = activeRecipes.length;
-  const globalAvgMargin =
-    totalItems > 0 ? activeRecipes.reduce((s, r) => s + r.margin.marginPercent, 0) / totalItems : 0;
-  const globalAvgPrice =
-    totalItems > 0 ? activeRecipes.reduce((s, r) => s + r.sellingPrice, 0) / totalItems : 0;
-  const allPrices = activeRecipes.map((r) => r.sellingPrice);
-  const globalMinPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-  const globalMaxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
-  const estimatedCoversPerService = 40;
-  const revenuePotentialPerService =
-    totalItems > 0 ? globalAvgPrice * estimatedCoversPerService : 0;
+  // Resolve ids to recipes for a section
+  const getSelectedRecipes = useCallback((sectionKey: string): Recipe[] => {
+    const ids = selections[sectionKey as keyof MenuSelections] || [];
+    return ids.map((id) => recipeMap.get(id)).filter(Boolean) as Recipe[];
+  }, [selections, recipeMap]);
 
-  // --- Quick add: recipes not on the menu for a given category ---
-  const getAvailableForCategory = useCallback((category: string) => {
-    return recipes.filter((r) => r.category === category && excludedDishes.has(r.id));
-  }, [recipes, excludedDishes]);
-
-  // --- Print ---
+  // Print
   const handlePrint = useCallback(() => {
     window.print();
   }, []);
 
-  if (loading)
+  // Suppress updateSelections unused warning — kept for future use
+  void updateSelections;
+
+  if (loading) {
     return (
       <div className="text-center py-12 text-slate-500 dark:text-slate-400">Chargement...</div>
     );
+  }
 
-  return (
-    <div className="max-w-7xl mx-auto">
-      {/* ========== TOOLBAR (hidden on print) ========== */}
-      <div className="print:hidden mb-6">
-        {/* Header row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+  // ═══════════════════════════════════
+  //  PREVIEW MODE
+  // ═══════════════════════════════════
+  if (mode === 'preview') {
+    const carteHasContent = CARTE_SECTIONS.some(
+      (s) => (selections[s.key as keyof MenuSelections] || []).length > 0
+    );
+    const mdjHasContent = MENU_DU_JOUR_SECTIONS.some(
+      (s) => (selections[s.key as keyof MenuSelections] || []).length > 0
+    );
+
+    return (
+      <div className="max-w-3xl mx-auto">
+        {/* Toolbar */}
+        <div className="print:hidden flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <Utensils className="w-6 h-6 text-amber-600" />
-            La Carte
+            <Eye className="w-6 h-6 text-amber-600" />
+            Aperçu de la carte
           </h2>
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Print options */}
-            <label className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={printWithPrices}
-                onChange={(e) => setPrintWithPrices(e.target.checked)}
-                className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
-              />
-              Prix sur impression
-            </label>
-            {/* Print */}
+          <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium transition-colors"
             >
               <Printer className="w-4 h-4" />
-              Imprimer le menu
+              Imprimer
             </button>
-            {/* Stats toggle */}
             <button
-              onClick={() => setShowStats((v) => !v)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              onClick={() => setMode('edit')}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
-              <BarChart3 className="w-4 h-4" />
-              {showStats ? 'Masquer stats' : 'Afficher stats'}
+              <Pencil className="w-4 h-4" />
+              Modifier la carte
             </button>
           </div>
         </div>
 
-        {/* Filter / Sort bar */}
-        <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-800 rounded-lg shadow px-4 py-3">
-          {/* Sort */}
-          <div className="flex items-center gap-2 text-sm">
-            <ArrowUpDown className="w-4 h-4 text-slate-400" />
-            <span className="text-slate-500 dark:text-slate-400">Tri :</span>
-            {(['name', 'price', 'margin'] as SortKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => setSortBy(key)}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                  sortBy === key
-                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
-                    : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-                }`}
-              >
-                {key === 'name' ? 'Nom' : key === 'price' ? 'Prix' : 'Marge'}
-              </button>
-            ))}
-          </div>
-
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-
-          {/* Show/hide prices */}
-          <button
-            onClick={() => setShowPrices((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
-          >
-            {showPrices ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            Prix
-          </button>
-
-          {/* Show/hide margins */}
-          <button
-            onClick={() => setShowMargins((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
-          >
-            {showMargins ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            Marges
-          </button>
-
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-
-          {/* Allergen filter */}
-          <div className="relative">
-            <button
-              onClick={() => setAllergenFilterOpen((v) => !v)}
-              className={`inline-flex items-center gap-1.5 text-sm px-2 py-1 rounded transition-colors ${
-                excludedAllergens.size > 0
-                  ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
-              }`}
-            >
-              <Filter className="w-4 h-4" />
-              Allergenes{excludedAllergens.size > 0 && ` (${excludedAllergens.size})`}
-            </button>
-            {allergenFilterOpen && (
-              <div className="absolute z-50 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-3 w-64">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Exclure les allergenes
-                  </span>
-                  <button onClick={() => setAllergenFilterOpen(false)}>
-                    <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-1 max-h-60 overflow-y-auto">
-                  {ALLERGENS.map((a) => (
-                    <label
-                      key={a}
-                      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer text-sm"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={excludedAllergens.has(a)}
-                        onChange={() => toggleAllergen(a)}
-                        className="rounded border-slate-300 text-red-600 focus:ring-red-500"
-                      />
-                      <span className="text-slate-700 dark:text-slate-300">{a}</span>
-                    </label>
-                  ))}
-                </div>
-                {excludedAllergens.size > 0 && (
-                  <button
-                    onClick={() => setExcludedAllergens(new Set())}
-                    className="mt-2 text-xs text-red-600 hover:text-red-700"
-                  >
-                    Reinitialiser
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-
-          {/* Menu du jour */}
-          <button
-            onClick={() => setMenuDuJourMode((v) => !v)}
-            className={`inline-flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-medium transition-colors ${
-              menuDuJourMode
-                ? 'bg-amber-500 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-            }`}
-          >
-            <Star className="w-4 h-4" />
-            Menu du jour
-            {menuDuJourCount > 0 && (
-              <span className="ml-1 bg-white/20 rounded-full px-1.5 text-xs">
-                {menuDuJourCount}
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* ========== STATS PANEL (hidden on print) ========== */}
-      {showStats && (
-        <div className="print:hidden grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          <StatCard
-            label="Total plats actifs"
-            value={String(totalItems)}
-            icon={<ChefHat className="w-5 h-5 text-white" />}
-            iconBg="bg-blue-600"
-          />
-          <StatCard
-            label="Marge moy."
-            value={`${globalAvgMargin.toFixed(1)}%`}
-            valueColor={
-              globalAvgMargin >= 70
-                ? 'text-green-600'
-                : globalAvgMargin >= 60
-                ? 'text-amber-600'
-                : 'text-red-600'
-            }
-            icon={<TrendingUp className="w-5 h-5 text-white" />}
-            iconBg="bg-green-600"
-          />
-          <StatCard
-            label="Prix moyen"
-            value={`${globalAvgPrice.toFixed(2)} €`}
-            icon={<DollarSign className="w-5 h-5 text-white" />}
-            iconBg="bg-purple-600"
-          />
-          <StatCard
-            label="Fourchette prix"
-            value={`${globalMinPrice.toFixed(0)} - ${globalMaxPrice.toFixed(0)} €`}
-            icon={<ArrowUpDown className="w-5 h-5 text-white" />}
-            iconBg="bg-cyan-600"
-          />
-          <StatCard
-            label={`CA / service (~${estimatedCoversPerService} cvts)`}
-            value={`${revenuePotentialPerService.toFixed(0)} €`}
-            icon={<BarChart3 className="w-5 h-5 text-white" />}
-            iconBg="bg-amber-600"
-          />
-        </div>
-      )}
-
-      {/* ========== MENU CARD ========== */}
-      <div ref={printRef}>
-        {/* Print header (visible only on print) */}
-        <div className="hidden print:block text-center mb-6">
-          {menuDuJourMode ? (
-            <>
-              <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">Menu du Jour</div>
-              {menuDuJourPrice && (
-                <div className="text-2xl font-serif font-bold text-amber-800 mt-2">{menuDuJourPrice} &euro;</div>
-              )}
-              <div className="text-sm text-slate-500 mt-1">{menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''}</div>
-            </>
-          ) : (
-            <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">La Carte</div>
-          )}
-          <MenuOrnament />
-        </div>
-
-        {displayGroups.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-lg shadow print:shadow-none">
-            <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">
-              Aucun plat sur la carte
-            </h3>
-            <p className="text-slate-400 dark:text-slate-500">
-              Creez des recettes pour construire votre carte.
-            </p>
-          </div>
-        ) : (
-          <div
-            className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden
-            border border-amber-100 dark:border-slate-700
-            print:shadow-none print:border-none print:rounded-none`}
-          >
-            {/* Screen menu header */}
-            <div className="print:hidden bg-gradient-to-b from-amber-50 to-white dark:from-slate-800 dark:to-slate-800 text-center py-8 px-6 border-b border-amber-100 dark:border-slate-700">
-              <h2 className="text-3xl font-serif font-bold text-slate-800 dark:text-slate-100 tracking-wide">
-                {menuDuJourMode ? 'Menu du Jour' : 'La Carte'}
-              </h2>
-              <MenuOrnament />
-              {menuDuJourMode && (
-                <div className="flex flex-col items-center gap-2 mt-2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-sm rounded-full font-medium">
-                    <Star className="w-3.5 h-3.5" />
-                    {menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''} selectionne{menuDuJourCount > 1 ? 's' : ''}
-                  </span>
-                  {/* Prix menu du jour */}
-                  <div className="flex items-center gap-2">
-                    {editingMenuPrice ? (
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm text-slate-500">Prix menu :</span>
-                        <input
-                          type="number"
-                          step="0.50"
-                          min="0"
-                          value={menuDuJourPrice}
-                          onChange={(e) => setMenuDuJourPrice(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingMenuPrice(false);
-                          }}
-                          onBlur={() => setEditingMenuPrice(false)}
-                          autoFocus
-                          className="w-20 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100"
-                          placeholder="0.00"
-                        />
-                        <span className="text-sm text-slate-500">&euro;</span>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setEditingMenuPrice(true)}
-                        className="inline-flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
-                      >
-                        <Pencil className="w-3 h-3" />
-                        {menuDuJourPrice ? `Prix menu : ${menuDuJourPrice} €` : 'Definir le prix du menu'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
+        {/* ═══ MENU CARD ═══ */}
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-amber-200/60 dark:border-slate-700 overflow-hidden print:shadow-none print:border print:border-amber-200">
+          {/* Card Header */}
+          <div className="bg-gradient-to-b from-amber-50 via-amber-50/50 to-white dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 text-center pt-10 pb-6 px-8 border-b border-amber-100/60 dark:border-slate-700">
+            <div className="text-xs tracking-[0.35em] uppercase text-amber-600 dark:text-amber-400 font-semibold mb-2">
+              Restaurant
             </div>
+            <h1 className="text-4xl font-serif font-bold text-slate-800 dark:text-slate-100 tracking-wide">
+              La Carte
+            </h1>
+            <MenuOrnament />
+          </div>
 
-            {/* Categories */}
-            <div className="px-6 sm:px-10 py-6 print:px-4 print:py-2 space-y-8 print:space-y-4">
-              {displayGroups.map((group, gi) => (
-                <div key={group.category}>
-                  {/* Category header */}
-                  <div className="text-center mb-4 print:mb-2">
-                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-amber-800 dark:text-amber-400 tracking-wider uppercase print:text-lg">
-                      {getCategoryLabel(group.category)}
-                    </h3>
-                    {/* Category stats (screen only) */}
-                    <div className="print:hidden flex items-center justify-center gap-3 mt-1 text-xs text-slate-400 dark:text-slate-500">
-                      <span>{group.recipes.length} plat{group.recipes.length > 1 ? 's' : ''}</span>
-                      <span>&middot;</span>
-                      <span>Moy. {group.avgPrice.toFixed(2)} &euro;</span>
-                      {showMargins && (
-                        <>
-                          <span>&middot;</span>
-                          <span>Marge {group.avgMargin.toFixed(1)}%</span>
-                        </>
-                      )}
+          <div className="px-8 sm:px-12 py-8 space-y-8 print:px-6 print:py-4 print:space-y-5">
+            {/* ─── LA CARTE sections ─── */}
+            {carteHasContent ? (
+              CARTE_SECTIONS.map((section, si) => {
+                const items = getSelectedRecipes(section.key);
+                if (items.length === 0) return null;
+                return (
+                  <div key={section.key}>
+                    <div className="text-center mb-3">
+                      <h3 className="text-xl font-serif font-bold text-amber-800 dark:text-amber-400 tracking-wider uppercase">
+                        {section.label}
+                      </h3>
+                      <MenuDivider />
                     </div>
-                    <MenuDivider />
-                  </div>
-
-                  {/* Quick add button (screen only) */}
-                  <div className="print:hidden relative mb-2">
-                    <button
-                      onClick={() => setQuickAddCategory(quickAddCategory === group.category ? null : group.category)}
-                      className="inline-flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 font-medium px-2 py-1 rounded hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Ajouter un plat
-                    </button>
-                    {quickAddCategory === group.category && (
-                      <div className="absolute z-40 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 w-72 max-h-60 overflow-y-auto">
-                        <div className="flex items-center justify-between mb-2 px-2">
-                          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Plats retires - {getCategoryLabel(group.category)}
-                          </span>
-                          <button onClick={() => setQuickAddCategory(null)}>
-                            <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
-                          </button>
-                        </div>
-                        {getAvailableForCategory(group.category).length === 0 ? (
-                          <div className="px-2 py-3 text-center">
-                            <p className="text-xs text-slate-400 mb-2">Aucun plat retire dans cette categorie</p>
-                            <Link
-                              to="/recipes"
-                              className="text-xs text-amber-600 hover:text-amber-700 font-medium"
-                              onClick={() => setQuickAddCategory(null)}
-                            >
-                              Creer un nouveau plat &rarr;
-                            </Link>
-                          </div>
-                        ) : (
-                          <>
-                            {getAvailableForCategory(group.category).map((r) => (
-                              <button
-                                key={r.id}
-                                onClick={() => {
-                                  toggleExcluded(r.id);
-                                  setQuickAddCategory(null);
-                                }}
-                                className="w-full flex items-center justify-between px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-700 rounded transition-colors"
-                              >
-                                <span>{r.name}</span>
-                                <span className="text-xs text-slate-400">{r.sellingPrice.toFixed(2)} &euro;</span>
-                              </button>
-                            ))}
-                            <div className="border-t border-slate-100 dark:border-slate-700 mt-1 pt-1">
-                              <Link
-                                to="/recipes"
-                                className="block px-3 py-2 text-xs text-amber-600 hover:text-amber-700 font-medium"
-                                onClick={() => setQuickAddCategory(null)}
-                              >
-                                Creer un nouveau plat &rarr;
-                              </Link>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Dishes */}
-                  <div className="space-y-1 print:space-y-0.5">
-                    {group.recipes.map((recipe, ri) => {
-                      const allergens = getRecipeAllergens(recipe);
-                      const mc =
-                        recipe.margin.marginPercent >= 70
-                          ? 'text-green-600'
-                          : recipe.margin.marginPercent >= 60
-                          ? 'text-amber-600'
-                          : 'text-red-600';
-                      const isDuJour = menuDuJourIds.has(recipe.id);
-
-                      return (
-                        <div
-                          key={recipe.id}
-                          className={`group flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors
-                            hover:bg-amber-50/50 dark:hover:bg-slate-700/30
-                            print:px-0 print:py-1 print:hover:bg-transparent
-                            ${menuDuJourMode && !isDuJour ? 'opacity-30' : ''}`}
-                        >
-                          {/* Toggle + reorder buttons (screen only) */}
-                          <div className="print:hidden flex flex-col items-center gap-0.5 pt-0.5 shrink-0">
-                            {/* Toggle on/off */}
-                            <button
-                              onClick={() => toggleExcluded(recipe.id)}
-                              title="Retirer de la carte"
-                              className="text-green-500 hover:text-red-400 transition-colors"
-                            >
-                              <ToggleRight className="w-5 h-5" />
-                            </button>
-                            {/* Menu du jour star */}
-                            {!menuDuJourMode && (
-                              <button
-                                onClick={() => toggleMenuDuJour(recipe.id)}
-                                title={isDuJour ? 'Retirer du menu du jour' : 'Ajouter au menu du jour'}
-                                className={`transition-colors ${
-                                  isDuJour
-                                    ? 'text-amber-500'
-                                    : 'text-slate-200 dark:text-slate-700 hover:text-amber-400'
-                                }`}
-                              >
-                                <Star className={`w-4 h-4 ${isDuJour ? 'fill-current' : ''}`} />
-                              </button>
-                            )}
-                            {/* Reorder arrows */}
-                            <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => moveRecipe(group.category, recipe.id, 'up')}
-                                disabled={ri === 0}
-                                className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                title="Monter"
-                              >
-                                <ChevronUp className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => moveRecipe(group.category, recipe.id, 'down')}
-                                disabled={ri === group.recipes.length - 1}
-                                className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                title="Descendre"
-                              >
-                                <ChevronDown className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Dish content */}
-                          <div className="flex-1 min-w-0">
+                    <div className="space-y-2">
+                      {items.map((recipe) => {
+                        const allergens = getRecipeAllergens(recipe);
+                        return (
+                          <div key={recipe.id} className="px-2">
                             <div className="flex items-baseline gap-2">
-                              <Link
-                                to={`/recipes/${recipe.id}`}
-                                className="font-semibold text-slate-800 dark:text-slate-100 hover:text-amber-700 dark:hover:text-amber-400 transition-colors print:text-slate-900 print:no-underline"
-                              >
+                              <span className="font-semibold text-slate-800 dark:text-slate-100 font-serif">
                                 {recipe.name}
-                              </Link>
-                              {/* Dotted leader line */}
-                              <span className="flex-1 border-b border-dotted border-slate-300 dark:border-slate-600 print:border-slate-400 translate-y-[-3px] mx-1" />
-                              {/* Price - inline editable on screen, static on print */}
-                              {showPrices && (
-                                <>
-                                  {/* Print price */}
-                                  <span className={`hidden font-serif font-bold text-slate-900 whitespace-nowrap ${printWithPrices ? 'print:inline' : 'print:hidden'}`}>
-                                    {recipe.sellingPrice.toFixed(2)} &euro;
-                                  </span>
-                                  {/* Screen price - click to edit */}
-                                  {editingPriceId === recipe.id ? (
-                                    <div className="print:hidden flex items-center gap-1 shrink-0">
-                                      <input
-                                        ref={priceInputRef}
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={editingPriceValue}
-                                        onChange={(e) => setEditingPriceValue(e.target.value)}
-                                        onKeyDown={(e) => {
-                                          if (e.key === 'Enter') savePrice(recipe);
-                                          if (e.key === 'Escape') setEditingPriceId(null);
-                                        }}
-                                        onBlur={() => savePrice(recipe)}
-                                        className="w-20 px-2 py-0.5 text-sm font-bold border border-amber-400 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 text-right"
-                                      />
-                                      <span className="text-sm font-bold text-slate-800 dark:text-slate-100">&euro;</span>
-                                    </div>
-                                  ) : (
-                                    <button
-                                      onClick={() => startEditPrice(recipe)}
-                                      className="print:hidden font-serif font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer group/price relative"
-                                      title="Cliquer pour modifier le prix"
-                                    >
-                                      {recipe.sellingPrice.toFixed(2)} &euro;
-                                      <Pencil className="w-3 h-3 absolute -right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/price:opacity-100 text-amber-500 transition-opacity" />
-                                    </button>
-                                  )}
-                                </>
-                              )}
+                              </span>
+                              <span className="flex-1 border-b border-dotted border-slate-300 dark:border-slate-600 translate-y-[-3px] mx-1" />
+                              <span className="font-serif font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">
+                                {recipe.sellingPrice.toFixed(2)} &euro;
+                              </span>
                             </div>
-                            {/* Description */}
                             {recipe.description && (
-                              <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 print:text-slate-600 italic">
+                              <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-0.5 pl-1">
                                 {recipe.description}
                               </p>
                             )}
-                            {/* Allergen badges + margin info (screen only) */}
-                            <div className="print:hidden flex flex-wrap items-center gap-2 mt-1">
-                              {allergens.length > 0 && (
-                                <div className="flex flex-wrap gap-1">
-                                  {allergens.map((a) => (
-                                    <span
-                                      key={a}
-                                      className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
-                                    >
-                                      {a}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                              {showMargins && (
-                                <span className={`text-xs font-semibold ${mc}`}>
-                                  {recipe.margin.marginPercent.toFixed(1)}% marge
-                                </span>
-                              )}
-                              {showMargins && (
-                                <span className="text-xs text-slate-400 dark:text-slate-500">
-                                  Cout: {(recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion).toFixed(2)} &euro;
-                                </span>
-                              )}
-                            </div>
-                            {/* Print: allergen line */}
                             {allergens.length > 0 && (
-                              <p className="hidden print:block text-[9px] text-slate-500 mt-0.5">
-                                Allergenes : {allergens.join(', ')}
+                              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 pl-1">
+                                Allergènes : {allergens.join(', ')}
                               </p>
                             )}
                           </div>
+                        );
+                      })}
+                    </div>
+                    {si < CARTE_SECTIONS.length - 1 && <MenuOrnament />}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-slate-400 dark:text-slate-500">
+                <ChefHat className="w-12 h-12 mx-auto mb-3 opacity-40" />
+                <p>Aucun plat sélectionné pour la carte.</p>
+                <button
+                  onClick={() => setMode('edit')}
+                  className="mt-3 text-sm text-amber-600 hover:text-amber-700 font-medium"
+                >
+                  Composer la carte &rarr;
+                </button>
+              </div>
+            )}
 
-                          {/* View link (screen only) */}
-                          <Link
-                            to={`/recipes/${recipe.id}`}
-                            className="print:hidden shrink-0 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-amber-100 dark:hover:bg-amber-900/30 text-amber-600 dark:text-amber-400 transition-all"
-                            title="Voir fiche technique"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Link>
+            {/* ─── MENU DU JOUR ─── */}
+            {mdjHasContent && (
+              <>
+                <div className="border-t-2 border-amber-200 dark:border-amber-800/40 pt-6 mt-8">
+                  <div className="text-center mb-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 dark:bg-amber-900/30 rounded-full mb-2">
+                      <Star className="w-4 h-4 text-amber-600 dark:text-amber-400 fill-current" />
+                      <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">
+                        Menu du Jour
+                      </span>
+                    </div>
+                    {mdjPrice && (
+                      <div className="text-2xl font-serif font-bold text-amber-700 dark:text-amber-400 mt-1">
+                        {parseFloat(mdjPrice).toFixed(2)} &euro;
+                      </div>
+                    )}
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                      Entrée + Plat + Dessert
+                    </p>
+                    <MenuDivider />
+                  </div>
+                  <div className="space-y-3">
+                    {MENU_DU_JOUR_SECTIONS.map((section) => {
+                      const items = getSelectedRecipes(section.key);
+                      if (items.length === 0) return null;
+                      return (
+                        <div key={section.key} className="text-center">
+                          <span className="text-xs tracking-widest uppercase text-amber-600 dark:text-amber-500 font-semibold">
+                            {section.label}
+                          </span>
+                          {items.map((recipe) => (
+                            <div key={recipe.id} className="mt-1">
+                              <span className="font-serif font-semibold text-slate-800 dark:text-slate-100">
+                                {recipe.name}
+                              </span>
+                              {recipe.description && (
+                                <p className="text-sm text-slate-500 dark:text-slate-400 italic">
+                                  {recipe.description}
+                                </p>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       );
                     })}
                   </div>
-
-                  {/* Separator between categories */}
-                  {gi < displayGroups.length - 1 && <MenuOrnament />}
                 </div>
-              ))}
-            </div>
-
-            {/* Menu footer */}
-            <div className="text-center py-4 px-6 border-t border-amber-100 dark:border-slate-700 print:border-slate-300">
-              <p className="text-xs text-slate-400 dark:text-slate-500 print:text-slate-600">
-                Prix TTC &mdash; Tous nos plats sont faits maison. N&apos;hesitez pas a signaler vos allergies a notre equipe.
-              </p>
-              <MenuOrnament />
-            </div>
+              </>
+            )}
           </div>
-        )}
+
+          {/* Footer */}
+          <div className="text-center py-4 px-8 border-t border-amber-100/60 dark:border-slate-700">
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              Prix TTC &mdash; Tous nos plats sont faits maison. N&apos;hésitez pas à signaler vos allergies à notre équipe.
+            </p>
+            <MenuOrnament />
+          </div>
+        </div>
+
+        {/* Print styles */}
+        <style>{`
+          @media print {
+            body * { visibility: hidden; }
+            #root, #root * { visibility: visible; }
+            nav, aside, header, footer, .print\\:hidden { display: none !important; }
+            @page { margin: 1.5cm; size: A4; }
+            body { font-size: 11pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .font-serif { font-family: 'Georgia', 'Times New Roman', serif; }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════
+  //  EDIT MODE
+  // ═══════════════════════════════════
+  return (
+    <div className="max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+          <Utensils className="w-6 h-6 text-amber-600" />
+          Composer la carte
+        </h2>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMode('preview')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium transition-colors"
+          >
+            <Eye className="w-4 h-4" />
+            Aperçu
+          </button>
+          <button
+            onClick={handlePrint}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          >
+            <Printer className="w-4 h-4" />
+            Imprimer
+          </button>
+        </div>
       </div>
 
-      {/* ========== PLATS RETIRES SECTION (screen only) ========== */}
-      {excludedRecipesList.length > 0 && (
-        <div className="print:hidden mt-8">
-          <h3 className="text-lg font-semibold text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
-            <EyeOff className="w-5 h-5" />
-            Plats retires ({excludedRecipesList.length})
+      {recipes.length === 0 ? (
+        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-lg shadow">
+          <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+          <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">
+            Aucune recette disponible
           </h3>
-          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 divide-y divide-slate-200 dark:divide-slate-700">
-            {excludedRecipesList.map((recipe) => (
-              <div
-                key={recipe.id}
-                className="flex items-center gap-3 px-4 py-3 opacity-60 hover:opacity-100 transition-opacity"
-              >
-                <button
-                  onClick={() => toggleExcluded(recipe.id)}
-                  title="Remettre sur la carte"
-                  className="text-slate-400 hover:text-green-500 transition-colors"
-                >
-                  <ToggleLeft className="w-5 h-5" />
-                </button>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-600 dark:text-slate-400 line-through">
-                      {recipe.name}
-                    </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">
-                      {getCategoryLabel(recipe.category)}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-sm text-slate-400 dark:text-slate-500">
-                  {recipe.sellingPrice.toFixed(2)} &euro;
-                </span>
-                <Link
-                  to={`/recipes/${recipe.id}`}
-                  className="shrink-0 p-1 rounded text-slate-400 hover:text-amber-600 transition-colors"
-                  title="Voir fiche technique"
-                >
-                  <Eye className="w-4 h-4" />
-                </Link>
-              </div>
-            ))}
-          </div>
+          <p className="text-slate-400 dark:text-slate-500 mb-4">
+            Créez des recettes pour composer votre carte.
+          </p>
+          <Link
+            to="/recipes"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium"
+          >
+            <Plus className="w-4 h-4" />
+            Créer une recette
+          </Link>
         </div>
-      )}
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* ═══ LA CARTE ═══ */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <BookOpen className="w-5 h-5 text-amber-600" />
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">La Carte</h3>
+            </div>
 
-      {/* ========== PER-CATEGORY STATS (screen only) ========== */}
-      {showStats && displayGroups.length > 0 && (
-        <div className="print:hidden mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {displayGroups.map((g) => (
-            <div
-              key={g.category}
-              className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 border-l-4 border-amber-400 dark:border-amber-600"
-            >
-              <h4 className="font-serif font-bold text-slate-800 dark:text-slate-100 mb-2">
-                {getCategoryLabel(g.category)}
-              </h4>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">Plats</span>
-                  <div className="font-semibold text-slate-700 dark:text-slate-200">{g.recipes.length}</div>
-                </div>
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">Prix moyen</span>
-                  <div className="font-semibold text-slate-700 dark:text-slate-200">
-                    {g.avgPrice.toFixed(2)} &euro;
-                  </div>
-                </div>
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">Min - Max</span>
-                  <div className="font-semibold text-slate-700 dark:text-slate-200">
-                    {g.minPrice.toFixed(0)} - {g.maxPrice.toFixed(0)} &euro;
-                  </div>
-                </div>
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">Marge moy.</span>
+            <div className="space-y-5">
+              {CARTE_SECTIONS.map((section) => {
+                const selected = getSelectedRecipes(section.key);
+                const available = getAvailable(section);
+                const count = (selections[section.key as keyof MenuSelections] || []).length;
+                const isOpen = openDropdown === section.key;
+
+                return (
                   <div
-                    className={`font-semibold ${
-                      g.avgMargin >= 70
-                        ? 'text-green-600'
-                        : g.avgMargin >= 60
-                        ? 'text-amber-600'
-                        : 'text-red-600'
-                    }`}
+                    key={section.key}
+                    className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
                   >
-                    {g.avgMargin.toFixed(1)}%
+                    {/* Section header */}
+                    <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-50 to-white dark:from-slate-800 dark:to-slate-800 border-b border-slate-100 dark:border-slate-700">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-serif font-bold text-amber-800 dark:text-amber-400 text-base">
+                          {section.label}
+                        </h4>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-full">
+                          {count}/{section.maxSlots}
+                        </span>
+                      </div>
+                      {count > 0 && (
+                        <button
+                          onClick={() => clearSection(section.key)}
+                          className="text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                        >
+                          Tout retirer
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Selected items */}
+                    <div className="divide-y divide-slate-100 dark:divide-slate-700">
+                      {selected.length === 0 ? (
+                        <div className="px-4 py-4 text-center text-sm text-slate-400 dark:text-slate-500">
+                          Aucun plat sélectionné
+                        </div>
+                      ) : (
+                        selected.map((recipe) => (
+                          <div
+                            key={recipe.id}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <Link
+                                  to={`/recipes/${recipe.id}`}
+                                  className="font-medium text-slate-800 dark:text-slate-100 hover:text-amber-700 dark:hover:text-amber-400 transition-colors truncate"
+                                >
+                                  {recipe.name}
+                                </Link>
+                                {recipe.description && (
+                                  <span className="hidden sm:inline text-xs text-slate-400 dark:text-slate-500 italic truncate">
+                                    {recipe.description}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                              {recipe.sellingPrice.toFixed(2)} &euro;
+                            </span>
+                            <button
+                              onClick={() => removeFromSection(section.key, recipe.id)}
+                              className="p-1 rounded text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 transition-colors"
+                              title="Retirer"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    {/* Add button / dropdown */}
+                    {count < section.maxSlots && (
+                      <div className="relative border-t border-slate-100 dark:border-slate-700">
+                        <button
+                          onClick={() => setOpenDropdown(isOpen ? null : section.key)}
+                          className="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/10 font-medium transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Ajouter ({section.maxSlots - count} restant{section.maxSlots - count > 1 ? 's' : ''})
+                          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {isOpen && (
+                          <div className="absolute z-50 bottom-full left-0 right-0 mb-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 max-h-60 overflow-y-auto">
+                            {available.length === 0 ? (
+                              <div className="px-4 py-3 text-center text-sm text-slate-400 dark:text-slate-500">
+                                {section.category
+                                  ? `Aucune recette disponible en "${section.label}"`
+                                  : 'Aucune recette disponible'}
+                                <Link
+                                  to="/recipes"
+                                  className="block mt-1 text-xs text-amber-600 hover:text-amber-700 font-medium"
+                                  onClick={() => setOpenDropdown(null)}
+                                >
+                                  Créer une recette &rarr;
+                                </Link>
+                              </div>
+                            ) : (
+                              available.map((r) => (
+                                <button
+                                  key={r.id}
+                                  onClick={() => addToSection(section.key, r.id, section.maxSlots)}
+                                  className="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors text-left"
+                                >
+                                  <span className="text-slate-700 dark:text-slate-300 truncate">
+                                    {r.name}
+                                    {section.category === '' && (
+                                      <span className="ml-2 text-xs text-slate-400">({r.category})</span>
+                                    )}
+                                  </span>
+                                  <span className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap ml-2">
+                                    {r.sellingPrice.toFixed(2)} &euro;
+                                  </span>
+                                </button>
+                              ))
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ═══ MENU DU JOUR ═══ */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="w-5 h-5 text-amber-600 fill-current" />
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Menu du Jour</h3>
+            </div>
+
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-amber-200 dark:border-amber-900/40 overflow-hidden">
+              {/* Price header */}
+              <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-amber-50 to-amber-50/30 dark:from-amber-900/20 dark:to-slate-800 border-b border-amber-100 dark:border-amber-900/30">
+                <div>
+                  <span className="text-sm text-slate-500 dark:text-slate-400">
+                    Entrée + Plat + Dessert
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {editingPrice ? (
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        step="0.10"
+                        min="0"
+                        value={mdjPrice}
+                        onChange={(e) => setMdjPrice(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            updateMDJPrice(mdjPrice);
+                            setEditingPrice(false);
+                          }
+                        }}
+                        onBlur={() => {
+                          updateMDJPrice(mdjPrice);
+                          setEditingPrice(false);
+                        }}
+                        autoFocus
+                        className="w-20 px-2 py-1 text-sm font-bold border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 text-right"
+                        placeholder="0.00"
+                      />
+                      <span className="text-sm font-bold text-slate-600 dark:text-slate-300">&euro;</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setEditingPrice(true)}
+                      className="inline-flex items-center gap-1.5 text-lg font-serif font-bold text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 transition-colors"
+                    >
+                      {mdjPrice ? `${parseFloat(mdjPrice).toFixed(2)} €` : 'Définir le prix'}
+                      <Pencil className="w-3.5 h-3.5 opacity-50" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Menu du jour sections */}
+              <div className="divide-y divide-slate-100 dark:divide-slate-700">
+                {MENU_DU_JOUR_SECTIONS.map((section) => {
+                  const selected = getSelectedRecipes(section.key);
+                  const available = getAvailable(section);
+                  const count = (selections[section.key as keyof MenuSelections] || []).length;
+                  const isOpen = openDropdown === section.key;
+
+                  return (
+                    <div key={section.key} className="px-5 py-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs tracking-widest uppercase text-amber-600 dark:text-amber-500 font-semibold">
+                          {section.label}
+                        </span>
+                        {count >= section.maxSlots && (
+                          <button
+                            onClick={() => clearSection(section.key)}
+                            className="text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400"
+                          >
+                            Retirer
+                          </button>
+                        )}
+                      </div>
+
+                      {selected.length > 0 ? (
+                        selected.map((recipe) => (
+                          <div key={recipe.id} className="flex items-center gap-2">
+                            <Link
+                              to={`/recipes/${recipe.id}`}
+                              className="font-medium text-slate-800 dark:text-slate-100 hover:text-amber-700 dark:hover:text-amber-400 transition-colors"
+                            >
+                              {recipe.name}
+                            </Link>
+                            <span className="text-xs text-slate-400">
+                              ({recipe.sellingPrice.toFixed(2)} &euro;)
+                            </span>
+                            <button
+                              onClick={() => removeFromSection(section.key, recipe.id)}
+                              className="ml-auto p-0.5 rounded text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="relative">
+                          <button
+                            onClick={() => setOpenDropdown(isOpen ? null : section.key)}
+                            className="w-full flex items-center justify-center gap-1.5 py-2 text-sm text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/10 rounded-lg border border-dashed border-amber-200 dark:border-amber-800/40 font-medium transition-colors"
+                          >
+                            <Plus className="w-4 h-4" />
+                            Choisir {section.label === 'Entrée' ? 'une entrée' : section.label === 'Plat' ? 'un plat' : 'un dessert'}
+                          </button>
+
+                          {isOpen && (
+                            <div className="absolute z-50 bottom-full left-0 right-0 mb-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 max-h-48 overflow-y-auto">
+                              {available.length === 0 ? (
+                                <div className="px-4 py-3 text-center text-sm text-slate-400">
+                                  Aucune recette en &laquo; {section.label} &raquo;
+                                </div>
+                              ) : (
+                                available.map((r) => (
+                                  <button
+                                    key={r.id}
+                                    onClick={() => addToSection(section.key, r.id, section.maxSlots)}
+                                    className="w-full flex items-center justify-between px-4 py-2 text-sm hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors text-left"
+                                  >
+                                    <span className="text-slate-700 dark:text-slate-300 truncate">{r.name}</span>
+                                    <span className="text-xs text-slate-400 whitespace-nowrap ml-2">
+                                      {r.sellingPrice.toFixed(2)} &euro;
+                                    </span>
+                                  </button>
+                                ))
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Menu du jour cost summary */}
+              {MENU_DU_JOUR_SECTIONS.every((s) => (selections[s.key as keyof MenuSelections] || []).length > 0) && (
+                <MdjCostSummary
+                  sections={MENU_DU_JOUR_SECTIONS}
+                  getSelectedRecipes={getSelectedRecipes}
+                  mdjPrice={mdjPrice}
+                />
+              )}
+            </div>
+
+            {/* Quick recap */}
+            <div className="mt-6 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+              <h4 className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2">
+                <Save className="w-4 h-4" />
+                Récapitulatif
+              </h4>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {CARTE_SECTIONS.map((s) => {
+                  const count = (selections[s.key as keyof MenuSelections] || []).length;
+                  return (
+                    <div key={s.key} className="flex items-center justify-between">
+                      <span className="text-slate-500 dark:text-slate-400">{s.label}</span>
+                      <span className={`font-semibold ${count === s.maxSlots ? 'text-green-600' : count > 0 ? 'text-amber-600' : 'text-slate-300 dark:text-slate-600'}`}>
+                        {count}/{s.maxSlots}
+                      </span>
+                    </div>
+                  );
+                })}
+                <div className="col-span-2 border-t border-slate-200 dark:border-slate-700 pt-2 mt-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">Menu du Jour</span>
+                    <span className={`font-semibold ${
+                      MENU_DU_JOUR_SECTIONS.every((s) => (selections[s.key as keyof MenuSelections] || []).length > 0)
+                        ? 'text-green-600'
+                        : 'text-slate-300 dark:text-slate-600'
+                    }`}>
+                      {MENU_DU_JOUR_SECTIONS.filter((s) => (selections[s.key as keyof MenuSelections] || []).length > 0).length}/3
+                      {mdjPrice && ` · ${parseFloat(mdjPrice).toFixed(2)} €`}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
       )}
 
-      {/* ========== PRINT STYLES ========== */}
-      <style>{`
-        @media print {
-          /* Hide everything outside the menu */
-          body * {
-            visibility: hidden;
-          }
-          /* But show the menu card and its children */
-          #root, #root * {
-            visibility: visible;
-          }
-          /* Hide navigation, sidebar, etc */
-          nav, aside, header, footer, .print\\:hidden {
-            display: none !important;
-          }
-          /* Page setup */
-          @page {
-            margin: 1.5cm;
-            size: A4;
-          }
-          body {
-            font-size: 11pt;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          /* Elegant font for print */
-          .font-serif {
-            font-family: 'Georgia', 'Times New Roman', serif;
-          }
-          /* Avoid page breaks inside a category */
-          .space-y-8 > div {
-            break-inside: avoid;
-          }
-          /* Clean menu layout for print */
-          .rounded-xl {
-            border-radius: 0 !important;
-          }
-          .shadow-lg {
-            box-shadow: none !important;
-          }
-          ${!printWithPrices ? `
-          /* Hide prices in print when option is off */
-          .print\\:inline {
-            display: none !important;
-          }
-          ` : ''}
-        }
-      `}</style>
+      {/* Close dropdowns on click outside */}
+      {openDropdown && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setOpenDropdown(null)}
+        />
+      )}
     </div>
   );
 }
 
-// --- Stat card sub-component ---
-function StatCard({
-  label,
-  value,
-  valueColor,
-  icon,
-  iconBg,
+// ─── Menu du Jour cost summary sub-component ───
+function MdjCostSummary({
+  sections,
+  getSelectedRecipes,
+  mdjPrice,
 }: {
-  label: string;
-  value: string;
-  valueColor?: string;
-  icon: React.ReactNode;
-  iconBg: string;
+  sections: MenuSection[];
+  getSelectedRecipes: (key: string) => Recipe[];
+  mdjPrice: string;
 }) {
+  const totalCost = sections.reduce((sum, s) => {
+    const items = getSelectedRecipes(s.key);
+    return sum + items.reduce((s2, r) => s2 + (r.margin.totalCostPerPortion || r.margin.costPerPortion), 0);
+  }, 0);
+
+  const price = parseFloat(mdjPrice) || 0;
+  const marginAmount = price - totalCost;
+  const marginPct = price > 0 ? (marginAmount / price) * 100 : 0;
+
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
-        <div className={`p-2 rounded-lg ${iconBg}`}>{icon}</div>
+    <div className="border-t border-amber-100 dark:border-amber-900/30 px-5 py-3 bg-amber-50/30 dark:bg-amber-900/10">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-slate-500 dark:text-slate-400">Coût matière total</span>
+        <span className="font-semibold text-slate-700 dark:text-slate-300">{totalCost.toFixed(2)} &euro;</span>
       </div>
-      <div className={`text-xl font-bold ${valueColor || 'text-slate-800 dark:text-slate-100'}`}>
-        {value}
-      </div>
+      {price > 0 && (
+        <div className="flex items-center justify-between text-sm mt-1">
+          <span className="text-slate-500 dark:text-slate-400">Marge menu</span>
+          <span className={`font-bold ${marginPct >= 70 ? 'text-green-600' : marginPct >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
+            {marginAmount.toFixed(2)} &euro; ({marginPct.toFixed(1)}%)
+          </span>
+        </div>
+      )}
     </div>
   );
 }

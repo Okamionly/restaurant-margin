@@ -83,7 +83,7 @@ interface EmailTemplate {
 // ── SMTP presets ────────────────────────────────────────────────────────────
 const SMTP_PRESETS: { label: string; server: string; port: string }[] = [
   { label: 'Gmail', server: 'smtp.gmail.com', port: '587' },
-  { label: 'Outlook / Office 365', server: 'smtp.office365.com', port: '587' },
+  { label: 'Outlook\u00A0/\u00A0Office 365', server: 'smtp.office365.com', port: '587' },
   { label: 'Yahoo', server: 'smtp.mail.yahoo.com', port: '587' },
 ];
 
@@ -699,7 +699,7 @@ export default function Messagerie() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  Mot de passe / App password
+                  {"Mot de passe\u00A0/\u00A0App password"}
                 </label>
                 <input
                   type="password"

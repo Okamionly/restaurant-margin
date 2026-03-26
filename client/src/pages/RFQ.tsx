@@ -321,7 +321,7 @@ function PriceComparisonModal({
 
   const criteria = [
     { label: 'Produit', key: 'product' },
-    { label: 'Prix / Remise', key: 'price' },
+    { label: 'Prix\u00A0/\u00A0Remise', key: 'price' },
     { label: 'Description', key: 'description' },
     { label: 'Date d\'expiration', key: 'expiryDate' },
     { label: 'Badge', key: 'badge' },
@@ -483,7 +483,7 @@ function RFQHistorySection() {
                 )}
               </div>
               <div className="col-span-2 text-center hidden sm:block">
-                <span className="text-xs text-slate-600 dark:text-slate-300">{entry.supplierCount} fourn. / {entry.itemCount} prod.</span>
+                <span className="text-xs text-slate-600 dark:text-slate-300">{entry.supplierCount}{" fourn.\u00A0/\u00A0"}{entry.itemCount}{" prod."}</span>
               </div>
               <div className="col-span-2 text-center">
                 {entry.bestSaving !== '-' ? (
@@ -937,7 +937,7 @@ export default function RFQPage() {
                                     >
                                       {quote.unitPrice !== null ? (
                                         <span className={`text-sm font-semibold ${isBest ? 'text-amber-700 dark:text-amber-400' : 'text-slate-700 dark:text-slate-300'}`}>
-                                          {quote.unitPrice.toFixed(2)} \€ / {item.ingredient.unit}
+                                          {quote.unitPrice.toFixed(2)} \€ / {item.ingredient.unit}
                                         </span>
                                       ) : (
                                         <span className="text-sm text-slate-400 italic">Cliquer pour saisir</span>

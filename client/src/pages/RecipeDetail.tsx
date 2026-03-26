@@ -148,7 +148,7 @@ export default function RecipeDetail() {
             onClick={() => window.print()}
             className="btn-primary flex items-center gap-2 text-sm"
           >
-            <Printer className="w-4 h-4" /> Imprimer / PDF
+            <Printer className="w-4 h-4" /> {"Imprimer\u00A0/\u00A0PDF"}
           </button>
         </div>
       </div>
@@ -327,11 +327,11 @@ export default function RecipeDetail() {
               <h2 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Indicateurs cl\és</h2>
               <div className="border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden text-[11px]">
                 <MetricRow label="Prix de vente" value={`${recipe.sellingPrice.toFixed(2)} \€`} />
-                <MetricRow label="Co\ût mati\ère / portion" value={`${m.costPerPortion.toFixed(2)} \€`} sub={`(${foodCostPct.toFixed(1)}%)`} />
+                <MetricRow label="Co\ût mati\ère / portion" value={`${m.costPerPortion.toFixed(2)} \€`} sub={`(${foodCostPct.toFixed(1)}%)`} />
                 {m.laborCostPerPortion > 0 && (
-                  <MetricRow label="Co\ût M.O. / portion" value={`${m.laborCostPerPortion.toFixed(2)} \€`} />
+                  <MetricRow label="Co\ût M.O. / portion" value={`${m.laborCostPerPortion.toFixed(2)} \€`} />
                 )}
-                <MetricRow label="Co\ût total / portion" value={`${m.totalCostPerPortion.toFixed(2)} \€`} bold />
+                <MetricRow label="Co\ût total / portion" value={`${m.totalCostPerPortion.toFixed(2)} \€`} bold />
                 <MetricRow label="Marge brute" value={`${m.marginAmount.toFixed(2)} \€`} valueClass={marginColor} />
                 <MetricRow label="Marge %" value={`${m.marginPercent.toFixed(1)}%`} valueClass={marginColor} bold />
                 <MetricRow label="Coefficient" value={m.coefficient.toFixed(2)} last />

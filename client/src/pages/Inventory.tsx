@@ -358,7 +358,7 @@ export default function Inventory() {
                 <div>
                   <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'} {item.ingredient.name}</span>
                   <div className="text-xs text-slate-500 dark:text-slate-400">
-                    {item.currentStock} / {item.minStock} {item.unit}
+                    {item.currentStock}{"\u00A0/\u00A0"}{item.minStock} {item.unit}
                   </div>
                 </div>
                 <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">

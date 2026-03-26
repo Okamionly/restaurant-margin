@@ -538,7 +538,7 @@ export default function Ingredients() {
                 {catalogSuggestions.length > 0 && (
                   <>
                     <div className="px-3 py-1.5 text-xs text-blue-500 border-b dark:border-slate-600 bg-blue-50 dark:bg-blue-900/20 flex items-center gap-1.5">
-                      <BookOpen className="w-3 h-3" /> Catalogue Metro / Transgourmet (prix de référence)
+                      <BookOpen className="w-3 h-3" /> {"Catalogue Metro\u00A0/\u00A0Transgourmet (prix de référence)"}
                     </div>
                     {catalogSuggestions.map((product, idx) => (
                       <button

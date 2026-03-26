@@ -518,17 +518,17 @@ export default function Recipes() {
                 <strong className="font-mono">{liveCost.toFixed(2)} &euro;</strong>
               </div>
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span>Coût / portion :</span>
+                <span>{"Coût\u00A0/\u00A0portion :"}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} &euro;</strong>
               </div>
               {liveLaborPerPortion > 0 && (
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                  <span>Coût MO / portion :</span>
+                  <span>{"Coût MO\u00A0/\u00A0portion :"}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} &euro;</strong>
                 </div>
               )}
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span>Total / portion :</span>
+                <span>{"Total\u00A0/\u00A0portion :"}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
               </div>
             </div>

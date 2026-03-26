@@ -1,9 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   ShoppingCart, Truck, Package, Send, FileText, Check, Trash2,
-  AlertTriangle, Plus, Loader2, Euro, ChevronDown, ChevronUp,
-  Clock, Eye, X, Mail, Copy, RotateCcw, CopyPlus, Filter,
-  CheckSquare, Square, XCircle,
+  Plus, Loader2, Euro, ChevronDown, ChevronUp,
+  Clock, X, Mail, Copy, CopyPlus, Filter, Edit3,
 } from 'lucide-react';
 import { fetchIngredients, fetchSuppliers } from '../services/api';
 import type { Ingredient, Supplier } from '../types';
@@ -13,19 +12,11 @@ import { useToast } from '../hooks/useToast';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
-const API = '';
-
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const h: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) h['Authorization'] = `Bearer ${token}`;
-  return h;
-}
-
 type OrderStatus = 'brouillon' | 'envoyé' | 'reçu';
 
 interface OrderLine {
-  ingredientId: number;
+  id: number;
+  ingredientId: number | null;
   name: string;
   quantity: number;
   unit: string;
@@ -46,15 +37,6 @@ interface Order {
   notes: string;
 }
 
-interface StockAlert {
-  ingredient: Ingredient;
-  currentStock: number;
-  minStock: number;
-  toOrder: number;
-  supplierName: string;
-  supplierId: number | null;
-}
-
 const STATUS_BADGE: Record<OrderStatus, { bg: string; label: string }> = {
   brouillon: { bg: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300', label: 'Brouillon' },
   'envoyé': { bg: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300', label: 'Envoyé' },
@@ -69,7 +51,78 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-let nextOrderId = 1;
+let nextOrderId = 100;
+let nextLineId = 1000;
+
+function calcTotals(lines: OrderLine[]) {
+  const totalHT = lines.reduce((s, l) => s + l.total, 0);
+  const tva = totalHT * 0.2;
+  return { totalHT, tva, totalTTC: totalHT + tva };
+}
+
+// ── sample data ─────────────────────────────────────────────────────────────
+
+function makeSampleOrders(): Order[] {
+  return [
+    {
+      id: 1,
+      supplierId: null,
+      supplierName: 'Transgourmet',
+      lines: [
+        { id: 1, ingredientId: null, name: 'Farine T55', quantity: 25, unit: 'kg', pricePerUnit: 1.20, total: 30 },
+        { id: 2, ingredientId: null, name: 'Beurre AOP', quantity: 10, unit: 'kg', pricePerUnit: 12.50, total: 125 },
+        { id: 3, ingredientId: null, name: 'Sucre semoule', quantity: 15, unit: 'kg', pricePerUnit: 1.10, total: 16.50 },
+        { id: 4, ingredientId: null, name: 'Crème fraîche', quantity: 20, unit: 'L', pricePerUnit: 3.80, total: 76 },
+        { id: 5, ingredientId: null, name: 'Oeufs bio', quantity: 180, unit: 'pièce', pricePerUnit: 0.35, total: 63 },
+      ],
+      totalHT: 310.50,
+      tva: 62.10,
+      totalTTC: 372.60,
+      status: 'brouillon',
+      date: new Date(Date.now() - 86400000).toISOString(),
+      notes: 'Livraison souhaitée mardi matin',
+    },
+    {
+      id: 2,
+      supplierId: null,
+      supplierName: 'Metro',
+      lines: [
+        { id: 6, ingredientId: null, name: 'Saumon frais', quantity: 8, unit: 'kg', pricePerUnit: 22.00, total: 176 },
+        { id: 7, ingredientId: null, name: 'Crevettes', quantity: 5, unit: 'kg', pricePerUnit: 18.50, total: 92.50 },
+        { id: 8, ingredientId: null, name: 'Citron bio', quantity: 3, unit: 'kg', pricePerUnit: 3.80, total: 11.40 },
+      ],
+      totalHT: 279.90,
+      tva: 55.98,
+      totalTTC: 335.88,
+      status: 'envoyé',
+      date: new Date(Date.now() - 2 * 86400000).toISOString(),
+      notes: '',
+    },
+    {
+      id: 3,
+      supplierId: null,
+      supplierName: 'Pomona',
+      lines: [
+        { id: 9, ingredientId: null, name: 'Tomates grappe', quantity: 10, unit: 'kg', pricePerUnit: 3.20, total: 32 },
+        { id: 10, ingredientId: null, name: 'Courgettes', quantity: 8, unit: 'kg', pricePerUnit: 2.50, total: 20 },
+        { id: 11, ingredientId: null, name: 'Poivrons', quantity: 5, unit: 'kg', pricePerUnit: 4.80, total: 24 },
+        { id: 12, ingredientId: null, name: 'Salade mesclun', quantity: 6, unit: 'kg', pricePerUnit: 11.00, total: 66 },
+      ],
+      totalHT: 142,
+      tva: 28.40,
+      totalTTC: 170.40,
+      status: 'reçu',
+      date: new Date(Date.now() - 5 * 86400000).toISOString(),
+      notes: 'Reçu complet, qualité OK',
+    },
+  ];
+}
+
+// ── empty form line ─────────────────────────────────────────────────────────
+
+function emptyLine(): OrderLine {
+  return { id: nextLineId++, ingredientId: null, name: '', quantity: 1, unit: 'kg', pricePerUnit: 0, total: 0 };
+}
 
 // ── component ────────────────────────────────────────────────────────────────
 
@@ -79,15 +132,20 @@ export default function AutoOrders() {
   // Data
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>(makeSampleOrders);
   const [loading, setLoading] = useState(true);
 
   // UI state
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
-  const [detailOrder, setDetailOrder] = useState<Order | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewOrders, setPreviewOrders] = useState<Order[]>([]);
-  const [generating, setGenerating] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'tous' | OrderStatus>('tous');
+
+  // Order form modal
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingOrderId, setEditingOrderId] = useState<number | null>(null);
+  const [formSupplierName, setFormSupplierName] = useState('');
+  const [formSupplierId, setFormSupplierId] = useState<number | null>(null);
+  const [formLines, setFormLines] = useState<OrderLine[]>([emptyLine()]);
+  const [formNotes, setFormNotes] = useState('');
 
   // Email modal state
   const [emailOrder, setEmailOrder] = useState<Order | null>(null);
@@ -96,16 +154,6 @@ export default function AutoOrders() {
 
   // Delete confirmation
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
-  const [deleteAllConfirm, setDeleteAllConfirm] = useState(false);
-
-  // Status filter
-  const [statusFilter, setStatusFilter] = useState<'tous' | OrderStatus>('tous');
-
-  // Bulk selection
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-
-  // Editable quantities for stock alerts
-  const [qtyOverrides, setQtyOverrides] = useState<Record<number, number>>({});
 
   // ── fetch data ─────────────────────────────────────────────────────────────
 
@@ -124,155 +172,128 @@ export default function AutoOrders() {
 
   useEffect(() => { loadData(); }, [loadData]);
 
-  // ── stock alerts ───────────────────────────────────────────────────────────
-
-  const stockAlerts: StockAlert[] = useMemo(() => {
-    return ingredients
-      .map((ing) => {
-        // Use a sensible default: 20% of price as proxy for min stock when no inventory data
-        const minStock = 5; // default minimum stock threshold
-        const currentStock = 0; // will be replaced by real inventory data when connected
-        const toOrder = Math.max(0, minStock - currentStock + 10); // order a buffer above min
-        return {
-          ingredient: ing,
-          currentStock,
-          minStock,
-          toOrder,
-          supplierName: ing.supplier || 'Non assigné',
-          supplierId: ing.supplierId,
-        };
-      })
-      .filter((a) => a.currentStock < a.minStock)
-      .sort((a, b) => a.currentStock - b.currentStock);
-  }, [ingredients]);
-
   // ── summary stats ──────────────────────────────────────────────────────────
 
-  const pendingCount = orders.filter((o) => o.status === 'brouillon').length;
-  const activeSuppliers = new Set(orders.filter((o) => o.status !== 'reçu').map((o) => o.supplierName)).size;
-  const totalValue = orders
-    .filter((o) => o.status !== 'reçu')
-    .reduce((sum, o) => sum + o.totalHT, 0);
-  const lastOrderDate = orders.length > 0
-    ? orders.reduce((latest, o) => (o.date > latest ? o.date : latest), orders[0].date)
-    : null;
+  const totalCount = orders.length;
+  const brouillonCount = orders.filter((o) => o.status === 'brouillon').length;
+  const envoyeCount = orders.filter((o) => o.status === 'envoyé').length;
+  const totalValue = orders.reduce((sum, o) => sum + o.totalHT, 0);
 
-  // ── filtered orders ──────────────────────────────────────────────────────
+  // ── filtered orders ────────────────────────────────────────────────────────
 
   const filteredOrders = useMemo(() => {
     if (statusFilter === 'tous') return orders;
     return orders.filter((o) => o.status === statusFilter);
   }, [orders, statusFilter]);
 
-  const totalOrdersValue = useMemo(() => {
-    return orders.reduce((sum, o) => sum + o.totalTTC, 0);
-  }, [orders]);
+  // ── form helpers ──────────────────────────────────────────────────────────
 
-  // ── bulk helpers ────────────────────────────────────────────────────────
-
-  function toggleSelect(id: number) {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+  function openNewOrderForm() {
+    setEditingOrderId(null);
+    setFormSupplierName('');
+    setFormSupplierId(null);
+    setFormLines([emptyLine()]);
+    setFormNotes('');
+    setFormOpen(true);
   }
 
-  function toggleSelectAll() {
-    if (selectedIds.size === filteredOrders.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(filteredOrders.map((o) => o.id)));
+  function openEditOrderForm(order: Order) {
+    setEditingOrderId(order.id);
+    setFormSupplierName(order.supplierName);
+    setFormSupplierId(order.supplierId);
+    setFormLines(order.lines.map((l) => ({ ...l })));
+    setFormNotes(order.notes);
+    setFormOpen(true);
+  }
+
+  function handleSupplierChange(supplierId: string) {
+    if (supplierId === '__custom__') {
+      setFormSupplierId(null);
+      setFormSupplierName('');
+      return;
+    }
+    const id = Number(supplierId);
+    const sup = suppliers.find((s) => s.id === id);
+    if (sup) {
+      setFormSupplierId(sup.id);
+      setFormSupplierName(sup.name);
     }
   }
 
-  function bulkDelete() {
-    setOrders((prev) => prev.filter((o) => !selectedIds.has(o.id)));
-    showToast(`${selectedIds.size} commande(s) supprimée(s)`, 'success');
-    setSelectedIds(new Set());
-  }
-
-  function bulkMarkSent() {
-    setOrders((prev) =>
-      prev.map((o) => (selectedIds.has(o.id) ? { ...o, status: 'envoyé' as OrderStatus } : o)),
+  function updateLine(lineId: number, field: keyof OrderLine, value: string | number) {
+    setFormLines((prev) =>
+      prev.map((l) => {
+        if (l.id !== lineId) return l;
+        const updated = { ...l, [field]: value };
+        if (field === 'quantity' || field === 'pricePerUnit') {
+          updated.total = updated.quantity * updated.pricePerUnit;
+        }
+        return updated;
+      }),
     );
-    showToast(`${selectedIds.size} commande(s) marquée(s) comme envoyée(s)`, 'success');
-    setSelectedIds(new Set());
   }
 
-  function bulkMarkReceived() {
-    setOrders((prev) =>
-      prev.map((o) => (selectedIds.has(o.id) ? { ...o, status: 'reçu' as OrderStatus } : o)),
+  function handleIngredientSelect(lineId: number, ingredientId: string) {
+    if (!ingredientId) return;
+    const ing = ingredients.find((i) => i.id === Number(ingredientId));
+    if (!ing) return;
+    setFormLines((prev) =>
+      prev.map((l) => {
+        if (l.id !== lineId) return l;
+        const qty = l.quantity || 1;
+        return { ...l, ingredientId: ing.id, name: ing.name, unit: ing.unit, pricePerUnit: ing.pricePerUnit, total: qty * ing.pricePerUnit };
+      }),
     );
-    showToast(`${selectedIds.size} commande(s) marquée(s) comme reçue(s)`, 'success');
-    setSelectedIds(new Set());
   }
 
-  // ── generate orders ────────────────────────────────────────────────────────
+  function addLine() {
+    setFormLines((prev) => [...prev, emptyLine()]);
+  }
 
-  function handleGeneratePreview() {
-    // Group alerts by supplier
-    const grouped = new Map<string, { supplierId: number | null; lines: OrderLine[] }>();
+  function removeLine(lineId: number) {
+    setFormLines((prev) => prev.length > 1 ? prev.filter((l) => l.id !== lineId) : prev);
+  }
 
-    stockAlerts.forEach((alert) => {
-      const qty = qtyOverrides[alert.ingredient.id] ?? alert.toOrder;
-      if (qty <= 0) return;
+  const formTotals = useMemo(() => calcTotals(formLines), [formLines]);
 
-      const key = alert.supplierName;
-      if (!grouped.has(key)) {
-        grouped.set(key, { supplierId: alert.supplierId, lines: [] });
-      }
-      grouped.get(key)!.lines.push({
-        ingredientId: alert.ingredient.id,
-        name: alert.ingredient.name,
-        quantity: qty,
-        unit: alert.ingredient.unit,
-        pricePerUnit: alert.ingredient.pricePerUnit,
-        total: qty * alert.ingredient.pricePerUnit,
-      });
-    });
-
-    if (grouped.size === 0) {
-      showToast('Aucun article à commander', 'error');
+  function saveOrder() {
+    if (!formSupplierName.trim()) {
+      showToast('Veuillez sélectionner ou saisir un fournisseur', 'error');
+      return;
+    }
+    const validLines = formLines.filter((l) => l.name.trim() && l.quantity > 0);
+    if (validLines.length === 0) {
+      showToast('Ajoutez au moins un article valide', 'error');
       return;
     }
 
-    const preview: Order[] = [];
-    grouped.forEach((val, supplierName) => {
-      const totalHT = val.lines.reduce((s, l) => s + l.total, 0);
-      const tva = totalHT * 0.2;
-      preview.push({
-        id: nextOrderId++,
-        supplierId: val.supplierId,
-        supplierName,
-        lines: val.lines,
-        totalHT,
-        tva,
-        totalTTC: totalHT + tva,
-        status: 'brouillon',
-        date: new Date().toISOString(),
-        notes: '',
-      });
-    });
+    const totals = calcTotals(validLines);
+    const orderData: Order = {
+      id: editingOrderId ?? nextOrderId++,
+      supplierId: formSupplierId,
+      supplierName: formSupplierName.trim(),
+      lines: validLines,
+      ...totals,
+      status: 'brouillon',
+      date: editingOrderId
+        ? (orders.find((o) => o.id === editingOrderId)?.date ?? new Date().toISOString())
+        : new Date().toISOString(),
+      notes: formNotes,
+    };
 
-    setPreviewOrders(preview);
-    setShowPreview(true);
+    if (editingOrderId) {
+      // preserve status when editing
+      const existing = orders.find((o) => o.id === editingOrderId);
+      if (existing) orderData.status = existing.status;
+      setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
+      showToast('Commande modifiée avec succès', 'success');
+    } else {
+      setOrders((prev) => [orderData, ...prev]);
+      showToast('Commande créée en brouillon', 'success');
+    }
+
+    setFormOpen(false);
   }
-
-  function confirmOrders() {
-    setGenerating(true);
-    setTimeout(() => {
-      setOrders((prev) => [...preview, ...prev]);
-      setPreviewOrders([]);
-      setShowPreview(false);
-      setQtyOverrides({});
-      setGenerating(false);
-      showToast(`${previewOrders.length} commande(s) créée(s) avec succès`, 'success');
-    }, 800);
-  }
-
-  const preview = previewOrders;
 
   // ── order actions ──────────────────────────────────────────────────────────
 
@@ -281,6 +302,33 @@ export default function AutoOrders() {
       prev.map((o) => (o.id === id ? { ...o, status: 'envoyé' as OrderStatus } : o)),
     );
     showToast('Commande marquée comme envoyée', 'success');
+  }
+
+  function markReceived(id: number) {
+    setOrders((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, status: 'reçu' as OrderStatus } : o)),
+    );
+    showToast('Commande marquée comme reçue', 'success');
+  }
+
+  function confirmDeleteOrder() {
+    if (deleteTarget === null) return;
+    setOrders((prev) => prev.filter((o) => o.id !== deleteTarget));
+    setDeleteTarget(null);
+    showToast('Commande supprimée', 'success');
+  }
+
+  function duplicateOrder(order: Order) {
+    const dup: Order = {
+      ...order,
+      id: nextOrderId++,
+      status: 'brouillon',
+      date: new Date().toISOString(),
+      notes: `Copie de la commande ${order.supplierName}`,
+      lines: order.lines.map((l) => ({ ...l, id: nextLineId++ })),
+    };
+    setOrders((prev) => [dup, ...prev]);
+    showToast(`Commande dupliquée pour ${order.supplierName}`, 'success');
   }
 
   // ── email helpers ──────────────────────────────────────────────────────────
@@ -347,49 +395,6 @@ export default function AutoOrders() {
     });
   }
 
-  function markReceived(id: number) {
-    setOrders((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, status: 'reçu' as OrderStatus } : o)),
-    );
-    showToast('Commande marquée comme reçue', 'success');
-  }
-
-  function confirmDeleteOrder() {
-    if (deleteTarget === null) return;
-    setOrders((prev) => prev.filter((o) => o.id !== deleteTarget));
-    setDeleteTarget(null);
-    showToast('Commande supprimée', 'success');
-  }
-
-  function deleteAllOrders() {
-    setOrders([]);
-    setSelectedIds(new Set());
-    setDeleteAllConfirm(false);
-    showToast('Toutes les commandes ont été supprimées', 'success');
-  }
-
-  function resetStockAlerts() {
-    setQtyOverrides({});
-    showToast('Alertes de stock réinitialisées', 'success');
-  }
-
-  function duplicateOrder(order: Order) {
-    const dup: Order = {
-      ...order,
-      id: nextOrderId++,
-      status: 'brouillon',
-      date: new Date().toISOString(),
-      notes: `Copie de la commande ${order.supplierName}`,
-      lines: order.lines.map((l) => ({ ...l })),
-    };
-    setOrders((prev) => [dup, ...prev]);
-    showToast(`Commande dupliquée pour ${order.supplierName}`, 'success');
-  }
-
-  function downloadPdf(order: Order) {
-    showToast(`Téléchargement PDF pour ${order.supplierName}...`, 'success');
-  }
-
   // ── render ─────────────────────────────────────────────────────────────────
 
   if (loading) {
@@ -408,52 +413,40 @@ export default function AutoOrders() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <ShoppingCart className="w-7 h-7 text-blue-600" />
-            Commandes automatiques
+            Carnet de commandes
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Générez vos commandes fournisseurs à partir des alertes de stock
+            Gérez vos commandes fournisseurs
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={handleGeneratePreview}
-            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Générer les commandes
-          </button>
-          {orders.length > 0 && (
-            <button
-              onClick={() => setDeleteAllConfirm(true)}
-              className="flex items-center gap-2 px-3 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium shadow-sm"
-            >
-              <Trash2 className="w-4 h-4" />
-              Supprimer tout
-            </button>
-          )}
-          <button
-            onClick={resetStockAlerts}
-            className="flex items-center gap-2 px-3 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm font-medium"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Réinitialiser
-          </button>
-        </div>
+        <button
+          onClick={openNewOrderForm}
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+        >
+          <Plus className="w-4 h-4" />
+          Nouvelle commande
+        </button>
       </div>
 
       {/* ── Summary cards ───────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
+          icon={<FileText className="w-5 h-5 text-blue-500" />}
+          label="Commandes total"
+          value={String(totalCount)}
+          bg="bg-blue-50 dark:bg-blue-900/20"
+        />
+        <SummaryCard
           icon={<Clock className="w-5 h-5 text-orange-500" />}
-          label="Commandes en attente"
-          value={String(pendingCount)}
+          label="Brouillons"
+          value={String(brouillonCount)}
           bg="bg-orange-50 dark:bg-orange-900/20"
         />
         <SummaryCard
-          icon={<Truck className="w-5 h-5 text-blue-500" />}
-          label="Fournisseurs actifs"
-          value={String(activeSuppliers)}
-          bg="bg-blue-50 dark:bg-blue-900/20"
+          icon={<Send className="w-5 h-5 text-indigo-500" />}
+          label="Envoyées"
+          value={String(envoyeCount)}
+          bg="bg-indigo-50 dark:bg-indigo-900/20"
         />
         <SummaryCard
           icon={<Euro className="w-5 h-5 text-green-500" />}
@@ -461,102 +454,14 @@ export default function AutoOrders() {
           value={fmtEuro(totalValue)}
           bg="bg-green-50 dark:bg-green-900/20"
         />
-        <SummaryCard
-          icon={<Package className="w-5 h-5 text-purple-500" />}
-          label="Dernière commande"
-          value={lastOrderDate ? fmtDate(lastOrderDate) : '—'}
-          bg="bg-purple-50 dark:bg-purple-900/20"
-        />
       </div>
-
-      {/* ── Stock Alerts ────────────────────────────────────────────────────── */}
-      <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-amber-500" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Alertes de stock
-          </h2>
-          <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-            {stockAlerts.length} article(s) sous le seuil
-          </span>
-        </div>
-
-        {stockAlerts.length === 0 ? (
-          <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-            <Check className="w-10 h-10 mx-auto mb-2 text-green-500" />
-            Tous les stocks sont au-dessus du seuil minimum
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-700/50 text-left">
-                  <th className="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">Ingrédient</th>
-                  <th className="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">Stock actuel</th>
-                  <th className="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">Stock min.</th>
-                  <th className="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">Qté à commander</th>
-                  <th className="px-6 py-3 font-medium text-gray-600 dark:text-gray-300">Fournisseur</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                {stockAlerts.map((alert) => (
-                  <tr key={alert.ingredient.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-                    <td className="px-6 py-3 font-medium text-gray-900 dark:text-white">
-                      {alert.ingredient.name}
-                    </td>
-                    <td className="px-6 py-3">
-                      <span className="text-red-600 dark:text-red-400 font-medium">
-                        {alert.currentStock} {alert.ingredient.unit}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3 text-gray-600 dark:text-gray-400">
-                      {alert.minStock} {alert.ingredient.unit}
-                    </td>
-                    <td className="px-6 py-3">
-                      <input
-                        type="number"
-                        min={0}
-                        value={qtyOverrides[alert.ingredient.id] ?? alert.toOrder}
-                        onChange={(e) =>
-                          setQtyOverrides((prev) => ({
-                            ...prev,
-                            [alert.ingredient.id]: Math.max(0, Number(e.target.value)),
-                          }))
-                        }
-                        className="w-24 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </td>
-                    <td className="px-6 py-3 text-gray-600 dark:text-gray-400">
-                      {alert.supplierName}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      {/* ── Total commandes summary ────────────────────────────────────────── */}
-      {orders.length > 0 && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800 p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Euro className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            <div>
-              <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">Total commandes</p>
-              <p className="text-xs text-blue-500 dark:text-blue-400">{orders.length} commande(s)</p>
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{fmtEuro(totalOrdersValue)}</p>
-        </div>
-      )}
 
       {/* ── Orders list ─────────────────────────────────────────────────────── */}
       <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center gap-3">
-          <FileText className="w-5 h-5 text-blue-500" />
+          <Package className="w-5 h-5 text-blue-500" />
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Commandes générées
+            Commandes
           </h2>
           <span className="text-sm text-gray-500 dark:text-gray-400">
             {filteredOrders.length} commande(s)
@@ -568,7 +473,7 @@ export default function AutoOrders() {
             {(['tous', 'brouillon', 'envoyé', 'reçu'] as const).map((s) => (
               <button
                 key={s}
-                onClick={() => { setStatusFilter(s); setSelectedIds(new Set()); }}
+                onClick={() => setStatusFilter(s)}
                 className={`px-2.5 py-1 text-xs font-medium rounded-full transition ${
                   statusFilter === s
                     ? 'bg-blue-600 text-white'
@@ -581,238 +486,208 @@ export default function AutoOrders() {
           </div>
         </div>
 
-        {/* Bulk actions toolbar */}
-        {selectedIds.size > 0 && (
-          <div className="px-6 py-3 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800 flex flex-wrap items-center gap-3">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-              {selectedIds.size} sélectionnée(s)
-            </span>
-            <button
-              onClick={bulkDelete}
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-            >
-              <Trash2 className="w-3.5 h-3.5" /> Supprimer
-            </button>
-            <button
-              onClick={bulkMarkSent}
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            >
-              <Send className="w-3.5 h-3.5" /> Marquer envoyé
-            </button>
-            <button
-              onClick={bulkMarkReceived}
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-            >
-              <Check className="w-3.5 h-3.5" /> Marquer reçu
-            </button>
-            <button
-              onClick={() => setSelectedIds(new Set())}
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-            >
-              <XCircle className="w-3.5 h-3.5" /> Désélectionner
-            </button>
-          </div>
-        )}
-
         {filteredOrders.length === 0 ? (
           <div className="p-8 text-center text-gray-500 dark:text-gray-400">
             <ShoppingCart className="w-10 h-10 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
             {orders.length === 0
-              ? 'Aucune commande générée pour le moment'
+              ? 'Aucune commande pour le moment. Cliquez sur "Nouvelle commande" pour commencer.'
               : 'Aucune commande pour ce filtre'}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-700/50 text-left">
-                  <th className="px-3 py-3 w-8">
-                    <button onClick={toggleSelectAll} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                      {selectedIds.size === filteredOrders.length && filteredOrders.length > 0
-                        ? <CheckSquare className="w-4 h-4 text-blue-600" />
-                        : <Square className="w-4 h-4" />}
-                    </button>
-                  </th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300 w-8"></th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">Fournisseur</th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">Nb articles</th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">Total HT</th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">Date</th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">Statut</th>
-                  <th className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                {filteredOrders.map((order) => (
-                  <OrderRow
-                    key={order.id}
-                    order={order}
-                    selected={selectedIds.has(order.id)}
-                    onSelect={() => toggleSelect(order.id)}
-                    expanded={expandedOrderId === order.id}
-                    onToggle={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
-                    onDetail={() => setDetailOrder(order)}
-                    onSend={() => openEmailModal(order)}
-                    onReceive={() => markReceived(order.id)}
-                    onDelete={() => setDeleteTarget(order.id)}
-                    onDuplicate={() => duplicateOrder(order)}
-                    onPdf={() => downloadPdf(order)}
-                  />
-                ))}
-              </tbody>
-            </table>
+          <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            {filteredOrders.map((order) => (
+              <OrderRow
+                key={order.id}
+                order={order}
+                expanded={expandedOrderId === order.id}
+                onToggle={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
+                onEdit={() => openEditOrderForm(order)}
+                onSend={() => openEmailModal(order)}
+                onReceive={() => markReceived(order.id)}
+                onDelete={() => setDeleteTarget(order.id)}
+                onDuplicate={() => duplicateOrder(order)}
+              />
+            ))}
           </div>
         )}
       </section>
 
-      {/* ── Preview modal ───────────────────────────────────────────────────── */}
-      <Modal isOpen={showPreview} onClose={() => setShowPreview(false)} title="Aperçu des commandes">
-        <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {previewOrders.length} commande(s) seront créées pour {previewOrders.reduce((s, o) => s + o.lines.length, 0)} article(s).
-          </p>
+      {/* ── Order form modal (create / edit) ─────────────────────────────────── */}
+      <Modal
+        isOpen={formOpen}
+        onClose={() => setFormOpen(false)}
+        title={editingOrderId ? 'Modifier la commande' : 'Nouvelle commande'}
+      >
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          {/* Supplier */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Fournisseur
+            </label>
+            {suppliers.length > 0 ? (
+              <select
+                value={formSupplierId ?? '__custom__'}
+                onChange={(e) => handleSupplierChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="__custom__">— Saisie libre —</option>
+                {suppliers.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            ) : null}
+            <input
+              type="text"
+              value={formSupplierName}
+              onChange={(e) => { setFormSupplierName(e.target.value); setFormSupplierId(null); }}
+              placeholder="Nom du fournisseur"
+              className="mt-2 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
 
-          {previewOrders.map((order) => (
-            <div key={order.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-blue-500" />
-                  {order.supplierName}
-                </h3>
-                <span className="font-semibold text-gray-900 dark:text-white">{fmtEuro(order.totalHT)}</span>
-              </div>
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-left text-gray-500 dark:text-gray-400">
-                    <th className="pb-1">Produit</th>
-                    <th className="pb-1">Qté</th>
-                    <th className="pb-1">P.U.</th>
-                    <th className="pb-1 text-right">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                  {order.lines.map((line) => (
-                    <tr key={line.ingredientId}>
-                      <td className="py-1 text-gray-800 dark:text-gray-200">{line.name}</td>
-                      <td className="py-1 text-gray-600 dark:text-gray-400">{line.quantity} {line.unit}</td>
-                      <td className="py-1 text-gray-600 dark:text-gray-400">{fmtEuro(line.pricePerUnit)}</td>
-                      <td className="py-1 text-right font-medium text-gray-800 dark:text-gray-200">{fmtEuro(line.total)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Line items */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Articles
+            </label>
+            <div className="space-y-2">
+              {formLines.map((line, idx) => (
+                <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-gray-50 dark:bg-gray-700/40 rounded-lg border border-gray-200 dark:border-gray-600">
+                  <div className="flex-1 min-w-[160px]">
+                    <label className="text-xs text-gray-500 dark:text-gray-400">Ingrédient</label>
+                    {ingredients.length > 0 ? (
+                      <select
+                        value={line.ingredientId ?? ''}
+                        onChange={(e) => handleIngredientSelect(line.id, e.target.value)}
+                        className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">— Sélectionner —</option>
+                        {ingredients.map((i) => (
+                          <option key={i.id} value={i.id}>{i.name}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        value={line.name}
+                        onChange={(e) => updateLine(line.id, 'name', e.target.value)}
+                        placeholder="Nom"
+                        className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                      />
+                    )}
+                    {/* free-text fallback even if ingredients exist */}
+                    {ingredients.length > 0 && (
+                      <input
+                        type="text"
+                        value={line.name}
+                        onChange={(e) => updateLine(line.id, 'name', e.target.value)}
+                        placeholder="ou saisir manuellement"
+                        className="mt-1 w-full px-2 py-1 border border-gray-200 dark:border-gray-600 rounded-md text-xs bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-1 focus:ring-blue-500"
+                      />
+                    )}
+                  </div>
+                  <div className="w-20">
+                    <label className="text-xs text-gray-500 dark:text-gray-400">Qté</label>
+                    <input
+                      type="number"
+                      min={0}
+                      step="any"
+                      value={line.quantity}
+                      onChange={(e) => updateLine(line.id, 'quantity', Math.max(0, Number(e.target.value)))}
+                      className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="w-20">
+                    <label className="text-xs text-gray-500 dark:text-gray-400">Unité</label>
+                    <input
+                      type="text"
+                      value={line.unit}
+                      onChange={(e) => updateLine(line.id, 'unit', e.target.value)}
+                      className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="w-24">
+                    <label className="text-xs text-gray-500 dark:text-gray-400">Prix unit.</label>
+                    <input
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      value={line.pricePerUnit}
+                      onChange={(e) => updateLine(line.id, 'pricePerUnit', Math.max(0, Number(e.target.value)))}
+                      className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="w-24 text-right">
+                    <label className="text-xs text-gray-500 dark:text-gray-400">Total</label>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white py-1.5">
+                      {fmtEuro(line.total)}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => removeLine(line.id)}
+                    title="Supprimer la ligne"
+                    className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+            <button
+              onClick={addLine}
+              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition"
+            >
+              <Plus className="w-4 h-4" /> Ajouter un article
+            </button>
+          </div>
 
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Notes
+            </label>
+            <textarea
+              value={formNotes}
+              onChange={(e) => setFormNotes(e.target.value)}
+              rows={2}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              placeholder="Notes pour cette commande..."
+            />
+          </div>
+
+          {/* Totals */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-1 text-sm">
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <span>Total HT</span>
+              <span className="font-medium">{fmtEuro(formTotals.totalHT)}</span>
+            </div>
+            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <span>TVA (20%)</span>
+              <span className="font-medium">{fmtEuro(formTotals.tva)}</span>
+            </div>
+            <div className="flex justify-between text-gray-900 dark:text-white font-semibold text-base pt-1 border-t border-gray-200 dark:border-gray-700">
+              <span>Total TTC</span>
+              <span>{fmtEuro(formTotals.totalTTC)}</span>
+            </div>
+          </div>
+
+          {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
             <button
-              onClick={() => setShowPreview(false)}
+              onClick={() => setFormOpen(false)}
               className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
             >
               Annuler
             </button>
             <button
-              onClick={confirmOrders}
-              disabled={generating}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+              onClick={saveOrder}
+              className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
             >
-              {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-              Confirmer les commandes
+              <Check className="w-4 h-4" />
+              {editingOrderId ? 'Enregistrer' : 'Créer en brouillon'}
             </button>
           </div>
         </div>
-      </Modal>
-
-      {/* ── Detail modal ────────────────────────────────────────────────────── */}
-      <Modal
-        isOpen={!!detailOrder}
-        onClose={() => setDetailOrder(null)}
-        title={`Commande — ${detailOrder?.supplierName ?? ''}`}
-      >
-        {detailOrder && (
-          <div className="space-y-4">
-            {/* Supplier info */}
-            <div className="bg-gray-50 dark:bg-gray-700/40 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
-                <Truck className="w-4 h-4" />
-                {detailOrder.supplierName}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Date : {fmtDate(detailOrder.date)} &middot; Statut :{' '}
-                <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[detailOrder.status].bg}`}>
-                  {STATUS_BADGE[detailOrder.status].label}
-                </span>
-              </p>
-            </div>
-
-            {/* Line items */}
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-700/50 text-left">
-                  <th className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Produit</th>
-                  <th className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Quantité</th>
-                  <th className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Unité</th>
-                  <th className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300">Prix unitaire</th>
-                  <th className="px-4 py-2 font-medium text-gray-600 dark:text-gray-300 text-right">Total</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                {detailOrder.lines.map((line) => (
-                  <tr key={line.ingredientId}>
-                    <td className="px-4 py-2 text-gray-900 dark:text-white">{line.name}</td>
-                    <td className="px-4 py-2 text-gray-600 dark:text-gray-400">{line.quantity}</td>
-                    <td className="px-4 py-2 text-gray-600 dark:text-gray-400">{line.unit}</td>
-                    <td className="px-4 py-2 text-gray-600 dark:text-gray-400">{fmtEuro(line.pricePerUnit)}</td>
-                    <td className="px-4 py-2 text-right font-medium text-gray-900 dark:text-white">{fmtEuro(line.total)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Totals */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-1 text-sm">
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                <span>Total HT</span>
-                <span className="font-medium">{fmtEuro(detailOrder.totalHT)}</span>
-              </div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                <span>TVA (20%)</span>
-                <span className="font-medium">{fmtEuro(detailOrder.tva)}</span>
-              </div>
-              <div className="flex justify-between text-gray-900 dark:text-white font-semibold text-base pt-1 border-t border-gray-200 dark:border-gray-700">
-                <span>Total TTC</span>
-                <span>{fmtEuro(detailOrder.totalTTC)}</span>
-              </div>
-            </div>
-
-            {/* Notes */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
-              <textarea
-                value={detailOrder.notes}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setDetailOrder((prev) => prev ? { ...prev, notes: val } : prev);
-                  setOrders((prev) =>
-                    prev.map((o) => (o.id === detailOrder.id ? { ...o, notes: val } : o)),
-                  );
-                }}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                placeholder="Ajouter des notes pour cette commande..."
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={() => setDetailOrder(null)}
-                className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-              >
-                Fermer
-              </button>
-            </div>
-          </div>
-        )}
       </Modal>
 
       {/* ── Email modal ───────────────────────────────────────────────────── */}
@@ -887,22 +762,13 @@ export default function AutoOrders() {
         )}
       </Modal>
 
-      {/* ── Delete single order confirm ────────────────────────────────────── */}
+      {/* ── Delete confirm ────────────────────────────────────────────────── */}
       <ConfirmDialog
         isOpen={deleteTarget !== null}
         title="Supprimer la commande"
         message="Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible."
         onConfirm={confirmDeleteOrder}
         onCancel={() => setDeleteTarget(null)}
-      />
-
-      {/* ── Delete all orders confirm ──────────────────────────────────────── */}
-      <ConfirmDialog
-        isOpen={deleteAllConfirm}
-        title="Supprimer toutes les commandes"
-        message={`Êtes-vous sûr de vouloir supprimer les ${orders.length} commande(s) ? Cette action est irréversible.`}
-        onConfirm={deleteAllOrders}
-        onCancel={() => setDeleteAllConfirm(false)}
       />
     </div>
   );
@@ -926,115 +792,113 @@ function SummaryCard({ icon, label, value, bg }: { icon: React.ReactNode; label:
 
 function OrderRow({
   order,
-  selected,
-  onSelect,
   expanded,
   onToggle,
-  onDetail,
+  onEdit,
   onSend,
   onReceive,
   onDelete,
   onDuplicate,
-  onPdf,
 }: {
   order: Order;
-  selected: boolean;
-  onSelect: () => void;
   expanded: boolean;
   onToggle: () => void;
-  onDetail: () => void;
+  onEdit: () => void;
   onSend: () => void;
   onReceive: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
-  onPdf: () => void;
 }) {
   return (
-    <>
-      <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/30 cursor-pointer">
-        <td className="px-3 py-3">
-          <button onClick={onSelect} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-            {selected
-              ? <CheckSquare className="w-4 h-4 text-blue-600" />
-              : <Square className="w-4 h-4" />}
+    <div className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
+      {/* Main row */}
+      <div className="flex flex-wrap items-center gap-3 px-6 py-4 cursor-pointer" onClick={onToggle}>
+        <div className="text-gray-400">
+          {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </div>
+        <div className="flex items-center gap-2 min-w-[140px]">
+          <Truck className="w-4 h-4 text-gray-400 shrink-0" />
+          <span className="font-medium text-gray-900 dark:text-white">{order.supplierName}</span>
+        </div>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          {order.lines.length} article{order.lines.length > 1 ? 's' : ''}
+        </span>
+        <span className="font-medium text-gray-900 dark:text-white">{fmtEuro(order.totalHT)}</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">{fmtDate(order.date)}</span>
+        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[order.status].bg}`}>
+          {STATUS_BADGE[order.status].label}
+        </span>
+
+        {/* Actions */}
+        <div className="ml-auto flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <button onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition">
+            <Edit3 className="w-3.5 h-3.5" /> Modifier
           </button>
-        </td>
-        <td className="px-4 py-3" onClick={onToggle}>
-          {expanded ? (
-            <ChevronUp className="w-4 h-4 text-gray-400" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-gray-400" />
+          <button onClick={onSend} title="Envoyer par email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition">
+            <Mail className="w-3.5 h-3.5" /> Email
+          </button>
+          {order.status === 'envoyé' && (
+            <button onClick={onReceive} title="Marquer reçu" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition">
+              <Check className="w-3.5 h-3.5" /> Reçu
+            </button>
           )}
-        </td>
-        <td className="px-4 py-3 font-medium text-gray-900 dark:text-white" onClick={onDetail}>
-          <div className="flex items-center gap-2">
-            <Truck className="w-4 h-4 text-gray-400" />
-            {order.supplierName}
-          </div>
-        </td>
-        <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{order.lines.length}</td>
-        <td className="px-4 py-3 font-medium text-gray-900 dark:text-white">{fmtEuro(order.totalHT)}</td>
-        <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{fmtDate(order.date)}</td>
-        <td className="px-4 py-3">
-          <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[order.status].bg}`}>
-            {STATUS_BADGE[order.status].label}
-          </span>
-        </td>
-        <td className="px-4 py-3">
-          <div className="flex items-center gap-1">
-            {order.status === 'brouillon' && (
-              <button onClick={onSend} title="Envoyer" className="flex items-center gap-1 px-2.5 py-1 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition shadow-sm">
-                <Mail className="w-3.5 h-3.5" />
-                Envoyer
-              </button>
-            )}
-            <button onClick={onPdf} title="Télécharger PDF" className="p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition">
-              <FileText className="w-4 h-4" />
-            </button>
-            {order.status === 'envoyé' && (
-              <button onClick={onReceive} title="Marquer reçu" className="p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition">
-                <Check className="w-4 h-4" />
-              </button>
-            )}
-            <button onClick={onDuplicate} title="Dupliquer" className="p-1.5 text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition">
-              <CopyPlus className="w-4 h-4" />
-            </button>
-            <button onClick={onDelete} title="Supprimer" className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        </td>
-      </tr>
+          <button onClick={onDuplicate} title="Dupliquer" className="p-1.5 text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition">
+            <CopyPlus className="w-4 h-4" />
+          </button>
+          <button onClick={onDelete} title="Supprimer" className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
 
       {/* Expanded details */}
       {expanded && (
-        <tr>
-          <td colSpan={8} className="px-6 py-3 bg-gray-50 dark:bg-gray-700/20">
-            <table className="w-full text-xs">
+        <div className="px-6 pb-4">
+          <div className="bg-gray-50 dark:bg-gray-700/20 rounded-lg p-4">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-gray-500 dark:text-gray-400">
-                  <th className="pb-1 pr-4">Produit</th>
-                  <th className="pb-1 pr-4">Quantité</th>
-                  <th className="pb-1 pr-4">Prix unitaire</th>
-                  <th className="pb-1 text-right">Total</th>
+                <tr className="text-left text-gray-500 dark:text-gray-400 text-xs">
+                  <th className="pb-2 pr-4">Produit</th>
+                  <th className="pb-2 pr-4">Quantité</th>
+                  <th className="pb-2 pr-4">Unité</th>
+                  <th className="pb-2 pr-4">Prix unitaire</th>
+                  <th className="pb-2 text-right">Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
                 {order.lines.map((line) => (
-                  <tr key={line.ingredientId}>
-                    <td className="py-1 pr-4 text-gray-800 dark:text-gray-200">{line.name}</td>
-                    <td className="py-1 pr-4 text-gray-600 dark:text-gray-400">
-                      {line.quantity} {line.unit}
-                    </td>
-                    <td className="py-1 pr-4 text-gray-600 dark:text-gray-400">{fmtEuro(line.pricePerUnit)}</td>
-                    <td className="py-1 text-right font-medium text-gray-800 dark:text-gray-200">{fmtEuro(line.total)}</td>
+                  <tr key={line.id}>
+                    <td className="py-1.5 pr-4 text-gray-800 dark:text-gray-200">{line.name}</td>
+                    <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-400">{line.quantity}</td>
+                    <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-400">{line.unit}</td>
+                    <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-400">{fmtEuro(line.pricePerUnit)}</td>
+                    <td className="py-1.5 text-right font-medium text-gray-800 dark:text-gray-200">{fmtEuro(line.total)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </td>
-        </tr>
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 space-y-1 text-sm">
+              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+                <span>Total HT</span>
+                <span className="font-medium">{fmtEuro(order.totalHT)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+                <span>TVA (20%)</span>
+                <span className="font-medium">{fmtEuro(order.tva)}</span>
+              </div>
+              <div className="flex justify-between text-gray-900 dark:text-white font-semibold">
+                <span>Total TTC</span>
+                <span>{fmtEuro(order.totalTTC)}</span>
+              </div>
+            </div>
+            {order.notes && (
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 italic">
+                Notes : {order.notes}
+              </p>
+            )}
+          </div>
+        </div>
       )}
-    </>
+    </div>
   );
 }

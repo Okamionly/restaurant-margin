@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShieldCheck, ShoppingCart, CreditCard } from 'lucide-react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import Dashboard from './pages/Dashboard';
@@ -17,6 +17,9 @@ import WeighStation from './pages/WeighStation';
 import InvoiceScanner from './pages/InvoiceScanner';
 import Mercuriale from './pages/Mercuriale';
 import MenuEngineering from './pages/MenuEngineering';
+import HACCP from './pages/HACCP';
+import AutoOrders from './pages/AutoOrders';
+import Subscription from './pages/Subscription';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 
@@ -92,6 +95,9 @@ function AppLayout() {
     { to: '/scanner-factures', icon: Receipt, label: 'Scanner Factures' },
     { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
     { to: '/menu-engineering', icon: BarChart3, label: 'Menu Engineering' },
+    { to: '/haccp', icon: ShieldCheck, label: 'HACCP' },
+    { to: '/commandes-auto', icon: ShoppingCart, label: 'Commandes' },
+    { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
   ];
 
   const secondaryNavItems = [
@@ -259,6 +265,9 @@ function AppLayout() {
           <Route path="/scanner-factures" element={<InvoiceScanner />} />
           <Route path="/mercuriale" element={<Mercuriale />} />
           <Route path="/menu-engineering" element={<MenuEngineering />} />
+          <Route path="/haccp" element={<HACCP />} />
+          <Route path="/commandes-auto" element={<AutoOrders />} />
+          <Route path="/abonnement" element={<Subscription />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />
         </Routes>

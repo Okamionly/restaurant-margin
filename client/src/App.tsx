@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
+import ChatbotAssistant from './components/ChatbotAssistant';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
@@ -26,6 +27,7 @@ import Messagerie from './pages/Messagerie';
 import Restaurants from './pages/Restaurants';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import Marketplace from './pages/Marketplace';
 import NotFound from './pages/NotFound';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -206,6 +208,7 @@ function AppLayout() {
     {
       title: 'BUSINESS',
       items: [
+        { to: '/marketplace', icon: Store, label: 'Marketplace' },
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
       ],
@@ -422,6 +425,7 @@ function AppLayout() {
             <Route path="/commandes" element={<AutoOrders />} />
             <Route path="/planning" element={<Planning />} />
             <Route path="/messagerie" element={<Messagerie />} />
+            <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/restaurants" element={<Restaurants />} />
             <Route path="/abonnement" element={<Subscription />} />
             <Route path="/settings" element={<SettingsPage />} />
@@ -435,6 +439,9 @@ function AppLayout() {
           RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
         </footer>
       </div>
+
+      {/* AI Chatbot - visible on all authenticated pages */}
+      <ChatbotAssistant />
     </div>
   );
 }

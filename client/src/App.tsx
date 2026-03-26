@@ -43,7 +43,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 
-function RestaurantSelector() {
+function SidebarRestaurantSelector() {
   const { restaurants, selectedRestaurant, switchRestaurant } = useRestaurant();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -59,17 +59,17 @@ function RestaurantSelector() {
   if (!selectedRestaurant) return null;
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative px-3 mb-4">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-700/60 hover:bg-blue-700 text-white text-sm font-medium transition-colors max-w-[200px]"
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-slate-800 dark:bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium transition-colors border border-slate-700"
       >
-        <Building2 className="w-4 h-4 flex-shrink-0" />
-        <span className="truncate hidden sm:inline">{selectedRestaurant.nom}</span>
-        <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <Building2 className="w-4 h-4 flex-shrink-0 text-blue-400" />
+        <span className="truncate flex-1 text-left sidebar-label">{selectedRestaurant.nom}</span>
+        <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform sidebar-label ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 py-1">
+        <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 py-1">
           {restaurants.map((r) => (
             <button
               key={r.id}
@@ -95,13 +95,26 @@ function RestaurantSelector() {
               className="flex items-center gap-3 px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <Settings className="w-4 h-4" />
-              Gérer les restaurants
+              Gerer les restaurants
             </NavLink>
           </div>
         </div>
       )}
     </div>
   );
+}
+
+// Nav section type
+interface NavItem {
+  to: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  badge?: number;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
 }
 
 function AppLayout() {
@@ -119,7 +132,6 @@ function AppLayout() {
       setInstallPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handler);
-    // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
     }
@@ -150,220 +162,277 @@ function AppLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const navItems = [
-    { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
-    { to: '/ingredients', icon: ShoppingBasket, label: 'Ingrédients' },
-    { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
-    { to: '/menu', icon: BookOpen, label: 'La Carte' },
-    { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
-    { to: '/inventory', icon: Package, label: 'Inventaire' },
-    { to: '/rfqs', icon: FileSearch, label: 'Appels d\'offres' },
-    { to: '/scanner-factures', icon: Receipt, label: 'Scanner Factures' },
-    { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
-    { to: '/menu-engineering', icon: BarChart3, label: 'Menu Engineering' },
-    { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
-    { to: '/planning', icon: CalendarDays, label: 'Planning' },
-    { to: '/messagerie', icon: MessageSquare, label: 'Messages', badge: 3 },
-    { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
+  // Grouped navigation sections
+  const navSections: NavSection[] = [
+    {
+      title: 'PRINCIPAL',
+      items: [
+        { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
+        { to: '/menu', icon: BookOpen, label: 'La Carte' },
+      ],
+    },
+    {
+      title: 'GESTION',
+      items: [
+        { to: '/ingredients', icon: ShoppingBasket, label: 'Ingredients' },
+        { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
+        { to: '/inventory', icon: Package, label: 'Inventaire' },
+        { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
+      ],
+    },
+    {
+      title: 'INTELLIGENCE',
+      items: [
+        { to: '/scanner-factures', icon: Receipt, label: 'Scanner Factures' },
+        { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
+        { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
+      ],
+    },
+    {
+      title: 'OPERATIONS',
+      items: [
+        { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
+        { to: '/planning', icon: CalendarDays, label: 'Planning' },
+        { to: '/rfqs', icon: FileSearch, label: "Appels d'offres" },
+      ],
+    },
+    {
+      title: 'COMMUNICATION',
+      items: [
+        { to: '/messagerie', icon: MessageSquare, label: 'Messages', badge: 3 },
+      ],
+    },
+    {
+      title: 'BUSINESS',
+      items: [
+        { to: '/restaurants', icon: Building2, label: 'Restaurants' },
+        { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
+      ],
+    },
   ];
 
-  const secondaryNavItems = [
-    { to: '/restaurants', icon: Building2, label: 'Restaurants' },
+  // Bottom nav items (always visible at bottom of sidebar)
+  const bottomNavItems: NavItem[] = [
     ...(user?.role === 'admin' ? [{ to: '/users', icon: Users, label: 'Utilisateurs' }] : []),
-    { to: '/settings', icon: Settings, label: 'Paramètres' },
+    { to: '/settings', icon: Settings, label: 'Parametres' },
   ];
 
-  return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-      {/* Header */}
-      <header className="bg-blue-800 dark:bg-blue-900 text-white shadow-lg no-print">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <ChefHat className="w-8 h-8" />
-            <h1 className="text-xl font-bold">RestauMargin</h1>
-            {/* Restaurant selector */}
-            <div className="hidden sm:block ml-2">
-              <RestaurantSelector />
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Station Balance button */}
-            <a
-              href="/station"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-700 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
-              title="Station Balance"
-            >
-              <Scale className="w-4 h-4" />
-              <span className="hidden sm:inline">Station</span>
-            </a>
+  // Get user initials for avatar
+  const userInitials = (user?.name || user?.email || 'U')
+    .split(' ')
+    .map((n: string) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
-            {/* Install PWA button */}
-            {installPrompt && !isInstalled && (
-              <button
-                onClick={handleInstall}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition-colors animate-pulse"
-                title="Installer l'application"
-              >
-                <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">Installer</span>
-              </button>
-            )}
+  const renderNavItem = (item: NavItem, collapsed = false) => (
+    <NavLink
+      key={item.to}
+      to={item.to}
+      end={item.to === '/dashboard'}
+      title={collapsed ? item.label : undefined}
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+          collapsed ? 'justify-center' : ''
+        } ${
+          isActive
+            ? 'bg-blue-600 text-white'
+            : 'text-slate-300 hover:bg-slate-700/70 hover:text-white'
+        }`
+      }
+    >
+      <span className="relative flex-shrink-0">
+        <item.icon className="w-5 h-5" />
+        {item.badge && item.badge > 0 && (
+          <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">
+            {item.badge}
+          </span>
+        )}
+      </span>
+      {!collapsed && <span className="sidebar-label truncate">{item.label}</span>}
+    </NavLink>
+  );
 
-            {/* Dark mode toggle */}
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
-              title={darkMode ? 'Mode clair' : 'Mode sombre'}
-            >
-              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
+  // Sidebar content (shared between desktop and mobile)
+  const sidebarContent = (collapsed = false) => (
+    <div className="flex flex-col h-full">
+      {/* Logo */}
+      <div className={`flex items-center gap-3 px-4 py-4 border-b border-slate-700/50 ${collapsed ? 'justify-center px-2' : ''}`}>
+        <ChefHat className="w-8 h-8 text-blue-400 flex-shrink-0" />
+        {!collapsed && <span className="text-lg font-bold text-white sidebar-label">RestauMargin</span>}
+      </div>
 
-            {/* User info - desktop */}
-            <div className="hidden sm:flex items-center gap-3">
-              <span className="text-sm text-blue-200">{user?.name || user?.email}</span>
-              {user?.role === 'admin' && (
-                <span className="px-2 py-0.5 rounded text-[10px] bg-purple-600 text-white font-medium">Admin</span>
-              )}
-              <button
-                onClick={logout}
-                className="p-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
-                title="Déconnexion"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Hamburger - mobile */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden p-2 rounded-lg hover:bg-blue-700"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-        {/* Mobile restaurant selector */}
-        <div className="sm:hidden px-4 pb-2">
-          <RestaurantSelector />
-        </div>
-      </header>
-
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden bg-white dark:bg-slate-800 border-b dark:border-slate-700 shadow-lg no-print">
-          <div className="px-4 py-2 space-y-1">
-            {[...navItems, ...secondaryNavItems].map(({ to, icon: Icon, label, badge }: any) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === '/dashboard'}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                  }`
-                }
-              >
-                <span className="relative">
-                  <Icon className="w-4 h-4" />
-                  {badge > 0 && <span className="absolute -top-1.5 -right-2 px-1 min-w-[16px] h-4 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">{badge}</span>}
-                </span>
-                {label}
-              </NavLink>
-            ))}
-            <div className="border-t dark:border-slate-700 pt-2 mt-2">
-              <div className="px-3 py-1 text-xs text-slate-400">{user?.name || user?.email}</div>
-              <button
-                onClick={logout}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 w-full"
-              >
-                <LogOut className="w-4 h-4" />
-                Déconnexion
-              </button>
-            </div>
-          </div>
+      {/* Restaurant selector */}
+      {!collapsed && (
+        <div className="pt-4">
+          <SidebarRestaurantSelector />
         </div>
       )}
 
-      {/* Navigation - desktop */}
-      <nav className="bg-white dark:bg-slate-800 border-b dark:border-slate-700 shadow-sm no-print hidden sm:block">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between">
-          <div className="flex gap-1">
-            {navItems.map(({ to, icon: Icon, label, badge }: any) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === '/dashboard'}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                    isActive
-                      ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-                      : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300'
-                  }`
-                }
-              >
-                <span className="relative">
-                  <Icon className="w-4 h-4" />
-                  {badge > 0 && <span className="absolute -top-1.5 -right-2 px-1 min-w-[16px] h-4 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">{badge}</span>}
-                </span>
-                {label}
-              </NavLink>
-            ))}
+      {/* Station Balance button */}
+      <div className={`px-3 mb-3 ${collapsed ? 'mt-4' : ''}`}>
+        <NavLink
+          to="/station"
+          title={collapsed ? 'Station Balance' : undefined}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+        >
+          <Scale className="w-5 h-5 flex-shrink-0" />
+          {!collapsed && <span className="sidebar-label">Station Balance</span>}
+        </NavLink>
+      </div>
+
+      {/* Nav sections - scrollable area */}
+      <nav className="flex-1 overflow-y-auto px-3 space-y-4 pb-4 sidebar-scroll">
+        {navSections.map((section) => (
+          <div key={section.title}>
+            {!collapsed && (
+              <div className="px-3 py-1.5 text-[10px] font-semibold tracking-wider text-slate-500 uppercase sidebar-label">
+                {section.title}
+              </div>
+            )}
+            {collapsed && <div className="border-t border-slate-700/50 my-2" />}
+            <div className="space-y-0.5">
+              {section.items.map((item) => renderNavItem(item, collapsed))}
+            </div>
           </div>
-          <div className="flex gap-1">
-            {secondaryNavItems.map(({ to, icon: Icon, label }) => (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-3 text-sm font-medium border-b-2 transition-colors ${
-                    isActive
-                      ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-                      : 'border-transparent text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300'
-                  }`
-                }
-              >
-                <Icon className="w-4 h-4" />
-                <span className="hidden lg:inline">{label}</span>
-              </NavLink>
-            ))}
-          </div>
-        </div>
+        ))}
       </nav>
 
-      {/* Connectivity status bar */}
-      <ConnectivityBar />
+      {/* Bottom section */}
+      <div className="border-t border-slate-700/50 px-3 py-3 space-y-1">
+        {/* Bottom nav items */}
+        {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
 
-      {/* Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/ingredients" element={<Ingredients />} />
-          <Route path="/recipes" element={<Recipes />} />
-          <Route path="/recipes/:id" element={<RecipeDetail />} />
-          <Route path="/menu" element={<MenuBuilder />} />
-          <Route path="/suppliers" element={<Suppliers />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/rfqs" element={<RFQPage />} />
-          <Route path="/scanner-factures" element={<InvoiceScanner />} />
-          <Route path="/mercuriale" element={<Mercuriale />} />
-          <Route path="/menu-engineering" element={<MenuEngineering />} />
-          <Route path="/commandes" element={<AutoOrders />} />
-          <Route path="/planning" element={<Planning />} />
-          <Route path="/messagerie" element={<Messagerie />} />
-          <Route path="/restaurants" element={<Restaurants />} />
-          <Route path="/abonnement" element={<Subscription />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/users" element={<UserManagement />} />
-        </Routes>
-      </main>
+        {/* Dark mode toggle */}
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          title={darkMode ? 'Mode clair' : 'Mode sombre'}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700/70 hover:text-white transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+        >
+          {darkMode ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+          {!collapsed && <span className="sidebar-label">{darkMode ? 'Mode clair' : 'Mode sombre'}</span>}
+        </button>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-slate-800 border-t dark:border-slate-700 py-3 text-center text-xs text-slate-400 dark:text-slate-500 no-print">
-        RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
-      </footer>
+        {/* Install PWA button */}
+        {installPrompt && !isInstalled && (
+          <button
+            onClick={handleInstall}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-green-600 hover:bg-green-500 text-white transition-colors w-full animate-pulse ${collapsed ? 'justify-center' : ''}`}
+            title="Installer l'application"
+          >
+            <Download className="w-5 h-5 flex-shrink-0" />
+            {!collapsed && <span className="sidebar-label">Installer</span>}
+          </button>
+        )}
+
+        {/* User profile */}
+        <div className={`flex items-center gap-3 px-2 py-2.5 mt-2 rounded-lg bg-slate-800/60 ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+            {userInitials}
+          </div>
+          {!collapsed && (
+            <div className="flex-1 min-w-0 sidebar-label">
+              <div className="text-sm font-medium text-white truncate">{user?.name || user?.email}</div>
+              <div className="text-xs text-slate-400 truncate">
+                {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
+              </div>
+            </div>
+          )}
+          <button
+            onClick={logout}
+            title="Deconnexion"
+            className="p-1.5 rounded-md hover:bg-slate-700 text-slate-400 hover:text-red-400 transition-colors flex-shrink-0"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+      {/* Desktop sidebar (>= 1024px): full width */}
+      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-slate-900 dark:bg-slate-950 z-30 no-print">
+        {sidebarContent(false)}
+      </aside>
+
+      {/* Tablet sidebar (768-1024px): icons only */}
+      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 bg-slate-900 dark:bg-slate-950 z-30 no-print">
+        {sidebarContent(true)}
+      </aside>
+
+      {/* Mobile overlay sidebar */}
+      {mobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          {/* Sidebar panel */}
+          <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-slate-900 dark:bg-slate-950 z-50 no-print animate-slide-in">
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute top-4 right-3 p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {sidebarContent(false)}
+          </aside>
+        </>
+      )}
+
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-56 md:ml-16 ml-0">
+        {/* Mobile top bar */}
+        <header className="md:hidden bg-white dark:bg-slate-800 border-b dark:border-slate-700 px-4 py-3 flex items-center justify-between no-print">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2">
+            <ChefHat className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <span className="font-bold text-slate-900 dark:text-white">RestauMargin</span>
+          </div>
+          <div className="w-9" /> {/* Spacer for centering */}
+        </header>
+
+        {/* Connectivity status bar */}
+        <ConnectivityBar />
+
+        {/* Content */}
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/ingredients" element={<Ingredients />} />
+            <Route path="/recipes" element={<Recipes />} />
+            <Route path="/recipes/:id" element={<RecipeDetail />} />
+            <Route path="/menu" element={<MenuBuilder />} />
+            <Route path="/suppliers" element={<Suppliers />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/rfqs" element={<RFQPage />} />
+            <Route path="/scanner-factures" element={<InvoiceScanner />} />
+            <Route path="/mercuriale" element={<Mercuriale />} />
+            <Route path="/menu-engineering" element={<MenuEngineering />} />
+            <Route path="/commandes" element={<AutoOrders />} />
+            <Route path="/planning" element={<Planning />} />
+            <Route path="/messagerie" element={<Messagerie />} />
+            <Route path="/restaurants" element={<Restaurants />} />
+            <Route path="/abonnement" element={<Subscription />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/users" element={<UserManagement />} />
+          </Routes>
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-white dark:bg-slate-800 border-t dark:border-slate-700 py-3 text-center text-xs text-slate-400 dark:text-slate-500 no-print">
+          RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
+        </footer>
+      </div>
     </div>
   );
 }

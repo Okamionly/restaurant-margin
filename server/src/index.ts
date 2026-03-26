@@ -8,6 +8,7 @@ import { inventoryRouter } from './routes/inventory';
 import { invoicesRouter } from './routes/invoices';
 import { priceHistoryRouter } from './routes/priceHistory';
 import { menuSalesRouter } from './routes/menuSales';
+import { messagesRouter } from './routes/messages';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/inventory', authMiddleware, inventoryRouter);
 app.use('/api/invoices', authMiddleware, invoicesRouter);
 app.use('/api/price-history', authMiddleware, priceHistoryRouter);
 app.use('/api/menu-sales', authMiddleware, menuSalesRouter);
+app.use('/api/messages', authMiddleware, messagesRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

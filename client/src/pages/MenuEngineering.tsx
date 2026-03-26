@@ -82,7 +82,7 @@ const QUADRANT_CONFIG = {
     dot: '#f59e0b',
     action: 'OPTIMISER PRIX',
     desc: 'Basse marge + populaire',
-    recommendation: 'Augmenter le prix ou réduire le co\u00fbt des ingrédients',
+    recommendation: 'Augmenter le prix ou réduire le coût des ingrédients',
   },
   dog: {
     label: 'Dogs',
@@ -274,7 +274,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
           <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
             <span className="text-slate-500 dark:text-slate-400">Prix vente:</span>
             <span className="font-medium text-slate-700 dark:text-slate-200">{fmtEur(hovered.sellingPrice)}</span>
-            <span className="text-slate-500 dark:text-slate-400">Co\u00fbt:</span>
+            <span className="text-slate-500 dark:text-slate-400">Coût:</span>
             <span className="font-medium text-slate-700 dark:text-slate-200">{fmtEur(hovered.costPerPortion)}</span>
             <span className="text-slate-500 dark:text-slate-400">Marge:</span>
             <span className="font-medium text-slate-700 dark:text-slate-200">{fmt(hovered.marginPercent, 1)}%</span>
@@ -686,7 +686,7 @@ export default function MenuEngineering() {
                         { field: 'name' as SortField, label: 'Nom' },
                         { field: 'category' as SortField, label: 'Catégorie' },
                         { field: 'sellingPrice' as SortField, label: 'Prix vente' },
-                        { field: 'costPerPortion' as SortField, label: 'Co\u00fbt' },
+                        { field: 'costPerPortion' as SortField, label: 'Coût' },
                         { field: 'margin' as SortField, label: 'Marge (€)' },
                         { field: 'marginPercent' as SortField, label: 'Marge (%)' },
                         { field: 'salesQty' as SortField, label: 'Ventes' },

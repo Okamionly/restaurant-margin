@@ -1,9 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, Paperclip, Search, Phone, Video, MoreVertical,
   Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+
+const API = '';
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return headers;
+}
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface Message {
@@ -34,6 +43,27 @@ interface Contact {
   avatar: string;
 }
 
+// ── API response types ──────────────────────────────────────────────────────
+interface ApiConversation {
+  id: string;
+  name: string;
+  participants: string[];
+  lastMessage: string;
+  unreadCount: number;
+  isGroup: boolean;
+  avatar: string;
+}
+
+interface ApiMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  content: string;
+  timestamp: string;
+  read: boolean;
+}
+
 // ── Data ─────────────────────────────────────────────────────────────────────
 const ME = 'me';
 
@@ -48,6 +78,15 @@ const CONTACTS: Contact[] = [
   { id: 'brake', name: 'Brake France', role: 'Fournisseur', avatar: 'BF' },
   { id: 'rungis', name: "Rungis Express", role: 'Fournisseur', avatar: 'RE' },
 ];
+
+// Online status map (not stored in backend)
+const ONLINE_MAP: Record<string, boolean> = {
+  transgourmet: true,
+  metro: false,
+  cuisine: true,
+  sofia: true,
+  pomona: false,
+};
 
 function buildConversations(): Conversation[] {
   return [
@@ -132,6 +171,30 @@ function buildConversations(): Conversation[] {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+function apiConvToLocal(apiConv: ApiConversation): Conversation {
+  return {
+    id: apiConv.id,
+    name: apiConv.name,
+    isGroup: apiConv.isGroup,
+    members: apiConv.participants.filter((p) => p !== 'me'),
+    avatar: apiConv.avatar,
+    online: ONLINE_MAP[apiConv.id] ?? false,
+    unread: apiConv.unreadCount,
+    messages: [],
+  };
+}
+
+function apiMsgToLocal(apiMsg: ApiMessage): Message {
+  return {
+    id: apiMsg.id,
+    senderId: apiMsg.senderId,
+    text: apiMsg.content,
+    timestamp: apiMsg.timestamp,
+    read: apiMsg.read,
+    type: 'text',
+  };
+}
+
 function getLastMessage(conv: Conversation) {
   return conv.messages[conv.messages.length - 1];
 }
@@ -163,14 +226,63 @@ export default function Messagerie() {
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
 
+  // ── Fetch conversations on mount ───────────────────────────────────────
+  useEffect(() => {
+    async function fetchConversations() {
+      try {
+        const res = await fetch(`${API}/api/messages/conversations`, { headers: authHeaders() });
+        if (!res.ok) throw new Error('API error');
+        const data: ApiConversation[] = await res.json();
+        // Convert API conversations to local format, then load messages for each
+        const localConvs = data.map(apiConvToLocal);
+        // Load messages for each conversation
+        const convsWithMessages = await Promise.all(
+          localConvs.map(async (conv) => {
+            try {
+              const msgRes = await fetch(`${API}/api/messages/conversations/${conv.id}`, { headers: authHeaders() });
+              if (!msgRes.ok) return conv;
+              const msgData: { conversation: ApiConversation; messages: ApiMessage[] } = await msgRes.json();
+              return { ...conv, messages: msgData.messages.map(apiMsgToLocal), unread: msgData.conversation.unreadCount };
+            } catch {
+              return conv;
+            }
+          })
+        );
+        setConversations(convsWithMessages);
+      } catch {
+        // Fallback: keep local data
+      }
+    }
+    fetchConversations();
+  }, []);
+
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeConv?.messages.length]);
 
-  // Mark as read when opening
+  // ── Fetch messages when selecting a conversation ───────────────────────
+  const fetchMessages = useCallback(async (convId: string) => {
+    try {
+      const res = await fetch(`${API}/api/messages/conversations/${convId}`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('API error');
+      const data: { conversation: ApiConversation; messages: ApiMessage[] } = await res.json();
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === convId
+            ? { ...c, messages: data.messages.map(apiMsgToLocal), unread: data.conversation.unreadCount }
+            : c
+        )
+      );
+    } catch {
+      // Fallback: keep local data
+    }
+  }, []);
+
+  // ── Mark as read when opening ──────────────────────────────────────────
   useEffect(() => {
     if (!activeId) return;
+    // Optimistic local update
     setConversations((prev) =>
       prev.map((c) =>
         c.id === activeId
@@ -178,6 +290,11 @@ export default function Messagerie() {
           : c
       )
     );
+    // Fire API call
+    fetch(`${API}/api/messages/conversations/${activeId}/read`, {
+      method: 'PUT',
+      headers: authHeaders(),
+    }).catch(() => {});
   }, [activeId]);
 
   const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
@@ -189,22 +306,51 @@ export default function Messagerie() {
   function selectConversation(id: string) {
     setActiveId(id);
     setMobileShowChat(true);
+    fetchMessages(id);
   }
 
-  function handleSend() {
+  async function handleSend() {
     if (!input.trim() || !activeId) return;
+    const text = input.trim();
     const newMsg: Message = {
       id: Date.now().toString(),
       senderId: ME,
-      text: input.trim(),
+      text,
       timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       read: false,
       type: 'text',
     };
+    // Optimistic local update
     setConversations((prev) =>
       prev.map((c) => (c.id === activeId ? { ...c, messages: [...c.messages, newMsg] } : c))
     );
     setInput('');
+
+    // Send to API
+    try {
+      const res = await fetch(`${API}/api/messages/conversations/${activeId}/messages`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ content: text, senderId: 'me', senderName: 'Moi' }),
+      });
+      if (!res.ok) throw new Error('API error');
+      const apiMsg: ApiMessage = await res.json();
+      // Replace optimistic message with server response
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === activeId
+            ? {
+                ...c,
+                messages: c.messages.map((m) =>
+                  m.id === newMsg.id ? { ...apiMsgToLocal(apiMsg), type: 'text' as const } : m
+                ),
+              }
+            : c
+        )
+      );
+    } catch {
+      // Fallback: keep optimistic message
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -214,11 +360,12 @@ export default function Messagerie() {
     }
   }
 
-  function handleNewConversation(contact: Contact) {
+  async function handleNewConversation(contact: Contact) {
     const existing = conversations.find((c) => c.id === contact.id);
     if (existing) {
       setActiveId(contact.id);
       setMobileShowChat(true);
+      fetchMessages(contact.id);
     } else {
       const newConv: Conversation = {
         id: contact.id,
@@ -230,9 +377,27 @@ export default function Messagerie() {
         unread: 0,
         messages: [],
       };
+      // Optimistic local update
       setConversations((prev) => [newConv, ...prev]);
       setActiveId(contact.id);
       setMobileShowChat(true);
+
+      // Create on API
+      try {
+        await fetch(`${API}/api/messages/conversations`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({
+            id: contact.id,
+            name: contact.name,
+            participants: [contact.id, 'me'],
+            isGroup: false,
+            avatar: contact.avatar,
+          }),
+        });
+      } catch {
+        // Fallback: keep optimistic conversation
+      }
     }
     setShowNewModal(false);
     showToast(`Conversation avec ${contact.name} ouverte`, 'info');

@@ -324,22 +324,7 @@ export default function Landing() {
               </FadeIn>
 
               <FadeIn delay={300}>
-                <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                  <Link
-                    to="/login"
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-xl shadow-blue-700/25 hover:shadow-blue-700/40 hover:-translate-y-0.5"
-                  >
-                    Démarrer gratuitement
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                  <a
-                    href="#how-it-works"
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white border-2 border-slate-200 text-slate-700 font-semibold text-base hover:border-blue-300 hover:text-blue-700 transition-all"
-                  >
-                    <Play className="w-4 h-4" />
-                    Voir une démo
-                  </a>
-                </div>
+                <div className="mt-8" />
               </FadeIn>
             </div>
 
@@ -701,7 +686,7 @@ export default function Landing() {
                     to="/login"
                     className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
                   >
-                    Démarrer gratuitement
+                    Commencer maintenant
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </div>
@@ -762,7 +747,7 @@ export default function Landing() {
               to="/login"
               className="inline-flex items-center gap-2 px-10 py-4 rounded-xl bg-white text-blue-700 font-bold text-lg hover:bg-blue-50 transition-all shadow-2xl hover:-translate-y-0.5"
             >
-              Démarrer gratuitement
+              Commencer maintenant
               <ArrowRight className="w-5 h-5" />
             </Link>
           </FadeIn>

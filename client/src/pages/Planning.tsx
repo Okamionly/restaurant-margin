@@ -247,7 +247,7 @@ export default function Planning() {
           ? { ...e, nom: empForm.nom, prenom: empForm.prenom, role: empForm.role, tauxHoraire: parseFloat(empForm.tauxHoraire), heuresContrat: parseFloat(empForm.heuresContrat) }
           : e
       ));
-      showToast('Employ\u00e9 modifi\u00e9', 'success');
+      showToast('Employé modifié', 'success');
     } else {
       const id = nextId;
       setNextId(n => n + 1);
@@ -259,7 +259,7 @@ export default function Planning() {
         tauxHoraire: parseFloat(empForm.tauxHoraire),
         heuresContrat: parseFloat(empForm.heuresContrat),
       }]);
-      showToast('Employ\u00e9 ajout\u00e9', 'success');
+      showToast('Employé ajouté', 'success');
     }
     setShowEmployeeModal(false);
   }
@@ -267,7 +267,7 @@ export default function Planning() {
   function deleteEmployee(id: number) {
     setEmployees(prev => prev.filter(e => e.id !== id));
     setShifts(prev => prev.filter(s => s.employeeId !== id));
-    showToast('Employ\u00e9 supprim\u00e9', 'success');
+    showToast('Employé supprimé', 'success');
   }
 
   // ── Shift CRUD ────────────────────────────────────────────────────
@@ -297,7 +297,7 @@ export default function Planning() {
       return;
     }
     if (shiftForm.start >= shiftForm.end) {
-      showToast('L\'heure de fin doit \u00eatre apr\u00e8s l\'heure de d\u00e9but', 'error');
+      showToast('L\'heure de fin doit être après l\'heure de début', 'error');
       return;
     }
     const empId = parseInt(shiftForm.employeeId);
@@ -308,7 +308,7 @@ export default function Planning() {
       return s.start < shiftForm.end && s.end > shiftForm.start;
     });
     if (overlap) {
-      showToast('Chevauchement d\u00e9tect\u00e9 pour cet employ\u00e9 ce jour', 'error');
+      showToast('Chevauchement détecté pour cet employé ce jour', 'error');
       return;
     }
 
@@ -318,7 +318,7 @@ export default function Planning() {
           ? { ...s, employeeId: empId, date: shiftForm.date, start: shiftForm.start, end: shiftForm.end, poste: shiftForm.poste }
           : s
       ));
-      showToast('Cr\u00e9neau modifi\u00e9', 'success');
+      showToast('Créneau modifié', 'success');
     } else {
       const id = nextId;
       setNextId(n => n + 1);
@@ -330,14 +330,14 @@ export default function Planning() {
         end: shiftForm.end,
         poste: shiftForm.poste,
       }]);
-      showToast('Cr\u00e9neau ajout\u00e9', 'success');
+      showToast('Créneau ajouté', 'success');
     }
     setShowShiftModal(false);
   }
 
   function deleteShift(id: number) {
     setShifts(prev => prev.filter(s => s.id !== id));
-    showToast('Cr\u00e9neau supprim\u00e9', 'success');
+    showToast('Créneau supprimé', 'success');
   }
 
   // ── Summary table data ────────────────────────────────────────────
@@ -378,19 +378,19 @@ export default function Planning() {
         </div>
         <div className="flex gap-2">
           <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium">
-            <UserPlus className="w-4 h-4" /> Ajouter employ\u00e9
+            <UserPlus className="w-4 h-4" /> Ajouter employé
           </button>
           <button onClick={() => openAddShift()} className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium">
-            <Plus className="w-4 h-4" /> Ajouter cr\u00e9neau
+            <Plus className="w-4 h-4" /> Ajouter créneau
           </button>
         </div>
       </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard icon={<Users className="w-5 h-5 text-indigo-500" />} label="Employ\u00e9s actifs" value={String(employees.length)} />
+        <SummaryCard icon={<Users className="w-5 h-5 text-indigo-500" />} label="Employés actifs" value={String(employees.length)} />
         <SummaryCard icon={<Clock className="w-5 h-5 text-amber-500" />} label="Heures cette semaine" value={`${totalHoursWeek.toFixed(1)}h`} />
-        <SummaryCard icon={<Euro className="w-5 h-5 text-emerald-500" />} label="Co\u00fbt MO semaine" value={`${laborCost.toFixed(0)} \u20ac`} />
+        <SummaryCard icon={<Euro className="w-5 h-5 text-emerald-500" />} label="Coût MO semaine" value={`${laborCost.toFixed(0)} €`} />
         <SummaryCard
           icon={<CalendarDays className="w-5 h-5 text-rose-500" />}
           label="Ratio MO/CA"
@@ -476,7 +476,7 @@ export default function Planning() {
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <Users className="w-4 h-4 text-indigo-500" /> \u00c9quipe ({employees.length})
+            <Users className="w-4 h-4 text-indigo-500" /> Équipe ({employees.length})
           </h3>
           <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
             <UserPlus className="w-3.5 h-3.5" /> Ajouter
@@ -486,8 +486,8 @@ export default function Planning() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employ\u00e9</th>
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">R\u00f4le</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employé</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Rôle</th>
                 <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Taux horaire</th>
                 <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Heures contrat</th>
                 <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Actions</th>
@@ -504,7 +504,7 @@ export default function Planning() {
                         {ROLE_LABELS[emp.role]}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{emp.tauxHoraire.toFixed(2)} \u20ac/h</td>
+                    <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{emp.tauxHoraire.toFixed(2)} €/h</td>
                     <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{emp.heuresContrat}h/sem</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
@@ -528,19 +528,19 @@ export default function Planning() {
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
           <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-500" /> R\u00e9capitulatif hebdomadaire
+            <Clock className="w-4 h-4 text-amber-500" /> Récapitulatif hebdomadaire
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employ\u00e9</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employé</th>
                 {JOURS.map(j => (
                   <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{j}</th>
                 ))}
                 <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Total</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Co\u00fbt</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Coût</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -558,7 +558,7 @@ export default function Planning() {
                     {row.total > 0 ? `${row.total}h` : '-'}
                   </td>
                   <td className="px-4 py-2.5 text-right font-medium text-slate-700 dark:text-slate-200">
-                    {row.cost > 0 ? `${row.cost.toFixed(0)} \u20ac` : '-'}
+                    {row.cost > 0 ? `${row.cost.toFixed(0)} €` : '-'}
                   </td>
                 </tr>
               ))}
@@ -571,7 +571,7 @@ export default function Planning() {
                   </td>
                 ))}
                 <td className="px-3 py-2.5 text-center text-indigo-600 dark:text-indigo-400">{totalRow.total}h</td>
-                <td className="px-4 py-2.5 text-right text-indigo-600 dark:text-indigo-400">{totalRow.cost.toFixed(0)} \u20ac</td>
+                <td className="px-4 py-2.5 text-right text-indigo-600 dark:text-indigo-400">{totalRow.cost.toFixed(0)} €</td>
               </tr>
             </tbody>
           </table>
@@ -582,12 +582,12 @@ export default function Planning() {
       <Modal
         isOpen={showEmployeeModal}
         onClose={() => setShowEmployeeModal(false)}
-        title={editEmployee ? 'Modifier employ\u00e9' : 'Ajouter un employ\u00e9'}
+        title={editEmployee ? 'Modifier employé' : 'Ajouter un employé'}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Pr\u00e9nom</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Prénom</label>
               <input
                 type="text"
                 value={empForm.prenom}
@@ -608,7 +608,7 @@ export default function Planning() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">R\u00f4le</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rôle</label>
             <select
               value={empForm.role}
               onChange={e => setEmpForm(f => ({ ...f, role: e.target.value as EmployeeRole }))}
@@ -621,7 +621,7 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Taux horaire (\u20ac/h)</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Taux horaire (€/h)</label>
               <input
                 type="number"
                 step="0.01"
@@ -659,17 +659,17 @@ export default function Planning() {
       <Modal
         isOpen={showShiftModal}
         onClose={() => setShowShiftModal(false)}
-        title={editShift ? 'Modifier cr\u00e9neau' : 'Ajouter un cr\u00e9neau'}
+        title={editShift ? 'Modifier créneau' : 'Ajouter un créneau'}
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Employ\u00e9</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Employé</label>
             <select
               value={shiftForm.employeeId}
               onChange={e => setShiftForm(f => ({ ...f, employeeId: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
-              <option value="">-- S\u00e9lectionner --</option>
+              <option value="">-- Sélectionner --</option>
               {employees.map(emp => (
                 <option key={emp.id} value={emp.id}>{emp.prenom} {emp.nom} ({ROLE_LABELS[emp.role]})</option>
               ))}
@@ -686,7 +686,7 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Heure d\u00e9but</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Heure début</label>
               <input
                 type="time"
                 value={shiftForm.start}

@@ -50,28 +50,39 @@ type Intent =
   | { type: 'unknown' };
 
 function detectIntent(input: string): Intent {
-  const lower = input.toLowerCase().trim();
+  const lower = input.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
-  if (/meilleure?\s*marge|plus\s*rentable|marge\s*(?:la\s*)?plus/.test(lower)) {
+  // Best margin
+  if (/marge|rentab|plus\s*rentable|meilleur|benefice|profit/.test(lower)) {
     return { type: 'best_margin' };
   }
-  if (/stock\s*bas|rupture|alerte|manque/.test(lower)) {
+  // Low stock
+  if (/stock|rupture|alerte|manque|commander|approvision/.test(lower)) {
     return { type: 'low_stock' };
   }
-  if (/combien\s*(?:de\s*)?recettes?|nombre\s*(?:de\s*)?recettes?/.test(lower)) {
+  // Recipe count
+  if (/combien|nombre|total.*recette|recette.*total|carte\s*actuel/.test(lower)) {
     return { type: 'recipe_count' };
   }
-  if (/co[uû]t\s*mati[eè]re\s*moyen|co[uû]t\s*moyen/.test(lower)) {
+  // Average cost
+  if (/cout|matiere|moyen|depense|charge/.test(lower)) {
     return { type: 'average_cost' };
   }
 
-  const suggestMatch = lower.match(/sugg[eè]re.*(?:avec|contenant|utilisant)\s+(.+)/);
-  if (suggestMatch) {
-    return { type: 'suggest_ingredient', ingredient: suggestMatch[1].trim() };
+  // Suggest with ingredient — match "plat avec X", "suggere X", "recette X", "que faire avec X"
+  const suggestPatterns = [
+    /(?:sugg|propos|conseil|plat|recette|faire|cuisiner).*(?:avec|contenant|utilisant|de|du|des|au|aux|a la)\s+(.+)/,
+    /(?:avec|contenant)\s+(.+)/,
+    /que\s+(?:faire|cuisiner|preparer)\s+(.+)/,
+  ];
+  for (const pat of suggestPatterns) {
+    const m = lower.match(pat);
+    if (m) return { type: 'suggest_ingredient', ingredient: m[1].trim() };
   }
-  const platAvecMatch = lower.match(/plat.*(?:avec|contenant)\s+(.+)/);
-  if (platAvecMatch) {
-    return { type: 'suggest_ingredient', ingredient: platAvecMatch[1].trim() };
+
+  // If just a single word that could be an ingredient
+  if (lower.split(/\s+/).length <= 2 && lower.length > 2) {
+    return { type: 'suggest_ingredient', ingredient: lower };
   }
 
   return { type: 'unknown' };
@@ -142,7 +153,7 @@ async function handleAverageCost(): Promise<string> {
 }
 
 const UNKNOWN_RESPONSE =
-  "Je ne comprends pas cette question. Essayez : 'meilleure marge', 'stock bas', 'nombre de recettes', 'suggere un plat avec [ingredient]', 'cout matiere moyen'.";
+  "Voici ce que je peux faire :\n\n- \"marge\" → Vos plats les plus rentables\n- \"stock\" → Alertes de stock bas\n- \"combien de recettes\" → Nombre total\n- \"saumon\" ou \"tomate\" → Recettes avec cet ingrédient\n- \"coût\" → Coût matière moyen\n\nTapez un mot-clé ou un ingrédient !";
 
 async function generateResponse(input: string): Promise<string> {
   const intent = detectIntent(input);

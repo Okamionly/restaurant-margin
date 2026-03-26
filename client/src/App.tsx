@@ -183,7 +183,7 @@ function AppLayout() {
     {
       title: 'INTELLIGENCE',
       items: [
-        { to: '/scanner-factures', icon: Receipt, label: 'Scanner Factures' },
+        { to: '/scanner-factures', icon: Receipt, label: 'Factures' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
       ],

@@ -36,7 +36,7 @@ type SupplierPromo = {
   highlight?: boolean;
 };
 
-const STATUS_LABELS: Record<string, string> = { draft: 'Brouillon', sent: 'Envoy\u00e9', closed: 'Cl\u00f4tur\u00e9' };
+const STATUS_LABELS: Record<string, string> = { draft: 'Brouillon', sent: 'Envoy\é', closed: 'Cl\ôtur\é' };
 const STATUS_COLORS: Record<string, string> = {
   draft: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
   sent: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
@@ -52,7 +52,7 @@ const SUPPLIER_PROMOS: SupplierPromo[] = [
     supplierBg: 'from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20 border-red-200 dark:border-red-800/40',
     supplierIcon: 'TG',
     product: 'Saumon frais d\'Ecosse',
-    description: 'Filet de saumon frais Label Rouge, pi\u00e8ce de 1.2kg minimum',
+    description: 'Filet de saumon frais Label Rouge, pi\èce de 1.2kg minimum',
     discount: '-20%',
     expiryDate: '31/03/2026',
     badge: 'Promo Semaine',
@@ -65,10 +65,10 @@ const SUPPLIER_PROMOS: SupplierPromo[] = [
     supplierBg: 'from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 border-blue-200 dark:border-blue-800/40',
     supplierIcon: 'M',
     product: 'Huile d\'olive extra vierge 5L',
-    description: 'Huile d\'olive premi\u00e8re pression \u00e0 froid, origine Espagne',
-    price: '12.99\u20ac',
+    description: 'Huile d\'olive premi\ère pression \à froid, origine Espagne',
+    price: '12.99\€',
     expiryDate: '05/04/2026',
-    badge: 'Offre sp\u00e9ciale',
+    badge: 'Offre sp\éciale',
   },
   {
     id: 'promo-3',
@@ -77,8 +77,8 @@ const SUPPLIER_PROMOS: SupplierPromo[] = [
     supplierBg: 'from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20 border-green-200 dark:border-green-800/40',
     supplierIcon: 'P',
     product: 'Fraises Gariguette',
-    description: 'Arrivage direct producteur, cat\u00e9gorie Extra, plateau 1kg',
-    price: '3.50\u20ac/kg',
+    description: 'Arrivage direct producteur, cat\égorie Extra, plateau 1kg',
+    price: '3.50\€/kg',
     expiryDate: '28/03/2026',
     badge: 'Arrivage',
   },
@@ -89,10 +89,10 @@ const SUPPLIER_PROMOS: SupplierPromo[] = [
     supplierBg: 'from-indigo-50 to-indigo-100/50 dark:from-indigo-950/30 dark:to-indigo-900/20 border-indigo-200 dark:border-indigo-800/40',
     supplierIcon: 'SF',
     product: 'Filet de boeuf Charolais',
-    description: 'Race Charolaise, maturation 21 jours, pi\u00e8ce de 2kg',
+    description: 'Race Charolaise, maturation 21 jours, pi\èce de 2kg',
     discount: '-15%',
     expiryDate: '02/04/2026',
-    badge: 'Exclusivit\u00e9',
+    badge: 'Exclusivit\é',
   },
   {
     id: 'promo-5',
@@ -100,9 +100,9 @@ const SUPPLIER_PROMOS: SupplierPromo[] = [
     supplierColor: 'text-orange-700 dark:text-orange-400',
     supplierBg: 'from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20 border-orange-200 dark:border-orange-800/40',
     supplierIcon: 'BF',
-    product: 'Cr\u00e8me fra\u00eeche 35% MG 5L',
-    description: 'Cr\u00e8me fra\u00eeche \u00e9paisse, id\u00e9ale cuisson et p\u00e2tisserie',
-    price: '8.49\u20ac',
+    product: 'Cr\ème fra\îche 35% MG 5L',
+    description: 'Cr\ème fra\îche \épaisse, id\éale cuisson et p\âtisserie',
+    price: '8.49\€',
     expiryDate: '10/04/2026',
     badge: 'Prix bas',
   },
@@ -112,14 +112,14 @@ const BANNER_ADS = [
   {
     id: 'banner-1',
     supplier: 'Transgourmet',
-    message: 'Livraison offerte d\u00e8s 250\u20ac de commande cette semaine',
+    message: 'Livraison offerte d\ès 250\€ de commande cette semaine',
     color: 'text-red-700 dark:text-red-300',
     bg: 'bg-gradient-to-r from-red-50 via-white to-red-50 dark:from-red-950/20 dark:via-slate-800 dark:to-red-950/20',
   },
   {
     id: 'banner-2',
     supplier: 'Metro',
-    message: 'Nouveaux produits bio : d\u00e9couvrez notre gamme \u00e9co-responsable',
+    message: 'Nouveaux produits bio : d\écouvrez notre gamme \éco-responsable',
     color: 'text-blue-700 dark:text-blue-300',
     bg: 'bg-gradient-to-r from-blue-50 via-white to-blue-50 dark:from-blue-950/20 dark:via-slate-800 dark:to-blue-950/20',
   },
@@ -146,7 +146,7 @@ interface RFQHistoryEntry {
 }
 
 const MOCK_RFQ_HISTORY: RFQHistoryEntry[] = [
-  { id: 101, title: 'L\u00e9gumes bio - Semaine 11', status: 'closed', createdAt: '2026-03-09', closedAt: '2026-03-12', supplierCount: 3, itemCount: 8, bestSaving: '-12%', selectedSupplier: 'Pomona' },
+  { id: 101, title: 'L\égumes bio - Semaine 11', status: 'closed', createdAt: '2026-03-09', closedAt: '2026-03-12', supplierCount: 3, itemCount: 8, bestSaving: '-12%', selectedSupplier: 'Pomona' },
   { id: 102, title: 'Viandes Charolaises', status: 'closed', createdAt: '2026-03-01', closedAt: '2026-03-05', supplierCount: 2, itemCount: 4, bestSaving: '-8%', selectedSupplier: 'Transgourmet' },
   { id: 103, title: 'Produits laitiers Mars', status: 'cancelled', createdAt: '2026-02-25', closedAt: '2026-02-27', supplierCount: 4, itemCount: 6, bestSaving: '-', selectedSupplier: '-' },
   { id: 104, title: 'Fruits de mer St-Valentin', status: 'closed', createdAt: '2026-02-10', closedAt: '2026-02-13', supplierCount: 3, itemCount: 5, bestSaving: '-18%', selectedSupplier: 'Brake France' },
@@ -191,13 +191,13 @@ function PromoCard({ promo, onOrder, isSelected, onToggleSelect }: {
               ? 'bg-blue-600 text-white shadow-sm'
               : 'bg-white/60 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700'
           }`}
-          title="S\u00e9lectionner pour comparaison"
+          title="S\électionner pour comparaison"
         >
           <BarChart3 className="w-3 h-3" />
-          {isSelected ? 'S\u00e9lectionn\u00e9' : 'Comparer'}
+          {isSelected ? 'S\électionn\é' : 'Comparer'}
         </button>
         <span className="px-1.5 py-0.5 rounded text-[9px] font-medium tracking-wide uppercase bg-white/80 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">
-          Sponsoris\u00e9
+          Sponsoris\é
         </span>
       </div>
 
@@ -334,7 +334,7 @@ function PriceComparisonModal({
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700">
               <th className="text-left py-3 px-3 text-slate-500 dark:text-slate-400 font-medium text-xs uppercase tracking-wider w-36">
-                Crit\u00e8re
+                Crit\ère
               </th>
               {selectedPromos.map(p => (
                 <th key={p.id} className="text-center py-3 px-3 min-w-[160px]">
@@ -430,7 +430,7 @@ function RFQHistorySection() {
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Historique des appels d'offres</h3>
-            <p className="text-[11px] text-slate-400 dark:text-slate-500">{MOCK_RFQ_HISTORY.length} appels pass\u00e9s</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">{MOCK_RFQ_HISTORY.length} appels pass\és</p>
           </div>
         </div>
         {MOCK_RFQ_HISTORY.length > 3 && (
@@ -452,7 +452,7 @@ function RFQHistorySection() {
           <div className="col-span-2 text-center">Statut</div>
           <div className="col-span-2 text-center hidden sm:block">Fournisseurs</div>
           <div className="col-span-2 text-center">
-            <span className="hidden sm:inline">\u00c9conomie</span>
+            <span className="hidden sm:inline">\Économie</span>
             <span className="sm:hidden">Eco.</span>
           </div>
           <div className="col-span-2 lg:col-span-1 text-center hidden sm:block">Choisi</div>
@@ -474,11 +474,11 @@ function RFQHistorySection() {
               <div className="col-span-2 text-center">
                 {entry.status === 'closed' ? (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                    <CheckCircle className="w-3 h-3" /> Cl\u00f4tur\u00e9
+                    <CheckCircle className="w-3 h-3" /> Cl\ôtur\é
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                    <XCircle className="w-3 h-3" /> Annul\u00e9
+                    <XCircle className="w-3 h-3" /> Annul\é
                   </span>
                 )}
               </div>
@@ -564,7 +564,7 @@ function SupplierPromosSection({
           )}
           {selectedIds.length === 1 && (
             <span className="text-[11px] text-blue-500 dark:text-blue-400 font-medium">
-              S\u00e9lectionnez 1 de plus pour comparer
+              S\électionnez 1 de plus pour comparer
             </span>
           )}
           <div className="flex items-center gap-1.5">
@@ -674,8 +674,8 @@ export default function RFQPage() {
       setShowCreate(false);
       setForm({ title: '', dueDate: '', notes: '', selectedIngredients: [], selectedSupplierIds: [] });
       setExpandedId(created.id);
-      showToast('Appel d\'offres cr\u00e9\u00e9', 'success');
-    } catch { showToast('Erreur cr\u00e9ation', 'error'); }
+      showToast('Appel d\'offres cr\é\é', 'success');
+    } catch { showToast('Erreur cr\éation', 'error'); }
   }
 
   async function handleStatusChange(rfq: RFQData, status: string) {
@@ -686,7 +686,7 @@ export default function RFQPage() {
       if (!res.ok) return;
       const updated = await res.json();
       setRfqs(prev => prev.map(r => r.id === rfq.id ? updated : r));
-    } catch { showToast('Erreur mise \u00e0 jour', 'error'); }
+    } catch { showToast('Erreur mise \à jour', 'error'); }
   }
 
   async function handleDelete() {
@@ -695,7 +695,7 @@ export default function RFQPage() {
       await fetch(`${API}/api/rfqs/${deleteId}`, { method: 'DELETE', headers: authHeaders() });
       setRfqs(prev => prev.filter(r => r.id !== deleteId));
       if (expandedId === deleteId) setExpandedId(null);
-      showToast('Supprim\u00e9', 'success');
+      showToast('Supprim\é', 'success');
     } catch { showToast('Erreur suppression', 'error'); }
     setDeleteId(null);
   }
@@ -721,12 +721,12 @@ export default function RFQPage() {
       });
       const rfqRes = await fetch(`${API}/api/rfqs/${rfqId}`, { headers: authHeaders() });
       if (rfqRes.ok) { const updated = await rfqRes.json(); setRfqs(prev => prev.map(r => r.id === rfqId ? updated : r)); }
-      showToast(applyPrice ? 'Prix appliqu\u00e9 \u00e0 l\'ingr\u00e9dient' : 'Offre s\u00e9lectionn\u00e9e', 'success');
+      showToast(applyPrice ? 'Prix appliqu\é \à l\'ingr\édient' : 'Offre s\électionn\ée', 'success');
     } catch { showToast('Erreur', 'error'); }
   }
 
   function handlePromoOrder(promo: SupplierPromo) {
-    showToast(`Demande envoy\u00e9e \u00e0 ${promo.supplier} pour "${promo.product}"`, 'success');
+    showToast(`Demande envoy\ée \à ${promo.supplier} pour "${promo.product}"`, 'success');
   }
 
   function toggleCompareId(id: string) {
@@ -803,7 +803,7 @@ export default function RFQPage() {
         <div className="text-center py-16 text-slate-400 dark:text-slate-500">
           <FileText className="w-12 h-12 mx-auto mb-3 opacity-30" />
           <p className="font-medium">Aucun appel d'offres</p>
-          <p className="text-sm mt-1">Cr\u00e9ez-en un pour comparer les prix de vos fournisseurs</p>
+          <p className="text-sm mt-1">Cr\éez-en un pour comparer les prix de vos fournisseurs</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -826,7 +826,7 @@ export default function RFQPage() {
                       <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">{rfq.title}</p>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
                         {rfq.suppliers.map(s => s.supplier.name).join(', ')} &bull; {totalItems} produit{totalItems > 1 ? 's' : ''}
-                        {rfq.dueDate && ` \u00b7 \u00c9ch\u00e9ance ${new Date(rfq.dueDate).toLocaleDateString('fr-FR')}`}
+                        {rfq.dueDate && ` \· \Éch\éance ${new Date(rfq.dueDate).toLocaleDateString('fr-FR')}`}
                       </p>
                     </div>
                   </div>
@@ -845,7 +845,7 @@ export default function RFQPage() {
                       {rfq.status === 'draft' && (
                         <button
                           onClick={() => handleStatusChange(rfq, 'sent')}
-                          title="Marquer comme envoy\u00e9"
+                          title="Marquer comme envoy\é"
                           className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 transition-colors"
                         >
                           <Send className="w-4 h-4" />
@@ -854,7 +854,7 @@ export default function RFQPage() {
                       {rfq.status === 'sent' && (
                         <button
                           onClick={() => handleStatusChange(rfq, 'closed')}
-                          title="Cl\u00f4turer"
+                          title="Cl\ôturer"
                           className="p-1.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 transition-colors"
                         >
                           <CheckCircle className="w-4 h-4" />
@@ -904,7 +904,7 @@ export default function RFQPage() {
                                   <div className="w-36 shrink-0">
                                     <p className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{quote.supplier.name}</p>
                                     {isBest && !quote.selected && <span className="text-[10px] text-amber-600 font-medium">Meilleur prix</span>}
-                                    {quote.selected && <span className="text-[10px] text-green-600 font-medium flex items-center gap-0.5"><CheckCircle className="w-3 h-3" /> S\u00e9lectionn\u00e9</span>}
+                                    {quote.selected && <span className="text-[10px] text-green-600 font-medium flex items-center gap-0.5"><CheckCircle className="w-3 h-3" /> S\électionn\é</span>}
                                   </div>
 
                                   {isEditing ? (
@@ -937,7 +937,7 @@ export default function RFQPage() {
                                     >
                                       {quote.unitPrice !== null ? (
                                         <span className={`text-sm font-semibold ${isBest ? 'text-amber-700 dark:text-amber-400' : 'text-slate-700 dark:text-slate-300'}`}>
-                                          {quote.unitPrice.toFixed(2)} \u20ac / {item.ingredient.unit}
+                                          {quote.unitPrice.toFixed(2)} \€ / {item.ingredient.unit}
                                         </span>
                                       ) : (
                                         <span className="text-sm text-slate-400 italic">Cliquer pour saisir</span>
@@ -952,21 +952,21 @@ export default function RFQPage() {
                                         <>
                                           <button
                                             onClick={() => handleSelectQuote(rfq.id, quote.id, false)}
-                                            title="S\u00e9lectionner ce fournisseur"
+                                            title="S\électionner ce fournisseur"
                                             className="px-2 py-1 rounded text-xs border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
                                           >
                                             Choisir
                                           </button>
                                           <button
                                             onClick={() => handleSelectQuote(rfq.id, quote.id, true)}
-                                            title="Choisir et appliquer le prix \u00e0 l'ingr\u00e9dient"
+                                            title="Choisir et appliquer le prix \à l'ingr\édient"
                                             className="px-2 py-1 rounded text-xs bg-green-600 hover:bg-green-700 text-white"
                                           >
                                             Choisir + Appliquer
                                           </button>
                                         </>
                                       ) : (
-                                        <span className="text-xs text-green-600 font-medium">\u2713 Prix appliqu\u00e9</span>
+                                        <span className="text-xs text-green-600 font-medium">\✓ Prix appliqu\é</span>
                                       )}
                                     </div>
                                   )}
@@ -999,12 +999,12 @@ export default function RFQPage() {
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Titre *</label>
             <input
               type="text" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-              placeholder="Ex: Commande l\u00e9gumes semaine 14"
+              placeholder="Ex: Commande l\égumes semaine 14"
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date limite de r\u00e9ponse</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date limite de r\éponse</label>
             <input
               type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
@@ -1020,7 +1020,7 @@ export default function RFQPage() {
               </button>
             </div>
             {form.selectedIngredients.length === 0 && (
-              <p className="text-sm text-slate-400 italic">Aucun produit ajout\u00e9</p>
+              <p className="text-sm text-slate-400 italic">Aucun produit ajout\é</p>
             )}
             <div className="space-y-2">
               {form.selectedIngredients.map((row, idx) => (
@@ -1034,11 +1034,11 @@ export default function RFQPage() {
                     })}
                     className="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
                   >
-                    <option value={0}>-- S\u00e9lectionner --</option>
+                    <option value={0}>-- S\électionner --</option>
                     {ingredients.map(ing => <option key={ing.id} value={ing.id}>{ing.name} ({ing.unit})</option>)}
                   </select>
                   <input
-                    type="number" min="0" step="0.01" placeholder="Qt\u00e9"
+                    type="number" min="0" step="0.01" placeholder="Qt\é"
                     value={row.quantity}
                     onChange={e => setForm(f => {
                       const arr = [...f.selectedIngredients];
@@ -1061,7 +1061,7 @@ export default function RFQPage() {
             {suppliers.length === 0 ? (
               <div className="flex items-center gap-2 text-amber-600 text-sm">
                 <AlertCircle className="w-4 h-4" />
-                Aucun fournisseur cr\u00e9\u00e9. Ajoutez-en dans la section Fournisseurs.
+                Aucun fournisseur cr\é\é. Ajoutez-en dans la section Fournisseurs.
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
@@ -1094,7 +1094,7 @@ export default function RFQPage() {
               Annuler
             </button>
             <button onClick={handleCreate} className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">
-              Cr\u00e9er
+              Cr\éer
             </button>
           </div>
         </div>
@@ -1103,7 +1103,7 @@ export default function RFQPage() {
       <ConfirmDialog
         isOpen={!!deleteId}
         title="Supprimer l'appel d'offres ?"
-        message="Cette action est irr\u00e9versible. Tous les devis associ\u00e9s seront supprim\u00e9s."
+        message="Cette action est irr\éversible. Tous les devis associ\és seront supprim\és."
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}
       />

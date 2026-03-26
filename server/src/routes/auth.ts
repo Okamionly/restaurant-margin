@@ -3,13 +3,12 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AuthRequest, authMiddleware, JwtPayload } from '../middleware/auth';
+import { JWT_SECRET, TOKEN_EXPIRY } from '../config';
 
 const prisma = new PrismaClient();
 export const authRouter = Router();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'restau-margin-secret-key-change-in-production';
 const INVITATION_CODE = process.env.INVITATION_CODE || 'RESTAUMARGIN2024';
-const TOKEN_EXPIRY = '7d';
 
 function generateToken(payload: JwtPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
@@ -74,7 +73,7 @@ authRouter.post('/register', async (req: AuthRequest, res: Response) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const role = userCount === 0 ? 'admin' : (requestedRole === 'admin' || requestedRole === 'chef' ? requestedRole : 'chef');
+    const role = userCount === 0 ? 'admin' : 'chef';
 
     const user = await prisma.user.create({
       data: { email, passwordHash, name, role },

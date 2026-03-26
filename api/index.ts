@@ -7,11 +7,14 @@ import jwt from 'jsonwebtoken';
 const app = express();
 const prisma = new PrismaClient();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'restau-margin-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'rM$9xK#2pL7vQ!dW4nZ8jF0tY6bA3hU5cE1gI';
 const INVITATION_CODE = process.env.INVITATION_CODE || 'RESTAUMARGIN2024';
 const TOKEN_EXPIRY = '7d';
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://restaumargin.vercel.app'],
+  credentials: true,
+}));
 app.use(express.json());
 
 // --- Auth Middleware ---
@@ -100,7 +103,7 @@ app.post('/api/auth/register', async (req: any, res) => {
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
     const passwordHash = await bcrypt.hash(password, 12);
-    const role = userCount === 0 ? 'admin' : (requestedRole === 'admin' || requestedRole === 'chef' ? requestedRole : 'chef');
+    const role = userCount === 0 ? 'admin' : 'chef';
     const user = await prisma.user.create({ data: { email, passwordHash, name, role } });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
     res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
@@ -769,6 +772,17 @@ app.get('/api/menu-engineering', authMiddleware, async (req: any, res) => {
 
     res.json({ engineering, totalSales, avgMargin: Math.round(engineering.reduce((s, e) => s + e.margin, 0) / Math.max(engineering.length, 1) * 100) / 100, days });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur menu engineering' }); }
+});
+
+// 404 catch-all
+app.use((_req, res) => {
+  res.status(404).json({ error: 'Route non trouvée' });
+});
+
+// Global error handler
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Erreur interne du serveur' });
 });
 
 export default app;

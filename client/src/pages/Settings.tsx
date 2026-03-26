@@ -78,7 +78,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   companyAddress: '',
   companyPhone: '',
   companySiret: '',
-  cuisineType: 'francaise',
+  cuisineType: 'française',
   coversPerDay: 80,
   tvaRate: 10,
   defaultLaborCost: 15,
@@ -100,13 +100,13 @@ const INVITATION_CODE = 'RESTAUMARGIN2024';
 const APP_VERSION = '1.0.0';
 
 const CUISINE_TYPES = [
-  { value: 'francaise', label: 'Cuisine francaise' },
+  { value: 'française', label: 'Cuisine française' },
   { value: 'italienne', label: 'Cuisine italienne' },
   { value: 'japonaise', label: 'Cuisine japonaise' },
   { value: 'chinoise', label: 'Cuisine chinoise' },
   { value: 'indienne', label: 'Cuisine indienne' },
   { value: 'mexicaine', label: 'Cuisine mexicaine' },
-  { value: 'mediterraneenne', label: 'Cuisine mediterraneenne' },
+  { value: 'méditerranéenne', label: 'Cuisine méditerranéenne' },
   { value: 'thai', label: 'Cuisine thai' },
   { value: 'bistronomique', label: 'Bistronomique' },
   { value: 'gastronomique', label: 'Gastronomique' },
@@ -375,7 +375,7 @@ export default function Settings() {
   function handleSaveSettings(section?: string) {
     saveSettingsToStorage(settings);
     showToast(
-      section ? `${section} sauvegarde avec succes` : 'Parametres sauvegardes avec succes',
+      section ? `${section} sauvegardé avec succès` : 'Paramètres sauvegardes avec succes',
       'success',
     );
   }
@@ -393,9 +393,9 @@ export default function Settings() {
         body: JSON.stringify({ name: profileName, email: profileEmail }),
       });
       if (res.ok) {
-        showToast('Profil mis a jour', 'success');
+        showToast('Profil mis à jour', 'success');
       } else {
-        showToast('Erreur lors de la mise a jour du profil', 'error');
+        showToast('Erreur lors de la mise à jour du profil', 'error');
       }
     } catch {
       // Fallback: save locally
@@ -414,7 +414,7 @@ export default function Settings() {
       return;
     }
     if (newPassword.length < 6) {
-      showToast('Le mot de passe doit contenir au moins 6 caracteres', 'error');
+      showToast('Le mot de passe doit contenir au moins 6 caractères', 'error');
       return;
     }
     try {
@@ -424,7 +424,7 @@ export default function Settings() {
         body: JSON.stringify({ oldPassword, newPassword }),
       });
       if (res.ok) {
-        showToast('Mot de passe modifie avec succes', 'success');
+        showToast('Mot de passe modifié avec succes', 'success');
         setOldPassword('');
         setNewPassword('');
         setConfirmPassword('');
@@ -441,7 +441,7 @@ export default function Settings() {
     try {
       await navigator.clipboard.writeText(INVITATION_CODE);
       setCopied(true);
-      showToast('Code copie dans le presse-papier', 'success');
+      showToast('Code copié dans le presse-papier', 'success');
       setTimeout(() => setCopied(false), 2000);
     } catch {
       showToast('Impossible de copier le code', 'error');
@@ -574,7 +574,7 @@ export default function Settings() {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
           <SettingsIcon className="w-7 h-7" />
-          Parametres
+          Paramètres
         </h2>
       </div>
 
@@ -672,7 +672,7 @@ export default function Settings() {
                         className="input w-full pr-10"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Minimum 6 caracteres"
+                        placeholder="Minimum 6 caractères"
                       />
                       <button
                         type="button"
@@ -960,7 +960,7 @@ export default function Settings() {
                     Notifications par email
                   </p>
                   <p className="text-xs text-slate-400">
-                    Recevoir un email pour chaque alerte activee ci-dessus
+                    Recevoir un email pour chaque alerte activée ci-dessus
                   </p>
                 </div>
               </div>
@@ -1231,7 +1231,7 @@ export default function Settings() {
           id="security"
           icon={<Shield className="w-5 h-5" />}
           iconColor="text-orange-600"
-          title="Securite & Invitation"
+          title="Sécurité & Invitation"
           open={openSections.security}
           onToggle={() => toggleSection('security')}
         >
@@ -1251,7 +1251,7 @@ export default function Settings() {
                   {copied ? (
                     <>
                       <Check className="w-4 h-4 text-green-600" />
-                      Copie
+                      Copié
                     </>
                   ) : (
                     <>
@@ -1282,7 +1282,7 @@ export default function Settings() {
         >
           <div className="space-y-5">
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
                 <UtensilsCrossed className="w-5 h-5 mx-auto mb-1 text-blue-500" />
                 <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.recipes}</div>
@@ -1373,7 +1373,7 @@ export default function Settings() {
                 Cette action est irreversible
               </p>
               <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                Toutes vos recettes, ingredients, parametres et preferences seront definitivement supprimes.
+                Toutes vos recettes, ingredients, paramètres et preferences seront definitivement supprimes.
               </p>
             </div>
           </div>

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'restau-margin-secret-key-change-in-production';
+import { JWT_SECRET } from '../config';
 
 export interface JwtPayload {
   userId: number;

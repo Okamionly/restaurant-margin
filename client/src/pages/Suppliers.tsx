@@ -636,7 +636,7 @@ export default function Suppliers() {
                                   <button onClick={() => { setShowCompare(false); setCompareIds(new Set()); }} className="text-blue-400 hover:text-blue-600"><X className="w-4 h-4" /></button>
                                 </div>
                                 <div className="text-xs space-y-1">
-                                  <div className="grid grid-cols-6 gap-2 font-medium text-slate-500 dark:text-slate-400 pb-1 border-b dark:border-blue-800">
+                                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 font-medium text-slate-500 dark:text-slate-400 pb-1 border-b dark:border-blue-800">
                                     <span className="col-span-2">Produit</span>
                                     <span>Mon prix</span>
                                     <span>Cat. min</span>
@@ -647,7 +647,7 @@ export default function Suppliers() {
                                     const match = searchCatalog(ing.name, 1)[0];
                                     const ecart = match ? Math.round(((ing.pricePerUnit - match.prixMoy) / match.prixMoy) * 100) : null;
                                     return (
-                                      <div key={ing.id} className="grid grid-cols-6 gap-2 py-1">
+                                      <div key={ing.id} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 py-1">
                                         <span className="col-span-2 truncate text-slate-700 dark:text-slate-300">{ing.name}</span>
                                         <span className="font-medium">{ing.pricePerUnit.toFixed(2)}€</span>
                                         <span className="text-green-600">{match ? match.prixMin.toFixed(2) + '€' : '—'}</span>

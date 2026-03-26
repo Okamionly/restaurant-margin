@@ -164,7 +164,7 @@ export default function Restaurants() {
                 </div>
 
                 {/* Stats row */}
-                <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 dark:border-slate-700">
                   <div className="text-center">
                     <div className="flex items-center justify-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
                       <ClipboardList className="w-3.5 h-3.5" />

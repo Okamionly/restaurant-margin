@@ -26,6 +26,7 @@ import Messagerie from './pages/Messagerie';
 import Restaurants from './pages/Restaurants';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import NotFound from './pages/NotFound';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -425,6 +426,7 @@ function AppLayout() {
             <Route path="/abonnement" element={<Subscription />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/users" element={<UserManagement />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 

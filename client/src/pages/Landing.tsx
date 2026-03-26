@@ -324,7 +324,20 @@ export default function Landing() {
               </FadeIn>
 
               <FadeIn delay={300}>
-                <div className="mt-8" />
+                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition-colors"
+                  >
+                    Essai gratuit <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <a
+                    href="#how-it-works"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 hover:border-slate-300 transition-colors"
+                  >
+                    <Play className="w-4 h-4" /> Voir une démo
+                  </a>
+                </div>
               </FadeIn>
             </div>
 
@@ -477,6 +490,7 @@ export default function Landing() {
                     src="/kit-station.jpg"
                     alt="Kit Station RestauMargin — Tablette + Balance connectée"
                     className="w-full h-auto"
+                    loading="lazy"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                 </div>
@@ -795,9 +809,9 @@ export default function Landing() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Légal</h4>
               <ul className="space-y-2.5">
-                <li><span className="text-sm text-slate-500">Mentions légales</span></li>
-                <li><span className="text-sm text-slate-500">CGU</span></li>
-                <li><span className="text-sm text-slate-500">Politique de confidentialité</span></li>
+                <li><Link to="/login" className="text-sm text-slate-500 hover:text-white transition-colors">Mentions légales</Link></li>
+                <li><Link to="/login" className="text-sm text-slate-500 hover:text-white transition-colors">CGU</Link></li>
+                <li><Link to="/login" className="text-sm text-slate-500 hover:text-white transition-colors">Politique de confidentialité</Link></li>
               </ul>
             </div>
           </div>

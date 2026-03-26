@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { ALLOWED_ORIGINS } from './config';
 import { authRouter } from './routes/auth';
 import { ingredientsRouter } from './routes/ingredients';
 import { recipesRouter } from './routes/recipes';
@@ -14,7 +15,10 @@ import { authMiddleware } from './middleware/auth';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: ALLOWED_ORIGINS,
+  credentials: true,
+}));
 app.use(express.json());
 
 // Public routes
@@ -33,6 +37,17 @@ app.use('/api/invoices', authMiddleware, invoicesRouter);
 app.use('/api/price-history', authMiddleware, priceHistoryRouter);
 app.use('/api/menu-sales', authMiddleware, menuSalesRouter);
 app.use('/api/messages', authMiddleware, messagesRouter);
+
+// 404 catch-all
+app.use((_req, res) => {
+  res.status(404).json({ error: 'Route non trouvée' });
+});
+
+// Global error handler
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Erreur interne du serveur' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

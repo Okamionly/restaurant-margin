@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   ShoppingCart, Truck, Package, Send, FileText, Check, Trash2,
   AlertTriangle, Plus, Loader2, Euro, ChevronDown, ChevronUp,
-  Clock, Eye, X,
+  Clock, Eye, X, Mail, Copy,
 } from 'lucide-react';
 import { fetchIngredients, fetchSuppliers } from '../services/api';
 import type { Ingredient, Supplier } from '../types';
@@ -86,6 +86,11 @@ export default function AutoOrders() {
   const [showPreview, setShowPreview] = useState(false);
   const [previewOrders, setPreviewOrders] = useState<Order[]>([]);
   const [generating, setGenerating] = useState(false);
+
+  // Email modal state
+  const [emailOrder, setEmailOrder] = useState<Order | null>(null);
+  const [emailTo, setEmailTo] = useState('');
+  const [emailCopied, setEmailCopied] = useState(false);
 
   // Editable quantities for stock alerts
   const [qtyOverrides, setQtyOverrides] = useState<Record<number, number>>({});
@@ -212,6 +217,70 @@ export default function AutoOrders() {
       prev.map((o) => (o.id === id ? { ...o, status: 'envoyé' as OrderStatus } : o)),
     );
     showToast('Commande marquée comme envoyée', 'success');
+  }
+
+  // ── email helpers ──────────────────────────────────────────────────────────
+
+  function buildEmailBody(order: Order): string {
+    const lines = [
+      `Bonjour,`,
+      ``,
+      `Veuillez trouver ci-dessous notre commande :`,
+      ``,
+      `Fournisseur : ${order.supplierName}`,
+      `Date : ${fmtDate(order.date)}`,
+      ``,
+      `--- Détail de la commande ---`,
+      ``,
+    ];
+    order.lines.forEach((line) => {
+      lines.push(
+        `- ${line.name} : ${line.quantity} ${line.unit} x ${fmtEuro(line.pricePerUnit)} = ${fmtEuro(line.total)}`,
+      );
+    });
+    lines.push(``);
+    lines.push(`Total HT : ${fmtEuro(order.totalHT)}`);
+    lines.push(`TVA (20%) : ${fmtEuro(order.tva)}`);
+    lines.push(`Total TTC : ${fmtEuro(order.totalTTC)}`);
+    lines.push(``);
+    if (order.notes) {
+      lines.push(`Notes : ${order.notes}`);
+      lines.push(``);
+    }
+    lines.push(`Cordialement,`);
+    lines.push(`RestauMargin`);
+    return lines.join('\n');
+  }
+
+  function buildEmailSubject(order: Order): string {
+    return `Commande RestauMargin - ${order.supplierName} - ${fmtDate(order.date)}`;
+  }
+
+  function openEmailModal(order: Order) {
+    const supplier = suppliers.find((s) => s.id === order.supplierId);
+    setEmailTo(supplier?.email ?? '');
+    setEmailCopied(false);
+    setEmailOrder(order);
+  }
+
+  function handleSendEmail() {
+    if (!emailOrder) return;
+    const subject = encodeURIComponent(buildEmailSubject(emailOrder));
+    const body = encodeURIComponent(buildEmailBody(emailOrder));
+    const mailto = `mailto:${encodeURIComponent(emailTo)}?subject=${subject}&body=${body}`;
+    window.open(mailto, '_blank');
+    markSent(emailOrder.id);
+    setEmailOrder(null);
+  }
+
+  function handleCopyToClipboard() {
+    if (!emailOrder) return;
+    const text = `Objet : ${buildEmailSubject(emailOrder)}\n\n${buildEmailBody(emailOrder)}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setEmailCopied(true);
+      showToast('Commande copiée dans le presse-papier', 'success');
+      setTimeout(() => setEmailCopied(false), 2000);
+    });
   }
 
   function markReceived(id: number) {
@@ -398,7 +467,7 @@ export default function AutoOrders() {
                     expanded={expandedOrderId === order.id}
                     onToggle={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
                     onDetail={() => setDetailOrder(order)}
-                    onSend={() => markSent(order.id)}
+                    onSend={() => openEmailModal(order)}
                     onReceive={() => markReceived(order.id)}
                     onDelete={() => deleteOrder(order.id)}
                     onPdf={() => downloadPdf(order)}
@@ -559,6 +628,78 @@ export default function AutoOrders() {
           </div>
         )}
       </Modal>
+
+      {/* ── Email modal ───────────────────────────────────────────────────── */}
+      <Modal
+        isOpen={!!emailOrder}
+        onClose={() => setEmailOrder(null)}
+        title="Envoyer la commande par email"
+      >
+        {emailOrder && (
+          <div className="space-y-4">
+            {/* Recipient */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Destinataire
+              </label>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-gray-400 shrink-0" />
+                <input
+                  type="email"
+                  value={emailTo}
+                  onChange={(e) => setEmailTo(e.target.value)}
+                  placeholder="email@fournisseur.com"
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            {/* Subject */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Objet
+              </label>
+              <p className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-700/40 rounded-lg px-3 py-2">
+                {buildEmailSubject(emailOrder)}
+              </p>
+            </div>
+
+            {/* Body preview */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Corps du message
+              </label>
+              <pre className="text-xs text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 rounded-lg px-3 py-3 max-h-64 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed">
+                {buildEmailBody(emailOrder)}
+              </pre>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
+              <button
+                onClick={() => setEmailOrder(null)}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleCopyToClipboard}
+                className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition text-sm"
+              >
+                {emailCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                {emailCopied ? 'Copié !' : 'Copier dans le presse-papier'}
+              </button>
+              <button
+                onClick={handleSendEmail}
+                className="flex items-center justify-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm shadow-sm"
+              >
+                <Mail className="w-4 h-4" />
+                Envoyer par email
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
@@ -625,8 +766,9 @@ function OrderRow({
         <td className="px-6 py-3">
           <div className="flex items-center gap-1">
             {order.status === 'brouillon' && (
-              <button onClick={onSend} title="Envoyer" className="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition">
-                <Send className="w-4 h-4" />
+              <button onClick={onSend} title="Envoyer" className="flex items-center gap-1 px-2.5 py-1 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition shadow-sm">
+                <Mail className="w-3.5 h-3.5" />
+                Envoyer
               </button>
             )}
             <button onClick={onPdf} title="Télécharger PDF" className="p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition">

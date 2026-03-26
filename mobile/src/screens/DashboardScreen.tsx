@@ -16,7 +16,7 @@ import { colors, typography, spacing, borderRadius } from '../theme';
 const STATS = [
   { label: 'Recettes', value: '38', icon: 'restaurant-outline', color: colors.primary },
   { label: 'Marge moy.', value: '66.9%', icon: 'trending-up-outline', color: colors.success },
-  { label: 'Cout moyen', value: '5.05\u20AC', icon: 'cash-outline', color: colors.warning },
+  { label: 'Cout moyen', value: '5.05€', icon: 'cash-outline', color: colors.warning },
   { label: 'Min / Max', value: '42% / 83%', icon: 'analytics-outline', color: colors.primaryLight },
 ];
 

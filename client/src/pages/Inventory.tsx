@@ -15,17 +15,17 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 
 const CATEGORY_EMOJIS: Record<string, string> = {
-  'Viandes': '\uD83E\uDD69',
-  'Poissons & Fruits de mer': '\uD83D\uDC1F',
-  'Legumes': '\uD83E\uDD66',
-  'Légumes': '\uD83E\uDD66',
-  'Fruits': '\uD83C\uDF4E',
-  'Produits laitiers': '\uD83E\uDDC0',
-  'Épices & Condiments': '\uD83C\uDF36\uFE0F',
-  'Féculents & Céréales': '\uD83C\uDF3E',
-  'Huiles & Matières grasses': '\uD83E\uDED2',
-  'Boissons': '\uD83E\uDD64',
-  'Autres': '\uD83D\uDCE6',
+  'Viandes': '🥩',
+  'Poissons & Fruits de mer': '🐟',
+  'Legumes': '🥦',
+  'Légumes': '🥦',
+  'Fruits': '🍎',
+  'Produits laitiers': '🧀',
+  'Épices & Condiments': '🌶️',
+  'Féculents & Céréales': '🌾',
+  'Huiles & Matières grasses': '🫒',
+  'Boissons': '🥤',
+  'Autres': '📦',
 };
 
 type SortKey = 'name' | 'currentStock' | 'value' | 'status';
@@ -324,7 +324,7 @@ export default function Inventory() {
             <TrendingUp className="w-4 h-4" /> Valeur totale estimée
           </div>
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-            {valueData ? `${valueData.totalValue.toFixed(2)} \u20AC` : '---'}
+            {valueData ? `${valueData.totalValue.toFixed(2)} €` : '---'}
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
@@ -356,7 +356,7 @@ export default function Inventory() {
             {alerts.map(item => (
               <div key={item.id} className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-lg px-3 py-2 border dark:border-slate-700">
                 <div>
-                  <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '\uD83D\uDCE6'} {item.ingredient.name}</span>
+                  <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'} {item.ingredient.name}</span>
                   <div className="text-xs text-slate-500 dark:text-slate-400">
                     {item.currentStock} / {item.minStock} {item.unit}
                   </div>
@@ -382,10 +382,10 @@ export default function Inventory() {
               const pct = valueData.totalValue > 0 ? (cat.value / valueData.totalValue * 100) : 0;
               return (
                 <div key={cat.category} className="flex items-center gap-2 bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
-                  <span>{CATEGORY_EMOJIS[cat.category] || '\uD83D\uDCE6'}</span>
+                  <span>{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                   <div>
                     <div className="text-sm font-medium">{cat.category}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{cat.value.toFixed(2)} \u20AC ({pct.toFixed(1)}%)</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
                   </div>
                   <div className="w-16 h-2 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-500 rounded-full" style={{ width: `${pct}%` }} />
@@ -459,7 +459,7 @@ export default function Inventory() {
                   <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <span>{CATEGORY_EMOJIS[item.ingredient.category] || '\uD83D\uDCE6'}</span>
+                        <span>{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
                         <div>
                           <div className="font-medium">{item.ingredient.name}</div>
                           <div className="text-xs text-slate-400">{item.ingredient.category}</div>
@@ -498,7 +498,7 @@ export default function Inventory() {
                     <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{item.unit}</td>
                     <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{item.minStock}</td>
                     <td className="px-4 py-3 text-slate-500 dark:text-slate-400 hidden md:table-cell">{item.maxStock ?? '---'}</td>
-                    <td className="px-4 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} \u20AC</td>
+                    <td className="px-4 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} €</td>
                     <td className="px-4 py-3">
                       {status === 'ok' && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">

@@ -14,9 +14,9 @@ import { colors, typography, spacing, borderRadius } from '../theme';
 // ---------- Mock data ----------
 
 const RECENT_SCANS = [
-  { id: '1', supplier: 'Metro Cash & Carry', date: '25/03/2026', items: 14, total: '487.30\u20AC' },
-  { id: '2', supplier: 'Rungis Frais', date: '22/03/2026', items: 8, total: '312.50\u20AC' },
-  { id: '3', supplier: 'Brake France', date: '18/03/2026', items: 21, total: '1 024.80\u20AC' },
+  { id: '1', supplier: 'Metro Cash & Carry', date: '25/03/2026', items: 14, total: '487.30€' },
+  { id: '2', supplier: 'Rungis Frais', date: '22/03/2026', items: 8, total: '312.50€' },
+  { id: '3', supplier: 'Brake France', date: '18/03/2026', items: 21, total: '1 024.80€' },
 ];
 
 // ---------- Screen ----------

@@ -320,7 +320,7 @@ export default function Ingredients() {
       .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
       .join('\n');
 
-    const BOM = '\uFEFF';
+    const BOM = '﻿';
     const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -474,7 +474,7 @@ export default function Ingredients() {
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{ing.supplier || '\u2014'}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{ing.supplier || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600" title="Modifier">

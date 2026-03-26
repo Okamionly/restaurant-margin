@@ -5,9 +5,70 @@ import { AuthRequest } from '../middleware/auth';
 const prisma = new PrismaClient();
 export const inventoryRouter = Router();
 
+// ── Fictive stock seed ────────────────────────────────────────────────────────
+// One-time seed: if all inventory items have stock=0, populate with realistic
+// random quantities based on ingredient category.
+let stockSeeded = false;
+
+interface StockRange { min: number; max: number }
+const STOCK_RANGES: Record<string, StockRange> = {
+  'Légumes':                  { min: 5,   max: 30 },
+  'Legumes':                  { min: 5,   max: 30 },
+  'Viandes':                  { min: 2,   max: 15 },
+  'Poissons & Fruits de mer': { min: 1,   max: 10 },
+  'Produits laitiers':        { min: 5,   max: 20 },
+  'Épices & Condiments':      { min: 0.5, max: 3 },
+  'Fruits':                   { min: 3,   max: 20 },
+  'Féculents & Céréales':     { min: 5,   max: 25 },
+  'Huiles & Matières grasses':{ min: 2,   max: 10 },
+  'Boissons':                 { min: 5,   max: 30 },
+  'Autres':                   { min: 2,   max: 15 },
+};
+
+function randomBetween(min: number, max: number): number {
+  return Math.round((min + Math.random() * (max - min)) * 100) / 100;
+}
+
+async function seedFictiveStock() {
+  if (stockSeeded) return;
+  stockSeeded = true;
+
+  const items = await prisma.inventoryItem.findMany({
+    include: { ingredient: true },
+  });
+
+  // Only seed if ALL items have stock=0 (avoid overwriting real data)
+  const allZero = items.length > 0 && items.every(i => i.currentStock === 0);
+  if (!allZero) return;
+
+  console.log(`[inventory] Seeding fictive stock for ${items.length} items...`);
+
+  for (const item of items) {
+    const category = item.ingredient.category;
+    const range = STOCK_RANGES[category] || { min: 2, max: 15 };
+    const stock = randomBetween(range.min, range.max);
+    const minStock = Math.round(stock * 0.2 * 100) / 100;   // ~20% of stock
+    const maxStock = Math.round(stock * 2.0 * 100) / 100;    // ~200% of stock
+
+    await prisma.inventoryItem.update({
+      where: { id: item.id },
+      data: {
+        currentStock: stock,
+        minStock,
+        maxStock,
+      },
+    });
+  }
+
+  console.log(`[inventory] Fictive stock seeded successfully.`);
+}
+
 // GET all inventory items with ingredient details
 inventoryRouter.get('/', async (_req: AuthRequest, res: Response) => {
   try {
+    // One-time seed on first load
+    await seedFictiveStock();
+
     const items = await prisma.inventoryItem.findMany({
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },

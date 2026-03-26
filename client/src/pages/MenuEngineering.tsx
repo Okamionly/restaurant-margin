@@ -46,54 +46,54 @@ interface Recipe {
 // ── Quadrant config ──────────────────────────────────────────────────────────
 const QUADRANT_CONFIG = {
   star: {
-    label: 'Stars',
-    emoji: '\u2B50',
+    label: 'Vedettes',
+    emoji: '⭐',
     color: 'emerald',
     bg: 'bg-emerald-50 dark:bg-emerald-950/30',
     border: 'border-emerald-200 dark:border-emerald-800',
     text: 'text-emerald-700 dark:text-emerald-300',
     badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300',
     dot: '#10b981',
-    action: 'PROMOUVOIR',
+    action: 'METTRE EN AVANT',
     desc: 'Haute marge + populaire',
     recommendation: 'Mettre en avant sur le menu, maintenir la qualité',
   },
   puzzle: {
-    label: 'Puzzles',
-    emoji: '\uD83E\uDDE9',
+    label: 'Énigmes',
+    emoji: '🧩',
     color: 'blue',
     bg: 'bg-blue-50 dark:bg-blue-950/30',
     border: 'border-blue-200 dark:border-blue-800',
     text: 'text-blue-700 dark:text-blue-300',
     badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
     dot: '#3b82f6',
-    action: 'MARKETER',
+    action: 'DÉVELOPPER',
     desc: 'Haute marge + peu populaire',
     recommendation: 'Améliorer la visibilité, repositionner sur le menu',
   },
   plow: {
-    label: 'Vaches',
-    emoji: '\uD83D\uDC2E',
+    label: 'Valeurs sûres',
+    emoji: '🐮',
     color: 'amber',
     bg: 'bg-amber-50 dark:bg-amber-950/30',
     border: 'border-amber-200 dark:border-amber-800',
     text: 'text-amber-700 dark:text-amber-300',
     badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300',
     dot: '#f59e0b',
-    action: 'OPTIMISER PRIX',
+    action: 'REFORMULER',
     desc: 'Basse marge + populaire',
     recommendation: 'Augmenter le prix ou réduire le coût des ingrédients',
   },
   dog: {
-    label: 'Dogs',
-    emoji: '\uD83D\uDC15',
+    label: 'Poids morts',
+    emoji: '🐕',
     color: 'red',
     bg: 'bg-red-50 dark:bg-red-950/30',
     border: 'border-red-200 dark:border-red-800',
     text: 'text-red-700 dark:text-red-300',
     badge: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
     dot: '#ef4444',
-    action: 'RETIRER',
+    action: 'REMPLACER',
     desc: 'Basse marge + peu populaire',
     recommendation: 'Envisager de retirer du menu ou reformuler',
   },
@@ -185,16 +185,16 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
         {/* Quadrant labels */}
         <text x={padding.left + 8} y={padding.top + 18} className="fill-blue-400 dark:fill-blue-500" fontSize={11} fontWeight={600}>
-          {QUADRANT_CONFIG.puzzle.emoji} Puzzles
+          {QUADRANT_CONFIG.puzzle.emoji} {QUADRANT_CONFIG.puzzle.label}
         </text>
         <text x={padding.left + plotW - 8} y={padding.top + 18} className="fill-emerald-500 dark:fill-emerald-400" fontSize={11} fontWeight={600} textAnchor="end">
-          {QUADRANT_CONFIG.star.emoji} Stars
+          {QUADRANT_CONFIG.star.emoji} {QUADRANT_CONFIG.star.label}
         </text>
         <text x={padding.left + 8} y={padding.top + plotH - 8} className="fill-red-400 dark:fill-red-500" fontSize={11} fontWeight={600}>
-          {QUADRANT_CONFIG.dog.emoji} Dogs
+          {QUADRANT_CONFIG.dog.emoji} {QUADRANT_CONFIG.dog.label}
         </text>
         <text x={padding.left + plotW - 8} y={padding.top + plotH - 8} className="fill-amber-500 dark:fill-amber-400" fontSize={11} fontWeight={600} textAnchor="end">
-          {QUADRANT_CONFIG.plow.emoji} Vaches
+          {QUADRANT_CONFIG.plow.emoji} {QUADRANT_CONFIG.plow.label}
         </text>
 
         {/* Axes */}
@@ -539,7 +539,7 @@ export default function MenuEngineering() {
                 onChange={e => setCustomFrom(e.target.value)}
                 className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm"
               />
-              <span className="text-slate-400">\u2192</span>
+              <span className="text-slate-400">→</span>
               <input
                 type="date"
                 value={customTo}
@@ -639,10 +639,10 @@ export default function MenuEngineering() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Stars</span>
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Puzzles</span>
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Vaches</span>
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Dogs</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Vedettes</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Énigmes</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Valeurs sûres</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Poids morts</span>
                 </div>
               </div>
 

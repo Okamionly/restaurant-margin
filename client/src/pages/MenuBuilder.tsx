@@ -548,19 +548,19 @@ export default function MenuBuilder() {
           />
           <StatCard
             label="Prix moyen"
-            value={`${globalAvgPrice.toFixed(2)} \u20AC`}
+            value={`${globalAvgPrice.toFixed(2)} €`}
             icon={<DollarSign className="w-5 h-5 text-white" />}
             iconBg="bg-purple-600"
           />
           <StatCard
             label="Fourchette prix"
-            value={`${globalMinPrice.toFixed(0)} - ${globalMaxPrice.toFixed(0)} \u20AC`}
+            value={`${globalMinPrice.toFixed(0)} - ${globalMaxPrice.toFixed(0)} €`}
             icon={<ArrowUpDown className="w-5 h-5 text-white" />}
             iconBg="bg-cyan-600"
           />
           <StatCard
             label={`CA / service (~${estimatedCoversPerService} cvts)`}
-            value={`${revenuePotentialPerService.toFixed(0)} \u20AC`}
+            value={`${revenuePotentialPerService.toFixed(0)} €`}
             icon={<BarChart3 className="w-5 h-5 text-white" />}
             iconBg="bg-amber-600"
           />
@@ -640,7 +640,7 @@ export default function MenuBuilder() {
                         className="inline-flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
                       >
                         <Pencil className="w-3 h-3" />
-                        {menuDuJourPrice ? `Prix menu : ${menuDuJourPrice} \u20AC` : 'Definir le prix du menu'}
+                        {menuDuJourPrice ? `Prix menu : ${menuDuJourPrice} €` : 'Definir le prix du menu'}
                       </button>
                     )}
                   </div>

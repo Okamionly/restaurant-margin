@@ -356,7 +356,7 @@ export default function Mercuriale() {
 
   const SortIcon = ({ col }: { col: SortKey }) => (
     <span className={`ml-1 inline-block ${sortKey === col ? 'text-blue-500' : 'text-gray-400'}`}>
-      {sortKey === col && sortDir === 'desc' ? '\u25BC' : '\u25B2'}
+      {sortKey === col && sortDir === 'desc' ? '▼' : '▲'}
     </span>
   );
 
@@ -415,7 +415,7 @@ export default function Mercuriale() {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-gray-500 dark:text-gray-400">{a.oldPrice.toFixed(2)} €</span>
-                    <span className="text-gray-400">\u2192</span>
+                    <span className="text-gray-400">→</span>
                     <span className={`font-medium ${up ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                       {a.newPrice.toFixed(2)} €
                     </span>

@@ -12,6 +12,10 @@ suppliersRouter.get('/', async (_req: AuthRequest, res: Response) => {
       orderBy: { name: 'asc' },
       include: {
         _count: { select: { ingredients: true } },
+        ingredients: {
+          orderBy: { name: 'asc' },
+          select: { id: true, name: true, unit: true, pricePerUnit: true, category: true },
+        },
       },
     });
     res.json(suppliers);

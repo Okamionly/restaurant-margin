@@ -257,7 +257,13 @@ app.get('/api/suppliers', authMiddleware, async (_req, res) => {
   try {
     const suppliers = await prisma.supplier.findMany({
       orderBy: { name: 'asc' },
-      include: { _count: { select: { ingredients: true } } },
+      include: {
+        _count: { select: { ingredients: true } },
+        ingredients: {
+          orderBy: { name: 'asc' },
+          select: { id: true, name: true, unit: true, pricePerUnit: true, category: true },
+        },
+      },
     });
     res.json(suppliers);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération fournisseurs' }); }

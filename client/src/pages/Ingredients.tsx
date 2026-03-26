@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Loader2, Check, ChevronDown, X, BookOpen } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Printer, Loader2, Check, ChevronDown, X, BookOpen } from 'lucide-react';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier } from '../services/api';
 import type { Ingredient, Supplier } from '../types';
@@ -402,13 +402,9 @@ export default function Ingredients() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Ingrédients</h2>
         <div className="flex gap-2">
-          <button onClick={exportCSV} className="btn-secondary flex items-center gap-2 text-sm" title="Exporter en CSV">
-            <Download className="w-4 h-4" /> Export CSV
+          <button onClick={() => window.print()} className="btn-secondary flex items-center gap-2 text-sm no-print" title="Imprimer">
+            <Printer className="w-4 h-4" /> Imprimer
           </button>
-          <label className={`btn-secondary flex items-center gap-2 text-sm cursor-pointer ${importing ? 'opacity-50' : ''}`} title="Importer depuis CSV">
-            <Upload className="w-4 h-4" /> Import CSV
-            <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleImportCSV} disabled={importing} />
-          </label>
           <button onClick={openNew} className="btn-primary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Ajouter
           </button>

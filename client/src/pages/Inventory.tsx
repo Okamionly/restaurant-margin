@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
-  ArrowUpDown, Download, TrendingUp, CheckCircle2, XCircle, MinusCircle,
+  ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
   PackagePlus, Loader2, PieChart
 } from 'lucide-react';
 import {
@@ -306,7 +306,7 @@ export default function Inventory() {
             <Download className="w-4 h-4" /> Export CSV
           </button>
           <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors no-print">
-            <Download className="w-4 h-4" /> Imprimer
+            <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
       </div>

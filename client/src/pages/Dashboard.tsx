@@ -2,13 +2,14 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   TrendingUp, TrendingDown, DollarSign, ChefHat, Eye, Briefcase,
-  PieChart as PieChartIcon, AlertTriangle, Plus, Download, ShieldAlert,
+  PieChart as PieChartIcon, AlertTriangle, Plus, Download, Printer, ShieldAlert,
   Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight, ArrowUpRight, ArrowDownRight,
   ChevronDown, ChevronRight, Package, ClipboardList, FileText, ShoppingCart,
+  Lightbulb, Sparkles, Star, Zap, ArrowUp, ArrowDown,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend, Treemap,
+  Tooltip, ResponsiveContainer, Legend, Treemap, LineChart, Line, LabelList,
 } from 'recharts';
 import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -253,6 +254,7 @@ export default function Dashboard() {
   const [couverts, setCouverts] = useState(50);
   const [serviceMode, setServiceMode] = useState<'all' | 'lunch' | 'dinner'>('all');
   const [avgPricePerCouvert, setAvgPricePerCouvert] = useState(25);
+  const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -337,7 +339,7 @@ export default function Dashboard() {
         margin: r.margin.marginPercent,
         category: r.category,
         id: r.id,
-        fill: r.margin.marginPercent >= 70 ? '#059669' : r.margin.marginPercent >= 60 ? '#d97706' : '#dc2626',
+        fill: r.margin.marginPercent >= 70 ? '#059669' : r.margin.marginPercent >= 50 ? '#d97706' : '#dc2626',
       }));
 
     // Top 10 by margin
@@ -425,6 +427,99 @@ export default function Dashboard() {
       else coeffBuckets[5].count++;
     });
 
+    // Menu du Marché: top 4 highest-margin recipes as daily suggestions
+    const menuDuMarche = [...recipes]
+      .sort((a, b) => b.margin.marginPercent - a.margin.marginPercent)
+      .slice(0, 4)
+      .map(r => ({
+        id: r.id,
+        name: r.name,
+        category: r.category,
+        marginPercent: r.margin.marginPercent,
+        costPerPortion: r.margin.costPerPortion,
+        suggestedPrice: r.sellingPrice,
+      }));
+
+    // AI Suggestions based on data analysis
+    const aiSuggestions: { id: string; type: 'opportunity' | 'warning' | 'info'; icon: string; text: string; action: string; actionLabel: string }[] = [];
+    // Find worst margin recipe that could be improved
+    if (worst5.length > 0) {
+      const w = worst5[0];
+      const suggestedIncrease = Math.ceil((w.margin.totalCostPerPortion || w.margin.costPerPortion) * 0.15);
+      aiSuggestions.push({
+        id: 'price-increase',
+        type: 'opportunity',
+        icon: 'trending-up',
+        text: `Augmenter le prix du ${w.name} de ${suggestedIncrease}€ (+${((suggestedIncrease / w.sellingPrice) * 100).toFixed(0)}% marge)`,
+        action: `/recipes/${w.id}`,
+        actionLabel: 'Appliquer',
+      });
+    }
+    // Find cheapest ingredient category for opportunity
+    if (foodCostData.length > 1) {
+      const cheapestCat = foodCostData[foodCostData.length - 1];
+      aiSuggestions.push({
+        id: 'cheap-category',
+        type: 'info',
+        icon: 'sparkles',
+        text: `La catégorie "${cheapestCat.name}" est la moins coûteuse — Idéale pour de nouveaux plats`,
+        action: '/ingredients',
+        actionLabel: 'Voir',
+      });
+    }
+    // Low-margin dishes warning
+    const lowMarginCount = recipes.filter(r => r.margin.marginPercent < 50).length;
+    if (lowMarginCount > 0) {
+      aiSuggestions.push({
+        id: 'low-margin',
+        type: 'warning',
+        icon: 'alert',
+        text: `${lowMarginCount} plat${lowMarginCount > 1 ? 's' : ''} sous 50% de marge — À optimiser`,
+        action: '/recipes',
+        actionLabel: 'Voir',
+      });
+    }
+    // Best performer
+    if (top10Margin.length > 0) {
+      const best = top10Margin[0];
+      aiSuggestions.push({
+        id: 'best-performer',
+        type: 'opportunity',
+        icon: 'star',
+        text: `"${best.name}" est votre star à ${best.margin.marginPercent.toFixed(1)}% — Mettez-le en avant`,
+        action: `/recipes/${best.id}`,
+        actionLabel: 'Voir',
+      });
+    }
+
+    // Profitability projection data (6 months)
+    const projectionData = Array.from({ length: 6 }, (_, i) => {
+      const month = i + 1;
+      const monthlyRevenue = dailyRevenue * 26;
+      const monthlyCost = dailyCost * 26;
+      const fixedCosts = 2000; // Estimated fixed monthly costs
+      const growthFactor = 1 + (i * 0.02); // 2% monthly growth
+      return {
+        name: `Mois ${month}`,
+        revenue: Math.round(monthlyRevenue * growthFactor),
+        costs: Math.round((monthlyCost * 26 > 0 ? monthlyCost : monthlyRevenue * 0.6) * (1 + i * 0.01)),
+        profit: Math.round((monthlyRevenue * growthFactor) - ((monthlyCost > 0 ? monthlyCost : monthlyRevenue * 0.6) * (1 + i * 0.01))),
+      };
+    });
+
+    // Cost breakdown by category with top ingredient per category
+    const categoryBreakdown = foodCostData.map(cat => {
+      const catIngredients = Array.from(ingredientCostMap.values()).filter(i => i.category === cat.name);
+      const topIng = catIngredients.sort((a, b) => b.cost - a.cost)[0];
+      return {
+        name: cat.name,
+        totalCost: cat.value,
+        pctOfTotal: totalFoodCostAll > 0 ? ((cat.value / totalFoodCostAll) * 100) : 0,
+        topIngredient: topIng?.name || '-',
+        fill: cat.fill,
+      };
+    });
+
     return {
       totalRecipes, avgMargin, avgCoefficient, bestMargin, worstMargin,
       avgFoodCost, avgLaborCost, avgTotalCost,
@@ -434,6 +529,7 @@ export default function Dashboard() {
       top10Margin, top10Coeff, worst5, alertRecipes,
       foodCostData, totalFoodCostAll, topIngredients,
       allergenSummary, coeffBuckets,
+      menuDuMarche, aiSuggestions, projectionData, categoryBreakdown,
     };
   }, [recipes, couverts, serviceMode, avgPricePerCouvert]);
 
@@ -516,10 +612,10 @@ export default function Dashboard() {
             <FileText className="w-4 h-4" /> Voir l'inventaire
           </Link>
           <button
-            onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            onClick={() => window.print()}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm no-print"
           >
-            <Download className="w-4 h-4" /> Exporter CSV
+            <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
       </div>
@@ -568,6 +664,86 @@ export default function Dashboard() {
 
       {/* ── Alert Ticker Banner ──────────────────────────────────────── */}
       <AlertTicker alerts={stats.alertRecipes} />
+
+      {/* ── Menu du Marché + Suggestions IA ────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Menu du Marché */}
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Star className="w-5 h-5 text-amber-500" />
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Suggestion du jour</h3>
+            <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">Menu du Marché</span>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Plats recommandés basés sur les meilleures marges</p>
+          <div className="space-y-3">
+            {stats.menuDuMarche.map((dish, i) => (
+              <Link
+                key={dish.id}
+                to={`/recipes/${dish.id}`}
+                className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors group"
+              >
+                <span className="text-lg font-bold text-amber-500 w-6 text-center">{i + 1}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">{dish.name}</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">{dish.category}</p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-sm font-bold text-green-600 dark:text-green-400">{dish.marginPercent.toFixed(1)}%</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">Coût {dish.costPerPortion.toFixed(2)}€ · Vente {dish.suggestedPrice.toFixed(2)}€</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium mt-3">
+            Voir toutes les suggestions <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        {/* Suggestions IA */}
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-purple-500" />
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Suggestions IA</h3>
+          </div>
+          <div className="space-y-3">
+            {stats.aiSuggestions.map(suggestion => {
+              const colorMap = {
+                opportunity: 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10',
+                warning: 'border-l-orange-500 bg-orange-50/50 dark:bg-orange-900/10',
+                info: 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10',
+              };
+              const btnColorMap = {
+                opportunity: 'bg-green-600 hover:bg-green-700 text-white',
+                warning: 'bg-orange-600 hover:bg-orange-700 text-white',
+                info: 'bg-blue-600 hover:bg-blue-700 text-white',
+              };
+              const iconMap = {
+                'trending-up': <TrendingUp className="w-4 h-4" />,
+                'sparkles': <Lightbulb className="w-4 h-4" />,
+                'alert': <AlertTriangle className="w-4 h-4" />,
+                'star': <Zap className="w-4 h-4" />,
+              };
+              return (
+                <div
+                  key={suggestion.id}
+                  className={`flex items-center gap-3 p-3 rounded-lg border-l-4 ${colorMap[suggestion.type]}`}
+                >
+                  <div className={`flex-shrink-0 ${suggestion.type === 'opportunity' ? 'text-green-600' : suggestion.type === 'warning' ? 'text-orange-600' : 'text-blue-600'}`}>
+                    {iconMap[suggestion.icon as keyof typeof iconMap] || <Lightbulb className="w-4 h-4" />}
+                  </div>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 flex-1">{suggestion.text}</p>
+                  <Link
+                    to={suggestion.action}
+                    className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${btnColorMap[suggestion.type]}`}
+                  >
+                    {suggestion.actionLabel}
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
       {/* ── Tab Navigation (card-style) ──────────────────────────────── */}
       <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
@@ -716,17 +892,32 @@ export default function Dashboard() {
                   <Utensils className="w-5 h-5 text-blue-600" />
                   <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition</h3>
                 </div>
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
                     <Pie
                       data={stats.categoryData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={50}
-                      outerRadius={85}
-                      paddingAngle={3}
+                      innerRadius={40}
+                      outerRadius={95}
+                      paddingAngle={2}
                       dataKey="count"
                       nameKey="name"
+                      label={(props: any) => {
+                        const { cx, cy, midAngle, innerRadius, outerRadius, name, count, percent } = props;
+                        const RADIAN = Math.PI / 180;
+                        const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.55;
+                        const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
+                        const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
+                        if ((percent || 0) < 0.08) return null;
+                        const label = String(name || '');
+                        return (
+                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '10px', fontWeight: 'bold', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+                            {label.length > 8 ? label.slice(0, 7) + '…' : label} ({count})
+                          </text>
+                        );
+                      }}
+                      labelLine={false}
                     >
                       {stats.categoryData.map((_entry, index) => (
                         <Cell key={index} fill={COLORS[index % COLORS.length]} />
@@ -777,17 +968,33 @@ export default function Dashboard() {
         <div className="space-y-6">
           {/* Full width horizontal bar chart of ALL recipes sorted by margin */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <TrendingUp className="w-5 h-5 text-green-600" />
               <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Toutes les recettes par marge</h3>
-              <div className="flex items-center gap-4 ml-auto text-xs text-slate-400 dark:text-slate-500">
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-600 inline-block" /> &ge; 70%</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 60-70%</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> &lt; 60%</span>
+              <div className="flex items-center gap-2 ml-auto">
+                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+                  <button
+                    onClick={() => setMarginSort('margin')}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'margin' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
+                  >
+                    <ArrowDown className="w-3 h-3" /> Marge
+                  </button>
+                  <button
+                    onClick={() => setMarginSort('name')}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'name' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
+                  >
+                    <ArrowDown className="w-3 h-3" /> Nom
+                  </button>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-600 inline-block" /> &ge; 70%</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 50-70%</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> &lt; 50%</span>
+                </div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={Math.max(300, stats.allByMargin.length * 28)}>
-              <BarChart data={stats.allByMargin} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
+              <BarChart data={marginSort === 'name' ? [...stats.allByMargin].sort((a, b) => a.fullName.localeCompare(b.fullName)) : stats.allByMargin} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} unit="%" tick={{ fontSize: 11 }} />
                 <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 11 }} />
@@ -866,7 +1073,7 @@ export default function Dashboard() {
         <div className="space-y-6">
           {/* Treemap + Stacked bar side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Food Cost Treemap */}
+            {/* Food Cost Pie Chart with labels inside segments */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <PieChartIcon className="w-5 h-5 text-blue-600" />
@@ -877,12 +1084,42 @@ export default function Dashboard() {
               </div>
               {stats.foodCostData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={320}>
-                  <Treemap
-                    data={stats.foodCostData.map(d => ({ ...d, totalFoodCost: stats.totalFoodCostAll }))}
-                    dataKey="value"
-                    nameKey="name"
-                    content={<TreemapContent totalFoodCost={stats.totalFoodCostAll} />}
-                  >
+                  <PieChart>
+                    <Pie
+                      data={stats.foodCostData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={0}
+                      outerRadius={130}
+                      paddingAngle={1}
+                      dataKey="value"
+                      nameKey="name"
+                      label={(props: any) => {
+                        const { cx, cy, midAngle, innerRadius, outerRadius, name, percent } = props;
+                        const RADIAN = Math.PI / 180;
+                        const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.5;
+                        const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
+                        const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
+                        if ((percent || 0) < 0.05) return null;
+                        const pctStr = ((percent || 0) * 100).toFixed(0);
+                        const label = String(name || '');
+                        return (
+                          <g>
+                            <text x={x} y={y - 6} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '10px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                              {label.length > 10 ? label.slice(0, 9) + '…' : label}
+                            </text>
+                            <text x={x} y={y + 8} fill="rgba(255,255,255,0.85)" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '9px', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                              {pctStr}%
+                            </text>
+                          </g>
+                        );
+                      }}
+                      labelLine={false}
+                    >
+                      {stats.foodCostData.map((entry, index) => (
+                        <Cell key={index} fill={entry.fill} />
+                      ))}
+                    </Pie>
                     <Tooltip
                       content={({ active, payload }) => {
                         if (!active || !payload?.length) return null;
@@ -896,7 +1133,7 @@ export default function Dashboard() {
                         );
                       }}
                     />
-                  </Treemap>
+                  </PieChart>
                 </ResponsiveContainer>
               ) : (
                 <p className="text-center text-slate-400 py-12">Aucune donnée</p>
@@ -980,6 +1217,43 @@ export default function Dashboard() {
               </div>
             </div>
           )}
+
+          {/* Category Breakdown Table */}
+          {stats.categoryBreakdown.length > 0 && (
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <ClipboardList className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Détail par catégorie d'ingrédients</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                      <th className="pb-2 font-medium">Catégorie</th>
+                      <th className="pb-2 text-right font-medium">Coût total</th>
+                      <th className="pb-2 text-right font-medium">% du total</th>
+                      <th className="pb-2 font-medium">Ingrédient principal</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                    {stats.categoryBreakdown.map(cat => (
+                      <tr key={cat.name} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">
+                          <span className="inline-flex items-center gap-2">
+                            <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.fill }} />
+                            {cat.name}
+                          </span>
+                        </td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-slate-700 dark:text-slate-300">{cat.totalCost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">{cat.pctOfTotal.toFixed(1)}%</td>
+                        <td className="py-2.5 text-slate-500 dark:text-slate-400">{cat.topIngredient}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1051,6 +1325,58 @@ export default function Dashboard() {
               <div className="bg-white/10 rounded-lg p-4">
                 <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
                 <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+              </div>
+            </div>
+          </div>
+
+          {/* Projections Line Chart */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Projections sur 6 mois</h3>
+              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">Revenus vs Coûts</span>
+            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={stats.projectionData} margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`} />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (!active || !payload?.length) return null;
+                    return (
+                      <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm min-w-[180px]">
+                        <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1.5">{label}</p>
+                        {payload.map((p: any, i: number) => (
+                          <div key={i} className="flex items-center gap-2 mt-0.5">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                            <span className="text-slate-500 dark:text-slate-400">{p.name}:</span>
+                            <span className="font-semibold ml-auto" style={{ color: p.color }}>{p.value?.toLocaleString('fr-FR')} €</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }}
+                />
+                <Line type="monotone" dataKey="revenue" name="Revenus" stroke="#2563eb" strokeWidth={2.5} dot={{ fill: '#2563eb', r: 4 }} />
+                <Line type="monotone" dataKey="costs" name="Coûts" stroke="#dc2626" strokeWidth={2.5} dot={{ fill: '#dc2626', r: 4 }} strokeDasharray="5 5" />
+                <Line type="monotone" dataKey="profit" name="Profit" stroke="#059669" strokeWidth={2.5} dot={{ fill: '#059669', r: 4 }} />
+                <Legend />
+              </LineChart>
+            </ResponsiveContainer>
+            {/* Break-even indicator */}
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg px-3 py-2">
+                <Target className="w-4 h-4 text-blue-600" />
+                <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">
+                  Seuil de rentabilité : {stats.seuilRentabilite > 0 ? `${stats.seuilRentabilite} couverts/jour` : 'Rentable dès le 1er couvert'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg px-3 py-2">
+                <DollarSign className="w-4 h-4 text-green-600" />
+                <span className="text-sm text-green-800 dark:text-green-300 font-medium">
+                  Profit mensuel estimé : {(stats.dailyProfit * 26).toLocaleString('fr-FR')} €
+                </span>
               </div>
             </div>
           </div>

@@ -101,17 +101,26 @@
 
 /* Print styles */
 @media print {
-  header, nav, .no-print {
+  /* Hide sidebar, header, connectivity bar, and elements marked no-print */
+  nav, header, aside, .no-print, .sidebar {
     display: none !important;
   }
+  /* Full width content */
   main {
+    margin-left: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
+    width: 100% !important;
   }
+  /* Clean backgrounds */
   body {
     background: white !important;
     color: black !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+  /* Avoid page breaks inside cards/tables */
+  .rounded-2xl, .rounded-xl, table {
+    break-inside: avoid;
   }
 }

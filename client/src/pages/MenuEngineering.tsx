@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Star, TrendingUp, Target, Zap, AlertCircle, BarChart3, Plus,
-  Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Upload, X,
+  Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Printer, Upload, X,
   Loader2, ShoppingBag, DollarSign, Percent, ChefHat, Eye,
   Download, Filter, RefreshCw,
 } from 'lucide-react';
@@ -495,10 +495,10 @@ export default function MenuEngineering() {
               <Plus className="w-4 h-4" /> Saisir vente
             </button>
             <button
-              onClick={() => setShowBulkModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-medium text-sm transition-all"
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-medium text-sm transition-all no-print"
             >
-              <Upload className="w-4 h-4" /> Import CSV
+              <Printer className="w-4 h-4" /> Imprimer
             </button>
           </div>
         </div>

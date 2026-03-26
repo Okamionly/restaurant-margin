@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, ChevronDown, ChevronUp, Trash2, CheckCircle, Send, FileText, X, Euro, AlertCircle, Tag, ShoppingCart, Clock, ChevronLeft, ChevronRight, Megaphone, Sparkles, ExternalLink } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Trash2, CheckCircle, Send, FileText, X, Euro, AlertCircle, Tag, ShoppingCart, Clock, ChevronLeft, ChevronRight, Megaphone, Sparkles, ExternalLink, BarChart3, History, ArrowUpDown, Star, TrendingDown, Eye, XCircle } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -132,8 +132,46 @@ const BANNER_ADS = [
   },
 ];
 
-// ── Promo Card Component ────────────────────────────────────────────────────
-function PromoCard({ promo, onOrder }: { promo: SupplierPromo; onOrder: (p: SupplierPromo) => void }) {
+// ── Mock RFQ History ────────────────────────────────────────────────────────
+interface RFQHistoryEntry {
+  id: number;
+  title: string;
+  status: 'closed' | 'cancelled';
+  createdAt: string;
+  closedAt: string;
+  supplierCount: number;
+  itemCount: number;
+  bestSaving: string;
+  selectedSupplier: string;
+}
+
+const MOCK_RFQ_HISTORY: RFQHistoryEntry[] = [
+  { id: 101, title: 'L\u00e9gumes bio - Semaine 11', status: 'closed', createdAt: '2026-03-09', closedAt: '2026-03-12', supplierCount: 3, itemCount: 8, bestSaving: '-12%', selectedSupplier: 'Pomona' },
+  { id: 102, title: 'Viandes Charolaises', status: 'closed', createdAt: '2026-03-01', closedAt: '2026-03-05', supplierCount: 2, itemCount: 4, bestSaving: '-8%', selectedSupplier: 'Transgourmet' },
+  { id: 103, title: 'Produits laitiers Mars', status: 'cancelled', createdAt: '2026-02-25', closedAt: '2026-02-27', supplierCount: 4, itemCount: 6, bestSaving: '-', selectedSupplier: '-' },
+  { id: 104, title: 'Fruits de mer St-Valentin', status: 'closed', createdAt: '2026-02-10', closedAt: '2026-02-13', supplierCount: 3, itemCount: 5, bestSaving: '-18%', selectedSupplier: 'Brake France' },
+  { id: 105, title: 'Huiles et condiments Q1', status: 'closed', createdAt: '2026-01-15', closedAt: '2026-01-20', supplierCount: 3, itemCount: 10, bestSaving: '-15%', selectedSupplier: 'Metro' },
+];
+
+// ── Promo Card Component (enhanced) ────────────────────────────────────────
+function PromoCard({ promo, onOrder, isSelected, onToggleSelect }: {
+  promo: SupplierPromo;
+  onOrder: (p: SupplierPromo) => void;
+  isSelected: boolean;
+  onToggleSelect: (id: string) => void;
+}) {
+  const supplierBgSolid = promo.supplier === 'Transgourmet' ? 'bg-red-600' :
+    promo.supplier === 'Metro' ? 'bg-blue-600' :
+    promo.supplier === 'Pomona' ? 'bg-green-600' :
+    promo.supplier === 'Sysco France' ? 'bg-indigo-600' :
+    'bg-orange-600';
+
+  const supplierBgHover = promo.supplier === 'Transgourmet' ? 'hover:bg-red-700' :
+    promo.supplier === 'Metro' ? 'hover:bg-blue-700' :
+    promo.supplier === 'Pomona' ? 'hover:bg-green-700' :
+    promo.supplier === 'Sysco France' ? 'hover:bg-indigo-700' :
+    'hover:bg-orange-700';
+
   return (
     <div
       className={`
@@ -141,51 +179,65 @@ function PromoCard({ promo, onOrder }: { promo: SupplierPromo; onOrder: (p: Supp
         p-4 flex flex-col gap-3 transition-all duration-200
         hover:shadow-lg hover:scale-[1.02] hover:-translate-y-0.5
         ${promo.highlight ? 'ring-2 ring-amber-300 dark:ring-amber-600 shadow-md' : 'shadow-sm'}
+        ${isSelected ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''}
       `}
     >
-      {/* Sponsored badge */}
-      <span className="absolute top-2.5 right-2.5 px-1.5 py-0.5 rounded text-[9px] font-medium tracking-wide uppercase bg-white/80 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">
-        Sponsoris\u00e9
-      </span>
+      {/* Top bar: checkbox + sponsored */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggleSelect(promo.id); }}
+          className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium transition-all ${
+            isSelected
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white/60 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700'
+          }`}
+          title="S\u00e9lectionner pour comparaison"
+        >
+          <BarChart3 className="w-3 h-3" />
+          {isSelected ? 'S\u00e9lectionn\u00e9' : 'Comparer'}
+        </button>
+        <span className="px-1.5 py-0.5 rounded text-[9px] font-medium tracking-wide uppercase bg-white/80 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">
+          Sponsoris\u00e9
+        </span>
+      </div>
 
-      {/* Supplier header */}
+      {/* Supplier header with rating */}
       <div className="flex items-center gap-2.5">
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm text-white ${
-          promo.supplier === 'Transgourmet' ? 'bg-red-600' :
-          promo.supplier === 'Metro' ? 'bg-blue-600' :
-          promo.supplier === 'Pomona' ? 'bg-green-600' :
-          promo.supplier === 'Sysco France' ? 'bg-indigo-600' :
-          'bg-orange-600'
-        }`}>
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm text-white shadow-sm ${supplierBgSolid}`}>
           {promo.supplierIcon}
         </div>
         <div className="min-w-0 flex-1">
           <p className={`text-sm font-bold ${promo.supplierColor} truncate`}>{promo.supplier}</p>
-          {promo.badge && (
-            <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-              <Sparkles className="w-3 h-3" />
-              {promo.badge}
+          <div className="flex items-center gap-2">
+            {promo.badge && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                <Sparkles className="w-3 h-3" />
+                {promo.badge}
+              </span>
+            )}
+            <span className="flex items-center gap-0.5 text-[10px] text-slate-400">
+              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />4.5
             </span>
-          )}
+          </div>
         </div>
       </div>
 
-      {/* Product info */}
-      <div className="flex-1 min-h-0">
+      {/* Product info with better hierarchy */}
+      <div className="flex-1 min-h-0 space-y-1.5">
         <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm leading-snug">{promo.product}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">{promo.description}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">{promo.description}</p>
       </div>
 
-      {/* Price / Discount */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      {/* Price / Discount - enhanced */}
+      <div className="flex items-end justify-between pt-1 border-t border-black/5 dark:border-white/5">
+        <div className="flex items-baseline gap-2">
           {promo.discount && (
-            <span className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm font-bold">
+            <span className="px-2.5 py-1 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-base font-extrabold tracking-tight">
               {promo.discount}
             </span>
           )}
           {promo.price && (
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{promo.price}</span>
+            <span className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">{promo.price}</span>
           )}
         </div>
         <div className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500">
@@ -198,14 +250,9 @@ function PromoCard({ promo, onOrder }: { promo: SupplierPromo; onOrder: (p: Supp
       <button
         onClick={() => onOrder(promo)}
         className={`
-          w-full py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5
-          transition-colors
-          ${promo.supplier === 'Transgourmet' ? 'bg-red-600 hover:bg-red-700' :
-            promo.supplier === 'Metro' ? 'bg-blue-600 hover:bg-blue-700' :
-            promo.supplier === 'Pomona' ? 'bg-green-600 hover:bg-green-700' :
-            promo.supplier === 'Sysco France' ? 'bg-indigo-600 hover:bg-indigo-700' :
-            'bg-orange-600 hover:bg-orange-700'}
-          text-white shadow-sm
+          w-full py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-1.5
+          transition-all shadow-sm active:scale-[0.98]
+          ${supplierBgSolid} ${supplierBgHover} text-white
         `}
       >
         <ShoppingCart className="w-3.5 h-3.5" />
@@ -260,8 +307,216 @@ function BannerAd() {
   );
 }
 
+// ── Price Comparison Modal ─────────────────────────────────────────────────
+function PriceComparisonModal({
+  isOpen,
+  onClose,
+  selectedPromos,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedPromos: SupplierPromo[];
+}) {
+  if (!isOpen || selectedPromos.length < 2) return null;
+
+  const criteria = [
+    { label: 'Produit', key: 'product' },
+    { label: 'Prix / Remise', key: 'price' },
+    { label: 'Description', key: 'description' },
+    { label: 'Date d\'expiration', key: 'expiryDate' },
+    { label: 'Badge', key: 'badge' },
+  ];
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Comparer les prix fournisseurs">
+      <div className="overflow-x-auto -mx-2">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 dark:border-slate-700">
+              <th className="text-left py-3 px-3 text-slate-500 dark:text-slate-400 font-medium text-xs uppercase tracking-wider w-36">
+                Crit\u00e8re
+              </th>
+              {selectedPromos.map(p => (
+                <th key={p.id} className="text-center py-3 px-3 min-w-[160px]">
+                  <div className="flex flex-col items-center gap-1.5">
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm text-white ${
+                      p.supplier === 'Transgourmet' ? 'bg-red-600' :
+                      p.supplier === 'Metro' ? 'bg-blue-600' :
+                      p.supplier === 'Pomona' ? 'bg-green-600' :
+                      p.supplier === 'Sysco France' ? 'bg-indigo-600' :
+                      'bg-orange-600'
+                    }`}>
+                      {p.supplierIcon}
+                    </div>
+                    <span className={`font-semibold text-sm ${p.supplierColor}`}>{p.supplier}</span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+            {criteria.map(c => (
+              <tr key={c.key} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                <td className="py-3 px-3 font-medium text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wide">
+                  {c.label}
+                </td>
+                {selectedPromos.map(p => {
+                  let content: React.ReactNode;
+                  if (c.key === 'product') {
+                    content = <span className="font-semibold text-slate-800 dark:text-slate-100">{p.product}</span>;
+                  } else if (c.key === 'price') {
+                    content = (
+                      <div className="flex flex-col items-center gap-1">
+                        {p.discount && (
+                          <span className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm font-bold">
+                            {p.discount}
+                          </span>
+                        )}
+                        {p.price && (
+                          <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{p.price}</span>
+                        )}
+                        {!p.discount && !p.price && <span className="text-slate-400">-</span>}
+                      </div>
+                    );
+                  } else if (c.key === 'description') {
+                    content = <span className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{p.description}</span>;
+                  } else if (c.key === 'expiryDate') {
+                    content = (
+                      <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                        <Clock className="w-3 h-3 text-slate-400" /> {p.expiryDate}
+                      </span>
+                    );
+                  } else if (c.key === 'badge') {
+                    content = p.badge ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-full">
+                        <Sparkles className="w-3 h-3" /> {p.badge}
+                      </span>
+                    ) : <span className="text-slate-400">-</span>;
+                  }
+                  return (
+                    <td key={p.id} className="py-3 px-3 text-center">
+                      {content}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+        >
+          Fermer
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+// ── RFQ History Section ────────────────────────────────────────────────────
+function RFQHistorySection() {
+  const [showAll, setShowAll] = useState(false);
+  const displayed = showAll ? MOCK_RFQ_HISTORY : MOCK_RFQ_HISTORY.slice(0, 3);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">
+            <History className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Historique des appels d'offres</h3>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">{MOCK_RFQ_HISTORY.length} appels pass\u00e9s</p>
+          </div>
+        </div>
+        {MOCK_RFQ_HISTORY.length > 3 && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+          >
+            {showAll ? 'Voir moins' : `Tout voir (${MOCK_RFQ_HISTORY.length})`}
+            <Eye className="w-3 h-3" />
+          </button>
+        )}
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+        {/* Table header */}
+        <div className="grid grid-cols-12 gap-2 px-4 py-2.5 bg-slate-50 dark:bg-slate-700/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+          <div className="col-span-4 lg:col-span-3">Titre</div>
+          <div className="col-span-2 hidden lg:block">Date</div>
+          <div className="col-span-2 text-center">Statut</div>
+          <div className="col-span-2 text-center hidden sm:block">Fournisseurs</div>
+          <div className="col-span-2 text-center">
+            <span className="hidden sm:inline">\u00c9conomie</span>
+            <span className="sm:hidden">Eco.</span>
+          </div>
+          <div className="col-span-2 lg:col-span-1 text-center hidden sm:block">Choisi</div>
+        </div>
+
+        {/* Rows */}
+        <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+          {displayed.map(entry => (
+            <div key={entry.id} className="grid grid-cols-12 gap-2 px-4 py-3 items-center hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+              <div className="col-span-4 lg:col-span-3 min-w-0">
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{entry.title}</p>
+                <p className="text-[11px] text-slate-400 lg:hidden">
+                  {new Date(entry.closedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                </p>
+              </div>
+              <div className="col-span-2 hidden lg:block text-xs text-slate-500 dark:text-slate-400">
+                {new Date(entry.createdAt).toLocaleDateString('fr-FR')} &rarr; {new Date(entry.closedAt).toLocaleDateString('fr-FR')}
+              </div>
+              <div className="col-span-2 text-center">
+                {entry.status === 'closed' ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                    <CheckCircle className="w-3 h-3" /> Cl\u00f4tur\u00e9
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                    <XCircle className="w-3 h-3" /> Annul\u00e9
+                  </span>
+                )}
+              </div>
+              <div className="col-span-2 text-center hidden sm:block">
+                <span className="text-xs text-slate-600 dark:text-slate-300">{entry.supplierCount} fourn. / {entry.itemCount} prod.</span>
+              </div>
+              <div className="col-span-2 text-center">
+                {entry.bestSaving !== '-' ? (
+                  <span className="inline-flex items-center gap-0.5 text-sm font-bold text-green-600 dark:text-green-400">
+                    <TrendingDown className="w-3.5 h-3.5" /> {entry.bestSaving}
+                  </span>
+                ) : (
+                  <span className="text-xs text-slate-400">-</span>
+                )}
+              </div>
+              <div className="col-span-2 lg:col-span-1 text-center hidden sm:block">
+                <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{entry.selectedSupplier}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Supplier Promos Carousel ────────────────────────────────────────────────
-function SupplierPromosSection({ onOrder }: { onOrder: (p: SupplierPromo) => void }) {
+function SupplierPromosSection({
+  onOrder,
+  selectedIds,
+  onToggleSelect,
+  onCompare,
+}: {
+  onOrder: (p: SupplierPromo) => void;
+  selectedIds: string[];
+  onToggleSelect: (id: string) => void;
+  onCompare: () => void;
+}) {
   const [scrollRef, setScrollRef] = useState<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -286,7 +541,7 @@ function SupplierPromosSection({ onOrder }: { onOrder: (p: SupplierPromo) => voi
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/30">
             <Tag className="w-4 h-4 text-amber-600 dark:text-amber-400" />
@@ -296,27 +551,44 @@ function SupplierPromosSection({ onOrder }: { onOrder: (p: SupplierPromo) => voi
             <p className="text-[11px] text-slate-400 dark:text-slate-500">Promotions et offres exclusives de nos partenaires</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => scroll('left')}
-            disabled={!canScrollLeft}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            disabled={!canScrollRight}
-            className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-          <a
-            href="#"
-            className="ml-1 text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
-          >
-            Tout voir <ExternalLink className="w-3 h-3" />
-          </a>
+        <div className="flex items-center gap-2">
+          {/* Compare button */}
+          {selectedIds.length >= 2 && (
+            <button
+              onClick={onCompare}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition-all shadow-sm animate-fade-in"
+            >
+              <ArrowUpDown className="w-3.5 h-3.5" />
+              Comparer ({selectedIds.length})
+            </button>
+          )}
+          {selectedIds.length === 1 && (
+            <span className="text-[11px] text-blue-500 dark:text-blue-400 font-medium">
+              S\u00e9lectionnez 1 de plus pour comparer
+            </span>
+          )}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => scroll('left')}
+              disabled={!canScrollLeft}
+              className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => scroll('right')}
+              disabled={!canScrollRight}
+              className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+            <a
+              href="#"
+              className="ml-1 text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
+            >
+              Tout voir <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
         </div>
       </div>
 
@@ -326,7 +598,13 @@ function SupplierPromosSection({ onOrder }: { onOrder: (p: SupplierPromo) => voi
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {SUPPLIER_PROMOS.map(promo => (
-          <PromoCard key={promo.id} promo={promo} onOrder={onOrder} />
+          <PromoCard
+            key={promo.id}
+            promo={promo}
+            onOrder={onOrder}
+            isSelected={selectedIds.includes(promo.id)}
+            onToggleSelect={onToggleSelect}
+          />
         ))}
       </div>
     </div>
@@ -344,6 +622,10 @@ export default function RFQPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editingQuote, setEditingQuote] = useState<{ quoteId: number; value: string; notes: string } | null>(null);
+
+  // Price comparison state
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [showCompare, setShowCompare] = useState(false);
 
   // Create form state
   const [form, setForm] = useState({
@@ -447,6 +729,12 @@ export default function RFQPage() {
     showToast(`Demande envoy\u00e9e \u00e0 ${promo.supplier} pour "${promo.product}"`, 'success');
   }
 
+  function toggleCompareId(id: string) {
+    setCompareIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  }
+
   const addIngredientRow = () =>
     setForm(f => ({ ...f, selectedIngredients: [...f.selectedIngredients, { ingredientId: 0, quantity: '' }] }));
 
@@ -467,12 +755,14 @@ export default function RFQPage() {
     return withPrices.reduce((best, q) => (q.unitPrice! < best.unitPrice! ? q : best));
   }
 
+  const selectedPromos = SUPPLIER_PROMOS.filter(p => compareIds.includes(p.id));
+
   if (loading) return <div className="flex items-center justify-center h-48 text-slate-400">Chargement...</div>;
 
   return (
     <div className="space-y-6">
       {/* ── Page Header ──────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Appels d'offres</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
@@ -481,7 +771,7 @@ export default function RFQPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors shadow-sm shrink-0"
         >
           <Plus className="w-4 h-4" /> Nouvel appel d'offres
         </button>
@@ -491,7 +781,15 @@ export default function RFQPage() {
       <BannerAd />
 
       {/* ── Supplier Promotions ──────────────────────────────────────────── */}
-      <SupplierPromosSection onOrder={handlePromoOrder} />
+      <SupplierPromosSection
+        onOrder={handlePromoOrder}
+        selectedIds={compareIds}
+        onToggleSelect={toggleCompareId}
+        onCompare={() => setShowCompare(true)}
+      />
+
+      {/* ── RFQ History ──────────────────────────────────────────────────── */}
+      <RFQHistorySection />
 
       {/* ── Divider ──────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3">
@@ -686,6 +984,13 @@ export default function RFQPage() {
           })}
         </div>
       )}
+
+      {/* ── Price Comparison Modal ─────────────────────────────────────── */}
+      <PriceComparisonModal
+        isOpen={showCompare}
+        onClose={() => setShowCompare(false)}
+        selectedPromos={selectedPromos}
+      />
 
       {/* ── Create Modal ─────────────────────────────────────────────────── */}
       <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Nouvel appel d'offres">

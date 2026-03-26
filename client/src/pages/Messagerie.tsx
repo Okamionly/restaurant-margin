@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, Paperclip, Search, Phone, Video, MoreVertical,
-  Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package,
+  Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package, Mail, Info,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 
@@ -213,6 +213,19 @@ function getLastPreview(conv: Conversation) {
   return prefix + (text.length > 40 ? text.slice(0, 40) + '...' : text);
 }
 
+// ── Email helpers ────────────────────────────────────────────────────────────
+function buildMailtoLink(conv: Conversation): string {
+  const subject = encodeURIComponent(`Conversation : ${conv.name}`);
+  const body = conv.messages
+    .map(m => {
+      const sender = m.senderId === ME ? 'Moi' : (CONTACTS.find(c => c.id === m.senderId)?.name.split(' - ')[0] || m.senderId);
+      const text = m.type === 'order' && m.orderData ? `[Commande ${m.orderData.id} - ${m.orderData.total}]` : m.text;
+      return `${sender} (${m.timestamp}) :\n${text}`;
+    })
+    .join('\n\n');
+  return `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+}
+
 // ── Component ────────────────────────────────────────────────────────────────
 export default function Messagerie() {
   const { showToast } = useToast();
@@ -222,6 +235,7 @@ export default function Messagerie() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewModal, setShowNewModal] = useState(false);
   const [mobileShowChat, setMobileShowChat] = useState(false);
+  const [showDemoBanner, setShowDemoBanner] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
@@ -426,6 +440,22 @@ export default function Messagerie() {
         </button>
       </div>
 
+      {/* Demo banner */}
+      {showDemoBanner && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 text-blue-700 dark:text-blue-300 text-xs">
+          <Info className="w-4 h-4 shrink-0" />
+          <span className="flex-1">
+            <strong>Version d\u00e9mo</strong> &mdash; Les messages sont stock\u00e9s localement. Connectez votre email pour envoyer de vrais messages.
+          </span>
+          <button
+            onClick={() => setShowDemoBanner(false)}
+            className="p-0.5 rounded hover:bg-blue-100 dark:hover:bg-blue-800/40 shrink-0"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Main panels */}
       <div className="flex flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 overflow-hidden">
         {/* ── Left panel: conversation list ──────────────────────────────── */}
@@ -489,11 +519,23 @@ export default function Messagerie() {
                     <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
                       {getLastPreview(conv)}
                     </span>
-                    {conv.unread > 0 && (
-                      <span className="ml-2 flex-shrink-0 px-1.5 py-0.5 text-[10px] font-bold bg-blue-600 text-white rounded-full min-w-[18px] text-center">
-                        {conv.unread}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1 shrink-0 ml-1">
+                      {conv.messages.length > 0 && (
+                        <a
+                          href={buildMailtoLink(conv)}
+                          onClick={(e) => e.stopPropagation()}
+                          title="Envoyer par email"
+                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        >
+                          <Mail className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      {conv.unread > 0 && (
+                        <span className="px-1.5 py-0.5 text-[10px] font-bold bg-blue-600 text-white rounded-full min-w-[18px] text-center">
+                          {conv.unread}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </button>
@@ -542,6 +584,16 @@ export default function Messagerie() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
+                  {activeConv.messages.length > 0 && (
+                    <a
+                      href={buildMailtoLink(activeConv)}
+                      title="Envoyer cette conversation par email"
+                      className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 dark:text-blue-400 transition-colors"
+                      onClick={() => showToast('Ouverture de votre client email...', 'info')}
+                    >
+                      <Mail className="w-4 h-4" />
+                    </a>
+                  )}
                   <button className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400">
                     <Phone className="w-4 h-4" />
                   </button>

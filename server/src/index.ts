@@ -10,6 +10,7 @@ import { invoicesRouter } from './routes/invoices';
 import { priceHistoryRouter } from './routes/priceHistory';
 import { menuSalesRouter } from './routes/menuSales';
 import { messagesRouter } from './routes/messages';
+import { menuEngineeringRouter } from './routes/menuEngineering';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/invoices', authMiddleware, invoicesRouter);
 app.use('/api/price-history', authMiddleware, priceHistoryRouter);
 app.use('/api/menu-sales', authMiddleware, menuSalesRouter);
 app.use('/api/messages', authMiddleware, messagesRouter);
+app.use('/api/menu-engineering', authMiddleware, menuEngineeringRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

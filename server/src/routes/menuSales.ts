@@ -15,8 +15,73 @@ interface MenuSale {
   createdAt: string;
 }
 
-let menuSales: MenuSale[] = [];
-let nextId = 1;
+// Pre-seed with demo data so Menu Engineering works immediately after server restart
+function generateDemoSales(): MenuSale[] {
+  const demoRecipes = [
+    { id: 1, name: 'Boeuf bourguignon', qty: 12, price: 18 },
+    { id: 2, name: 'Crème brûlée', qty: 25, price: 8 },
+    { id: 3, name: 'Frites maison', qty: 45, price: 6 },
+    { id: 4, name: 'Gratin dauphinois', qty: 18, price: 9 },
+    { id: 5, name: 'Salade de chèvre chaud', qty: 22, price: 12 },
+    { id: 6, name: 'Salade Niçoise', qty: 15, price: 14 },
+    { id: 7, name: 'Tarte Tatin', qty: 20, price: 9 },
+    { id: 8, name: 'Tiramisu', qty: 30, price: 8 },
+    { id: 9, name: 'Mousse au chocolat', qty: 28, price: 7 },
+    { id: 10, name: 'Carbonara authentique', qty: 35, price: 14 },
+    { id: 11, name: 'Gaspacho andalou', qty: 16, price: 10 },
+    { id: 12, name: 'Tarte au citron meringuée', qty: 14, price: 8 },
+    { id: 13, name: 'Tarte au citron citron vert', qty: 10, price: 9 },
+    { id: 14, name: 'Panna cotta fraise', qty: 19, price: 8 },
+    { id: 15, name: 'Fondant au chocolat', qty: 24, price: 9 },
+    { id: 16, name: 'Risotto aux champignons', qty: 17, price: 15 },
+    { id: 17, name: 'Ratatouille provençale', qty: 13, price: 11 },
+    { id: 18, name: 'Bruschetta tomates', qty: 21, price: 8 },
+    { id: 19, name: 'Quiche Lorraine', qty: 16, price: 10 },
+    { id: 20, name: 'Filet de bar', qty: 8, price: 22 },
+    { id: 21, name: 'Pavé de saumon grillé', qty: 11, price: 19 },
+    { id: 22, name: 'Velouté de butternut', qty: 14, price: 8 },
+    { id: 23, name: 'Crêpes flambées', qty: 18, price: 10 },
+    { id: 24, name: 'Salade verte vinaigrette', qty: 30, price: 6 },
+    { id: 25, name: 'Salade César', qty: 20, price: 13 },
+    { id: 26, name: 'Magret de canard', qty: 9, price: 21 },
+    { id: 27, name: 'Confit de canard', qty: 7, price: 18 },
+    { id: 28, name: 'Poulet rôti jus', qty: 22, price: 15 },
+    { id: 29, name: 'Tartare de saumon', qty: 13, price: 16 },
+    { id: 30, name: 'Burger gourmet', qty: 32, price: 16 },
+  ];
+  const sales: MenuSale[] = [];
+  let id = 1;
+  const now = new Date();
+  for (let d = 0; d < 30; d++) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - d);
+    const dateStr = date.toISOString().slice(0, 10);
+    for (const r of demoRecipes) {
+      const variation = 0.6 + Math.random() * 0.8;
+      const qty = Math.round(r.qty * variation);
+      if (qty > 0) {
+        sales.push({
+          id: id++,
+          recipeId: r.id,
+          recipeName: r.name,
+          quantity: qty,
+          revenue: qty * r.price,
+          date: dateStr,
+          createdAt: new Date().toISOString(),
+        });
+      }
+    }
+  }
+  return sales;
+}
+
+let menuSales: MenuSale[] = generateDemoSales();
+let nextId = menuSales.length + 1;
+
+// Export getter for menu-engineering route
+export function getSalesData() {
+  return menuSales;
+}
 
 /* ─── GET /api/menu-sales ─── */
 menuSalesRouter.get('/', async (req: AuthRequest, res: Response) => {

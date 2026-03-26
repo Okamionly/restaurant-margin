@@ -8,6 +8,15 @@
   }
 }
 
+/* Remove black focus outline on SVG chart elements */
+.recharts-wrapper svg:focus,
+.recharts-wrapper path:focus,
+.recharts-wrapper rect:focus,
+.recharts-wrapper g:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}
+
 @layer components {
   .btn-primary {
     @apply bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors dark:bg-blue-500 dark:hover:bg-blue-600;

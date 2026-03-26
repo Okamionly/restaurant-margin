@@ -912,8 +912,8 @@ export default function Dashboard() {
                         if ((percent || 0) < 0.08) return null;
                         const label = String(name || '');
                         return (
-                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '10px', fontWeight: 'bold', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
-                            {label.length > 8 ? label.slice(0, 7) + '…' : label} ({count})
+                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '11px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                            {label.length > 12 ? label.slice(0, 11) + '…' : label} ({count})
                           </text>
                         );
                       }}

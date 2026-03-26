@@ -5,6 +5,9 @@ import { ingredientsRouter } from './routes/ingredients';
 import { recipesRouter } from './routes/recipes';
 import { suppliersRouter } from './routes/suppliers';
 import { inventoryRouter } from './routes/inventory';
+import { invoicesRouter } from './routes/invoices';
+import { priceHistoryRouter } from './routes/priceHistory';
+import { menuSalesRouter } from './routes/menuSales';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -25,6 +28,9 @@ app.use('/api/ingredients', authMiddleware, ingredientsRouter);
 app.use('/api/recipes', authMiddleware, recipesRouter);
 app.use('/api/suppliers', authMiddleware, suppliersRouter);
 app.use('/api/inventory', authMiddleware, inventoryRouter);
+app.use('/api/invoices', authMiddleware, invoicesRouter);
+app.use('/api/price-history', authMiddleware, priceHistoryRouter);
+app.use('/api/menu-sales', authMiddleware, menuSalesRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -89,9 +89,9 @@ function AppLayout() {
     { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
     { to: '/inventory', icon: Package, label: 'Inventaire' },
     { to: '/rfqs', icon: FileSearch, label: 'Appels d\'offres' },
-    { to: '/invoices', icon: Receipt, label: 'Factures' },
+    { to: '/scanner-factures', icon: Receipt, label: 'Scanner Factures' },
     { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
-    { to: '/engineering', icon: Target, label: 'Menu Engineering' },
+    { to: '/menu-engineering', icon: BarChart3, label: 'Menu Engineering' },
   ];
 
   const secondaryNavItems = [
@@ -256,9 +256,9 @@ function AppLayout() {
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/rfqs" element={<RFQPage />} />
-          <Route path="/invoices" element={<InvoiceScanner />} />
+          <Route path="/scanner-factures" element={<InvoiceScanner />} />
           <Route path="/mercuriale" element={<Mercuriale />} />
-          <Route path="/engineering" element={<MenuEngineering />} />
+          <Route path="/menu-engineering" element={<MenuEngineering />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />
         </Routes>

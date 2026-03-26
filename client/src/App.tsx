@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare } from 'lucide-react';
+import ConnectivityBar from './components/ConnectivityBar';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import Dashboard from './pages/Dashboard';
@@ -20,6 +21,7 @@ import MenuEngineering from './pages/MenuEngineering';
 import AutoOrders from './pages/AutoOrders';
 import Subscription from './pages/Subscription';
 import Planning from './pages/Planning';
+import Messagerie from './pages/Messagerie';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 
@@ -97,6 +99,7 @@ function AppLayout() {
     { to: '/menu-engineering', icon: BarChart3, label: 'Menu Engineering' },
     { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
     { to: '/planning', icon: CalendarDays, label: 'Planning' },
+    { to: '/messagerie', icon: MessageSquare, label: 'Messages', badge: 3 },
     { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
   ];
 
@@ -176,7 +179,7 @@ function AppLayout() {
       {mobileMenuOpen && (
         <div className="sm:hidden bg-white dark:bg-slate-800 border-b dark:border-slate-700 shadow-lg no-print">
           <div className="px-4 py-2 space-y-1">
-            {[...navItems, ...secondaryNavItems].map(({ to, icon: Icon, label }) => (
+            {[...navItems, ...secondaryNavItems].map(({ to, icon: Icon, label, badge }: any) => (
               <NavLink
                 key={to}
                 to={to}
@@ -189,7 +192,10 @@ function AppLayout() {
                   }`
                 }
               >
-                <Icon className="w-4 h-4" />
+                <span className="relative">
+                  <Icon className="w-4 h-4" />
+                  {badge > 0 && <span className="absolute -top-1.5 -right-2 px-1 min-w-[16px] h-4 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">{badge}</span>}
+                </span>
                 {label}
               </NavLink>
             ))}
@@ -211,7 +217,7 @@ function AppLayout() {
       <nav className="bg-white dark:bg-slate-800 border-b dark:border-slate-700 shadow-sm no-print hidden sm:block">
         <div className="max-w-7xl mx-auto px-4 flex justify-between">
           <div className="flex gap-1">
-            {navItems.map(({ to, icon: Icon, label }) => (
+            {navItems.map(({ to, icon: Icon, label, badge }: any) => (
               <NavLink
                 key={to}
                 to={to}
@@ -224,7 +230,10 @@ function AppLayout() {
                   }`
                 }
               >
-                <Icon className="w-4 h-4" />
+                <span className="relative">
+                  <Icon className="w-4 h-4" />
+                  {badge > 0 && <span className="absolute -top-1.5 -right-2 px-1 min-w-[16px] h-4 flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">{badge}</span>}
+                </span>
                 {label}
               </NavLink>
             ))}
@@ -250,6 +259,9 @@ function AppLayout() {
         </div>
       </nav>
 
+      {/* Connectivity status bar */}
+      <ConnectivityBar />
+
       {/* Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6">
         <Routes>
@@ -267,6 +279,7 @@ function AppLayout() {
           <Route path="/menu-engineering" element={<MenuEngineering />} />
           <Route path="/commandes" element={<AutoOrders />} />
           <Route path="/planning" element={<Planning />} />
+          <Route path="/messagerie" element={<Messagerie />} />
           <Route path="/abonnement" element={<Subscription />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />

@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "RestauMargin",
+    "slug": "restaumargin-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#1d4ed8",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.restaumargin.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1d4ed8"
+      },
+      "package": "com.restaumargin.mobile"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Autoriser RestauMargin a acceder a la camera pour scanner les factures."
+        }
+      ]
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target } from 'lucide-react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import Dashboard from './pages/Dashboard';
@@ -14,6 +14,9 @@ import MenuBuilder from './pages/MenuBuilder';
 import SettingsPage from './pages/Settings';
 import UserManagement from './pages/UserManagement';
 import WeighStation from './pages/WeighStation';
+import InvoiceScanner from './pages/InvoiceScanner';
+import Mercuriale from './pages/Mercuriale';
+import MenuEngineering from './pages/MenuEngineering';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 
@@ -86,6 +89,9 @@ function AppLayout() {
     { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
     { to: '/inventory', icon: Package, label: 'Inventaire' },
     { to: '/rfqs', icon: FileSearch, label: 'Appels d\'offres' },
+    { to: '/invoices', icon: Receipt, label: 'Factures' },
+    { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
+    { to: '/engineering', icon: Target, label: 'Menu Engineering' },
   ];
 
   const secondaryNavItems = [
@@ -250,6 +256,9 @@ function AppLayout() {
           <Route path="/suppliers" element={<Suppliers />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/rfqs" element={<RFQPage />} />
+          <Route path="/invoices" element={<InvoiceScanner />} />
+          <Route path="/mercuriale" element={<Mercuriale />} />
+          <Route path="/engineering" element={<MenuEngineering />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/users" element={<UserManagement />} />
         </Routes>

@@ -567,4 +567,208 @@ app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authMiddleware, async (req, 
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur sélection devis' }); }
 });
 
+// ============ PRICE HISTORY (MERCURIALE) ============
+app.get('/api/price-history', authMiddleware, async (req: any, res) => {
+  try {
+    const { ingredientId, days } = req.query;
+    const where: any = {};
+    if (ingredientId) where.ingredientId = parseInt(ingredientId);
+    if (days) where.createdAt = { gte: new Date(Date.now() - parseInt(days) * 86400000) };
+    const history = await prisma.priceHistory.findMany({
+      where,
+      include: { ingredient: { select: { id: true, name: true, unit: true, category: true } } },
+      orderBy: { createdAt: 'desc' },
+      take: 500,
+    });
+    res.json(history);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur historique prix' }); }
+});
+
+app.get('/api/price-history/alerts', authMiddleware, async (_req, res) => {
+  try {
+    // Find ingredients with significant price changes (>10%) in last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+    const history = await prisma.priceHistory.findMany({
+      where: { createdAt: { gte: thirtyDaysAgo } },
+      include: { ingredient: { select: { id: true, name: true, unit: true, pricePerUnit: true, category: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+    // Group by ingredient and calculate change
+    const byIngredient: Record<number, any[]> = {};
+    history.forEach(h => {
+      if (!byIngredient[h.ingredientId]) byIngredient[h.ingredientId] = [];
+      byIngredient[h.ingredientId].push(h);
+    });
+    const alerts = Object.entries(byIngredient).map(([id, records]) => {
+      const first = records[0];
+      const last = records[records.length - 1];
+      const change = first.price > 0 ? ((last.price - first.price) / first.price) * 100 : 0;
+      return { ingredientId: parseInt(id), ingredient: last.ingredient, oldPrice: first.price, newPrice: last.price, changePercent: Math.round(change * 10) / 10, records: records.length };
+    }).filter(a => Math.abs(a.changePercent) > 5).sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent));
+    res.json(alerts);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur alertes prix' }); }
+});
+
+// ============ INVOICES (SCANNER FACTURES) ============
+app.get('/api/invoices', authMiddleware, async (_req, res) => {
+  try {
+    const invoices = await prisma.invoice.findMany({
+      include: { items: true },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(invoices);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur factures' }); }
+});
+
+app.post('/api/invoices', authMiddleware, async (req, res) => {
+  try {
+    const { supplierName, invoiceNumber, invoiceDate, totalHT, totalTTC, items, rawText } = req.body;
+    const invoice = await prisma.invoice.create({
+      data: {
+        supplierName: supplierName || 'Inconnu',
+        invoiceNumber: invoiceNumber || null,
+        invoiceDate: invoiceDate ? new Date(invoiceDate) : null,
+        totalHT: totalHT || null,
+        totalTTC: totalTTC || null,
+        rawText: rawText || null,
+        items: {
+          create: (items || []).map((item: any) => ({
+            productName: item.productName,
+            quantity: item.quantity || null,
+            unit: item.unit || null,
+            unitPrice: item.unitPrice || null,
+            totalPrice: item.totalPrice || null,
+          })),
+        },
+      },
+      include: { items: true },
+    });
+    res.status(201).json(invoice);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création facture' }); }
+});
+
+app.post('/api/invoices/:id/apply', authMiddleware, async (req, res) => {
+  try {
+    const invoiceId = parseInt(req.params.id);
+    const { matches } = req.body; // [{ itemId, ingredientId }]
+    let applied = 0;
+    for (const match of matches || []) {
+      const item = await prisma.invoiceItem.findUnique({ where: { id: match.itemId } });
+      if (!item || !item.unitPrice) continue;
+      // Update ingredient price
+      const ingredient = await prisma.ingredient.update({
+        where: { id: match.ingredientId },
+        data: { pricePerUnit: item.unitPrice },
+      });
+      // Record price history
+      await prisma.priceHistory.create({
+        data: { ingredientId: match.ingredientId, price: item.unitPrice, source: 'invoice', invoiceRef: String(invoiceId) },
+      });
+      // Mark item as matched
+      await prisma.invoiceItem.update({
+        where: { id: match.itemId },
+        data: { matched: true, ingredientId: match.ingredientId },
+      });
+      applied++;
+    }
+    await prisma.invoice.update({ where: { id: invoiceId }, data: { status: 'processed' } });
+    res.json({ applied });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur application facture' }); }
+});
+
+app.delete('/api/invoices/:id', authMiddleware, async (req, res) => {
+  try {
+    await prisma.invoice.delete({ where: { id: parseInt(req.params.id) } });
+    res.status(204).send();
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
+});
+
+// ============ MENU SALES (MENU ENGINEERING) ============
+app.get('/api/menu-sales', authMiddleware, async (req: any, res) => {
+  try {
+    const { days } = req.query;
+    const where: any = {};
+    if (days) where.date = { gte: new Date(Date.now() - parseInt(days) * 86400000) };
+    const sales = await prisma.menuSales.findMany({ where, orderBy: { date: 'desc' }, take: 1000 });
+    res.json(sales);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ventes' }); }
+});
+
+app.post('/api/menu-sales', authMiddleware, async (req, res) => {
+  try {
+    const { recipeId, quantity, revenue, date } = req.body;
+    const sale = await prisma.menuSales.create({
+      data: { recipeId, quantity: quantity || 1, revenue: revenue || null, date: date ? new Date(date) : new Date() },
+    });
+    res.status(201).json(sale);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout vente' }); }
+});
+
+app.post('/api/menu-sales/bulk', authMiddleware, async (req, res) => {
+  try {
+    const { sales } = req.body; // [{ recipeId, quantity, revenue, date }]
+    const result = await prisma.menuSales.createMany({
+      data: (sales || []).map((s: any) => ({
+        recipeId: s.recipeId, quantity: s.quantity || 1, revenue: s.revenue || null, date: s.date ? new Date(s.date) : new Date(),
+      })),
+    });
+    res.status(201).json({ created: result.count });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur import ventes' }); }
+});
+
+app.get('/api/menu-engineering', authMiddleware, async (req: any, res) => {
+  try {
+    const days = parseInt(req.query.days || '30');
+    const since = new Date(Date.now() - days * 86400000);
+
+    // Get all recipes with margins
+    const recipes = await prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } } });
+
+    // Get sales data
+    const sales = await prisma.menuSales.findMany({ where: { date: { gte: since } } });
+    const salesByRecipe: Record<number, { qty: number; revenue: number }> = {};
+    sales.forEach(s => {
+      if (!salesByRecipe[s.recipeId]) salesByRecipe[s.recipeId] = { qty: 0, revenue: 0 };
+      salesByRecipe[s.recipeId].qty += s.quantity;
+      salesByRecipe[s.recipeId].revenue += s.revenue || 0;
+    });
+
+    const totalSales = Object.values(salesByRecipe).reduce((sum, s) => sum + s.qty, 0);
+    const avgSales = totalSales / Math.max(recipes.length, 1);
+
+    const engineering = recipes.map(recipe => {
+      const foodCost = recipe.ingredients.reduce((total, ri) => {
+        const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
+        return total + ri.quantity * ri.ingredient.pricePerUnit * wasteMultiplier;
+      }, 0);
+      const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
+      const margin = recipe.sellingPrice - costPerPortion;
+      const marginPercent = recipe.sellingPrice > 0 ? (margin / recipe.sellingPrice) * 100 : 0;
+      const salesData = salesByRecipe[recipe.id] || { qty: 0, revenue: 0 };
+      const popularity = totalSales > 0 ? (salesData.qty / totalSales) * 100 : 0;
+      const avgMargin = recipes.reduce((sum, r) => {
+        const fc = r.ingredients.reduce((t, ri) => t + ri.quantity * ri.ingredient.pricePerUnit * (ri.wastePercent > 0 ? 1/(1-ri.wastePercent/100) : 1), 0);
+        const cp = r.nbPortions > 0 ? fc / r.nbPortions : fc;
+        return sum + (r.sellingPrice - cp);
+      }, 0) / Math.max(recipes.length, 1);
+
+      let quadrant: string;
+      if (margin >= avgMargin && salesData.qty >= avgSales) quadrant = 'star';
+      else if (margin >= avgMargin && salesData.qty < avgSales) quadrant = 'puzzle';
+      else if (margin < avgMargin && salesData.qty >= avgSales) quadrant = 'plow';
+      else quadrant = 'dog';
+
+      return {
+        id: recipe.id, name: recipe.name, category: recipe.category,
+        sellingPrice: recipe.sellingPrice, costPerPortion: Math.round(costPerPortion * 100) / 100,
+        margin: Math.round(margin * 100) / 100, marginPercent: Math.round(marginPercent * 10) / 10,
+        salesQty: salesData.qty, salesRevenue: Math.round(salesData.revenue * 100) / 100,
+        popularity: Math.round(popularity * 10) / 10, quadrant,
+      };
+    });
+
+    res.json({ engineering, totalSales, avgMargin: Math.round(engineering.reduce((s, e) => s + e.margin, 0) / Math.max(engineering.length, 1) * 100) / 100, days });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur menu engineering' }); }
+});
+
 export default app;

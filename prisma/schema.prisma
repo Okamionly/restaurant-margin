@@ -60,8 +60,63 @@ model Ingredient {
   recipes      RecipeIngredient[]
   inventoryItem InventoryItem?
   rfqItems     RFQItem[]
+  priceHistory PriceHistory[]
 
   @@map("ingredients")
+}
+
+model PriceHistory {
+  id           Int        @id @default(autoincrement())
+  ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  price        Float
+  source       String?    // "manual", "invoice", "rfq"
+  invoiceRef   String?
+  createdAt    DateTime   @default(now())
+
+  @@map("price_history")
+}
+
+model Invoice {
+  id           Int            @id @default(autoincrement())
+  supplierId   Int?
+  supplierName String
+  invoiceNumber String?
+  invoiceDate  DateTime?
+  totalHT      Float?
+  totalTTC     Float?
+  imageUrl     String?
+  status       String         @default("pending") // pending, processed, error
+  rawText      String?
+  createdAt    DateTime       @default(now())
+  items        InvoiceItem[]
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id           Int      @id @default(autoincrement())
+  invoiceId    Int
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productName  String
+  quantity     Float?
+  unit         String?
+  unitPrice    Float?
+  totalPrice   Float?
+  matched      Boolean  @default(false)
+  ingredientId Int?
+
+  @@map("invoice_items")
+}
+
+model MenuSales {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  date      DateTime @default(now())
+  quantity  Int      @default(1)
+  revenue   Float?
+
+  @@map("menu_sales")
 }
 
 model RFQ {

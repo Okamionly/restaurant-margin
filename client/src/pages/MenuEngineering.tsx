@@ -56,7 +56,7 @@ const QUADRANT_CONFIG = {
     dot: '#10b981',
     action: 'PROMOUVOIR',
     desc: 'Haute marge + populaire',
-    recommendation: 'Mettre en avant sur le menu, maintenir la qualit\u00e9',
+    recommendation: 'Mettre en avant sur le menu, maintenir la qualité',
   },
   puzzle: {
     label: 'Puzzles',
@@ -69,7 +69,7 @@ const QUADRANT_CONFIG = {
     dot: '#3b82f6',
     action: 'MARKETER',
     desc: 'Haute marge + peu populaire',
-    recommendation: 'Am\u00e9liorer la visibilit\u00e9, repositionner sur le menu',
+    recommendation: 'Améliorer la visibilité, repositionner sur le menu',
   },
   plow: {
     label: 'Vaches',
@@ -82,7 +82,7 @@ const QUADRANT_CONFIG = {
     dot: '#f59e0b',
     action: 'OPTIMISER PRIX',
     desc: 'Basse marge + populaire',
-    recommendation: 'Augmenter le prix ou r\u00e9duire le co\u00fbt des ingr\u00e9dients',
+    recommendation: 'Augmenter le prix ou réduire le co\u00fbt des ingrédients',
   },
   dog: {
     label: 'Dogs',
@@ -110,7 +110,7 @@ function fmt(n: number, decimals = 2) {
 }
 
 function fmtEur(n: number) {
-  return `${fmt(n, 2)} \u20AC`;
+  return `${fmt(n, 2)} €`;
 }
 
 // ── BCG Matrix Component ─────────────────────────────────────────────────────
@@ -205,7 +205,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
         {/* Axis labels */}
         <text x={padding.left + plotW / 2} y={height - 8} className="fill-slate-500 dark:fill-slate-400" fontSize={12} textAnchor="middle" fontWeight={500}>
-          Popularit\u00e9 (ventes)
+          Popularité (ventes)
         </text>
         <text x={14} y={padding.top + plotH / 2} className="fill-slate-500 dark:fill-slate-400" fontSize={12}
           textAnchor="middle" fontWeight={500} transform={`rotate(-90, 14, ${padding.top + plotH / 2})`}>
@@ -376,7 +376,7 @@ export default function MenuEngineering() {
         }),
       });
       if (!res.ok) throw new Error('Erreur enregistrement');
-      showToast(`Vente enregistr\u00e9e : ${recipe?.name || ''} x${saleQty}`, 'success');
+      showToast(`Vente enregistrée : ${recipe?.name || ''} x${saleQty}`, 'success');
       setShowSalesModal(false);
       setSaleRecipeId('');
       setSaleQty('');
@@ -391,7 +391,7 @@ export default function MenuEngineering() {
   // ── Submit bulk import ─────────────────────────────────────────────────────
   const handleBulkImport = async () => {
     if (!bulkCsv.trim()) {
-      showToast('Veuillez coller des donn\u00e9es CSV', 'error');
+      showToast('Veuillez coller des données CSV', 'error');
       return;
     }
     setBulkSubmitting(true);
@@ -403,7 +403,7 @@ export default function MenuEngineering() {
         const recipeMatch = recipes.find(r =>
           r.name.toLowerCase() === parts[0].toLowerCase() || r.id === Number(parts[0])
         );
-        if (!recipeMatch) throw new Error(`Recette non trouv\u00e9e: ${parts[0]}`);
+        if (!recipeMatch) throw new Error(`Recette non trouvée: ${parts[0]}`);
         return {
           recipeId: recipeMatch.id,
           quantity: Number(parts[1]),
@@ -418,7 +418,7 @@ export default function MenuEngineering() {
         body: JSON.stringify({ sales }),
       });
       if (!res.ok) throw new Error('Erreur import');
-      showToast(`${sales.length} ventes import\u00e9es avec succ\u00e8s`, 'success');
+      showToast(`${sales.length} ventes importées avec succès`, 'success');
       setShowBulkModal(false);
       setBulkCsv('');
       fetchData();
@@ -484,7 +484,7 @@ export default function MenuEngineering() {
               Menu Engineering
             </h1>
             <p className="text-slate-500 dark:text-slate-400 mt-1">
-              Analyse BCG de votre carte &mdash; identifiez les plats \u00e0 promouvoir, optimiser ou retirer
+              Analyse BCG de votre carte &mdash; identifiez les plats à promouvoir, optimiser ou retirer
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -527,7 +527,7 @@ export default function MenuEngineering() {
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
-              <Calendar className="w-3.5 h-3.5" /> Personnalis\u00e9
+              <Calendar className="w-3.5 h-3.5" /> Personnalisé
             </button>
           </div>
 
@@ -593,7 +593,7 @@ export default function MenuEngineering() {
                 icon={<ChefHat className="w-5 h-5" />}
                 label="Nb recettes"
                 value={items.length.toString()}
-                sub="analys\u00e9es"
+                sub="analysées"
                 color="amber"
               />
             </div>
@@ -635,7 +635,7 @@ export default function MenuEngineering() {
                     Matrice BCG &mdash; Menu Engineering
                   </h2>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-                    Chaque bulle repr\u00e9sente un plat. Taille = chiffre d&apos;affaires. Survolez pour les d\u00e9tails.
+                    Chaque bulle représente un plat. Taille = chiffre d&apos;affaires. Survolez pour les détails.
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
@@ -651,7 +651,7 @@ export default function MenuEngineering() {
               ) : (
                 <div className="text-center py-16 text-slate-400 dark:text-slate-500">
                   <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p className="font-medium">Aucune donn\u00e9e de vente</p>
+                  <p className="font-medium">Aucune donnée de vente</p>
                   <p className="text-sm mt-1">Commencez par saisir des ventes pour alimenter l&apos;analyse</p>
                 </div>
               )}
@@ -662,7 +662,7 @@ export default function MenuEngineering() {
               <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <Award className="w-5 h-5 text-violet-500" />
-                  D\u00e9tail par recette
+                  Détail par recette
                 </h2>
                 <div className="flex items-center gap-2">
                   <select
@@ -684,10 +684,10 @@ export default function MenuEngineering() {
                     <tr className="bg-slate-50 dark:bg-slate-900/50">
                       {[
                         { field: 'name' as SortField, label: 'Nom' },
-                        { field: 'category' as SortField, label: 'Cat\u00e9gorie' },
+                        { field: 'category' as SortField, label: 'Catégorie' },
                         { field: 'sellingPrice' as SortField, label: 'Prix vente' },
                         { field: 'costPerPortion' as SortField, label: 'Co\u00fbt' },
-                        { field: 'margin' as SortField, label: 'Marge (\u20AC)' },
+                        { field: 'margin' as SortField, label: 'Marge (€)' },
                         { field: 'marginPercent' as SortField, label: 'Marge (%)' },
                         { field: 'salesQty' as SortField, label: 'Ventes' },
                         { field: 'salesRevenue' as SortField, label: 'CA' },
@@ -713,7 +713,7 @@ export default function MenuEngineering() {
                     {sortedItems.length === 0 ? (
                       <tr>
                         <td colSpan={10} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500">
-                          Aucun plat trouv\u00e9 pour ce filtre
+                          Aucun plat trouvé pour ce filtre
                         </td>
                       </tr>
                     ) : (
@@ -775,7 +775,7 @@ export default function MenuEngineering() {
               onChange={e => setSaleRecipeId(e.target.value ? Number(e.target.value) : '')}
               className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
             >
-              <option value="">S\u00e9lectionner une recette...</option>
+              <option value="">Sélectionner une recette...</option>
               {recipes.map(r => (
                 <option key={r.id} value={r.id}>{r.name} ({r.category})</option>
               ))}
@@ -783,7 +783,7 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Quantit\u00e9 vendue</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Quantité vendue</label>
             <input
               type="number"
               min="1"
@@ -827,24 +827,24 @@ export default function MenuEngineering() {
       <Modal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} title="Import CSV de ventes">
         <div className="space-y-4">
           <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl text-sm text-blue-700 dark:text-blue-300">
-            <p className="font-medium mb-1">Format attendu (s\u00e9parateur: virgule, point-virgule ou tabulation)</p>
+            <p className="font-medium mb-1">Format attendu (séparateur: virgule, point-virgule ou tabulation)</p>
             <code className="text-xs block mt-1 font-mono">
-              nom_recette, quantit\u00e9, date (YYYY-MM-DD)<br />
+              nom_recette, quantité, date (YYYY-MM-DD)<br />
               Burger Classic, 25, 2026-03-20<br />
-              Salade C\u00e9sar, 18, 2026-03-20<br />
+              Salade César, 18, 2026-03-20<br />
               Tiramisu, 12, 2026-03-20
             </code>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Donn\u00e9es CSV
+              Données CSV
             </label>
             <textarea
               rows={8}
               value={bulkCsv}
               onChange={e => setBulkCsv(e.target.value)}
-              placeholder="Collez vos donn\u00e9es ici..."
+              placeholder="Collez vos données ici..."
               className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-sm resize-y"
             />
           </div>

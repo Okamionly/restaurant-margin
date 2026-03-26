@@ -113,7 +113,7 @@ function PriceChart({ data, width = 700, height = 260 }: { data: PricePoint[]; w
         <g key={i}>
           <line x1={padX} y1={t.y} x2={width - 20} y2={t.y} stroke="currentColor" className="text-gray-200 dark:text-gray-700" strokeDasharray="4 4" />
           <text x={padX - 8} y={t.y + 4} textAnchor="end" className="text-[10px] fill-gray-500 dark:fill-gray-400">
-            {t.val.toFixed(2)}\u2009\u20AC
+            {t.val.toFixed(2)} €
           </text>
         </g>
       ))}
@@ -129,7 +129,7 @@ function PriceChart({ data, width = 700, height = 260 }: { data: PricePoint[]; w
         <g key={i}>
           <circle cx={p.x} cy={p.y} r={3.5} className={trendUp ? 'fill-red-500' : 'fill-emerald-500'} />
           <title>
-            {new Date(p.date).toLocaleDateString('fr-FR')} — {p.price.toFixed(2)} \u20AC
+            {new Date(p.date).toLocaleDateString('fr-FR')} — {p.price.toFixed(2)} €
           </title>
         </g>
       ))}
@@ -414,10 +414,10 @@ export default function Mercuriale() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">{a.oldPrice.toFixed(2)}\u2009\u20AC</span>
+                    <span className="text-gray-500 dark:text-gray-400">{a.oldPrice.toFixed(2)} €</span>
                     <span className="text-gray-400">\u2192</span>
                     <span className={`font-medium ${up ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                      {a.newPrice.toFixed(2)}\u2009\u20AC
+                      {a.newPrice.toFixed(2)} €
                     </span>
                     <span className="text-gray-400 text-xs">/ {a.unit}</span>
                   </div>
@@ -467,7 +467,7 @@ export default function Mercuriale() {
         {selectedIngredient && (
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
             <Euro className="w-3.5 h-3.5 inline mr-1" />
-            {selectedIngredient.name} — prix actuel : <span className="font-semibold text-gray-900 dark:text-white">{selectedIngredient.pricePerUnit.toFixed(2)}\u2009\u20AC/{selectedIngredient.unit}</span>
+            {selectedIngredient.name} — prix actuel : <span className="font-semibold text-gray-900 dark:text-white">{selectedIngredient.pricePerUnit.toFixed(2)} €/{selectedIngredient.unit}</span>
           </div>
         )}
         {chartLoading ? (
@@ -552,7 +552,7 @@ export default function Mercuriale() {
                       <div className="text-xs text-gray-400">{row.category}</div>
                     </td>
                     <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-white">
-                      {row.currentPrice.toFixed(2)}\u2009\u20AC<span className="text-gray-400 text-xs ml-1">/{row.unit}</span>
+                      {row.currentPrice.toFixed(2)} €<span className="text-gray-400 text-xs ml-1">/{row.unit}</span>
                     </td>
                     <td className="px-4 py-3 text-right">{formatChange(row.change7d)}</td>
                     <td className="px-4 py-3 text-right">{formatChange(row.change30d)}</td>
@@ -601,7 +601,7 @@ export default function Mercuriale() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Nouveau prix (\u20AC)
+                  Nouveau prix (€)
                 </label>
                 <div className="relative">
                   <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -617,7 +617,7 @@ export default function Mercuriale() {
                 </div>
                 {priceForm.ingredientId > 0 && (
                   <p className="mt-1 text-xs text-gray-400">
-                    Prix actuel : {ingredients.find((i) => i.id === priceForm.ingredientId)?.pricePerUnit.toFixed(2) ?? '—'}\u2009\u20AC
+                    Prix actuel : {ingredients.find((i) => i.id === priceForm.ingredientId)?.pricePerUnit.toFixed(2) ?? '—'} €
                   </p>
                 )}
               </div>

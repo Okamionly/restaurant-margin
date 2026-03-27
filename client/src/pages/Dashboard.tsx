@@ -288,9 +288,10 @@ export default function Dashboard() {
   useEffect(() => {
     Promise.all([fetchRecipes(), fetchIngredients()])
       .then(([r, i]) => { setRecipes(r); setIngredients(i); })
-      .catch(() => showToast('Erreur lors du chargement des données. Veuillez réessayer.', 'error'))
+      .catch(() => console.error('Erreur chargement'))
       .finally(() => setLoading(false));
-  }, [showToast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Computed stats ─────────────────────────────────────────────────────
   const stats = useMemo(() => {

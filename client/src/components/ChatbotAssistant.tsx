@@ -155,7 +155,73 @@ async function handleAverageCost(): Promise<string> {
 const UNKNOWN_RESPONSE =
   "Voici ce que je peux faire :\n\n- \"marge\" → Vos plats les plus rentables\n- \"stock\" → Alertes de stock bas\n- \"combien de recettes\" → Nombre total\n- \"saumon\" ou \"tomate\" → Recettes avec cet ingrédient\n- \"coût\" → Coût matière moyen\n\nTapez un mot-clé ou un ingrédient !";
 
-async function generateResponse(input: string): Promise<string> {
+// --- OpenRouter AI integration ---
+
+async function getRestaurantContext(): Promise<string> {
+  try {
+    const recipes = await fetchRecipes();
+    const topRecipes = recipes
+      .filter((r: Recipe) => r.margin)
+      .sort((a: Recipe, b: Recipe) => (b.margin?.marginPercent ?? 0) - (a.margin?.marginPercent ?? 0))
+      .slice(0, 15)
+      .map((r: Recipe) => `- ${r.name} (${r.category}): prix ${r.sellingPrice}€, coût ${r.margin?.foodCost?.toFixed(2)}€, marge ${r.margin?.marginPercent?.toFixed(1)}%`)
+      .join('\n');
+    const avgMargin = recipes.filter((r: Recipe) => r.margin).reduce((s: number, r: Recipe) => s + (r.margin?.marginPercent ?? 0), 0) / (recipes.filter((r: Recipe) => r.margin).length || 1);
+    return `Restaurant: ${recipes.length} recettes, marge moyenne ${avgMargin.toFixed(1)}%.\nTop recettes:\n${topRecipes}`;
+  } catch {
+    return 'Données non disponibles.';
+  }
+}
+
+async function callOpenRouter(input: string, history: { role: string; content: string }[]): Promise<string | null> {
+  const apiKey = localStorage.getItem('openrouter_api_key');
+  if (!apiKey) return null;
+
+  const context = await getRestaurantContext();
+  const systemPrompt = `Tu es l'Assistant Chef IA de RestauMargin, une application de gestion de marge pour la restauration. Tu parles en français. Tu es expert en cuisine, gestion de restaurant, marges, coûts matière, et menu engineering.
+
+Voici les données du restaurant:
+${context}
+
+Réponds de manière concise, professionnelle et utile. Utilise les données réelles du restaurant quand c'est pertinent. Si on te demande des calculs, utilise les vrais chiffres. Donne des conseils actionables.`;
+
+  try {
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...history.slice(-6).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
+      { role: 'user', content: input },
+    ];
+
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': window.location.origin,
+        'X-Title': 'RestauMargin Assistant Chef',
+      },
+      body: JSON.stringify({
+        model: 'google/gemma-3-4b-it:free',
+        messages,
+        max_tokens: 500,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || null;
+  } catch {
+    return null;
+  }
+}
+
+async function generateResponse(input: string, history: { role: string; content: string }[] = []): Promise<string> {
+  // Try OpenRouter first
+  const aiResponse = await callOpenRouter(input, history);
+  if (aiResponse) return aiResponse;
+
+  // Fallback to local keyword matching
   const intent = detectIntent(input);
   switch (intent.type) {
     case 'best_margin':
@@ -216,7 +282,8 @@ export default function ChatbotAssistant() {
     setIsTyping(true);
 
     try {
-      const response = await generateResponse(text);
+      const history = messages.map(m => ({ role: m.role, content: m.text }));
+      const response = await generateResponse(text, history);
       const botMsg: ChatMessage = {
         id: crypto.randomUUID?.() || String(Date.now() + 1),
         role: 'assistant',

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, Paperclip, Search, Phone, Video, MoreVertical,
-  Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package, Mail, Info,
-  Settings, FileText, ChevronUp,
+  Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package, Mail,
+  FileText,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 
@@ -68,9 +68,6 @@ interface ApiMessage {
 // ── Email config types ──────────────────────────────────────────────────────
 interface EmailConfig {
   email: string;
-  smtpServer: string;
-  smtpPort: string;
-  password: string;
 }
 
 interface EmailTemplate {
@@ -80,12 +77,14 @@ interface EmailTemplate {
   body: string;
 }
 
-// ── SMTP presets ────────────────────────────────────────────────────────────
-const SMTP_PRESETS: { label: string; server: string; port: string }[] = [
-  { label: 'Gmail', server: 'smtp.gmail.com', port: '587' },
-  { label: 'Outlook / Office 365', server: 'smtp.office365.com', port: '587' },
-  { label: 'Yahoo', server: 'smtp.mail.yahoo.com', port: '587' },
-];
+// ── Supplier email addresses ──────────────────────────────────────────────────────
+const SUPPLIER_EMAILS: Record<string, string> = {
+  transgourmet: 'contact@transgourmet.fr',
+  metro: 'pro@metro.fr',
+  pomona: 'commande@pomona.fr',
+};
+
+const CONFIGURED_EMAIL = 'marketphaseai@gmail.com';
 
 // ── Email templates ─────────────────────────────────────────────────────────
 const EMAIL_TEMPLATES: EmailTemplate[] = [
@@ -293,24 +292,19 @@ function getLastPreview(conv: Conversation) {
 }
 
 // ── Email helpers ────────────────────────────────────────────────────────────
-function loadEmailConfig(): EmailConfig | null {
-  try {
-    const raw = localStorage.getItem('emailConfig');
-    if (!raw) return null;
-    const cfg = JSON.parse(raw) as EmailConfig;
-    if (cfg.email && cfg.smtpServer && cfg.smtpPort) return cfg;
-    return null;
-  } catch {
-    return null;
-  }
+function loadEmailConfig(): EmailConfig {
+  const cfg: EmailConfig = { email: CONFIGURED_EMAIL };
+  localStorage.setItem('emailConfig', JSON.stringify(cfg));
+  return cfg;
 }
 
-function saveEmailConfig(config: EmailConfig) {
-  localStorage.setItem('emailConfig', JSON.stringify(config));
+function getSupplierEmail(convId: string): string {
+  return SUPPLIER_EMAILS[convId] || '';
 }
 
-function buildMailtoLink(conv: Conversation, fromEmail?: string): string {
-  const subject = encodeURIComponent(`Conversation : ${conv.name}`);
+function buildMailtoLink(conv: Conversation): string {
+  const to = getSupplierEmail(conv.id);
+  const subject = encodeURIComponent(`RestauMargin — ${conv.name}`);
   const body = conv.messages
     .map(m => {
       const sender = m.senderId === ME ? 'Moi' : (CONTACTS.find(c => c.id === m.senderId)?.name.split(' - ')[0] || m.senderId);
@@ -318,8 +312,7 @@ function buildMailtoLink(conv: Conversation, fromEmail?: string): string {
       return `${sender} (${m.timestamp}) :\n${text}`;
     })
     .join('\n\n');
-  const _from = fromEmail ? `&from=${encodeURIComponent(fromEmail)}` : '';
-  return `mailto:?subject=${subject}&body=${encodeURIComponent(body)}${_from}`;
+  return `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${encodeURIComponent(body)}`;
 }
 
 function buildComposeMailto(to: string, subject: string, body: string): string {
@@ -335,15 +328,10 @@ export default function Messagerie() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewModal, setShowNewModal] = useState(false);
   const [mobileShowChat, setMobileShowChat] = useState(false);
-  const [showDemoBanner, setShowDemoBanner] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Email config state
-  const [emailConfig, setEmailConfig] = useState<EmailConfig | null>(loadEmailConfig);
-  const [showEmailSettings, setShowEmailSettings] = useState(false);
-  const [emailForm, setEmailForm] = useState<EmailConfig>(
-    emailConfig || { email: '', smtpServer: '', smtpPort: '587', password: '' }
-  );
+  // Email config — auto-configured with marketphaseai@gmail.com
+  const [emailConfig] = useState<EmailConfig>(loadEmailConfig);
 
   // Compose email modal
   const [showComposeModal, setShowComposeModal] = useState(false);
@@ -355,7 +343,7 @@ export default function Messagerie() {
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
-  const isEmailConfigured = emailConfig !== null;
+  const isEmailConfigured = true; // always configured with marketphaseai@gmail.com
 
   // ── Fetch conversations on mount ───────────────────────────────────────
   useEffect(() => {
@@ -525,37 +513,6 @@ export default function Messagerie() {
     showToast(`Conversation avec ${contact.name} ouverte`, 'info');
   }
 
-  // ── Email config handlers ─────────────────────────────────────────────
-  function handleSmtpPreset(preset: { server: string; port: string }) {
-    setEmailForm((prev) => ({ ...prev, smtpServer: preset.server, smtpPort: preset.port }));
-  }
-
-  function handleTestConnection() {
-    if (!emailForm.email || !emailForm.smtpServer || !emailForm.smtpPort) {
-      showToast('Veuillez remplir tous les champs obligatoires', 'error');
-      return;
-    }
-    showToast('Connexion SMTP réussie !', 'success');
-  }
-
-  function handleSaveEmailConfig() {
-    if (!emailForm.email || !emailForm.smtpServer || !emailForm.smtpPort) {
-      showToast('Veuillez remplir tous les champs obligatoires', 'error');
-      return;
-    }
-    saveEmailConfig(emailForm);
-    setEmailConfig(emailForm);
-    setShowEmailSettings(false);
-    showToast('Configuration email sauvegardée', 'success');
-  }
-
-  function handleDisconnectEmail() {
-    localStorage.removeItem('emailConfig');
-    setEmailConfig(null);
-    setEmailForm({ email: '', smtpServer: '', smtpPort: '587', password: '' });
-    showToast('Email déconnecté', 'info');
-  }
-
   // ── Compose email handlers ────────────────────────────────────────────
   function openComposeModal(template?: EmailTemplate) {
     setComposeTo('');
@@ -598,12 +555,12 @@ export default function Messagerie() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowEmailSettings((v) => !v)}
-            title="Paramètres email"
+            onClick={() => window.open(`https://mail.google.com/mail/u/${CONFIGURED_EMAIL}`, '_blank')}
+            title="Ouvrir Gmail"
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors text-sm"
           >
-            <Settings className="w-4 h-4" />
-            <span className="hidden sm:inline">Email</span>
+            <Mail className="w-4 h-4" />
+            <span className="hidden sm:inline">Lire mes emails</span>
           </button>
           {isEmailConfigured && (
             <div className="relative">
@@ -651,154 +608,21 @@ export default function Messagerie() {
         </div>
       </div>
 
-      {/* Email settings panel (collapsible) */}
-      {showEmailSettings && (
-        <div className="mb-4 rounded-xl border dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
-          <button
-            onClick={() => setShowEmailSettings(false)}
-            className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b dark:border-slate-700"
-          >
-            <div className="flex items-center gap-2 text-sm font-semibold dark:text-slate-200">
-              <Settings className="w-4 h-4" />
-              Connecter mon email
-            </div>
-            <ChevronUp className="w-4 h-4 text-slate-400" />
-          </button>
-          <div className="p-4 space-y-4">
-            {/* SMTP presets */}
-            <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
-                Pré-remplir avec un fournisseur
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {SMTP_PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    onClick={() => handleSmtpPreset(preset)}
-                    className="px-3 py-1.5 text-xs font-medium rounded-lg border dark:border-slate-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 text-slate-600 dark:text-slate-300 transition-colors"
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+      {/* Email connected banner */}
+      <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 text-green-700 dark:text-green-300 text-xs">
+        <Check className="w-4 h-4 shrink-0" />
+        <span className="flex-1">
+          <strong>Email connecté</strong> — {emailConfig.email}
+        </span>
+        <button
+          onClick={() => window.open(`https://mail.google.com/mail/u/${CONFIGURED_EMAIL}`, '_blank')}
+          className="px-2 py-0.5 rounded text-[10px] font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
+        >
+          Ouvrir Gmail
+        </button>
+      </div>
 
-            {/* Form fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  Adresse email *
-                </label>
-                <input
-                  type="email"
-                  placeholder="vous@exemple.com"
-                  value={emailForm.email}
-                  onChange={(e) => setEmailForm((prev) => ({ ...prev, email: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  {"Mot de passe / App password"}
-                </label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={emailForm.password}
-                  onChange={(e) => setEmailForm((prev) => ({ ...prev, password: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  Serveur SMTP *
-                </label>
-                <input
-                  type="text"
-                  placeholder="smtp.gmail.com"
-                  value={emailForm.smtpServer}
-                  onChange={(e) => setEmailForm((prev) => ({ ...prev, smtpServer: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  Port SMTP *
-                </label>
-                <input
-                  type="text"
-                  placeholder="587"
-                  value={emailForm.smtpPort}
-                  onChange={(e) => setEmailForm((prev) => ({ ...prev, smtpPort: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-between pt-2 border-t dark:border-slate-700">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleTestConnection}
-                  className="px-4 py-2 text-sm font-medium rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
-                >
-                  Tester la connexion
-                </button>
-                <button
-                  onClick={handleSaveEmailConfig}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                  Sauvegarder
-                </button>
-              </div>
-              {isEmailConfigured && (
-                <button
-                  onClick={handleDisconnectEmail}
-                  className="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                >
-                  Déconnecter
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Demo banner OR connected email banner */}
-      {isEmailConfigured ? (
-        <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 text-green-700 dark:text-green-300 text-xs">
-          <Check className="w-4 h-4 shrink-0" />
-          <span className="flex-1">
-            <strong>Email connecté</strong> &mdash; {emailConfig.email}
-          </span>
-          <button
-            onClick={() => setShowEmailSettings(true)}
-            className="p-0.5 rounded hover:bg-green-100 dark:hover:bg-green-800/40 shrink-0"
-          >
-            <Settings className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ) : showDemoBanner ? (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 text-blue-700 dark:text-blue-300 text-xs">
-          <Info className="w-4 h-4 shrink-0" />
-          <span className="flex-1">
-            <strong>Version démo</strong> &mdash; Les messages sont stockés localement. Connectez votre email pour envoyer de vrais messages.
-          </span>
-          <button
-            onClick={() => setShowEmailSettings(true)}
-            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors mr-1"
-          >
-            Configurer
-          </button>
-          <button
-            onClick={() => setShowDemoBanner(false)}
-            className="p-0.5 rounded hover:bg-blue-100 dark:hover:bg-blue-800/40 shrink-0"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ) : null}
-
+      
       {/* Main panels */}
       <div className="flex flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 overflow-hidden mt-1">
         {/* ── Left panel: conversation list ──────────────────────────────── */}
@@ -865,14 +689,13 @@ export default function Messagerie() {
                     <div className="flex items-center gap-1 shrink-0 ml-1">
                       {conv.messages.length > 0 && (
                         <a
-                          href={buildMailtoLink(conv, emailConfig?.email)}
+                          href={buildMailtoLink(conv)}
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (isEmailConfigured) {
-                              showToast(`Envoi depuis ${emailConfig.email}`, 'info');
-                            }
+                            const supplierEmail = getSupplierEmail(conv.id);
+                            showToast(supplierEmail ? `Email vers ${supplierEmail}` : 'Ouverture email...', 'info');
                           }}
-                          title={isEmailConfigured ? `Envoyer depuis ${emailConfig.email}` : 'Envoyer par email'}
+                          title={getSupplierEmail(conv.id) ? `Envoyer à ${getSupplierEmail(conv.id)}` : 'Envoyer par email'}
                           className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                         >
                           <Mail className="w-3.5 h-3.5" />
@@ -934,17 +757,13 @@ export default function Messagerie() {
                 <div className="flex items-center gap-1">
                   {activeConv.messages.length > 0 && (
                     <a
-                      href={buildMailtoLink(activeConv, emailConfig?.email)}
-                      title={isEmailConfigured ? `Envoyer depuis ${emailConfig.email}` : 'Envoyer cette conversation par email'}
+                      href={buildMailtoLink(activeConv)}
+                      title={getSupplierEmail(activeConv.id) ? `Envoyer à ${getSupplierEmail(activeConv.id)}` : 'Envoyer cette conversation par email'}
                       className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 dark:text-blue-400 transition-colors"
-                      onClick={() =>
-                        showToast(
-                          isEmailConfigured
-                            ? `Ouverture email depuis ${emailConfig.email}...`
-                            : 'Ouverture de votre client email...',
-                          'info'
-                        )
-                      }
+                      onClick={() => {
+                        const to = getSupplierEmail(activeConv.id);
+                        showToast(to ? `Email vers ${to}...` : 'Ouverture email...', 'info');
+                      }}
                     >
                       <Mail className="w-4 h-4" />
                     </a>

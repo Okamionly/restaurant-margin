@@ -1,7 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { Bluetooth, BluetoothOff, Scale, Check, RotateCcw, Search, ChevronRight, AlertTriangle, Wifi, WifiOff, Plus, Minus } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  Bluetooth, BluetoothOff, Scale, Check, RotateCcw, Search,
+  AlertTriangle, Wifi, Plus, Minus, ArrowLeft, Trash2,
+  ClipboardList, Package, ChefHat, Zap, CircleDot,
+} from 'lucide-react';
 import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 
 const API = '';
 
@@ -11,45 +16,89 @@ function authHeaders() {
 }
 
 type Ingredient = { id: number; name: string; unit: string; category: string; pricePerUnit: number };
-type WeighLog = { ingredient: Ingredient; weight: number; unit: string; timestamp: Date };
 
-const CATEGORY_COLORS: Record<string, string> = {
-  'Viandes': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
-  'Poissons': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-  'Légumes': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-  'Fruits': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
-  'Produits laitiers': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
-  'Épicerie': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+type HistoryEntry = {
+  ingredientName: string;
+  ingredientCategory: string;
+  weight: number;
+  unit: string;
+  timestamp: string;
+  status: 'success' | 'error';
 };
 
-// Unit conversion: balance gives kg, convert to ingredient unit
+const CATEGORY_COLORS: Record<string, string> = {
+  'Viandes': 'bg-red-500/20 text-red-300 border-red-500/30',
+  'Poissons': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  'Legumes': 'bg-green-500/20 text-green-300 border-green-500/30',
+  'Fruits': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  'Produits laitiers': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  'Epicerie': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+};
+
+function getCategoryColor(cat: string) {
+  return CATEGORY_COLORS[cat] ?? 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+}
+
+// Scale gives kg, convert to target unit
 function convertWeight(kg: number, unit: string): number {
   switch (unit.toLowerCase()) {
     case 'g': return Math.round(kg * 1000);
     case 'kg': return Math.round(kg * 1000) / 1000;
-    case 'l': return Math.round(kg * 100) / 100; // approx water density
+    case 'l': return Math.round(kg * 100) / 100;
     case 'cl': return Math.round(kg * 1000) / 10;
     case 'ml': return Math.round(kg * 1000 * 10);
     default: return Math.round(kg * 1000) / 1000;
   }
 }
 
+// localStorage persistence for history
+const HISTORY_KEY = 'weighstation_history';
+
+function loadHistory(): HistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveHistory(entries: HistoryEntry[]) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, 50)));
+}
+
+// Steps for the workflow
+const STEPS = [
+  { num: 1, label: 'Ingredient', icon: Search },
+  { num: 2, label: 'Tare', icon: RotateCcw },
+  { num: 3, label: 'Peser', icon: Scale },
+  { num: 4, label: 'Valider', icon: Check },
+];
+
+type DisplayUnit = 'g' | 'kg';
+
 export default function WeighStation() {
+  const navigate = useNavigate();
   const { showToast } = useToast();
-  const { status, reading, error, isSupported, connect, disconnect } = useScale();
+  const { status, reading, error, connect, disconnect } = useScale();
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Ingredient | null>(null);
   const [tare, setTare] = useState(0);
-  const [log, setLog] = useState<WeighLog[]>([]);
   const [saving, setSaving] = useState(false);
-  const [simWeight, setSimWeight] = useState(0); // simulation mode
+  const [simWeight, setSimWeight] = useState(0);
   const [useSimulation, setUseSimulation] = useState(false);
-  const [debugMode, setDebugMode] = useState(false);
+  const [history, setHistory] = useState<HistoryEntry[]>(loadHistory);
+  const [displayUnit, setDisplayUnit] = useState<DisplayUnit>('g');
+  const [quickMode, setQuickMode] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [prevWeight, setPrevWeight] = useState(0);
+  const [flashGreen, setFlashGreen] = useState(false);
+  const [connectAnim, setConnectAnim] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Load ingredients
   useEffect(() => {
     fetch(`${API}/api/ingredients`, { headers: authHeaders() })
       .then(r => r.ok ? r.json() : [])
@@ -57,10 +106,53 @@ export default function WeighStation() {
       .catch(() => {});
   }, []);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  // Connection animation
+  useEffect(() => {
+    if (status === 'connecting') {
+      setConnectAnim(true);
+    } else {
+      const t = setTimeout(() => setConnectAnim(false), 600);
+      return () => clearTimeout(t);
+    }
+  }, [status]);
+
   const currentWeight = useSimulation ? simWeight : (reading?.weight ?? 0);
   const netWeight = Math.max(0, currentWeight - tare);
-  const netConverted = selected ? convertWeight(netWeight, selected.unit) : netWeight;
   const isStable = useSimulation ? true : (reading?.stable ?? false);
+
+  // Green flash when stable
+  useEffect(() => {
+    if (netWeight > 0 && isStable && prevWeight !== netWeight) {
+      setFlashGreen(true);
+      const t = setTimeout(() => setFlashGreen(false), 800);
+      setPrevWeight(netWeight);
+      return () => clearTimeout(t);
+    }
+  }, [netWeight, isStable, prevWeight]);
+
+  // Display weight in current display unit
+  const displayWeight = useCallback((kg: number): string => {
+    if (kg <= 0) return '0';
+    if (displayUnit === 'g') return `${Math.round(kg * 1000)}`;
+    return `${(Math.round(kg * 1000) / 1000).toFixed(3)}`;
+  }, [displayUnit]);
+
+  // Converted weight for selected ingredient
+  const netConverted = selected ? convertWeight(netWeight, selected.unit) : (displayUnit === 'g' ? Math.round(netWeight * 1000) : Math.round(netWeight * 1000) / 1000);
+
+  // Current step calculation
+  const currentStep = !selected && !quickMode ? 1 : tare === 0 && currentWeight <= 0 ? 2 : netWeight <= 0 ? 3 : 4;
 
   const filteredIngredients = ingredients.filter(i =>
     i.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -69,20 +161,41 @@ export default function WeighStation() {
 
   function handleTare() {
     setTare(currentWeight);
-    showToast('Tare effectuée', 'success');
+    showToast('Tare effectuee', 'success');
   }
 
   function handleReset() {
     setTare(0);
     setSelected(null);
+    setQuickMode(false);
+    setSearch('');
   }
 
   async function handleValidate() {
+    if (quickMode) {
+      // Quick mode: just log it
+      const entry: HistoryEntry = {
+        ingredientName: 'Pesee rapide',
+        ingredientCategory: '',
+        weight: netConverted,
+        unit: displayUnit,
+        timestamp: new Date().toISOString(),
+        status: 'success',
+      };
+      const updated = [entry, ...history].slice(0, 50);
+      setHistory(updated);
+      saveHistory(updated);
+      showToast(`Pesee enregistree : ${netConverted} ${displayUnit}`, 'success');
+      setTare(0);
+      setQuickMode(false);
+      return;
+    }
+
     if (!selected || netConverted <= 0) return;
     setSaving(true);
     try {
-      // Update inventory stock
       const invRes = await fetch(`${API}/api/inventory`, { headers: authHeaders() });
+      let entryStatus: 'success' | 'error' = 'success';
       if (invRes.ok) {
         const invItems = await invRes.json();
         const item = invItems.find((i: any) => i.ingredientId === selected.id);
@@ -92,231 +205,474 @@ export default function WeighStation() {
             headers: authHeaders(),
             body: JSON.stringify({ currentStock: item.currentStock + netConverted }),
           });
-          showToast(`+${netConverted} ${selected.unit} ajouté à l'inventaire`, 'success');
+          showToast(`+${netConverted} ${selected.unit} ajoute a l'inventaire`, 'success');
         } else {
-          showToast('Ingrédient non trouvé dans l\'inventaire', 'error');
+          showToast('Ingredient non trouve dans l\'inventaire', 'error');
+          entryStatus = 'error';
         }
       }
-      setLog(prev => [{ ingredient: selected, weight: netConverted, unit: selected.unit, timestamp: new Date() }, ...prev.slice(0, 9)]);
+      const entry: HistoryEntry = {
+        ingredientName: selected.name,
+        ingredientCategory: selected.category,
+        weight: netConverted,
+        unit: selected.unit,
+        timestamp: new Date().toISOString(),
+        status: entryStatus,
+      };
+      const updated = [entry, ...history].slice(0, 50);
+      setHistory(updated);
+      saveHistory(updated);
       setTare(0);
       setSelected(null);
       setSearch('');
     } catch {
       showToast('Erreur sauvegarde', 'error');
+      const entry: HistoryEntry = {
+        ingredientName: selected.name,
+        ingredientCategory: selected.category,
+        weight: netConverted,
+        unit: selected.unit,
+        timestamp: new Date().toISOString(),
+        status: 'error',
+      };
+      const updated = [entry, ...history].slice(0, 50);
+      setHistory(updated);
+      saveHistory(updated);
     }
     setSaving(false);
   }
 
-  const weightDisplay = netConverted > 0 ? (
-    selected?.unit === 'g' ? `${netConverted} g` :
-    selected?.unit === 'kg' ? `${netConverted.toFixed(3)} kg` :
-    `${netConverted} ${selected?.unit ?? 'kg'}`
-  ) : '— —';
+  function clearHistory() {
+    setHistory([]);
+    localStorage.removeItem(HISTORY_KEY);
+    showToast('Historique efface', 'success');
+  }
+
+  function selectIngredient(ing: Ingredient) {
+    setSelected(ing);
+    setTare(0);
+    setSearch('');
+    setShowDropdown(false);
+    setQuickMode(false);
+  }
+
+  const isConnected = status === 'connected' || useSimulation;
+  const weightForDisplay = quickMode || !selected
+    ? displayWeight(netWeight)
+    : `${netConverted}`;
+  const unitForDisplay = quickMode || !selected ? displayUnit : (selected?.unit ?? displayUnit);
 
   return (
-    <div className="h-screen bg-slate-900 text-white flex flex-col select-none overflow-hidden" style={{ fontFamily: 'system-ui, sans-serif' }}>
+    <div className="h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex flex-col select-none overflow-hidden">
 
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-6 py-3 bg-slate-800 border-b border-slate-700">
+      {/* ===== TOP BAR ===== */}
+      <header className="flex items-center justify-between px-4 py-3 bg-slate-900/80 border-b border-slate-700/60 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <Scale className="w-6 h-6 text-blue-400" />
-          <span className="text-lg font-bold text-white">Station Balance</span>
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-4 py-2.5 min-h-[48px] bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-200 font-medium text-sm transition-all active:scale-95"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="hidden sm:inline">Retour</span>
+          </button>
+          <div className="flex items-center gap-2.5">
+            <Scale className="w-6 h-6 text-emerald-400" />
+            <span className="text-lg font-bold text-white tracking-tight">Station Balance</span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Connection status indicator */}
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/60 border border-slate-700/50">
+            <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${
+              status === 'connected' ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' :
+              status === 'connecting' ? 'bg-blue-400 animate-pulse' :
+              status === 'error' ? 'bg-red-400' :
+              'bg-slate-500'
+            }`} />
+            <span className="text-xs text-slate-400 hidden sm:inline">
+              {status === 'connected' ? 'Connecte' :
+               status === 'connecting' ? 'Connexion...' :
+               status === 'error' ? 'Erreur' : 'Deconnecte'}
+            </span>
+          </div>
+
           {/* Simulation toggle */}
           <button
             onClick={() => setUseSimulation(s => !s)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${useSimulation ? 'bg-amber-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
+            className={`px-3 py-2.5 min-h-[48px] rounded-xl text-sm font-medium transition-all active:scale-95 ${
+              useSimulation ? 'bg-amber-600/80 text-white border border-amber-500/50' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-700/50'
+            }`}
           >
-            {useSimulation ? 'Mode Simulation' : 'Mode Balance'}
+            {useSimulation ? 'Simulation' : 'Balance'}
           </button>
 
-          {/* Debug toggle */}
-          <button
-            onClick={() => setDebugMode(d => !d)}
-            className="px-2 py-1.5 rounded-lg text-xs bg-slate-700 text-slate-400 hover:bg-slate-600"
-          >
-            Debug
-          </button>
-
-          {/* BT Status */}
+          {/* Connect / Disconnect button */}
           {!useSimulation && (
             <button
               onClick={status === 'connected' ? disconnect : connect}
               disabled={status === 'connecting'}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all active:scale-95 ${
-                status === 'connected' ? 'bg-green-600 hover:bg-green-700 text-white' :
-                status === 'connecting' ? 'bg-blue-700 text-white animate-pulse' :
-                status === 'error' ? 'bg-red-600 hover:bg-red-700 text-white' :
-                'bg-blue-600 hover:bg-blue-700 text-white'
+              className={`flex items-center gap-2 px-4 py-2.5 min-h-[48px] rounded-xl font-medium text-sm transition-all active:scale-95 ${
+                connectAnim ? 'animate-pulse' : ''
+              } ${
+                status === 'connected' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' :
+                status === 'connecting' ? 'bg-blue-700 text-white' :
+                status === 'error' ? 'bg-red-600 hover:bg-red-500 text-white' :
+                'bg-blue-600 hover:bg-blue-500 text-white'
               }`}
             >
-              {status === 'connected' ? <Wifi className="w-4 h-4" /> :
-               status === 'connecting' ? <Bluetooth className="w-4 h-4 animate-pulse" /> :
-               <BluetoothOff className="w-4 h-4" />}
-              {status === 'connected' ? 'Connecté' :
-               status === 'connecting' ? 'Connexion...' :
-               'Connecter balance'}
+              {status === 'connected' ? <Wifi className="w-5 h-5" /> :
+               status === 'connecting' ? <Bluetooth className="w-5 h-5 animate-spin" /> :
+               <BluetoothOff className="w-5 h-5" />}
+              <span className="hidden sm:inline">
+                {status === 'connected' ? 'Deconnecter' :
+                 status === 'connecting' ? 'Connexion...' :
+                 'Connecter'}
+              </span>
             </button>
           )}
         </div>
-      </div>
+      </header>
 
       {/* Error banner */}
       {error && !useSimulation && (
-        <div className="flex items-center gap-2 px-6 py-2 bg-red-900/50 text-red-300 text-sm border-b border-red-800">
+        <div className="flex items-center gap-2 px-6 py-2.5 bg-red-900/40 text-red-300 text-sm border-b border-red-800/50">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           {error}
         </div>
       )}
 
-      {/* Main layout — 3 columns on tablet */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* ===== STEP INDICATOR ===== */}
+      {!quickMode && (
+        <div className="flex items-center justify-center gap-1 px-4 py-3 bg-slate-900/50 border-b border-slate-800/60">
+          {STEPS.map((step, idx) => {
+            const active = currentStep === step.num;
+            const done = currentStep > step.num;
+            const Icon = step.icon;
+            return (
+              <div key={step.num} className="flex items-center">
+                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-300 ${
+                  active ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40' :
+                  done ? 'bg-slate-700/40 text-emerald-400' :
+                  'bg-slate-800/30 text-slate-600'
+                }`}>
+                  <Icon className="w-4 h-4" />
+                  <span className="text-xs font-medium hidden sm:inline">{step.label}</span>
+                  <span className="text-xs font-bold sm:hidden">{step.num}</span>
+                </div>
+                {idx < STEPS.length - 1 && (
+                  <div className={`w-6 h-0.5 mx-1 rounded transition-colors ${done ? 'bg-emerald-500/60' : 'bg-slate-700/40'}`} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-        {/* LEFT — Ingredient selector */}
-        <div className="w-72 bg-slate-800 border-r border-slate-700 flex flex-col overflow-hidden shrink-0">
-          <div className="px-4 py-3 border-b border-slate-700">
+      {/* ===== MAIN CONTENT ===== */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+
+        {/* LEFT PANEL: Ingredient selector + Quick actions */}
+        <div className="lg:w-80 xl:w-96 bg-slate-900/40 border-r border-slate-800/60 flex flex-col overflow-hidden shrink-0">
+
+          {/* Quick actions */}
+          <div className="p-3 border-b border-slate-800/60 grid grid-cols-3 gap-2">
+            <button
+              onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
+              className={`flex flex-col items-center gap-1 px-2 py-3 min-h-[48px] rounded-xl text-xs font-medium transition-all active:scale-95 ${
+                quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40'
+              }`}
+            >
+              <Zap className="w-5 h-5" />
+              Pesee rapide
+            </button>
+            <button
+              onClick={() => navigate('/inventory')}
+              className="flex flex-col items-center gap-1 px-2 py-3 min-h-[48px] rounded-xl text-xs font-medium bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40 transition-all active:scale-95"
+            >
+              <Package className="w-5 h-5" />
+              Inventaire
+            </button>
+            <button
+              onClick={() => navigate('/recipes')}
+              className="flex flex-col items-center gap-1 px-2 py-3 min-h-[48px] rounded-xl text-xs font-medium bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40 transition-all active:scale-95"
+            >
+              <ChefHat className="w-5 h-5" />
+              Recettes
+            </button>
+          </div>
+
+          {/* Ingredient search */}
+          <div className="p-3 border-b border-slate-800/60" ref={dropdownRef}>
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
               <input
                 ref={searchRef}
                 type="text"
                 value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Rechercher un ingrédient..."
-                className="w-full pl-9 pr-3 py-2.5 bg-slate-700 rounded-xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
+                onFocus={() => setShowDropdown(true)}
+                placeholder="Rechercher un ingredient..."
+                className="w-full pl-10 pr-3 py-3 min-h-[48px] bg-slate-800/80 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-slate-700/50"
               />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto py-2 space-y-0.5 px-2">
-            {filteredIngredients.map(ing => (
+
+          {/* Ingredient list */}
+          <div className="flex-1 overflow-y-auto py-1 px-2 space-y-0.5">
+            {(showDropdown && search ? filteredIngredients : ingredients).map(ing => (
               <button
                 key={ing.id}
-                onClick={() => { setSelected(ing); setTare(0); setSearch(''); }}
-                className={`w-full flex items-center justify-between px-3 py-3 rounded-xl text-left transition-all active:scale-98 ${
+                onClick={() => selectIngredient(ing)}
+                className={`w-full flex items-center justify-between px-3 py-3 min-h-[48px] rounded-xl text-left transition-all active:scale-[0.98] ${
                   selected?.id === ing.id
-                    ? 'bg-blue-600 text-white'
-                    : 'hover:bg-slate-700 text-slate-200'
+                    ? 'bg-emerald-600/30 text-white border border-emerald-500/40'
+                    : 'hover:bg-slate-800/60 text-slate-300 border border-transparent'
                 }`}
               >
-                <div>
-                  <p className="font-medium text-sm">{ing.name}</p>
-                  <p className={`text-xs mt-0.5 ${selected?.id === ing.id ? 'text-blue-200' : 'text-slate-400'}`}>
-                    {ing.unit} · {ing.category}
-                  </p>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-sm truncate">{ing.name}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>
+                      {ing.category}
+                    </span>
+                    <span className="text-[10px] text-slate-500">{ing.unit}</span>
+                  </div>
                 </div>
-                {selected?.id === ing.id && <ChevronRight className="w-4 h-4 text-blue-200" />}
+                {selected?.id === ing.id && (
+                  <CircleDot className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
+                )}
               </button>
             ))}
-            {filteredIngredients.length === 0 && (
-              <p className="text-center text-slate-500 text-sm py-8">Aucun résultat</p>
+            {filteredIngredients.length === 0 && search && (
+              <p className="text-center text-slate-600 text-sm py-8">Aucun resultat</p>
             )}
           </div>
         </div>
 
-        {/* CENTER — Scale display */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-8">
+        {/* CENTER: Scale display */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-5 px-4 py-6 relative overflow-hidden">
 
-          {/* Selected ingredient */}
-          <div className="text-center">
-            {selected ? (
+          {/* Selected ingredient label */}
+          <div className="text-center min-h-[60px] flex flex-col items-center justify-center">
+            {quickMode ? (
               <div>
-                <p className="text-slate-400 text-sm uppercase tracking-widest mb-1">Ingrédient sélectionné</p>
-                <p className="text-3xl font-bold text-white">{selected.name}</p>
-                <p className="text-slate-400 text-sm mt-1">{selected.category}</p>
+                <p className="text-amber-400 text-sm uppercase tracking-widest font-medium">Pesee rapide</p>
+                <p className="text-slate-500 text-xs mt-1">Pesez sans selectionner d'ingredient</p>
+              </div>
+            ) : selected ? (
+              <div>
+                <p className="text-slate-500 text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>
+                <p className="text-2xl font-bold text-white mt-0.5">{selected.name}</p>
+                <span className={`inline-block text-[10px] px-2 py-0.5 rounded border mt-1 ${getCategoryColor(selected.category)}`}>
+                  {selected.category}
+                </span>
               </div>
             ) : (
               <div>
-                <p className="text-slate-500 text-xl">← Sélectionnez un ingrédient</p>
+                <p className="text-slate-600 text-base">Selectionnez un ingredient ou utilisez la pesee rapide</p>
               </div>
             )}
           </div>
 
-          {/* Big weight display */}
-          <div className={`relative flex flex-col items-center justify-center w-64 h-64 rounded-full border-4 transition-all duration-300 ${
-            netWeight > 0 && isStable ? 'border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.3)]' :
-            netWeight > 0 ? 'border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.2)]' :
-            'border-slate-600'
-          }`}>
-            <p className={`text-6xl font-black tabular-nums transition-all ${
-              netWeight > 0 && isStable ? 'text-green-400' :
-              netWeight > 0 ? 'text-blue-300' :
-              'text-slate-500'
-            }`}>
-              {weightDisplay}
-            </p>
-            {netWeight > 0 && (
-              <p className={`text-sm mt-2 font-medium ${isStable ? 'text-green-400' : 'text-blue-400 animate-pulse'}`}>
-                {isStable ? '✓ Stable' : '⋯ En cours'}
-              </p>
-            )}
+          {/* ===== BIG WEIGHT DISPLAY (LCD-style) ===== */}
+          <div
+            className={`relative w-full max-w-md aspect-[2/1] rounded-2xl flex flex-col items-center justify-center transition-all duration-500 ${
+              flashGreen ? 'shadow-[0_0_80px_rgba(52,211,153,0.3)]' : ''
+            }`}
+            style={{
+              background: 'linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0a0e17 100%)',
+              border: `2px solid ${
+                netWeight > 0 && isStable ? '#10b981' :
+                netWeight > 0 ? '#3b82f6' :
+                '#1e293b'
+              }`,
+              boxShadow: netWeight > 0 && isStable
+                ? '0 0 60px rgba(16,185,129,0.15), inset 0 1px 0 rgba(255,255,255,0.03)'
+                : netWeight > 0
+                ? '0 0 40px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.03)'
+                : 'inset 0 1px 0 rgba(255,255,255,0.03)',
+            }}
+          >
+            {/* Scan lines effect */}
+            <div className="absolute inset-0 rounded-2xl opacity-[0.03] pointer-events-none"
+              style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }}
+            />
+
+            {/* Weight number */}
+            <div className="relative z-10 flex items-baseline gap-2">
+              <span
+                className={`font-black tabular-nums tracking-tight transition-all duration-300 ${
+                  netWeight > 0 && isStable ? 'text-emerald-400' :
+                  netWeight > 0 ? 'text-blue-300' :
+                  'text-slate-600'
+                }`}
+                style={{ fontSize: 'clamp(3.5rem, 10vw, 6rem)', lineHeight: 1 }}
+              >
+                {netWeight <= 0 ? '0' : weightForDisplay}
+              </span>
+              <span className={`text-2xl font-bold transition-colors duration-300 ${
+                netWeight > 0 ? 'text-slate-400' : 'text-slate-700'
+              }`}>
+                {unitForDisplay}
+              </span>
+            </div>
+
+            {/* Stability indicator */}
+            <div className="relative z-10 mt-2 h-5 flex items-center">
+              {netWeight > 0 && isStable && (
+                <span className="flex items-center gap-1.5 text-emerald-400 text-sm font-medium animate-in fade-in duration-300">
+                  <Check className="w-4 h-4" /> Stable
+                </span>
+              )}
+              {netWeight > 0 && !isStable && (
+                <span className="flex items-center gap-1.5 text-blue-400 text-sm font-medium animate-pulse">
+                  <span className="flex gap-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </span>
+                  Mesure en cours
+                </span>
+              )}
+            </div>
+
+            {/* Tare info */}
             {tare > 0 && (
-              <p className="text-xs text-amber-400 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
+              <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
             )}
+          </div>
+
+          {/* Unit toggle */}
+          <div className="flex items-center gap-1 p-1 bg-slate-800/60 rounded-xl border border-slate-700/40">
+            {(['g', 'kg'] as DisplayUnit[]).map(u => (
+              <button
+                key={u}
+                onClick={() => setDisplayUnit(u)}
+                className={`px-5 py-2 min-h-[44px] rounded-lg text-sm font-bold transition-all ${
+                  displayUnit === u
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-700/60'
+                }`}
+              >
+                {u}
+              </button>
+            ))}
           </div>
 
           {/* Simulation controls */}
           {useSimulation && (
-            <div className="flex items-center gap-4 bg-slate-800 px-6 py-3 rounded-2xl border border-amber-600/30">
-              <p className="text-amber-400 text-sm font-medium">Simulation :</p>
-              <button onClick={() => setSimWeight(w => Math.max(0, +(w - 0.1).toFixed(3)))} className="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center active:scale-90">
-                <Minus className="w-4 h-4" />
+            <div className="flex items-center gap-4 bg-slate-800/60 px-5 py-3 rounded-2xl border border-amber-600/30">
+              <p className="text-amber-400 text-xs font-medium uppercase tracking-wider">Sim</p>
+              <button
+                onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
+                className="w-12 h-12 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center active:scale-90 transition-all"
+              >
+                <Minus className="w-5 h-5" />
               </button>
-              <span className="text-white font-mono w-20 text-center text-lg">{simWeight.toFixed(3)} kg</span>
-              <button onClick={() => setSimWeight(w => +(w + 0.1).toFixed(3))} className="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center active:scale-90">
-                <Plus className="w-4 h-4" />
+              <span className="text-white font-mono w-24 text-center text-lg tabular-nums">{simWeight.toFixed(3)} kg</span>
+              <button
+                onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
+                className="w-12 h-12 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center active:scale-90 transition-all"
+              >
+                <Plus className="w-5 h-5" />
               </button>
-            </div>
-          )}
-
-          {/* Debug */}
-          {debugMode && reading && !useSimulation && (
-            <div className="bg-slate-800 px-4 py-2 rounded-xl text-xs text-slate-400 font-mono max-w-xs text-center break-all">
-              RAW: {reading.raw}
             </div>
           )}
 
           {/* Action buttons */}
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-3 w-full max-w-lg">
             <button
               onClick={handleTare}
               disabled={currentWeight <= 0}
-              className="flex items-center gap-2 px-6 py-4 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed rounded-2xl font-semibold text-white text-lg transition-all active:scale-95"
+              className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-white text-base transition-all active:scale-95 border border-slate-700/50"
             >
               <RotateCcw className="w-5 h-5" /> Tare
             </button>
+
             <button
               onClick={handleValidate}
-              disabled={!selected || netConverted <= 0 || saving}
-              className="flex items-center gap-2 px-8 py-4 bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-2xl font-bold text-white text-lg transition-all active:scale-95 shadow-lg shadow-green-900/40"
+              disabled={(!selected && !quickMode) || netConverted <= 0 || saving}
+              className="flex items-center gap-2 px-10 py-4 min-h-[56px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white text-lg transition-all active:scale-95 shadow-lg shadow-emerald-900/30 border border-emerald-500/30"
             >
               <Check className="w-6 h-6" />
               {saving ? 'Sauvegarde...' : 'Valider'}
             </button>
+
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-6 py-4 bg-slate-700 hover:bg-slate-600 rounded-2xl font-semibold text-white text-lg transition-all active:scale-95"
+              className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-slate-800 hover:bg-slate-700 rounded-2xl font-semibold text-white text-base transition-all active:scale-95 border border-slate-700/50"
             >
               <RotateCcw className="w-5 h-5" /> Reset
             </button>
           </div>
         </div>
 
-        {/* RIGHT — Recent log */}
-        <div className="w-64 bg-slate-800 border-l border-slate-700 flex flex-col overflow-hidden shrink-0">
-          <div className="px-4 py-3 border-b border-slate-700">
-            <p className="text-sm font-semibold text-slate-300">Pesées récentes</p>
-          </div>
-          <div className="flex-1 overflow-y-auto py-2 px-2 space-y-1">
-            {log.length === 0 && (
-              <p className="text-center text-slate-600 text-xs py-6">Aucune pesée</p>
+        {/* RIGHT PANEL: History log */}
+        <div className="lg:w-80 xl:w-96 bg-slate-900/40 border-l border-slate-800/60 flex flex-col overflow-hidden shrink-0">
+
+          {/* History header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800/60">
+            <div className="flex items-center gap-2">
+              <ClipboardList className="w-4 h-4 text-slate-500" />
+              <p className="text-sm font-semibold text-slate-300">Historique</p>
+              {history.length > 0 && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-700 text-slate-400">{history.length}</span>
+              )}
+            </div>
+            {history.length > 0 && (
+              <button
+                onClick={clearHistory}
+                className="flex items-center gap-1 px-2 py-1.5 min-h-[40px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Effacer
+              </button>
             )}
-            {log.map((entry, i) => (
-              <div key={i} className="bg-slate-700/60 rounded-xl px-3 py-2.5">
-                <p className="text-white text-sm font-medium truncate">{entry.ingredient.name}</p>
-                <p className="text-green-400 text-lg font-bold tabular-nums">{entry.weight} {entry.unit}</p>
-                <p className="text-slate-500 text-xs">{entry.timestamp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</p>
+          </div>
+
+          {/* History table/list */}
+          <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+            {history.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12 text-slate-700">
+                <Scale className="w-8 h-8 mb-2" />
+                <p className="text-sm">Aucune pesee</p>
+              </div>
+            )}
+            {history.map((entry, i) => (
+              <div
+                key={`${entry.timestamp}-${i}`}
+                className={`rounded-xl px-3 py-2.5 border transition-all ${
+                  entry.status === 'error'
+                    ? 'bg-red-900/10 border-red-800/30'
+                    : 'bg-slate-800/40 border-slate-700/30'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-white text-sm font-medium truncate">{entry.ingredientName}</p>
+                    {entry.ingredientCategory && (
+                      <span className={`inline-block text-[9px] px-1 py-0.5 rounded border mt-0.5 ${getCategoryColor(entry.ingredientCategory)}`}>
+                        {entry.ingredientCategory}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className={`text-lg font-bold tabular-nums ${entry.status === 'error' ? 'text-red-400' : 'text-emerald-400'}`}>
+                      {entry.weight} {entry.unit}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-1.5">
+                  <p className="text-slate-600 text-[10px]">
+                    {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  </p>
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded ${
+                    entry.status === 'error' ? 'bg-red-900/30 text-red-400' : 'bg-emerald-900/30 text-emerald-400'
+                  }`}>
+                    {entry.status === 'error' ? 'Erreur' : 'OK'}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

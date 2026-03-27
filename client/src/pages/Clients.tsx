@@ -1,0 +1,1305 @@
+import { useState, useMemo } from 'react';
+import {
+  Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
+  Tag, Filter, LayoutGrid, List, ChevronDown, ChevronUp, Eye, FileText,
+  Download, Shield, Clock, BarChart3, PieChart, TrendingUp, X, AlertTriangle,
+  Upload, Copy, ExternalLink, Heart, UserPlus, Send,
+} from 'lucide-react';
+import { useToast } from '../hooks/useToast';
+import Modal from '../components/Modal';
+
+const API = '';
+
+function authHeaders() {
+  const token = localStorage.getItem('token');
+  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+}
+
+// ── Types ──────────────────────────────────────────────────────────────
+
+type ClientType = 'Particulier' | 'Entreprise' | 'Association';
+type ClientTag = 'VIP' | 'Régulier' | 'Nouveau';
+type ViewMode = 'cards' | 'table';
+type SortField = 'nom' | 'caTotal' | 'derniereVisite';
+type TabId = 'infos' | 'preferences' | 'historique' | 'documents' | 'rgpd';
+
+interface Allergene {
+  id: string;
+  nom: string;
+}
+
+interface Interaction {
+  id: string;
+  date: string;
+  type: 'devis' | 'evenement' | 'facture' | 'email' | 'appel';
+  description: string;
+  montant?: number;
+}
+
+interface Document {
+  id: string;
+  type: 'devis' | 'facture';
+  numero: string;
+  date: string;
+  montant: number;
+  statut: string;
+}
+
+interface Client {
+  id: string;
+  nom: string;
+  prenom: string;
+  entreprise: string;
+  siret: string;
+  type: ClientType;
+  tags: ClientTag[];
+  email: string;
+  telephone: string;
+  adresse: string;
+  notes: string;
+  caTotal: number;
+  nbCommandes: number;
+  derniereVisite: string;
+  dateCreation: string;
+  allergenes: string[];
+  regime: string[];
+  platsFavoris: string[];
+  historique: Interaction[];
+  documents: Document[];
+  consentementRGPD: string;
+}
+
+// ── Constants ──────────────────────────────────────────────────────────
+
+const EU_ALLERGENES: Allergene[] = [
+  { id: 'gluten', nom: 'Gluten' },
+  { id: 'crustaces', nom: 'Crustacés' },
+  { id: 'oeufs', nom: 'Oeufs' },
+  { id: 'poisson', nom: 'Poisson' },
+  { id: 'arachides', nom: 'Arachides' },
+  { id: 'soja', nom: 'Soja' },
+  { id: 'lait', nom: 'Lait' },
+  { id: 'fruits_coques', nom: 'Fruits à coques' },
+  { id: 'celeri', nom: 'Céleri' },
+  { id: 'moutarde', nom: 'Moutarde' },
+  { id: 'sesame', nom: 'Sésame' },
+  { id: 'sulfites', nom: 'Sulfites' },
+  { id: 'lupin', nom: 'Lupin' },
+  { id: 'mollusques', nom: 'Mollusques' },
+];
+
+const REGIMES = ['Végétarien', 'Vegan', 'Halal', 'Casher', 'Sans gluten'];
+
+const TAG_COLORS: Record<ClientTag, { bg: string; text: string; border: string }> = {
+  VIP: { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700' },
+  Régulier: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700' },
+  Nouveau: { bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', border: 'border-green-300 dark:border-green-700' },
+};
+
+const TYPE_COLORS: Record<ClientType, { bg: string; text: string }> = {
+  Particulier: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-700 dark:text-slate-300' },
+  Entreprise: { bg: 'bg-indigo-100 dark:bg-indigo-900/40', text: 'text-indigo-700 dark:text-indigo-300' },
+  Association: { bg: 'bg-rose-100 dark:bg-rose-900/40', text: 'text-rose-700 dark:text-rose-300' },
+};
+
+const EMAIL_TEMPLATES = [
+  { id: 'confirmation', label: 'Confirmation de réservation', subject: 'Confirmation de votre réservation', body: 'Bonjour,\n\nNous avons le plaisir de confirmer votre réservation pour le [DATE].\n\nCordialement,' },
+  { id: 'rappel', label: 'Rappel événement J-3', subject: 'Rappel : votre événement dans 3 jours', body: 'Bonjour,\n\nNous vous rappelons que votre événement est prévu dans 3 jours.\n\nCordialement,' },
+  { id: 'remerciement', label: 'Remerciement post-événement', subject: 'Merci pour votre confiance !', body: 'Bonjour,\n\nNous tenions à vous remercier pour votre confiance lors de votre dernier événement.\n\nCordialement,' },
+  { id: 'relance', label: 'Relance devis en attente', subject: 'Votre devis en attente', body: 'Bonjour,\n\nNous revenons vers vous concernant le devis que nous vous avons transmis.\n\nCordialement,' },
+  { id: 'promo', label: 'Offre spéciale / promotion', subject: 'Offre spéciale pour vous !', body: 'Bonjour,\n\nNous avons le plaisir de vous faire parvenir une offre exclusive.\n\nCordialement,' },
+];
+
+// ── Mock Data ──────────────────────────────────────────────────────────
+
+function generateMockClients(): Client[] {
+  return [
+    {
+      id: '1', nom: 'Dupont', prenom: 'Marie', entreprise: 'TechCorp SAS', siret: '123 456 789 00012',
+      type: 'Entreprise', tags: ['VIP'], email: 'marie.dupont@techcorp.fr', telephone: '01 42 33 44 55',
+      adresse: '15 Rue de la Paix, 75002 Paris', notes: 'Cliente fidèle, préfère les menus végétariens pour les séminaires.',
+      caTotal: 45200, nbCommandes: 23, derniereVisite: '2026-03-20', dateCreation: '2024-06-15',
+      allergenes: ['gluten', 'arachides'], regime: ['Végétarien'], platsFavoris: ['Risotto aux champignons', 'Tarte tatin'],
+      historique: [
+        { id: 'h1', date: '2026-03-20', type: 'evenement', description: 'Séminaire 40 personnes', montant: 3200 },
+        { id: 'h2', date: '2026-02-10', type: 'devis', description: 'Devis cocktail dînatoire', montant: 5600 },
+        { id: 'h3', date: '2026-01-15', type: 'facture', description: 'Facture gala annuel', montant: 8400 },
+        { id: 'h4', date: '2025-12-01', type: 'email', description: 'Envoi catalogue traiteur 2026' },
+      ],
+      documents: [
+        { id: 'd1', type: 'devis', numero: 'DEV-2026-042', date: '2026-02-10', montant: 5600, statut: 'En attente' },
+        { id: 'd2', type: 'facture', numero: 'FAC-2026-018', date: '2026-01-15', montant: 8400, statut: 'Payée' },
+      ],
+      consentementRGPD: '2024-06-15',
+    },
+    {
+      id: '2', nom: 'Martin', prenom: 'Jean-Pierre', entreprise: 'Cabinet Martin & Associés', siret: '987 654 321 00034',
+      type: 'Entreprise', tags: ['VIP', 'Régulier'], email: 'jp.martin@cabinet-martin.fr', telephone: '01 55 66 77 88',
+      adresse: '8 Avenue Montaigne, 75008 Paris', notes: 'Commande chaque trimestre pour les réunions du cabinet.',
+      caTotal: 38700, nbCommandes: 18, derniereVisite: '2026-03-15', dateCreation: '2024-03-20',
+      allergenes: ['lait'], regime: [], platsFavoris: ['Filet de boeuf', 'Fondant au chocolat'],
+      historique: [
+        { id: 'h5', date: '2026-03-15', type: 'evenement', description: 'Déjeuner affaires 12 couverts', montant: 960 },
+        { id: 'h6', date: '2026-01-20', type: 'facture', description: 'Facture réception cabinet', montant: 4200 },
+      ],
+      documents: [
+        { id: 'd3', type: 'facture', numero: 'FAC-2026-025', date: '2026-03-15', montant: 960, statut: 'Payée' },
+      ],
+      consentementRGPD: '2024-03-20',
+    },
+    {
+      id: '3', nom: 'Lefebvre', prenom: 'Sophie', entreprise: 'Groupe Alpha', siret: '456 789 123 00056',
+      type: 'Entreprise', tags: ['Régulier'], email: 'sophie.lefebvre@groupe-alpha.com', telephone: '01 44 55 66 77',
+      adresse: '22 Boulevard Haussmann, 75009 Paris', notes: 'Attention aux allergènes, plusieurs collaborateurs allergiques.',
+      caTotal: 28500, nbCommandes: 14, derniereVisite: '2026-03-10', dateCreation: '2024-09-01',
+      allergenes: ['crustaces', 'poisson', 'mollusques'], regime: ['Sans gluten'], platsFavoris: ['Poulet rôti', 'Salade César'],
+      historique: [
+        { id: 'h7', date: '2026-03-10', type: 'devis', description: 'Devis team building 60 pers.', montant: 4800 },
+        { id: 'h8', date: '2026-02-05', type: 'evenement', description: 'Buffet déjeuner 30 pers.', montant: 1800 },
+      ],
+      documents: [
+        { id: 'd4', type: 'devis', numero: 'DEV-2026-056', date: '2026-03-10', montant: 4800, statut: 'Accepté' },
+      ],
+      consentementRGPD: '2024-09-01',
+    },
+    {
+      id: '4', nom: 'Petit', prenom: 'François', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['VIP'], email: 'francois.petit@gmail.com', telephone: '06 12 34 56 78',
+      adresse: '5 Rue du Faubourg Saint-Honoré, 75008 Paris', notes: 'Client exigeant, anniversaires et fêtes de famille régulières.',
+      caTotal: 22300, nbCommandes: 11, derniereVisite: '2026-03-05', dateCreation: '2024-01-10',
+      allergenes: [], regime: ['Halal'], platsFavoris: ['Couscous royal', 'Pastilla'],
+      historique: [
+        { id: 'h9', date: '2026-03-05', type: 'evenement', description: 'Anniversaire 25 personnes', montant: 2500 },
+        { id: 'h10', date: '2025-11-20', type: 'facture', description: 'Facture mariage', montant: 12000 },
+      ],
+      documents: [
+        { id: 'd5', type: 'facture', numero: 'FAC-2025-089', date: '2025-11-20', montant: 12000, statut: 'Payée' },
+      ],
+      consentementRGPD: '2024-01-10',
+    },
+    {
+      id: '5', nom: 'Bernard', prenom: 'Claire', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['Régulier'], email: 'claire.bernard@outlook.fr', telephone: '06 98 76 54 32',
+      adresse: '12 Rue de Rivoli, 75004 Paris', notes: 'Végane stricte.',
+      caTotal: 8900, nbCommandes: 7, derniereVisite: '2026-02-28', dateCreation: '2025-03-15',
+      allergenes: ['lait', 'oeufs'], regime: ['Vegan'], platsFavoris: ['Buddha bowl', 'Curry de légumes'],
+      historique: [
+        { id: 'h11', date: '2026-02-28', type: 'evenement', description: 'Brunch vegan 15 pers.', montant: 750 },
+      ],
+      documents: [],
+      consentementRGPD: '2025-03-15',
+    },
+    {
+      id: '6', nom: 'Moreau', prenom: 'Luc', entreprise: 'Association Les Amis du Goût', siret: '321 654 987 00078',
+      type: 'Association', tags: ['Régulier'], email: 'contact@amisgout.org', telephone: '01 33 44 55 66',
+      adresse: '45 Rue Oberkampf, 75011 Paris', notes: 'Budget limité, privilégier les formules économiques.',
+      caTotal: 12400, nbCommandes: 9, derniereVisite: '2026-03-18', dateCreation: '2024-11-01',
+      allergenes: ['sulfites'], regime: [], platsFavoris: ['Blanquette de veau', 'Tarte aux pommes'],
+      historique: [
+        { id: 'h12', date: '2026-03-18', type: 'evenement', description: 'Dîner caritatif 80 pers.', montant: 2400 },
+        { id: 'h13', date: '2026-01-10', type: 'devis', description: 'Devis gala de charité', montant: 5000 },
+      ],
+      documents: [
+        { id: 'd6', type: 'devis', numero: 'DEV-2026-012', date: '2026-01-10', montant: 5000, statut: 'Refusé' },
+      ],
+      consentementRGPD: '2024-11-01',
+    },
+    {
+      id: '7', nom: 'Girard', prenom: 'Nathalie', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['Nouveau'], email: 'nathalie.girard@free.fr', telephone: '06 11 22 33 44',
+      adresse: '3 Place des Vosges, 75004 Paris', notes: 'Premier contact via le site web.',
+      caTotal: 1200, nbCommandes: 1, derniereVisite: '2026-03-22', dateCreation: '2026-03-01',
+      allergenes: ['celeri', 'moutarde'], regime: ['Sans gluten'], platsFavoris: [],
+      historique: [
+        { id: 'h14', date: '2026-03-22', type: 'devis', description: 'Devis baptême 35 pers.', montant: 2800 },
+      ],
+      documents: [
+        { id: 'd7', type: 'devis', numero: 'DEV-2026-068', date: '2026-03-22', montant: 2800, statut: 'En attente' },
+      ],
+      consentementRGPD: '2026-03-01',
+    },
+    {
+      id: '8', nom: 'Roux', prenom: 'Philippe', entreprise: 'Roux Consulting', siret: '789 123 456 00090',
+      type: 'Entreprise', tags: ['Régulier'], email: 'philippe@roux-consulting.fr', telephone: '01 77 88 99 00',
+      adresse: '18 Rue de la Boétie, 75008 Paris', notes: 'Déjeuners mensuels pour ses clients.',
+      caTotal: 19800, nbCommandes: 12, derniereVisite: '2026-03-12', dateCreation: '2024-08-01',
+      allergenes: [], regime: [], platsFavoris: ['Magret de canard', 'Crème brûlée'],
+      historique: [
+        { id: 'h15', date: '2026-03-12', type: 'evenement', description: 'Déjeuner client 8 pers.', montant: 640 },
+        { id: 'h16', date: '2026-02-15', type: 'facture', description: 'Facture déjeuner février', montant: 720 },
+      ],
+      documents: [
+        { id: 'd8', type: 'facture', numero: 'FAC-2026-031', date: '2026-02-15', montant: 720, statut: 'Payée' },
+      ],
+      consentementRGPD: '2024-08-01',
+    },
+    {
+      id: '9', nom: 'Fournier', prenom: 'Isabelle', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['Nouveau'], email: 'isabelle.fournier@yahoo.fr', telephone: '06 55 66 77 88',
+      adresse: '7 Rue de Turenne, 75003 Paris', notes: '',
+      caTotal: 800, nbCommandes: 1, derniereVisite: '2026-03-25', dateCreation: '2026-03-20',
+      allergenes: ['arachides', 'fruits_coques', 'sesame'], regime: [], platsFavoris: [],
+      historique: [
+        { id: 'h17', date: '2026-03-25', type: 'devis', description: 'Devis anniversaire 20 pers.', montant: 1600 },
+      ],
+      documents: [
+        { id: 'd9', type: 'devis', numero: 'DEV-2026-075', date: '2026-03-25', montant: 1600, statut: 'En attente' },
+      ],
+      consentementRGPD: '2026-03-20',
+    },
+    {
+      id: '10', nom: 'Simon', prenom: 'Thomas', entreprise: 'Simon & Fils SARL', siret: '654 321 987 00045',
+      type: 'Entreprise', tags: ['VIP', 'Régulier'], email: 'thomas.simon@simonetfils.fr', telephone: '01 22 33 44 55',
+      adresse: '30 Avenue des Champs-Élysées, 75008 Paris', notes: 'Client premium, toujours des événements haut de gamme.',
+      caTotal: 67500, nbCommandes: 28, derniereVisite: '2026-03-24', dateCreation: '2023-06-01',
+      allergenes: [], regime: ['Casher'], platsFavoris: ['Saumon gravlax', 'Cheesecake'],
+      historique: [
+        { id: 'h18', date: '2026-03-24', type: 'evenement', description: 'Cocktail inauguration 120 pers.', montant: 9600 },
+        { id: 'h19', date: '2026-02-20', type: 'facture', description: 'Facture soirée entreprise', montant: 7800 },
+        { id: 'h20', date: '2026-01-05', type: 'email', description: 'Envoi proposition menus 2026' },
+      ],
+      documents: [
+        { id: 'd10', type: 'facture', numero: 'FAC-2026-029', date: '2026-02-20', montant: 7800, statut: 'Payée' },
+      ],
+      consentementRGPD: '2023-06-01',
+    },
+    {
+      id: '11', nom: 'Laurent', prenom: 'Emma', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['Régulier'], email: 'emma.laurent@gmail.com', telephone: '06 44 55 66 77',
+      adresse: '21 Rue de Sèvres, 75006 Paris', notes: 'Organise souvent des dîners entre amis.',
+      caTotal: 6300, nbCommandes: 5, derniereVisite: '2026-02-20', dateCreation: '2025-01-15',
+      allergenes: ['poisson', 'crustaces'], regime: ['Végétarien'], platsFavoris: ['Lasagnes végétariennes', 'Tiramisu'],
+      historique: [
+        { id: 'h21', date: '2026-02-20', type: 'evenement', description: 'Dîner 10 personnes', montant: 800 },
+      ],
+      documents: [],
+      consentementRGPD: '2025-01-15',
+    },
+    {
+      id: '12', nom: 'Mercier', prenom: 'David', entreprise: 'Association Saveurs Solidaires', siret: '147 258 369 00023',
+      type: 'Association', tags: ['Nouveau'], email: 'contact@saveurssolidaires.fr', telephone: '01 99 88 77 66',
+      adresse: '56 Rue de Belleville, 75020 Paris', notes: 'Association aide alimentaire, recherche partenariats.',
+      caTotal: 3200, nbCommandes: 2, derniereVisite: '2026-03-08', dateCreation: '2026-01-15',
+      allergenes: [], regime: [], platsFavoris: [],
+      historique: [
+        { id: 'h22', date: '2026-03-08', type: 'evenement', description: 'Repas solidaire 50 pers.', montant: 1500 },
+        { id: 'h23', date: '2026-02-01', type: 'devis', description: 'Devis repas mensuel', montant: 2000 },
+      ],
+      documents: [
+        { id: 'd11', type: 'devis', numero: 'DEV-2026-033', date: '2026-02-01', montant: 2000, statut: 'Accepté' },
+      ],
+      consentementRGPD: '2026-01-15',
+    },
+    {
+      id: '13', nom: 'Robert', prenom: 'Véronique', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['VIP'], email: 'veronique.robert@orange.fr', telephone: '06 33 22 11 00',
+      adresse: '9 Quai Voltaire, 75007 Paris', notes: 'Cliente très fidèle, anniversaire le 14 mai.',
+      caTotal: 31200, nbCommandes: 16, derniereVisite: '2026-03-01', dateCreation: '2023-12-01',
+      allergenes: ['lupin'], regime: [], platsFavoris: ['Bouillabaisse', 'Tarte au citron meringuée'],
+      historique: [
+        { id: 'h24', date: '2026-03-01', type: 'evenement', description: 'Repas anniversaire 30 pers.', montant: 3000 },
+        { id: 'h25', date: '2025-12-15', type: 'facture', description: 'Facture Noël', montant: 4500 },
+        { id: 'h26', date: '2025-10-01', type: 'appel', description: 'Appel pour planifier événement fin d\'année' },
+      ],
+      documents: [
+        { id: 'd12', type: 'facture', numero: 'FAC-2025-098', date: '2025-12-15', montant: 4500, statut: 'Payée' },
+      ],
+      consentementRGPD: '2023-12-01',
+    },
+    {
+      id: '14', nom: 'Garcia', prenom: 'Antonio', entreprise: 'Garcia Immobilier', siret: '258 369 147 00067',
+      type: 'Entreprise', tags: ['Nouveau'], email: 'antonio@garcia-immo.fr', telephone: '01 66 77 88 99',
+      adresse: '42 Rue du Commerce, 75015 Paris', notes: 'Nouveau client, 1er événement prévu en avril.',
+      caTotal: 0, nbCommandes: 0, derniereVisite: '', dateCreation: '2026-03-25',
+      allergenes: [], regime: [], platsFavoris: [],
+      historique: [
+        { id: 'h27', date: '2026-03-25', type: 'devis', description: 'Devis inauguration agence', montant: 3500 },
+      ],
+      documents: [
+        { id: 'd13', type: 'devis', numero: 'DEV-2026-077', date: '2026-03-25', montant: 3500, statut: 'En attente' },
+      ],
+      consentementRGPD: '2026-03-25',
+    },
+    {
+      id: '15', nom: 'Blanc', prenom: 'Julie', entreprise: '', siret: '',
+      type: 'Particulier', tags: ['Régulier'], email: 'julie.blanc@laposte.net', telephone: '06 77 88 99 00',
+      adresse: '14 Rue Mouffetard, 75005 Paris', notes: 'Mariages et événements familiaux.',
+      caTotal: 15600, nbCommandes: 8, derniereVisite: '2026-02-14', dateCreation: '2024-05-01',
+      allergenes: ['soja', 'sesame'], regime: [], platsFavoris: ['Magret de canard', 'Pièce montée'],
+      historique: [
+        { id: 'h28', date: '2026-02-14', type: 'evenement', description: 'Dîner Saint-Valentin 2 pers.', montant: 250 },
+        { id: 'h29', date: '2025-09-10', type: 'facture', description: 'Facture mariage', montant: 8500 },
+      ],
+      documents: [
+        { id: 'd14', type: 'facture', numero: 'FAC-2025-072', date: '2025-09-10', montant: 8500, statut: 'Payée' },
+      ],
+      consentementRGPD: '2024-05-01',
+    },
+  ];
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────────
+
+function fmt(n: number) {
+  return n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function fmtDate(d: string) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function getInitials(nom: string, prenom: string) {
+  return `${prenom?.[0] || ''}${nom?.[0] || ''}`.toUpperCase();
+}
+
+const interactionIcons: Record<string, { icon: string; color: string }> = {
+  devis: { icon: '📋', color: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300' },
+  evenement: { icon: '🎉', color: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' },
+  facture: { icon: '📄', color: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' },
+  email: { icon: '✉️', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
+  appel: { icon: '📞', color: 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300' },
+};
+
+// ── Component ──────────────────────────────────────────────────────────
+
+export default function Clients() {
+  const { showToast } = useToast();
+
+  // State
+  const [clients, setClients] = useState<Client[]>(generateMockClients);
+  const [search, setSearch] = useState('');
+  const [filterType, setFilterType] = useState<ClientType | ''>('');
+  const [filterTag, setFilterTag] = useState<ClientTag | ''>('');
+  const [sortField, setSortField] = useState<SortField>('nom');
+  const [sortAsc, setSortAsc] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
+
+  // Modals
+  const [showDetail, setShowDetail] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [detailTab, setDetailTab] = useState<TabId>('infos');
+
+  // Form state
+  const emptyForm: Client = {
+    id: '', nom: '', prenom: '', entreprise: '', siret: '', type: 'Particulier',
+    tags: [], email: '', telephone: '', adresse: '', notes: '',
+    caTotal: 0, nbCommandes: 0, derniereVisite: '', dateCreation: new Date().toISOString().split('T')[0],
+    allergenes: [], regime: [], platsFavoris: [], historique: [], documents: [],
+    consentementRGPD: new Date().toISOString().split('T')[0],
+  };
+  const [form, setForm] = useState<Client>(emptyForm);
+  const [duplicateWarning, setDuplicateWarning] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('');
+
+  // ── Filtering & sorting ───────────────────────────────────────────────
+
+  const filtered = useMemo(() => {
+    let result = [...clients];
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter(c =>
+        c.nom.toLowerCase().includes(q) ||
+        c.prenom.toLowerCase().includes(q) ||
+        c.entreprise.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q)
+      );
+    }
+    if (filterType) result = result.filter(c => c.type === filterType);
+    if (filterTag) result = result.filter(c => c.tags.includes(filterTag));
+
+    result.sort((a, b) => {
+      let cmp = 0;
+      if (sortField === 'nom') cmp = a.nom.localeCompare(b.nom);
+      else if (sortField === 'caTotal') cmp = a.caTotal - b.caTotal;
+      else if (sortField === 'derniereVisite') cmp = (a.derniereVisite || '').localeCompare(b.derniereVisite || '');
+      return sortAsc ? cmp : -cmp;
+    });
+    return result;
+  }, [clients, search, filterType, filterTag, sortField, sortAsc]);
+
+  // ── Actions ───────────────────────────────────────────────────────────
+
+  function openDetail(c: Client) {
+    setSelectedClient(c);
+    setDetailTab('infos');
+    setShowDetail(true);
+  }
+
+  function openAdd() {
+    setEditingClient(null);
+    setForm({ ...emptyForm, id: crypto.randomUUID() });
+    setDuplicateWarning('');
+    setShowForm(true);
+  }
+
+  function openEdit(c: Client) {
+    setEditingClient(c);
+    setForm({ ...c });
+    setDuplicateWarning('');
+    setShowForm(true);
+  }
+
+  function checkDuplicate(nom: string, email: string) {
+    const existing = clients.find(c =>
+      c.id !== form.id &&
+      (c.email.toLowerCase() === email.toLowerCase() ||
+       c.nom.toLowerCase() === nom.toLowerCase())
+    );
+    if (existing) {
+      setDuplicateWarning(`Client similaire trouvé : ${existing.prenom} ${existing.nom} (${existing.email})`);
+    } else {
+      setDuplicateWarning('');
+    }
+  }
+
+  function handleSave() {
+    if (!form.nom || !form.email) {
+      showToast('Nom et email sont requis', 'error');
+      return;
+    }
+    if (editingClient) {
+      setClients(prev => prev.map(c => c.id === form.id ? form : c));
+      showToast('Client mis à jour avec succès', 'success');
+    } else {
+      setClients(prev => [...prev, form]);
+      showToast('Nouveau client ajouté', 'success');
+    }
+    setShowForm(false);
+  }
+
+  function handleDelete(id: string) {
+    setClients(prev => prev.filter(c => c.id !== id));
+    setShowDetail(false);
+    showToast('Client supprimé', 'success');
+  }
+
+  function openEmailModal(c: Client) {
+    setSelectedClient(c);
+    setSelectedTemplate('');
+    setShowEmail(true);
+  }
+
+  function sendEmail(c: Client, template: typeof EMAIL_TEMPLATES[0]) {
+    const mailto = `mailto:${c.email}?subject=${encodeURIComponent(template.subject)}&body=${encodeURIComponent(template.body)}`;
+    window.open(mailto, '_blank');
+    showToast(`Email "${template.label}" ouvert pour ${c.prenom} ${c.nom}`, 'success');
+    setShowEmail(false);
+  }
+
+  function exportClientData(c: Client) {
+    const data = JSON.stringify(c, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `client_${c.nom}_${c.prenom}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Données exportées avec succès', 'success');
+  }
+
+  function handleRGPDForget(c: Client) {
+    setClients(prev => prev.filter(cl => cl.id !== c.id));
+    setShowDetail(false);
+    showToast(`Données de ${c.prenom} ${c.nom} supprimées (droit à l'oubli)`, 'success');
+  }
+
+  function handleCSVImport() {
+    showToast('Import CSV : fonctionnalité à venir', 'info');
+  }
+
+  // ── Stats ─────────────────────────────────────────────────────────────
+
+  const stats = useMemo(() => {
+    const top10 = [...clients].sort((a, b) => b.caTotal - a.caTotal).slice(0, 10);
+    const byType = { Particulier: 0, Entreprise: 0, Association: 0 };
+    const byTag = { VIP: 0, Régulier: 0, Nouveau: 0 };
+    clients.forEach(c => {
+      byType[c.type]++;
+      c.tags.forEach(t => byTag[t]++);
+    });
+    const totalCA = clients.reduce((s, c) => s + c.caTotal, 0);
+    const avgCA = clients.length ? totalCA / clients.length : 0;
+    return { top10, byType, byTag, totalCA, avgCA };
+  }, [clients]);
+
+  // ── Render helpers ────────────────────────────────────────────────────
+
+  function renderTags(tags: ClientTag[]) {
+    return tags.map(t => (
+      <span key={t} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${TAG_COLORS[t].bg} ${TAG_COLORS[t].text} ${TAG_COLORS[t].border}`}>
+        {t === 'VIP' && <Star className="w-3 h-3" />}
+        {t}
+      </span>
+    ));
+  }
+
+  function renderAvatar(c: Client, size = 'w-10 h-10 text-sm') {
+    const colors = c.tags.includes('VIP')
+      ? 'from-amber-500 to-amber-700'
+      : c.type === 'Entreprise'
+        ? 'from-indigo-500 to-indigo-700'
+        : 'from-blue-500 to-blue-700';
+    return (
+      <div className={`${size} rounded-full bg-gradient-to-br ${colors} flex items-center justify-center text-white font-bold flex-shrink-0`}>
+        {getInitials(c.nom, c.prenom)}
+      </div>
+    );
+  }
+
+  // ── Client Card ───────────────────────────────────────────────────────
+
+  function ClientCard({ c }: { c: Client }) {
+    return (
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer group"
+        onClick={() => openDetail(c)}>
+        <div className="flex items-start gap-4">
+          {renderAvatar(c, 'w-12 h-12 text-base')}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-semibold text-slate-900 dark:text-white truncate">{c.prenom} {c.nom}</h3>
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${TYPE_COLORS[c.type].bg} ${TYPE_COLORS[c.type].text}`}>{c.type}</span>
+            </div>
+            {c.entreprise && (
+              <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                <Building2 className="w-3.5 h-3.5" />
+                <span className="truncate">{c.entreprise}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-3 mt-1 text-xs text-slate-400 dark:text-slate-500">
+              <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{c.email}</span>
+            </div>
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              {renderTags(c.tags)}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+          <div className="text-center">
+            <div className="text-lg font-bold text-slate-900 dark:text-white">{fmt(c.caTotal)}</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500">CA total</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-slate-900 dark:text-white">{c.nbCommandes}</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500">Commandes</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{fmtDate(c.derniereVisite)}</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500">Dernière visite</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+            <Mail className="w-3.5 h-3.5" /> Email
+          </button>
+          <a href={`tel:${c.telephone}`} onClick={(e) => e.stopPropagation()}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
+            <Phone className="w-3.5 h-3.5" /> Appeler
+          </a>
+          <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors">
+            <FileText className="w-3.5 h-3.5" /> Devis
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Simple Bar Chart ──────────────────────────────────────────────────
+
+  function BarChartSimple({ data }: { data: { label: string; value: number }[] }) {
+    const max = Math.max(...data.map(d => d.value), 1);
+    return (
+      <div className="space-y-2">
+        {data.map((d, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="w-28 text-xs text-slate-600 dark:text-slate-400 truncate text-right">{d.label}</div>
+            <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-full h-5 overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+                style={{ width: `${(d.value / max) * 100}%` }}>
+                {d.value > 0 && <span className="text-[10px] text-white font-medium">{fmt(d.value)}</span>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // ── Pie Chart (simple CSS) ────────────────────────────────────────────
+
+  function PieChartSimple({ data }: { data: { label: string; value: number; color: string }[] }) {
+    const total = data.reduce((s, d) => s + d.value, 0) || 1;
+    let acc = 0;
+    const segments = data.map(d => {
+      const start = acc;
+      acc += (d.value / total) * 360;
+      return { ...d, start, end: acc };
+    });
+    const gradient = segments.map(s => `${s.color} ${s.start}deg ${s.end}deg`).join(', ');
+    return (
+      <div className="flex items-center gap-6">
+        <div className="w-32 h-32 rounded-full flex-shrink-0"
+          style={{ background: `conic-gradient(${gradient})` }} />
+        <div className="space-y-2">
+          {data.map((d, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
+              <span className="text-sm text-slate-600 dark:text-slate-400">{d.label}: <strong>{d.value}</strong></span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+            <Users className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            Clients CRM
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            {clients.length} clients &middot; CA total : {fmt(stats.totalCA)}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button onClick={() => setShowStats(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
+            <BarChart3 className="w-4 h-4" /> Statistiques
+          </button>
+          <button onClick={handleCSVImport}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
+            <Upload className="w-4 h-4" /> Import CSV
+          </button>
+          <button onClick={openAdd}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors shadow-sm">
+            <Plus className="w-4 h-4" /> Nouveau client
+          </button>
+        </div>
+      </div>
+
+      {/* Filters bar */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input type="text" placeholder="Rechercher par nom, entreprise, email..."
+              value={search} onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          </div>
+
+          {/* Type filter */}
+          <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
+            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-300">
+            <option value="">Tous les types</option>
+            <option value="Particulier">Particulier</option>
+            <option value="Entreprise">Entreprise</option>
+            <option value="Association">Association</option>
+          </select>
+
+          {/* Tag filter */}
+          <select value={filterTag} onChange={e => setFilterTag(e.target.value as ClientTag | '')}
+            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-300">
+            <option value="">Tous les tags</option>
+            <option value="VIP">VIP</option>
+            <option value="Régulier">Régulier</option>
+            <option value="Nouveau">Nouveau</option>
+          </select>
+
+          {/* Sort */}
+          <div className="flex items-center gap-1">
+            <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
+              className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-300">
+              <option value="nom">Trier par nom</option>
+              <option value="caTotal">Trier par CA</option>
+              <option value="derniereVisite">Trier par visite</option>
+            </select>
+            <button onClick={() => setSortAsc(!sortAsc)}
+              className="p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              {sortAsc ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+            </button>
+          </div>
+
+          {/* View toggle */}
+          <div className="flex items-center bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+            <button onClick={() => setViewMode('cards')}
+              className={`p-2 rounded-md transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-slate-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button onClick={() => setViewMode('table')}
+              className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
+              <List className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Results count */}
+      {filtered.length !== clients.length && (
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {filtered.length} résultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
+        </p>
+      )}
+
+      {/* Card view */}
+      {viewMode === 'cards' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filtered.map(c => <ClientCard key={c.id} c={c} />)}
+        </div>
+      )}
+
+      {/* Table view */}
+      {viewMode === 'table' && (
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Client</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Type</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Tags</th>
+                <th className="text-right px-4 py-3 font-medium text-slate-500 dark:text-slate-400">CA total</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Commandes</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Dernière visite</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+              {filtered.map(c => (
+                <tr key={c.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 cursor-pointer transition-colors"
+                  onClick={() => openDetail(c)}>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      {renderAvatar(c, 'w-8 h-8 text-xs')}
+                      <div>
+                        <div className="font-medium text-slate-900 dark:text-white">{c.prenom} {c.nom}</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500">{c.entreprise || c.email}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${TYPE_COLORS[c.type].bg} ${TYPE_COLORS[c.type].text}`}>{c.type}</span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1 flex-wrap">{renderTags(c.tags)}</div>
+                  </td>
+                  <td className="px-4 py-3 text-right font-medium text-slate-900 dark:text-white">{fmt(c.caTotal)}</td>
+                  <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{c.nbCommandes}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{fmtDate(c.derniereVisite)}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-center gap-1">
+                      <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
+                        className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="Envoyer un email">
+                        <Mail className="w-4 h-4" />
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
+                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" title="Modifier">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filtered.length === 0 && (
+            <div className="text-center py-12 text-slate-400 dark:text-slate-500">
+              <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
+              <p>Aucun client trouvé</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Detail Modal ─────────────────────────────────────────────── */}
+      <Modal isOpen={showDetail} onClose={() => setShowDetail(false)}
+        title={selectedClient ? `${selectedClient.prenom} ${selectedClient.nom}` : 'Client'}
+        className="max-w-3xl">
+        {selectedClient && (
+          <div>
+            {/* Header */}
+            <div className="flex items-start gap-4 mb-6">
+              {renderAvatar(selectedClient, 'w-16 h-16 text-xl')}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${TYPE_COLORS[selectedClient.type].bg} ${TYPE_COLORS[selectedClient.type].text}`}>{selectedClient.type}</span>
+                  {renderTags(selectedClient.tags)}
+                </div>
+                {selectedClient.entreprise && (
+                  <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    <Building2 className="w-4 h-4" /> {selectedClient.entreprise}
+                  </div>
+                )}
+                <div className="flex items-center gap-4 mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {selectedClient.email}</span>
+                  <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {selectedClient.telephone}</span>
+                </div>
+                <div className="flex items-center gap-3 mt-3">
+                  <button onClick={() => openEmailModal(selectedClient)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    <Mail className="w-3.5 h-3.5" /> Email
+                  </button>
+                  <a href={`tel:${selectedClient.telephone}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
+                    <Phone className="w-3.5 h-3.5" /> Appeler
+                  </a>
+                  <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    <Edit2 className="w-3.5 h-3.5" /> Modifier
+                  </button>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">{fmt(selectedClient.caTotal)}</div>
+                <div className="text-xs text-slate-400">CA total</div>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-4 overflow-x-auto">
+              {([
+                { id: 'infos' as TabId, label: 'Infos' },
+                { id: 'preferences' as TabId, label: 'Préférences' },
+                { id: 'historique' as TabId, label: 'Historique' },
+                { id: 'documents' as TabId, label: 'Documents' },
+                { id: 'rgpd' as TabId, label: 'RGPD' },
+              ]).map(tab => (
+                <button key={tab.id} onClick={() => setDetailTab(tab.id)}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                    detailTab === tab.id
+                      ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
+                      : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  }`}>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab: Infos */}
+            {detailTab === 'infos' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Nom complet</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Entreprise</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.entreprise || '—'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">SIRET</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.siret || '—'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Adresse</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.adresse || '—'}</p></div>
+                </div>
+                <div className="space-y-3">
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Email</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.email}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Téléphone</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.telephone}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Client depuis</label><p className="text-sm text-slate-900 dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Commandes / événements</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.nbCommandes}</p></div>
+                </div>
+                {selectedClient.notes && (
+                  <div className="col-span-full">
+                    <label className="text-xs font-medium text-slate-400 dark:text-slate-500">Notes</label>
+                    <p className="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 rounded-lg p-3 mt-1">{selectedClient.notes}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab: Préférences alimentaires */}
+            {detailTab === 'preferences' && (
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-500" /> Allergènes
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {EU_ALLERGENES.map(a => {
+                      const active = selectedClient.allergenes.includes(a.id);
+                      return (
+                        <span key={a.id} className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                          active
+                            ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
+                            : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-700'
+                        }`}>
+                          {active && '⚠ '}{a.nom}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-green-500" /> Régime alimentaire
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {REGIMES.map(r => {
+                      const active = selectedClient.regime.includes(r);
+                      return (
+                        <span key={r} className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                          active
+                            ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
+                            : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-600 border-slate-200 dark:border-slate-700'
+                        }`}>
+                          {r}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+                {selectedClient.platsFavoris.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                      <Star className="w-4 h-4 text-amber-500" /> Plats favoris
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedClient.platsFavoris.map(p => (
+                        <span key={p} className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700">{p}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab: Historique */}
+            {detailTab === 'historique' && (
+              <div className="space-y-3">
+                {selectedClient.historique.length === 0 ? (
+                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">Aucune interaction enregistrée</p>
+                ) : (
+                  <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700 space-y-4">
+                    {selectedClient.historique.map(h => (
+                      <div key={h.id} className="relative">
+                        <div className="absolute -left-[29px] w-4 h-4 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-[8px]">
+                          {interactionIcons[h.type]?.icon}
+                        </div>
+                        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${interactionIcons[h.type]?.color}`}>
+                              {h.type.charAt(0).toUpperCase() + h.type.slice(1)}
+                            </span>
+                            <span className="text-xs text-slate-400 dark:text-slate-500">{fmtDate(h.date)}</span>
+                          </div>
+                          <p className="text-sm text-slate-700 dark:text-slate-300 mt-1">{h.description}</p>
+                          {h.montant && <p className="text-sm font-semibold text-slate-900 dark:text-white mt-1">{fmt(h.montant)}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab: Documents */}
+            {detailTab === 'documents' && (
+              <div className="space-y-3">
+                {selectedClient.documents.length === 0 ? (
+                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">Aucun document lié</p>
+                ) : (
+                  selectedClient.documents.map(d => (
+                    <div key={d.id} className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-lg p-3">
+                      <div className="flex items-center gap-3">
+                        <FileText className={`w-5 h-5 ${d.type === 'facture' ? 'text-green-500' : 'text-blue-500'}`} />
+                        <div>
+                          <div className="text-sm font-medium text-slate-900 dark:text-white">{d.numero}</div>
+                          <div className="text-xs text-slate-400 dark:text-slate-500">{d.type === 'facture' ? 'Facture' : 'Devis'} &middot; {fmtDate(d.date)}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-semibold text-slate-900 dark:text-white">{fmt(d.montant)}</div>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          d.statut === 'Payée' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' :
+                          d.statut === 'Accepté' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300' :
+                          d.statut === 'Refusé' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' :
+                          'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
+                        }`}>{d.statut}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Tab: RGPD */}
+            {detailTab === 'rgpd' && (
+              <div className="space-y-4">
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-5 h-5 text-blue-500" />
+                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Protection des données</h4>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-slate-600 dark:text-slate-400">
+                      Date de consentement RGPD : <strong className="text-slate-900 dark:text-white">{fmtDate(selectedClient.consentementRGPD)}</strong>
+                    </p>
+                    <p className="text-slate-600 dark:text-slate-400">
+                      Données collectées : nom, coordonnées, préférences alimentaires, historique commercial
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <button onClick={() => exportClientData(selectedClient)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-sm font-medium transition-colors">
+                    <Download className="w-4 h-4" /> Exporter les données
+                  </button>
+                  <button onClick={() => handleRGPDForget(selectedClient)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-sm font-medium transition-colors">
+                    <Trash2 className="w-4 h-4" /> Droit à l'oubli
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      {/* ── Add/Edit Modal ───────────────────────────────────────────── */}
+      <Modal isOpen={showForm} onClose={() => setShowForm(false)}
+        title={editingClient ? 'Modifier le client' : 'Nouveau client'}
+        className="max-w-3xl">
+        <div className="space-y-5">
+          {/* Duplicate warning */}
+          {duplicateWarning && (
+            <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg text-sm text-amber-700 dark:text-amber-300">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+              {duplicateWarning}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Prénom</label>
+              <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Nom *</label>
+              <input type="text" value={form.nom}
+                onChange={e => { setForm({ ...form, nom: e.target.value }); checkDuplicate(e.target.value, form.email); }}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Email *</label>
+              <input type="email" value={form.email}
+                onChange={e => { setForm({ ...form, email: e.target.value }); checkDuplicate(form.nom, e.target.value); }}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Téléphone</label>
+              <input type="tel" value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Entreprise</label>
+              <input type="text" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">SIRET</label>
+              <input type="text" value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div className="col-span-full">
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Adresse</label>
+              <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Type</label>
+              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as ClientType })}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white">
+                <option value="Particulier">Particulier</option>
+                <option value="Entreprise">Entreprise</option>
+                <option value="Association">Association</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Tags</label>
+              <div className="flex gap-2 flex-wrap">
+                {(['VIP', 'Régulier', 'Nouveau'] as ClientTag[]).map(tag => (
+                  <button key={tag} type="button"
+                    onClick={() => {
+                      setForm(f => ({
+                        ...f,
+                        tags: f.tags.includes(tag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag],
+                      }));
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                      form.tags.includes(tag)
+                        ? `${TAG_COLORS[tag].bg} ${TAG_COLORS[tag].text} ${TAG_COLORS[tag].border}`
+                        : 'bg-slate-50 dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-slate-700'
+                    }`}>
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Allergènes */}
+          <div>
+            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Allergènes (14 allergènes UE)</label>
+            <div className="flex flex-wrap gap-2">
+              {EU_ALLERGENES.map(a => (
+                <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
+                  form.allergenes.includes(a.id)
+                    ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
+                    : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}>
+                  <input type="checkbox" className="sr-only"
+                    checked={form.allergenes.includes(a.id)}
+                    onChange={() => {
+                      setForm(f => ({
+                        ...f,
+                        allergenes: f.allergenes.includes(a.id) ? f.allergenes.filter(x => x !== a.id) : [...f.allergenes, a.id],
+                      }));
+                    }} />
+                  {a.nom}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Régime */}
+          <div>
+            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Régime alimentaire</label>
+            <div className="flex flex-wrap gap-2">
+              {REGIMES.map(r => (
+                <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
+                  form.regime.includes(r)
+                    ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
+                    : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}>
+                  <input type="checkbox" className="sr-only"
+                    checked={form.regime.includes(r)}
+                    onChange={() => {
+                      setForm(f => ({
+                        ...f,
+                        regime: f.regime.includes(r) ? f.regime.filter(x => x !== r) : [...f.regime, r],
+                      }));
+                    }} />
+                  {r}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Notes</label>
+            <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
+              rows={3}
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white resize-none" />
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
+            <button onClick={handleCSVImport}
+              className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+              <Upload className="w-4 h-4" /> Import CSV
+            </button>
+            <div className="flex gap-3">
+              <button onClick={() => setShowForm(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                Annuler
+              </button>
+              <button onClick={handleSave}
+                className="px-6 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors">
+                {editingClient ? 'Enregistrer' : 'Ajouter'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Email Modal ──────────────────────────────────────────────── */}
+      <Modal isOpen={showEmail} onClose={() => setShowEmail(false)}
+        title={selectedClient ? `Envoyer un email à ${selectedClient.prenom} ${selectedClient.nom}` : 'Email'}>
+        {selectedClient && (
+          <div className="space-y-3">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+              Choisissez un modèle d'email. Il sera ouvert dans votre client de messagerie.
+            </p>
+            {EMAIL_TEMPLATES.map(t => (
+              <button key={t.id}
+                onClick={() => sendEmail(selectedClient, t)}
+                className="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all text-left">
+                <Send className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <div>
+                  <div className="text-sm font-medium text-slate-900 dark:text-white">{t.label}</div>
+                  <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Objet : {t.subject}</div>
+                </div>
+                <ExternalLink className="w-4 h-4 text-slate-300 dark:text-slate-600 ml-auto" />
+              </button>
+            ))}
+          </div>
+        )}
+      </Modal>
+
+      {/* ── Stats Modal ──────────────────────────────────────────────── */}
+      <Modal isOpen={showStats} onClose={() => setShowStats(false)} title="Statistiques clients" className="max-w-3xl">
+        <div className="space-y-8">
+          {/* KPIs */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-slate-900 dark:text-white">{clients.length}</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">Total clients</div>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{fmt(stats.totalCA)}</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">CA total</div>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{fmt(stats.avgCA)}</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">CA moyen</div>
+            </div>
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
+              <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{stats.byTag.VIP}</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">Clients VIP</div>
+            </div>
+          </div>
+
+          {/* Top 10 by CA */}
+          <div>
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-blue-500" /> Top 10 clients par CA
+            </h4>
+            <BarChartSimple data={stats.top10.map(c => ({ label: `${c.prenom} ${c.nom}`, value: c.caTotal }))} />
+          </div>
+
+          {/* Type distribution */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                <PieChart className="w-4 h-4 text-purple-500" /> Répartition par type
+              </h4>
+              <PieChartSimple data={[
+                { label: 'Particulier', value: stats.byType.Particulier, color: '#64748b' },
+                { label: 'Entreprise', value: stats.byType.Entreprise, color: '#6366f1' },
+                { label: 'Association', value: stats.byType.Association, color: '#f43f5e' },
+              ]} />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-green-500" /> Répartition par tag
+              </h4>
+              <PieChartSimple data={[
+                { label: 'VIP', value: stats.byTag.VIP, color: '#f59e0b' },
+                { label: 'Régulier', value: stats.byTag.Régulier, color: '#3b82f6' },
+                { label: 'Nouveau', value: stats.byTag.Nouveau, color: '#22c55e' },
+              ]} />
+            </div>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+}

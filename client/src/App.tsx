@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import { AuthProvider, useAuth } from './hooks/useAuth';
@@ -36,6 +36,10 @@ const Marketplace = lazy(() => import('./pages/Marketplace'));
 const WasteTracker = lazy(() => import('./pages/WasteTracker'));
 const QRMenu = lazy(() => import('./pages/QRMenu'));
 const Integrations = lazy(() => import('./pages/Integrations'));
+const Seminaires = lazy(() => import('./pages/Seminaires'));
+const DevisPage = lazy(() => import('./pages/Devis'));
+const Comptabilite = lazy(() => import('./pages/Comptabilite'));
+const Clients = lazy(() => import('./pages/Clients'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -205,6 +209,7 @@ function AppLayout() {
       items: [
         { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
         { to: '/planning', icon: CalendarDays, label: 'Planning' },
+        { to: '/seminaires', icon: PartyPopper, label: 'Séminaires' },
         { to: '/rfqs', icon: FileSearch, label: "Appels d'offres" },
       ],
     },
@@ -212,11 +217,14 @@ function AppLayout() {
       title: 'COMMUNICATION',
       items: [
         { to: '/messagerie', icon: MessageSquare, label: 'Messages', badge: 3 },
+        { to: '/clients', icon: Contact, label: 'Clients CRM' },
       ],
     },
     {
       title: 'BUSINESS',
       items: [
+        { to: '/comptabilite', icon: Calculator, label: 'Comptabilité' },
+        { to: '/devis', icon: FileText, label: 'Devis & Factures' },
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
         { to: '/integrations', icon: Plug, label: 'Integrations' },
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
@@ -438,9 +446,13 @@ function AppLayout() {
               <Route path="/qr-menu" element={<QRMenu />} />
               <Route path="/commandes" element={<AutoOrders />} />
               <Route path="/planning" element={<Planning />} />
+              <Route path="/seminaires" element={<Seminaires />} />
               <Route path="/messagerie" element={<Messagerie />} />
+              <Route path="/clients" element={<Clients />} />
               <Route path="/marketplace" element={<Marketplace />} />
               <Route path="/integrations" element={<Integrations />} />
+              <Route path="/comptabilite" element={<Comptabilite />} />
+              <Route path="/devis" element={<DevisPage />} />
               <Route path="/restaurants" element={<Restaurants />} />
               <Route path="/abonnement" element={<Subscription />} />
               <Route path="/settings" element={<SettingsPage />} />

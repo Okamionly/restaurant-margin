@@ -177,3 +177,38 @@ authRouter.delete('/users/:id', authMiddleware, async (req: AuthRequest, res: Re
     res.status(500).json({ error: 'Erreur lors de la suppression' });
   }
 });
+
+// POST /forgot-password (simulated)
+authRouter.post('/forgot-password', async (req: AuthRequest, res: Response) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: 'Email requis' });
+    }
+    // Log for development — in production, send a real email
+    console.log(`[forgot-password] Reset requested for: ${email}`);
+    res.json({ message: 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// POST /reset-password (simulated)
+authRouter.post('/reset-password', async (req: AuthRequest, res: Response) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ error: 'Token et nouveau mot de passe requis' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 6 caractères' });
+    }
+    // Simulated — in production, verify the token and update the password
+    console.log(`[reset-password] Token: ${token}, new password length: ${newPassword.length}`);
+    res.json({ message: 'Mot de passe réinitialisé avec succès.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});

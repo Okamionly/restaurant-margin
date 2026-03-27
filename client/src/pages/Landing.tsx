@@ -15,12 +15,17 @@ import {
   Utensils,
   Zap,
   Star,
+  StarHalf,
   Play,
   Package,
   Users,
   Quote,
   Menu,
   X,
+  Shield,
+  Lock,
+  Mail,
+  BadgeCheck,
 } from 'lucide-react';
 
 /* ───────────────────────── Hooks ───────────────────────── */
@@ -132,25 +137,25 @@ const steps = [
 
 const testimonials = [
   {
-    quote: "RestauMargin a transformé notre façon de gérer les coûts. On a gagné 4 points de marge en 3 mois simplement en ajustant nos fiches techniques.",
+    quote: "+4 points de marge en 3 mois. Les fiches techniques automatisées nous ont tout changé.",
     name: 'Laurent Dubois',
     role: 'Chef de cuisine',
     place: 'Restaurant gastronomique, Lyon',
-    rating: 5,
+    rating: 4.5,
   },
   {
-    quote: "Enfin un outil pensé pour les restaurateurs. L'interface est intuitive et le calcul de marge en temps réel est un vrai game-changer pour notre brasserie.",
+    quote: "Interface intuitive, calcul en temps réel. Exactement ce qu'il manquait aux restaurateurs.",
     name: 'Sophie Martin',
     role: 'Directrice',
     place: 'Brasserie Le Comptoir, Paris',
     rating: 5,
   },
   {
-    quote: "Avec mon food truck, chaque centime compte. RestauMargin m'aide à optimiser mes recettes et à garder mes prix compétitifs tout en restant rentable.",
+    quote: "Chaque centime compte en food truck. RestauMargin m'aide à rester compétitif et rentable.",
     name: 'Karim Benali',
     role: 'Gérant',
     place: 'Food truck Street Flavors, Bordeaux',
-    rating: 5,
+    rating: 4.5,
   },
 ];
 
@@ -179,6 +184,10 @@ const pricingFeaturesPro = [
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [proEmail, setProEmail] = useState('');
+  const [proEmailSent, setProEmailSent] = useState(false);
+  const [kitForm, setKitForm] = useState({ nom: '', email: '', telephone: '', message: '' });
+  const [kitFormSent, setKitFormSent] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -235,7 +244,7 @@ export default function Landing() {
               Connexion
             </Link>
             <Link
-              to="/login"
+              to="/login?mode=register"
               className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
             >
               Essai gratuit
@@ -270,7 +279,7 @@ export default function Landing() {
                 Connexion
               </Link>
               <Link
-                to="/login"
+                to="/login?mode=register"
                 className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all"
               >
                 Essai gratuit
@@ -326,7 +335,7 @@ export default function Landing() {
               <FadeIn delay={300}>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
-                    to="/login"
+                    to="/login?mode=register"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition-colors"
                   >
                     Essai gratuit <ArrowRight className="w-4 h-4" />
@@ -338,6 +347,9 @@ export default function Landing() {
                     <Play className="w-4 h-4" /> Voir une démo
                   </a>
                 </div>
+                <p className="mt-3 text-sm text-slate-400 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5">
+                  <Lock className="w-3.5 h-3.5" /> Pas de carte bancaire requise
+                </p>
               </FadeIn>
             </div>
 
@@ -433,11 +445,40 @@ export default function Landing() {
             <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
               Compatible avec vos fournisseurs
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14">
-              {['Metro', 'Transgourmet', 'Pomona', 'Sysco', 'Brake'].map((name) => (
-                <span key={name} className="text-xl sm:text-2xl font-bold text-slate-300 hover:text-slate-400 transition-colors tracking-tight">
-                  {name}
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+              {[
+                { name: 'METRO', bg: 'bg-[#003D7A]', text: 'text-white' },
+                { name: 'Transgourmet', bg: 'bg-[#E30613]', text: 'text-white' },
+                { name: 'Pomona', bg: 'bg-[#00833E]', text: 'text-white' },
+                { name: 'Sysco', bg: 'bg-[#004B87]', text: 'text-white' },
+                { name: 'Brake', bg: 'bg-[#D4202C]', text: 'text-white' },
+              ].map((s) => (
+                <span
+                  key={s.name}
+                  className={`${s.bg} ${s.text} px-4 py-1.5 rounded-full text-sm sm:text-base font-bold tracking-tight opacity-80 hover:opacity-100 transition-opacity select-none`}
+                >
+                  {s.name}
                 </span>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ════════════════ Trust Badges ════════════════ */}
+      <section className="py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
+              {[
+                { icon: Shield, label: 'Données hébergées en France', color: 'text-blue-700' },
+                { icon: BadgeCheck, label: 'Conforme RGPD', color: 'text-emerald-600' },
+                { icon: Lock, label: 'Chiffrement SSL', color: 'text-indigo-600' },
+              ].map((badge) => (
+                <div key={badge.label} className="flex items-center gap-2 text-sm font-medium text-slate-600">
+                  <badge.icon className={`w-5 h-5 ${badge.color}`} />
+                  {badge.label}
+                </div>
               ))}
             </div>
           </FadeIn>
@@ -529,7 +570,7 @@ export default function Landing() {
                   ))}
                 </div>
                 <a
-                  href="#pricing"
+                  href="#kit-contact"
                   className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all"
                 >
                   Commander le Kit
@@ -626,11 +667,19 @@ export default function Landing() {
             {testimonials.map((t, i) => (
               <FadeIn key={t.name} delay={i * 120}>
                 <div className="bg-white rounded-2xl p-7 border border-slate-100 hover:shadow-xl hover:shadow-slate-100 transition-all duration-300 h-full flex flex-col">
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: t.rating }).map((_, j) => (
-                      <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
+                  {/* Stars + Avis vérifié */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex gap-0.5">
+                      {Array.from({ length: Math.floor(t.rating) }).map((_, j) => (
+                        <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      ))}
+                      {t.rating % 1 !== 0 && (
+                        <StarHalf className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      )}
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                      <BadgeCheck className="w-3 h-3" /> Avis vérifié
+                    </span>
                   </div>
 
                   <div className="relative mb-5 flex-1">
@@ -730,12 +779,34 @@ export default function Landing() {
                     ))}
                   </div>
 
-                  <button
-                    disabled
-                    className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-200 text-slate-400 font-semibold text-base cursor-not-allowed"
-                  >
-                    Bientôt disponible
-                  </button>
+                  <div className="mt-8">
+                    <p className="text-xs font-semibold text-slate-500 mb-2 text-center">Prévenez-moi du lancement</p>
+                    {proEmailSent ? (
+                      <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 font-medium py-3">
+                        <CheckCircle2 className="w-4 h-4" /> Vous serez notifié !
+                      </div>
+                    ) : (
+                      <form
+                        onSubmit={(e) => { e.preventDefault(); if (proEmail) setProEmailSent(true); }}
+                        className="flex gap-2"
+                      >
+                        <input
+                          type="email"
+                          required
+                          value={proEmail}
+                          onChange={(e) => setProEmail(e.target.value)}
+                          placeholder="votre@email.com"
+                          className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button
+                          type="submit"
+                          className="px-4 py-2.5 rounded-xl bg-slate-700 text-white text-sm font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+                        >
+                          <Mail className="w-4 h-4" />
+                        </button>
+                      </form>
+                    )}
+                  </div>
                 </div>
               </div>
             </FadeIn>
@@ -764,6 +835,88 @@ export default function Landing() {
               Commencer maintenant
               <ArrowRight className="w-5 h-5" />
             </Link>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ════════════════ Kit Contact Form ════════════════ */}
+      <section id="kit-contact" className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center mb-12">
+              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Contact</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+                Demander un devis pour le{' '}
+                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">Kit Station</span>
+              </h2>
+              <p className="mt-4 text-lg text-slate-500">
+                Remplissez le formulaire et notre équipe vous recontacte sous 24h.
+              </p>
+            </div>
+            {kitFormSent ? (
+              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center">
+                <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
+                <p className="text-lg font-semibold text-emerald-800">Demande envoyée !</p>
+                <p className="text-sm text-emerald-600 mt-1">Nous vous recontactons très vite.</p>
+              </div>
+            ) : (
+              <form
+                onSubmit={(e) => { e.preventDefault(); setKitFormSent(true); }}
+                className="bg-white rounded-2xl border border-slate-100 shadow-xl p-8 space-y-5"
+              >
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Nom</label>
+                    <input
+                      type="text"
+                      required
+                      value={kitForm.nom}
+                      onChange={(e) => setKitForm({ ...kitForm, nom: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Votre nom"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={kitForm.email}
+                      onChange={(e) => setKitForm({ ...kitForm, email: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="votre@email.com"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Téléphone</label>
+                  <input
+                    type="tel"
+                    value={kitForm.telephone}
+                    onChange={(e) => setKitForm({ ...kitForm, telephone: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="06 12 34 56 78"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Message</label>
+                  <textarea
+                    rows={3}
+                    value={kitForm.message}
+                    onChange={(e) => setKitForm({ ...kitForm, message: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    placeholder="Décrivez votre besoin..."
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25"
+                >
+                  Demander un devis
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </form>
+            )}
           </FadeIn>
         </div>
       </section>

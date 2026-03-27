@@ -3,6 +3,7 @@ import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
   ChevronUp, FileText, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
+  Star, Clock, TrendingUp, ArrowRightLeft, Zap,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
@@ -71,6 +72,71 @@ const emptyForm: SupplierFormData = {
   notes: '',
 };
 
+// ── Mock data: supplier ratings ──────────────────────────────────────────────
+
+interface SupplierRating {
+  reliability: number; // 1-5 stars
+  deliveryDays: string;
+  minOrderAmount: string;
+}
+
+function getMockRating(supplierId: number): SupplierRating {
+  const ratings: SupplierRating[] = [
+    { reliability: 5, deliveryDays: '24h', minOrderAmount: '150 EUR' },
+    { reliability: 4, deliveryDays: '48h', minOrderAmount: '200 EUR' },
+    { reliability: 3, deliveryDays: '72h', minOrderAmount: '100 EUR' },
+    { reliability: 5, deliveryDays: '24-48h', minOrderAmount: '300 EUR' },
+    { reliability: 4, deliveryDays: '48-72h', minOrderAmount: '80 EUR' },
+    { reliability: 3, deliveryDays: '3-5 jours', minOrderAmount: '250 EUR' },
+  ];
+  return ratings[supplierId % ratings.length];
+}
+
+function getMockPriceHistory(basePrice: number): number[] {
+  const points: number[] = [];
+  let price = basePrice * (0.9 + Math.random() * 0.1);
+  for (let i = 0; i < 30; i++) {
+    price += (Math.random() - 0.48) * basePrice * 0.03;
+    price = Math.max(basePrice * 0.75, Math.min(basePrice * 1.25, price));
+    points.push(Math.round(price * 100) / 100);
+  }
+  return points;
+}
+
+// ── Mini sparkline chart (SVG) ──────────────────────────────────────────────
+
+function MiniPriceChart({ data, width = 200, height = 50 }: { data: number[]; width?: number; height?: number }) {
+  if (data.length < 2) return null;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 4) - 2;
+    return `${x},${y}`;
+  }).join(' ');
+  const trend = data[data.length - 1] - data[0];
+  const color = trend > 0 ? '#ef4444' : '#22c55e';
+  return (
+    <svg width={width} height={height} className="block">
+      <polyline fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
+      <circle cx={(data.length - 1) / (data.length - 1) * width} cy={height - ((data[data.length - 1] - min) / range) * (height - 4) - 2} r="2.5" fill={color} />
+    </svg>
+  );
+}
+
+// ── Quick-add templates ─────────────────────────────────────────────────────
+
+const QUICK_ADD_TEMPLATES: { name: string; data: Partial<SupplierFormData> }[] = [
+  { name: 'Metro', data: { name: 'Metro Cash & Carry', website: 'https://www.metro.fr', categories: ['Viandes', 'Poissons & Fruits de mer', 'Légumes', 'Fruits', 'Produits laitiers', 'Épices & Condiments', 'Féculents & Céréales'], delivery: true, minOrder: '0 EUR', paymentTerms: 'Comptant / 30 jours', notes: 'Grossiste généraliste - carte Metro requise' } },
+  { name: 'Transgourmet', data: { name: 'Transgourmet', website: 'https://www.transgourmet.fr', categories: ['Viandes', 'Poissons & Fruits de mer', 'Légumes', 'Produits laitiers', 'Féculents & Céréales'], delivery: true, minOrder: '150 EUR', paymentTerms: '30 jours fin de mois', notes: 'Livraison professionnelle' } },
+  { name: 'Pomona', data: { name: 'Pomona', website: 'https://www.pomona.fr', categories: ['Légumes', 'Fruits'], delivery: true, minOrder: '100 EUR', paymentTerms: '30 jours', notes: 'Spécialiste fruits et légumes frais' } },
+  { name: 'Sysco', data: { name: 'Sysco France', website: 'https://www.sysco.fr', categories: ['Viandes', 'Poissons & Fruits de mer', 'Légumes', 'Produits laitiers', 'Féculents & Céréales', 'Huiles & Matières grasses'], delivery: true, minOrder: '200 EUR', paymentTerms: '30 jours fin de mois', notes: 'Distribution alimentaire multiservice' } },
+  { name: 'Brake', data: { name: 'Brake France', website: 'https://www.brake.fr', categories: ['Viandes', 'Poissons & Fruits de mer', 'Légumes', 'Produits laitiers'], delivery: true, minOrder: '150 EUR', paymentTerms: '30 jours', notes: 'Surgelés et frais, livraison nationale' } },
+  { name: 'Davigel', data: { name: 'Davigel', website: 'https://www.davigel.fr', categories: ['Poissons & Fruits de mer', 'Légumes', 'Féculents & Céréales'], delivery: true, minOrder: '200 EUR', paymentTerms: '30 jours fin de mois', notes: 'Spécialiste surgelés professionnels' } },
+  { name: 'Promocash', data: { name: 'Promocash', website: 'https://www.promocash.com', categories: ['Viandes', 'Légumes', 'Fruits', 'Produits laitiers', 'Boissons', 'Épices & Condiments'], delivery: false, minOrder: '0 EUR', paymentTerms: 'Comptant', notes: 'Cash & Carry, libre-service professionnel' } },
+];
+
 function supplierToForm(s: Supplier): SupplierFormData {
   return {
     name: s.name,
@@ -131,6 +197,16 @@ export default function Suppliers() {
   const [ingSearch, setIngSearch] = useState('');
   const [compareIds, setCompareIds] = useState<Set<number>>(new Set());
   const [showCompare, setShowCompare] = useState(false);
+
+  // Supplier comparison (top-level, cross-supplier)
+  const [compareSupplierIds, setCompareSupplierIds] = useState<Set<number>>(new Set());
+  const [showSupplierCompare, setShowSupplierCompare] = useState(false);
+
+  // Supplier detail view
+  const [detailSupplier, setDetailSupplier] = useState<Supplier | null>(null);
+
+  // Quick-add from templates
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   // Catalogue Transgourmet
   const [catalogData, setCatalogData] = useState<CatalogProduct[]>([]);
@@ -339,10 +415,43 @@ export default function Suppliers() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Fournisseurs</h2>
-            <button onClick={openAdd} className="btn btn-primary flex items-center gap-2 w-fit">
-              <Plus className="w-4 h-4" />
-              Ajouter un fournisseur
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Quick-add dropdown */}
+              <div className="relative">
+                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                  <Zap className="w-4 h-4 text-amber-500" />
+                  Ajout rapide
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+                {showQuickAdd && (
+                  <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowQuickAdd(false)} />
+                  <div className="absolute right-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-slate-700 z-50 py-1">
+                    <div className="px-3 py-2 text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Fournisseurs courants</div>
+                    {QUICK_ADD_TEMPLATES.map((tpl) => (
+                      <button
+                        key={tpl.name}
+                        onClick={() => {
+                          setEditingSupplier(null);
+                          setForm({ ...emptyForm, ...tpl.data } as SupplierFormData);
+                          setModalOpen(true);
+                          setShowQuickAdd(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                      >
+                        <Building2 className="w-4 h-4 text-slate-400" />
+                        {tpl.name}
+                      </button>
+                    ))}
+                  </div>
+                  </>
+                )}
+              </div>
+              <button onClick={openAdd} className="btn btn-primary flex items-center gap-2 w-fit">
+                <Plus className="w-4 h-4" />
+                Ajouter un fournisseur
+              </button>
+            </div>
           </div>
 
           {/* Stats cards */}
@@ -376,6 +485,92 @@ export default function Suppliers() {
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withoutSupplier}</div>
             </div>
           </div>
+
+          {/* Comparer les prix bar */}
+          {compareSupplierIds.size > 0 && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4 flex items-center justify-between">
+              <span className="text-sm text-blue-700 dark:text-blue-300">
+                <ArrowRightLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                {compareSupplierIds.size} fournisseur{compareSupplierIds.size > 1 ? 's' : ''} sélectionné{compareSupplierIds.size > 1 ? 's' : ''}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCompareSupplierIds(new Set())}
+                  className="text-xs px-3 py-1.5 rounded border border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
+                >
+                  Tout désélectionner
+                </button>
+                <button
+                  onClick={() => setShowSupplierCompare(true)}
+                  disabled={compareSupplierIds.size < 2}
+                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  Comparer les prix
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Supplier price comparison modal */}
+          <Modal isOpen={showSupplierCompare} onClose={() => setShowSupplierCompare(false)} title="Comparaison des prix fournisseurs">
+            {(() => {
+              const comparedSuppliers = suppliers.filter(s => compareSupplierIds.has(s.id));
+              // Build a map of ingredient name -> { supplier name -> price, unit }
+              const ingredientMap: Record<string, Record<string, { price: number; unit: string }>> = {};
+              comparedSuppliers.forEach(s => {
+                (s.ingredients || []).forEach((ing: any) => {
+                  if (!ingredientMap[ing.name]) ingredientMap[ing.name] = {};
+                  ingredientMap[ing.name][s.name] = { price: ing.pricePerUnit, unit: ing.unit };
+                });
+              });
+              const ingredientNames = Object.keys(ingredientMap).sort();
+              if (ingredientNames.length === 0) {
+                return <p className="text-sm text-slate-400 py-4 text-center">Aucun ingrédient en commun. Liez d'abord des ingrédients aux fournisseurs sélectionnés.</p>;
+              }
+              return (
+                <div className="overflow-x-auto max-h-[60vh]">
+                  <table className="w-full text-sm">
+                    <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700 z-10">
+                      <tr>
+                        <th className="text-left px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">Ingrédient</th>
+                        {comparedSuppliers.map(s => (
+                          <th key={s.id} className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{s.name}</th>
+                        ))}
+                        <th className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">Écart %</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y dark:divide-slate-700">
+                      {ingredientNames.map(name => {
+                        const prices = comparedSuppliers.map(s => ingredientMap[name][s.name]?.price ?? null);
+                        const validPrices = prices.filter((p): p is number => p !== null);
+                        const minPrice = validPrices.length > 0 ? Math.min(...validPrices) : null;
+                        const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
+                        const diff = minPrice && maxPrice && maxPrice > 0 ? Math.round(((maxPrice - minPrice) / minPrice) * 100) : null;
+                        return (
+                          <tr key={name} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                            <td className="px-3 py-2 text-slate-700 dark:text-slate-300 font-medium">{name}</td>
+                            {comparedSuppliers.map(s => {
+                              const entry = ingredientMap[name][s.name];
+                              const isBest = entry && minPrice !== null && entry.price === minPrice && validPrices.length > 1;
+                              return (
+                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-slate-600 dark:text-slate-400'}`}>
+                                  {entry ? `${entry.price.toFixed(2)} €/${entry.unit}` : <span className="text-slate-300 dark:text-slate-600">--</span>}
+                                </td>
+                              );
+                            })}
+                            <td className={`px-3 py-2 text-right text-xs font-bold ${diff !== null && diff > 15 ? 'text-red-600' : diff !== null && diff > 0 ? 'text-orange-500' : 'text-slate-400'}`}>
+                              {diff !== null ? `${diff}%` : '--'}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+          </Modal>
 
           {/* Search / filter bar */}
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
@@ -443,13 +638,51 @@ export default function Suppliers() {
                     {/* Card header */}
                     <div className="p-5 flex-1">
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">
-                          {supplier.name}
-                        </h3>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={compareSupplierIds.has(supplier.id)}
+                            onChange={() => setCompareSupplierIds(prev => {
+                              const next = new Set(prev);
+                              next.has(supplier.id) ? next.delete(supplier.id) : next.add(supplier.id);
+                              return next;
+                            })}
+                            className="accent-blue-600 shrink-0 mt-0.5"
+                            title="Sélectionner pour comparer"
+                          />
+                          <h3
+                            className="font-semibold text-slate-800 dark:text-slate-100 leading-tight cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                            onClick={() => setDetailSupplier(supplier)}
+                            title="Voir le détail"
+                          >
+                            {supplier.name}
+                          </h3>
+                        </div>
                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 whitespace-nowrap">
                           {ingCount} ing.
                         </span>
                       </div>
+
+                      {/* Supplier rating */}
+                      {(() => {
+                        const rating = getMockRating(supplier.id);
+                        return (
+                          <div className="flex items-center gap-3 mb-2 text-xs">
+                            <span className="flex items-center gap-0.5" title="Fiabilité">
+                              {[1,2,3,4,5].map(n => (
+                                <Star key={n} className={`w-3 h-3 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
+                              ))}
+                            </span>
+                            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400" title="Délai de livraison">
+                              <Clock className="w-3 h-3" />
+                              {rating.deliveryDays}
+                            </span>
+                            <span className="text-slate-500 dark:text-slate-400" title="Commande minimum">
+                              Min: {rating.minOrderAmount}
+                            </span>
+                          </div>
+                        );
+                      })()}
 
                       {/* Contact info */}
                       {supplier.contactName && (
@@ -994,6 +1227,93 @@ export default function Suppliers() {
           </div>
         </>
       )}
+
+      {/* ================================================================== */}
+      {/* Supplier Detail Modal                                              */}
+      {/* ================================================================== */}
+      <Modal isOpen={!!detailSupplier} onClose={() => setDetailSupplier(null)} title={detailSupplier?.name || 'Détail fournisseur'}>
+        {detailSupplier && (() => {
+          const rating = getMockRating(detailSupplier.id);
+          const ings = detailSupplier.ingredients || [];
+          return (
+            <div className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
+              {/* Rating summary */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
+                  <div className="flex items-center justify-center gap-0.5 mb-1">
+                    {[1,2,3,4,5].map(n => (
+                      <Star key={n} className={`w-4 h-4 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
+                    ))}
+                  </div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Fiabilité</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
+                    <Clock className="w-4 h-4 text-blue-500" />
+                    {rating.deliveryDays}
+                  </div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Délai livraison</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
+                  <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{rating.minOrderAmount}</div>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Commande min.</span>
+                </div>
+              </div>
+
+              {/* Contact info */}
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {detailSupplier.contactName && <div className="text-slate-600 dark:text-slate-300"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.contactName}</div>}
+                {detailSupplier.phone && <div className="text-slate-600 dark:text-slate-300"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.phone}</div>}
+                {detailSupplier.email && <div className="text-slate-600 dark:text-slate-300"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.email}</div>}
+                {detailSupplier.city && <div className="text-slate-600 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
+              </div>
+
+              {/* Linked ingredients with price history */}
+              <div>
+                <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+                  <Package className="w-4 h-4 text-blue-500" />
+                  Ingrédients liés ({ings.length})
+                </h4>
+                {ings.length === 0 ? (
+                  <p className="text-sm text-slate-400 italic">Aucun ingrédient lié à ce fournisseur</p>
+                ) : (
+                  <div className="space-y-3">
+                    {ings.map((ing: any) => {
+                      const priceHistory = getMockPriceHistory(ing.pricePerUnit);
+                      const trend = priceHistory[priceHistory.length - 1] - priceHistory[0];
+                      return (
+                        <div key={ing.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <div>
+                              <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{ing.name}</span>
+                              <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400">{ing.category}</span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{ing.pricePerUnit.toFixed(2)} €/{ing.unit}</span>
+                              <span className={`ml-2 text-xs font-medium ${trend > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                <TrendingUp className={`w-3 h-3 inline -mt-0.5 ${trend < 0 ? 'rotate-180' : ''}`} />
+                                {trend > 0 ? '+' : ''}{((trend / priceHistory[0]) * 100).toFixed(1)}%
+                              </span>
+                            </div>
+                          </div>
+                          {/* Mini price chart */}
+                          <div className="mt-1">
+                            <div className="flex items-center justify-between text-[10px] text-slate-400 mb-0.5">
+                              <span>Historique 30j</span>
+                              <span>{priceHistory[priceHistory.length - 1].toFixed(2)} €</span>
+                            </div>
+                            <MiniPriceChart data={priceHistory} width={300} height={40} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+      </Modal>
 
       {/* ================================================================== */}
       {/* Add / Edit Modal                                                   */}

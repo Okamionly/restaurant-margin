@@ -6,6 +6,7 @@ import {
   Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight, ArrowUpRight, ArrowDownRight,
   ChevronDown, ChevronRight, Package, ClipboardList, FileText, ShoppingCart,
   Lightbulb, Sparkles, Star, Zap, ArrowUp, ArrowDown,
+  CheckCircle2, Rocket, BookOpen, UtensilsCrossed, LayoutDashboard, X,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -14,6 +15,8 @@ import {
 import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
+import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../hooks/useToast';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -255,14 +258,20 @@ export default function Dashboard() {
   const [serviceMode, setServiceMode] = useState<'all' | 'lunch' | 'dinner'>('all');
   const [avgPricePerCouvert, setAvgPricePerCouvert] = useState(25);
   const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() =>
+    localStorage.getItem('restaumargin_onboarding_dismissed') === 'true'
+  );
+  const [onboardingVisible, setOnboardingVisible] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { showToast } = useToast();
 
   useEffect(() => {
     Promise.all([fetchRecipes(), fetchIngredients()])
       .then(([r, i]) => { setRecipes(r); setIngredients(i); })
-      .catch(() => console.error('Erreur chargement'))
+      .catch(() => showToast('Erreur lors du chargement des données. Veuillez réessayer.', 'error'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [showToast]);
 
   // ── Computed stats ─────────────────────────────────────────────────────
   const stats = useMemo(() => {
@@ -556,18 +565,229 @@ export default function Dashboard() {
     );
   }
 
-  // ── Empty state ────────────────────────────────────────────────────────
+  // ── Onboarding wizard logic ──────────────────────────────────────────
+  const onboardingSteps = useMemo(() => {
+    const hasIngredients = ingredients.length > 0;
+    const hasRecipes = recipes.length > 0;
+    // We can't easily check menu items from here, so step 4 done = hasRecipes (proxy)
+    return [
+      {
+        title: 'Bienvenue sur RestauMargin !',
+        description: `${user?.name ? `${user.name}, bienvenue` : 'Bienvenue'} ! Configurez votre espace en quelques étapes simples.`,
+        icon: Rocket,
+        done: true, // Welcome step is always "done" (viewed)
+        color: 'blue',
+        action: null,
+      },
+      {
+        title: 'Ajoutez vos premiers ingrédients',
+        description: 'Référencez vos produits avec leurs prix et unités pour calculer vos coûts.',
+        icon: Package,
+        done: hasIngredients,
+        color: 'green',
+        action: { label: 'Ajouter des ingrédients', to: '/ingredients' },
+      },
+      {
+        title: 'Créez votre première recette',
+        description: 'Composez vos fiches techniques avec les ingrédients et leurs quantités.',
+        icon: UtensilsCrossed,
+        done: hasRecipes,
+        color: 'amber',
+        action: { label: 'Créer une recette', to: '/recipes' },
+      },
+      {
+        title: 'Composez votre carte',
+        description: 'Organisez vos recettes par catégories pour structurer votre menu.',
+        icon: BookOpen,
+        done: hasRecipes, // proxy: if recipes exist, card composition is possible
+        color: 'purple',
+        action: { label: 'Voir le menu', to: '/menu' },
+      },
+      {
+        title: 'Analysez vos marges',
+        description: 'Tout est prêt ! Suivez vos marges et optimisez votre rentabilité.',
+        icon: LayoutDashboard,
+        done: false,
+        color: 'cyan',
+        action: null,
+      },
+    ];
+  }, [ingredients.length, recipes.length, user?.name]);
+
+  // Trigger fade-in for onboarding
+  useEffect(() => {
+    if (!onboardingDismissed && (!stats || stats.totalRecipes === 0)) {
+      const timer = setTimeout(() => setOnboardingVisible(true), 50);
+      return () => clearTimeout(timer);
+    }
+  }, [onboardingDismissed, stats]);
+
+  const dismissOnboarding = useCallback(() => {
+    setOnboardingVisible(false);
+    setTimeout(() => {
+      setOnboardingDismissed(true);
+      localStorage.setItem('restaumargin_onboarding_dismissed', 'true');
+    }, 300);
+  }, []);
+
+  const stepColorMap: Record<string, { bg: string; text: string; ring: string; iconBg: string }> = {
+    blue:   { bg: 'bg-blue-50 dark:bg-blue-950/30',     text: 'text-blue-600 dark:text-blue-400',     ring: 'ring-blue-500',   iconBg: 'bg-blue-100 dark:bg-blue-900/50' },
+    green:  { bg: 'bg-green-50 dark:bg-green-950/30',    text: 'text-green-600 dark:text-green-400',   ring: 'ring-green-500',  iconBg: 'bg-green-100 dark:bg-green-900/50' },
+    amber:  { bg: 'bg-amber-50 dark:bg-amber-950/30',    text: 'text-amber-600 dark:text-amber-400',   ring: 'ring-amber-500',  iconBg: 'bg-amber-100 dark:bg-amber-900/50' },
+    purple: { bg: 'bg-purple-50 dark:bg-purple-950/30',   text: 'text-purple-600 dark:text-purple-400', ring: 'ring-purple-500', iconBg: 'bg-purple-100 dark:bg-purple-900/50' },
+    cyan:   { bg: 'bg-cyan-50 dark:bg-cyan-950/30',      text: 'text-cyan-600 dark:text-cyan-400',     ring: 'ring-cyan-500',   iconBg: 'bg-cyan-100 dark:bg-cyan-900/50' },
+  };
+
+  // ── Empty state with onboarding wizard ────────────────────────────────
   if (!stats || stats.totalRecipes === 0) {
+    // If onboarding was dismissed, show a minimal empty state
+    if (onboardingDismissed) {
+      return (
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Tableau de bord</h2>
+          <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Aucune recette pour l'instant</h3>
+            <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingrédients puis créez vos fiches techniques.</p>
+            <div className="flex gap-4 justify-center">
+              <Link to="/ingredients" className="btn-primary">Ajouter des ingrédients</Link>
+              <Link to="/recipes" className="btn-secondary">Créer une recette</Link>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Onboarding wizard
+    const firstIncomplete = onboardingSteps.findIndex(s => !s.done);
     return (
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Tableau de bord</h2>
-        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Bienvenue sur RestauMargin</h3>
-          <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingrédients puis créez vos fiches techniques.</p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/ingredients" className="btn-primary">Ajouter des ingrédients</Link>
-            <Link to="/recipes" className="btn-secondary">Créer une recette</Link>
+      <div
+        className={`transition-opacity duration-300 ${onboardingVisible ? 'opacity-100' : 'opacity-0'}`}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord</h2>
+          <button
+            onClick={dismissOnboarding}
+            className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+          >
+            <X className="w-4 h-4" />
+            Passer l'introduction
+          </button>
+        </div>
+
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 mb-4">
+              <Sparkles className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              {user?.name ? `Bienvenue, ${user.name} !` : 'Bienvenue sur RestauMargin !'}
+            </h3>
+            <p className="text-blue-100 max-w-md mx-auto">
+              Suivez ces étapes pour configurer votre espace et commencer à analyser vos marges.
+            </p>
+          </div>
+
+          {/* Progress bar */}
+          <div className="px-6 pt-5 pb-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Progression</span>
+              <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+                {onboardingSteps.filter(s => s.done).length} / {onboardingSteps.length}
+              </span>
+            </div>
+            <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-700"
+                style={{ width: `${(onboardingSteps.filter(s => s.done).length / onboardingSteps.length) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Horizontal stepper */}
+          <div className="px-6 py-2">
+            <div className="flex items-center justify-center gap-1 mb-4">
+              {onboardingSteps.map((step, i) => (
+                <div key={i} className="flex items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                      step.done
+                        ? 'bg-green-500 text-white'
+                        : i === firstIncomplete
+                          ? 'bg-blue-600 text-white ring-4 ring-blue-200 dark:ring-blue-800'
+                          : 'bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {step.done ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
+                  </div>
+                  {i < onboardingSteps.length - 1 && (
+                    <div className={`w-8 sm:w-12 h-0.5 mx-1 ${
+                      step.done ? 'bg-green-400' : 'bg-slate-200 dark:bg-slate-600'
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Step cards */}
+          <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {onboardingSteps.map((step, i) => {
+              const colors = stepColorMap[step.color] || stepColorMap.blue;
+              const StepIcon = step.icon;
+              const isCurrent = i === firstIncomplete;
+              return (
+                <div
+                  key={i}
+                  className={`relative rounded-lg border p-4 transition-all ${
+                    step.done
+                      ? 'border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20 opacity-75'
+                      : isCurrent
+                        ? `border-2 ${colors.bg} border-blue-300 dark:border-blue-600 shadow-md`
+                        : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50'
+                  }`}
+                >
+                  {step.done && (
+                    <div className="absolute top-2 right-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500" />
+                    </div>
+                  )}
+                  <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3 ${
+                    step.done ? 'bg-green-100 dark:bg-green-900/50' : colors.iconBg
+                  }`}>
+                    <StepIcon className={`w-5 h-5 ${step.done ? 'text-green-600 dark:text-green-400' : colors.text}`} />
+                  </div>
+                  <h4 className={`text-sm font-semibold mb-1 ${
+                    step.done ? 'text-green-700 dark:text-green-300' : 'text-slate-700 dark:text-slate-200'
+                  }`}>
+                    {step.title}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">
+                    {step.description}
+                  </p>
+                  {step.action && !step.done && (
+                    <Link
+                      to={step.action.to}
+                      className={`inline-flex items-center gap-1 text-xs font-medium ${colors.text} hover:underline`}
+                    >
+                      {step.action.label}
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                  {step.action && step.done && (
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400">
+                      <CheckCircle2 className="w-3 h-3" /> Complété
+                    </span>
+                  )}
+                  {!step.action && !step.done && i === onboardingSteps.length - 1 && (
+                    <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                      Bientôt disponible
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

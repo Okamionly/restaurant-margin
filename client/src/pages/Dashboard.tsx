@@ -7,6 +7,7 @@ import {
   ChevronDown, ChevronRight, Package, ClipboardList, FileText, ShoppingCart,
   Lightbulb, Sparkles, Star, Zap, ArrowUp, ArrowDown,
   CheckCircle2, Rocket, BookOpen, UtensilsCrossed, LayoutDashboard, X,
+  Leaf, Replace, BadgeCheck, XCircle,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -17,6 +18,7 @@ import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
+import DemandForecast from '../components/DemandForecast';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -68,13 +70,13 @@ const TABS: { key: TabKey; label: string; desc: string; icon: any }[] = [
 ];
 
 // ── Stat card color configs ────────────────────────────────────────────────
-const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
-  blue:   { gradient: 'from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800',   border: 'border-t-blue-500' },
-  green:  { gradient: 'from-green-50 to-white dark:from-green-950/30 dark:to-slate-800',  border: 'border-t-green-500' },
-  amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',  border: 'border-t-amber-500' },
-  purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800', border: 'border-t-purple-500' },
-  cyan:   { gradient: 'from-cyan-50 to-white dark:from-cyan-950/30 dark:to-slate-800',    border: 'border-t-cyan-500' },
-  slate:  { gradient: 'from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-800',   border: 'border-t-slate-500' },
+const STAT_CARD_STYLES: Record<string, { gradient: string; border: string; glow: string }> = {
+  blue:   { gradient: 'from-blue-50 via-blue-50/50 to-white dark:from-blue-950/40 dark:via-blue-900/20 dark:to-slate-800',   border: 'border-t-blue-500',   glow: 'hover:shadow-blue-100/50 dark:hover:shadow-blue-900/30' },
+  green:  { gradient: 'from-green-50 via-green-50/50 to-white dark:from-green-950/40 dark:via-green-900/20 dark:to-slate-800',  border: 'border-t-green-500',  glow: 'hover:shadow-green-100/50 dark:hover:shadow-green-900/30' },
+  amber:  { gradient: 'from-amber-50 via-amber-50/50 to-white dark:from-amber-950/40 dark:via-amber-900/20 dark:to-slate-800',  border: 'border-t-amber-500',  glow: 'hover:shadow-amber-100/50 dark:hover:shadow-amber-900/30' },
+  purple: { gradient: 'from-purple-50 via-purple-50/50 to-white dark:from-purple-950/40 dark:via-purple-900/20 dark:to-slate-800', border: 'border-t-purple-500', glow: 'hover:shadow-purple-100/50 dark:hover:shadow-purple-900/30' },
+  cyan:   { gradient: 'from-cyan-50 via-cyan-50/50 to-white dark:from-cyan-950/40 dark:via-cyan-900/20 dark:to-slate-800',    border: 'border-t-cyan-500',   glow: 'hover:shadow-cyan-100/50 dark:hover:shadow-cyan-900/30' },
+  slate:  { gradient: 'from-slate-50 via-slate-100/30 to-white dark:from-slate-900/50 dark:via-slate-800/30 dark:to-slate-800',   border: 'border-t-slate-500',  glow: 'hover:shadow-slate-200/50 dark:hover:shadow-slate-700/30' },
 };
 
 // ── Animated Number Counter ────────────────────────────────────────────────
@@ -110,15 +112,15 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
 }) {
   const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.blue;
   return (
-    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-md transition-shadow`}>
+    <div className={`bg-gradient-to-br ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-lg ${style.glow} transition-all duration-300 hover:-translate-y-0.5`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 truncate">{title}</span>
-        <div className={`p-2 rounded-lg ${color}`}>
-          <Icon className="w-4 h-4 text-white" />
+        <div className={`p-2 rounded-lg ${color} shadow-sm ring-1 ring-white/20`}>
+          <Icon className="w-4 h-4 text-white drop-shadow-sm" />
         </div>
       </div>
       <div className="flex items-end gap-2">
-        <div className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">
+        <div className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
           {numericValue !== undefined
             ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
             : value}
@@ -213,14 +215,21 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
   // Duplicate items for seamless loop
   const items = [...alerts, ...alerts];
   return (
-    <div className="relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 rounded-xl shadow-sm">
-      <div className="flex items-center gap-2 px-4 py-2.5">
-        <AlertTriangle className="w-4 h-4 text-white flex-shrink-0" />
-        <span className="text-xs font-bold text-white/90 flex-shrink-0 uppercase tracking-wide">
-          Alertes ({alerts.length})
-        </span>
-        <div className="flex-1 overflow-hidden">
-          <div className="flex gap-6 animate-[ticker_20s_linear_infinite]">
+    <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-500 to-red-700 rounded-xl shadow-md group">
+      {/* Subtle animated shimmer overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
+      <div className="relative flex items-center gap-3 px-4 py-3">
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="p-1 bg-white/15 rounded-md">
+            <AlertTriangle className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-xs font-bold text-white/90 flex-shrink-0 uppercase tracking-wider">
+            Alertes ({alerts.length})
+          </span>
+        </div>
+        <div className="w-px h-5 bg-white/20 flex-shrink-0" />
+        <div className="flex-1 overflow-hidden mask-fade-edges">
+          <div className="flex gap-6 animate-[ticker_20s_linear_infinite] group-hover:[animation-play-state:paused]">
             {items.map((r, i) => (
               <Link
                 key={`${r.id}-${i}`}
@@ -228,7 +237,7 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
                 className="flex items-center gap-2 flex-shrink-0 text-white/90 hover:text-white transition-colors"
               >
                 <span className="text-sm font-medium whitespace-nowrap">{r.name}</span>
-                <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${r.margin.marginPercent < 50 ? 'bg-white/25' : 'bg-white/15'}`}>
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-md backdrop-blur-sm ${r.margin.marginPercent < 50 ? 'bg-white/25' : 'bg-white/15'}`}>
                   {r.margin.marginPercent.toFixed(1)}%
                 </span>
               </Link>
@@ -240,6 +249,14 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
         @keyframes ticker {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
+        }
+        @keyframes shimmer {
+          0%, 100% { transform: translateX(-100%); }
+          50% { transform: translateX(100%); }
+        }
+        .mask-fade-edges {
+          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
         }
       `}</style>
     </div>
@@ -262,6 +279,8 @@ export default function Dashboard() {
     localStorage.getItem('restaumargin_onboarding_dismissed') === 'true'
   );
   const [onboardingVisible, setOnboardingVisible] = useState(false);
+  const [dismissedOptimizations, setDismissedOptimizations] = useState<Set<string>>(new Set());
+  const [appliedOptimizations, setAppliedOptimizations] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -529,6 +548,94 @@ export default function Dashboard() {
       };
     });
 
+    // ── AI Cost Optimizer: find cheaper alternatives ──────────────────
+    // Build a map of ingredient usage: ingredientId -> { ingredient, totalCost, recipeCount, recipes[] }
+    const ingredientUsageMap = new Map<number, {
+      ingredient: Ingredient;
+      totalCostPerMonth: number;
+      recipeCount: number;
+      recipeNames: string[];
+      avgQuantityPerRecipe: number;
+    }>();
+    recipes.forEach(r => {
+      r.ingredients.forEach(ri => {
+        const existing = ingredientUsageMap.get(ri.ingredientId);
+        const cost = ri.ingredient.pricePerUnit * ri.quantity * (1 + ri.wastePercent / 100);
+        // Estimate monthly cost: cost per recipe * 26 working days (assume each recipe made once/day)
+        const monthlyCost = cost * 26;
+        if (existing) {
+          existing.totalCostPerMonth += monthlyCost;
+          existing.recipeCount += 1;
+          existing.recipeNames.push(r.name);
+          existing.avgQuantityPerRecipe = (existing.avgQuantityPerRecipe * (existing.recipeCount - 1) + ri.quantity) / existing.recipeCount;
+        } else {
+          ingredientUsageMap.set(ri.ingredientId, {
+            ingredient: ri.ingredient,
+            totalCostPerMonth: monthlyCost,
+            recipeCount: 1,
+            recipeNames: [r.name],
+            avgQuantityPerRecipe: ri.quantity,
+          });
+        }
+      });
+    });
+
+    // For each expensive ingredient, find cheaper alternatives in same category & unit
+    type CostOptimization = {
+      id: string;
+      expensiveIngredient: { id: number; name: string; pricePerUnit: number; unit: string; category: string };
+      cheaperAlternative: { id: number; name: string; pricePerUnit: number };
+      recipeCount: number;
+      recipeNames: string[];
+      monthlySavings: number;
+      savingsPercent: number;
+    };
+    const costOptimizations: CostOptimization[] = [];
+
+    // Sort ingredient usage by monthly cost descending
+    const sortedUsage = Array.from(ingredientUsageMap.values())
+      .sort((a, b) => b.totalCostPerMonth - a.totalCostPerMonth);
+
+    // Build a lookup of all ingredients by category+unit for finding alternatives
+    const ingredientsByKey = new Map<string, Ingredient[]>();
+    ingredients.forEach(ing => {
+      const key = `${ing.category}||${ing.unit}`;
+      if (!ingredientsByKey.has(key)) ingredientsByKey.set(key, []);
+      ingredientsByKey.get(key)!.push(ing);
+    });
+
+    sortedUsage.forEach(usage => {
+      const ing = usage.ingredient;
+      const key = `${ing.category}||${ing.unit}`;
+      const alternatives = ingredientsByKey.get(key) || [];
+      // Find cheapest alternative that is NOT the same ingredient and is genuinely cheaper
+      const cheaper = alternatives
+        .filter(a => a.id !== ing.id && a.pricePerUnit < ing.pricePerUnit * 0.8) // At least 20% cheaper
+        .sort((a, b) => a.pricePerUnit - b.pricePerUnit);
+      if (cheaper.length > 0) {
+        const alt = cheaper[0];
+        const priceDiff = ing.pricePerUnit - alt.pricePerUnit;
+        // Monthly savings = price diff * avg quantity * recipe count * 26 days
+        const monthlySavings = priceDiff * usage.avgQuantityPerRecipe * usage.recipeCount * 26;
+        if (monthlySavings > 5) { // Only show if savings > 5€/month
+          costOptimizations.push({
+            id: `opt-${ing.id}-${alt.id}`,
+            expensiveIngredient: { id: ing.id, name: ing.name, pricePerUnit: ing.pricePerUnit, unit: ing.unit, category: ing.category },
+            cheaperAlternative: { id: alt.id, name: alt.name, pricePerUnit: alt.pricePerUnit },
+            recipeCount: usage.recipeCount,
+            recipeNames: usage.recipeNames,
+            monthlySavings: Math.round(monthlySavings * 100) / 100,
+            savingsPercent: Math.round((priceDiff / ing.pricePerUnit) * 100),
+          });
+        }
+      }
+    });
+
+    // Sort by savings and take top optimizations
+    costOptimizations.sort((a, b) => b.monthlySavings - a.monthlySavings);
+    const top5Optimizations = costOptimizations.slice(0, 5);
+    const totalPotentialSavings = costOptimizations.reduce((s, o) => s + o.monthlySavings, 0);
+
     return {
       totalRecipes, avgMargin, avgCoefficient, bestMargin, worstMargin,
       avgFoodCost, avgLaborCost, avgTotalCost,
@@ -539,8 +646,9 @@ export default function Dashboard() {
       foodCostData, totalFoodCostAll, topIngredients,
       allergenSummary, coeffBuckets,
       menuDuMarche, aiSuggestions, projectionData, categoryBreakdown,
+      costOptimizations, top5Optimizations, totalPotentialSavings,
     };
-  }, [recipes, couverts, serviceMode, avgPricePerCouvert]);
+  }, [recipes, ingredients, couverts, serviceMode, avgPricePerCouvert]);
 
   // ── Export CSV helper ──────────────────────────────────────────────────
   const handleExportCSV = useCallback(() => {
@@ -797,7 +905,9 @@ export default function Dashboard() {
   const sortedByMargin = [...recipes].sort((a, b) => a.margin.marginPercent - b.margin.marginPercent);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 relative">
+      {/* Subtle dot-grid background pattern */}
+      <div className="absolute inset-0 -z-10 opacity-[0.03] dark:opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
       {/* ── Header + Quick Actions ────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -841,7 +951,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
         <StatCard title="Recettes" value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" colorKey="blue" />
         <StatCard
           title="Marge moyenne"
@@ -874,8 +984,8 @@ export default function Dashboard() {
           colorKey="cyan"
         />
         <StatCard
-          title={`Min\u00A0/\u00A0Max`}
-          value={`${stats.worstMargin.toFixed(0)}%\u00A0/\u00A0${stats.bestMargin.toFixed(0)}%`}
+          title={`Min / Max`}
+          value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
           icon={TrendingDown}
           color="bg-slate-600"
           colorKey="slate"
@@ -886,7 +996,7 @@ export default function Dashboard() {
       <AlertTicker alerts={stats.alertRecipes} />
 
       {/* ── Menu du Marché + Suggestions IA ────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
         {/* Menu du Marché */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
@@ -965,8 +1075,125 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* ── Demand Forecast ───────────────────────────────────────────── */}
+      <DemandForecast />
+
+      {/* ── Optimiseur IA : Cost Optimization ──────────────────────── */}
+      {stats.top5Optimizations.length > 0 && (
+        <div className="bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-emerald-950/20 dark:via-slate-800 dark:to-green-950/20 rounded-xl shadow-sm border border-emerald-200 dark:border-emerald-800/50 p-6">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl">
+                <Leaf className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Optimiseur IA</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Alternatives moins chères pour vos ingrédients les plus coûteux</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="px-4 py-2 bg-emerald-600 dark:bg-emerald-500 rounded-xl shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30">
+                <p className="text-xs text-emerald-100 font-medium">Économie potentielle</p>
+                <p className="text-xl font-bold text-white">{stats.totalPotentialSavings.toFixed(0)}€<span className="text-sm font-normal text-emerald-200">/mois</span></p>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Trophy className="w-4 h-4 text-amber-500" />
+              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Top {stats.top5Optimizations.length} optimisations</h4>
+              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{stats.costOptimizations.length} optimisation{stats.costOptimizations.length > 1 ? 's' : ''} trouvée{stats.costOptimizations.length > 1 ? 's' : ''}</span>
+            </div>
+            {stats.top5Optimizations
+              .filter(opt => !dismissedOptimizations.has(opt.id))
+              .map((opt, i) => (
+              <div
+                key={opt.id}
+                className={`relative flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-all ${
+                  appliedOptimizations.has(opt.id)
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md'
+                }`}
+              >
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                    i === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400' :
+                    i === 1 ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
+                    'bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
+                  }`}>
+                    {i + 1}
+                  </span>
+                  <Replace className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                    Remplacer <span className="font-semibold text-red-600 dark:text-red-400">{opt.expensiveIngredient.name}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">({opt.expensiveIngredient.pricePerUnit.toFixed(2)}€/{opt.expensiveIngredient.unit})</span>
+                    {' '}par{' '}
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">{opt.cheaperAlternative.name}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">({opt.cheaperAlternative.pricePerUnit.toFixed(2)}€/{opt.expensiveIngredient.unit})</span>
+                    {' '}dans{' '}
+                    <span className="font-medium">{opt.recipeCount} recette{opt.recipeCount > 1 ? 's' : ''}</span>
+                  </p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">
+                    {opt.recipeNames.slice(0, 3).join(', ')}{opt.recipeNames.length > 3 ? ` +${opt.recipeNames.length - 3} autres` : ''}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg">
+                    <TrendingDown className="w-3.5 h-3.5" />
+                    <span className="text-sm font-bold">{opt.monthlySavings.toFixed(0)}€</span>
+                    <span className="text-xs font-normal">/mois</span>
+                  </div>
+                  <span className="text-xs font-medium px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-md">
+                    -{opt.savingsPercent}%
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {appliedOptimizations.has(opt.id) ? (
+                    <span className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+                      <BadgeCheck className="w-3.5 h-3.5" /> Appliqué
+                    </span>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          setAppliedOptimizations(prev => new Set(prev).add(opt.id));
+                          showToast(`Optimisation appliquée : ${opt.cheaperAlternative.name} remplace ${opt.expensiveIngredient.name}`, 'success');
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-sm"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Appliquer
+                      </button>
+                      <button
+                        onClick={() => {
+                          setDismissedOptimizations(prev => new Set(prev).add(opt.id));
+                          showToast('Suggestion ignorée', 'info');
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition-colors"
+                      >
+                        <XCircle className="w-3.5 h-3.5" /> Ignorer
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {stats.costOptimizations.length > 5 && (
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-4 text-center">
+              + {stats.costOptimizations.length - 5} autre{stats.costOptimizations.length - 5 > 1 ? 's' : ''} optimisation{stats.costOptimizations.length - 5 > 1 ? 's' : ''} disponible{stats.costOptimizations.length - 5 > 1 ? 's' : ''} pour{' '}
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                {(stats.totalPotentialSavings - stats.top5Optimizations.reduce((s, o) => s + o.monthlySavings, 0)).toFixed(0)}€/mois
+              </span>
+              {" d\u2019économies supplémentaires"}
+            </p>
+          )}
+        </div>
+      )}
       {/* ── Tab Navigation (card-style) ──────────────────────────────── */}
-      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
+      <div className="border-t border-slate-200/60 dark:border-slate-700/40 pt-6" />
+      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin -mt-4 snap-x snap-mandatory scroll-smooth touch-pan-x">
         {TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;
@@ -974,7 +1201,7 @@ export default function Dashboard() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px]
+              className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px] snap-start
                 ${isActive
                   ? 'bg-white dark:bg-slate-800 border-l-4 border-l-blue-600 border border-slate-200 dark:border-slate-700 shadow-md'
                   : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm opacity-75 hover:opacity-100'
@@ -1053,19 +1280,19 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0jour"}</p>
+                    <p className="text-xs text-blue-200 mb-1">{"CA / jour"}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0semaine"}</p>
+                    <p className="text-xs text-blue-200 mb-1">{"CA / semaine"}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0mois"}</p>
+                    <p className="text-xs text-blue-200 mb-1">{"CA / mois"}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"Profit\u00A0/\u00A0jour"}</p>
+                    <p className="text-xs text-blue-200 mb-1">{"Profit / jour"}</p>
                     <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
                   </div>
                 </div>
@@ -1255,7 +1482,7 @@ export default function Dashboard() {
                   {stats.allByMargin.map((entry, index) => (
                     <Cell key={index} fill={entry.fill} />
                   ))}
-                  <LabelList dataKey="margin" position="right" formatter={(v: number) => `${v.toFixed(1)}%`} style={{ fontSize: '10px', fontWeight: 600, fill: '#475569' }} />
+                  <LabelList dataKey="margin" position="right" formatter={(v: unknown) => `${Number(v).toFixed(1)}%`} style={{ fontSize: '10px', fontWeight: 600, fill: '#475569' }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -1571,19 +1798,19 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0jour"}</p>
+                <p className="text-xs text-blue-200 mb-1">{"CA / jour"}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0semaine"}</p>
+                <p className="text-xs text-blue-200 mb-1">{"CA / semaine"}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"CA\u00A0/\u00A0mois"}</p>
+                <p className="text-xs text-blue-200 mb-1">{"CA / mois"}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"Profit\u00A0/\u00A0jour"}</p>
+                <p className="text-xs text-blue-200 mb-1">{"Profit / jour"}</p>
                 <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
               </div>
             </div>
@@ -1658,13 +1885,13 @@ export default function Dashboard() {
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Profit\u00A0/\u00A0couvert"}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Profit / couvert"}</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                       <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Couverts\u00A0/\u00A0jour"}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Couverts / jour"}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">

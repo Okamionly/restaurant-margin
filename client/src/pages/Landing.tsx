@@ -291,12 +291,31 @@ export default function Landing() {
 
       {/* ════════════════ Hero ════════════════ */}
       <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-28 overflow-hidden">
-        {/* Background */}
+        {/* Animated gradient mesh background */}
         <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 opacity-30" style={{
+            backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(59,130,246,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(99,102,241,0.25) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(37,99,235,0.15) 0%, transparent 60%)',
+            animation: 'meshMove 12s ease-in-out infinite alternate',
+          }} />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] rounded-full bg-gradient-to-b from-blue-50 to-transparent opacity-80" />
-          <div className="absolute top-20 right-0 w-96 h-96 rounded-full bg-blue-100/40 blur-3xl" />
-          <div className="absolute top-48 -left-20 w-72 h-72 rounded-full bg-indigo-100/30 blur-3xl" />
+          <div className="absolute top-20 right-0 w-96 h-96 rounded-full bg-blue-100/40 blur-3xl" style={{ animation: 'meshFloat 8s ease-in-out infinite alternate' }} />
+          <div className="absolute top-48 -left-20 w-72 h-72 rounded-full bg-indigo-100/30 blur-3xl" style={{ animation: 'meshFloat 10s ease-in-out infinite alternate-reverse' }} />
+          {/* Dot grid pattern */}
+          <div className="absolute inset-0 opacity-[0.035]" style={{
+            backgroundImage: 'radial-gradient(circle, #1e40af 1px, transparent 1px)',
+            backgroundSize: '24px 24px',
+          }} />
         </div>
+        <style>{`
+          @keyframes meshMove {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.08) rotate(2deg); }
+          }
+          @keyframes meshFloat {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-20px) scale(1.05); }
+          }
+        `}</style>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -356,8 +375,8 @@ export default function Landing() {
             {/* Right — Mock dashboard */}
             <FadeIn delay={400} className="hidden lg:block">
               <div className="relative">
-                {/* Main card */}
-                <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/60 border border-slate-100/80 p-6 relative z-10">
+                {/* Main card — glassmorphism */}
+                <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-slate-200/60 border border-white/50 p-6 relative z-10" style={{ boxShadow: '0 8px 32px rgba(31,38,135,0.12), inset 0 0 0 1px rgba(255,255,255,0.3)' }}>
                   {/* Header */}
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-2">
@@ -413,7 +432,7 @@ export default function Landing() {
                 </div>
 
                 {/* Floating cards */}
-                <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3 flex items-center gap-2.5 animate-bounce" style={{ animationDuration: '3s' }}>
+                <div className="absolute -top-4 -right-4 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg shadow-slate-200/50 border border-white/50 px-4 py-3 flex items-center gap-2.5 animate-bounce" style={{ animationDuration: '3s' }}>
                   <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
                     <TrendingUp className="w-4.5 h-4.5 text-emerald-600" />
                   </div>
@@ -423,7 +442,7 @@ export default function Landing() {
                   </div>
                 </div>
 
-                <div className="absolute -bottom-3 -left-4 bg-white rounded-xl shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3 flex items-center gap-2.5" style={{ animation: 'bounce 3.5s infinite' }}>
+                <div className="absolute -bottom-3 -left-4 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg shadow-slate-200/50 border border-white/50 px-4 py-3 flex items-center gap-2.5" style={{ animation: 'bounce 3.5s infinite' }}>
                   <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
                     <Calculator className="w-4.5 h-4.5 text-blue-600" />
                   </div>
@@ -465,6 +484,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
+
       {/* ════════════════ Trust Badges ════════════════ */}
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -484,6 +506,9 @@ export default function Landing() {
           </FadeIn>
         </div>
       </section>
+
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
 
       {/* ════════════════ Features ════════════════ */}
       <section id="features" className="py-20 sm:py-28">
@@ -507,7 +532,7 @@ export default function Landing() {
             {features.map((f, i) => (
               <FadeIn key={f.title} delay={i * 80}>
                 <div className="group relative bg-white rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-50 transition-all duration-300 h-full cursor-default">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-blue-800 flex items-center justify-center mb-5 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-blue-800 flex items-center justify-center mb-5 transition-all duration-300 group-hover:rotate-[360deg] group-hover:scale-110" style={{ transitionDuration: '500ms' }}>
                     <f.icon className="w-6 h-6 text-blue-700 group-hover:text-white transition-colors duration-300" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 mb-2">{f.title}</h3>
@@ -518,6 +543,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
 
       {/* ════════════════ Kit Station Balance ════════════════ */}
       <section className="py-20 sm:py-28 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
@@ -645,6 +673,9 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
+
       {/* ════════════════ Testimonials ════════════════ */}
       <section id="testimonials" className="py-20 sm:py-28 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -702,6 +733,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
 
       {/* ════════════════ Pricing ════════════════ */}
       <section id="pricing" className="py-20 sm:py-28">

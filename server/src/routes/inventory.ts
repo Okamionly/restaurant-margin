@@ -173,7 +173,9 @@ inventoryRouter.post('/', async (req: AuthRequest, res: Response) => {
 // PUT update stock (adjust quantity, set min/max)
 inventoryRouter.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id as string);
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const { currentStock, minStock, maxStock, unit, notes } = req.body;
 
     const data: any = {};
@@ -198,7 +200,9 @@ inventoryRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 // POST restock event (adds to currentStock)
 inventoryRouter.post('/:id/restock', async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id as string);
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const { quantity } = req.body;
     if (!quantity || quantity <= 0) {
       return res.status(400).json({ error: 'La quantité doit être supérieure à 0' });
@@ -226,8 +230,11 @@ inventoryRouter.post('/:id/restock', async (req: AuthRequest, res: Response) => 
 // DELETE remove from inventory
 inventoryRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     await prisma.inventoryItem.delete({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
     });
     res.status(204).send();
   } catch (error) {

@@ -45,8 +45,11 @@ ingredientsRouter.get('/usage', async (_req: AuthRequest, res: Response) => {
 // GET single ingredient
 ingredientsRouter.get('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const ingredient = await prisma.ingredient.findUnique({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
       include: {
         _count: {
           select: { recipes: true },
@@ -103,6 +106,9 @@ ingredientsRouter.post('/', async (req: AuthRequest, res: Response) => {
 // PUT update ingredient
 ingredientsRouter.put('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const { name, unit, pricePerUnit, supplier, category, allergens } = req.body;
 
     // Validation
@@ -121,7 +127,7 @@ ingredientsRouter.put('/:id', async (req: AuthRequest, res: Response) => {
     }
 
     const ingredient = await prisma.ingredient.update({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
       data: {
         name: name.trim(),
         unit: unit.trim(),
@@ -141,8 +147,11 @@ ingredientsRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 // DELETE ingredient
 ingredientsRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     await prisma.ingredient.delete({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
     });
     res.status(204).send();
   } catch (error) {

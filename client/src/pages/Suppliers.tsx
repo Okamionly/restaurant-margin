@@ -1216,7 +1216,7 @@ export default function Suppliers() {
                       <span className="text-xs text-slate-400">{filtered.length} résultats</span>
                       <div className="flex gap-1">
                         <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">←</button>
-                        <span className="px-3 py-1 text-xs text-slate-500">{catalogPage + 1}{"\u00A0/\u00A0"}{totalPages}</span>
+                        <span className="px-3 py-1 text-xs text-slate-500">{catalogPage + 1}{" / "}{totalPages}</span>
                         <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">→</button>
                       </div>
                     </div>

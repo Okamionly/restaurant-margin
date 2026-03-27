@@ -28,8 +28,11 @@ suppliersRouter.get('/', async (_req: AuthRequest, res: Response) => {
 // GET /api/suppliers/:id - Get supplier with its ingredients
 suppliersRouter.get('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const supplier = await prisma.supplier.findUnique({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
       include: {
         ingredients: {
           orderBy: { name: 'asc' },
@@ -105,8 +108,11 @@ suppliersRouter.put('/:id', async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Le nom est requis' });
     }
 
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const supplier = await prisma.supplier.update({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
       data: {
         name: name.trim(),
         phone: phone || null,
@@ -137,7 +143,8 @@ suppliersRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 // DELETE /api/suppliers/:id - Delete supplier (only if no ingredients linked)
 suppliersRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id as string);
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
     const ingredientCount = await prisma.ingredient.count({
       where: { supplierId: id },
@@ -160,7 +167,8 @@ suppliersRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
 // POST /api/suppliers/:id/link-ingredients - Link existing ingredients by supplier name match
 suppliersRouter.post('/:id/link-ingredients', async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id as string);
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
     const supplier = await prisma.supplier.findUnique({ where: { id } });
     if (!supplier) {

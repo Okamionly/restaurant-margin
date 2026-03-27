@@ -120,8 +120,11 @@ recipesRouter.get('/', async (_req: AuthRequest, res: Response) => {
 // GET single recipe with full details
 recipesRouter.get('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     const recipe = await prisma.recipe.findUnique({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
       include: recipeInclude,
     });
     if (!recipe) {
@@ -206,7 +209,8 @@ recipesRouter.put('/:id', async (req: AuthRequest, res: Response) => {
       laborCostPerHour,
       ingredients,
     } = req.body;
-    const recipeId = parseInt(req.params.id as string);
+    const recipeId = parseInt(req.params.id);
+    if (isNaN(recipeId)) return res.status(400).json({ error: 'ID invalide' });
 
     // Validation
     if (!name || !name.trim()) {
@@ -270,7 +274,8 @@ recipesRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 // POST clone recipe
 recipesRouter.post('/:id/clone', async (req: AuthRequest, res: Response) => {
   try {
-    const sourceId = parseInt(req.params.id as string);
+    const sourceId = parseInt(req.params.id);
+    if (isNaN(sourceId)) return res.status(400).json({ error: 'ID invalide' });
 
     const source = await prisma.recipe.findUnique({
       where: { id: sourceId },
@@ -312,8 +317,11 @@ recipesRouter.post('/:id/clone', async (req: AuthRequest, res: Response) => {
 // DELETE recipe
 recipesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
     await prisma.recipe.delete({
-      where: { id: parseInt(req.params.id as string) },
+      where: { id },
     });
     res.status(204).send();
   } catch (error) {

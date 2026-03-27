@@ -1152,7 +1152,7 @@ export default function InvoiceScanner() {
                           </td>
                           <td className="px-4 py-2.5 text-center text-gray-600 dark:text-gray-300">
                             {m.ingredient
-                              ? `${m.ingredient.pricePerUnit.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} \u20AC`
+                              ? `${m.ingredient.pricePerUnit.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`
                               : '—'}
                           </td>
                           <td className="px-4 py-2.5 text-center font-medium text-gray-900 dark:text-white">

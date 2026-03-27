@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import { AuthProvider, useAuth } from './hooks/useAuth';
@@ -28,6 +28,9 @@ import Restaurants from './pages/Restaurants';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 import Marketplace from './pages/Marketplace';
+import WasteTracker from './pages/WasteTracker';
+import QRMenu from './pages/QRMenu';
+import PublicMenu from './pages/PublicMenu';
 import NotFound from './pages/NotFound';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -172,6 +175,7 @@ function AppLayout() {
       items: [
         { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
         { to: '/menu', icon: BookOpen, label: 'La Carte' },
+        { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
       ],
     },
     {
@@ -181,6 +185,7 @@ function AppLayout() {
         { to: '/recipes', icon: ClipboardList, label: 'Fiches techniques' },
         { to: '/inventory', icon: Package, label: 'Inventaire' },
         { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
+        { to: '/gaspillage', icon: Trash2, label: 'Gaspillage' },
       ],
     },
     {
@@ -236,12 +241,12 @@ function AppLayout() {
       end={item.to === '/dashboard'}
       title={collapsed ? item.label : undefined}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group ${
+        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
           collapsed ? 'justify-center' : ''
         } ${
           isActive
-            ? 'bg-blue-600 text-white'
-            : 'text-slate-300 hover:bg-slate-700/70 hover:text-white'
+            ? 'bg-blue-600/20 text-blue-400 border-l-[3px] border-blue-500 pl-[9px]'
+            : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1 hover:shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]'
         }`
       }
     >
@@ -286,11 +291,12 @@ function AppLayout() {
       </div>
 
       {/* Nav sections - scrollable area */}
-      <nav className="flex-1 overflow-y-auto px-3 space-y-4 pb-4 sidebar-scroll">
-        {navSections.map((section) => (
-          <div key={section.title}>
+      <nav className="flex-1 overflow-y-auto px-3 space-y-1 pb-4 sidebar-scroll">
+        {navSections.map((section, idx) => (
+          <div key={section.title} className={idx > 0 ? 'pt-3' : ''}>
+            {!collapsed && idx > 0 && <div className="border-t border-slate-700/30 mb-3" />}
             {!collapsed && (
-              <div className="px-3 py-1.5 text-[10px] font-semibold tracking-wider text-slate-500 uppercase sidebar-label">
+              <div className="px-3 py-1.5 text-[9px] font-medium tracking-[0.15em] text-slate-500/70 uppercase sidebar-label">
                 {section.title}
               </div>
             )}
@@ -330,14 +336,14 @@ function AppLayout() {
         )}
 
         {/* User profile */}
-        <div className={`flex items-center gap-3 px-2 py-2.5 mt-2 rounded-lg bg-slate-800/60 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+        <div className={`flex items-center gap-3 px-3 py-3 mt-3 rounded-xl bg-slate-800/40 border border-slate-700/30 ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 ring-2 ring-blue-500/20">
             {userInitials}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0 sidebar-label">
-              <div className="text-sm font-medium text-white truncate">{user?.name || user?.email}</div>
-              <div className="text-xs text-slate-400 truncate">
+              <div className="text-sm font-semibold text-white truncate">{user?.name || user?.email}</div>
+              <div className="text-[11px] text-slate-500 truncate">
                 {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
               </div>
             </div>
@@ -345,7 +351,7 @@ function AppLayout() {
           <button
             onClick={logout}
             title="Deconnexion"
-            className="p-1.5 rounded-md hover:bg-slate-700 text-slate-400 hover:text-red-400 transition-colors flex-shrink-0"
+            className="p-1.5 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-all duration-200 flex-shrink-0"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -357,12 +363,12 @@ function AppLayout() {
   return (
     <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       {/* Desktop sidebar (>= 1024px): full width */}
-      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-slate-900 dark:bg-slate-950 z-30 no-print">
+      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-30 no-print">
         {sidebarContent(false)}
       </aside>
 
       {/* Tablet sidebar (768-1024px): icons only */}
-      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 bg-slate-900 dark:bg-slate-950 z-30 no-print">
+      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-30 no-print">
         {sidebarContent(true)}
       </aside>
 
@@ -375,7 +381,7 @@ function AppLayout() {
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Sidebar panel */}
-          <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-slate-900 dark:bg-slate-950 z-50 no-print animate-slide-in">
+          <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-50 no-print animate-slide-in">
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="absolute top-4 right-3 p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
@@ -418,10 +424,12 @@ function AppLayout() {
             <Route path="/menu" element={<MenuBuilder />} />
             <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/inventory" element={<Inventory />} />
+            <Route path="/gaspillage" element={<WasteTracker />} />
             <Route path="/rfqs" element={<RFQPage />} />
             <Route path="/scanner-factures" element={<InvoiceScanner />} />
             <Route path="/mercuriale" element={<Mercuriale />} />
             <Route path="/menu-engineering" element={<MenuEngineering />} />
+            <Route path="/qr-menu" element={<QRMenu />} />
             <Route path="/commandes" element={<AutoOrders />} />
             <Route path="/planning" element={<Planning />} />
             <Route path="/messagerie" element={<Messagerie />} />
@@ -469,6 +477,7 @@ function App() {
             <Route path="/" element={<PublicHome />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/menu-public" element={<PublicMenu />} />
           <Route
             path="/station"
             element={

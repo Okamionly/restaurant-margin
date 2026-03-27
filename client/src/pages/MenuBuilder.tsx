@@ -561,7 +561,7 @@ export default function MenuBuilder() {
             iconBg="bg-cyan-600"
           />
           <StatCard
-            label={`CA\u00A0/\u00A0service (~${estimatedCoversPerService} cvts)`}
+            label={`CA / service (~${estimatedCoversPerService} cvts)`}
             value={`${revenuePotentialPerService.toFixed(0)} €`}
             icon={<BarChart3 className="w-5 h-5 text-white" />}
             iconBg="bg-amber-600"

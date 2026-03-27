@@ -81,6 +81,8 @@ invoicesRouter.post('/', async (req: AuthRequest, res: Response) => {
 invoicesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
   try {
     const id = parseInt(req.params.id);
+    if (isNaN(id)) { res.status(400).json({ error: 'ID invalide' }); return; }
+
     const idx = invoices.findIndex(inv => inv.id === id);
     if (idx === -1) {
       res.status(404).json({ error: 'Facture non trouvée' });
@@ -97,6 +99,8 @@ invoicesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
 invoicesRouter.post('/:id/apply', async (req: AuthRequest, res: Response) => {
   try {
     const id = parseInt(req.params.id);
+    if (isNaN(id)) { res.status(400).json({ error: 'ID invalide' }); return; }
+
     const invoice = invoices.find(inv => inv.id === id);
     if (!invoice) {
       res.status(404).json({ error: 'Facture non trouvée' });

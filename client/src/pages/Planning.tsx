@@ -152,6 +152,10 @@ export default function Planning() {
   const [employees, setEmployees] = useState<Employee[]>(sample.employees);
   const [shifts, setShifts] = useState<Shift[]>(sample.shifts);
   const [weekStart, setWeekStart] = useState<Date>(() => getMonday(new Date()));
+  const [mobileDayIdx, setMobileDayIdx] = useState(() => {
+    const today = new Date().getDay();
+    return today === 0 ? 6 : today - 1; // Monday=0 ... Sunday=6
+  });
   const [nextId, setNextId] = useState(100);
 
   // Modals
@@ -416,59 +420,129 @@ export default function Planning() {
         </button>
       </div>
 
-      {/* Week view */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-x-auto">
-        <div className="grid grid-cols-7 min-w-[800px]">
-          {weekDays.map((day, i) => {
+      {/* Week view — Desktop: 7-column grid, Mobile: single day with prev/next */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+
+        {/* ── Mobile: single day view (<768px) ── */}
+        <div className="lg:hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
+            <button
+              onClick={() => setMobileDayIdx(prev => (prev - 1 + 7) % 7)}
+              className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+            >
+              <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+            </button>
+            <div className="text-center">
+              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{JOURS_FULL[mobileDayIdx]}</div>
+              <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                {weekDays[mobileDayIdx].getDate()}/{(weekDays[mobileDayIdx].getMonth() + 1).toString().padStart(2, '0')}
+              </div>
+            </div>
+            <button
+              onClick={() => setMobileDayIdx(prev => (prev + 1) % 7)}
+              className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+            >
+              <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+            </button>
+          </div>
+          {(() => {
+            const day = weekDays[mobileDayIdx];
             const dayStr = formatDate(day);
             const dayShifts = shifts.filter(s => s.date === dayStr);
-            const isToday = formatDate(new Date()) === dayStr;
-
             return (
-              <div key={i} className={`border-r border-slate-200 dark:border-slate-700 last:border-r-0 ${isToday ? 'bg-indigo-50/50 dark:bg-indigo-950/20' : ''}`}>
-                {/* Day header */}
-                <div className={`px-3 py-2 border-b border-slate-200 dark:border-slate-700 text-center ${isToday ? 'bg-indigo-100 dark:bg-indigo-900/30' : 'bg-slate-50 dark:bg-slate-800/80'}`}>
-                  <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{JOURS[i]}</div>
-                  <div className={`text-sm font-semibold ${isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200'}`}>
-                    {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
-                  </div>
-                </div>
-                {/* Shifts */}
-                <div className="p-2 space-y-1.5 min-h-[180px]">
-                  {dayShifts
-                    .sort((a, b) => a.start.localeCompare(b.start))
-                    .map(s => {
-                      const emp = employees.find(e => e.id === s.employeeId);
-                      if (!emp) return null;
-                      const colors = ROLE_COLORS[emp.role] || ROLE_COLORS.Commis;
-                      return (
-                        <div
-                          key={s.id}
-                          className={`rounded-lg p-1.5 text-xs border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition group relative`}
-                          onClick={() => openEditShift(s)}
+              <div className="p-3 space-y-2 min-h-[200px]">
+                {dayShifts
+                  .sort((a, b) => a.start.localeCompare(b.start))
+                  .map(s => {
+                    const emp = employees.find(e => e.id === s.employeeId);
+                    if (!emp) return null;
+                    const colors = ROLE_COLORS[emp.role] || ROLE_COLORS.Commis;
+                    return (
+                      <div
+                        key={s.id}
+                        className={`rounded-lg p-2.5 text-sm border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition group relative`}
+                        onClick={() => openEditShift(s)}
+                      >
+                        <div className={`font-semibold ${colors.text}`}>{emp.prenom} {emp.nom}</div>
+                        <div className={`text-xs ${colors.text} opacity-75`}>{ROLE_LABELS[emp.role]}</div>
+                        <div className={`text-xs font-mono ${colors.text} mt-0.5`}>{s.start} - {s.end}</div>
+                        <button
+                          onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
+                          className="absolute top-2 right-2 p-1 rounded bg-white/80 dark:bg-slate-900/80 hover:bg-red-100 dark:hover:bg-red-900/40 transition"
                         >
-                          <div className={`font-semibold truncate ${colors.text}`}>{emp.prenom} {emp.nom.charAt(0)}.</div>
-                          <div className={`text-[10px] ${colors.text} opacity-75`}>{ROLE_LABELS[emp.role]}</div>
-                          <div className={`text-[10px] font-mono ${colors.text}`}>{s.start} - {s.end}</div>
-                          <button
-                            onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
-                            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-white/80 dark:bg-slate-900/80 hover:bg-red-100 dark:hover:bg-red-900/40 transition"
-                          >
-                            <X className="w-3 h-3 text-red-500" />
-                          </button>
-                        </div>
-                      );
-                    })}
-                  <button
-                    onClick={() => openAddShift(dayStr)}
-                    className="w-full py-1.5 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-500 hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
-                  >
-                    <Plus className="w-3 h-3" /> Ajouter
-                  </button>
-                </div>
+                          <X className="w-3.5 h-3.5 text-red-500" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                {dayShifts.length === 0 && (
+                  <p className="text-center text-sm text-slate-400 dark:text-slate-500 py-6">Aucun créneau</p>
+                )}
+                <button
+                  onClick={() => openAddShift(dayStr)}
+                  className="w-full py-2.5 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-500 hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
+                >
+                  <Plus className="w-4 h-4" /> Ajouter
+                </button>
               </div>
             );
-          })}
+          })()}
+        </div>
+
+        {/* ── Desktop: 7-column grid (>=768px) ── */}
+        <div className="hidden lg:block overflow-x-auto">
+          <div className="grid grid-cols-7 min-w-[800px]">
+            {weekDays.map((day, i) => {
+              const dayStr = formatDate(day);
+              const dayShifts = shifts.filter(s => s.date === dayStr);
+              const isToday = formatDate(new Date()) === dayStr;
+
+              return (
+                <div key={i} className={`border-r border-slate-200 dark:border-slate-700 last:border-r-0 ${isToday ? 'bg-indigo-50/50 dark:bg-indigo-950/20' : ''}`}>
+                  {/* Day header */}
+                  <div className={`px-3 py-2 border-b border-slate-200 dark:border-slate-700 text-center ${isToday ? 'bg-indigo-100 dark:bg-indigo-900/30' : 'bg-slate-50 dark:bg-slate-800/80'}`}>
+                    <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{JOURS[i]}</div>
+                    <div className={`text-sm font-semibold ${isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                      {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
+                    </div>
+                  </div>
+                  {/* Shifts */}
+                  <div className="p-2 space-y-1.5 min-h-[180px]">
+                    {dayShifts
+                      .sort((a, b) => a.start.localeCompare(b.start))
+                      .map(s => {
+                        const emp = employees.find(e => e.id === s.employeeId);
+                        if (!emp) return null;
+                        const colors = ROLE_COLORS[emp.role] || ROLE_COLORS.Commis;
+                        return (
+                          <div
+                            key={s.id}
+                            className={`rounded-lg p-1.5 text-xs border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition group relative`}
+                            onClick={() => openEditShift(s)}
+                          >
+                            <div className={`font-semibold truncate ${colors.text}`}>{emp.prenom} {emp.nom.charAt(0)}.</div>
+                            <div className={`text-[10px] ${colors.text} opacity-75`}>{ROLE_LABELS[emp.role]}</div>
+                            <div className={`text-[10px] font-mono ${colors.text}`}>{s.start} - {s.end}</div>
+                            <button
+                              onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
+                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-white/80 dark:bg-slate-900/80 hover:bg-red-100 dark:hover:bg-red-900/40 transition"
+                            >
+                              <X className="w-3 h-3 text-red-500" />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    <button
+                      onClick={() => openAddShift(dayStr)}
+                      className="w-full py-1.5 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-500 hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+                    >
+                      <Plus className="w-3 h-3" /> Ajouter
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -633,7 +707,7 @@ export default function Planning() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{"Heures contrat\u00A0/\u00A0semaine"}</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{"Heures contrat / semaine"}</label>
               <input
                 type="number"
                 min="0"

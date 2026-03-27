@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed } from 'lucide-react';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { RECIPE_CATEGORIES } from '../types';
@@ -12,6 +12,205 @@ import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';
 function MarginBadge({ percent }: { percent: number }) {
   const color = percent >= 70 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : percent >= 60 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
   return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{percent.toFixed(1)}%</span>;
+}
+
+// ── Category gradient colors for recipe photo placeholders ───────────────
+const CATEGORY_GRADIENTS: Record<string, string> = {
+  'Entrée': 'from-emerald-400 to-green-600',
+  'Plat': 'from-blue-400 to-indigo-600',
+  'Dessert': 'from-pink-400 to-rose-600',
+  'Accompagnement': 'from-amber-400 to-orange-600',
+  'Boisson': 'from-cyan-400 to-teal-600',
+};
+
+// ── SVG allergen icons ───────────────────────────────────────────────────
+const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = {
+  Gluten: {
+    label: 'Gluten',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M12 2v20M9 5c0 2 3 3 3 5s-3 3-3 5M15 5c0 2-3 3-3 5s3 3 3 5" />
+        <path d="M7 3c1 1 2 2 2 4M17 3c-1 1-2 2-2 4" />
+      </svg>
+    ),
+  },
+  Lait: {
+    label: 'Lait',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M8 2h8l1 5v13a2 2 0 01-2 2H9a2 2 0 01-2-2V7l1-5z" />
+        <path d="M6 7h12" />
+      </svg>
+    ),
+  },
+  Oeufs: {
+    label: 'Oeufs',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <ellipse cx="12" cy="14" rx="7" ry="8" />
+        <ellipse cx="12" cy="14" rx="3" ry="3.5" />
+      </svg>
+    ),
+  },
+  Poissons: {
+    label: 'Poissons',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z" />
+        <path d="M22 12l-3-3v6l3-3z" />
+        <circle cx="8" cy="12" r="1" fill="currentColor" />
+      </svg>
+    ),
+  },
+  'Crustacés': {
+    label: 'Crustacés',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M5 8c0-3 3-5 7-5s7 2 7 5" />
+        <path d="M4 12c0 4 4 8 8 8s8-4 8-8" />
+        <path d="M8 12v3M16 12v3M12 8v4" />
+        <path d="M3 8l2 4M21 8l-2 4" />
+      </svg>
+    ),
+  },
+  'Fruits à coque': {
+    label: 'Fruits à coque',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <ellipse cx="12" cy="14" rx="6" ry="7" />
+        <path d="M8 7c0-3 2-5 4-5s4 2 4 5" />
+        <path d="M12 7v7" />
+      </svg>
+    ),
+  },
+  Soja: {
+    label: 'Soja',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <ellipse cx="9" cy="14" rx="4" ry="6" />
+        <ellipse cx="15" cy="14" rx="4" ry="6" />
+        <path d="M12 2v6" />
+        <path d="M10 4l2 2 2-2" />
+      </svg>
+    ),
+  },
+  'Céleri': {
+    label: 'Céleri',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M12 22V8M8 22V10c0-4 2-7 4-8M16 22V10c0-4-2-7-4-8" />
+        <path d="M8 6c-2-1-3 1-3 3M16 6c2-1 3 1 3 3" />
+      </svg>
+    ),
+  },
+  Moutarde: {
+    label: 'Moutarde',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <rect x="7" y="8" width="10" height="13" rx="1" />
+        <path d="M9 8V5a3 3 0 016 0v3" />
+        <path d="M12 2v3M7 14h10" />
+      </svg>
+    ),
+  },
+  'Sésame': {
+    label: 'Sésame',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <ellipse cx="8" cy="10" rx="2.5" ry="4" transform="rotate(-15 8 10)" />
+        <ellipse cx="16" cy="10" rx="2.5" ry="4" transform="rotate(15 16 10)" />
+        <ellipse cx="12" cy="16" rx="2.5" ry="4" />
+      </svg>
+    ),
+  },
+  Sulfites: {
+    label: 'Sulfites',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="w-3.5 h-3.5">
+        <text x="4" y="17" fontSize="11" fontWeight="bold" fill="currentColor" stroke="none" fontFamily="sans-serif">SO₂</text>
+      </svg>
+    ),
+  },
+  Lupin: {
+    label: 'Lupin',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M12 22V10" />
+        <path d="M12 10c-2-4-6-5-6-8 0 5 4 6 6 8z" />
+        <path d="M12 10c2-4 6-5 6-8 0 5-4 6-6 8z" />
+        <path d="M12 14c-3-2-6-1-7 0 3-1 5 0 7 0z" />
+        <path d="M12 14c3-2 6-1 7 0-3-1-5 0-7 0z" />
+      </svg>
+    ),
+  },
+  Mollusques: {
+    label: 'Mollusques',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <path d="M4 18c0-6 4-12 8-14 4 2 8 8 8 14" />
+        <path d="M4 18h16" />
+        <path d="M8 18c0-3 2-7 4-9 2 2 4 6 4 9" />
+      </svg>
+    ),
+  },
+  Arachides: {
+    label: 'Arachides',
+    svg: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+        <ellipse cx="10" cy="9" rx="4" ry="5" />
+        <ellipse cx="14" cy="16" rx="4" ry="5" />
+        <path d="M12 12c1-1 1-2 2-3" />
+      </svg>
+    ),
+  },
+};
+
+function AllergenIcon({ name }: { name: string }) {
+  const icon = ALLERGEN_ICONS[name];
+  if (!icon) {
+    return (
+      <span
+        title={name}
+        className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 text-[9px] font-bold cursor-help border border-red-200 dark:border-red-800"
+      >
+        {name.slice(0, 2)}
+      </span>
+    );
+  }
+  return (
+    <span
+      title={icon.label}
+      className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 cursor-help border border-red-200 dark:border-red-800 hover:scale-110 transition-transform"
+    >
+      {icon.svg}
+    </span>
+  );
+}
+
+/** Collect unique allergens from a recipe's ingredients */
+function getRecipeAllergens(recipe: Recipe): string[] {
+  const set = new Set<string>();
+  recipe.ingredients.forEach((ri) => {
+    ri.ingredient?.allergens?.forEach((a) => set.add(a));
+  });
+  return Array.from(set).sort();
+}
+
+/** Category-based photo placeholder */
+function RecipePhotoPlaceholder({ category }: { category: string }) {
+  const gradient = CATEGORY_GRADIENTS[category] || 'from-slate-400 to-slate-600';
+  return (
+    <div className={`relative h-32 rounded-t-lg bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
+      <div className="absolute inset-0 opacity-10">
+        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <circle cx="20" cy="20" r="15" fill="white" />
+          <circle cx="80" cy="70" r="20" fill="white" />
+          <circle cx="50" cy="50" r="10" fill="white" />
+        </svg>
+      </div>
+      <UtensilsCrossed className="w-10 h-10 text-white/70" />
+    </div>
+  );
 }
 
 export default function Recipes() {
@@ -319,40 +518,69 @@ export default function Recipes() {
             {recipes.length === 0 ? 'Aucune recette. Créez-en une !' : 'Aucun résultat.'}
           </p>
         ) : (
-          filtered.map((recipe) => (
-            <div key={recipe.id} className="bg-white dark:bg-slate-800 rounded-lg shadow p-5 hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100">{recipe.name}</h3>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{recipe.category}</span>
+          filtered.map((recipe) => {
+            const allergens = getRecipeAllergens(recipe);
+            return (
+            <div key={recipe.id} className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
+              {/* Photo placeholder */}
+              <RecipePhotoPlaceholder category={recipe.category} />
+
+              <div className="p-4">
+                {/* Header: name + category + margin */}
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100 leading-tight">{recipe.name}</h3>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{recipe.category}</span>
+                  </div>
+                  <MarginBadge percent={recipe.margin.marginPercent} />
                 </div>
-                <MarginBadge percent={recipe.margin.marginPercent} />
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-sm mt-3 text-slate-600 dark:text-slate-400">
-                <div>Prix vente : <strong className="text-slate-800 dark:text-slate-200">{recipe.sellingPrice.toFixed(2)} &euro;</strong></div>
-                <div>Coût matière : <strong className="text-slate-800 dark:text-slate-200">{recipe.margin.costPerPortion.toFixed(2)} &euro;</strong></div>
-                {recipe.margin.laborCostPerPortion > 0 && (
-                  <div>Coût MO : <strong className="text-slate-800 dark:text-slate-200">{recipe.margin.laborCostPerPortion.toFixed(2)} &euro;</strong></div>
+
+                {/* Key stats row */}
+                <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Vente</div>
+                    <div className="text-sm font-bold text-slate-800 dark:text-slate-200">{recipe.sellingPrice.toFixed(2)}&euro;</div>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Coût</div>
+                    <div className="text-sm font-bold text-slate-800 dark:text-slate-200">{recipe.margin.costPerPortion.toFixed(2)}&euro;</div>
+                  </div>
+                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Marge</div>
+                    <div className={`text-sm font-bold ${recipe.margin.marginPercent >= 70 ? 'text-green-600 dark:text-green-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                      {recipe.margin.marginPercent.toFixed(1)}%
+                    </div>
+                  </div>
+                </div>
+
+                {/* Allergen icons row */}
+                {allergens.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {allergens.map((a) => (
+                      <AllergenIcon key={a} name={a} />
+                    ))}
+                  </div>
                 )}
-                <div>Coeff : <strong className="text-slate-800 dark:text-slate-200">{recipe.margin.coefficient.toFixed(2)}</strong></div>
-                <div>Marge : <strong className="text-slate-800 dark:text-slate-200">{recipe.margin.marginAmount.toFixed(2)} &euro;</strong></div>
-              </div>
-              <div className="flex gap-2 mt-4 pt-3 border-t dark:border-slate-700">
-                <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
-                  <Eye className="w-4 h-4" /> Voir
-                </Link>
-                <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="Modifier">
-                  <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                </button>
-                <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title="Dupliquer">
-                  <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </button>
-                <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title="Supprimer">
-                  <Trash2 className="w-4 h-4 text-red-500" />
-                </button>
+
+                {/* Actions */}
+                <div className="flex gap-2 pt-3 border-t dark:border-slate-700">
+                  <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
+                    <Eye className="w-4 h-4" /> Voir
+                  </Link>
+                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title="Modifier">
+                    <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                  </button>
+                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title="Dupliquer">
+                    <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  </button>
+                  <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title="Supprimer">
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+                </div>
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -518,17 +746,17 @@ export default function Recipes() {
                 <strong className="font-mono">{liveCost.toFixed(2)} &euro;</strong>
               </div>
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span>{"Coût\u00A0/\u00A0portion :"}</span>
+                <span>{"Coût / portion :"}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} &euro;</strong>
               </div>
               {liveLaborPerPortion > 0 && (
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                  <span>{"Coût MO\u00A0/\u00A0portion :"}</span>
+                  <span>{"Coût MO / portion :"}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} &euro;</strong>
                 </div>
               )}
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                <span>{"Total\u00A0/\u00A0portion :"}</span>
+                <span>{"Total / portion :"}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
               </div>
             </div>

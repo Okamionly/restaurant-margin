@@ -83,7 +83,7 @@ interface EmailTemplate {
 // ── SMTP presets ────────────────────────────────────────────────────────────
 const SMTP_PRESETS: { label: string; server: string; port: string }[] = [
   { label: 'Gmail', server: 'smtp.gmail.com', port: '587' },
-  { label: 'Outlook\u00A0/\u00A0Office 365', server: 'smtp.office365.com', port: '587' },
+  { label: 'Outlook / Office 365', server: 'smtp.office365.com', port: '587' },
   { label: 'Yahoo', server: 'smtp.mail.yahoo.com', port: '587' },
 ];
 
@@ -98,10 +98,10 @@ const EMAIL_TEMPLATES: EmailTemplate[] = [
 Nous souhaitons passer la commande suivante :
 
 - Produit :
-- Quantit\u00e9 :
-- Date de livraison souhait\u00e9e :
+- Quantité :
+- Date de livraison souhaitée :
 
-Merci de confirmer la disponibilit\u00e9 et le d\u00e9lai de livraison.
+Merci de confirmer la disponibilité et le délai de livraison.
 
 Cordialement,
 [Votre nom]
@@ -128,14 +128,14 @@ Cordialement,
   {
     id: 'relance',
     name: 'Relance paiement',
-    subject: 'Relance - Facture en attente de r\u00e8glement',
+    subject: 'Relance - Facture en attente de règlement',
     body: `Bonjour,
 
-Sauf erreur de notre part, nous n'avons pas encore re\u00e7u le r\u00e8glement de la facture n\u00b0 [num\u00e9ro] d'un montant de [montant] \u20ac, \u00e9chue le [date].
+Sauf erreur de notre part, nous n'avons pas encore reçu le règlement de la facture n° [numéro] d'un montant de [montant] €, échue le [date].
 
-Nous vous remercions de bien vouloir proc\u00e9der au r\u00e8glement dans les meilleurs d\u00e9lais.
+Nous vous remercions de bien vouloir procéder au règlement dans les meilleurs délais.
 
-N'h\u00e9sitez pas \u00e0 nous contacter si vous avez des questions.
+N'hésitez pas à nous contacter si vous avez des questions.
 
 Cordialement,
 [Votre nom]
@@ -149,11 +149,11 @@ const ME = 'me';
 const CONTACTS: Contact[] = [
   { id: 'transgourmet', name: 'Transgourmet - Commercial', role: 'Fournisseur', avatar: 'TC' },
   { id: 'metro', name: 'Metro - Service client', role: 'Fournisseur', avatar: 'MS' },
-  { id: 'cuisine', name: '\u00c9quipe Cuisine', role: 'Groupe interne', avatar: 'EC' },
-  { id: 'sofia', name: 'Sofia M. - P\u00e2tissi\u00e8re', role: 'Employ\u00e9e', avatar: 'SM' },
+  { id: 'cuisine', name: 'Équipe Cuisine', role: 'Groupe interne', avatar: 'EC' },
+  { id: 'sofia', name: 'Sofia M. - Pâtissière', role: 'Employée', avatar: 'SM' },
   { id: 'pomona', name: 'Fournisseur Pomona', role: 'Fournisseur', avatar: 'FP' },
-  { id: 'lucas', name: 'Lucas D. - Commis', role: 'Employ\u00e9', avatar: 'LD' },
-  { id: 'marie', name: 'Marie L. - Serveuse', role: 'Employ\u00e9e', avatar: 'ML' },
+  { id: 'lucas', name: 'Lucas D. - Commis', role: 'Employé', avatar: 'LD' },
+  { id: 'marie', name: 'Marie L. - Serveuse', role: 'Employée', avatar: 'ML' },
   { id: 'brake', name: 'Brake France', role: 'Fournisseur', avatar: 'BF' },
   { id: 'rungis', name: "Rungis Express", role: 'Fournisseur', avatar: 'RE' },
 ];
@@ -178,14 +178,14 @@ function buildConversations(): Conversation[] {
       online: true,
       unread: 2,
       messages: [
-        { id: '1', senderId: 'transgourmet', text: 'Bonjour, votre commande #1247 a \u00e9t\u00e9 pr\u00e9par\u00e9e.', timestamp: '10:15', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Parfait, merci ! Livraison pr\u00e9vue \u00e0 quelle heure ?', timestamp: '10:20', read: true, type: 'text' },
+        { id: '1', senderId: 'transgourmet', text: 'Bonjour, votre commande #1247 a été préparée.', timestamp: '10:15', read: true, type: 'text' },
+        { id: '2', senderId: ME, text: 'Parfait, merci ! Livraison prévue à quelle heure ?', timestamp: '10:20', read: true, type: 'text' },
         { id: '3', senderId: 'transgourmet', text: 'Livraison entre 14h et 16h.', timestamp: '10:25', read: true, type: 'text' },
         {
           id: '4', senderId: 'transgourmet', text: '', timestamp: '10:28', read: false, type: 'order',
-          orderData: { id: '#1247', supplier: 'Transgourmet', items: 12, total: '847,50 \u20ac', status: 'Exp\u00e9di\u00e9e' },
+          orderData: { id: '#1247', supplier: 'Transgourmet', items: 12, total: '847,50 €', status: 'Expédiée' },
         },
-        { id: '5', senderId: 'transgourmet', text: 'Votre commande #1247 a \u00e9t\u00e9 exp\u00e9di\u00e9e', timestamp: '10:30', read: false, type: 'text' },
+        { id: '5', senderId: 'transgourmet', text: 'Votre commande #1247 a été expédiée', timestamp: '10:30', read: false, type: 'text' },
       ],
     },
     {
@@ -198,37 +198,37 @@ function buildConversations(): Conversation[] {
       unread: 1,
       messages: [
         { id: '1', senderId: ME, text: 'Bonjour, je cherche des offres sur les produits frais cette semaine.', timestamp: 'Hier 09:00', read: true, type: 'text' },
-        { id: '2', senderId: 'metro', text: 'Bonjour ! Nous avons -20% sur les l\u00e9gumes bio et -15% sur la volaille.', timestamp: 'Hier 09:45', read: true, type: 'text' },
+        { id: '2', senderId: 'metro', text: 'Bonjour ! Nous avons -20% sur les légumes bio et -15% sur la volaille.', timestamp: 'Hier 09:45', read: true, type: 'text' },
         { id: '3', senderId: 'metro', text: 'Nouvelle promotion disponible', timestamp: 'Hier 14:30', read: false, type: 'text' },
       ],
     },
     {
       id: 'cuisine',
-      name: '\u00c9quipe Cuisine',
+      name: 'Équipe Cuisine',
       isGroup: true,
       members: ['sofia', 'lucas', 'cuisine'],
       avatar: 'EC',
       online: true,
       unread: 0,
       messages: [
-        { id: '1', senderId: 'lucas', text: 'Les l\u00e9gumes du jour sont arriv\u00e9s, tout est conforme.', timestamp: '08:30', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Super, merci Lucas. Sofia, le dessert du jour est pr\u00eat ?', timestamp: '08:45', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin pr\u00eate ! \ud83c\udf4e', timestamp: '09:00', read: true, type: 'text' },
-        { id: '4', senderId: 'lucas', text: 'Chef: Le poisson est arriv\u00e9', timestamp: '09:15', read: true, type: 'text' },
+        { id: '1', senderId: 'lucas', text: 'Les légumes du jour sont arrivés, tout est conforme.', timestamp: '08:30', read: true, type: 'text' },
+        { id: '2', senderId: ME, text: 'Super, merci Lucas. Sofia, le dessert du jour est prêt ?', timestamp: '08:45', read: true, type: 'text' },
+        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin prête ! ��', timestamp: '09:00', read: true, type: 'text' },
+        { id: '4', senderId: 'lucas', text: 'Chef: Le poisson est arrivé', timestamp: '09:15', read: true, type: 'text' },
       ],
     },
     {
       id: 'sofia',
-      name: 'Sofia M. - P\u00e2tissi\u00e8re',
+      name: 'Sofia M. - Pâtissière',
       isGroup: false,
       members: ['sofia'],
       avatar: 'SM',
       online: true,
       unread: 0,
       messages: [
-        { id: '1', senderId: 'sofia', text: 'Bonjour chef, j\'ai test\u00e9 la nouvelle recette de fondant.', timestamp: 'Lun 14:00', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'G\u00e9nial ! Comment \u00e7a s\'est pass\u00e9 ?', timestamp: 'Lun 14:15', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Tr\u00e8s bien, je vous montre demain matin.', timestamp: 'Lun 14:20', read: true, type: 'text' },
+        { id: '1', senderId: 'sofia', text: 'Bonjour chef, j\'ai testé la nouvelle recette de fondant.', timestamp: 'Lun 14:00', read: true, type: 'text' },
+        { id: '2', senderId: ME, text: 'Génial ! Comment ça s\'est passé ?', timestamp: 'Lun 14:15', read: true, type: 'text' },
+        { id: '3', senderId: 'sofia', text: 'Très bien, je vous montre demain matin.', timestamp: 'Lun 14:20', read: true, type: 'text' },
         { id: '4', senderId: 'sofia', text: 'Je serai en retard demain', timestamp: 'Lun 16:30', read: true, type: 'text' },
       ],
     },
@@ -241,9 +241,9 @@ function buildConversations(): Conversation[] {
       online: false,
       unread: 0,
       messages: [
-        { id: '1', senderId: ME, text: 'Bonjour, pouvez-vous me faire un devis pour les l\u00e9gumes bio ?', timestamp: '25/03 10:00', read: true, type: 'text' },
-        { id: '2', senderId: 'pomona', text: 'Bien s\u00fbr, je pr\u00e9pare \u00e7a et vous l\'envoie dans l\'apr\u00e8s-midi.', timestamp: '25/03 10:30', read: true, type: 'text' },
-        { id: '3', senderId: 'pomona', text: 'Devis envoy\u00e9 pour les l\u00e9gumes bio', timestamp: '25/03 15:00', read: true, type: 'text' },
+        { id: '1', senderId: ME, text: 'Bonjour, pouvez-vous me faire un devis pour les légumes bio ?', timestamp: '25/03 10:00', read: true, type: 'text' },
+        { id: '2', senderId: 'pomona', text: 'Bien sûr, je prépare ça et vous l\'envoie dans l\'après-midi.', timestamp: '25/03 10:30', read: true, type: 'text' },
+        { id: '3', senderId: 'pomona', text: 'Devis envoyé pour les légumes bio', timestamp: '25/03 15:00', read: true, type: 'text' },
       ],
     },
   ];
@@ -286,7 +286,7 @@ function getLastTimestamp(conv: Conversation) {
 function getLastPreview(conv: Conversation) {
   const last = getLastMessage(conv);
   if (!last) return '';
-  if (last.type === 'order') return `\ud83d\udce6 Commande ${last.orderData?.id}`;
+  if (last.type === 'order') return `�� Commande ${last.orderData?.id}`;
   const prefix = last.senderId === ME ? 'Vous: ' : '';
   const text = last.text;
   return prefix + (text.length > 40 ? text.slice(0, 40) + '...' : text);
@@ -535,7 +535,7 @@ export default function Messagerie() {
       showToast('Veuillez remplir tous les champs obligatoires', 'error');
       return;
     }
-    showToast('Connexion SMTP r\u00e9ussie !', 'success');
+    showToast('Connexion SMTP réussie !', 'success');
   }
 
   function handleSaveEmailConfig() {
@@ -546,14 +546,14 @@ export default function Messagerie() {
     saveEmailConfig(emailForm);
     setEmailConfig(emailForm);
     setShowEmailSettings(false);
-    showToast('Configuration email sauvegard\u00e9e', 'success');
+    showToast('Configuration email sauvegardée', 'success');
   }
 
   function handleDisconnectEmail() {
     localStorage.removeItem('emailConfig');
     setEmailConfig(null);
     setEmailForm({ email: '', smtpServer: '', smtpPort: '587', password: '' });
-    showToast('Email d\u00e9connect\u00e9', 'info');
+    showToast('Email déconnecté', 'info');
   }
 
   // ── Compose email handlers ────────────────────────────────────────────
@@ -592,14 +592,14 @@ export default function Messagerie() {
           {isEmailConfigured && (
             <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">
               <Check className="w-3 h-3" />
-              Email connect\u00e9
+              Email connecté
             </span>
           )}
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowEmailSettings((v) => !v)}
-            title="Param\u00e8tres email"
+            title="Paramètres email"
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors text-sm"
           >
             <Settings className="w-4 h-4" />
@@ -625,7 +625,7 @@ export default function Messagerie() {
                   </button>
                   <div className="border-t dark:border-slate-700 my-1" />
                   <div className="px-3 py-1 text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
-                    Mod\u00e8les
+                    Modèles
                   </div>
                   {EMAIL_TEMPLATES.map((tpl) => (
                     <button
@@ -668,7 +668,7 @@ export default function Messagerie() {
             {/* SMTP presets */}
             <div>
               <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
-                Pr\u00e9-remplir avec un fournisseur
+                Pré-remplir avec un fournisseur
               </label>
               <div className="flex flex-wrap gap-2">
                 {SMTP_PRESETS.map((preset) => (
@@ -699,11 +699,11 @@ export default function Messagerie() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  {"Mot de passe\u00A0/\u00A0App password"}
+                  {"Mot de passe / App password"}
                 </label>
                 <input
                   type="password"
-                  placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                  placeholder="••••••••"
                   value={emailForm.password}
                   onChange={(e) => setEmailForm((prev) => ({ ...prev, password: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
@@ -756,7 +756,7 @@ export default function Messagerie() {
                   onClick={handleDisconnectEmail}
                   className="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 >
-                  D\u00e9connecter
+                  Déconnecter
                 </button>
               )}
             </div>
@@ -769,7 +769,7 @@ export default function Messagerie() {
         <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 text-green-700 dark:text-green-300 text-xs">
           <Check className="w-4 h-4 shrink-0" />
           <span className="flex-1">
-            <strong>Email connect\u00e9</strong> &mdash; {emailConfig.email}
+            <strong>Email connecté</strong> &mdash; {emailConfig.email}
           </span>
           <button
             onClick={() => setShowEmailSettings(true)}
@@ -782,7 +782,7 @@ export default function Messagerie() {
         <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 text-blue-700 dark:text-blue-300 text-xs">
           <Info className="w-4 h-4 shrink-0" />
           <span className="flex-1">
-            <strong>Version d\u00e9mo</strong> &mdash; Les messages sont stock\u00e9s localement. Connectez votre email pour envoyer de vrais messages.
+            <strong>Version démo</strong> &mdash; Les messages sont stockés localement. Connectez votre email pour envoyer de vrais messages.
           </span>
           <button
             onClick={() => setShowEmailSettings(true)}
@@ -1039,7 +1039,7 @@ export default function Messagerie() {
                   </button>
                   <input
                     type="text"
-                    placeholder="\u00c9crire un message..."
+                    placeholder="Écrire un message..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -1058,8 +1058,8 @@ export default function Messagerie() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
               <MessageSquare className="w-16 h-16 mb-4 opacity-30" />
-              <p className="text-lg font-medium">S\u00e9lectionnez une conversation</p>
-              <p className="text-sm mt-1">Choisissez un contact pour commencer \u00e0 discuter</p>
+              <p className="text-lg font-medium">Sélectionnez une conversation</p>
+              <p className="text-sm mt-1">Choisissez un contact pour commencer à discuter</p>
             </div>
           )}
         </div>
@@ -1130,7 +1130,7 @@ export default function Messagerie() {
               )}
               <div>
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  \u00c0 (destinataire)
+                  À (destinataire)
                 </label>
                 <input
                   type="email"
@@ -1168,7 +1168,7 @@ export default function Messagerie() {
               {/* Quick templates */}
               <div>
                 <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5">
-                  Appliquer un mod\u00e8le
+                  Appliquer un modèle
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {EMAIL_TEMPLATES.map((tpl) => (

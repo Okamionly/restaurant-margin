@@ -277,7 +277,7 @@ export default function HACCP() {
         <nav className="flex gap-6">
           {([
             { key: 'temperatures' as TabKey, label: 'Températures', icon: <Thermometer className="w-4 h-4" /> },
-            { key: 'dlc' as TabKey, label: 'DLC\u00A0/\u00A0DLUO', icon: <CalendarClock className="w-4 h-4" /> },
+            { key: 'dlc' as TabKey, label: 'DLC / DLUO', icon: <CalendarClock className="w-4 h-4" /> },
             { key: 'nettoyage' as TabKey, label: 'Plan de nettoyage', icon: <SprayCan className="w-4 h-4" /> },
           ]).map(tab => (
             <button
@@ -571,7 +571,7 @@ function DLCSection({ products, onAdd, onDelete }: {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
           <CalendarClock className="w-5 h-5 text-orange-600" />
-          {"Suivi DLC\u00A0/\u00A0DLUO"}
+          {"Suivi DLC / DLUO"}
         </h2>
         <button
           onClick={onAdd}

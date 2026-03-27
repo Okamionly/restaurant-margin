@@ -218,7 +218,7 @@ function renderStars(rating: number) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Marketplace() {
-  const { addToast } = useToast();
+  const { showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('price_asc');
@@ -243,7 +243,7 @@ export default function Marketplace() {
       return [...prev, { productId, supplierId, quantity: 1, price, unit }];
     });
     setCartOpen(true);
-    addToast('Produit ajoute au panier', 'success');
+    showToast('Produit ajoute au panier', 'success');
   }
 
   function updateCartQuantity(productId: string, supplierId: string, delta: number) {
@@ -270,7 +270,7 @@ export default function Marketplace() {
 
   function submitOrder() {
     if (cart.length === 0) return;
-    addToast(`Commande de ${cart.length} produit(s) envoyee avec succes !`, 'success');
+    showToast(`Commande de ${cart.length} produit(s) envoyee avec succes !`, 'success');
     setCart([]);
     setCartOpen(false);
   }
@@ -512,7 +512,7 @@ export default function Marketplace() {
                     </span>
                   )}
                   <button
-                    onClick={() => addToast(`Contact ${supplier.name}: ${supplier.phone}`, 'info')}
+                    onClick={() => showToast(`Contact ${supplier.name}: ${supplier.phone}`, 'info')}
                     className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
                   >
                     <Phone className="w-3.5 h-3.5" />

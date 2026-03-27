@@ -11,6 +11,7 @@ import { priceHistoryRouter } from './routes/priceHistory';
 import { menuSalesRouter } from './routes/menuSales';
 import { messagesRouter } from './routes/messages';
 import { menuEngineeringRouter } from './routes/menuEngineering';
+import { publicMenuRouter } from './routes/publicMenu';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.json());
 
 // Public routes
 app.use('/api/auth', authRouter);
+app.use('/api/public', publicMenuRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

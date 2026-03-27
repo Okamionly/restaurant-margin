@@ -156,6 +156,18 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
         viewBox={`0 0 ${width} ${height}`}
         className="w-full max-w-3xl mx-auto"
         onMouseMove={handleMouseMove}
+        onTouchStart={(e) => {
+          if (!svgRef.current) return;
+          const touch = e.touches[0];
+          const rect = svgRef.current.getBoundingClientRect();
+          setTooltipPos({ x: touch.clientX - rect.left, y: touch.clientY - rect.top });
+        }}
+        onClick={(e) => {
+          // Dismiss tooltip when tapping SVG background (not a data point)
+          if ((e.target as SVGElement).tagName === 'svg' || (e.target as SVGElement).tagName === 'rect') {
+            setHovered(null);
+          }
+        }}
       >
         {/* Background quadrants */}
         <rect x={padding.left} y={padding.top} width={avgPopX - padding.left} height={avgMarginY - padding.top}
@@ -232,13 +244,14 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
         {items.map(item => {
           const cx = scaleX(item.popularity);
           const cy = scaleY(item.marginPercent);
-          const r = Math.max(6, Math.min(20, Math.sqrt(item.salesRevenue) / 8));
+          const r = Math.max(8, Math.min(22, Math.sqrt(item.salesRevenue) / 7));
           const cfg = QUADRANT_CONFIG[item.quadrant];
           const isHovered = hovered?.id === item.id;
           return (
             <g key={item.id}
               onMouseEnter={() => setHovered(item)}
               onMouseLeave={() => setHovered(null)}
+              onClick={() => setHovered(prev => prev?.id === item.id ? null : item)}
               className="cursor-pointer"
             >
               <circle cx={cx} cy={cy} r={isHovered ? r + 3 : r}

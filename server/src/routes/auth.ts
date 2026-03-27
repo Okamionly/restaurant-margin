@@ -165,7 +165,8 @@ authRouter.delete('/users/:id', authMiddleware, async (req: AuthRequest, res: Re
       return res.status(403).json({ error: 'Accès réservé aux administrateurs' });
     }
 
-    const targetId = parseInt(req.params.id as string);
+    const targetId = parseInt(req.params.id);
+    if (isNaN(targetId)) return res.status(400).json({ error: 'ID invalide' });
 
     if (targetId === req.user!.userId) {
       return res.status(400).json({ error: 'Vous ne pouvez pas supprimer votre propre compte' });

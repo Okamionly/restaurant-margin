@@ -42,6 +42,7 @@ function saveHistory(messages: ChatMessage[]) {
 // --- Intent matching ---
 
 type Intent =
+  | { type: 'greeting' }
   | { type: 'best_margin' }
   | { type: 'low_stock' }
   | { type: 'recipe_count' }
@@ -52,6 +53,10 @@ type Intent =
 function detectIntent(input: string): Intent {
   const lower = input.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
+  // Greetings
+  if (/^(salut|bonjour|hello|hi|hey|coucou|bonsoir|yo|slt|bjr|ca va|comment vas)/.test(lower)) {
+    return { type: 'greeting' };
+  }
   // Best margin
   if (/marge|rentab|plus\s*rentable|meilleur|benefice|profit/.test(lower)) {
     return { type: 'best_margin' };
@@ -80,8 +85,9 @@ function detectIntent(input: string): Intent {
     if (m) return { type: 'suggest_ingredient', ingredient: m[1].trim() };
   }
 
-  // If just a single word that could be an ingredient
-  if (lower.split(/\s+/).length <= 2 && lower.length > 2) {
+  // If just a single word that could be an ingredient (but not a common word)
+  const commonWords = ['merci', 'oui', 'non', 'ok', 'bien', 'super', 'genial', 'parfait', 'aide', 'help', 'quoi', 'comment', 'pourquoi'];
+  if (lower.split(/\s+/).length <= 2 && lower.length > 2 && !commonWords.includes(lower)) {
     return { type: 'suggest_ingredient', ingredient: lower };
   }
 
@@ -242,6 +248,8 @@ async function generateResponse(input: string, history: { role: string; content:
   // Fallback to local keyword matching
   const intent = detectIntent(input);
   switch (intent.type) {
+    case 'greeting':
+      return "Bonjour Chef ! Comment puis-je vous aider ?\n\nVoici quelques idées :\n- \"marge\" → Vos plats les plus rentables\n- \"stock\" → Alertes de stock\n- \"coût\" → Coût matière moyen\n- \"saumon\" → Recettes avec un ingrédient\n- \"combien de recettes\" → Nombre total";
     case 'best_margin':
       return handleBestMargin();
     case 'low_stock':

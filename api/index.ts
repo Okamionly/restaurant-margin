@@ -3,6 +3,7 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -806,7 +807,6 @@ app.put('/api/messages/conversations/:id/read', authMiddleware, (req, res) => {
 });
 
 // ── Email (nodemailer) ──
-import nodemailer from 'nodemailer';
 const sentEmails: any[] = [];
 
 app.post('/api/email/send', authMiddleware, async (req, res) => {

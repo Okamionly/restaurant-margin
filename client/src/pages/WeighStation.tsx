@@ -73,7 +73,7 @@ const STEPS = [
   { num: 4, label: 'Valider', icon: Check },
 ];
 
-type DisplayUnit = 'g' | 'kg';
+type DisplayUnit = 'g' | 'kg' | 'L' | 'pièce';
 
 export default function WeighStation() {
   const navigate = useNavigate();
@@ -581,7 +581,7 @@ export default function WeighStation() {
 
           {/* Unit toggle */}
           <div className="flex items-center gap-1 p-1 bg-slate-800/60 rounded-xl border border-slate-700/40">
-            {(['g', 'kg'] as DisplayUnit[]).map(u => (
+            {(['g', 'kg', 'L', 'pièce'] as DisplayUnit[]).map(u => (
               <button
                 key={u}
                 onClick={() => setDisplayUnit(u)}

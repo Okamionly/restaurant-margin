@@ -3,7 +3,7 @@ import { Bluetooth, BluetoothOff, Plus, Minus, RotateCcw, Check, Wifi, AlertTria
 import { useScale } from '../hooks/useScale';
 import Modal from './Modal';
 
-type DisplayUnit = 'g' | 'kg';
+type DisplayUnit = 'g' | 'kg' | 'L' | 'pièce';
 
 interface WeighModalProps {
   isOpen: boolean;
@@ -183,7 +183,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
         <div className="flex items-center justify-between">
           {/* Unit toggle */}
           <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
-            {(['g', 'kg'] as DisplayUnit[]).map(u => (
+            {(['g', 'kg', 'L', 'pièce'] as DisplayUnit[]).map(u => (
               <button
                 key={u}
                 onClick={() => setDisplayUnit(u)}

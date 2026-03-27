@@ -208,7 +208,10 @@ Réponds de manière concise, professionnelle et utile. Utilise les données ré
       }),
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error('OpenRouter error:', res.status, await res.text().catch(() => ''));
+      return null;
+    }
     const data = await res.json();
     return data.choices?.[0]?.message?.content || null;
   } catch {

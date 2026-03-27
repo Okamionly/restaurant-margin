@@ -78,7 +78,13 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title={`Peser avec la balance — ${ingredientName}`}>
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title={`Peser avec la balance — ${ingredientName}`}
+      className="max-sm:!rounded-none max-sm:!my-0 max-sm:!max-w-none max-sm:min-h-screen"
+      contentClassName="max-sm:max-h-none max-sm:!max-h-[unset] max-sm:overflow-y-auto max-sm:flex-1"
+    >
       <div className="space-y-5">
 
         {/* Ingredient info */}
@@ -156,7 +162,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           />
 
           <div className="relative z-10 flex items-baseline gap-2">
-            <span className={`text-5xl font-black tabular-nums tracking-tight transition-colors ${
+            <span className={`text-6xl sm:text-5xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
               netWeight > 0 ? 'text-blue-300' :
               'text-slate-600'
@@ -180,7 +186,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
         </div>
 
         {/* Controls row: unit toggle + tare */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
           {/* Unit toggle */}
           <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
             {(['g', 'kg', 'L', 'pièce'] as DisplayUnit[]).map(u => (
@@ -214,16 +220,16 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
             <span className="text-amber-600 dark:text-amber-400 text-xs font-medium uppercase tracking-wider">Simulation</span>
             <button
               onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-              className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors"
+              className="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors"
             >
-              <Minus className="w-4 h-4" />
+              <Minus className="w-5 h-5" />
             </button>
             <span className="font-mono text-sm w-20 text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
             <button
               onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-              className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors"
+              className="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-5 h-5" />
             </button>
           </div>
         )}
@@ -231,14 +237,16 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
         {/* Stock calculation preview */}
         {weightInUnit > 0 && (
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-4 py-3 text-sm">
-            <p className="text-blue-700 dark:text-blue-300 font-medium">
-              Stock actuel : {currentStock} {unit} + Pesée : {weightInUnit} {unit} = Nouveau stock : {newStockAdd.toFixed(2)} {unit}
+            <p className="text-blue-700 dark:text-blue-300 font-medium break-words leading-relaxed">
+              Stock actuel : {currentStock} {unit}
+              <span className="max-sm:block"> + Pesée : {weightInUnit} {unit}</span>
+              <span className="max-sm:block"> = <strong>Nouveau stock : {newStockAdd.toFixed(2)} {unit}</strong></span>
             </p>
           </div>
         )}
 
         {/* Action buttons */}
-        <div className="flex gap-3 pt-1">
+        <div className="flex flex-col sm:flex-row gap-3 pt-1">
           <button
             onClick={handleSetStock}
             disabled={weightInUnit <= 0}

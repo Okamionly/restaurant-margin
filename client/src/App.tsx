@@ -1,37 +1,40 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2 } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
-import Dashboard from './pages/Dashboard';
-import Ingredients from './pages/Ingredients';
-import Recipes from './pages/Recipes';
-import RecipeDetail from './pages/RecipeDetail';
-import Suppliers from './pages/Suppliers';
-import Inventory from './pages/Inventory';
-import RFQPage from './pages/RFQ';
-import MenuBuilder from './pages/MenuBuilder';
-import SettingsPage from './pages/Settings';
-import UserManagement from './pages/UserManagement';
-import WeighStation from './pages/WeighStation';
-import InvoiceScanner from './pages/InvoiceScanner';
-import Mercuriale from './pages/Mercuriale';
-import MenuEngineering from './pages/MenuEngineering';
-import AutoOrders from './pages/AutoOrders';
-import Subscription from './pages/Subscription';
-import Planning from './pages/Planning';
-import Messagerie from './pages/Messagerie';
-import Restaurants from './pages/Restaurants';
+// Critical pages loaded eagerly (first pages users see)
 import Login from './pages/Login';
 import Landing from './pages/Landing';
-import Marketplace from './pages/Marketplace';
-import WasteTracker from './pages/WasteTracker';
-import QRMenu from './pages/QRMenu';
 import PublicMenu from './pages/PublicMenu';
 import NotFound from './pages/NotFound';
+
+// Lazy-loaded pages for code splitting
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Ingredients = lazy(() => import('./pages/Ingredients'));
+const Recipes = lazy(() => import('./pages/Recipes'));
+const RecipeDetail = lazy(() => import('./pages/RecipeDetail'));
+const Suppliers = lazy(() => import('./pages/Suppliers'));
+const Inventory = lazy(() => import('./pages/Inventory'));
+const RFQPage = lazy(() => import('./pages/RFQ'));
+const MenuBuilder = lazy(() => import('./pages/MenuBuilder'));
+const SettingsPage = lazy(() => import('./pages/Settings'));
+const UserManagement = lazy(() => import('./pages/UserManagement'));
+const WeighStation = lazy(() => import('./pages/WeighStation'));
+const InvoiceScanner = lazy(() => import('./pages/InvoiceScanner'));
+const Mercuriale = lazy(() => import('./pages/Mercuriale'));
+const MenuEngineering = lazy(() => import('./pages/MenuEngineering'));
+const AutoOrders = lazy(() => import('./pages/AutoOrders'));
+const Subscription = lazy(() => import('./pages/Subscription'));
+const Planning = lazy(() => import('./pages/Planning'));
+const Messagerie = lazy(() => import('./pages/Messagerie'));
+const Restaurants = lazy(() => import('./pages/Restaurants'));
+const Marketplace = lazy(() => import('./pages/Marketplace'));
+const WasteTracker = lazy(() => import('./pages/WasteTracker'));
+const QRMenu = lazy(() => import('./pages/QRMenu'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -415,31 +418,33 @@ function AppLayout() {
 
         {/* Content */}
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/ingredients" element={<Ingredients />} />
-            <Route path="/recipes" element={<Recipes />} />
-            <Route path="/recipes/:id" element={<RecipeDetail />} />
-            <Route path="/menu" element={<MenuBuilder />} />
-            <Route path="/suppliers" element={<Suppliers />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/gaspillage" element={<WasteTracker />} />
-            <Route path="/rfqs" element={<RFQPage />} />
-            <Route path="/scanner-factures" element={<InvoiceScanner />} />
-            <Route path="/mercuriale" element={<Mercuriale />} />
-            <Route path="/menu-engineering" element={<MenuEngineering />} />
-            <Route path="/qr-menu" element={<QRMenu />} />
-            <Route path="/commandes" element={<AutoOrders />} />
-            <Route path="/planning" element={<Planning />} />
-            <Route path="/messagerie" element={<Messagerie />} />
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/restaurants" element={<Restaurants />} />
-            <Route path="/abonnement" element={<Subscription />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/users" element={<UserManagement />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/ingredients" element={<Ingredients />} />
+              <Route path="/recipes" element={<Recipes />} />
+              <Route path="/recipes/:id" element={<RecipeDetail />} />
+              <Route path="/menu" element={<MenuBuilder />} />
+              <Route path="/suppliers" element={<Suppliers />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/gaspillage" element={<WasteTracker />} />
+              <Route path="/rfqs" element={<RFQPage />} />
+              <Route path="/scanner-factures" element={<InvoiceScanner />} />
+              <Route path="/mercuriale" element={<Mercuriale />} />
+              <Route path="/menu-engineering" element={<MenuEngineering />} />
+              <Route path="/qr-menu" element={<QRMenu />} />
+              <Route path="/commandes" element={<AutoOrders />} />
+              <Route path="/planning" element={<Planning />} />
+              <Route path="/messagerie" element={<Messagerie />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/restaurants" element={<Restaurants />} />
+              <Route path="/abonnement" element={<Subscription />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/users" element={<UserManagement />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </main>
 
         {/* Footer */}
@@ -482,7 +487,9 @@ function App() {
             path="/station"
             element={
               <ProtectedRoute>
-                <WeighStation />
+                <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>}>
+                  <WeighStation />
+                </Suspense>
               </ProtectedRoute>
             }
           />

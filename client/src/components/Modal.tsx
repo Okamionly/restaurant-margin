@@ -6,9 +6,13 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  /** Extra classes on the modal panel (the white card) */
+  className?: string;
+  /** Extra classes on the scrollable content area */
+  contentClassName?: string;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, className = '', contentClassName = '' }: ModalProps) {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -33,7 +37,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm animate-fade-in" />
       <div
-        className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl my-8 animate-modal-in"
+        className={`relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl my-8 animate-modal-in ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/80 dark:border-slate-700/80">
@@ -42,7 +46,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
             <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
           </button>
         </div>
-        <div className="p-6 max-h-[70vh] overflow-y-auto">{children}</div>
+        <div className={`p-6 max-h-[70vh] overflow-y-auto ${contentClassName}`}>{children}</div>
       </div>
     </div>
   );

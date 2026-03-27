@@ -299,11 +299,11 @@ export default function WeighStation() {
   const unitForDisplay = quickMode || !selected ? displayUnit : (selected?.unit ?? displayUnit);
 
   return (
-    <div className="h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex flex-col select-none overflow-hidden">
+    <div className="min-h-screen lg:h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex flex-col select-none lg:overflow-hidden">
 
       {/* ===== TOP BAR ===== */}
-      <header className="flex items-center justify-between px-4 py-3 bg-slate-900/80 border-b border-slate-700/60 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
+      <header className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-slate-900/80 border-b border-slate-700/60 backdrop-blur-sm">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => navigate('/')}
             className="flex items-center gap-2 px-4 py-2.5 min-h-[48px] bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-200 font-medium text-sm transition-all active:scale-95"
@@ -311,13 +311,13 @@ export default function WeighStation() {
             <ArrowLeft className="w-5 h-5" />
             <span className="hidden sm:inline">Retour</span>
           </button>
-          <div className="flex items-center gap-2.5">
-            <Scale className="w-6 h-6 text-emerald-400" />
-            <span className="text-lg font-bold text-white tracking-tight">Station Balance</span>
+          <div className="flex items-center gap-2">
+            <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
+            <span className="text-base sm:text-lg font-bold text-white tracking-tight">Station Balance</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Connection status indicator */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/60 border border-slate-700/50">
             <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${
@@ -406,16 +406,16 @@ export default function WeighStation() {
       )}
 
       {/* ===== MAIN CONTENT ===== */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
 
         {/* LEFT PANEL: Ingredient selector + Quick actions */}
-        <div className="lg:w-80 xl:w-96 bg-slate-900/40 border-r border-slate-800/60 flex flex-col overflow-hidden shrink-0">
+        <div className="max-h-[50vh] lg:max-h-none lg:w-80 xl:w-96 bg-slate-900/40 border-b lg:border-b-0 lg:border-r border-slate-800/60 flex flex-col overflow-hidden shrink-0">
 
           {/* Quick actions */}
-          <div className="p-3 border-b border-slate-800/60 grid grid-cols-3 gap-2">
+          <div className="p-3 border-b border-slate-800/60 flex overflow-x-auto sm:grid sm:grid-cols-3 gap-2 scrollbar-none">
             <button
               onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
-              className={`flex flex-col items-center gap-1 px-2 py-3 min-h-[48px] rounded-xl text-xs font-medium transition-all active:scale-95 ${
+              className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[100px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
                 quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40'
               }`}
             >
@@ -424,14 +424,14 @@ export default function WeighStation() {
             </button>
             <button
               onClick={() => navigate('/inventory')}
-              className="flex flex-col items-center gap-1 px-2 py-3 min-h-[48px] rounded-xl text-xs font-medium bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40 transition-all active:scale-95"
+              className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[100px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40 transition-all active:scale-95"
             >
               <Package className="w-5 h-5" />
               Inventaire
             </button>
             <button
               onClick={() => navigate('/recipes')}
-              className="flex flex-col items-center gap-1 px-2 py-3 min-h-[48px] rounded-xl text-xs font-medium bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40 transition-all active:scale-95"
+              className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[100px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-slate-800/60 text-slate-400 hover:bg-slate-700/60 border border-slate-700/40 transition-all active:scale-95"
             >
               <ChefHat className="w-5 h-5" />
               Recettes
@@ -487,7 +487,7 @@ export default function WeighStation() {
         </div>
 
         {/* CENTER: Scale display */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-5 px-4 py-6 relative overflow-hidden">
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 sm:gap-5 px-3 sm:px-4 py-4 sm:py-6 relative overflow-hidden">
 
           {/* Selected ingredient label */}
           <div className="text-center min-h-[60px] flex flex-col items-center justify-center">
@@ -506,14 +506,14 @@ export default function WeighStation() {
               </div>
             ) : (
               <div>
-                <p className="text-slate-600 text-base">Selectionnez un ingredient ou utilisez la pesee rapide</p>
+                <p className="text-slate-600 text-sm sm:text-base px-2 text-center">Selectionnez un ingredient ou utilisez la pesee rapide</p>
               </div>
             )}
           </div>
 
           {/* ===== BIG WEIGHT DISPLAY (LCD-style) ===== */}
           <div
-            className={`relative w-full max-w-md aspect-[2/1] rounded-2xl flex flex-col items-center justify-center transition-all duration-500 ${
+            className={`relative w-full max-w-full sm:max-w-md aspect-[2.2/1] sm:aspect-[2/1] rounded-2xl flex flex-col items-center justify-center transition-all duration-500 ${
               flashGreen ? 'shadow-[0_0_80px_rgba(52,211,153,0.3)]' : ''
             }`}
             style={{
@@ -585,7 +585,7 @@ export default function WeighStation() {
               <button
                 key={u}
                 onClick={() => setDisplayUnit(u)}
-                className={`px-5 py-2 min-h-[44px] rounded-lg text-sm font-bold transition-all ${
+                className={`px-3 sm:px-5 py-2 min-h-[48px] rounded-lg text-sm font-bold transition-all ${
                   displayUnit === u
                     ? 'bg-emerald-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white hover:bg-slate-700/60'
@@ -598,7 +598,7 @@ export default function WeighStation() {
 
           {/* Simulation controls */}
           {useSimulation && (
-            <div className="flex items-center gap-4 bg-slate-800/60 px-5 py-3 rounded-2xl border border-amber-600/30">
+            <div className="flex items-center gap-3 sm:gap-4 bg-slate-800/60 px-3 sm:px-5 py-3 rounded-2xl border border-amber-600/30">
               <p className="text-amber-400 text-xs font-medium uppercase tracking-wider">Sim</p>
               <button
                 onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
@@ -617,11 +617,11 @@ export default function WeighStation() {
           )}
 
           {/* Action buttons */}
-          <div className="flex flex-wrap justify-center gap-3 w-full max-w-lg">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 w-full max-w-lg px-1">
             <button
               onClick={handleTare}
               disabled={currentWeight <= 0}
-              className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-white text-base transition-all active:scale-95 border border-slate-700/50"
+              className="flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] bg-slate-800 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-white text-sm sm:text-base transition-all active:scale-95 border border-slate-700/50"
             >
               <RotateCcw className="w-5 h-5" /> Tare
             </button>
@@ -629,7 +629,7 @@ export default function WeighStation() {
             <button
               onClick={handleValidate}
               disabled={(!selected && !quickMode) || netConverted <= 0 || saving}
-              className="flex items-center gap-2 px-10 py-4 min-h-[56px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white text-lg transition-all active:scale-95 shadow-lg shadow-emerald-900/30 border border-emerald-500/30"
+              className="flex items-center gap-2 px-6 sm:px-10 py-4 min-h-[56px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white text-base sm:text-lg transition-all active:scale-95 shadow-lg shadow-emerald-900/30 border border-emerald-500/30"
             >
               <Check className="w-6 h-6" />
               {saving ? 'Sauvegarde...' : 'Valider'}
@@ -637,7 +637,7 @@ export default function WeighStation() {
 
             <button
               onClick={handleReset}
-              className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-slate-800 hover:bg-slate-700 rounded-2xl font-semibold text-white text-base transition-all active:scale-95 border border-slate-700/50"
+              className="flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] bg-slate-800 hover:bg-slate-700 rounded-2xl font-semibold text-white text-sm sm:text-base transition-all active:scale-95 border border-slate-700/50"
             >
               <RotateCcw className="w-5 h-5" /> Reset
             </button>
@@ -645,7 +645,7 @@ export default function WeighStation() {
         </div>
 
         {/* RIGHT PANEL: History log */}
-        <div className="lg:w-80 xl:w-96 bg-slate-900/40 border-l border-slate-800/60 flex flex-col overflow-hidden shrink-0">
+        <div className="max-h-[40vh] lg:max-h-none lg:w-80 xl:w-96 bg-slate-900/40 border-t lg:border-t-0 lg:border-l border-slate-800/60 flex flex-col overflow-hidden shrink-0">
 
           {/* History header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800/60">
@@ -659,7 +659,7 @@ export default function WeighStation() {
             {history.length > 0 && (
               <button
                 onClick={clearHistory}
-                className="flex items-center gap-1 px-2 py-1.5 min-h-[40px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
+                className="flex items-center gap-1 px-3 py-2 min-h-[48px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 Effacer

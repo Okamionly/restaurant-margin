@@ -1,5 +1,6 @@
 import { X, CheckCircle, AlertCircle, Info } from 'lucide-react';
-import type { ToastType } from '../hooks/useToast';
+
+export type ToastType = 'success' | 'error' | 'info';
 
 interface ToastProps {
   message: string;

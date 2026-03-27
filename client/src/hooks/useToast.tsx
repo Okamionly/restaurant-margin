@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-import Toast from '../components/Toast';
+import Toast, { type ToastType } from '../components/Toast';
 
-export type ToastType = 'success' | 'error' | 'info';
+export type { ToastType };
 
 interface ToastItem {
   id: number;

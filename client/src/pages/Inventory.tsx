@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
   ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
-  PackagePlus, Loader2, PieChart
+  PackagePlus, Loader2, PieChart, Scale
 } from 'lucide-react';
 import {
   fetchInventory, fetchInventoryAlerts, fetchInventoryValue, fetchInventorySuggestions,
@@ -13,6 +13,7 @@ import { INGREDIENT_CATEGORIES } from '../types';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import WeighModal from '../components/WeighModal';
 
 const CATEGORY_EMOJIS: Record<string, string> = {
   'Viandes': '🥩',
@@ -60,6 +61,9 @@ export default function Inventory() {
   const [showRestockModal, setShowRestockModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+
+  // Weigh modal
+  const [weighTarget, setWeighTarget] = useState<InventoryItem | null>(null);
 
   // Forms
   const [addForm, setAddForm] = useState({ ingredientId: 0, currentStock: '', minStock: '', unit: '' });
@@ -223,6 +227,23 @@ export default function Inventory() {
       showToast(err.message || 'Erreur', 'error');
     } finally {
       setSavingBulk(false);
+    }
+  }
+
+  async function handleWeighComplete(data: { weight: number; mode: 'set' | 'add' }) {
+    if (!weighTarget) return;
+    try {
+      if (data.mode === 'set') {
+        await updateInventoryItem(weighTarget.id, { currentStock: data.weight });
+        showToast(`Stock de ${weighTarget.ingredient.name} mis à ${data.weight} ${weighTarget.unit}`, 'success');
+      } else {
+        await restockInventoryItem(weighTarget.id, data.weight);
+        showToast(`+${data.weight} ${weighTarget.unit} ajouté au stock de ${weighTarget.ingredient.name}`, 'success');
+      }
+      setWeighTarget(null);
+      loadData();
+    } catch (err: any) {
+      showToast(err.message || 'Erreur lors de la mise à jour', 'error');
     }
   }
 
@@ -518,6 +539,9 @@ export default function Inventory() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => setWeighTarget(item)} className="p-1.5 rounded hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 transition-colors" title="Peser avec la balance">
+                          <Scale className="w-4 h-4" />
+                        </button>
                         <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors" title="Réapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
@@ -688,6 +712,19 @@ export default function Inventory() {
           </div>
         </div>
       </Modal>
+
+      {/* Weigh Modal */}
+      {weighTarget && (
+        <WeighModal
+          isOpen={!!weighTarget}
+          onClose={() => setWeighTarget(null)}
+          ingredientId={weighTarget.ingredientId}
+          ingredientName={weighTarget.ingredient.name}
+          currentStock={weighTarget.currentStock}
+          unit={weighTarget.unit}
+          onComplete={handleWeighComplete}
+        />
+      )}
 
       {/* Delete Confirm */}
       <ConfirmDialog

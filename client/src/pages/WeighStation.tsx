@@ -200,15 +200,32 @@ export default function WeighStation() {
         const invItems = await invRes.json();
         const item = invItems.find((i: any) => i.ingredientId === selected.id);
         if (item) {
+          // Update existing inventory item
+          const newStock = item.currentStock + netConverted;
           await fetch(`${API}/api/inventory/${item.id}`, {
             method: 'PUT',
             headers: authHeaders(),
-            body: JSON.stringify({ currentStock: item.currentStock + netConverted }),
+            body: JSON.stringify({ currentStock: newStock }),
           });
-          showToast(`+${netConverted} ${selected.unit} ajoute a l'inventaire`, 'success');
+          showToast(`${selected.name} : +${netConverted} ${selected.unit} → inventaire mis à jour (${newStock.toFixed(2)} ${selected.unit} total)`, 'success');
         } else {
-          showToast('Ingredient non trouve dans l\'inventaire', 'error');
-          entryStatus = 'error';
+          // Create new inventory entry via POST
+          const createRes = await fetch(`${API}/api/inventory`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({
+              ingredientId: selected.id,
+              currentStock: netConverted,
+              minStock: 0,
+              unit: selected.unit,
+            }),
+          });
+          if (createRes.ok) {
+            showToast(`${selected.name} : ${netConverted} ${selected.unit} ajouté à l'inventaire (nouveau)`, 'success');
+          } else {
+            showToast('Erreur lors de la création dans l\'inventaire', 'error');
+            entryStatus = 'error';
+          }
         }
       }
       const entry: HistoryEntry = {
@@ -255,6 +272,25 @@ export default function WeighStation() {
     setShowDropdown(false);
     setQuickMode(false);
   }
+
+  // Daily stats
+  const todayStats = (() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const todayEntries = history.filter(e => e.timestamp.slice(0, 10) === today && e.status === 'success');
+    const totalWeighs = todayEntries.length;
+    const totalKg = todayEntries.reduce((sum, e) => {
+      // Convert back to kg for summary
+      const w = e.weight;
+      const u = e.unit.toLowerCase();
+      if (u === 'g') return sum + w / 1000;
+      if (u === 'kg') return sum + w;
+      if (u === 'l') return sum + w;
+      if (u === 'cl') return sum + w / 100;
+      if (u === 'ml') return sum + w / 1000;
+      return sum + w;
+    }, 0);
+    return { totalWeighs, totalKg: Math.round(totalKg * 100) / 100 };
+  })();
 
   const isConnected = status === 'connected' || useSimulation;
   const weightForDisplay = quickMode || !selected
@@ -675,6 +711,17 @@ export default function WeighStation() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Daily stats footer */}
+          <div className="px-4 py-3 border-t border-slate-800/60 bg-slate-900/60">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-500">Aujourd'hui</span>
+              <div className="flex items-center gap-4">
+                <span className="text-emerald-400 font-medium">{todayStats.totalWeighs} pesée{todayStats.totalWeighs !== 1 ? 's' : ''}</span>
+                <span className="text-blue-400 font-medium">{todayStats.totalKg} kg total</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

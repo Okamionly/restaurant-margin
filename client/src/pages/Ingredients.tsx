@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Printer, Loader2, Check, ChevronDown, X, BookOpen } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale } from 'lucide-react';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
-import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier } from '../services/api';
-import type { Ingredient, Supplier } from '../types';
+import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
+import type { Ingredient, Supplier, InventoryItem } from '../types';
 import { INGREDIENT_CATEGORIES, UNITS, ALLERGENS } from '../types';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import WeighModal from '../components/WeighModal';
 
 const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[] };
 
@@ -30,6 +31,10 @@ export default function Ingredients() {
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+
+  // Weigh modal
+  const [weighTarget, setWeighTarget] = useState<Ingredient | null>(null);
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
 
   // New: form enhancements state
   const [saving, setSaving] = useState(false);
@@ -93,9 +98,10 @@ export default function Ingredients() {
 
   async function loadIngredients() {
     try {
-      const [data, sups] = await Promise.all([fetchIngredients(), fetchSuppliers()]);
+      const [data, sups, inv] = await Promise.all([fetchIngredients(), fetchSuppliers(), fetchInventory().catch(() => [] as InventoryItem[])]);
       setIngredients(data);
       setSuppliers(sups);
+      setInventoryItems(inv);
     } catch {
       showToast('Erreur lors du chargement des ingrédients', 'error');
     } finally {
@@ -304,6 +310,41 @@ export default function Ingredients() {
     }
   }
 
+  // Weigh and add to inventory
+  function openWeigh(ing: Ingredient) {
+    setWeighTarget(ing);
+  }
+
+  async function handleWeighComplete(data: { weight: number; mode: 'set' | 'add' }) {
+    if (!weighTarget) return;
+    try {
+      // Find existing inventory item for this ingredient
+      const invItem = inventoryItems.find(i => i.ingredientId === weighTarget.id);
+      if (invItem) {
+        if (data.mode === 'set') {
+          await updateInventoryItem(invItem.id, { currentStock: data.weight });
+          showToast(`Stock de ${weighTarget.name} mis à ${data.weight} ${weighTarget.unit}`, 'success');
+        } else {
+          await restockInventoryItem(invItem.id, data.weight);
+          showToast(`+${data.weight} ${weighTarget.unit} ajouté à l'inventaire de ${weighTarget.name}`, 'success');
+        }
+      } else {
+        // Create new inventory entry
+        await addToInventory({
+          ingredientId: weighTarget.id,
+          currentStock: data.weight,
+          minStock: 0,
+          unit: weighTarget.unit,
+        });
+        showToast(`${weighTarget.name} ajouté à l'inventaire avec ${data.weight} ${weighTarget.unit}`, 'success');
+      }
+      setWeighTarget(null);
+      loadIngredients();
+    } catch (err: any) {
+      showToast(err.message || 'Erreur lors de la mise à jour de l\'inventaire', 'error');
+    }
+  }
+
   // CSV Export
   function exportCSV() {
     const headers = ['Nom', 'Catégorie', 'Prix unitaire', 'Unité', 'Fournisseur', 'Allergènes'];
@@ -477,6 +518,9 @@ export default function Ingredients() {
                   <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{ing.supplier || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
+                      <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Peser et ajouter à l'inventaire">
+                        <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      </button>
                       <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600" title="Modifier">
                         <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                       </button>
@@ -710,7 +754,21 @@ export default function Ingredients() {
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-xs text-slate-400">Ctrl+Entrée pour sauvegarder</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400">Ctrl+Entrée pour sauvegarder</span>
+              {editingId && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const ing = ingredients.find(i => i.id === editingId);
+                    if (ing) { setShowForm(false); openWeigh(ing); }
+                  }}
+                  className="flex items-center gap-1 px-2 py-1 text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                >
+                  <Scale className="w-3 h-3" /> Peser
+                </button>
+              )}
+            </div>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Annuler</button>
               <button
@@ -730,6 +788,19 @@ export default function Ingredients() {
           </div>
         </form>
       </Modal>
+
+      {/* Weigh Modal */}
+      {weighTarget && (
+        <WeighModal
+          isOpen={!!weighTarget}
+          onClose={() => setWeighTarget(null)}
+          ingredientId={weighTarget.id}
+          ingredientName={weighTarget.name}
+          currentStock={inventoryItems.find(i => i.ingredientId === weighTarget.id)?.currentStock ?? 0}
+          unit={weighTarget.unit}
+          onComplete={handleWeighComplete}
+        />
+      )}
 
       {/* Delete Confirm */}
       <ConfirmDialog

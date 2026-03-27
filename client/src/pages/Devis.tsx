@@ -96,33 +96,33 @@ const ENTREPRISE: EntrepriseInfo = {
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
   brouillon: { label: 'Brouillon', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-600 dark:text-slate-300', icon: Edit2 },
-  envoye: { label: 'Envoy\u00e9', bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', icon: Send },
-  accepte: { label: 'Accept\u00e9', bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', icon: CheckCircle },
-  refuse: { label: 'Refus\u00e9', bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', icon: XCircle },
-  paye: { label: 'Pay\u00e9', bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', icon: CreditCard },
+  envoye: { label: 'Envoyé', bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', icon: Send },
+  accepte: { label: 'Accepté', bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', icon: CheckCircle },
+  refuse: { label: 'Refusé', bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', icon: XCircle },
+  paye: { label: 'Payé', bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', icon: CreditCard },
   en_retard: { label: 'En retard', bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-300', icon: AlertTriangle },
 };
 
-const UNITES = ['unit\u00e9', 'heure', 'jour', 'forfait', 'kg', 'litre', 'personne', 'lot'];
+const UNITES = ['unité', 'heure', 'jour', 'forfait', 'kg', 'litre', 'personne', 'lot'];
 
 const CONDITIONS_PAIEMENT = [
-  'Paiement \u00e0 r\u00e9ception',
-  'Paiement \u00e0 30 jours',
-  'Paiement \u00e0 45 jours',
-  'Paiement \u00e0 60 jours',
-  '50% \u00e0 la commande, solde \u00e0 la livraison',
-  '30% acompte, 70% \u00e0 r\u00e9ception',
+  'Paiement à réception',
+  'Paiement à 30 jours',
+  'Paiement à 45 jours',
+  'Paiement à 60 jours',
+  '50% à la commande, solde à la livraison',
+  '30% acompte, 70% à réception',
 ];
 
-const MENTIONS_LEGALES_DEVIS = `En cas d'acceptation, le pr\u00e9sent devis devra \u00eatre retourn\u00e9 dat\u00e9 et sign\u00e9 avec la mention "Bon pour accord".
-P\u00e9nalit\u00e9s de retard : 3 fois le taux d'int\u00e9r\u00eat l\u00e9gal (art. L.441-10 du Code de commerce).
-Indemnit\u00e9 forfaitaire pour frais de recouvrement : 40\u20ac (D\u00e9cret n\u00b02012-1115).
-Pas d'escompte pour paiement anticip\u00e9.`;
+const MENTIONS_LEGALES_DEVIS = `En cas d'acceptation, le présent devis devra être retourné daté et signé avec la mention "Bon pour accord".
+Pénalités de retard : 3 fois le taux d'intérêt légal (art. L.441-10 du Code de commerce).
+Indemnité forfaitaire pour frais de recouvrement : 40€ (Décret n°2012-1115).
+Pas d'escompte pour paiement anticipé.`;
 
-const MENTIONS_LEGALES_FACTURE = `P\u00e9nalit\u00e9s de retard : 3 fois le taux d'int\u00e9r\u00eat l\u00e9gal (art. L.441-10 du Code de commerce).
-Indemnit\u00e9 forfaitaire pour frais de recouvrement : 40\u20ac (D\u00e9cret n\u00b02012-1115).
-Pas d'escompte pour paiement anticip\u00e9.
-TVA acquitt\u00e9e sur les d\u00e9bits.`;
+const MENTIONS_LEGALES_FACTURE = `Pénalités de retard : 3 fois le taux d'intérêt légal (art. L.441-10 du Code de commerce).
+Indemnité forfaitaire pour frais de recouvrement : 40€ (Décret n°2012-1115).
+Pas d'escompte pour paiement anticipé.
+TVA acquittée sur les débits.`;
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -156,7 +156,7 @@ function calcTotals(lignes: LigneDevis[]): { totalHT: number; totalTVA: number; 
 }
 
 function emptyLigne(): LigneDevis {
-  return { id: generateId(), description: '', quantite: 1, unite: 'unit\u00e9', prixUnitaireHT: 0, tauxTVA: 20 };
+  return { id: generateId(), description: '', quantite: 1, unite: 'unité', prixUnitaireHT: 0, tauxTVA: 20 };
 }
 
 function emptyClient(): ClientInfo {
@@ -167,16 +167,16 @@ function emptyClient(): ClientInfo {
 
 function buildMockDocuments(): DocumentDevis[] {
   const dev001Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Menu s\u00e9minaire complet (entr\u00e9e + plat + dessert)', quantite: 50, unite: 'personne', prixUnitaireHT: 55, tauxTVA: 10 },
-    { id: generateId(), description: 'Location salle \u00e9quip\u00e9e (vid\u00e9oprojecteur, wifi)', quantite: 1, unite: 'jour', prixUnitaireHT: 500, tauxTVA: 20 },
-    { id: generateId(), description: 'Pause caf\u00e9 matin + apr\u00e8s-midi', quantite: 50, unite: 'personne', prixUnitaireHT: 8, tauxTVA: 10 },
+    { id: generateId(), description: 'Menu séminaire complet (entrée + plat + dessert)', quantite: 50, unite: 'personne', prixUnitaireHT: 55, tauxTVA: 10 },
+    { id: generateId(), description: 'Location salle équipée (vidéoprojecteur, wifi)', quantite: 1, unite: 'jour', prixUnitaireHT: 500, tauxTVA: 20 },
+    { id: generateId(), description: 'Pause café matin + après-midi', quantite: 50, unite: 'personne', prixUnitaireHT: 8, tauxTVA: 10 },
   ];
 
   const dev002Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Cocktail d\u00eenner (120 pi\u00e8ces)', quantite: 120, unite: 'personne', prixUnitaireHT: 45, tauxTVA: 10 },
-    { id: generateId(), description: 'Pi\u00e8ce mont\u00e9e 5 \u00e9tages', quantite: 1, unite: 'unit\u00e9', prixUnitaireHT: 450, tauxTVA: 5.5 },
-    { id: generateId(), description: 'D\u00e9coration florale tables', quantite: 15, unite: 'unit\u00e9', prixUnitaireHT: 85, tauxTVA: 20 },
-    { id: generateId(), description: 'Service en salle (ma\u00eetres d\'h\u00f4tel)', quantite: 8, unite: 'personne', prixUnitaireHT: 200, tauxTVA: 20 },
+    { id: generateId(), description: 'Cocktail d\u00eenner (120 pièces)', quantite: 120, unite: 'personne', prixUnitaireHT: 45, tauxTVA: 10 },
+    { id: generateId(), description: 'Pièce montée 5 étages', quantite: 1, unite: 'unité', prixUnitaireHT: 450, tauxTVA: 5.5 },
+    { id: generateId(), description: 'Décoration florale tables', quantite: 15, unite: 'unité', prixUnitaireHT: 85, tauxTVA: 20 },
+    { id: generateId(), description: 'Service en salle (ma\u00eetres d\'hôtel)', quantite: 8, unite: 'personne', prixUnitaireHT: 200, tauxTVA: 20 },
   ];
 
   const dev003Lignes: LigneDevis[] = [
@@ -184,14 +184,14 @@ function buildMockDocuments(): DocumentDevis[] {
   ];
 
   const fac002Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Menu business d\u00e9jeuner (entr\u00e9e + plat + dessert + caf\u00e9)', quantite: 12, unite: 'personne', prixUnitaireHT: 75, tauxTVA: 10 },
-    { id: generateId(), description: 'S\u00e9lection vins (Bordeaux, Bourgogne)', quantite: 6, unite: 'unit\u00e9', prixUnitaireHT: 45, tauxTVA: 20 },
-    { id: generateId(), description: 'Salon priv\u00e9', quantite: 1, unite: 'forfait', prixUnitaireHT: 150, tauxTVA: 20 },
+    { id: generateId(), description: 'Menu business déjeuner (entrée + plat + dessert + café)', quantite: 12, unite: 'personne', prixUnitaireHT: 75, tauxTVA: 10 },
+    { id: generateId(), description: 'Sélection vins (Bordeaux, Bourgogne)', quantite: 6, unite: 'unité', prixUnitaireHT: 45, tauxTVA: 20 },
+    { id: generateId(), description: 'Salon privé', quantite: 1, unite: 'forfait', prixUnitaireHT: 150, tauxTVA: 20 },
   ];
 
   const avo001Lignes: LigneDevis[] = [
     { id: generateId(), description: 'Avoir partiel - 3 couverts non servis', quantite: 3, unite: 'personne', prixUnitaireHT: -75, tauxTVA: 10 },
-    { id: generateId(), description: 'Avoir partiel - 1 bouteille retourn\u00e9e', quantite: 1, unite: 'unit\u00e9', prixUnitaireHT: -45, tauxTVA: 20 },
+    { id: generateId(), description: 'Avoir partiel - 1 bouteille retournée', quantite: 1, unite: 'unité', prixUnitaireHT: -45, tauxTVA: 20 },
   ];
 
   const docBuilder = (
@@ -213,7 +213,7 @@ function buildMockDocuments(): DocumentDevis[] {
       lignes, dateCreation,
       dateValidite: new Date(new Date(dateCreation).getTime() + 30 * 86400000).toISOString().split('T')[0],
       dureeValidite: 30,
-      conditionsPaiement: 'Paiement \u00e0 30 jours',
+      conditionsPaiement: 'Paiement à 30 jours',
       mentionsLegales: type === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
       notes: '',
       statut,
@@ -225,7 +225,7 @@ function buildMockDocuments(): DocumentDevis[] {
   return [
     docBuilder('devis', 'DEV-2026-001', 'Jean Martin', 'TechCorp', dev001Lignes, '2026-03-01', 'accepte'),
     docBuilder('devis', 'DEV-2026-002', 'Marie Dupont', 'Famille Dupont', dev002Lignes, '2026-03-10', 'envoye'),
-    docBuilder('devis', 'DEV-2026-003', 'Pierre Lefebvre', 'Agence \u00c9v\u00e9nements Plus', dev003Lignes, '2026-03-20', 'brouillon'),
+    docBuilder('devis', 'DEV-2026-003', 'Pierre Lefebvre', 'Agence Événements Plus', dev003Lignes, '2026-03-20', 'brouillon'),
     docBuilder('facture', 'FAC-2026-001', 'Jean Martin', 'TechCorp', dev001Lignes, '2026-03-05', 'paye', {
       refDevis: 'DEV-2026-001', datePaiement: '2026-03-15', modePaiement: 'virement',
     }),
@@ -264,7 +264,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
           <div className="text-xs text-slate-500 space-y-0.5 mt-1">
             <div>{entreprise.adresse}</div>
             <div>{entreprise.codePostal} {entreprise.ville}</div>
-            <div>T\u00e9l : {entreprise.telephone}</div>
+            <div>Tél : {entreprise.telephone}</div>
             <div>{entreprise.email}</div>
           </div>
         </div>
@@ -274,8 +274,8 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
           <div className="text-xs text-slate-500 mt-2">
             <div>Date : {formatDate(doc.dateCreation)}</div>
             {doc.type === 'devis' && <div>Valide jusqu'au : {formatDate(doc.dateValidite)}</div>}
-            {doc.refDevis && <div>R\u00e9f. devis : {doc.refDevis}</div>}
-            {doc.refFacture && <div>R\u00e9f. facture : {doc.refFacture}</div>}
+            {doc.refDevis && <div>Réf. devis : {doc.refDevis}</div>}
+            {doc.refFacture && <div>Réf. facture : {doc.refFacture}</div>}
           </div>
         </div>
       </div>
@@ -297,8 +297,8 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
         <thead>
           <tr className="bg-blue-600 text-white">
             <th className="text-left py-2 px-3 rounded-tl-lg">Description</th>
-            <th className="text-center py-2 px-2">Qt\u00e9</th>
-            <th className="text-center py-2 px-2">Unit\u00e9</th>
+            <th className="text-center py-2 px-2">Qté</th>
+            <th className="text-center py-2 px-2">Unité</th>
             <th className="text-right py-2 px-2">P.U. HT</th>
             <th className="text-center py-2 px-2">TVA</th>
             <th className="text-right py-2 px-3 rounded-tr-lg">Total HT</th>
@@ -342,19 +342,19 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       <div className="border-t border-slate-200 pt-4 space-y-2 text-xs text-slate-500">
         <div><span className="font-semibold text-slate-700">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
         {doc.type === 'devis' && (
-          <div><span className="font-semibold text-slate-700">Dur\u00e9e de validit\u00e9 :</span> {doc.dureeValidite} jours</div>
+          <div><span className="font-semibold text-slate-700">Durée de validité :</span> {doc.dureeValidite} jours</div>
         )}
         {doc.notes && <div><span className="font-semibold text-slate-700">Notes :</span> {doc.notes}</div>}
       </div>
 
-      {/* Mentions l\u00e9gales */}
+      {/* Mentions légales */}
       <div className="mt-6 pt-4 border-t border-slate-200 text-[10px] text-slate-400 whitespace-pre-line">
         {doc.mentionsLegales}
       </div>
 
       {/* Footer */}
       <div className="mt-4 pt-3 border-t border-slate-300 text-[9px] text-slate-400 text-center">
-        {entreprise.nom} - {entreprise.rcs} - Capital social : {entreprise.capitalSocial}\u20ac - SIRET : {entreprise.siret} - TVA : {entreprise.tvaIntracommunautaire}
+        {entreprise.nom} - {entreprise.rcs} - Capital social : {entreprise.capitalSocial}€ - SIRET : {entreprise.siret} - TVA : {entreprise.tvaIntracommunautaire}
       </div>
 
       {/* Signature zone for devis */}
@@ -420,7 +420,7 @@ function LigneRow({
             onChange={e => onUpdate(ligne.id, 'prixUnitaireHT', Number(e.target.value))}
             className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-right pr-7"
           />
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400">\u20ac</span>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400">€</span>
         </div>
       </div>
       <div className="col-span-3 sm:col-span-1">
@@ -481,8 +481,8 @@ function PaymentModal({ isOpen, onClose, onConfirm }: {
           >
             <option value="virement">Virement bancaire</option>
             <option value="cb">Carte bancaire</option>
-            <option value="especes">Esp\u00e8ces</option>
-            <option value="cheque">Ch\u00e8que</option>
+            <option value="especes">Espèces</option>
+            <option value="cheque">Chèque</option>
           </select>
         </div>
         <div className="flex justify-end gap-3 pt-2">
@@ -581,7 +581,7 @@ export default function Devis() {
       return;
     }
     if (lignes.some(l => !l.description || l.prixUnitaireHT === 0)) {
-      showToast('Veuillez compl\u00e9ter toutes les lignes', 'error');
+      showToast('Veuillez compléter toutes les lignes', 'error');
       return;
     }
 
@@ -594,7 +594,7 @@ export default function Devis() {
         mentionsLegales: createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
         ...totals,
       } : d));
-      showToast('Document mis \u00e0 jour avec succ\u00e8s', 'success');
+      showToast('Document mis à jour avec succès', 'success');
     } else {
       const newDoc: DocumentDevis = {
         id: generateId(),
@@ -613,7 +613,7 @@ export default function Devis() {
         tvaVentilee: totals.tvaVentilee,
       };
       setDocuments(prev => [newDoc, ...prev]);
-      showToast(`${createType === 'devis' ? 'Devis' : createType === 'facture' ? 'Facture' : 'Avoir'} cr\u00e9\u00e9 avec succ\u00e8s`, 'success');
+      showToast(`${createType === 'devis' ? 'Devis' : createType === 'facture' ? 'Facture' : 'Avoir'} créé avec succès`, 'success');
     }
 
     setShowCreateModal(false);
@@ -638,16 +638,16 @@ export default function Devis() {
 
   function handleDelete(id: string) {
     setDocuments(prev => prev.filter(d => d.id !== id));
-    showToast('Document supprim\u00e9', 'info');
+    showToast('Document supprimé', 'info');
   }
 
   function handleSendEmail(doc: DocumentDevis) {
     setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, statut: 'envoye' as DocStatus } : d));
-    showToast(`${doc.numero} envoy\u00e9 par email \u00e0 ${doc.client.email}`, 'success');
+    showToast(`${doc.numero} envoyé par email à ${doc.client.email}`, 'success');
   }
 
   function handleDownloadPDF(doc: DocumentDevis) {
-    showToast(`T\u00e9l\u00e9chargement de ${doc.numero}.pdf`, 'info');
+    showToast(`Téléchargement de ${doc.numero}.pdf`, 'info');
   }
 
   function handleConvertToFacture(devis: DocumentDevis) {
@@ -668,7 +668,7 @@ export default function Devis() {
       const updated = prev.map(d => d.id === devis.id ? { ...d, statut: 'accepte' as DocStatus } : d);
       return [facture, ...updated];
     });
-    showToast(`Facture ${facture.numero} cr\u00e9\u00e9e \u00e0 partir du devis ${devis.numero}`, 'success');
+    showToast(`Facture ${facture.numero} créée à partir du devis ${devis.numero}`, 'success');
     setActiveTab('factures');
   }
 
@@ -684,7 +684,7 @@ export default function Devis() {
     } : d));
     setShowPaymentModal(false);
     setPaymentDocId(null);
-    showToast('Facture marqu\u00e9e comme pay\u00e9e', 'success');
+    showToast('Facture marquée comme payée', 'success');
   }
 
   function handleDuplicate(doc: DocumentDevis) {
@@ -699,7 +699,7 @@ export default function Devis() {
       ...totals,
     };
     setDocuments(prev => [dup, ...prev]);
-    showToast(`${doc.numero} dupliqu\u00e9`, 'success');
+    showToast(`${doc.numero} dupliqué`, 'success');
   }
 
   function updateLigne(id: string, field: keyof LigneDevis, value: any) {
@@ -746,7 +746,7 @@ export default function Devis() {
             Devis & Factures
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            G\u00e9rez vos devis, factures et avoirs en toute conformit\u00e9
+            Gérez vos devis, factures et avoirs en toute conformité
           </p>
         </div>
         <button
@@ -762,8 +762,8 @@ export default function Devis() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Devis en attente', value: formatEuro(stats.enAttente), icon: Clock, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-          { label: 'CA factur\u00e9', value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-          { label: 'Impay\u00e9s', value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+          { label: 'CA facturé', value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+          { label: 'Impayés', value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
           { label: 'Taux de conversion', value: `${stats.tauxConversion}%`, icon: Receipt, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
         ].map(stat => (
           <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50`}>
@@ -814,7 +814,7 @@ export default function Devis() {
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Rechercher par num\u00e9ro, client..."
+                placeholder="Rechercher par numéro, client..."
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
@@ -856,14 +856,14 @@ export default function Devis() {
           {filteredDocs.length === 0 ? (
             <div className="text-center py-16">
               <FileText className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-500 dark:text-slate-400 font-medium">Aucun document trouv\u00e9</p>
-              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Cr\u00e9ez votre premier document</p>
+              <p className="text-slate-500 dark:text-slate-400 font-medium">Aucun document trouvé</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Créez votre premier document</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-700/50">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Num\u00e9ro</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Numéro</th>
                   <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Client</th>
                   <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">Date</th>
                   <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Montant HT</th>
@@ -881,10 +881,10 @@ export default function Devis() {
                     <td className="py-3 px-4">
                       <span className="font-mono font-semibold text-slate-900 dark:text-white">{doc.numero}</span>
                       {doc.refDevis && (
-                        <div className="text-xs text-slate-400 dark:text-slate-500">R\u00e9f: {doc.refDevis}</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500">Réf: {doc.refDevis}</div>
                       )}
                       {doc.refFacture && (
-                        <div className="text-xs text-slate-400 dark:text-slate-500">R\u00e9f: {doc.refFacture}</div>
+                        <div className="text-xs text-slate-400 dark:text-slate-500">Réf: {doc.refFacture}</div>
                       )}
                     </td>
                     <td className="py-3 px-4">
@@ -894,7 +894,7 @@ export default function Devis() {
                     <td className="py-3 px-4 text-slate-600 dark:text-slate-400 hidden md:table-cell">
                       {formatDate(doc.dateCreation)}
                       {doc.datePaiement && (
-                        <div className="text-xs text-emerald-500">Pay\u00e9 le {formatDate(doc.datePaiement)}</div>
+                        <div className="text-xs text-emerald-500">Payé le {formatDate(doc.datePaiement)}</div>
                       )}
                     </td>
                     <td className="py-3 px-4 text-right font-semibold text-slate-900 dark:text-white">
@@ -908,7 +908,7 @@ export default function Devis() {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handlePreview(doc)} title="Aper\u00e7u" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                        <button onClick={() => handlePreview(doc)} title="Aperçu" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
                           <Eye className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
@@ -927,13 +927,13 @@ export default function Devis() {
                         {doc.type === 'facture' && doc.statut !== 'paye' && (
                           <button
                             onClick={() => { setPaymentDocId(doc.id); setShowPaymentModal(true); }}
-                            title="Marquer pay\u00e9" className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                            title="Marquer payé" className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                           >
                             <CreditCard className="w-4 h-4" />
                           </button>
                         )}
                         {doc.type === 'facture' && (
-                          <button onClick={() => handleCreateAvoir(doc)} title="Cr\u00e9er un avoir" className="p-1.5 rounded-lg text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                          <button onClick={() => handleCreateAvoir(doc)} title="Créer un avoir" className="p-1.5 rounded-lg text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                             <RotateCcw className="w-4 h-4" />
                           </button>
                         )}
@@ -964,7 +964,7 @@ export default function Devis() {
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">\u00c9metteur</span>
+              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Émetteur</span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs text-blue-600 dark:text-blue-300">
               <div><span className="font-medium">{ENTREPRISE.nom}</span></div>
@@ -988,7 +988,7 @@ export default function Devis() {
                 { key: 'codePostal', label: 'Code postal', placeholder: '75001' },
                 { key: 'ville', label: 'Ville', placeholder: 'Paris' },
                 { key: 'email', label: 'Email', placeholder: 'contact@techcorp.fr' },
-                { key: 'telephone', label: 'T\u00e9l\u00e9phone', placeholder: '01 23 45 67 89' },
+                { key: 'telephone', label: 'Téléphone', placeholder: '01 23 45 67 89' },
                 { key: 'siret', label: 'SIRET (B2B)', placeholder: '123 456 789 00012' },
               ].map(field => (
                 <div key={field.key}>
@@ -1013,8 +1013,8 @@ export default function Devis() {
             </h4>
             <div className="hidden sm:grid grid-cols-12 gap-2 px-2 mb-1">
               <div className="col-span-4 text-xs text-slate-400 font-medium">Description</div>
-              <div className="col-span-1 text-xs text-slate-400 font-medium text-center">Qt\u00e9</div>
-              <div className="col-span-2 text-xs text-slate-400 font-medium text-center">Unit\u00e9</div>
+              <div className="col-span-1 text-xs text-slate-400 font-medium text-center">Qté</div>
+              <div className="col-span-2 text-xs text-slate-400 font-medium text-center">Unité</div>
               <div className="col-span-2 text-xs text-slate-400 font-medium text-right">P.U. HT</div>
               <div className="col-span-1 text-xs text-slate-400 font-medium text-center">TVA</div>
               <div className="col-span-1 text-xs text-slate-400 font-medium text-right">Total HT</div>
@@ -1065,7 +1065,7 @@ export default function Devis() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {createType === 'devis' && (
               <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Dur\u00e9e de validit\u00e9 (jours)</label>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Durée de validité (jours)</label>
                 <input
                   type="number"
                   value={dureeValidite}
@@ -1094,14 +1094,14 @@ export default function Devis() {
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={3}
-              placeholder="Notes additionnelles, informations compl\u00e9mentaires..."
+              placeholder="Notes additionnelles, informations complémentaires..."
               className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
             />
           </div>
 
-          {/* Mentions l\u00e9gales (read-only) */}
+          {/* Mentions légales (read-only) */}
           <div className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4">
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">Mentions l\u00e9gales obligatoires (incluses automatiquement)</div>
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">Mentions légales obligatoires (incluses automatiquement)</div>
             <div className="text-xs text-slate-400 dark:text-slate-500 whitespace-pre-line">
               {createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE}
             </div>
@@ -1119,7 +1119,7 @@ export default function Devis() {
               onClick={handleSaveDocument}
               className="px-6 py-2.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors"
             >
-              {editingDoc ? 'Mettre \u00e0 jour' : 'Enregistrer'}
+              {editingDoc ? 'Mettre à jour' : 'Enregistrer'}
             </button>
           </div>
         </div>
@@ -1129,7 +1129,7 @@ export default function Devis() {
       <Modal
         isOpen={showPreviewModal}
         onClose={() => { setShowPreviewModal(false); setPreviewDoc(null); }}
-        title={previewDoc ? `Aper\u00e7u - ${previewDoc.numero}` : 'Aper\u00e7u'}
+        title={previewDoc ? `Aperçu - ${previewDoc.numero}` : 'Aperçu'}
         className="max-w-4xl"
       >
         {previewDoc && (
@@ -1150,7 +1150,7 @@ export default function Devis() {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
               >
                 <Download className="w-4 h-4" />
-                T\u00e9l\u00e9charger PDF
+                Télécharger PDF
               </button>
               {previewDoc.type === 'devis' && (previewDoc.statut === 'accepte' || previewDoc.statut === 'envoye') && (
                 <button
@@ -1171,7 +1171,7 @@ export default function Devis() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
                 >
                   <CreditCard className="w-4 h-4" />
-                  Marquer pay\u00e9
+                  Marquer payé
                 </button>
               )}
             </div>

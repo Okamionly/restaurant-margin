@@ -6,8 +6,6 @@ import {
   Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight, ArrowUpRight, ArrowDownRight,
   ChevronDown, ChevronRight, Package, ClipboardList, FileText, ShoppingCart,
   Lightbulb, Sparkles, Star, Zap, ArrowUp, ArrowDown,
-  CheckCircle2, Rocket, BookOpen, UtensilsCrossed, LayoutDashboard, X,
-  Leaf, Replace, BadgeCheck, XCircle,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -16,9 +14,6 @@ import {
 import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
-import { useAuth } from '../hooks/useAuth';
-import { useToast } from '../hooks/useToast';
-import DemandForecast from '../components/DemandForecast';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -70,13 +65,13 @@ const TABS: { key: TabKey; label: string; desc: string; icon: any }[] = [
 ];
 
 // ── Stat card color configs ────────────────────────────────────────────────
-const STAT_CARD_STYLES: Record<string, { gradient: string; border: string; glow: string }> = {
-  blue:   { gradient: 'from-blue-50 via-blue-50/50 to-white dark:from-blue-950/40 dark:via-blue-900/20 dark:to-slate-800',   border: 'border-t-blue-500',   glow: 'hover:shadow-blue-100/50 dark:hover:shadow-blue-900/30' },
-  green:  { gradient: 'from-green-50 via-green-50/50 to-white dark:from-green-950/40 dark:via-green-900/20 dark:to-slate-800',  border: 'border-t-green-500',  glow: 'hover:shadow-green-100/50 dark:hover:shadow-green-900/30' },
-  amber:  { gradient: 'from-amber-50 via-amber-50/50 to-white dark:from-amber-950/40 dark:via-amber-900/20 dark:to-slate-800',  border: 'border-t-amber-500',  glow: 'hover:shadow-amber-100/50 dark:hover:shadow-amber-900/30' },
-  purple: { gradient: 'from-purple-50 via-purple-50/50 to-white dark:from-purple-950/40 dark:via-purple-900/20 dark:to-slate-800', border: 'border-t-purple-500', glow: 'hover:shadow-purple-100/50 dark:hover:shadow-purple-900/30' },
-  cyan:   { gradient: 'from-cyan-50 via-cyan-50/50 to-white dark:from-cyan-950/40 dark:via-cyan-900/20 dark:to-slate-800',    border: 'border-t-cyan-500',   glow: 'hover:shadow-cyan-100/50 dark:hover:shadow-cyan-900/30' },
-  slate:  { gradient: 'from-slate-50 via-slate-100/30 to-white dark:from-slate-900/50 dark:via-slate-800/30 dark:to-slate-800',   border: 'border-t-slate-500',  glow: 'hover:shadow-slate-200/50 dark:hover:shadow-slate-700/30' },
+const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
+  blue:   { gradient: 'from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800',   border: 'border-t-blue-500' },
+  green:  { gradient: 'from-green-50 to-white dark:from-green-950/30 dark:to-slate-800',  border: 'border-t-green-500' },
+  amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',  border: 'border-t-amber-500' },
+  purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800', border: 'border-t-purple-500' },
+  cyan:   { gradient: 'from-cyan-50 to-white dark:from-cyan-950/30 dark:to-slate-800',    border: 'border-t-cyan-500' },
+  slate:  { gradient: 'from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-800',   border: 'border-t-slate-500' },
 };
 
 // ── Animated Number Counter ────────────────────────────────────────────────
@@ -112,15 +107,15 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
 }) {
   const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.blue;
   return (
-    <div className={`bg-gradient-to-br ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-lg ${style.glow} transition-all duration-300 hover:-translate-y-0.5`}>
+    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-md transition-shadow`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 truncate">{title}</span>
-        <div className={`p-2 rounded-lg ${color} shadow-sm ring-1 ring-white/20`}>
-          <Icon className="w-4 h-4 text-white drop-shadow-sm" />
+        <div className={`p-2 rounded-lg ${color}`}>
+          <Icon className="w-4 h-4 text-white" />
         </div>
       </div>
       <div className="flex items-end gap-2">
-        <div className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+        <div className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">
           {numericValue !== undefined
             ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
             : value}
@@ -215,21 +210,14 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
   // Duplicate items for seamless loop
   const items = [...alerts, ...alerts];
   return (
-    <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-500 to-red-700 rounded-xl shadow-md group">
-      {/* Subtle animated shimmer overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
-      <div className="relative flex items-center gap-3 px-4 py-3">
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <div className="p-1 bg-white/15 rounded-md">
-            <AlertTriangle className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-xs font-bold text-white/90 flex-shrink-0 uppercase tracking-wider">
-            Alertes ({alerts.length})
-          </span>
-        </div>
-        <div className="w-px h-5 bg-white/20 flex-shrink-0" />
-        <div className="flex-1 overflow-hidden mask-fade-edges">
-          <div className="flex gap-6 animate-[ticker_20s_linear_infinite] group-hover:[animation-play-state:paused]">
+    <div className="relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 rounded-xl shadow-sm">
+      <div className="flex items-center gap-2 px-4 py-2.5">
+        <AlertTriangle className="w-4 h-4 text-white flex-shrink-0" />
+        <span className="text-xs font-bold text-white/90 flex-shrink-0 uppercase tracking-wide">
+          Alertes ({alerts.length})
+        </span>
+        <div className="flex-1 overflow-hidden">
+          <div className="flex gap-6 animate-[ticker_20s_linear_infinite]">
             {items.map((r, i) => (
               <Link
                 key={`${r.id}-${i}`}
@@ -237,7 +225,7 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
                 className="flex items-center gap-2 flex-shrink-0 text-white/90 hover:text-white transition-colors"
               >
                 <span className="text-sm font-medium whitespace-nowrap">{r.name}</span>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-md backdrop-blur-sm ${r.margin.marginPercent < 50 ? 'bg-white/25' : 'bg-white/15'}`}>
+                <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${r.margin.marginPercent < 50 ? 'bg-white/25' : 'bg-white/15'}`}>
                   {r.margin.marginPercent.toFixed(1)}%
                 </span>
               </Link>
@@ -249,14 +237,6 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
         @keyframes ticker {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
-        }
-        @keyframes shimmer {
-          0%, 100% { transform: translateX(-100%); }
-          50% { transform: translateX(100%); }
-        }
-        .mask-fade-edges {
-          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-          mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
         }
       `}</style>
     </div>
@@ -275,22 +255,13 @@ export default function Dashboard() {
   const [serviceMode, setServiceMode] = useState<'all' | 'lunch' | 'dinner'>('all');
   const [avgPricePerCouvert, setAvgPricePerCouvert] = useState(25);
   const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
-  const [onboardingDismissed, setOnboardingDismissed] = useState(() =>
-    localStorage.getItem('restaumargin_onboarding_dismissed') === 'true'
-  );
-  const [onboardingVisible, setOnboardingVisible] = useState(false);
-  const [dismissedOptimizations, setDismissedOptimizations] = useState<Set<string>>(new Set());
-  const [appliedOptimizations, setAppliedOptimizations] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { showToast } = useToast();
 
   useEffect(() => {
     Promise.all([fetchRecipes(), fetchIngredients()])
       .then(([r, i]) => { setRecipes(r); setIngredients(i); })
       .catch(() => console.error('Erreur chargement'))
       .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Computed stats ─────────────────────────────────────────────────────
@@ -363,7 +334,7 @@ export default function Dashboard() {
     const allByMargin = [...recipes]
       .sort((a, b) => b.margin.marginPercent - a.margin.marginPercent)
       .map(r => ({
-        name: r.name.length > 30 ? r.name.slice(0, 27) + '...' : r.name,
+        name: r.name.length > 20 ? r.name.slice(0, 18) + '...' : r.name,
         fullName: r.name,
         margin: r.margin.marginPercent,
         category: r.category,
@@ -549,94 +520,6 @@ export default function Dashboard() {
       };
     });
 
-    // ── AI Cost Optimizer: find cheaper alternatives ──────────────────
-    // Build a map of ingredient usage: ingredientId -> { ingredient, totalCost, recipeCount, recipes[] }
-    const ingredientUsageMap = new Map<number, {
-      ingredient: Ingredient;
-      totalCostPerMonth: number;
-      recipeCount: number;
-      recipeNames: string[];
-      avgQuantityPerRecipe: number;
-    }>();
-    recipes.forEach(r => {
-      r.ingredients.forEach(ri => {
-        const existing = ingredientUsageMap.get(ri.ingredientId);
-        const cost = ri.ingredient.pricePerUnit * ri.quantity * (1 + ri.wastePercent / 100);
-        // Estimate monthly cost: cost per recipe * 26 working days (assume each recipe made once/day)
-        const monthlyCost = cost * 26;
-        if (existing) {
-          existing.totalCostPerMonth += monthlyCost;
-          existing.recipeCount += 1;
-          existing.recipeNames.push(r.name);
-          existing.avgQuantityPerRecipe = (existing.avgQuantityPerRecipe * (existing.recipeCount - 1) + ri.quantity) / existing.recipeCount;
-        } else {
-          ingredientUsageMap.set(ri.ingredientId, {
-            ingredient: ri.ingredient,
-            totalCostPerMonth: monthlyCost,
-            recipeCount: 1,
-            recipeNames: [r.name],
-            avgQuantityPerRecipe: ri.quantity,
-          });
-        }
-      });
-    });
-
-    // For each expensive ingredient, find cheaper alternatives in same category & unit
-    type CostOptimization = {
-      id: string;
-      expensiveIngredient: { id: number; name: string; pricePerUnit: number; unit: string; category: string };
-      cheaperAlternative: { id: number; name: string; pricePerUnit: number };
-      recipeCount: number;
-      recipeNames: string[];
-      monthlySavings: number;
-      savingsPercent: number;
-    };
-    const costOptimizations: CostOptimization[] = [];
-
-    // Sort ingredient usage by monthly cost descending
-    const sortedUsage = Array.from(ingredientUsageMap.values())
-      .sort((a, b) => b.totalCostPerMonth - a.totalCostPerMonth);
-
-    // Build a lookup of all ingredients by category+unit for finding alternatives
-    const ingredientsByKey = new Map<string, Ingredient[]>();
-    ingredients.forEach(ing => {
-      const key = `${ing.category}||${ing.unit}`;
-      if (!ingredientsByKey.has(key)) ingredientsByKey.set(key, []);
-      ingredientsByKey.get(key)!.push(ing);
-    });
-
-    sortedUsage.forEach(usage => {
-      const ing = usage.ingredient;
-      const key = `${ing.category}||${ing.unit}`;
-      const alternatives = ingredientsByKey.get(key) || [];
-      // Find cheapest alternative that is NOT the same ingredient and is genuinely cheaper
-      const cheaper = alternatives
-        .filter(a => a.id !== ing.id && a.pricePerUnit < ing.pricePerUnit * 0.8) // At least 20% cheaper
-        .sort((a, b) => a.pricePerUnit - b.pricePerUnit);
-      if (cheaper.length > 0) {
-        const alt = cheaper[0];
-        const priceDiff = ing.pricePerUnit - alt.pricePerUnit;
-        // Monthly savings = price diff * avg quantity * recipe count * 26 days
-        const monthlySavings = priceDiff * usage.avgQuantityPerRecipe * usage.recipeCount * 26;
-        if (monthlySavings > 5) { // Only show if savings > 5€/month
-          costOptimizations.push({
-            id: `opt-${ing.id}-${alt.id}`,
-            expensiveIngredient: { id: ing.id, name: ing.name, pricePerUnit: ing.pricePerUnit, unit: ing.unit, category: ing.category },
-            cheaperAlternative: { id: alt.id, name: alt.name, pricePerUnit: alt.pricePerUnit },
-            recipeCount: usage.recipeCount,
-            recipeNames: usage.recipeNames,
-            monthlySavings: Math.round(monthlySavings * 100) / 100,
-            savingsPercent: Math.round((priceDiff / ing.pricePerUnit) * 100),
-          });
-        }
-      }
-    });
-
-    // Sort by savings and take top optimizations
-    costOptimizations.sort((a, b) => b.monthlySavings - a.monthlySavings);
-    const top5Optimizations = costOptimizations.slice(0, 5);
-    const totalPotentialSavings = costOptimizations.reduce((s, o) => s + o.monthlySavings, 0);
-
     return {
       totalRecipes, avgMargin, avgCoefficient, bestMargin, worstMargin,
       avgFoodCost, avgLaborCost, avgTotalCost,
@@ -647,9 +530,8 @@ export default function Dashboard() {
       foodCostData, totalFoodCostAll, topIngredients,
       allergenSummary, coeffBuckets,
       menuDuMarche, aiSuggestions, projectionData, categoryBreakdown,
-      costOptimizations, top5Optimizations, totalPotentialSavings,
     };
-  }, [recipes, ingredients, couverts, serviceMode, avgPricePerCouvert]);
+  }, [recipes, couverts, serviceMode, avgPricePerCouvert]);
 
   // ── Export CSV helper ──────────────────────────────────────────────────
   const handleExportCSV = useCallback(() => {
@@ -658,7 +540,7 @@ export default function Dashboard() {
     const rows = recipes.map(r =>
       `"${r.name}","${r.category}",${r.sellingPrice.toFixed(2)},${r.margin.costPerPortion.toFixed(2)},${(r.margin.laborCostPerPortion || 0).toFixed(2)},${(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)},${r.margin.marginAmount.toFixed(2)},${r.margin.marginPercent.toFixed(1)},${r.margin.coefficient.toFixed(2)}`
     ).join('\n');
-    const blob = new Blob(['﻿' + header + rows], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'recettes-marges.csv'; a.click();
@@ -674,229 +556,18 @@ export default function Dashboard() {
     );
   }
 
-  // ── Onboarding wizard logic ──────────────────────────────────────────
-  const onboardingSteps = useMemo(() => {
-    const hasIngredients = ingredients.length > 0;
-    const hasRecipes = recipes.length > 0;
-    // We can't easily check menu items from here, so step 4 done = hasRecipes (proxy)
-    return [
-      {
-        title: 'Bienvenue sur RestauMargin !',
-        description: `${user?.name ? `${user.name}, bienvenue` : 'Bienvenue'} ! Configurez votre espace en quelques étapes simples.`,
-        icon: Rocket,
-        done: true, // Welcome step is always "done" (viewed)
-        color: 'blue',
-        action: null,
-      },
-      {
-        title: 'Ajoutez vos premiers ingrédients',
-        description: 'Référencez vos produits avec leurs prix et unités pour calculer vos coûts.',
-        icon: Package,
-        done: hasIngredients,
-        color: 'green',
-        action: { label: 'Ajouter des ingrédients', to: '/ingredients' },
-      },
-      {
-        title: 'Créez votre première recette',
-        description: 'Composez vos fiches techniques avec les ingrédients et leurs quantités.',
-        icon: UtensilsCrossed,
-        done: hasRecipes,
-        color: 'amber',
-        action: { label: 'Créer une recette', to: '/recipes' },
-      },
-      {
-        title: 'Composez votre carte',
-        description: 'Organisez vos recettes par catégories pour structurer votre menu.',
-        icon: BookOpen,
-        done: hasRecipes, // proxy: if recipes exist, card composition is possible
-        color: 'purple',
-        action: { label: 'Voir le menu', to: '/menu' },
-      },
-      {
-        title: 'Analysez vos marges',
-        description: 'Tout est prêt ! Suivez vos marges et optimisez votre rentabilité.',
-        icon: LayoutDashboard,
-        done: false,
-        color: 'cyan',
-        action: null,
-      },
-    ];
-  }, [ingredients.length, recipes.length, user?.name]);
-
-  // Trigger fade-in for onboarding
-  useEffect(() => {
-    if (!onboardingDismissed && (!stats || stats.totalRecipes === 0)) {
-      const timer = setTimeout(() => setOnboardingVisible(true), 50);
-      return () => clearTimeout(timer);
-    }
-  }, [onboardingDismissed, stats]);
-
-  const dismissOnboarding = useCallback(() => {
-    setOnboardingVisible(false);
-    setTimeout(() => {
-      setOnboardingDismissed(true);
-      localStorage.setItem('restaumargin_onboarding_dismissed', 'true');
-    }, 300);
-  }, []);
-
-  const stepColorMap: Record<string, { bg: string; text: string; ring: string; iconBg: string }> = {
-    blue:   { bg: 'bg-blue-50 dark:bg-blue-950/30',     text: 'text-blue-600 dark:text-blue-400',     ring: 'ring-blue-500',   iconBg: 'bg-blue-100 dark:bg-blue-900/50' },
-    green:  { bg: 'bg-green-50 dark:bg-green-950/30',    text: 'text-green-600 dark:text-green-400',   ring: 'ring-green-500',  iconBg: 'bg-green-100 dark:bg-green-900/50' },
-    amber:  { bg: 'bg-amber-50 dark:bg-amber-950/30',    text: 'text-amber-600 dark:text-amber-400',   ring: 'ring-amber-500',  iconBg: 'bg-amber-100 dark:bg-amber-900/50' },
-    purple: { bg: 'bg-purple-50 dark:bg-purple-950/30',   text: 'text-purple-600 dark:text-purple-400', ring: 'ring-purple-500', iconBg: 'bg-purple-100 dark:bg-purple-900/50' },
-    cyan:   { bg: 'bg-cyan-50 dark:bg-cyan-950/30',      text: 'text-cyan-600 dark:text-cyan-400',     ring: 'ring-cyan-500',   iconBg: 'bg-cyan-100 dark:bg-cyan-900/50' },
-  };
-
-  // ── Empty state with onboarding wizard ────────────────────────────────
+  // ── Empty state ────────────────────────────────────────────────────────
   if (!stats || stats.totalRecipes === 0) {
-    // If onboarding was dismissed, show a minimal empty state
-    if (onboardingDismissed) {
-      return (
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Tableau de bord</h2>
-          <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Aucune recette pour l'instant</h3>
-            <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingrédients puis créez vos fiches techniques.</p>
-            <div className="flex gap-4 justify-center">
-              <Link to="/ingredients" className="btn-primary">Ajouter des ingrédients</Link>
-              <Link to="/recipes" className="btn-secondary">Créer une recette</Link>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // Onboarding wizard
-    const firstIncomplete = onboardingSteps.findIndex(s => !s.done);
     return (
-      <div
-        className={`transition-opacity duration-300 ${onboardingVisible ? 'opacity-100' : 'opacity-0'}`}
-      >
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord</h2>
-          <button
-            onClick={dismissOnboarding}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-          >
-            <X className="w-4 h-4" />
-            Passer l'introduction
-          </button>
-        </div>
-
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 mb-4">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-2">
-              {user?.name ? `Bienvenue, ${user.name} !` : 'Bienvenue sur RestauMargin !'}
-            </h3>
-            <p className="text-blue-100 max-w-md mx-auto">
-              Suivez ces étapes pour configurer votre espace et commencer à analyser vos marges.
-            </p>
-          </div>
-
-          {/* Progress bar */}
-          <div className="px-6 pt-5 pb-2">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Progression</span>
-              <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
-                {onboardingSteps.filter(s => s.done).length} / {onboardingSteps.length}
-              </span>
-            </div>
-            <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-700"
-                style={{ width: `${(onboardingSteps.filter(s => s.done).length / onboardingSteps.length) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Horizontal stepper */}
-          <div className="px-6 py-2">
-            <div className="flex items-center justify-center gap-1 mb-4">
-              {onboardingSteps.map((step, i) => (
-                <div key={i} className="flex items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                      step.done
-                        ? 'bg-green-500 text-white'
-                        : i === firstIncomplete
-                          ? 'bg-blue-600 text-white ring-4 ring-blue-200 dark:ring-blue-800'
-                          : 'bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400'
-                    }`}
-                  >
-                    {step.done ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
-                  </div>
-                  {i < onboardingSteps.length - 1 && (
-                    <div className={`w-8 sm:w-12 h-0.5 mx-1 ${
-                      step.done ? 'bg-green-400' : 'bg-slate-200 dark:bg-slate-600'
-                    }`} />
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Step cards */}
-          <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {onboardingSteps.map((step, i) => {
-              const colors = stepColorMap[step.color] || stepColorMap.blue;
-              const StepIcon = step.icon;
-              const isCurrent = i === firstIncomplete;
-              return (
-                <div
-                  key={i}
-                  className={`relative rounded-lg border p-4 transition-all ${
-                    step.done
-                      ? 'border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20 opacity-75'
-                      : isCurrent
-                        ? `border-2 ${colors.bg} border-blue-300 dark:border-blue-600 shadow-md`
-                        : 'border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50'
-                  }`}
-                >
-                  {step.done && (
-                    <div className="absolute top-2 right-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    </div>
-                  )}
-                  <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3 ${
-                    step.done ? 'bg-green-100 dark:bg-green-900/50' : colors.iconBg
-                  }`}>
-                    <StepIcon className={`w-5 h-5 ${step.done ? 'text-green-600 dark:text-green-400' : colors.text}`} />
-                  </div>
-                  <h4 className={`text-sm font-semibold mb-1 ${
-                    step.done ? 'text-green-700 dark:text-green-300' : 'text-slate-700 dark:text-slate-200'
-                  }`}>
-                    {step.title}
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">
-                    {step.description}
-                  </p>
-                  {step.action && !step.done && (
-                    <Link
-                      to={step.action.to}
-                      className={`inline-flex items-center gap-1 text-xs font-medium ${colors.text} hover:underline`}
-                    >
-                      {step.action.label}
-                      <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  )}
-                  {step.action && step.done && (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400">
-                      <CheckCircle2 className="w-3 h-3" /> Complété
-                    </span>
-                  )}
-                  {!step.action && !step.done && i === onboardingSteps.length - 1 && (
-                    <span className="text-xs text-slate-400 dark:text-slate-500 italic">
-                      Bientôt disponible
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+      <div>
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Tableau de bord</h2>
+        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+          <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+          <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Bienvenue sur RestauMargin</h3>
+          <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingrédients puis créez vos fiches techniques.</p>
+          <div className="flex gap-4 justify-center">
+            <Link to="/ingredients" className="btn-primary">Ajouter des ingrédients</Link>
+            <Link to="/recipes" className="btn-secondary">Créer une recette</Link>
           </div>
         </div>
       </div>
@@ -906,9 +577,7 @@ export default function Dashboard() {
   const sortedByMargin = [...recipes].sort((a, b) => a.margin.marginPercent - b.margin.marginPercent);
 
   return (
-    <div className="space-y-8 relative">
-      {/* Subtle dot-grid background pattern */}
-      <div className="absolute inset-0 -z-10 opacity-[0.03] dark:opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+    <div className="space-y-6">
       {/* ── Header + Quick Actions ────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -952,7 +621,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <StatCard title="Recettes" value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" colorKey="blue" />
         <StatCard
           title="Marge moyenne"
@@ -985,8 +654,8 @@ export default function Dashboard() {
           colorKey="cyan"
         />
         <StatCard
-          title={`Min / Max`}
-          value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
+          title="Min / Max"
+          value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
           icon={TrendingDown}
           color="bg-slate-600"
           colorKey="slate"
@@ -997,7 +666,7 @@ export default function Dashboard() {
       <AlertTicker alerts={stats.alertRecipes} />
 
       {/* ── Menu du Marché + Suggestions IA ────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Menu du Marché */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
@@ -1076,125 +745,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ── Demand Forecast ───────────────────────────────────────────── */}
-      <DemandForecast />
-
-      {/* ── Optimiseur IA : Cost Optimization ──────────────────────── */}
-      {stats.top5Optimizations.length > 0 && (
-        <div className="bg-gradient-to-br from-emerald-50 via-white to-green-50 dark:from-emerald-950/20 dark:via-slate-800 dark:to-green-950/20 rounded-xl shadow-sm border border-emerald-200 dark:border-emerald-800/50 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl">
-                <Leaf className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Optimiseur IA</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Alternatives moins chères pour vos ingrédients les plus coûteux</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="px-4 py-2 bg-emerald-600 dark:bg-emerald-500 rounded-xl shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30">
-                <p className="text-xs text-emerald-100 font-medium">Économie potentielle</p>
-                <p className="text-xl font-bold text-white">{stats.totalPotentialSavings.toFixed(0)}€<span className="text-sm font-normal text-emerald-200">/mois</span></p>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center gap-2 mb-1">
-              <Trophy className="w-4 h-4 text-amber-500" />
-              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Top {stats.top5Optimizations.length} optimisations</h4>
-              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{stats.costOptimizations.length} optimisation{stats.costOptimizations.length > 1 ? 's' : ''} trouvée{stats.costOptimizations.length > 1 ? 's' : ''}</span>
-            </div>
-            {stats.top5Optimizations
-              .filter(opt => !dismissedOptimizations.has(opt.id))
-              .map((opt, i) => (
-              <div
-                key={opt.id}
-                className={`relative flex flex-col sm:flex-row sm:items-center gap-3 p-4 rounded-xl border transition-all ${
-                  appliedOptimizations.has(opt.id)
-                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700'
-                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md'
-                }`}
-              >
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-                    i === 0 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400' :
-                    i === 1 ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
-                    'bg-orange-50 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
-                  }`}>
-                    {i + 1}
-                  </span>
-                  <Replace className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
-                    Remplacer <span className="font-semibold text-red-600 dark:text-red-400">{opt.expensiveIngredient.name}</span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">({opt.expensiveIngredient.pricePerUnit.toFixed(2)}€/{opt.expensiveIngredient.unit})</span>
-                    {' '}par{' '}
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">{opt.cheaperAlternative.name}</span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">({opt.cheaperAlternative.pricePerUnit.toFixed(2)}€/{opt.expensiveIngredient.unit})</span>
-                    {' '}dans{' '}
-                    <span className="font-medium">{opt.recipeCount} recette{opt.recipeCount > 1 ? 's' : ''}</span>
-                  </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">
-                    {opt.recipeNames.slice(0, 3).join(', ')}{opt.recipeNames.length > 3 ? ` +${opt.recipeNames.length - 3} autres` : ''}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg">
-                    <TrendingDown className="w-3.5 h-3.5" />
-                    <span className="text-sm font-bold">{opt.monthlySavings.toFixed(0)}€</span>
-                    <span className="text-xs font-normal">/mois</span>
-                  </div>
-                  <span className="text-xs font-medium px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-md">
-                    -{opt.savingsPercent}%
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  {appliedOptimizations.has(opt.id) ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                      <BadgeCheck className="w-3.5 h-3.5" /> Appliqué
-                    </span>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => {
-                          setAppliedOptimizations(prev => new Set(prev).add(opt.id));
-                          showToast(`Optimisation appliquée : ${opt.cheaperAlternative.name} remplace ${opt.expensiveIngredient.name}`, 'success');
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors shadow-sm"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Appliquer
-                      </button>
-                      <button
-                        onClick={() => {
-                          setDismissedOptimizations(prev => new Set(prev).add(opt.id));
-                          showToast('Suggestion ignorée', 'info');
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-lg transition-colors"
-                      >
-                        <XCircle className="w-3.5 h-3.5" /> Ignorer
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          {stats.costOptimizations.length > 5 && (
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-4 text-center">
-              + {stats.costOptimizations.length - 5} autre{stats.costOptimizations.length - 5 > 1 ? 's' : ''} optimisation{stats.costOptimizations.length - 5 > 1 ? 's' : ''} disponible{stats.costOptimizations.length - 5 > 1 ? 's' : ''} pour{' '}
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                {(stats.totalPotentialSavings - stats.top5Optimizations.reduce((s, o) => s + o.monthlySavings, 0)).toFixed(0)}€/mois
-              </span>
-              {" d\u2019économies supplémentaires"}
-            </p>
-          )}
-        </div>
-      )}
       {/* ── Tab Navigation (card-style) ──────────────────────────────── */}
-      <div className="border-t border-slate-200/60 dark:border-slate-700/40 pt-6" />
-      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin -mt-4 snap-x snap-mandatory scroll-smooth touch-pan-x">
+      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
         {TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.key;
@@ -1202,7 +754,7 @@ export default function Dashboard() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px] snap-start
+              className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px]
                 ${isActive
                   ? 'bg-white dark:bg-slate-800 border-l-4 border-l-blue-600 border border-slate-200 dark:border-slate-700 shadow-md'
                   : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm opacity-75 hover:opacity-100'
@@ -1281,19 +833,19 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"CA / jour"}</p>
+                    <p className="text-xs text-blue-200 mb-1">CA / jour</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"CA / semaine"}</p>
+                    <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"CA / mois"}</p>
+                    <p className="text-xs text-blue-200 mb-1">CA / mois</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{"Profit / jour"}</p>
+                    <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
                     <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
                   </div>
                 </div>
@@ -1340,52 +892,32 @@ export default function Dashboard() {
                   <Utensils className="w-5 h-5 text-blue-600" />
                   <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition</h3>
                 </div>
-                <ResponsiveContainer width="100%" height={280}>
+                <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
                     <Pie
                       data={stats.categoryData}
                       cx="50%"
                       cy="50%"
                       innerRadius={40}
-                      outerRadius={110}
+                      outerRadius={95}
                       paddingAngle={2}
                       dataKey="count"
                       nameKey="name"
                       label={(props: any) => {
                         const { cx, cy, midAngle, innerRadius, outerRadius, name, count, percent } = props;
                         const RADIAN = Math.PI / 180;
-                        const label = String(name || '');
-                        // Small segments (<8%): show label outside with connector line
-                        if ((percent || 0) < 0.08) {
-                          const outerR = (outerRadius || 0) + 30;
-                          const x = (cx || 0) + outerR * Math.cos(-(midAngle || 0) * RADIAN);
-                          const y = (cy || 0) + outerR * Math.sin(-(midAngle || 0) * RADIAN);
-                          return (
-                            <text x={x} y={y} fill="#334155" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold' }}>
-                              {label} ({count})
-                            </text>
-                          );
-                        }
-                        // Large segments: show label inside
                         const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.55;
                         const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
                         const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
+                        if ((percent || 0) < 0.08) return null;
+                        const label = String(name || '');
                         return (
-                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                            {label} ({count})
+                          <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '11px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                            {label.length > 12 ? label.slice(0, 11) + '…' : label} ({count})
                           </text>
                         );
                       }}
-                      labelLine={(props: any) => {
-                        const { cx, cy, midAngle, outerRadius, percent } = props;
-                        if ((percent || 0) >= 0.08) return <path d="" />;
-                        const RADIAN = Math.PI / 180;
-                        const startX = (cx || 0) + (outerRadius || 0) * Math.cos(-(midAngle || 0) * RADIAN);
-                        const startY = (cy || 0) + (outerRadius || 0) * Math.sin(-(midAngle || 0) * RADIAN);
-                        const endX = (cx || 0) + ((outerRadius || 0) + 22) * Math.cos(-(midAngle || 0) * RADIAN);
-                        const endY = (cy || 0) + ((outerRadius || 0) + 22) * Math.sin(-(midAngle || 0) * RADIAN);
-                        return <path d={`M${startX},${startY}L${endX},${endY}`} stroke="#94a3b8" fill="none" strokeWidth={1} />;
-                      }}
+                      labelLine={false}
                     >
                       {stats.categoryData.map((_entry, index) => (
                         <Cell key={index} fill={COLORS[index % COLORS.length]} />
@@ -1461,11 +993,11 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={Math.max(400, stats.allByMargin.length * 34)}>
-              <BarChart data={marginSort === 'name' ? [...stats.allByMargin].sort((a, b) => a.fullName.localeCompare(b.fullName)) : stats.allByMargin} layout="vertical" margin={{ top: 5, right: 60, bottom: 5, left: 5 }}>
+            <ResponsiveContainer width="100%" height={Math.max(300, stats.allByMargin.length * 28)}>
+              <BarChart data={marginSort === 'name' ? [...stats.allByMargin].sort((a, b) => a.fullName.localeCompare(b.fullName)) : stats.allByMargin} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} unit="%" tick={{ fontSize: 11 }} />
-                <YAxis type="category" dataKey="name" width={200} tick={{ fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" width={130} tick={{ fontSize: 11 }} />
                 <Tooltip
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null;
@@ -1483,7 +1015,6 @@ export default function Dashboard() {
                   {stats.allByMargin.map((entry, index) => (
                     <Cell key={index} fill={entry.fill} />
                   ))}
-                  <LabelList dataKey="margin" position="right" formatter={(v: unknown) => `${Number(v).toFixed(1)}%`} style={{ fontSize: '10px', fontWeight: 600, fill: '#475569' }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -1552,57 +1083,38 @@ export default function Dashboard() {
                 </span>
               </div>
               {stats.foodCostData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={360}>
+                <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
                       data={stats.foodCostData}
                       cx="50%"
                       cy="50%"
                       innerRadius={0}
-                      outerRadius={140}
+                      outerRadius={130}
                       paddingAngle={1}
                       dataKey="value"
                       nameKey="name"
                       label={(props: any) => {
                         const { cx, cy, midAngle, innerRadius, outerRadius, name, percent } = props;
                         const RADIAN = Math.PI / 180;
-                        const pctStr = ((percent || 0) * 100).toFixed(0);
-                        const label = String(name || '');
-                        // Small segments (<8%): show label outside with connector line
-                        if ((percent || 0) < 0.08) {
-                          const outerR = (outerRadius || 0) + 30;
-                          const x = (cx || 0) + outerR * Math.cos(-(midAngle || 0) * RADIAN);
-                          const y = (cy || 0) + outerR * Math.sin(-(midAngle || 0) * RADIAN);
-                          return (
-                            <text x={x} y={y} fill="#334155" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold' }}>
-                              {label} ({pctStr}%)
-                            </text>
-                          );
-                        }
                         const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.5;
                         const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
                         const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
+                        if ((percent || 0) < 0.05) return null;
+                        const pctStr = ((percent || 0) * 100).toFixed(0);
+                        const label = String(name || '');
                         return (
                           <g>
-                            <text x={x} y={y - 7} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '12px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
-                              {label}
+                            <text x={x} y={y - 6} fill="white" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '10px', fontWeight: 'bold', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                              {label.length > 10 ? label.slice(0, 9) + '…' : label}
                             </text>
-                            <text x={x} y={y + 9} fill="rgba(255,255,255,0.85)" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '11px', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
+                            <text x={x} y={y + 8} fill="rgba(255,255,255,0.85)" textAnchor="middle" dominantBaseline="central" style={{ fontSize: '9px', textShadow: '0 1px 3px rgba(0,0,0,0.6)' }}>
                               {pctStr}%
                             </text>
                           </g>
                         );
                       }}
-                      labelLine={(props: any) => {
-                        const { cx, cy, midAngle, outerRadius, percent } = props;
-                        if ((percent || 0) >= 0.08) return <path d="" />;
-                        const RADIAN = Math.PI / 180;
-                        const startX = (cx || 0) + (outerRadius || 0) * Math.cos(-(midAngle || 0) * RADIAN);
-                        const startY = (cy || 0) + (outerRadius || 0) * Math.sin(-(midAngle || 0) * RADIAN);
-                        const endX = (cx || 0) + ((outerRadius || 0) + 22) * Math.cos(-(midAngle || 0) * RADIAN);
-                        const endY = (cy || 0) + ((outerRadius || 0) + 22) * Math.sin(-(midAngle || 0) * RADIAN);
-                        return <path d={`M${startX},${startY}L${endX},${endY}`} stroke="#94a3b8" fill="none" strokeWidth={1} />;
-                      }}
+                      labelLine={false}
                     >
                       {stats.foodCostData.map((entry, index) => (
                         <Cell key={index} fill={entry.fill} />
@@ -1799,19 +1311,19 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"CA / jour"}</p>
+                <p className="text-xs text-blue-200 mb-1">CA / jour</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"CA / semaine"}</p>
+                <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"CA / mois"}</p>
+                <p className="text-xs text-blue-200 mb-1">CA / mois</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{"Profit / jour"}</p>
+                <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
                 <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
               </div>
             </div>
@@ -1824,11 +1336,11 @@ export default function Dashboard() {
               <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Projections sur 6 mois</h3>
               <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">Revenus vs Coûts</span>
             </div>
-            <ResponsiveContainer width="100%" height={340}>
-              <LineChart data={stats.projectionData} margin={{ top: 10, right: 30, bottom: 10, left: 20 }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={stats.projectionData} margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} tickMargin={8} />
-                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`} width={55} />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`} />
                 <Tooltip
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
@@ -1886,13 +1398,13 @@ export default function Dashboard() {
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Profit / couvert"}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Profit / couvert</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                       <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{"Couverts / jour"}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Couverts / jour</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2 } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import { AuthProvider, useAuth } from './hooks/useAuth';
@@ -35,6 +35,7 @@ const Restaurants = lazy(() => import('./pages/Restaurants'));
 const Marketplace = lazy(() => import('./pages/Marketplace'));
 const WasteTracker = lazy(() => import('./pages/WasteTracker'));
 const QRMenu = lazy(() => import('./pages/QRMenu'));
+const Integrations = lazy(() => import('./pages/Integrations'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -217,6 +218,7 @@ function AppLayout() {
       title: 'BUSINESS',
       items: [
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
+        { to: '/integrations', icon: Plug, label: 'Integrations' },
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
       ],
@@ -438,6 +440,7 @@ function AppLayout() {
               <Route path="/planning" element={<Planning />} />
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/integrations" element={<Integrations />} />
               <Route path="/restaurants" element={<Restaurants />} />
               <Route path="/abonnement" element={<Subscription />} />
               <Route path="/settings" element={<SettingsPage />} />

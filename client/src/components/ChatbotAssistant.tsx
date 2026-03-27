@@ -201,18 +201,33 @@ Réponds de manière concise, professionnelle et utile. Utilise les données ré
         'X-Title': 'RestauMargin Assistant Chef',
       },
       body: JSON.stringify({
-        model: 'google/gemma-3-4b-it:free',
+        model: 'google/gemma-3-12b-it:free',
         messages,
-        max_tokens: 500,
+        max_tokens: 400,
         temperature: 0.7,
       }),
     });
 
-    if (!res.ok) {
-      console.error('OpenRouter error:', res.status, await res.text().catch(() => ''));
+    const data = await res.json();
+    if (data.error) {
+      console.warn('OpenRouter error:', data.error.message);
+      // Try fallback models on rate limit
+      if (data.error.code === 429) {
+        const fallbackModels = ['google/gemma-3-4b-it:free', 'mistralai/mistral-small-3.1-24b-instruct:free', 'qwen/qwen3-4b:free'];
+        for (const model of fallbackModels) {
+          try {
+            const retryRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'HTTP-Referer': window.location.origin },
+              body: JSON.stringify({ model, messages, max_tokens: 400, temperature: 0.7 }),
+            });
+            const retryData = await retryRes.json();
+            if (retryData.choices?.[0]?.message?.content) return retryData.choices[0].message.content;
+          } catch { continue; }
+        }
+      }
       return null;
     }
-    const data = await res.json();
     return data.choices?.[0]?.message?.content || null;
   } catch {
     return null;

@@ -1,414 +1,433 @@
-import { useState, useEffect, useRef } from 'react';
-import {
-  Brain, Shield, Palette, Server, Languages, Rocket,
-  CheckCircle2, Loader2, Clock, AlertTriangle,
-  ChevronRight, Terminal, Zap, Coffee, Bug,
-  GitBranch, FileCode, Database, Globe
-} from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 
-interface AgentTask {
+// ── Types ──────────────────────────────────────────────
+interface Agent {
   id: string;
   name: string;
-  description: string;
-  status: 'idle' | 'working' | 'done' | 'error';
-  progress: number;
-  logs: string[];
-  color: string;
-  icon: typeof Brain;
   role: string;
+  color: string;
+  skinColor: string;
+  deskX: number;
+  deskY: number;
+  status: 'coding' | 'thinking' | 'coffee' | 'meeting' | 'done';
+  progress: number;
   currentTask: string;
-  tasksCompleted: number;
-  tasksTotal: number;
-  linesChanged: number;
-  filesFixed: number;
+  mood: number; // 0-100
+  linesWritten: number;
+  bugsFixed: number;
+  messages: string[];
+  bubbleText: string;
+  bubbleTimer: number;
 }
 
-const INITIAL_AGENTS: AgentTask[] = [
+interface ChatMessage {
+  from: string;
+  text: string;
+  time: string;
+  isUser: boolean;
+}
+
+// ── Constants ──────────────────────────────────────────
+const AGENTS_INIT: Agent[] = [
   {
-    id: 'cto', name: 'CTO Agent', role: 'Architecte en chef',
-    description: 'Analyse du codebase, priorisation du backlog, planification sprint',
-    status: 'working', progress: 0, color: 'red',
-    icon: Brain, currentTask: 'Analyse des 34 pages...',
-    tasksCompleted: 0, tasksTotal: 5, linesChanged: 0, filesFixed: 0,
-    logs: ['[09:00] Démarrage de l\'analyse architecturale...']
+    id: 'cto', name: 'Alex', role: 'CTO — Architecte', color: '#ef4444',
+    skinColor: '#d4a574', deskX: 80, deskY: 100,
+    status: 'coding', progress: 72, currentTask: 'Sprint backlog', mood: 85,
+    linesWritten: 342, bugsFixed: 0, messages: [],
+    bubbleText: '', bubbleTimer: 0
   },
   {
-    id: 'qa', name: 'QA Agent', role: 'Ingénieur Qualité',
-    description: 'Tests de toutes les pages, détection de bugs, rapport qualité',
-    status: 'working', progress: 0, color: 'green',
-    icon: Bug, currentTask: 'Compilation TypeScript...',
-    tasksCompleted: 0, tasksTotal: 8, linesChanged: 0, filesFixed: 0,
-    logs: ['[09:00] Lancement des tests TypeScript...']
+    id: 'qa', name: 'Sarah', role: 'QA — Qualité', color: '#10b981',
+    skinColor: '#c4956a', deskX: 380, deskY: 100,
+    status: 'thinking', progress: 88, currentTask: 'Test des 34 pages', mood: 92,
+    linesWritten: 0, bugsFixed: 27, messages: [],
+    bubbleText: '', bubbleTimer: 0
   },
   {
-    id: 'backend', name: 'Backend Agent', role: 'Ingénieur Backend',
-    description: 'Migration des données in-memory vers PostgreSQL/Prisma',
-    status: 'working', progress: 0, color: 'yellow',
-    icon: Database, currentTask: 'Lecture du schéma Prisma...',
-    tasksCompleted: 0, tasksTotal: 6, linesChanged: 0, filesFixed: 0,
-    logs: ['[09:00] Connexion à la base de données...']
+    id: 'backend', name: 'Omar', role: 'Backend — DB', color: '#f59e0b',
+    skinColor: '#b8865a', deskX: 680, deskY: 100,
+    status: 'coding', progress: 45, currentTask: 'Migration Prisma', mood: 78,
+    linesWritten: 890, bugsFixed: 3, messages: [],
+    bubbleText: '', bubbleTimer: 0
   },
   {
-    id: 'content', name: 'Content Agent', role: 'Spécialiste i18n',
-    description: 'Correction des accents, unicode, terminologie française',
-    status: 'working', progress: 0, color: 'purple',
-    icon: Languages, currentTask: 'Scan des fichiers .tsx...',
-    tasksCompleted: 0, tasksTotal: 7, linesChanged: 0, filesFixed: 0,
-    logs: ['[09:00] Recherche des séquences unicode...']
+    id: 'content', name: 'Marie', role: 'Content — i18n', color: '#8b5cf6',
+    skinColor: '#e8c4a0', deskX: 230, deskY: 340,
+    status: 'coding', progress: 95, currentTask: 'Accents français', mood: 97,
+    linesWritten: 163, bugsFixed: 30, messages: [],
+    bubbleText: '', bubbleTimer: 0
   },
   {
-    id: 'devops', name: 'DevOps Agent', role: 'Ingénieur DevOps',
-    description: 'Optimisation du bundle, cache PWA, performance',
-    status: 'working', progress: 0, color: 'orange',
-    icon: Rocket, currentTask: 'Analyse du bundle Vite...',
-    tasksCompleted: 0, tasksTotal: 5, linesChanged: 0, filesFixed: 0,
-    logs: ['[09:00] Build de production en cours...']
+    id: 'devops', name: 'Karim', role: 'DevOps — Perf', color: '#f97316',
+    skinColor: '#c9a07a', deskX: 530, deskY: 340,
+    status: 'coffee', progress: 60, currentTask: 'Bundle optimization', mood: 88,
+    linesWritten: 45, bugsFixed: 5, messages: [],
+    bubbleText: '', bubbleTimer: 0
   }
 ];
 
-const CTO_STEPS = [
-  { task: 'Scan des 34 pages du frontend', log: 'Trouvé 34 pages, 28 composants, 12 hooks' },
-  { task: 'Analyse des routes serveur', log: '44 endpoints API identifiés (4 public + 40 protégés)' },
-  { task: 'Détection des features mock vs réelles', log: '4 routes in-memory détectées (invoices, messages, menuSales, priceHistory)' },
-  { task: 'Évaluation de la dette technique', log: 'Score: 7.2/10 — Principaux points: persistance, sécurité, tests' },
-  { task: 'Rédaction du sprint backlog', log: 'Sprint "Production Ready" créé — 10 tâches priorisées' }
-];
+const BUBBLES: Record<string, string[]> = {
+  coding: ['...', 'function()', 'if (margin > 30)', 'commit!', 'const API =', 'await fetch()', '// TODO', 'npm run build', 'git push', '.tsx'],
+  thinking: ['hmm...', '🤔', 'peut-être...', 'j\'ai une idée!', 'vérifions...', 'analysons...', 'intéressant...', 'eurêka!'],
+  coffee: ['☕', '☕☕', 'pause café!', 'mmm...', '5 min...', 'je reviens!'],
+  meeting: ['📊', 'slide 3...', 'questions?', 'next sprint', 'deadline?'],
+  done: ['✅ Terminé!', '🎉', 'prêt!', 'mergé!', 'déployé!']
+};
 
-const QA_STEPS = [
-  { task: 'Compilation TypeScript (tsc --noEmit)', log: '2 265 modules compilés, 0 erreurs critiques' },
-  { task: 'Build de production (vite build)', log: 'Build réussi en 6.2s — 87 chunks générés' },
-  { task: 'Scan des unicode escapes', log: '0 séquences \\u00xx restantes dans les pages' },
-  { task: 'Vérification des imports manquants', log: 'Tous les imports résolus correctement' },
-  { task: 'Détection des catch vides', log: '3 catch blocks vides trouvés (Settings, RecipeDetail)' },
-  { task: 'Scan des console.log', log: '12 console.log trouvés — à nettoyer' },
-  { task: 'Vérification des URLs hardcodées', log: '0 localhost URL en production' },
-  { task: 'Génération du rapport QA', log: 'Rapport créé: 2 critiques, 5 high, 8 medium, 12 low' }
-];
-
-const BACKEND_STEPS = [
-  { task: 'Lecture du schéma Prisma actuel', log: '6 modèles existants: User, Supplier, Ingredient, Recipe, RecipeIngredient, InventoryItem' },
-  { task: 'Création du modèle Invoice + InvoiceItem', log: 'Modèle créé avec FK vers Supplier et Ingredient' },
-  { task: 'Création du modèle PriceHistory', log: 'Modèle créé avec index sur [ingredientId, date]' },
-  { task: 'Création du modèle MenuSale', log: 'Modèle créé avec FK vers Recipe' },
-  { task: 'Création des modèles Conversation + Message', log: 'Modèles créés avec cascade delete' },
-  { task: 'Migration Prisma (db push)', log: 'prisma db push — 5 nouveaux modèles synchronisés' }
-];
-
-const CONTENT_STEPS = [
-  { task: 'Scan complet des fichiers .tsx', log: '34 fichiers scannés dans client/src/pages/' },
-  { task: 'Remplacement unicode Devis.tsx', log: '127 séquences remplacées par des caractères français' },
-  { task: 'Correction accents Settings.tsx', log: '12 accents manquants corrigés (paramètres, sauvegardé, succès)' },
-  { task: 'Traduction textes anglais', log: '"Upgrade" → "Passer au Pro", "Debug" → "Débogage"' },
-  { task: 'Standardisation terminologie', log: '"recette" / "fiche technique" / "plat" harmonisés' },
-  { task: 'Vérification espaces insécables', log: 'Espaces insécables ajoutés avant : ; ? !' },
-  { task: 'Validation finale', log: 'grep -r "\\u00" → 0 résultat. Codebase 100% clean.' }
-];
-
-const DEVOPS_STEPS = [
-  { task: 'Analyse du bundle (vite build)', log: 'Bundle principal: 420KB gzipped, 87 chunks lazy-loaded' },
-  { task: 'Suppression imports inutilisés', log: '5 imports lucide-react supprimés (Download, Upload, WifiOff, Loader2)' },
-  { task: 'Optimisation chargement catalogue', log: 'catalog.json: chargement différé, suppression du doublon Suppliers.tsx' },
-  { task: 'Correction cache PWA', log: 'Service worker: versioning ajouté, skipWaiting activé' },
-  { task: 'Scan fuites mémoire', log: '1 listener BLE non nettoyé corrigé dans useScale.ts' }
-];
-
-const ALL_STEPS = [CTO_STEPS, QA_STEPS, BACKEND_STEPS, CONTENT_STEPS, DEVOPS_STEPS];
-
-const colorMap: Record<string, { bg: string; text: string; border: string; glow: string }> = {
-  red: { bg: 'bg-red-500', text: 'text-red-400', border: 'border-red-500/30', glow: 'shadow-red-500/20' },
-  green: { bg: 'bg-emerald-500', text: 'text-emerald-400', border: 'border-emerald-500/30', glow: 'shadow-emerald-500/20' },
-  yellow: { bg: 'bg-amber-500', text: 'text-amber-400', border: 'border-amber-500/30', glow: 'shadow-amber-500/20' },
-  purple: { bg: 'bg-purple-500', text: 'text-purple-400', border: 'border-purple-500/30', glow: 'shadow-purple-500/20' },
-  orange: { bg: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-500/30', glow: 'shadow-orange-500/20' }
+const TASKS = {
+  cto: ['Analyse architecture', 'Priorisation backlog', 'Review PR #42', 'Sprint planning', 'Code review'],
+  qa: ['Test Dashboard', 'Test Messagerie', 'Test Devis', 'Rapport bugs', 'Test mobile'],
+  backend: ['Schema Prisma', 'Migration invoices', 'Migration messages', 'API endpoints', 'Index DB'],
+  content: ['Fix unicode Devis', 'Accents Settings', 'Traduction EN→FR', 'Terminologie', 'Vérification finale'],
+  devops: ['Analyse bundle', 'Lazy loading', 'PWA cache', 'Cleanup imports', 'Build prod']
 };
 
 export default function DevCorp() {
-  const [agents, setAgents] = useState<AgentTask[]>(INITIAL_AGENTS);
+  const [agents, setAgents] = useState<Agent[]>(AGENTS_INIT);
+  const [chat, setChat] = useState<ChatMessage[]>([
+    { from: 'Système', text: 'Bienvenue au bureau RestauMargin Dev Corp !', time: '09:00', isUser: false },
+    { from: 'Alex (CTO)', text: 'Bonjour chef ! L\'équipe est au complet.', time: '09:01', isUser: false }
+  ]);
+  const [chatInput, setChatInput] = useState('');
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
-  const [globalProgress, setGlobalProgress] = useState(0);
-  const [totalLines, setTotalLines] = useState(0);
-  const [totalFiles, setTotalFiles] = useState(0);
-  const [startTime] = useState(Date.now());
-  const [elapsed, setElapsed] = useState(0);
-  const logEndRef = useRef<HTMLDivElement>(null);
+  const [time, setTime] = useState(540); // 9:00 AM in minutes
 
-  // Simulate agent progress
+  // Clock + agent simulation
   useEffect(() => {
     const interval = setInterval(() => {
-      setElapsed(Math.floor((Date.now() - startTime) / 1000));
+      setTime(t => (t + 1) % 1440);
 
-      setAgents(prev => {
-        const updated = prev.map((agent, idx) => {
-          if (agent.status === 'done') return agent;
+      setAgents(prev => prev.map(a => {
+        // Random status changes
+        const rand = Math.random();
+        let newStatus = a.status;
+        if (rand < 0.03) newStatus = 'coffee';
+        else if (rand < 0.06) newStatus = 'thinking';
+        else if (rand < 0.15) newStatus = 'coding';
+        if (a.progress >= 100) newStatus = 'done';
 
-          const steps = ALL_STEPS[idx];
-          const stepDuration = 2500 + Math.random() * 2000; // 2.5-4.5s per step
-          const expectedStep = Math.min(
-            Math.floor((Date.now() - startTime) / stepDuration),
-            steps.length
-          );
+        // Progress
+        const progressInc = newStatus === 'coding' ? 0.3 + Math.random() * 0.5 :
+                           newStatus === 'thinking' ? 0.1 : 0;
+        const newProgress = Math.min(100, a.progress + progressInc);
 
-          if (expectedStep >= steps.length) {
-            return {
-              ...agent,
-              status: 'done' as const,
-              progress: 100,
-              tasksCompleted: agent.tasksTotal,
-              currentTask: 'Terminé !',
-              linesChanged: Math.floor(Math.random() * 500) + 100,
-              filesFixed: Math.floor(Math.random() * 20) + 5,
-              logs: [
-                ...steps.map((s, i) => `[${String(9).padStart(2, '0')}:${String(i * 2).padStart(2, '0')}] ${s.log}`),
-                `[${String(9).padStart(2, '0')}:${String(steps.length * 2).padStart(2, '0')}] ✅ Mission terminée !`
-              ]
-            };
-          }
+        // Bubble
+        let bubbleText = a.bubbleText;
+        let bubbleTimer = a.bubbleTimer - 1;
+        if (bubbleTimer <= 0 && Math.random() < 0.15) {
+          const pool = BUBBLES[newStatus] || BUBBLES.coding;
+          bubbleText = pool[Math.floor(Math.random() * pool.length)];
+          bubbleTimer = 20 + Math.floor(Math.random() * 30);
+        }
+        if (bubbleTimer <= 0) bubbleText = '';
 
-          const progress = Math.floor((expectedStep / steps.length) * 100);
-          const currentStep = steps[Math.min(expectedStep, steps.length - 1)];
+        // Lines & bugs
+        const linesInc = newStatus === 'coding' ? Math.floor(Math.random() * 3) : 0;
+        const bugsInc = newStatus === 'coding' && Math.random() < 0.02 ? 1 : 0;
 
-          return {
-            ...agent,
-            progress,
-            tasksCompleted: expectedStep,
-            currentTask: currentStep.task,
-            linesChanged: Math.floor(Math.random() * 50 * expectedStep),
-            filesFixed: Math.floor(Math.random() * 3 * expectedStep),
-            logs: steps.slice(0, expectedStep + 1).map((s, i) =>
-              `[${String(9).padStart(2, '0')}:${String(i * 2).padStart(2, '0')}] ${s.log}`
-            )
-          };
-        });
+        // Task rotation
+        const taskList = TASKS[a.id as keyof typeof TASKS] || [];
+        const taskIdx = Math.floor((newProgress / 100) * taskList.length);
+        const currentTask = taskList[Math.min(taskIdx, taskList.length - 1)] || a.currentTask;
 
-        const gp = Math.floor(updated.reduce((sum, a) => sum + a.progress, 0) / updated.length);
-        setGlobalProgress(gp);
-        setTotalLines(updated.reduce((sum, a) => sum + a.linesChanged, 0));
-        setTotalFiles(updated.reduce((sum, a) => sum + a.filesFixed, 0));
-
-        return updated;
-      });
+        return {
+          ...a,
+          status: newStatus,
+          progress: newProgress,
+          bubbleText, bubbleTimer,
+          linesWritten: a.linesWritten + linesInc,
+          bugsFixed: a.bugsFixed + bugsInc,
+          currentTask,
+          mood: Math.max(60, Math.min(100, a.mood + (Math.random() - 0.48) * 2))
+        };
+      }));
     }, 500);
-
     return () => clearInterval(interval);
-  }, [startTime]);
+  }, []);
 
-  // Auto-scroll logs
-  useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [agents, selectedAgent]);
+  const formatTime = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 
-  const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-  const allDone = agents.every(a => a.status === 'done');
-  const selected = agents.find(a => a.id === selectedAgent);
+  const sendChat = useCallback(() => {
+    if (!chatInput.trim()) return;
+    const now = formatTime(time);
+    const newChat: ChatMessage = { from: 'Vous', text: chatInput, time: now, isUser: true };
+    setChat(prev => [...prev, newChat]);
+
+    // Agent responds
+    const input = chatInput.toLowerCase();
+    setTimeout(() => {
+      let responder = 'Alex (CTO)';
+      let response = 'Bien reçu chef ! Je transmets à l\'équipe.';
+
+      if (input.includes('bug') || input.includes('erreur') || input.includes('test')) {
+        responder = 'Sarah (QA)';
+        response = 'Je vérifie immédiatement ! Rapport en cours...';
+      } else if (input.includes('base') || input.includes('prisma') || input.includes('api')) {
+        responder = 'Omar (Backend)';
+        response = 'La migration avance bien, 3 modèles sur 4 sont faits !';
+      } else if (input.includes('french') || input.includes('accent') || input.includes('texte')) {
+        responder = 'Marie (Content)';
+        response = 'Presque fini ! Plus que 3 fichiers à corriger.';
+      } else if (input.includes('deploy') || input.includes('build') || input.includes('perf')) {
+        responder = 'Karim (DevOps)';
+        response = 'Le bundle est passé de 1.2MB à 420KB gzipped ! 🚀';
+      } else if (input.includes('status') || input.includes('avancement')) {
+        responder = 'Alex (CTO)';
+        const done = agents.filter(a => a.progress >= 100).length;
+        response = `Sprint en cours : ${done}/5 agents ont terminé. Progression moyenne : ${Math.floor(agents.reduce((s, a) => s + a.progress, 0) / 5)}%`;
+      } else if (input.includes('bravo') || input.includes('merci') || input.includes('bien')) {
+        responder = 'Alex (CTO)';
+        response = 'Merci chef ! L\'équipe est motivée ! 💪';
+      } else if (input.includes('café') || input.includes('pause')) {
+        responder = 'Karim (DevOps)';
+        response = 'Bonne idée ! ☕ 5 minutes de pause pour tout le monde !';
+      }
+
+      setChat(prev => [...prev, { from: responder, text: response, time: formatTime(time + 1), isUser: false }]);
+    }, 800 + Math.random() * 1200);
+
+    setChatInput('');
+  }, [chatInput, time, agents]);
+
+  const globalProgress = Math.floor(agents.reduce((s, a) => s + a.progress, 0) / agents.length);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-8">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
-            <Terminal className="w-6 h-6" />
+    <div className="h-screen flex flex-col bg-slate-950 text-white overflow-hidden">
+      {/* Top bar */}
+      <div className="h-12 bg-slate-900 border-b border-slate-800 flex items-center px-4 gap-4 shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-bold">DC</div>
+        <span className="font-semibold text-sm">RestauMargin Dev Corp</span>
+        <span className="text-slate-500 text-xs">Bureau virtuel</span>
+        <div className="ml-auto flex items-center gap-4 text-xs">
+          <span className="font-mono text-blue-400">{formatTime(time)}</span>
+          <span className="text-slate-500">Sprint: {globalProgress}%</span>
+          <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all duration-500" style={{ width: `${globalProgress}%` }} />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">RestauMargin Dev Corp</h1>
-            <p className="text-slate-400 text-sm">Équipe d'agents autonomes — Sprint "Production Ready"</p>
-          </div>
-          <div className="ml-auto flex items-center gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-slate-500" />
-              <span className="font-mono text-slate-300">{formatTime(elapsed)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FileCode className="w-4 h-4 text-slate-500" />
-              <span className="text-slate-300">{totalFiles} fichiers</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <GitBranch className="w-4 h-4 text-slate-500" />
-              <span className="text-slate-300">{totalLines} lignes</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Global progress */}
-        <div className="mb-8 bg-slate-900 rounded-2xl p-5 border border-slate-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-300">Progression globale</span>
-            <span className="text-sm font-mono text-blue-400">{globalProgress}%</span>
-          </div>
-          <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500 ease-out relative"
-              style={{
-                width: `${globalProgress}%`,
-                background: allDone
-                  ? 'linear-gradient(90deg, #10b981, #34d399)'
-                  : 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)'
-              }}
-            >
-              {!allDone && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
-              )}
-            </div>
-          </div>
-          {allDone && (
-            <div className="mt-3 flex items-center gap-2 text-emerald-400 text-sm animate-bounce">
-              <CheckCircle2 className="w-4 h-4" />
-              Sprint terminé ! Tous les agents ont complété leurs missions.
-            </div>
-          )}
-        </div>
-
-        {/* Agent grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-8">
-          {agents.map(agent => {
-            const colors = colorMap[agent.color];
-            const Icon = agent.icon;
-            const isSelected = selectedAgent === agent.id;
-
-            return (
-              <button
-                key={agent.id}
-                onClick={() => setSelectedAgent(isSelected ? null : agent.id)}
-                className={`relative text-left p-4 rounded-xl border transition-all duration-300 ${
-                  isSelected
-                    ? `${colors.border} bg-slate-800/80 shadow-lg ${colors.glow} scale-[1.02]`
-                    : 'border-slate-800 bg-slate-900/50 hover:bg-slate-800/50 hover:border-slate-700'
-                }`}
-              >
-                {/* Status indicator */}
-                <div className="absolute top-3 right-3">
-                  {agent.status === 'working' && (
-                    <Loader2 className={`w-4 h-4 ${colors.text} animate-spin`} />
-                  )}
-                  {agent.status === 'done' && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  )}
-                  {agent.status === 'error' && (
-                    <AlertTriangle className="w-4 h-4 text-red-400" />
-                  )}
-                </div>
-
-                {/* Agent icon + name */}
-                <div className={`w-10 h-10 rounded-lg ${colors.bg}/20 flex items-center justify-center mb-3`}>
-                  <Icon className={`w-5 h-5 ${colors.text}`} />
-                </div>
-                <h3 className="font-semibold text-sm mb-0.5">{agent.name}</h3>
-                <p className="text-[10px] text-slate-500 mb-3">{agent.role}</p>
-
-                {/* Progress bar */}
-                <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden mb-2">
-                  <div
-                    className={`h-full rounded-full ${colors.bg} transition-all duration-700 ease-out`}
-                    style={{ width: `${agent.progress}%` }}
-                  />
-                </div>
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="text-slate-500">{agent.tasksCompleted}/{agent.tasksTotal} tâches</span>
-                  <span className={colors.text}>{agent.progress}%</span>
-                </div>
-
-                {/* Current task */}
-                <div className="mt-3 pt-3 border-t border-slate-800">
-                  <div className="flex items-start gap-1.5">
-                    {agent.status === 'working' && (
-                      <ChevronRight className={`w-3 h-3 mt-0.5 ${colors.text} flex-shrink-0`} />
-                    )}
-                    <p className="text-[11px] text-slate-400 leading-tight line-clamp-2">
-                      {agent.currentTask}
-                    </p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Selected agent detail + logs */}
-        {selected && (
-          <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden animate-in">
-            <div className="p-5 border-b border-slate-800 flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-lg ${colorMap[selected.color].bg}/20 flex items-center justify-center`}>
-                <selected.icon className={`w-5 h-5 ${colorMap[selected.color].text}`} />
-              </div>
-              <div>
-                <h3 className="font-semibold">{selected.name} — {selected.role}</h3>
-                <p className="text-sm text-slate-400">{selected.description}</p>
-              </div>
-              <div className="ml-auto flex items-center gap-6 text-sm">
-                <div className="text-center">
-                  <div className="font-mono font-bold text-white">{selected.filesFixed}</div>
-                  <div className="text-[10px] text-slate-500">fichiers</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-mono font-bold text-white">{selected.linesChanged}</div>
-                  <div className="text-[10px] text-slate-500">lignes</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Terminal logs */}
-            <div className="bg-black/50 p-4 font-mono text-xs max-h-[300px] overflow-y-auto">
-              <div className="text-slate-600 mb-2">$ restaumargin-dev-corp --agent={selected.id}</div>
-              {selected.logs.map((log, i) => (
-                <div
-                  key={i}
-                  className={`py-0.5 ${
-                    log.includes('✅') ? 'text-emerald-400' :
-                    log.includes('❌') ? 'text-red-400' :
-                    'text-slate-300'
-                  }`}
-                  style={{ animationDelay: `${i * 100}ms` }}
-                >
-                  {log}
-                </div>
-              ))}
-              {selected.status === 'working' && (
-                <div className="text-slate-500 animate-pulse mt-1">
-                  <span className="inline-block w-2 h-3 bg-slate-500 animate-blink" /> En cours...
-                </div>
-              )}
-              <div ref={logEndRef} />
-            </div>
-          </div>
-        )}
-
-        {/* Stats footer */}
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[
-            { icon: Globe, label: 'Pages', value: '34', color: 'text-blue-400' },
-            { icon: Server, label: 'Endpoints API', value: '44', color: 'text-emerald-400' },
-            { icon: Database, label: 'Modèles DB', value: '11', color: 'text-amber-400' },
-            { icon: Zap, label: 'Temps de build', value: '6.2s', color: 'text-purple-400' }
-          ].map((stat, i) => (
-            <div key={i} className="bg-slate-900/50 rounded-xl p-4 border border-slate-800 flex items-center gap-3">
-              <stat.icon className={`w-5 h-5 ${stat.color}`} />
-              <div>
-                <div className="font-mono font-bold text-lg">{stat.value}</div>
-                <div className="text-[10px] text-slate-500">{stat.label}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Coffee break */}
-        <div className="mt-8 text-center text-slate-600 text-xs flex items-center justify-center gap-2">
-          <Coffee className="w-3 h-3" />
-          Les agents travaillent pendant que vous prenez un café
         </div>
       </div>
 
-      <style>{`
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-        .animate-blink { animation: blink 1s infinite; }
-        .animate-in { animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+      <div className="flex flex-1 overflow-hidden">
+        {/* ── Office View (left) ── */}
+        <div className="flex-1 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #1a1f2e 0%, #151a27 100%)' }}>
+          {/* Floor grid */}
+          <svg className="absolute inset-0 w-full h-full opacity-5">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+
+          {/* Office furniture & agents */}
+          <svg viewBox="0 0 900 550" className="w-full h-full">
+            {/* Room walls */}
+            <rect x="20" y="20" width="860" height="510" rx="8" fill="none" stroke="#334155" strokeWidth="1.5" strokeDasharray="4 2" />
+
+            {/* Company sign */}
+            <rect x="300" y="30" width="300" height="35" rx="6" fill="#1e293b" stroke="#334155" />
+            <text x="450" y="53" textAnchor="middle" fill="#60a5fa" fontSize="14" fontWeight="bold">🏢 RestauMargin Dev Corp</text>
+
+            {/* Each agent desk + character */}
+            {agents.map((agent) => {
+              const isSelected = selectedAgent === agent.id;
+              const bobY = agent.status === 'coding' ? Math.sin(Date.now() / 300 + agents.indexOf(agent)) * 2 : 0;
+
+              return (
+                <g key={agent.id} onClick={() => setSelectedAgent(isSelected ? null : agent.id)} style={{ cursor: 'pointer' }}>
+                  {/* Desk */}
+                  <rect x={agent.deskX} y={agent.deskY + 40} width="120" height="50" rx="4"
+                    fill="#1e293b" stroke={isSelected ? agent.color : '#334155'} strokeWidth={isSelected ? 2 : 1} />
+
+                  {/* Monitor */}
+                  <rect x={agent.deskX + 35} y={agent.deskY + 20} width="50" height="35" rx="3"
+                    fill={agent.status === 'coding' ? '#0f172a' : '#1a1a2e'} stroke="#475569" strokeWidth="0.5" />
+                  {agent.status === 'coding' && (
+                    <>
+                      <line x1={agent.deskX + 40} y1={agent.deskY + 28} x2={agent.deskX + 75} y2={agent.deskY + 28} stroke="#4ade80" strokeWidth="1" opacity="0.6" />
+                      <line x1={agent.deskX + 40} y1={agent.deskY + 33} x2={agent.deskX + 65} y2={agent.deskY + 33} stroke="#60a5fa" strokeWidth="1" opacity="0.5" />
+                      <line x1={agent.deskX + 40} y1={agent.deskY + 38} x2={agent.deskX + 70} y2={agent.deskY + 38} stroke="#c084fc" strokeWidth="1" opacity="0.4" />
+                      <line x1={agent.deskX + 40} y1={agent.deskY + 43} x2={agent.deskX + 60} y2={agent.deskY + 43} stroke="#fbbf24" strokeWidth="1" opacity="0.3" />
+                    </>
+                  )}
+
+                  {/* Coffee mug (if on break) */}
+                  {agent.status === 'coffee' && (
+                    <g transform={`translate(${agent.deskX + 95}, ${agent.deskY + 42})`}>
+                      <rect x="0" y="0" width="12" height="14" rx="2" fill="#78350f" />
+                      <path d="M 12 3 Q 18 3 18 8 Q 18 13 12 13" fill="none" stroke="#78350f" strokeWidth="1.5" />
+                      <path d={`M 3 -2 Q 6 ${-6 + Math.sin(Date.now() / 500) * 2} 9 -2`} fill="none" stroke="#94a3b8" strokeWidth="0.8" opacity="0.4" />
+                    </g>
+                  )}
+
+                  {/* Chair */}
+                  <ellipse cx={agent.deskX + 60} cy={agent.deskY + 110} rx="18" ry="8" fill="#334155" />
+
+                  {/* Character body */}
+                  <g transform={`translate(${agent.deskX + 60}, ${agent.deskY + 85 + bobY})`}>
+                    {/* Body */}
+                    <rect x="-12" y="0" width="24" height="25" rx="6" fill={agent.color} />
+                    {/* Head */}
+                    <circle cx="0" cy="-12" r="12" fill={agent.skinColor} />
+                    {/* Eyes */}
+                    {agent.status === 'thinking' ? (
+                      <>
+                        <circle cx="-4" cy="-14" r="1.5" fill="#1e293b" />
+                        <circle cx="4" cy="-14" r="1.5" fill="#1e293b" />
+                        <ellipse cx="-4" cy="-14" rx="1.5" ry="2" fill="#1e293b">
+                          <animate attributeName="ry" values="2;0.5;2" dur="3s" repeatCount="indefinite" />
+                        </ellipse>
+                      </>
+                    ) : agent.status === 'coffee' ? (
+                      <>
+                        <path d="M -6 -14 Q -4 -16 -2 -14" fill="none" stroke="#1e293b" strokeWidth="1.2" />
+                        <path d="M 2 -14 Q 4 -16 6 -14" fill="none" stroke="#1e293b" strokeWidth="1.2" />
+                      </>
+                    ) : (
+                      <>
+                        <circle cx="-4" cy="-14" r="1.5" fill="#1e293b" />
+                        <circle cx="4" cy="-14" r="1.5" fill="#1e293b" />
+                      </>
+                    )}
+                    {/* Mouth */}
+                    {agent.status === 'done' ? (
+                      <path d="M -4 -8 Q 0 -5 4 -8" fill="none" stroke="#1e293b" strokeWidth="1" />
+                    ) : (
+                      <line x1="-3" y1="-8" x2="3" y2="-8" stroke="#1e293b" strokeWidth="1" />
+                    )}
+                    {/* Arms typing */}
+                    {agent.status === 'coding' && (
+                      <>
+                        <line x1="-12" y1="8" x2="-20" y2={15 + Math.sin(Date.now() / 200) * 3} stroke={agent.skinColor} strokeWidth="3" strokeLinecap="round" />
+                        <line x1="12" y1="8" x2="20" y2={15 + Math.cos(Date.now() / 200) * 3} stroke={agent.skinColor} strokeWidth="3" strokeLinecap="round" />
+                      </>
+                    )}
+                  </g>
+
+                  {/* Speech bubble */}
+                  {agent.bubbleText && (
+                    <g>
+                      <rect x={agent.deskX + 30} y={agent.deskY - 15} width={agent.bubbleText.length * 8 + 16} height="22" rx="10" fill="white" />
+                      <polygon points={`${agent.deskX + 55},${agent.deskY + 7} ${agent.deskX + 50},${agent.deskY + 15} ${agent.deskX + 60},${agent.deskY + 7}`} fill="white" />
+                      <text x={agent.deskX + 38 + agent.bubbleText.length * 4} y={agent.deskY} textAnchor="middle" fill="#1e293b" fontSize="10">{agent.bubbleText}</text>
+                    </g>
+                  )}
+
+                  {/* Name tag */}
+                  <rect x={agent.deskX + 20} y={agent.deskY + 120} width="80" height="30" rx="4" fill={isSelected ? agent.color + '30' : '#0f172a'} stroke={agent.color} strokeWidth="0.5" />
+                  <text x={agent.deskX + 60} y={agent.deskY + 133} textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">{agent.name}</text>
+                  <text x={agent.deskX + 60} y={agent.deskY + 144} textAnchor="middle" fill="#94a3b8" fontSize="7">{agent.role}</text>
+
+                  {/* Progress bar under name */}
+                  <rect x={agent.deskX + 25} y={agent.deskY + 152} width="70" height="3" rx="1.5" fill="#1e293b" />
+                  <rect x={agent.deskX + 25} y={agent.deskY + 152} width={70 * agent.progress / 100} height="3" rx="1.5" fill={agent.color} />
+
+                  {/* Status indicator */}
+                  <circle cx={agent.deskX + 105} cy={agent.deskY + 130} r="4"
+                    fill={agent.status === 'done' ? '#10b981' : agent.status === 'coding' ? '#3b82f6' : agent.status === 'coffee' ? '#f59e0b' : '#8b5cf6'}>
+                    {agent.status !== 'done' && <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />}
+                  </circle>
+                </g>
+              );
+            })}
+
+            {/* Decorations */}
+            {/* Plant */}
+            <g transform="translate(50, 280)">
+              <rect x="0" y="15" width="16" height="18" rx="3" fill="#78350f" />
+              <circle cx="8" cy="10" r="12" fill="#22c55e" opacity="0.7" />
+              <circle cx="4" cy="5" r="8" fill="#16a34a" opacity="0.6" />
+            </g>
+
+            {/* Whiteboard */}
+            <rect x="750" y="80" width="100" height="70" rx="4" fill="#f8fafc" stroke="#e2e8f0" />
+            <text x="800" y="100" textAnchor="middle" fill="#475569" fontSize="8">SPRINT</text>
+            <line x1="760" y1="110" x2="840" y2="110" stroke="#60a5fa" strokeWidth="2" />
+            <line x1="760" y1="120" x2="820" y2="120" stroke="#10b981" strokeWidth="2" />
+            <line x1="760" y1="130" x2="800" y2="130" stroke="#f59e0b" strokeWidth="2" />
+
+            {/* Water cooler */}
+            <g transform="translate(820, 300)">
+              <rect x="0" y="0" width="20" height="30" rx="3" fill="#dbeafe" stroke="#93c5fd" />
+              <rect x="3" y="30" width="14" height="15" rx="2" fill="#e2e8f0" />
+              <circle cx="10" cy="12" r="6" fill="#60a5fa" opacity="0.5" />
+            </g>
+          </svg>
+        </div>
+
+        {/* ── Chat Panel (right) ── */}
+        <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0">
+          {/* Agent info or chat header */}
+          <div className="p-3 border-b border-slate-800">
+            {selectedAgent ? (
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                  style={{ backgroundColor: agents.find(a => a.id === selectedAgent)?.color }}>
+                  {agents.find(a => a.id === selectedAgent)?.name[0]}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">{agents.find(a => a.id === selectedAgent)?.name}</div>
+                  <div className="text-[10px] text-slate-400">{agents.find(a => a.id === selectedAgent)?.currentTask}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm font-semibold">💬 Chat d'équipe</div>
+            )}
+          </div>
+
+          {/* Stats bar */}
+          <div className="px-3 py-2 border-b border-slate-800 flex gap-3 text-[10px]">
+            {agents.map(a => (
+              <div key={a.id} className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: a.color }} />
+                <span className="text-slate-400">{Math.floor(a.progress)}%</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Chat messages */}
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {chat.map((msg, i) => (
+              <div key={i} className={`flex flex-col ${msg.isUser ? 'items-end' : 'items-start'}`}>
+                <div className="flex items-center gap-1 mb-0.5">
+                  <span className="text-[9px] text-slate-500">{msg.time}</span>
+                  <span className={`text-[10px] font-medium ${msg.isUser ? 'text-blue-400' : 'text-slate-300'}`}>{msg.from}</span>
+                </div>
+                <div className={`px-3 py-1.5 rounded-xl text-xs max-w-[220px] ${
+                  msg.isUser ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-slate-800 text-slate-200 rounded-bl-sm'
+                }`}>
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Chat input */}
+          <div className="p-3 border-t border-slate-800">
+            <div className="flex gap-2">
+              <input
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && sendChat()}
+                placeholder="Parler à l'équipe..."
+                className="flex-1 bg-slate-800 text-white text-xs rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-500"
+              />
+              <button onClick={sendChat} className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-lg transition-colors">
+                ➤
+              </button>
+            </div>
+            <div className="mt-2 flex gap-1 flex-wrap">
+              {['status', 'bravo!', 'pause café', 'bugs?', 'deploy!'].map(q => (
+                <button key={q} onClick={() => { setChatInput(q); }}
+                  className="text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-0.5 rounded-full transition-colors">
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

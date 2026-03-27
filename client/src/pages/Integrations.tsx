@@ -320,7 +320,7 @@ export default function Integrations() {
             onClick={() => toggleConnection(category, integ.id)}
             className="w-full px-4 py-2 text-sm font-medium rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
-            Deconnecter
+            Déconnecter
           </button>
         ) : (
           <button
@@ -368,10 +368,10 @@ export default function Integrations() {
       <div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
           <Plug className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-          API & Integrations
+          API & Intégrations
         </h1>
         <p className="text-slate-500 dark:text-slate-400 mt-1">
-          Connectez RestauMargin a vos outils
+          Connectez RestauMargin à vos outils
         </p>
       </div>
 

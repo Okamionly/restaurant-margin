@@ -551,7 +551,7 @@ export default function Settings() {
   function handleDeleteAllData() {
     if (deleteConfirmText !== 'SUPPRIMER') return;
     localStorage.clear();
-    showToast('Toutes les donnees ont ete supprimees', 'success');
+    showToast('Toutes les données ont été supprimées', 'success');
     setShowDeleteDataModal(false);
     setDeleteConfirmText('');
     window.location.reload();
@@ -1123,11 +1123,11 @@ export default function Settings() {
                   <p className="text-xs text-slate-400 flex items-center gap-1">
                     {bluetoothConnected ? (
                       <>
-                        <Wifi className="w-3 h-3 text-green-500" /> Connectee
+                        <Wifi className="w-3 h-3 text-green-500" /> Connectée
                       </>
                     ) : (
                       <>
-                        <WifiOff className="w-3 h-3" /> Non connectee
+                        <WifiOff className="w-3 h-3" /> Non connectée
                       </>
                     )}
                   </p>
@@ -1137,13 +1137,13 @@ export default function Settings() {
                 onClick={() => {
                   setBluetoothConnected(!bluetoothConnected);
                   showToast(
-                    bluetoothConnected ? 'Balance deconnectee' : 'Recherche de balance en cours...',
+                    bluetoothConnected ? 'Balance déconnectée' : 'Recherche de balance en cours...',
                     bluetoothConnected ? 'info' : 'success',
                   );
                 }}
                 className="btn-secondary text-sm px-4"
               >
-                {bluetoothConnected ? 'Deconnecter' : 'Appairer'}
+                {bluetoothConnected ? 'Déconnecter' : 'Appairer'}
               </button>
             </div>
 
@@ -1184,13 +1184,13 @@ export default function Settings() {
                 onClick={() => {
                   setPrinterConnected(!printerConnected);
                   showToast(
-                    printerConnected ? 'Imprimante deconnectee' : 'Imprimante configuree',
+                    printerConnected ? 'Imprimante déconnectée' : 'Imprimante configurée',
                     printerConnected ? 'info' : 'success',
                   );
                 }}
                 className="btn-secondary text-sm px-4"
               >
-                {printerConnected ? 'Deconnecter' : 'Configurer'}
+                {printerConnected ? 'Déconnecter' : 'Configurer'}
               </button>
             </div>
 

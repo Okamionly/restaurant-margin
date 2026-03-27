@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, Paperclip, Search, Phone, Video, MoreVertical,
   Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package, Mail,
-  FileText,
+  FileText, Loader2, Inbox, Clock,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 
@@ -65,7 +65,7 @@ interface ApiMessage {
   read: boolean;
 }
 
-// ── Email config types ──────────────────────────────────────────────────────
+// ── Email types ─────────────────────────────────────────────────────────────
 interface EmailConfig {
   email: string;
 }
@@ -77,7 +77,17 @@ interface EmailTemplate {
   body: string;
 }
 
-// ── Supplier email addresses ──────────────────────────────────────────────────────
+interface SentEmail {
+  id: string;
+  to: string;
+  from: string;
+  subject: string;
+  body: string;
+  messageId: string;
+  sentAt: string;
+}
+
+// ── Supplier email addresses ──────────────────────────────────────────────────
 const SUPPLIER_EMAILS: Record<string, string> = {
   transgourmet: 'contact@transgourmet.fr',
   metro: 'pro@metro.fr',
@@ -212,7 +222,7 @@ function buildConversations(): Conversation[] {
       messages: [
         { id: '1', senderId: 'lucas', text: 'Les légumes du jour sont arrivés, tout est conforme.', timestamp: '08:30', read: true, type: 'text' },
         { id: '2', senderId: ME, text: 'Super, merci Lucas. Sofia, le dessert du jour est prêt ?', timestamp: '08:45', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin prête ! ��', timestamp: '09:00', read: true, type: 'text' },
+        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin prête !', timestamp: '09:00', read: true, type: 'text' },
         { id: '4', senderId: 'lucas', text: 'Chef: Le poisson est arrivé', timestamp: '09:15', read: true, type: 'text' },
       ],
     },
@@ -285,7 +295,7 @@ function getLastTimestamp(conv: Conversation) {
 function getLastPreview(conv: Conversation) {
   const last = getLastMessage(conv);
   if (!last) return '';
-  if (last.type === 'order') return `�� Commande ${last.orderData?.id}`;
+  if (last.type === 'order') return `Commande ${last.orderData?.id}`;
   const prefix = last.senderId === ME ? 'Vous: ' : '';
   const text = last.text;
   return prefix + (text.length > 40 ? text.slice(0, 40) + '...' : text);
@@ -294,30 +304,35 @@ function getLastPreview(conv: Conversation) {
 // ── Email helpers ────────────────────────────────────────────────────────────
 function loadEmailConfig(): EmailConfig {
   const saved = localStorage.getItem('restaumargin_email');
-  const cfg: EmailConfig = { email: saved || DEFAULT_EMAIL };
-  localStorage.setItem('emailConfig', JSON.stringify(cfg));
-  return cfg;
+  return { email: saved || DEFAULT_EMAIL };
 }
 
 function getSupplierEmail(convId: string): string {
   return SUPPLIER_EMAILS[convId] || '';
 }
 
-function buildMailtoLink(conv: Conversation): string {
-  const to = getSupplierEmail(conv.id);
-  const subject = encodeURIComponent(`RestauMargin — ${conv.name}`);
-  const body = conv.messages
-    .map(m => {
-      const sender = m.senderId === ME ? 'Moi' : (CONTACTS.find(c => c.id === m.senderId)?.name.split(' - ')[0] || m.senderId);
-      const text = m.type === 'order' && m.orderData ? `[Commande ${m.orderData.id} - ${m.orderData.total}]` : m.text;
-      return `${sender} (${m.timestamp}) :\n${text}`;
-    })
-    .join('\n\n');
-  return `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${encodeURIComponent(body)}`;
+// ── Send email via API ──────────────────────────────────────────────────────
+async function sendEmailApi(payload: { to: string; subject: string; body: string; from?: string }): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  const res = await fetch(`${API}/api/email/send`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    return { success: false, error: data.error || "Erreur lors de l'envoi" };
+  }
+  return { success: true, messageId: data.messageId };
 }
 
-function buildComposeMailto(to: string, subject: string, body: string): string {
-  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+async function fetchSentEmails(): Promise<SentEmail[]> {
+  try {
+    const res = await fetch(`${API}/api/email/sent`, { headers: authHeaders() });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -331,7 +346,10 @@ export default function Messagerie() {
   const [mobileShowChat, setMobileShowChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Email config — user can connect their own email
+  // Main view tab: 'conversations' or 'sent'
+  const [mainTab, setMainTab] = useState<'conversations' | 'sent'>('conversations');
+
+  // Email config
   const [emailConfig, setEmailConfig] = useState<EmailConfig>(loadEmailConfig);
   const [showEmailSetup, setShowEmailSetup] = useState(false);
   const [emailInput, setEmailInput] = useState('');
@@ -341,9 +359,17 @@ export default function Messagerie() {
   const [composeTo, setComposeTo] = useState('');
   const [composeSubject, setComposeSubject] = useState('');
   const [composeBody, setComposeBody] = useState('');
+  const [composeSending, setComposeSending] = useState(false);
 
   // Template picker
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+
+  // Sent emails
+  const [sentEmails, setSentEmails] = useState<SentEmail[]>([]);
+  const [sentLoading, setSentLoading] = useState(false);
+
+  // Email forward from conversation
+  const [emailForwardSending, setEmailForwardSending] = useState<string | null>(null);
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
   const isEmailConfigured = !!emailConfig.email;
@@ -398,7 +424,7 @@ export default function Messagerie() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeConv?.messages.length]);
 
-  // ── Fetch messages when selecting a conversation ───────────────────────
+  // Fetch messages when selecting a conversation
   const fetchMessages = useCallback(async (convId: string) => {
     try {
       const res = await fetch(`${API}/api/messages/conversations/${convId}`, { headers: authHeaders() });
@@ -416,7 +442,7 @@ export default function Messagerie() {
     }
   }, []);
 
-  // ── Mark as read when opening ──────────────────────────────────────────
+  // Mark as read when opening
   useEffect(() => {
     if (!activeId) return;
     setConversations((prev) =>
@@ -431,6 +457,17 @@ export default function Messagerie() {
       headers: authHeaders(),
     }).catch(() => {});
   }, [activeId]);
+
+  // Load sent emails when switching to sent tab
+  useEffect(() => {
+    if (mainTab === 'sent') {
+      setSentLoading(true);
+      fetchSentEmails().then((emails) => {
+        setSentEmails(emails);
+        setSentLoading(false);
+      });
+    }
+  }, [mainTab]);
 
   const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
 
@@ -530,7 +567,37 @@ export default function Messagerie() {
       }
     }
     setShowNewModal(false);
+    setMainTab('conversations');
     showToast(`Conversation avec ${contact.name} ouverte`, 'info');
+  }
+
+  // ── Email: send conversation by email (in-app) ───────────────────────
+  async function handleEmailConversation(conv: Conversation) {
+    const to = getSupplierEmail(conv.id);
+    if (!to) {
+      showToast('Aucune adresse email connue pour ce contact', 'error');
+      return;
+    }
+
+    setEmailForwardSending(conv.id);
+
+    const subject = `RestauMargin — ${conv.name}`;
+    const body = conv.messages
+      .map(m => {
+        const sender = m.senderId === ME ? 'Moi' : (CONTACTS.find(c => c.id === m.senderId)?.name.split(' - ')[0] || m.senderId);
+        const text = m.type === 'order' && m.orderData ? `[Commande ${m.orderData.id} - ${m.orderData.total}]` : m.text;
+        return `${sender} (${m.timestamp}) :\n${text}`;
+      })
+      .join('\n\n');
+
+    const result = await sendEmailApi({ to, subject, body, from: emailConfig.email || undefined });
+    setEmailForwardSending(null);
+
+    if (result.success) {
+      showToast(`Email envoyé à ${to}`, 'success');
+    } else {
+      showToast(result.error || "Erreur lors de l'envoi", 'error');
+    }
   }
 
   // ── Compose email handlers ────────────────────────────────────────────
@@ -542,15 +609,44 @@ export default function Messagerie() {
     setShowComposeModal(true);
   }
 
-  function handleSendCompose() {
+  async function handleSendCompose() {
+    if (!composeTo.trim() || !composeTo.includes('@')) {
+      showToast('Veuillez saisir une adresse email valide', 'error');
+      return;
+    }
     if (!composeSubject.trim()) {
       showToast('Veuillez saisir un objet', 'error');
       return;
     }
-    const link = buildComposeMailto(composeTo, composeSubject, composeBody);
-    window.open(link, '_blank');
-    showToast('Email ouvert dans votre client de messagerie', 'success');
-    setShowComposeModal(false);
+    if (!composeBody.trim()) {
+      showToast('Veuillez saisir le corps du message', 'error');
+      return;
+    }
+
+    setComposeSending(true);
+
+    const result = await sendEmailApi({
+      to: composeTo.trim(),
+      subject: composeSubject.trim(),
+      body: composeBody.trim(),
+      from: emailConfig.email || undefined,
+    });
+
+    setComposeSending(false);
+
+    if (result.success) {
+      showToast(`Email envoyé à ${composeTo.trim()}`, 'success');
+      setShowComposeModal(false);
+      setComposeTo('');
+      setComposeSubject('');
+      setComposeBody('');
+      // Refresh sent list if on that tab
+      if (mainTab === 'sent') {
+        fetchSentEmails().then(setSentEmails);
+      }
+    } else {
+      showToast(result.error || "Erreur lors de l'envoi de l'email", 'error');
+    }
   }
 
   // ── Render ───────────────────────────────────────────────────────────────
@@ -574,14 +670,6 @@ export default function Messagerie() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => window.open(`https://mail.google.com/mail/u/${emailConfig.email}`, '_blank')}
-            title="Ouvrir Gmail"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors text-sm"
-          >
-            <Mail className="w-4 h-4" />
-            <span className="hidden sm:inline">Lire mes emails</span>
-          </button>
           {isEmailConfigured && (
             <div className="relative">
               <button
@@ -636,12 +724,6 @@ export default function Messagerie() {
             <strong>Email connecté</strong> — {emailConfig.email}
           </span>
           <button
-            onClick={() => window.open(`https://mail.google.com/mail/u/${emailConfig.email}`, '_blank')}
-            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
-          >
-            Ouvrir Gmail
-          </button>
-          <button
             onClick={handleDisconnectEmail}
             className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 transition-colors"
           >
@@ -669,7 +751,7 @@ export default function Messagerie() {
       ) : (
         <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-amber-700 dark:text-amber-300 text-xs">
           <Mail className="w-4 h-4 shrink-0" />
-          <span className="flex-1">Connectez votre adresse email pour envoyer de vrais messages</span>
+          <span className="flex-1">Connectez votre adresse email pour personnaliser l'expéditeur</span>
           <button
             onClick={() => setShowEmailSetup(true)}
             className="px-3 py-1 rounded text-[10px] font-semibold bg-amber-600 text-white hover:bg-amber-700 transition-colors"
@@ -679,105 +761,255 @@ export default function Messagerie() {
         </div>
       )}
 
-      
       {/* Main panels */}
       <div className="flex flex-1 min-h-0 bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 overflow-hidden mt-1">
-        {/* ── Left panel: conversation list ──────────────────────────────── */}
+        {/* ── Left panel: conversation list + sent tab ──────────────────── */}
         <div
           className={`w-full md:w-1/3 md:max-w-sm border-r dark:border-slate-700 flex flex-col ${
             mobileShowChat ? 'hidden md:flex' : 'flex'
           }`}
         >
-          {/* Search */}
-          <div className="p-3 border-b dark:border-slate-700">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Rechercher une conversation..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
-              />
-            </div>
+          {/* Tab switcher */}
+          <div className="flex border-b dark:border-slate-700">
+            <button
+              onClick={() => setMainTab('conversations')}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-semibold transition-colors ${
+                mainTab === 'conversations'
+                  ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+              }`}
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              Conversations
+              {totalUnread > 0 && (
+                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-red-500 text-white rounded-full min-w-[16px] text-center">
+                  {totalUnread}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => { setMainTab('sent'); setActiveId(null); }}
+              className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-semibold transition-colors ${
+                mainTab === 'sent'
+                  ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400 bg-green-50/50 dark:bg-green-900/10'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+              }`}
+            >
+              <Inbox className="w-3.5 h-3.5" />
+              Emails envoyés
+              {sentEmails.length > 0 && (
+                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-full min-w-[16px] text-center">
+                  {sentEmails.length}
+                </span>
+              )}
+            </button>
           </div>
 
-          {/* Conversations */}
-          <div className="flex-1 overflow-y-auto">
-            {filteredConversations.length === 0 && (
-              <div className="p-4 text-center text-sm text-slate-400">Aucune conversation</div>
-            )}
-            {filteredConversations.map((conv) => (
-              <button
-                key={conv.id}
-                onClick={() => selectConversation(conv.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b dark:border-slate-700/50 ${
-                  activeId === conv.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                }`}
-              >
-                {/* Avatar */}
-                <div className="relative flex-shrink-0">
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white ${
-                      conv.isGroup ? 'bg-purple-500' : 'bg-blue-500'
+          {mainTab === 'conversations' ? (
+            <>
+              {/* Search */}
+              <div className="p-3 border-b dark:border-slate-700">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher une conversation..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                  />
+                </div>
+              </div>
+
+              {/* Conversations */}
+              <div className="flex-1 overflow-y-auto">
+                {filteredConversations.length === 0 && (
+                  <div className="p-4 text-center text-sm text-slate-400">Aucune conversation</div>
+                )}
+                {filteredConversations.map((conv) => (
+                  <button
+                    key={conv.id}
+                    onClick={() => selectConversation(conv.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b dark:border-slate-700/50 ${
+                      activeId === conv.id ? 'bg-blue-50 dark:bg-blue-900/20' : ''
                     }`}
                   >
-                    {conv.isGroup ? <Users className="w-5 h-5" /> : conv.avatar}
-                  </div>
-                  {conv.online && (
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-800" />
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold truncate dark:text-slate-200">
-                      {conv.name}
-                    </span>
-                    <span className="text-xs text-slate-400 flex-shrink-0 ml-2">
-                      {getLastTimestamp(conv)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between mt-0.5">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                      {getLastPreview(conv)}
-                    </span>
-                    <div className="flex items-center gap-1 shrink-0 ml-1">
-                      {conv.messages.length > 0 && (
-                        <a
-                          href={buildMailtoLink(conv)}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const supplierEmail = getSupplierEmail(conv.id);
-                            showToast(supplierEmail ? `Email vers ${supplierEmail}` : 'Ouverture email...', 'info');
-                          }}
-                          title={getSupplierEmail(conv.id) ? `Envoyer à ${getSupplierEmail(conv.id)}` : 'Envoyer par email'}
-                          className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                        >
-                          <Mail className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-                      {conv.unread > 0 && (
-                        <span className="px-1.5 py-0.5 text-[10px] font-bold bg-blue-600 text-white rounded-full min-w-[18px] text-center">
-                          {conv.unread}
-                        </span>
+                    {/* Avatar */}
+                    <div className="relative flex-shrink-0">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white ${
+                          conv.isGroup ? 'bg-purple-500' : 'bg-blue-500'
+                        }`}
+                      >
+                        {conv.isGroup ? <Users className="w-5 h-5" /> : conv.avatar}
+                      </div>
+                      {conv.online && (
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-slate-800" />
                       )}
                     </div>
-                  </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold truncate dark:text-slate-200">
+                          {conv.name}
+                        </span>
+                        <span className="text-xs text-slate-400 flex-shrink-0 ml-2">
+                          {getLastTimestamp(conv)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mt-0.5">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                          {getLastPreview(conv)}
+                        </span>
+                        <div className="flex items-center gap-1 shrink-0 ml-1">
+                          {conv.messages.length > 0 && getSupplierEmail(conv.id) && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEmailConversation(conv);
+                              }}
+                              disabled={emailForwardSending === conv.id}
+                              title={`Envoyer à ${getSupplierEmail(conv.id)}`}
+                              className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors disabled:opacity-50"
+                            >
+                              {emailForwardSending === conv.id ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <Mail className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          )}
+                          {conv.unread > 0 && (
+                            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-blue-600 text-white rounded-full min-w-[18px] text-center">
+                              {conv.unread}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            /* ── Sent emails list ──────────────────────────────────────── */
+            <div className="flex-1 overflow-y-auto">
+              {sentLoading ? (
+                <div className="flex items-center justify-center p-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
                 </div>
-              </button>
-            ))}
-          </div>
+              ) : sentEmails.length === 0 ? (
+                <div className="flex flex-col items-center justify-center p-8 text-slate-400">
+                  <Inbox className="w-10 h-10 mb-2 opacity-40" />
+                  <p className="text-sm font-medium">Aucun email envoyé</p>
+                  <p className="text-xs mt-1">Les emails envoyés apparaitront ici</p>
+                </div>
+              ) : (
+                sentEmails.map((email) => (
+                  <button
+                    key={email.id}
+                    onClick={() => {
+                      // Show detail in right panel
+                      setActiveId(`email-${email.id}`);
+                      setMobileShowChat(true);
+                    }}
+                    className={`w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border-b dark:border-slate-700/50 ${
+                      activeId === `email-${email.id}` ? 'bg-green-50 dark:bg-green-900/20' : ''
+                    }`}
+                  >
+                    <div className="w-9 h-9 rounded-full bg-green-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold truncate dark:text-slate-200">
+                          {email.to}
+                        </span>
+                        <span className="text-xs text-slate-400 shrink-0 ml-2">
+                          {new Date(email.sentAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <div className="text-xs font-medium text-slate-600 dark:text-slate-300 truncate mt-0.5">
+                        {email.subject}
+                      </div>
+                      <div className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">
+                        {email.body.slice(0, 60)}...
+                      </div>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
-        {/* ── Right panel: active conversation ───────────────────────────── */}
+        {/* ── Right panel: active conversation OR sent email detail ────── */}
         <div
           className={`flex-1 flex flex-col ${
             !mobileShowChat ? 'hidden md:flex' : 'flex'
           }`}
         >
-          {activeConv ? (
+          {activeId?.startsWith('email-') ? (
+            /* ── Sent email detail view ─────────────────────────────── */
+            (() => {
+              const emailId = activeId.replace('email-', '');
+              const email = sentEmails.find((e) => e.id === emailId);
+              if (!email) return null;
+              return (
+                <>
+                  <div className="flex items-center justify-between px-4 py-3 border-b dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => { setMobileShowChat(false); setActiveId(null); }}
+                        className="md:hidden p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700"
+                      >
+                        <ArrowLeft className="w-5 h-5" />
+                      </button>
+                      <div className="w-9 h-9 rounded-full bg-green-500 flex items-center justify-center text-sm font-bold text-white">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold dark:text-slate-200">Email envoyé</div>
+                        <div className="text-xs text-slate-400">
+                          {new Date(email.sentAt).toLocaleDateString('fr-FR')} à {new Date(email.sentAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50 dark:bg-slate-900/30">
+                    <div className="max-w-2xl mx-auto bg-white dark:bg-slate-800 rounded-xl shadow-sm border dark:border-slate-700 overflow-hidden">
+                      <div className="px-6 py-4 border-b dark:border-slate-700 space-y-2">
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-slate-400 w-8">De :</span>
+                          <span className="font-medium dark:text-slate-200">{email.from}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-slate-400 w-8">À :</span>
+                          <span className="font-medium dark:text-slate-200">{email.to}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-slate-400 w-16">Objet :</span>
+                          <span className="font-semibold dark:text-slate-100">{email.subject}</span>
+                        </div>
+                      </div>
+                      <div className="px-6 py-4">
+                        <pre className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">
+                          {email.body}
+                        </pre>
+                      </div>
+                      <div className="px-6 py-3 border-t dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60">
+                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                          <Clock className="w-3 h-3" />
+                          <span>ID: {email.messageId}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()
+          ) : activeConv ? (
             <>
               {/* Chat header */}
               <div className="flex items-center justify-between px-4 py-3 border-b dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
@@ -812,18 +1044,19 @@ export default function Messagerie() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  {activeConv.messages.length > 0 && (
-                    <a
-                      href={buildMailtoLink(activeConv)}
-                      title={getSupplierEmail(activeConv.id) ? `Envoyer à ${getSupplierEmail(activeConv.id)}` : 'Envoyer cette conversation par email'}
-                      className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 dark:text-blue-400 transition-colors"
-                      onClick={() => {
-                        const to = getSupplierEmail(activeConv.id);
-                        showToast(to ? `Email vers ${to}...` : 'Ouverture email...', 'info');
-                      }}
+                  {activeConv.messages.length > 0 && getSupplierEmail(activeConv.id) && (
+                    <button
+                      onClick={() => handleEmailConversation(activeConv)}
+                      disabled={emailForwardSending === activeConv.id}
+                      title={`Envoyer par email à ${getSupplierEmail(activeConv.id)}`}
+                      className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-500 dark:text-blue-400 transition-colors disabled:opacity-50"
                     >
-                      <Mail className="w-4 h-4" />
-                    </a>
+                      {emailForwardSending === activeConv.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Mail className="w-4 h-4" />
+                      )}
+                    </button>
                   )}
                   <button className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400">
                     <Phone className="w-4 h-4" />
@@ -980,7 +1213,7 @@ export default function Messagerie() {
 
       {/* ── Compose email modal ────────────────────────────────────────── */}
       {showComposeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowComposeModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => !composeSending && setShowComposeModal(false)}>
           <div
             className="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-lg mx-4 flex flex-col"
             onClick={(e) => e.stopPropagation()}
@@ -991,7 +1224,7 @@ export default function Messagerie() {
                 <h2 className="text-lg font-semibold dark:text-slate-200">Nouveau message email</h2>
               </div>
               <button
-                onClick={() => setShowComposeModal(false)}
+                onClick={() => !composeSending && setShowComposeModal(false)}
                 className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400"
               >
                 <X className="w-5 h-5" />
@@ -1006,14 +1239,15 @@ export default function Messagerie() {
               )}
               <div>
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  À (destinataire)
+                  À (destinataire) *
                 </label>
                 <input
                   type="email"
                   placeholder="destinataire@exemple.com"
                   value={composeTo}
                   onChange={(e) => setComposeTo(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                  disabled={composeSending}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400 disabled:opacity-50"
                 />
               </div>
               <div>
@@ -1025,19 +1259,21 @@ export default function Messagerie() {
                   placeholder="Objet du message"
                   value={composeSubject}
                   onChange={(e) => setComposeSubject(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400"
+                  disabled={composeSending}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400 disabled:opacity-50"
                 />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
-                  Corps du message
+                  Corps du message *
                 </label>
                 <textarea
                   rows={8}
                   placeholder="Votre message..."
                   value={composeBody}
                   onChange={(e) => setComposeBody(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400 resize-none"
+                  disabled={composeSending}
+                  className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm border-0 focus:ring-2 focus:ring-blue-500 dark:text-slate-200 placeholder:text-slate-400 resize-none disabled:opacity-50"
                 />
               </div>
 
@@ -1054,7 +1290,8 @@ export default function Messagerie() {
                         setComposeSubject(tpl.subject);
                         setComposeBody(tpl.body);
                       }}
-                      className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border dark:border-slate-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:border-amber-300 dark:hover:border-amber-700 text-slate-600 dark:text-slate-300 transition-colors"
+                      disabled={composeSending}
+                      className="flex items-center gap-1 px-2 py-1 text-xs rounded-md border dark:border-slate-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:border-amber-300 dark:hover:border-amber-700 text-slate-600 dark:text-slate-300 transition-colors disabled:opacity-50"
                     >
                       <FileText className="w-3 h-3 text-amber-500" />
                       {tpl.name}
@@ -1065,17 +1302,28 @@ export default function Messagerie() {
             </div>
             <div className="flex items-center justify-end gap-2 px-4 py-3 border-t dark:border-slate-700">
               <button
-                onClick={() => setShowComposeModal(false)}
-                className="px-4 py-2 text-sm font-medium rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                onClick={() => !composeSending && setShowComposeModal(false)}
+                disabled={composeSending}
+                className="px-4 py-2 text-sm font-medium rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors disabled:opacity-50"
               >
                 Annuler
               </button>
               <button
                 onClick={handleSendCompose}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                disabled={composeSending}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-70"
               >
-                <Send className="w-4 h-4" />
-                Envoyer
+                {composeSending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Envoi en cours...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Envoyer
+                  </>
+                )}
               </button>
             </div>
           </div>

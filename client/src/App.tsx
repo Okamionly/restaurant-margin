@@ -40,6 +40,7 @@ const Seminaires = lazy(() => import('./pages/Seminaires'));
 const DevisPage = lazy(() => import('./pages/Devis'));
 const Comptabilite = lazy(() => import('./pages/Comptabilite'));
 const Clients = lazy(() => import('./pages/Clients'));
+const DevCorp = lazy(() => import('./pages/DevCorp'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -236,7 +237,7 @@ function AppLayout() {
   // Bottom nav items (always visible at bottom of sidebar)
   const bottomNavItems: NavItem[] = [
     ...(user?.role === 'admin' ? [{ to: '/users', icon: Users, label: 'Utilisateurs' }] : []),
-    { to: '/settings', icon: Settings, label: 'Parametres' },
+    { to: '/settings', icon: Settings, label: 'Paramètres' },
   ];
 
   // Get user initials for avatar
@@ -498,6 +499,7 @@ function App() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/menu-public" element={<PublicMenu />} />
+          <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
           <Route
             path="/station"
             element={

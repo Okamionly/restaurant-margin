@@ -1,40 +1,33 @@
 import { Router, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 
+const prisma = new PrismaClient();
 export const priceHistoryRouter = Router();
-
-/* ─── In-memory storage ─── */
-
-interface PriceEntry {
-  id: number;
-  ingredientId: number;
-  price: number;
-  date: string;
-  source: string;
-  createdAt: string;
-}
-
-let priceEntries: PriceEntry[] = [];
-let nextId = 1;
 
 /* ─── GET /api/price-history ─── */
 priceHistoryRouter.get('/', async (req: AuthRequest, res: Response) => {
   try {
     const { ingredientId, days } = req.query;
-    let results = [...priceEntries];
+
+    const where: any = {};
 
     if (ingredientId) {
-      results = results.filter(e => e.ingredientId === Number(ingredientId));
+      where.ingredientId = Number(ingredientId);
     }
 
     if (days) {
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - Number(days));
       const cutoffStr = cutoff.toISOString().slice(0, 10);
-      results = results.filter(e => e.date >= cutoffStr);
+      where.date = { gte: cutoffStr };
     }
 
-    results.sort((a, b) => a.date.localeCompare(b.date));
+    const results = await prisma.priceHistory.findMany({
+      where,
+      orderBy: { date: 'asc' },
+    });
+
     res.json(results);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération de l\'historique des prix' });
@@ -44,9 +37,13 @@ priceHistoryRouter.get('/', async (req: AuthRequest, res: Response) => {
 /* ─── GET /api/price-history/alerts ─── */
 priceHistoryRouter.get('/alerts', async (_req: AuthRequest, res: Response) => {
   try {
-    // Group entries by ingredientId and compute alerts for significant price changes
-    const byIngredient: Record<number, PriceEntry[]> = {};
-    for (const entry of priceEntries) {
+    const allEntries = await prisma.priceHistory.findMany({
+      orderBy: { date: 'asc' },
+    });
+
+    // Group entries by ingredientId
+    const byIngredient: Record<number, typeof allEntries> = {};
+    for (const entry of allEntries) {
       if (!byIngredient[entry.ingredientId]) byIngredient[entry.ingredientId] = [];
       byIngredient[entry.ingredientId].push(entry);
     }
@@ -54,11 +51,10 @@ priceHistoryRouter.get('/alerts', async (_req: AuthRequest, res: Response) => {
     const alerts: { ingredientId: number; oldPrice: number; newPrice: number; changePercent: number; date: string }[] = [];
 
     for (const [ingId, entries] of Object.entries(byIngredient)) {
-      const sorted = entries.sort((a, b) => a.date.localeCompare(b.date));
-      if (sorted.length < 2) continue;
+      if (entries.length < 2) continue;
 
-      const latest = sorted[sorted.length - 1];
-      const previous = sorted[sorted.length - 2];
+      const latest = entries[entries.length - 1];
+      const previous = entries[entries.length - 2];
       const changePercent = ((latest.price - previous.price) / previous.price) * 100;
 
       if (Math.abs(changePercent) >= 5) {
@@ -88,16 +84,15 @@ priceHistoryRouter.post('/', async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const entry: PriceEntry = {
-      id: nextId++,
-      ingredientId: Number(ingredientId),
-      price: Number(price),
-      date: date || new Date().toISOString().slice(0, 10),
-      source: source || 'manual',
-      createdAt: new Date().toISOString(),
-    };
+    const entry = await prisma.priceHistory.create({
+      data: {
+        ingredientId: Number(ingredientId),
+        price: Number(price),
+        date: date || new Date().toISOString().slice(0, 10),
+        source: source || 'manual',
+      },
+    });
 
-    priceEntries.push(entry);
     res.status(201).json(entry);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de l\'ajout du prix' });

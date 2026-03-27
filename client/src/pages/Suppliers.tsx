@@ -18,7 +18,7 @@ import {
   searchSuppliers,
 } from '../data/frenchSuppliers';
 import type { FrenchSupplier } from '../data/frenchSuppliers';
-import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
+import { searchCatalog, loadFullCatalog, type CatalogProduct } from '../data/productCatalog';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
@@ -218,7 +218,7 @@ export default function Suppliers() {
 
   // Load catalog for annuaire
   useEffect(() => {
-    fetch('/catalog.json').then(r => r.json()).then(setCatalogData).catch(() => {});
+    loadFullCatalog().then(setCatalogData).catch(() => {});
   }, []);
 
   // ── data loading ───────────────────────────────────────────────────────────

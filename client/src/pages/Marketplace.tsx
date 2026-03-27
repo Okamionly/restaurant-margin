@@ -243,7 +243,7 @@ export default function Marketplace() {
       return [...prev, { productId, supplierId, quantity: 1, price, unit }];
     });
     setCartOpen(true);
-    showToast('Produit ajoute au panier', 'success');
+    showToast('Produit ajouté au panier', 'success');
   }
 
   function updateCartQuantity(productId: string, supplierId: string, delta: number) {
@@ -270,7 +270,7 @@ export default function Marketplace() {
 
   function submitOrder() {
     if (cart.length === 0) return;
-    showToast(`Commande de ${cart.length} produit(s) envoyee avec succes !`, 'success');
+    showToast(`Commande de ${cart.length} produit(s) envoyée avec succès !`, 'success');
     setCart([]);
     setCartOpen(false);
   }

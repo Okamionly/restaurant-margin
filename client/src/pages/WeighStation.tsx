@@ -332,9 +332,9 @@ export default function WeighStation() {
               'bg-slate-500'
             }`} />
             <span className="text-xs text-slate-400 hidden sm:inline">
-              {status === 'connected' ? 'Connecte' :
+              {status === 'connected' ? 'Connecté' :
                status === 'connecting' ? 'Connexion...' :
-               status === 'error' ? 'Erreur' : 'Deconnecte'}
+               status === 'error' ? 'Erreur' : 'Déconnecté'}
             </span>
           </div>
 
@@ -366,7 +366,7 @@ export default function WeighStation() {
                status === 'connecting' ? <Bluetooth className="w-5 h-5 animate-spin" /> :
                <BluetoothOff className="w-5 h-5" />}
               <span className="hidden sm:inline">
-                {status === 'connected' ? 'Deconnecter' :
+                {status === 'connected' ? 'Déconnecter' :
                  status === 'connecting' ? 'Connexion...' :
                  'Connecter'}
               </span>

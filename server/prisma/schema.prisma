@@ -108,3 +108,92 @@ model InventoryItem {
   @@unique([ingredientId])
   @@map("inventory_items")
 }
+
+model Invoice {
+  id            Int           @id @default(autoincrement())
+  supplierName  String
+  invoiceNumber String
+  invoiceDate   String
+  totalAmount   Float
+  status        String        @default("pending")
+  createdAt     DateTime      @default(now())
+  items         InvoiceItem[]
+
+  @@index([supplierName])
+  @@index([status])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id           Int      @id @default(autoincrement())
+  invoiceId    Int
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productName  String
+  quantity     Float
+  unit         String
+  unitPrice    Float
+  total        Float
+  ingredientId Int?
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model PriceHistory {
+  id           Int      @id @default(autoincrement())
+  ingredientId Int
+  price        Float
+  date         String
+  source       String   @default("manual")
+  createdAt    DateTime @default(now())
+
+  @@index([ingredientId])
+  @@index([date])
+  @@index([ingredientId, date])
+  @@map("price_history")
+}
+
+model MenuSale {
+  id         Int      @id @default(autoincrement())
+  recipeId   Int
+  recipeName String
+  quantity   Int
+  revenue    Float
+  date       String
+  createdAt  DateTime @default(now())
+
+  @@index([recipeId])
+  @@index([date])
+  @@index([recipeId, date])
+  @@map("menu_sales")
+}
+
+model Conversation {
+  id           String    @id
+  name         String
+  participants String[]
+  lastMessage  String    @default("")
+  unreadCount  Int       @default(0)
+  isGroup      Boolean   @default(false)
+  avatar       String    @default("")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  senderName     String
+  content        String
+  timestamp      String
+  read           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@map("messages")
+}

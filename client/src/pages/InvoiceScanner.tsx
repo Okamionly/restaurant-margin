@@ -384,8 +384,8 @@ export default function InvoiceScanner() {
       setPendingFiles([]);
       showToast(
         pendingFiles.length === 1
-          ? 'Facture ajoutee avec succes'
-          : `${pendingFiles.length} factures ajoutees`,
+          ? 'Facture ajoutée avec succès'
+          : `${pendingFiles.length} factures ajoutées`,
         'success'
       );
     }
@@ -420,7 +420,7 @@ export default function InvoiceScanner() {
     const inv = invoices.find((i) => i.id === id);
     if (inv?.previewUrl && inv.file) URL.revokeObjectURL(inv.previewUrl);
     setInvoices((prev) => prev.filter((i) => i.id !== id));
-    showToast('Facture supprimee', 'success');
+    showToast('Facture supprimée', 'success');
   };
 
   /* ─── OCR handlers ─── */
@@ -474,7 +474,7 @@ export default function InvoiceScanner() {
       previewUrl: null,
     };
     setInvoices((prev) => [newInv, ...prev]);
-    showToast('Facture OCR ajoutee au dossier', 'success');
+    showToast('Facture OCR ajoutée au dossier', 'success');
     setOcrItems([]);
     setOcrText('');
     setOcrParsed(false);

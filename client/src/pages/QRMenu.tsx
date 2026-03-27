@@ -199,7 +199,7 @@ export default function QRMenu() {
             Menu Digital QR Code
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Generez un QR code pour que vos clients consultent votre carte en ligne
+            Générez un QR code pour que vos clients consultent votre carte en ligne
           </p>
         </div>
         <a

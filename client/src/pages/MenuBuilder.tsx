@@ -594,7 +594,7 @@ export default function MenuBuilder() {
               Aucun plat sur la carte
             </h3>
             <p className="text-slate-400 dark:text-slate-500">
-              Creez des recettes pour construire votre carte.
+              Créez des recettes pour construire votre carte.
             </p>
           </div>
         ) : (
@@ -701,7 +701,7 @@ export default function MenuBuilder() {
                               className="text-xs text-amber-600 hover:text-amber-700 font-medium"
                               onClick={() => setQuickAddCategory(null)}
                             >
-                              Creer un nouveau plat &rarr;
+                              Créer un nouveau plat &rarr;
                             </Link>
                           </div>
                         ) : (
@@ -725,7 +725,7 @@ export default function MenuBuilder() {
                                 className="block px-3 py-2 text-xs text-amber-600 hover:text-amber-700 font-medium"
                                 onClick={() => setQuickAddCategory(null)}
                               >
-                                Creer un nouveau plat &rarr;
+                                Créer un nouveau plat &rarr;
                               </Link>
                             </div>
                           </>

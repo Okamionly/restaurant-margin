@@ -173,14 +173,14 @@ function buildMockDocuments(): DocumentDevis[] {
   ];
 
   const dev002Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Cocktail d\u00eenner (120 pièces)', quantite: 120, unite: 'personne', prixUnitaireHT: 45, tauxTVA: 10 },
+    { id: generateId(), description: 'Cocktail dîner (120 pièces)', quantite: 120, unite: 'personne', prixUnitaireHT: 45, tauxTVA: 10 },
     { id: generateId(), description: 'Pièce montée 5 étages', quantite: 1, unite: 'unité', prixUnitaireHT: 450, tauxTVA: 5.5 },
     { id: generateId(), description: 'Décoration florale tables', quantite: 15, unite: 'unité', prixUnitaireHT: 85, tauxTVA: 20 },
-    { id: generateId(), description: 'Service en salle (ma\u00eetres d\'hôtel)', quantite: 8, unite: 'personne', prixUnitaireHT: 200, tauxTVA: 20 },
+    { id: generateId(), description: 'Service en salle (maîtres d\'hôtel)', quantite: 8, unite: 'personne', prixUnitaireHT: 200, tauxTVA: 20 },
   ];
 
   const dev003Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Cocktail d\u00eenatoire 80 personnes', quantite: 80, unite: 'personne', prixUnitaireHT: 35, tauxTVA: 10 },
+    { id: generateId(), description: 'Cocktail dînatoire 80 personnes', quantite: 80, unite: 'personne', prixUnitaireHT: 35, tauxTVA: 10 },
   ];
 
   const fac002Lignes: LigneDevis[] = [

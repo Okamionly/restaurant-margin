@@ -1,38 +1,17 @@
 import { Router, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 
+const prisma = new PrismaClient();
 export const invoicesRouter = Router();
-
-/* ─── In-memory storage ─── */
-
-interface InvoiceItem {
-  id: number;
-  productName: string;
-  quantity: number;
-  unit: string;
-  unitPrice: number;
-  total: number;
-  ingredientId?: number | null;
-}
-
-interface Invoice {
-  id: number;
-  supplierName: string;
-  invoiceNumber: string;
-  invoiceDate: string;
-  totalAmount: number;
-  status: string;
-  items: InvoiceItem[];
-  createdAt: string;
-}
-
-let invoices: Invoice[] = [];
-let nextId = 1;
-let nextItemId = 1;
 
 /* ─── GET /api/invoices ─── */
 invoicesRouter.get('/', async (_req: AuthRequest, res: Response) => {
   try {
+    const invoices = await prisma.invoice.findMany({
+      include: { items: true },
+      orderBy: { createdAt: 'desc' },
+    });
     res.json(invoices);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération des factures' });
@@ -49,8 +28,7 @@ invoicesRouter.post('/', async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const invoiceItems: InvoiceItem[] = (items || []).map((item: any) => ({
-      id: nextItemId++,
+    const invoiceItems = (items || []).map((item: any) => ({
       productName: item.productName || '',
       quantity: item.quantity || 0,
       unit: item.unit || '',
@@ -59,18 +37,22 @@ invoicesRouter.post('/', async (req: AuthRequest, res: Response) => {
       ingredientId: item.ingredientId || null,
     }));
 
-    const invoice: Invoice = {
-      id: nextId++,
-      supplierName,
-      invoiceNumber,
-      invoiceDate: invoiceDate || new Date().toISOString().slice(0, 10),
-      totalAmount: totalAmount || invoiceItems.reduce((s, i) => s + i.total, 0),
-      status: 'pending',
-      items: invoiceItems,
-      createdAt: new Date().toISOString(),
-    };
+    const computedTotal = totalAmount || invoiceItems.reduce((s: number, i: any) => s + i.total, 0);
 
-    invoices.push(invoice);
+    const invoice = await prisma.invoice.create({
+      data: {
+        supplierName,
+        invoiceNumber,
+        invoiceDate: invoiceDate || new Date().toISOString().slice(0, 10),
+        totalAmount: computedTotal,
+        status: 'pending',
+        items: {
+          create: invoiceItems,
+        },
+      },
+      include: { items: true },
+    });
+
     res.status(201).json(invoice);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la création de la facture' });
@@ -83,14 +65,13 @@ invoicesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) { res.status(400).json({ error: 'ID invalide' }); return; }
 
-    const idx = invoices.findIndex(inv => inv.id === id);
-    if (idx === -1) {
+    await prisma.invoice.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (error: any) {
+    if (error.code === 'P2025') {
       res.status(404).json({ error: 'Facture non trouvée' });
       return;
     }
-    invoices.splice(idx, 1);
-    res.json({ success: true });
-  } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la suppression de la facture' });
   }
 });
@@ -101,17 +82,18 @@ invoicesRouter.post('/:id/apply', async (req: AuthRequest, res: Response) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) { res.status(400).json({ error: 'ID invalide' }); return; }
 
-    const invoice = invoices.find(inv => inv.id === id);
+    const invoice = await prisma.invoice.findUnique({ where: { id } });
     if (!invoice) {
       res.status(404).json({ error: 'Facture non trouvée' });
       return;
     }
 
     const { matches } = req.body;
-    // matches is an array of { invoiceItemId, ingredientId, newPrice }
-    // In a real app this would update ingredient prices in the DB
-    // For now, just mark the invoice as applied
-    invoice.status = 'applied';
+
+    await prisma.invoice.update({
+      where: { id },
+      data: { status: 'applied' },
+    });
 
     res.json({ success: true, applied: matches?.length || 0 });
   } catch (error) {

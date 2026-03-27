@@ -1,22 +1,15 @@
 import { Router, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 
+const prisma = new PrismaClient();
 export const menuSalesRouter = Router();
 
-/* ─── In-memory storage ─── */
+/* ─── Seed demo data if table is empty ─── */
+async function seedDemoSalesIfEmpty() {
+  const count = await prisma.menuSale.count();
+  if (count > 0) return;
 
-interface MenuSale {
-  id: number;
-  recipeId: number;
-  recipeName: string;
-  quantity: number;
-  revenue: number;
-  date: string;
-  createdAt: string;
-}
-
-// Pre-seed with demo data so Menu Engineering works immediately after server restart
-function generateDemoSales(): MenuSale[] {
   const demoRecipes = [
     { id: 1, name: 'Boeuf bourguignon', qty: 12, price: 18 },
     { id: 2, name: 'Crème brûlée', qty: 25, price: 8 },
@@ -49,8 +42,8 @@ function generateDemoSales(): MenuSale[] {
     { id: 29, name: 'Tartare de saumon', qty: 13, price: 16 },
     { id: 30, name: 'Burger gourmet', qty: 32, price: 16 },
   ];
-  const sales: MenuSale[] = [];
-  let id = 1;
+
+  const rows: any[] = [];
   const now = new Date();
   for (let d = 0; d < 30; d++) {
     const date = new Date(now);
@@ -60,43 +53,37 @@ function generateDemoSales(): MenuSale[] {
       const variation = 0.6 + Math.random() * 0.8;
       const qty = Math.round(r.qty * variation);
       if (qty > 0) {
-        sales.push({
-          id: id++,
+        rows.push({
           recipeId: r.id,
           recipeName: r.name,
           quantity: qty,
           revenue: qty * r.price,
           date: dateStr,
-          createdAt: new Date().toISOString(),
         });
       }
     }
   }
-  return sales;
+
+  await prisma.menuSale.createMany({ data: rows });
 }
 
-let menuSales: MenuSale[] = generateDemoSales();
-let nextId = menuSales.length + 1;
-
-// Export getter for menu-engineering route
-export function getSalesData() {
-  return menuSales;
-}
+// Run seed on module load
+seedDemoSalesIfEmpty().catch(console.error);
 
 /* ─── GET /api/menu-sales ─── */
 menuSalesRouter.get('/', async (req: AuthRequest, res: Response) => {
   try {
     const { from, to } = req.query;
-    let results = [...menuSales];
 
-    if (from) {
-      results = results.filter(s => s.date >= String(from));
-    }
-    if (to) {
-      results = results.filter(s => s.date <= String(to));
-    }
+    const where: any = {};
+    if (from) where.date = { ...where.date, gte: String(from) };
+    if (to) where.date = { ...where.date, lte: String(to) };
 
-    results.sort((a, b) => a.date.localeCompare(b.date));
+    const results = await prisma.menuSale.findMany({
+      where,
+      orderBy: { date: 'asc' },
+    });
+
     res.json(results);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la récupération des ventes' });
@@ -113,17 +100,16 @@ menuSalesRouter.post('/', async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const sale: MenuSale = {
-      id: nextId++,
-      recipeId: Number(recipeId),
-      recipeName: recipeName || '',
-      quantity: Number(quantity),
-      revenue: Number(revenue || 0),
-      date: date || new Date().toISOString().slice(0, 10),
-      createdAt: new Date().toISOString(),
-    };
+    const sale = await prisma.menuSale.create({
+      data: {
+        recipeId: Number(recipeId),
+        recipeName: recipeName || '',
+        quantity: Number(quantity),
+        revenue: Number(revenue || 0),
+        date: date || new Date().toISOString().slice(0, 10),
+      },
+    });
 
-    menuSales.push(sale);
     res.status(201).json(sale);
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de l\'ajout de la vente' });
@@ -140,18 +126,23 @@ menuSalesRouter.post('/bulk', async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    const created: MenuSale[] = sales.map((s: any) => ({
-      id: nextId++,
+    const data = sales.map((s: any) => ({
       recipeId: Number(s.recipeId),
       recipeName: s.recipeName || '',
       quantity: Number(s.quantity || 0),
       revenue: Number(s.revenue || 0),
       date: s.date || new Date().toISOString().slice(0, 10),
-      createdAt: new Date().toISOString(),
     }));
 
-    menuSales.push(...created);
-    res.status(201).json({ imported: created.length, sales: created });
+    const result = await prisma.menuSale.createMany({ data });
+
+    // Return the created sales for the response
+    const created = await prisma.menuSale.findMany({
+      orderBy: { id: 'desc' },
+      take: data.length,
+    });
+
+    res.status(201).json({ imported: result.count, sales: created.reverse() });
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de l\'import des ventes' });
   }

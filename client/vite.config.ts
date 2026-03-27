@@ -45,6 +45,14 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Force new SW to take over immediately on deploy
+        skipWaiting: true,
+        clientsClaim: true,
+        // Clean old precaches from previous builds
+        cleanupOutdatedCaches: true,
+        // Navigation fallback for SPA
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/restaumargin\.vercel\.app\/api\/.*/i,

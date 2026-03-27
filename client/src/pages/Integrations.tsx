@@ -32,7 +32,7 @@ const INITIAL_WEBHOOKS: WebhookConfig[] = [
   { id: 'wh1', name: 'Nouvelle commande', url: 'https://hooks.example.com/orders', active: true, lastTriggered: '2026-03-27 09:14' },
   { id: 'wh2', name: 'Stock bas', url: 'https://hooks.example.com/low-stock', active: true, lastTriggered: '2026-03-26 17:45' },
   { id: 'wh3', name: 'Nouvelle recette', url: '', active: false, lastTriggered: null },
-  { id: 'wh4', name: 'Prix modifie', url: '', active: false, lastTriggered: null },
+  { id: 'wh4', name: 'Prix modifié', url: '', active: false, lastTriggered: null },
 ];
 
 const CAISSE_INTEGRATIONS: Integration[] = [
@@ -81,8 +81,8 @@ const COMPTA_INTEGRATIONS: Integration[] = [
   {
     id: 'pennylane',
     name: 'Pennylane',
-    description: 'Exportez vos factures et ecritures',
-    features: ['Export automatique des factures', 'Ecritures comptables', 'Rapprochement bancaire'],
+    description: 'Exportez vos factures et écritures',
+    features: ['Export automatique des factures', 'Écritures comptables', 'Rapprochement bancaire'],
     color: '#6366f1',
     logo: 'PL',
     connected: true,
@@ -131,8 +131,8 @@ const RESERVATION_INTEGRATIONS: Integration[] = [
   {
     id: 'octotable',
     name: 'Octotable',
-    description: 'Gerez vos reservations',
-    features: ['Plan de salle connecte', 'Historique client', 'Previsions journalieres'],
+    description: 'Gérez vos réservations',
+    features: ['Plan de salle connecté', 'Historique client', 'Prévisions journalières'],
     color: '#7c3aed',
     logo: 'OT',
     connected: false,
@@ -172,7 +172,7 @@ const LIVRAISON_INTEGRATIONS: Integration[] = [
   {
     id: 'justeat',
     name: 'Just Eat',
-    description: 'Connectez Just Eat a RestauMargin',
+    description: 'Connectez Just Eat à RestauMargin',
     features: ['Import des commandes', 'Gestion du menu en ligne', 'Statistiques de vente'],
     color: '#ff8000',
     logo: 'JE',
@@ -199,7 +199,7 @@ export default function Integrations() {
 
   const copyApiKey = () => {
     navigator.clipboard.writeText(MOCK_API_KEY);
-    showToast('Cle API copiee dans le presse-papiers', 'success');
+    showToast('Clé API copiée dans le presse-papiers', 'success');
   };
 
   const regenerateApiKey = () => {
@@ -208,7 +208,7 @@ export default function Integrations() {
       return;
     }
     setConfirmRegenerate(false);
-    showToast('Nouvelle cle API generee avec succes', 'success');
+    showToast('Nouvelle clé API générée avec succès', 'success');
   };
 
   // ── Webhook Handlers ──────────────────────────────────────────────────────
@@ -230,13 +230,13 @@ export default function Integrations() {
       showToast('Veuillez saisir une URL avant de tester', 'error');
       return;
     }
-    showToast(`Test envoye a ${wh.url}`, 'info');
+    showToast(`Test envoyé à ${wh.url}`, 'info');
   };
 
   const addWebhook = () => {
     const id = `wh${Date.now()}`;
     setWebhooks(prev => [...prev, { id, name: 'Nouveau webhook', url: '', active: false, lastTriggered: null }]);
-    showToast('Webhook ajoute', 'success');
+    showToast('Webhook ajouté', 'success');
   };
 
   // ── Integration Handlers ──────────────────────────────────────────────────
@@ -257,7 +257,7 @@ export default function Integrations() {
     const found = integrations[category].find(i => i.id === id);
     if (found && !found.comingSoon) {
       showToast(
-        found.connected ? `${found.name} deconnecte` : `${found.name} connecte avec succes`,
+        found.connected ? `${found.name} déconnecté` : `${found.name} connecté avec succès`,
         found.connected ? 'info' : 'success'
       );
     }

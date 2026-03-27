@@ -375,7 +375,7 @@ export default function Settings() {
   function handleSaveSettings(section?: string) {
     saveSettingsToStorage(settings);
     showToast(
-      section ? `${section} sauvegardé avec succès` : 'Paramètres sauvegardes avec succes',
+      section ? `${section} sauvegardé avec succès` : 'Paramètres sauvegardés avec succès',
       'success',
     );
   }
@@ -399,7 +399,7 @@ export default function Settings() {
       }
     } catch {
       // Fallback: save locally
-      showToast('Profil sauvegarde localement', 'success');
+      showToast('Profil sauvegardé localement', 'success');
     }
   }
 
@@ -424,7 +424,7 @@ export default function Settings() {
         body: JSON.stringify({ oldPassword, newPassword }),
       });
       if (res.ok) {
-        showToast('Mot de passe modifié avec succes', 'success');
+        showToast('Mot de passe modifié avec succès', 'success');
         setOldPassword('');
         setNewPassword('');
         setConfirmPassword('');
@@ -509,7 +509,7 @@ export default function Settings() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('Donnees exportees avec succes', 'success');
+      showToast('Données exportées avec succès', 'success');
     } catch {
       showToast("Erreur lors de l'export", 'error');
     }

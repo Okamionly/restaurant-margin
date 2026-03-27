@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
-  Edit, Trash2, Loader2, X, UserPlus
+  Edit, Trash2, X, UserPlus
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';

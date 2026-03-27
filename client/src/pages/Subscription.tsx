@@ -190,7 +190,7 @@ export default function Subscription() {
             </div>
             <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5">
               <Zap className="w-4 h-4" />
-              Upgrade
+              Passer au Pro
             </button>
           </div>
 

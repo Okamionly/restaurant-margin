@@ -335,7 +335,7 @@ export const CATALOG_CATEGORIES = [...new Set(PRODUCT_CATALOG.map(p => p.categor
 let _fullCatalog: CatalogProduct[] | null = null;
 let _loadingPromise: Promise<CatalogProduct[]> | null = null;
 
-async function loadFullCatalog(): Promise<CatalogProduct[]> {
+export async function loadFullCatalog(): Promise<CatalogProduct[]> {
   if (_fullCatalog) return _fullCatalog;
   if (_loadingPromise) return _loadingPromise;
   _loadingPromise = fetch('/catalog.json')
@@ -351,10 +351,12 @@ async function loadFullCatalog(): Promise<CatalogProduct[]> {
   return _loadingPromise;
 }
 
-// Preload on import
-loadFullCatalog();
+// Catalog is loaded on first search call — no eager preload
 
 export function searchCatalog(query: string, limit = 15): CatalogProduct[] {
+  // Trigger lazy load on first search (non-blocking)
+  if (!_fullCatalog && !_loadingPromise) loadFullCatalog();
+
   const q = query.toLowerCase().trim();
   if (!q) return [];
 

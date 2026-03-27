@@ -3,7 +3,7 @@ import {
   Star, TrendingUp, Target, Zap, AlertCircle, BarChart3, Plus,
   Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Printer, Upload, X,
   Loader2, ShoppingBag, DollarSign, Percent, ChefHat, Eye,
-  Download, Filter, RefreshCw,
+  Filter, RefreshCw,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';

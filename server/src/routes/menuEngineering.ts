@@ -5,7 +5,7 @@ import { AuthRequest } from '../middleware/auth';
 const prisma = new PrismaClient();
 export const menuEngineeringRouter = Router();
 
-import { getSalesData } from './menuSales';
+// Sales data now fetched from Prisma directly
 
 menuEngineeringRouter.get('/', async (req: AuthRequest, res: Response) => {
   try {
@@ -20,9 +20,7 @@ menuEngineeringRouter.get('/', async (req: AuthRequest, res: Response) => {
       },
     });
 
-    const salesData = getSalesData();
-
-    // Filter sales by date range
+    // Compute date range
     const now = new Date();
     let dateFrom: string;
     let dateTo: string = now.toISOString().slice(0, 10);
@@ -36,9 +34,12 @@ menuEngineeringRouter.get('/', async (req: AuthRequest, res: Response) => {
       dateFrom = d.toISOString().slice(0, 10);
     }
 
-    const filteredSales = salesData.filter(
-      (s: any) => s.date >= dateFrom && s.date <= dateTo
-    );
+    // Fetch sales from DB
+    const filteredSales = await prisma.menuSale.findMany({
+      where: {
+        date: { gte: dateFrom, lte: dateTo },
+      },
+    });
 
     // Aggregate sales by recipe
     const salesByRecipe = new Map<number, { qty: number; revenue: number }>();

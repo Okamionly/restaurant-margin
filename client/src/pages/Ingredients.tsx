@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Download, Upload, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale } from 'lucide-react';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';

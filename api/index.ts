@@ -3,7 +3,7 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -813,17 +813,16 @@ app.post('/api/email/send', authMiddleware, async (req, res) => {
   try {
     const { to, subject, body } = req.body;
     if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com', port: 587, secure: false,
-      auth: { user: process.env.EMAIL_USER || 'marketphaseai@gmail.com', pass: process.env.EMAIL_PASS || '' },
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { data, error } = await resend.emails.send({
+      from: 'RestauMargin <onboarding@resend.dev>',
+      to: to.trim(), subject: subject.trim(),
+      html: body.trim().replace(/\n/g, '<br>'),
     });
-    const info = await transporter.sendMail({
-      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
-      to, subject, text: body, html: body.replace(/\n/g, '<br>'),
-    });
-    const email = { id: `e-${Date.now()}`, to, subject, body, from: process.env.EMAIL_USER, messageId: info.messageId, sentAt: new Date().toISOString() };
+    if (error) return res.status(500).json({ error: error.message });
+    const email = { id: `e-${Date.now()}`, to, subject, body, from: 'onboarding@resend.dev', messageId: data?.id, sentAt: new Date().toISOString() };
     sentEmails.push(email);
-    res.json({ success: true, messageId: info.messageId });
+    res.json({ success: true, messageId: data?.id });
   } catch (e: any) { res.status(500).json({ error: e.message || 'Erreur envoi email' }); }
 });
 

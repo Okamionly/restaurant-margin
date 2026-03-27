@@ -1,10 +1,9 @@
 import { Router, Response } from 'express';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { AuthRequest } from '../middleware/auth';
 
 export const emailRouter = Router();
 
-// ── Types ────────────────────────────────────────────────────────────────────
 interface SentEmail {
   id: string;
   to: string;
@@ -16,92 +15,55 @@ interface SentEmail {
   userId: number;
 }
 
-// ── In-memory storage ────────────────────────────────────────────────────────
 const sentEmails: SentEmail[] = [];
 
-// ── Transporter ──────────────────────────────────────────────────────────────
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-}
-
-// ── POST /api/email/send — send a real email ─────────────────────────────────
+// POST /api/email/send — send a real email via Resend
 emailRouter.post('/send', async (req: AuthRequest, res: Response) => {
   try {
-    const { to, subject, body, from } = req.body;
+    const { to, subject, body } = req.body;
 
-    if (!to || !to.trim()) {
-      return res.status(400).json({ error: 'Le destinataire est requis' });
-    }
-    if (!subject || !subject.trim()) {
-      return res.status(400).json({ error: "L'objet est requis" });
-    }
-    if (!body || !body.trim()) {
-      return res.status(400).json({ error: 'Le corps du message est requis' });
-    }
+    if (!to?.trim()) return res.status(400).json({ error: 'Le destinataire est requis' });
+    if (!subject?.trim()) return res.status(400).json({ error: "L'objet est requis" });
+    if (!body?.trim()) return res.status(400).json({ error: 'Le corps du message est requis' });
 
-    const senderEmail = from || process.env.EMAIL_USER;
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'Clé API Resend manquante (RESEND_API_KEY)' });
 
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      return res.status(500).json({ error: 'Configuration email serveur manquante (EMAIL_USER / EMAIL_PASS)' });
-    }
+    const resend = new Resend(apiKey);
 
-    const transporter = createTransporter();
-
-    const info = await transporter.sendMail({
-      from: `"RestauMargin" <${process.env.EMAIL_USER}>`,
-      replyTo: senderEmail,
+    const { data, error } = await resend.emails.send({
+      from: 'RestauMargin <onboarding@resend.dev>',
       to: to.trim(),
       subject: subject.trim(),
-      text: body.trim(),
+      html: body.trim().replace(/\n/g, '<br>'),
     });
+
+    if (error) {
+      console.error('Resend error:', error);
+      return res.status(500).json({ error: error.message || "Erreur lors de l'envoi" });
+    }
 
     const sent: SentEmail = {
       id: Date.now().toString(),
       to: to.trim(),
-      from: senderEmail as string,
+      from: 'onboarding@resend.dev',
       subject: subject.trim(),
       body: body.trim(),
-      messageId: info.messageId,
+      messageId: data?.id || '',
       sentAt: new Date().toISOString(),
       userId: req.user?.userId ?? 0,
     };
 
     sentEmails.unshift(sent);
-
-    console.log(`Email sent to ${to} — messageId: ${info.messageId}`);
-
-    res.json({ success: true, messageId: info.messageId });
+    console.log(`Email sent to ${to} via Resend — id: ${data?.id}`);
+    res.json({ success: true, messageId: data?.id });
   } catch (error: any) {
     console.error('Email send error:', error);
-
-    let msg = "Erreur lors de l'envoi de l'email";
-    if (error?.responseCode === 535) {
-      msg = 'Authentification SMTP échouée — vérifiez EMAIL_USER / EMAIL_PASS';
-    } else if (error?.code === 'ECONNREFUSED') {
-      msg = 'Connexion au serveur SMTP refusée';
-    } else if (error?.message) {
-      msg = error.message;
-    }
-
-    res.status(500).json({ error: msg });
+    res.status(500).json({ error: error.message || "Erreur lors de l'envoi de l'email" });
   }
 });
 
-// ── GET /api/email/sent — list sent emails ───────────────────────────────────
+// GET /api/email/sent — list sent emails
 emailRouter.get('/sent', (req: AuthRequest, res: Response) => {
-  try {
-    // Return all sent emails (optionally filter by userId later)
-    res.json(sentEmails);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erreur lors de la récupération des emails envoyés' });
-  }
+  res.json(sentEmails);
 });

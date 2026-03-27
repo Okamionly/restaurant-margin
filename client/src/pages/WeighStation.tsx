@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Bluetooth, BluetoothOff, Scale, Check, RotateCcw, Search,
   AlertTriangle, Wifi, Plus, Minus, ArrowLeft, Trash2,
-  ClipboardList, Package, ChefHat, Zap, CircleDot,
+  ClipboardList, Package, ChefHat, Zap, CircleDot, Euro, PlusCircle, X,
 } from 'lucide-react';
 import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
@@ -94,6 +94,9 @@ export default function WeighStation() {
   const [prevWeight, setPrevWeight] = useState(0);
   const [flashGreen, setFlashGreen] = useState(false);
   const [connectAnim, setConnectAnim] = useState(false);
+  const [showNewIngredient, setShowNewIngredient] = useState(false);
+  const [newIngForm, setNewIngForm] = useState({ name: '', category: 'Légumes', unit: 'kg', pricePerUnit: '' });
+  const [creatingIngredient, setCreatingIngredient] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -207,7 +210,8 @@ export default function WeighStation() {
             headers: authHeaders(),
             body: JSON.stringify({ currentStock: newStock }),
           });
-          showToast(`${selected.name} : +${netConverted} ${selected.unit} → inventaire mis à jour (${newStock.toFixed(2)} ${selected.unit} total)`, 'success');
+          const valueStr = selected.pricePerUnit > 0 ? ` (${(netConverted * selected.pricePerUnit).toFixed(2)} €)` : '';
+          showToast(`Ajouté à l'inventaire : ${netConverted} ${selected.unit} de ${selected.name}${valueStr}`, 'success');
         } else {
           // Create new inventory entry via POST
           const createRes = await fetch(`${API}/api/inventory`, {
@@ -221,7 +225,8 @@ export default function WeighStation() {
             }),
           });
           if (createRes.ok) {
-            showToast(`${selected.name} : ${netConverted} ${selected.unit} ajouté à l'inventaire (nouveau)`, 'success');
+            const newValueStr = selected.pricePerUnit > 0 ? ` (${(netConverted * selected.pricePerUnit).toFixed(2)} €)` : '';
+            showToast(`Ajouté à l'inventaire : ${netConverted} ${selected.unit} de ${selected.name}${newValueStr}`, 'success');
           } else {
             showToast('Erreur lors de la création dans l\'inventaire', 'error');
             entryStatus = 'error';
@@ -412,7 +417,7 @@ export default function WeighStation() {
         <div className="max-h-[50vh] lg:max-h-none lg:w-80 xl:w-96 bg-slate-900/40 border-b lg:border-b-0 lg:border-r border-slate-800/60 flex flex-col overflow-hidden shrink-0">
 
           {/* Quick actions */}
-          <div className="p-3 border-b border-slate-800/60 flex overflow-x-auto sm:grid sm:grid-cols-3 gap-2 scrollbar-none">
+          <div className="p-3 border-b border-slate-800/60 flex overflow-x-auto sm:grid sm:grid-cols-4 gap-2 scrollbar-none">
             <button
               onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
               className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[100px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
@@ -421,6 +426,13 @@ export default function WeighStation() {
             >
               <Zap className="w-5 h-5" />
               Pesee rapide
+            </button>
+            <button
+              onClick={() => setShowNewIngredient(true)}
+              className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[100px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-emerald-800/40 text-emerald-300 hover:bg-emerald-700/40 border border-emerald-600/30 transition-all active:scale-95"
+            >
+              <PlusCircle className="w-5 h-5" />
+              Nouvel ingrédient
             </button>
             <button
               onClick={() => navigate('/inventory')}
@@ -437,6 +449,89 @@ export default function WeighStation() {
               Recettes
             </button>
           </div>
+
+          {/* New ingredient mini form */}
+          {showNewIngredient && (
+            <div className="p-3 border-b border-slate-800/60 bg-emerald-900/20">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-semibold text-emerald-300">Nouvel ingrédient</p>
+                <button onClick={() => setShowNewIngredient(false)} className="p-1 hover:bg-slate-700 rounded-lg transition-colors">
+                  <X className="w-4 h-4 text-slate-400" />
+                </button>
+              </div>
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="Nom *"
+                  value={newIngForm.name}
+                  onChange={e => setNewIngForm(f => ({ ...f, name: e.target.value }))}
+                  className="w-full px-3 py-2.5 min-h-[44px] bg-slate-800/80 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-slate-700/50"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <select
+                    value={newIngForm.category}
+                    onChange={e => setNewIngForm(f => ({ ...f, category: e.target.value }))}
+                    className="px-3 py-2.5 min-h-[44px] bg-slate-800/80 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-slate-700/50"
+                  >
+                    {['Viandes', 'Poissons', 'Legumes', 'Fruits', 'Produits laitiers', 'Epicerie', 'Autres'].map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={newIngForm.unit}
+                    onChange={e => setNewIngForm(f => ({ ...f, unit: e.target.value }))}
+                    className="px-3 py-2.5 min-h-[44px] bg-slate-800/80 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-slate-700/50"
+                  >
+                    {['kg', 'g', 'L', 'cl', 'ml', 'pièce'].map(u => (
+                      <option key={u} value={u}>{u}</option>
+                    ))}
+                  </select>
+                </div>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Prix / unité (€) *"
+                  value={newIngForm.pricePerUnit}
+                  onChange={e => setNewIngForm(f => ({ ...f, pricePerUnit: e.target.value }))}
+                  className="w-full px-3 py-2.5 min-h-[44px] bg-slate-800/80 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-slate-700/50"
+                />
+                <button
+                  disabled={!newIngForm.name.trim() || !newIngForm.pricePerUnit || creatingIngredient}
+                  onClick={async () => {
+                    setCreatingIngredient(true);
+                    try {
+                      const res = await fetch(`${API}/api/ingredients`, {
+                        method: 'POST',
+                        headers: authHeaders(),
+                        body: JSON.stringify({
+                          name: newIngForm.name.trim(),
+                          category: newIngForm.category,
+                          unit: newIngForm.unit,
+                          pricePerUnit: parseFloat(newIngForm.pricePerUnit),
+                          allergens: [],
+                        }),
+                      });
+                      if (!res.ok) throw new Error('Erreur creation');
+                      const created = await res.json();
+                      const newIng: Ingredient = { id: created.id, name: created.name, unit: created.unit, category: created.category, pricePerUnit: created.pricePerUnit };
+                      setIngredients(prev => [...prev, newIng]);
+                      selectIngredient(newIng);
+                      setShowNewIngredient(false);
+                      setNewIngForm({ name: '', category: 'Légumes', unit: 'kg', pricePerUnit: '' });
+                      showToast(`Ingrédient "${created.name}" créé et sélectionné`, 'success');
+                    } catch {
+                      showToast('Erreur lors de la création de l\'ingrédient', 'error');
+                    }
+                    setCreatingIngredient(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[48px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-white font-medium text-sm transition-all active:scale-95"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  {creatingIngredient ? 'Création...' : 'Créer et sélectionner'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Ingredient search */}
           <div className="p-3 border-b border-slate-800/60" ref={dropdownRef}>
@@ -473,6 +568,7 @@ export default function WeighStation() {
                       {ing.category}
                     </span>
                     <span className="text-[10px] text-slate-500">{ing.unit}</span>
+                    <span className="text-[10px] text-blue-400">{ing.pricePerUnit.toFixed(2)} €/{ing.unit}</span>
                   </div>
                 </div>
                 {selected?.id === ing.id && (
@@ -500,9 +596,14 @@ export default function WeighStation() {
               <div>
                 <p className="text-slate-500 text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>
                 <p className="text-2xl font-bold text-white mt-0.5">{selected.name}</p>
-                <span className={`inline-block text-[10px] px-2 py-0.5 rounded border mt-1 ${getCategoryColor(selected.category)}`}>
-                  {selected.category}
-                </span>
+                <div className="flex items-center justify-center gap-3 mt-1">
+                  <span className={`inline-block text-[10px] px-2 py-0.5 rounded border ${getCategoryColor(selected.category)}`}>
+                    {selected.category}
+                  </span>
+                  <span className="text-xs text-blue-400 font-medium">
+                    {selected.pricePerUnit.toFixed(2)} €/{selected.unit}
+                  </span>
+                </div>
               </div>
             ) : (
               <div>
@@ -578,6 +679,16 @@ export default function WeighStation() {
               <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
             )}
           </div>
+
+          {/* Real-time estimated value */}
+          {selected && netConverted > 0 && selected.pricePerUnit > 0 && (
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-emerald-900/30 border border-emerald-500/30 rounded-2xl">
+              <Euro className="w-5 h-5 text-emerald-400" />
+              <span className="text-2xl font-bold text-emerald-400 tabular-nums">
+                Valeur : {(netConverted * selected.pricePerUnit).toFixed(2)} €
+              </span>
+            </div>
+          )}
 
           {/* Unit toggle */}
           <div className="flex items-center gap-1 p-1 bg-slate-800/60 rounded-xl border border-slate-700/40">

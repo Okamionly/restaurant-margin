@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Bluetooth, BluetoothOff, Plus, Minus, RotateCcw, Check, Wifi, AlertTriangle, RefreshCw } from 'lucide-react';
+import { Bluetooth, BluetoothOff, Plus, Minus, RotateCcw, Check, Wifi, AlertTriangle, RefreshCw, Euro } from 'lucide-react';
 import { useScale } from '../hooks/useScale';
 import Modal from './Modal';
 
@@ -12,11 +12,12 @@ interface WeighModalProps {
   ingredientName: string;
   currentStock: number;
   unit: string;
+  pricePerUnit: number;
   /** Called with { weight, mode } where mode is 'set' or 'add' */
   onComplete: (data: { weight: number; mode: 'set' | 'add' }) => void;
 }
 
-export default function WeighModal({ isOpen, onClose, ingredientName, currentStock, unit, onComplete }: WeighModalProps) {
+export default function WeighModal({ isOpen, onClose, ingredientName, currentStock, unit, pricePerUnit, onComplete }: WeighModalProps) {
   const { status, reading, error, connect, disconnect } = useScale();
 
   const [tare, setTare] = useState(0);
@@ -92,6 +93,9 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-400">Ingrédient</p>
             <p className="font-semibold text-slate-800 dark:text-slate-100">{ingredientName}</p>
+            <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-0.5">
+              Prix unitaire : {pricePerUnit.toFixed(2)} €/{unit}
+            </p>
           </div>
           <div className="text-right">
             <p className="text-sm text-slate-500 dark:text-slate-400">Stock actuel</p>
@@ -184,6 +188,16 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
             <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
           )}
         </div>
+
+        {/* Real-time estimated value */}
+        {weightInUnit > 0 && pricePerUnit > 0 && (
+          <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+            <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+              Valeur estimée : {(weightInUnit * pricePerUnit).toFixed(2)} €
+            </span>
+          </div>
+        )}
 
         {/* Controls row: unit toggle + tare */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">

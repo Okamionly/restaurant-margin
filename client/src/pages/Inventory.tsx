@@ -233,12 +233,15 @@ export default function Inventory() {
   async function handleWeighComplete(data: { weight: number; mode: 'set' | 'add' }) {
     if (!weighTarget) return;
     try {
+      const valueStr = weighTarget.ingredient.pricePerUnit > 0
+        ? ` (${(data.weight * weighTarget.ingredient.pricePerUnit).toFixed(2)} €)`
+        : '';
       if (data.mode === 'set') {
         await updateInventoryItem(weighTarget.id, { currentStock: data.weight });
-        showToast(`Stock de ${weighTarget.ingredient.name} mis à ${data.weight} ${weighTarget.unit}`, 'success');
+        showToast(`Stock mis à jour : ${data.weight} ${weighTarget.unit}${valueStr}`, 'success');
       } else {
         await restockInventoryItem(weighTarget.id, data.weight);
-        showToast(`+${data.weight} ${weighTarget.unit} ajouté au stock de ${weighTarget.ingredient.name}`, 'success');
+        showToast(`Stock mis à jour : ${data.weight} ${weighTarget.unit}${valueStr}`, 'success');
       }
       setWeighTarget(null);
       loadData();
@@ -722,6 +725,7 @@ export default function Inventory() {
           ingredientName={weighTarget.ingredient.name}
           currentStock={weighTarget.currentStock}
           unit={weighTarget.unit}
+          pricePerUnit={weighTarget.ingredient.pricePerUnit}
           onComplete={handleWeighComplete}
         />
       )}

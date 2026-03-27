@@ -84,7 +84,7 @@ const SUPPLIER_EMAILS: Record<string, string> = {
   pomona: 'commande@pomona.fr',
 };
 
-const CONFIGURED_EMAIL = 'marketphaseai@gmail.com';
+const DEFAULT_EMAIL = 'marketphaseai@gmail.com';
 
 // ── Email templates ─────────────────────────────────────────────────────────
 const EMAIL_TEMPLATES: EmailTemplate[] = [
@@ -293,7 +293,8 @@ function getLastPreview(conv: Conversation) {
 
 // ── Email helpers ────────────────────────────────────────────────────────────
 function loadEmailConfig(): EmailConfig {
-  const cfg: EmailConfig = { email: CONFIGURED_EMAIL };
+  const saved = localStorage.getItem('restaumargin_email');
+  const cfg: EmailConfig = { email: saved || DEFAULT_EMAIL };
   localStorage.setItem('emailConfig', JSON.stringify(cfg));
   return cfg;
 }
@@ -330,8 +331,10 @@ export default function Messagerie() {
   const [mobileShowChat, setMobileShowChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Email config — auto-configured with marketphaseai@gmail.com
-  const [emailConfig] = useState<EmailConfig>(loadEmailConfig);
+  // Email config — user can connect their own email
+  const [emailConfig, setEmailConfig] = useState<EmailConfig>(loadEmailConfig);
+  const [showEmailSetup, setShowEmailSetup] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
 
   // Compose email modal
   const [showComposeModal, setShowComposeModal] = useState(false);
@@ -343,7 +346,24 @@ export default function Messagerie() {
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
-  const isEmailConfigured = true; // always configured with marketphaseai@gmail.com
+  const isEmailConfigured = !!emailConfig.email;
+
+  function handleConnectEmail() {
+    if (!emailInput.includes('@')) {
+      showToast('Adresse email invalide', 'error');
+      return;
+    }
+    localStorage.setItem('restaumargin_email', emailInput);
+    setEmailConfig({ email: emailInput });
+    setShowEmailSetup(false);
+    showToast(`Email connecté : ${emailInput}`, 'success');
+  }
+
+  function handleDisconnectEmail() {
+    localStorage.removeItem('restaumargin_email');
+    setEmailConfig({ email: '' });
+    showToast('Email déconnecté', 'info');
+  }
 
   // ── Fetch conversations on mount ───────────────────────────────────────
   useEffect(() => {
@@ -555,7 +575,7 @@ export default function Messagerie() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => window.open(`https://mail.google.com/mail/u/${CONFIGURED_EMAIL}`, '_blank')}
+            onClick={() => window.open(`https://mail.google.com/mail/u/${emailConfig.email}`, '_blank')}
             title="Ouvrir Gmail"
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors text-sm"
           >
@@ -608,19 +628,56 @@ export default function Messagerie() {
         </div>
       </div>
 
-      {/* Email connected banner */}
-      <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 text-green-700 dark:text-green-300 text-xs">
-        <Check className="w-4 h-4 shrink-0" />
-        <span className="flex-1">
-          <strong>Email connecté</strong> — {emailConfig.email}
-        </span>
-        <button
-          onClick={() => window.open(`https://mail.google.com/mail/u/${CONFIGURED_EMAIL}`, '_blank')}
-          className="px-2 py-0.5 rounded text-[10px] font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
-        >
-          Ouvrir Gmail
-        </button>
-      </div>
+      {/* Email banner */}
+      {isEmailConfigured ? (
+        <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 text-green-700 dark:text-green-300 text-xs">
+          <Check className="w-4 h-4 shrink-0" />
+          <span className="flex-1">
+            <strong>Email connecté</strong> — {emailConfig.email}
+          </span>
+          <button
+            onClick={() => window.open(`https://mail.google.com/mail/u/${emailConfig.email}`, '_blank')}
+            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-green-600 text-white hover:bg-green-700 transition-colors"
+          >
+            Ouvrir Gmail
+          </button>
+          <button
+            onClick={handleDisconnectEmail}
+            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 transition-colors"
+          >
+            Déconnecter
+          </button>
+        </div>
+      ) : showEmailSetup ? (
+        <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 text-xs">
+          <Mail className="w-4 h-4 text-blue-500 shrink-0" />
+          <input
+            type="email"
+            value={emailInput}
+            onChange={e => setEmailInput(e.target.value)}
+            placeholder="votre@email.com"
+            className="flex-1 px-2 py-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs"
+            onKeyDown={e => e.key === 'Enter' && handleConnectEmail()}
+          />
+          <button onClick={handleConnectEmail} className="px-3 py-1 rounded text-[10px] font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+            Connecter
+          </button>
+          <button onClick={() => setShowEmailSetup(false)} className="p-1 text-slate-400 hover:text-slate-600">
+            <X className="w-3 h-3" />
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 px-3 py-2 mb-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-amber-700 dark:text-amber-300 text-xs">
+          <Mail className="w-4 h-4 shrink-0" />
+          <span className="flex-1">Connectez votre adresse email pour envoyer de vrais messages</span>
+          <button
+            onClick={() => setShowEmailSetup(true)}
+            className="px-3 py-1 rounded text-[10px] font-semibold bg-amber-600 text-white hover:bg-amber-700 transition-colors"
+          >
+            Connecter mon email
+          </button>
+        </div>
+      )}
 
       
       {/* Main panels */}

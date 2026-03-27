@@ -774,6 +774,75 @@ app.get('/api/menu-engineering', authMiddleware, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur menu engineering' }); }
 });
 
+// ── Messages (in-memory) ──
+const conversations: any[] = [
+  { id: 'conv-1', name: 'Transgourmet - Commercial', participants: ['user', 'transgourmet'], lastMessage: 'Votre commande a été expédiée', unreadCount: 2, isGroup: false },
+  { id: 'conv-2', name: 'Metro - Service client', participants: ['user', 'metro'], lastMessage: 'Nouvelle promotion disponible', unreadCount: 1, isGroup: false },
+  { id: 'conv-3', name: 'Équipe Cuisine', participants: ['user', 'chef', 'commis'], lastMessage: 'Le poisson est arrivé', unreadCount: 0, isGroup: true },
+];
+const messagesStore: Record<string, any[]> = {
+  'conv-1': [{ id: 'm1', senderId: 'transgourmet', senderName: 'Transgourmet', content: 'Votre commande #1247 a été expédiée', timestamp: new Date().toISOString(), read: false }],
+  'conv-2': [{ id: 'm2', senderId: 'metro', senderName: 'Metro', content: 'Nouvelle promotion disponible sur les produits frais', timestamp: new Date().toISOString(), read: false }],
+  'conv-3': [{ id: 'm3', senderId: 'chef', senderName: 'Chef', content: 'Le poisson est arrivé', timestamp: new Date().toISOString(), read: true }],
+};
+
+app.get('/api/messages/conversations', authMiddleware, (_req, res) => { res.json(conversations); });
+app.get('/api/messages/conversations/:id', authMiddleware, (req, res) => {
+  const conv = conversations.find(c => c.id === req.params.id);
+  if (!conv) return res.status(404).json({ error: 'Conversation non trouvée' });
+  res.json({ ...conv, messages: messagesStore[conv.id] || [] });
+});
+app.post('/api/messages/conversations/:id/messages', authMiddleware, (req: any, res) => {
+  const { content } = req.body;
+  const msg = { id: `m-${Date.now()}`, senderId: 'user', senderName: req.user?.email || 'Moi', content, timestamp: new Date().toISOString(), read: true };
+  if (!messagesStore[req.params.id]) messagesStore[req.params.id] = [];
+  messagesStore[req.params.id].push(msg);
+  res.status(201).json(msg);
+});
+app.put('/api/messages/conversations/:id/read', authMiddleware, (req, res) => {
+  const conv = conversations.find(c => c.id === req.params.id);
+  if (conv) conv.unreadCount = 0;
+  res.json({ success: true });
+});
+
+// ── Email (nodemailer) ──
+import nodemailer from 'nodemailer';
+const sentEmails: any[] = [];
+
+app.post('/api/email/send', authMiddleware, async (req, res) => {
+  try {
+    const { to, subject, body } = req.body;
+    if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com', port: 587, secure: false,
+      auth: { user: process.env.EMAIL_USER || 'marketphaseai@gmail.com', pass: process.env.EMAIL_PASS || '' },
+    });
+    const info = await transporter.sendMail({
+      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
+      to, subject, text: body, html: body.replace(/\n/g, '<br>'),
+    });
+    const email = { id: `e-${Date.now()}`, to, subject, body, from: process.env.EMAIL_USER, messageId: info.messageId, sentAt: new Date().toISOString() };
+    sentEmails.push(email);
+    res.json({ success: true, messageId: info.messageId });
+  } catch (e: any) { res.status(500).json({ error: e.message || 'Erreur envoi email' }); }
+});
+
+app.get('/api/email/sent', authMiddleware, (_req, res) => { res.json(sentEmails); });
+
+// ── Public menu ──
+app.get('/api/public/menu', async (_req, res) => {
+  try {
+    const recipes = await prisma.recipe.findMany({
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+    res.json(recipes.map(r => ({
+      id: r.id, name: r.name, category: r.category,
+      sellingPrice: r.sellingPrice, description: r.description,
+      allergens: [...new Set(r.ingredients.flatMap(ri => ri.ingredient.allergens || []))],
+    })));
+  } catch { res.status(500).json({ error: 'Erreur' }); }
+});
+
 // 404 catch-all
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });

@@ -559,7 +559,7 @@ export default function Landing() {
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-100 to-blue-50">
                   <img
-                    src="/images/restaumargin-station.png"
+                    src="/images/restaumargin-station-opt.webp"
                     alt="Kit Station RestauMargin — Tablette + Balance connectée"
                     className="w-full h-auto"
                     loading="lazy"

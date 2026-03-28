@@ -22,6 +22,7 @@ import { searchCatalog, loadFullCatalog, type CatalogProduct } from '../data/pro
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -162,6 +163,7 @@ function supplierToForm(s: Supplier): SupplierFormData {
 
 export default function Suppliers() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   // Tab
   const [activeTab, setActiveTab] = useState<TabId>('mes-fournisseurs');
@@ -229,7 +231,7 @@ export default function Suppliers() {
       setSuppliers(s);
       setIngredients(i);
     } catch {
-      showToast('Erreur de chargement', 'error');
+      showToast(t('suppliers.loadError'), 'error');
     } finally {
       setLoading(false);
     }
@@ -274,7 +276,7 @@ export default function Suppliers() {
 
   async function handleSave() {
     if (!form.name.trim()) {
-      showToast('Le nom du fournisseur est requis', 'error');
+      showToast(t('suppliers.nameRequired'), 'error');
       return;
     }
     setSaving(true);
@@ -296,15 +298,15 @@ export default function Suppliers() {
       };
       if (editingSupplier) {
         await updateSupplier(editingSupplier.id, payload);
-        showToast('Fournisseur mis à jour', 'success');
+        showToast(t('suppliers.updated'), 'success');
       } else {
         await createSupplier(payload as any);
-        showToast('Fournisseur créé', 'success');
+        showToast(t('suppliers.created'), 'success');
       }
       setModalOpen(false);
       await loadData();
     } catch (e: any) {
-      showToast(e.message || 'Erreur', 'error');
+      showToast(e.message || t('suppliers.error'), 'error');
     } finally {
       setSaving(false);
     }
@@ -314,11 +316,11 @@ export default function Suppliers() {
     if (!deleteTarget) return;
     try {
       await deleteSupplier(deleteTarget.id);
-      showToast('Fournisseur supprimé', 'success');
+      showToast(t('suppliers.deleted'), 'success');
       setDeleteTarget(null);
       await loadData();
     } catch (e: any) {
-      showToast(e.message || 'Erreur', 'error');
+      showToast(e.message || t('suppliers.error'), 'error');
     }
   }
 
@@ -326,10 +328,10 @@ export default function Suppliers() {
     setLinking(s.id);
     try {
       const result = await linkSupplierIngredients(s.id);
-      showToast(`${result.linked} ingrédient(s) lié(s) à ${result.supplierName}`, 'success');
+      showToast(`${result.linked} ${t('suppliers.ingredientsLinkedTo')} ${result.supplierName}`, 'success');
       await loadData();
     } catch (e: any) {
-      showToast(e.message || 'Erreur', 'error');
+      showToast(e.message || t('suppliers.error'), 'error');
     } finally {
       setLinking(null);
     }
@@ -375,7 +377,7 @@ export default function Suppliers() {
 
   // ── render ─────────────────────────────────────────────────────────────────
 
-  if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">Chargement...</div>;
+  if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">{t('suppliers.loading')}</div>;
 
   return (
     <div>
@@ -391,7 +393,7 @@ export default function Suppliers() {
             }`}
           >
             <Truck className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
-            Mes fournisseurs
+            {t('suppliers.mySuppliers')}
           </button>
           <button
             onClick={() => setActiveTab('annuaire')}
@@ -402,7 +404,7 @@ export default function Suppliers() {
             }`}
           >
             <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
-            Annuaire fournisseurs France
+            {t('suppliers.directory')}
           </button>
         </div>
       </div>
@@ -414,20 +416,20 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Fournisseurs</h2>
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('suppliers.title')}</h2>
             <div className="flex items-center gap-2">
               {/* Quick-add dropdown */}
               <div className="relative">
                 <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                   <Zap className="w-4 h-4 text-amber-500" />
-                  Ajout rapide
+                  {t('suppliers.quickAdd')}
                   <ChevronDown className="w-3 h-3" />
                 </button>
                 {showQuickAdd && (
                   <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowQuickAdd(false)} />
                   <div className="absolute right-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-slate-700 z-50 py-1">
-                    <div className="px-3 py-2 text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">Fournisseurs courants</div>
+                    <div className="px-3 py-2 text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('suppliers.commonSuppliers')}</div>
                     {QUICK_ADD_TEMPLATES.map((tpl) => (
                       <button
                         key={tpl.name}
@@ -449,7 +451,7 @@ export default function Suppliers() {
               </div>
               <button onClick={openAdd} className="btn btn-primary flex items-center gap-2 w-fit">
                 <Plus className="w-4 h-4" />
-                Ajouter un fournisseur
+                {t('suppliers.addSupplier')}
               </button>
             </div>
           </div>
@@ -458,28 +460,28 @@ export default function Suppliers() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Total fournisseurs</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.totalSuppliers')}</span>
                 <div className="p-2 rounded-lg bg-blue-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalSuppliers}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Ingrédients liés</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.linkedIngredients')}</span>
                 <div className="p-2 rounded-lg bg-green-600"><Package className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalLinked}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Avec livraison</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.withDelivery')}</span>
                 <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withDelivery}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Sans fournisseur</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.withoutSupplier')}</span>
                 <div className="p-2 rounded-lg bg-amber-500"><Package className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withoutSupplier}</div>
@@ -491,14 +493,14 @@ export default function Suppliers() {
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4 flex items-center justify-between">
               <span className="text-sm text-blue-700 dark:text-blue-300">
                 <ArrowRightLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" />
-                {compareSupplierIds.size} fournisseur{compareSupplierIds.size > 1 ? 's' : ''} sélectionné{compareSupplierIds.size > 1 ? 's' : ''}
+                {compareSupplierIds.size} {t('suppliers.suppliersSelected')}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCompareSupplierIds(new Set())}
                   className="text-xs px-3 py-1.5 rounded border border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
                 >
-                  Tout désélectionner
+                  {t('suppliers.deselectAll')}
                 </button>
                 <button
                   onClick={() => setShowSupplierCompare(true)}
@@ -506,14 +508,14 @@ export default function Suppliers() {
                   className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
-                  Comparer les prix
+                  {t('suppliers.comparePrices')}
                 </button>
               </div>
             </div>
           )}
 
           {/* Supplier price comparison modal */}
-          <Modal isOpen={showSupplierCompare} onClose={() => setShowSupplierCompare(false)} title="Comparaison des prix fournisseurs">
+          <Modal isOpen={showSupplierCompare} onClose={() => setShowSupplierCompare(false)} title={t('suppliers.priceComparison')}>
             {(() => {
               const comparedSuppliers = suppliers.filter(s => compareSupplierIds.has(s.id));
               // Build a map of ingredient name -> { supplier name -> price, unit }
@@ -526,18 +528,18 @@ export default function Suppliers() {
               });
               const ingredientNames = Object.keys(ingredientMap).sort();
               if (ingredientNames.length === 0) {
-                return <p className="text-sm text-slate-400 py-4 text-center">Aucun ingrédient en commun. Liez d'abord des ingrédients aux fournisseurs sélectionnés.</p>;
+                return <p className="text-sm text-slate-400 py-4 text-center">{t('suppliers.noCommonIngredients')}</p>;
               }
               return (
                 <div className="overflow-x-auto max-h-[60vh]">
                   <table className="w-full text-sm">
                     <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700 z-10">
                       <tr>
-                        <th className="text-left px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">Ingrédient</th>
+                        <th className="text-left px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{t('suppliers.ingredient')}</th>
                         {comparedSuppliers.map(s => (
                           <th key={s.id} className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{s.name}</th>
                         ))}
-                        <th className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">Écart %</th>
+                        <th className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{t('suppliers.gapPercent')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y dark:divide-slate-700">
@@ -576,14 +578,14 @@ export default function Suppliers() {
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
             <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-600 dark:text-slate-300">
               <Filter className="w-4 h-4" />
-              Filtres
+              {t('suppliers.filters')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Rechercher par nom..."
+                  placeholder={t('suppliers.searchByName')}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="input pl-10 w-full"
@@ -596,7 +598,7 @@ export default function Suppliers() {
                   onChange={(e) => setFilterRegion(e.target.value)}
                   className="input pl-10 w-full appearance-none"
                 >
-                  <option value="">Toutes les régions</option>
+                  <option value="">{t('suppliers.allRegions')}</option>
                   {FRENCH_REGIONS.map((r) => (
                     <option key={r} value={r}>{r}</option>
                   ))}
@@ -609,7 +611,7 @@ export default function Suppliers() {
                   onChange={(e) => setFilterCategory(e.target.value)}
                   className="input pl-10 w-full appearance-none"
                 >
-                  <option value="">Toutes catégories</option>
+                  <option value="">{t('suppliers.allCategories')}</option>
                   {INGREDIENT_CATEGORIES.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
@@ -622,7 +624,7 @@ export default function Suppliers() {
           {filtered.length === 0 ? (
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
               <Truck className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-slate-400 dark:text-slate-500">Aucun fournisseur trouvé</p>
+              <p className="text-slate-400 dark:text-slate-500">{t('suppliers.noSupplierFound')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -648,12 +650,12 @@ export default function Suppliers() {
                               return next;
                             })}
                             className="accent-blue-600 shrink-0 mt-0.5"
-                            title="Sélectionner pour comparer"
+                            title={t('suppliers.selectToCompare')}
                           />
                           <h3
                             className="font-semibold text-slate-800 dark:text-slate-100 leading-tight cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             onClick={() => setDetailSupplier(supplier)}
-                            title="Voir le détail"
+                            title={t('suppliers.viewDetail')}
                           >
                             {supplier.name}
                           </h3>
@@ -668,16 +670,16 @@ export default function Suppliers() {
                         const rating = getMockRating(supplier.id);
                         return (
                           <div className="flex items-center gap-3 mb-2 text-xs">
-                            <span className="flex items-center gap-0.5" title="Fiabilité">
+                            <span className="flex items-center gap-0.5" title={t('suppliers.reliability')}>
                               {[1,2,3,4,5].map(n => (
                                 <Star key={n} className={`w-3 h-3 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
                               ))}
                             </span>
-                            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400" title="Délai de livraison">
+                            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400" title={t('suppliers.deliveryTime')}>
                               <Clock className="w-3 h-3" />
                               {rating.deliveryDays}
                             </span>
-                            <span className="text-slate-500 dark:text-slate-400" title="Commande minimum">
+                            <span className="text-slate-500 dark:text-slate-400" title={t('suppliers.minimumOrder')}>
                               Min: {rating.minOrderAmount}
                             </span>
                           </div>
@@ -725,7 +727,7 @@ export default function Suppliers() {
                       <div className="flex flex-wrap items-center gap-3 text-xs mt-2">
                         <span className={`flex items-center gap-1 ${supplier.delivery ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
                           {supplier.delivery ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                          Livraison
+                          {t('suppliers.delivery')}
                         </span>
                         {supplier.website && (
                           <a
@@ -735,7 +737,7 @@ export default function Suppliers() {
                             className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
                           >
                             <ExternalLink className="w-3 h-3" />
-                            Site web
+                            {t('suppliers.website')}
                           </a>
                         )}
                       </div>
@@ -746,14 +748,14 @@ export default function Suppliers() {
                       <button
                         onClick={() => openEdit(supplier)}
                         className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
-                        title="Modifier"
+                        title={t('suppliers.edit')}
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setDeleteTarget(supplier)}
                         className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500"
-                        title="Supprimer"
+                        title={t('suppliers.delete')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -761,14 +763,14 @@ export default function Suppliers() {
                         onClick={() => handleLink(supplier)}
                         disabled={linking === supplier.id}
                         className="p-1.5 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 disabled:opacity-50"
-                        title="Lier les ingrédients"
+                        title={t('suppliers.linkIngredients')}
                       >
                         <Link2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setExpandedId(isExpanded ? null : supplier.id)}
                         className="ml-auto p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
-                        title="Voir les ingrédients"
+                        title={t('suppliers.viewIngredients')}
                       >
                         {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </button>
@@ -784,7 +786,7 @@ export default function Suppliers() {
                               <div className="relative flex-1">
                                 <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
-                                  type="text" placeholder="Filtrer les ingrédients..." value={ingSearch}
+                                  type="text" placeholder={t('suppliers.filterIngredients')} value={ingSearch}
                                   onChange={e => setIngSearch(e.target.value)}
                                   className="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 />
@@ -794,10 +796,10 @@ export default function Suppliers() {
                                   onClick={() => setShowCompare(true)}
                                   className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
                                 >
-                                  <BarChart3 className="w-3.5 h-3.5" /> Comparer ({compareIds.size})
+                                  <BarChart3 className="w-3.5 h-3.5" /> {t('suppliers.comparePrices')} ({compareIds.size})
                                 </button>
                               )}
-                              <span className="text-xs text-slate-400">{supplier.ingredients.length} produits</span>
+                              <span className="text-xs text-slate-400">{supplier.ingredients.length} {t('suppliers.products')}</span>
                             </div>
                             {/* Ingredient rows */}
                             <div className="max-h-80 overflow-y-auto space-y-0.5">
@@ -829,7 +831,7 @@ export default function Suppliers() {
                                             await updateIngredient(ing.id, { pricePerUnit: parseFloat(editingPrice!.value) } as any);
                                             setEditingPrice(null);
                                             loadData();
-                                            showToast('Prix mis à jour', 'success');
+                                            showToast(t('suppliers.priceUpdated'), 'success');
                                           } else if (e.key === 'Escape') setEditingPrice(null);
                                         }}
                                         className="w-20 px-2 py-0.5 text-xs border border-blue-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-slate-700"
@@ -840,7 +842,7 @@ export default function Suppliers() {
                                     <span
                                       className="text-xs font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline w-24 text-right shrink-0"
                                       onClick={() => setEditingPrice({ id: ing.id, value: ing.pricePerUnit.toFixed(2) })}
-                                      title="Cliquer pour modifier le prix"
+                                      title={t('suppliers.clickToEditPrice')}
                                     >
                                       {ing.pricePerUnit.toFixed(2)} €/{ing.unit}
                                     </span>
@@ -850,10 +852,10 @@ export default function Suppliers() {
                                     onClick={async () => {
                                       await updateIngredient(ing.id, { supplierId: null, supplier: '' } as any);
                                       loadData();
-                                      showToast(`${ing.name} délié`, 'success');
+                                      showToast(`${ing.name} ${t('suppliers.unlinked')}`, 'success');
                                     }}
                                     className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-400 hover:text-red-600 transition-all shrink-0"
-                                    title="Délier du fournisseur"
+                                    title={t('suppliers.unlinkFromSupplier')}
                                   >
                                     <X className="w-3.5 h-3.5" />
                                   </button>
@@ -865,16 +867,16 @@ export default function Suppliers() {
                             {showCompare && compareIds.size > 0 && (
                               <div className="border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
                                 <div className="flex items-center justify-between mb-2">
-                                  <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Comparaison prix catalogue</span>
+                                  <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">{t('suppliers.catalogPriceComparison')}</span>
                                   <button onClick={() => { setShowCompare(false); setCompareIds(new Set()); }} className="text-blue-400 hover:text-blue-600"><X className="w-4 h-4" /></button>
                                 </div>
                                 <div className="text-xs space-y-1">
                                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 font-medium text-slate-500 dark:text-slate-400 pb-1 border-b dark:border-blue-800">
-                                    <span className="col-span-2">Produit</span>
-                                    <span>Mon prix</span>
-                                    <span>Cat. min</span>
-                                    <span>Cat. moy</span>
-                                    <span>Écart</span>
+                                    <span className="col-span-2">{t('suppliers.product')}</span>
+                                    <span>{t('suppliers.myPrice')}</span>
+                                    <span>{t('suppliers.catMin')}</span>
+                                    <span>{t('suppliers.catAvg')}</span>
+                                    <span>{t('suppliers.gap')}</span>
                                   </div>
                                   {supplier.ingredients.filter((i: any) => compareIds.has(i.id)).map((ing: any) => {
                                     const match = searchCatalog(ing.name, 1)[0];
@@ -896,7 +898,7 @@ export default function Suppliers() {
                             )}
                           </>
                         ) : (
-                          <p className="text-sm text-slate-400 italic">Aucun ingrédient lié</p>
+                          <p className="text-sm text-slate-400 italic">{t('suppliers.noLinkedIngredient')}</p>
                         )}
                       </div>
                     )}
@@ -916,16 +918,16 @@ export default function Suppliers() {
           {/* Stats bar */}
           <div className="flex flex-wrap gap-3 mb-4 text-sm">
             <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
-              {annuaireStats.total} fournisseur{annuaireStats.total > 1 ? 's' : ''} trouvé{annuaireStats.total > 1 ? 's' : ''}
+              {annuaireStats.total} {t('suppliers.suppliersFound')}
             </span>
             <span className="px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-medium">
-              {annuaireStats.withDelivery} avec livraison
+              {annuaireStats.withDelivery} {t('suppliers.withDeliveryLabel')}
             </span>
             {Object.entries(annuaireStats.byType).map(([type, count]) => {
               const tc = TYPE_COLORS[type as FrenchSupplier['type']];
               return (
                 <span key={type} className={`px-3 py-1.5 rounded-full ${tc.bg} ${tc.text} font-medium`}>
-                  {count} {tc.label.toLowerCase()}{count > 1 ? 's' : ''}
+                  {count} {({grossiste: t('suppliers.typeWholesaler'), specialiste: t('suppliers.typeSpecialist'), local: t('suppliers.typeLocal'), national: t('suppliers.typeNational')} as Record<string, string>)[type]?.toLowerCase()}
                 </span>
               );
             })}
@@ -935,14 +937,14 @@ export default function Suppliers() {
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
             <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-600 dark:text-slate-300">
               <Filter className="w-4 h-4" />
-              Filtres
+              {t('suppliers.filters')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Rechercher..."
+                  placeholder={t('suppliers.search')}
                   value={annuaireSearch}
                   onChange={(e) => setAnnuaireSearch(e.target.value)}
                   className="input pl-10 w-full"
@@ -955,7 +957,7 @@ export default function Suppliers() {
                   onChange={(e) => setAnnuaireRegion(e.target.value)}
                   className="input pl-10 w-full appearance-none"
                 >
-                  <option value="">Toutes les régions</option>
+                  <option value="">{t('suppliers.allRegions')}</option>
                   {FRENCH_REGIONS.map((r) => (
                     <option key={r} value={r}>{r}</option>
                   ))}
@@ -968,7 +970,7 @@ export default function Suppliers() {
                   onChange={(e) => setAnnuaireCategory(e.target.value)}
                   className="input pl-10 w-full appearance-none"
                 >
-                  <option value="">Toutes catégories</option>
+                  <option value="">{t('suppliers.allCategories')}</option>
                   {SUPPLIER_CATEGORIES.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
@@ -981,11 +983,11 @@ export default function Suppliers() {
                   onChange={(e) => setAnnuaireType(e.target.value as '' | FrenchSupplier['type'])}
                   className="input pl-10 w-full appearance-none"
                 >
-                  <option value="">Tous types</option>
-                  <option value="grossiste">Grossiste</option>
-                  <option value="specialiste">Spécialiste</option>
-                  <option value="local">Local</option>
-                  <option value="national">National</option>
+                  <option value="">{t('suppliers.allTypes')}</option>
+                  <option value="grossiste">{t('suppliers.typeWholesaler')}</option>
+                  <option value="specialiste">{t('suppliers.typeSpecialist')}</option>
+                  <option value="local">{t('suppliers.typeLocal')}</option>
+                  <option value="national">{t('suppliers.typeNational')}</option>
                 </select>
               </div>
               <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-700/50 cursor-pointer select-none">
@@ -996,7 +998,7 @@ export default function Suppliers() {
                   className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
                 />
                 <Truck className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                <span className="text-sm text-slate-600 dark:text-slate-300">Livraison uniquement</span>
+                <span className="text-sm text-slate-600 dark:text-slate-300">{t('suppliers.deliveryOnly')}</span>
               </label>
             </div>
           </div>
@@ -1005,7 +1007,7 @@ export default function Suppliers() {
           {annuaireResults.length === 0 ? (
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
               <Search className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-slate-400 dark:text-slate-500">Aucun fournisseur ne correspond à vos critères</p>
+              <p className="text-slate-400 dark:text-slate-500">{t('suppliers.noMatchingSupplier')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -1021,7 +1023,7 @@ export default function Suppliers() {
                         {supplier.name}
                       </h3>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap ${tc.bg} ${tc.text}`}>
-                        {tc.label}
+                        {({grossiste: t('suppliers.typeWholesaler'), specialiste: t('suppliers.typeSpecialist'), local: t('suppliers.typeLocal'), national: t('suppliers.typeNational')} as Record<string, string>)[supplier.type]}
                       </span>
                     </div>
                     <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">
@@ -1043,7 +1045,7 @@ export default function Suppliers() {
                       <MapPin className="w-3 h-3 mt-0.5 shrink-0" />
                       <span className="line-clamp-1">
                         {supplier.regions.length === FRENCH_REGIONS.length
-                          ? 'Toute la France'
+                          ? t('suppliers.allFrance')
                           : supplier.regions.join(', ')}
                       </span>
                     </div>
@@ -1078,8 +1080,8 @@ export default function Suppliers() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Catalogue Transgourmet</h3>
-                <span className="text-xs text-slate-400 ml-2">{catalogData.length} produits disponibles</span>
+                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t('suppliers.catalogTitle')}</h3>
+                <span className="text-xs text-slate-400 ml-2">{catalogData.length} {t('suppliers.availableProducts')}</span>
               </div>
               {catalogSelected.size > 0 && (
                 <button
@@ -1101,13 +1103,13 @@ export default function Suppliers() {
                     }
                     setCatalogSelected(new Set());
                     await loadData();
-                    showToast(`${added} produit${added > 1 ? 's' : ''} ajouté${added > 1 ? 's' : ''}`, 'success');
+                    showToast(`${added} ${t('suppliers.productsAdded')}`, 'success');
                     setAddingCatalog(false);
                   }}
                   className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />
-                  {addingCatalog ? 'Ajout en cours...' : `Ajouter ${catalogSelected.size} produit${catalogSelected.size > 1 ? 's' : ''}`}
+                  {addingCatalog ? t('suppliers.addingInProgress') : `${t('suppliers.add')} ${catalogSelected.size} ${t('suppliers.products')}`}
                 </button>
               )}
             </div>
@@ -1116,7 +1118,7 @@ export default function Suppliers() {
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
-                  type="text" placeholder="Rechercher un produit..." value={catalogSearch}
+                  type="text" placeholder={t('suppliers.searchProduct')} value={catalogSearch}
                   onChange={e => { setCatalogSearch(e.target.value); setCatalogPage(0); }}
                   className="input pl-10 w-full"
                 />
@@ -1125,7 +1127,7 @@ export default function Suppliers() {
                 value={catalogCat} onChange={e => { setCatalogCat(e.target.value); setCatalogPage(0); }}
                 className="input w-48"
               >
-                <option value="">Toutes catégories</option>
+                <option value="">{t('suppliers.allCategories')}</option>
                 {[...new Set(catalogData.map(p => p.category))].sort().map(c => (
                   <option key={c} value={c}>{c}</option>
                 ))}
@@ -1158,11 +1160,11 @@ export default function Suppliers() {
                               className="accent-blue-600"
                             />
                           </th>
-                          <th className="px-3 py-2">Produit</th>
-                          <th className="px-3 py-2">Catégorie</th>
-                          <th className="px-3 py-2">Prix estimé</th>
-                          <th className="px-3 py-2">Unité</th>
-                          <th className="px-3 py-2 w-20">Action</th>
+                          <th className="px-3 py-2">{t('suppliers.product')}</th>
+                          <th className="px-3 py-2">{t('suppliers.category')}</th>
+                          <th className="px-3 py-2">{t('suppliers.estimatedPrice')}</th>
+                          <th className="px-3 py-2">{t('suppliers.unit')}</th>
+                          <th className="px-3 py-2 w-20">{t('suppliers.action')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y dark:divide-slate-700">
@@ -1188,19 +1190,19 @@ export default function Suppliers() {
                               <td className="px-3 py-2 text-slate-400">{p.unit}</td>
                               <td className="px-3 py-2">
                                 {exists ? (
-                                  <span className="text-xs text-green-500">✓ Ajouté</span>
+                                  <span className="text-xs text-green-500">✓ {t('suppliers.added')}</span>
                                 ) : (
                                   <button
                                     onClick={async () => {
                                       try {
                                         await createIngredient({ name: p.name, unit: p.unit, pricePerUnit: p.prixMoy, category: p.category, allergens: [] } as any);
                                         await loadData();
-                                        showToast(`${p.name} ajouté`, 'success');
-                                      } catch { showToast('Erreur', 'error'); }
+                                        showToast(`${p.name} ${t('suppliers.added')}`, 'success');
+                                      } catch { showToast(t('suppliers.error'), 'error'); }
                                     }}
                                     className="text-xs px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white"
                                   >
-                                    + Ajouter
+                                    + {t('suppliers.add')}
                                   </button>
                                 )}
                               </td>
@@ -1213,7 +1215,7 @@ export default function Suppliers() {
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-xs text-slate-400">{filtered.length} résultats</span>
+                      <span className="text-xs text-slate-400">{filtered.length} {t('suppliers.results')}</span>
                       <div className="flex gap-1">
                         <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">←</button>
                         <span className="px-3 py-1 text-xs text-slate-500">{catalogPage + 1}{" / "}{totalPages}</span>
@@ -1231,7 +1233,7 @@ export default function Suppliers() {
       {/* ================================================================== */}
       {/* Supplier Detail Modal                                              */}
       {/* ================================================================== */}
-      <Modal isOpen={!!detailSupplier} onClose={() => setDetailSupplier(null)} title={detailSupplier?.name || 'Détail fournisseur'}>
+      <Modal isOpen={!!detailSupplier} onClose={() => setDetailSupplier(null)} title={detailSupplier?.name || t('suppliers.supplierDetail')}>
         {detailSupplier && (() => {
           const rating = getMockRating(detailSupplier.id);
           const ings = detailSupplier.ingredients || [];
@@ -1245,18 +1247,18 @@ export default function Suppliers() {
                       <Star key={n} className={`w-4 h-4 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
                     ))}
                   </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">Fiabilité</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.reliability')}</span>
                 </div>
                 <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
                   <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
                     <Clock className="w-4 h-4 text-blue-500" />
                     {rating.deliveryDays}
                   </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">Délai livraison</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
                 </div>
                 <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
                   <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{rating.minOrderAmount}</div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">Commande min.</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.minOrder')}</span>
                 </div>
               </div>
 
@@ -1272,10 +1274,10 @@ export default function Suppliers() {
               <div>
                 <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
                   <Package className="w-4 h-4 text-blue-500" />
-                  Ingrédients liés ({ings.length})
+                  {t('suppliers.linkedIngredientsCount')} ({ings.length})
                 </h4>
                 {ings.length === 0 ? (
-                  <p className="text-sm text-slate-400 italic">Aucun ingrédient lié à ce fournisseur</p>
+                  <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
                 ) : (
                   <div className="space-y-3">
                     {ings.map((ing: any) => {
@@ -1299,7 +1301,7 @@ export default function Suppliers() {
                           {/* Mini price chart */}
                           <div className="mt-1">
                             <div className="flex items-center justify-between text-[10px] text-slate-400 mb-0.5">
-                              <span>Historique 30j</span>
+                              <span>{t('suppliers.history30d')}</span>
                               <span>{priceHistory[priceHistory.length - 1].toFixed(2)} €</span>
                             </div>
                             <MiniPriceChart data={priceHistory} width={300} height={40} />
@@ -1321,26 +1323,26 @@ export default function Suppliers() {
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title={editingSupplier ? 'Modifier le fournisseur' : 'Ajouter un fournisseur'}
+        title={editingSupplier ? t('suppliers.editSupplier') : t('suppliers.addSupplier')}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           {/* Nom */}
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Nom du fournisseur <span className="text-red-500">*</span>
+              {t('suppliers.supplierName')} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => setField('name', e.target.value)}
               className="input w-full"
-              placeholder="Ex: Metro, Transgourmet..."
+              placeholder={t('suppliers.namePlaceholder')}
             />
           </div>
 
           {/* Contact name */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nom du contact</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.contactName')}</label>
             <input
               type="text"
               value={form.contactName}
@@ -1352,7 +1354,7 @@ export default function Suppliers() {
           {/* Phone + Email */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Téléphone</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.phone')}</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -1361,7 +1363,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.email')}</label>
               <input
                 type="email"
                 value={form.email}
@@ -1373,7 +1375,7 @@ export default function Suppliers() {
 
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Adresse</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.address')}</label>
             <input
               type="text"
               value={form.address}
@@ -1385,7 +1387,7 @@ export default function Suppliers() {
           {/* Postal code + City */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Code postal</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.postalCode')}</label>
               <input
                 type="text"
                 value={form.postalCode}
@@ -1394,7 +1396,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Ville</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.city')}</label>
               <input
                 type="text"
                 value={form.city}
@@ -1407,20 +1409,20 @@ export default function Suppliers() {
           {/* Region + Country */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Région</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.region')}</label>
               <select
                 value={form.region}
                 onChange={(e) => setField('region', e.target.value)}
                 className="input w-full"
               >
-                <option value="">-- Sélectionner --</option>
+                <option value="">-- {t('suppliers.select')} --</option>
                 {FRENCH_REGIONS.map((r) => (
                   <option key={r} value={r}>{r}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Pays</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.country')}</label>
               <input
                 type="text"
                 value={form.country}
@@ -1433,17 +1435,17 @@ export default function Suppliers() {
           {/* SIRET + Website */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">SIRET</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.siret')}</label>
               <input
                 type="text"
                 value={form.siret}
                 onChange={(e) => setField('siret', e.target.value)}
                 className="input w-full"
-                placeholder="14 chiffres"
+                placeholder={t('suppliers.siretPlaceholder')}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Site web</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.websiteLabel')}</label>
               <input
                 type="url"
                 value={form.website}
@@ -1456,7 +1458,7 @@ export default function Suppliers() {
 
           {/* Categories multi-select */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Catégories</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t('suppliers.categories')}</label>
             <div className="flex flex-wrap gap-2">
               {INGREDIENT_CATEGORIES.map((cat) => (
                 <label
@@ -1492,43 +1494,43 @@ export default function Suppliers() {
                   ? <ToggleRight className="w-8 h-8 text-green-500" />
                   : <ToggleLeft className="w-8 h-8 text-slate-400" />}
               </button>
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Livraison disponible</span>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('suppliers.deliveryAvailable')}</span>
             </label>
           </div>
 
           {/* Min order + Payment terms */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Commande minimum</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.minimumOrder')}</label>
               <input
                 type="text"
                 value={form.minOrder}
                 onChange={(e) => setField('minOrder', e.target.value)}
                 className="input w-full"
-                placeholder="Ex: 150 EUR"
+                placeholder={t('suppliers.minOrderPlaceholder')}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Conditions de paiement</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.paymentTerms')}</label>
               <input
                 type="text"
                 value={form.paymentTerms}
                 onChange={(e) => setField('paymentTerms', e.target.value)}
                 className="input w-full"
-                placeholder="Ex: 30 jours fin de mois"
+                placeholder={t('suppliers.paymentTermsPlaceholder')}
               />
             </div>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.notes')}</label>
             <textarea
               value={form.notes}
               onChange={(e) => setField('notes', e.target.value)}
               rows={3}
               className="input w-full resize-none"
-              placeholder="Informations complémentaires..."
+              placeholder={t('suppliers.notesPlaceholder')}
             />
           </div>
         </div>
@@ -1539,7 +1541,7 @@ export default function Suppliers() {
             onClick={() => setModalOpen(false)}
             className="px-4 py-2 rounded-lg font-medium border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
-            Annuler
+            {t('suppliers.cancel')}
           </button>
           <button
             onClick={handleSave}
@@ -1549,10 +1551,10 @@ export default function Suppliers() {
             {saving ? (
               <>
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Enregistrement...
+                {t('suppliers.saving')}
               </>
             ) : (
-              editingSupplier ? 'Mettre à jour' : 'Créer'
+              editingSupplier ? t('suppliers.update') : t('suppliers.create')
             )}
           </button>
         </div>
@@ -1565,8 +1567,8 @@ export default function Suppliers() {
         isOpen={!!deleteTarget}
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
-        title="Supprimer le fournisseur"
-        message={`Voulez-vous vraiment supprimer "${deleteTarget?.name}" ? Cette action est irréversible.`}
+        title={t('suppliers.deleteSupplier')}
+        message={`${t('suppliers.deleteConfirm')} "${deleteTarget?.name}" ?`}
       />
     </div>
   );

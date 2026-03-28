@@ -251,7 +251,7 @@ export default function StationLanding() {
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 rounded-3xl blur-2xl" />
               <div className="relative bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm">
                 <img
-                  src="/images/restaumargin-station.png"
+                  src="/images/restaumargin-station-opt.webp"
                   alt="RestauMargin Station — Kit Balance + Tablette"
                   className="w-full h-auto rounded-2xl"
                   loading="eager"
@@ -346,7 +346,7 @@ export default function StationLanding() {
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
               <div className="aspect-video bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 mb-4 overflow-hidden">
                 <img
-                  src="/images/restaumargin-station.png"
+                  src="/images/restaumargin-station-opt.webp"
                   alt="Vue détaillée RestauMargin Station"
                   className="w-full h-full object-cover rounded-xl"
                 />

@@ -14,6 +14,7 @@ import {
 import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -57,12 +58,12 @@ const ALLERGEN_COLORS: Record<string, string> = {
 
 // ── Tab definitions with descriptions ──────────────────────────────────────
 type TabKey = 'overview' | 'margins' | 'costs' | 'profitability';
-const TABS: { key: TabKey; label: string; desc: string; icon: any }[] = [
-  { key: 'overview', label: "Vue d'ensemble", desc: 'Résumé global et catégories', icon: BarChart3 },
-  { key: 'margins', label: 'Analyse des marges', desc: 'Marges par recette et classement', icon: TrendingUp },
-  { key: 'costs', label: 'Coûts matière', desc: 'Répartition des coûts ingrédients', icon: ShoppingCart },
-  { key: 'profitability', label: 'Rentabilité', desc: 'Projections et seuils', icon: DollarSign },
-];
+const TAB_ICONS: Record<TabKey, any> = {
+  overview: BarChart3,
+  margins: TrendingUp,
+  costs: ShoppingCart,
+  profitability: DollarSign,
+};
 
 // ── Stat card color configs ────────────────────────────────────────────────
 const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
@@ -206,6 +207,7 @@ function TreemapContent({ x, y, width, height, name, value, totalFoodCost }: any
 
 // ── Alert Ticker Banner ───────────────────────────────────────────────────
 function AlertTicker({ alerts }: { alerts: Recipe[] }) {
+  const { t } = useTranslation();
   if (alerts.length === 0) return null;
   // Duplicate items for seamless loop
   const items = [...alerts, ...alerts];
@@ -214,7 +216,7 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
       <div className="flex items-center gap-2 px-4 py-2.5">
         <AlertTriangle className="w-4 h-4 text-white flex-shrink-0" />
         <span className="text-xs font-bold text-white/90 flex-shrink-0 uppercase tracking-wide">
-          Alertes ({alerts.length})
+          {t("dashboard.alerts")} ({alerts.length})
         </span>
         <div className="flex-1 overflow-hidden">
           <div className="flex gap-6 animate-[ticker_20s_linear_infinite]">
@@ -247,6 +249,7 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
 // MAIN DASHBOARD
 // ══════════════════════════════════════════════════════════════════════════════
 export default function Dashboard() {
+  const { t } = useTranslation();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -256,6 +259,13 @@ export default function Dashboard() {
   const [avgPricePerCouvert, setAvgPricePerCouvert] = useState(25);
   const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
   const navigate = useNavigate();
+
+  const TABS: { key: TabKey; label: string; desc: string; icon: any }[] = [
+    { key: 'overview', label: t("dashboard.tabOverview"), desc: t("dashboard.tabOverviewDesc"), icon: TAB_ICONS.overview },
+    { key: 'margins', label: t("dashboard.tabMargins"), desc: t("dashboard.tabMarginsDesc"), icon: TAB_ICONS.margins },
+    { key: 'costs', label: t("dashboard.tabCosts"), desc: t("dashboard.tabCostsDesc"), icon: TAB_ICONS.costs },
+    { key: 'profitability', label: t("dashboard.tabProfitability"), desc: t("dashboard.tabProfitabilityDesc"), icon: TAB_ICONS.profitability },
+  ];
 
   useEffect(() => {
     Promise.all([fetchRecipes(), fetchIngredients()])
@@ -450,9 +460,9 @@ export default function Dashboard() {
         id: 'price-increase',
         type: 'opportunity',
         icon: 'trending-up',
-        text: `Augmenter le prix du ${w.name} de ${suggestedIncrease}€ (+${((suggestedIncrease / w.sellingPrice) * 100).toFixed(0)}% marge)`,
+        text: `${t("dashboard.aiIncreasePriceOf")} ${w.name} ${t("dashboard.aiBy")} ${suggestedIncrease}€ (+${((suggestedIncrease / w.sellingPrice) * 100).toFixed(0)}% ${t("dashboard.margin")})`,
         action: `/recipes/${w.id}`,
-        actionLabel: 'Appliquer',
+        actionLabel: t("dashboard.aiApply"),
       });
     }
     // Find cheapest ingredient category for opportunity
@@ -462,9 +472,9 @@ export default function Dashboard() {
         id: 'cheap-category',
         type: 'info',
         icon: 'sparkles',
-        text: `La catégorie "${cheapestCat.name}" est la moins coûteuse — Idéale pour de nouveaux plats`,
+        text: `${t("dashboard.aiCheapestCategory")} "${cheapestCat.name}" — ${t("dashboard.aiIdealForNewDishes")}`,
         action: '/ingredients',
-        actionLabel: 'Voir',
+        actionLabel: t("dashboard.aiView"),
       });
     }
     // Low-margin dishes warning
@@ -474,9 +484,9 @@ export default function Dashboard() {
         id: 'low-margin',
         type: 'warning',
         icon: 'alert',
-        text: `${lowMarginCount} plat${lowMarginCount > 1 ? 's' : ''} sous 50% de marge — À optimiser`,
+        text: `${lowMarginCount} ${lowMarginCount > 1 ? t("dashboard.aiDishesPlural") : t("dashboard.aiDishSingular")} ${t("dashboard.aiBelow50Margin")}`,
         action: '/recipes',
-        actionLabel: 'Voir',
+        actionLabel: t("dashboard.aiView"),
       });
     }
     // Best performer
@@ -486,9 +496,9 @@ export default function Dashboard() {
         id: 'best-performer',
         type: 'opportunity',
         icon: 'star',
-        text: `"${best.name}" est votre star à ${best.margin.marginPercent.toFixed(1)}% — Mettez-le en avant`,
+        text: `"${best.name}" ${t("dashboard.aiIsYourStar")} ${best.margin.marginPercent.toFixed(1)}% — ${t("dashboard.aiHighlightIt")}`,
         action: `/recipes/${best.id}`,
-        actionLabel: 'Voir',
+        actionLabel: t("dashboard.aiView"),
       });
     }
 
@@ -500,7 +510,7 @@ export default function Dashboard() {
       const fixedCosts = 2000; // Estimated fixed monthly costs
       const growthFactor = 1 + (i * 0.02); // 2% monthly growth
       return {
-        name: `Mois ${month}`,
+        name: `${t("dashboard.month")} ${month}`,
         revenue: Math.round(monthlyRevenue * growthFactor),
         costs: Math.round((monthlyCost * 26 > 0 ? monthlyCost : monthlyRevenue * 0.6) * (1 + i * 0.01)),
         profit: Math.round((monthlyRevenue * growthFactor) - ((monthlyCost > 0 ? monthlyCost : monthlyRevenue * 0.6) * (1 + i * 0.01))),
@@ -531,12 +541,12 @@ export default function Dashboard() {
       allergenSummary, coeffBuckets,
       menuDuMarche, aiSuggestions, projectionData, categoryBreakdown,
     };
-  }, [recipes, couverts, serviceMode, avgPricePerCouvert]);
+  }, [recipes, couverts, serviceMode, avgPricePerCouvert, t]);
 
   // ── Export CSV helper ──────────────────────────────────────────────────
   const handleExportCSV = useCallback(() => {
     if (recipes.length === 0) return;
-    const header = 'Nom,Catégorie,Prix vente,Coût matière,Coût MO,Coût total,Marge €,Marge %,Coefficient\n';
+    const header = `${t("dashboard.csvName")},${t("dashboard.csvCategory")},${t("dashboard.csvSellingPrice")},${t("dashboard.csvFoodCost")},${t("dashboard.csvLaborCost")},${t("dashboard.csvTotalCost")},${t("dashboard.csvMarginEuro")},${t("dashboard.csvMarginPercent")},${t("dashboard.csvCoefficient")}\n`;
     const rows = recipes.map(r =>
       `"${r.name}","${r.category}",${r.sellingPrice.toFixed(2)},${r.margin.costPerPortion.toFixed(2)},${(r.margin.laborCostPerPortion || 0).toFixed(2)},${(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)},${r.margin.marginAmount.toFixed(2)},${r.margin.marginPercent.toFixed(1)},${r.margin.coefficient.toFixed(2)}`
     ).join('\n');
@@ -560,14 +570,14 @@ export default function Dashboard() {
   if (!stats || stats.totalRecipes === 0) {
     return (
       <div>
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Tableau de bord</h2>
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">{t("dashboard.title")}</h2>
         <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
           <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Bienvenue sur RestauMargin</h3>
-          <p className="text-slate-400 dark:text-slate-500 mb-6">Commencez par ajouter des ingrédients puis créez vos fiches techniques.</p>
+          <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
+          <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
           <div className="flex gap-4 justify-center">
-            <Link to="/ingredients" className="btn-primary">Ajouter des ingrédients</Link>
-            <Link to="/recipes" className="btn-secondary">Créer une recette</Link>
+            <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
+            <Link to="/recipes" className="btn-secondary">{t("dashboard.createRecipe")}</Link>
           </div>
         </div>
       </div>
@@ -581,9 +591,9 @@ export default function Dashboard() {
       {/* ── Header + Quick Actions ────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Tableau de bord</h2>
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t("dashboard.title")}</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {stats.totalRecipes} recette{stats.totalRecipes > 1 ? 's' : ''} · {ingredients.length} ingrédient{ingredients.length > 1 ? 's' : ''}
+            {stats.totalRecipes} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -591,70 +601,70 @@ export default function Dashboard() {
             onClick={() => navigate('/recipes?action=new')}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
           >
-            <Plus className="w-4 h-4" /> Nouvelle recette
+            <Plus className="w-4 h-4" /> {t("dashboard.newRecipe")}
           </button>
           <button
             onClick={() => navigate('/ingredients?action=new')}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
-            <Package className="w-4 h-4" /> Ajouter ingrédient
+            <Package className="w-4 h-4" /> {t("dashboard.addIngredient")}
           </button>
           <Link
             to="/recipes"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
-            <ClipboardList className="w-4 h-4" /> Voir les recettes
+            <ClipboardList className="w-4 h-4" /> {t("dashboard.viewRecipes")}
           </Link>
           <Link
             to="/inventory"
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
-            <FileText className="w-4 h-4" /> Voir l'inventaire
+            <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
           </Link>
           <button
             onClick={() => window.print()}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm no-print"
           >
-            <Printer className="w-4 h-4" /> Imprimer
+            <Printer className="w-4 h-4" /> {t("dashboard.print")}
           </button>
         </div>
       </div>
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        <StatCard title="Recettes" value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" colorKey="blue" />
+        <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" colorKey="blue" />
         <StatCard
-          title="Marge moyenne"
+          title={t("dashboard.avgMargin")}
           numericValue={stats.avgMargin}
           suffix="%"
-          subtitle={stats.avgMargin >= 70 ? 'Objectif atteint' : 'Objectif : > 70%'}
+          subtitle={stats.avgMargin >= 70 ? t("dashboard.goalReached") : t("dashboard.goalTarget70")}
           icon={TrendingUp}
           color={stats.avgMargin >= 70 ? 'bg-green-600' : 'bg-amber-500'}
           colorKey={stats.avgMargin >= 70 ? 'green' : 'amber'}
           trend={stats.avgMargin >= 70 ? 'up' : 'down'}
         />
         <StatCard
-          title="Coefficient moyen"
+          title={t("dashboard.avgCoefficient")}
           numericValue={stats.avgCoefficient}
           decimals={2}
-          subtitle="Objectif : > 3.3"
+          subtitle={t("dashboard.goalTarget33")}
           icon={DollarSign}
           color="bg-purple-600"
           colorKey="purple"
           trend={stats.avgCoefficient >= 3.3 ? 'up' : 'down'}
         />
         <StatCard
-          title="Coût moyen total"
+          title={t("dashboard.avgTotalCost")}
           numericValue={stats.avgTotalCost}
           decimals={2}
           suffix=" €"
-          subtitle={stats.avgLaborCost > 0 ? `Mat. ${stats.avgFoodCost.toFixed(2)}€ + MO ${stats.avgLaborCost.toFixed(2)}€` : 'Matière seule'}
+          subtitle={stats.avgLaborCost > 0 ? `${t("dashboard.material")} ${stats.avgFoodCost.toFixed(2)}€ + ${t("dashboard.labor")} ${stats.avgLaborCost.toFixed(2)}€` : t("dashboard.materialOnly")}
           icon={Briefcase}
           color="bg-cyan-600"
           colorKey="cyan"
         />
         <StatCard
-          title="Min / Max"
+          title={t("dashboard.minMax")}
           value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
           icon={TrendingDown}
           color="bg-slate-600"
@@ -671,10 +681,10 @@ export default function Dashboard() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
             <Star className="w-5 h-5 text-amber-500" />
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Suggestion du jour</h3>
-            <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">Menu du Marché</span>
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.dailySuggestion")}</h3>
+            <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{t("dashboard.marketMenu")}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Plats recommandés basés sur les meilleures marges</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t("dashboard.recommendedDishes")}</p>
           <div className="space-y-3">
             {stats.menuDuMarche.map((dish, i) => (
               <Link
@@ -689,13 +699,13 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-sm font-bold text-green-600 dark:text-green-400">{dish.marginPercent.toFixed(1)}%</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">Coût {dish.costPerPortion.toFixed(2)}€ · Vente {dish.suggestedPrice.toFixed(2)}€</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">{t("dashboard.cost")} {dish.costPerPortion.toFixed(2)}€ · {t("dashboard.sale")} {dish.suggestedPrice.toFixed(2)}€</p>
                 </div>
               </Link>
             ))}
           </div>
           <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium mt-3">
-            Voir toutes les suggestions <ArrowRight className="w-3 h-3" />
+            {t("dashboard.viewAllSuggestions")} <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
@@ -703,7 +713,7 @@ export default function Dashboard() {
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-purple-500" />
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Suggestions IA</h3>
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.aiSuggestions")}</h3>
           </div>
           <div className="space-y-3">
             {stats.aiSuggestions.map(suggestion => {
@@ -789,14 +799,14 @@ export default function Dashboard() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
                     <Calculator className="w-5 h-5" />
-                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 text-white">Estimation de revenus</h3>
+                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 text-white">{t("dashboard.revenueEstimation")}</h3>
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
-                      {([['all', 'Jour'], ['lunch', 'Déj.'], ['dinner', 'Dîn.']] as const).map(([key, label]) => (
+                      {([['all', t("dashboard.serviceAll")], ['lunch', t("dashboard.serviceLunch")], ['dinner', t("dashboard.serviceDinner")]] as [string, string][]).map(([key, label]) => (
                         <button
                           key={key}
-                          onClick={() => setServiceMode(key)}
+                          onClick={() => setServiceMode(key as 'all' | 'lunch' | 'dinner')}
                           className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                             serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
                           }`}
@@ -806,7 +816,7 @@ export default function Dashboard() {
                       ))}
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-blue-100">Couverts :</label>
+                      <label className="text-xs text-blue-100">{t("dashboard.covers")} :</label>
                       <input
                         type="number"
                         min={1}
@@ -817,7 +827,7 @@ export default function Dashboard() {
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-blue-100">Ticket moy. :</label>
+                      <label className="text-xs text-blue-100">{t("dashboard.avgTicket")} :</label>
                       <input
                         type="number"
                         min={1}
@@ -833,29 +843,29 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">CA / jour</p>
+                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerDay")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
+                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">CA / mois</p>
+                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
+                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.profitPerDay")}</p>
                     <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-blue-200">
-                  <span>{stats.dailyCouverts} couverts/jour ({serviceMode === 'all' ? '2 services' : serviceMode === 'lunch' ? 'déjeuner' : 'dîner'})</span>
-                  <span>Coût ratio : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
-                  <span>Profit/couvert : {stats.profitPerCouvert.toFixed(2)} €</span>
+                  <span>{stats.dailyCouverts} {t("dashboard.coversPerDay")} ({serviceMode === 'all' ? t("dashboard.twoServices") : serviceMode === 'lunch' ? t("dashboard.lunch") : t("dashboard.dinner")})</span>
+                  <span>{t("dashboard.costRatio")} : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
+                  <span>{t("dashboard.profitPerCover")} : {stats.profitPerCouvert.toFixed(2)} €</span>
                   {stats.seuilRentabilite > 0 && (
-                    <span className="text-yellow-300 font-medium">Seuil de rentabilité : {stats.seuilRentabilite} couverts/jour</span>
+                    <span className="text-yellow-300 font-medium">{t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite} {t("dashboard.coversPerDay")}</span>
                   )}
                 </div>
               </div>
@@ -870,7 +880,7 @@ export default function Dashboard() {
                     </div>
                     <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{cat.count}</div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Marge :{' '}
+                      {t("dashboard.margin")} :{' '}
                       <span className={
                         cat.avgMargin >= 70 ? 'text-green-600 font-semibold'
                           : cat.avgMargin >= 60 ? 'text-amber-600 font-semibold'
@@ -890,7 +900,7 @@ export default function Dashboard() {
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
                 <div className="flex items-center gap-2 mb-4">
                   <Utensils className="w-5 h-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition</h3>
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.distribution")}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
@@ -942,7 +952,7 @@ export default function Dashboard() {
                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <ShieldAlert className="w-5 h-5 text-amber-500" />
-                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Allergènes</h3>
+                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.allergens")}</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {stats.allergenSummary.map(a => (
@@ -970,20 +980,20 @@ export default function Dashboard() {
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               <TrendingUp className="w-5 h-5 text-green-600" />
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Toutes les recettes par marge</h3>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.allRecipesByMargin")}</h3>
               <div className="flex items-center gap-2 ml-auto">
                 <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
                   <button
                     onClick={() => setMarginSort('margin')}
                     className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'margin' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
                   >
-                    <ArrowDown className="w-3 h-3" /> Marge
+                    <ArrowDown className="w-3 h-3" /> {t("dashboard.margin")}
                   </button>
                   <button
                     onClick={() => setMarginSort('name')}
                     className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'name' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
                   >
-                    <ArrowDown className="w-3 h-3" /> Nom
+                    <ArrowDown className="w-3 h-3" /> {t("dashboard.name")}
                   </button>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
@@ -1011,7 +1021,7 @@ export default function Dashboard() {
                     );
                   }}
                 />
-                <Bar dataKey="margin" name="Marge %" radius={[0, 4, 4, 0]}>
+                <Bar dataKey="margin" name={t("dashboard.marginPercent")} radius={[0, 4, 4, 0]}>
                   {stats.allByMargin.map((entry, index) => (
                     <Cell key={index} fill={entry.fill} />
                   ))}
@@ -1025,7 +1035,7 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Trophy className="w-5 h-5 text-yellow-500" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Top 10 par marge</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.top10ByMargin")}</h3>
               </div>
               <div className="space-y-3">
                 {stats.top10Margin.map((r, i) => (
@@ -1045,8 +1055,8 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <ShieldAlert className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">5 marges les plus basses</h3>
-                <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">Action requise</span>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.bottom5Margins")}</h3>
+                <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">{t("dashboard.actionRequired")}</span>
               </div>
               <div className="space-y-3">
                 {stats.worst5.map((r, i) => (
@@ -1077,7 +1087,7 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <PieChartIcon className="w-5 h-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Répartition coût matière</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.foodCostDistribution")}</h3>
                 <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
                   Total : {stats.totalFoodCostAll.toFixed(2)} €
                 </span>
@@ -1136,7 +1146,7 @@ export default function Dashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-center text-slate-400 py-12">Aucune donnée</p>
+                <p className="text-center text-slate-400 py-12">{t("dashboard.noData")}</p>
               )}
             </div>
 
@@ -1145,7 +1155,7 @@ export default function Dashboard() {
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
                 <div className="flex items-center gap-2 mb-4">
                   <BarChart3 className="w-5 h-5 text-orange-600" />
-                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Détail par catégorie</h3>
+                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.detailByCategory")}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={Math.max(200, stats.foodCostData.length * 36)}>
                   <BarChart data={stats.foodCostData} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
@@ -1161,12 +1171,12 @@ export default function Dashboard() {
                           <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
                             <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
                             <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
-                            <p className="text-slate-500 dark:text-slate-400">{pct}% du coût total</p>
+                            <p className="text-slate-500 dark:text-slate-400">{pct}% {t("dashboard.ofTotalCost")}</p>
                           </div>
                         );
                       }}
                     />
-                    <Bar dataKey="value" name="Coût" radius={[0, 4, 4, 0]}>
+                    <Bar dataKey="value" name={t("dashboard.cost")} radius={[0, 4, 4, 0]}>
                       {stats.foodCostData.map((entry, index) => (
                         <Cell key={index} fill={entry.fill} />
                       ))}
@@ -1182,17 +1192,17 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <ShoppingCart className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Top 10 ingrédients les plus coûteux</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.top10ExpensiveIngredients")}</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                       <th className="pb-2 font-medium">#</th>
-                      <th className="pb-2 font-medium">Ingrédient</th>
-                      <th className="pb-2 font-medium">Catégorie</th>
-                      <th className="pb-2 text-right font-medium">Coût total</th>
-                      <th className="pb-2 text-right font-medium">% du total</th>
+                      <th className="pb-2 font-medium">{t("dashboard.ingredient")}</th>
+                      <th className="pb-2 font-medium">{t("dashboard.category")}</th>
+                      <th className="pb-2 text-right font-medium">{t("dashboard.totalCost")}</th>
+                      <th className="pb-2 text-right font-medium">{t("dashboard.percentOfTotal")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -1223,16 +1233,16 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <ClipboardList className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Détail par catégorie d'ingrédients</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.ingredientCategoryDetail")}</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
-                      <th className="pb-2 font-medium">Catégorie</th>
-                      <th className="pb-2 text-right font-medium">Coût total</th>
-                      <th className="pb-2 text-right font-medium">% du total</th>
-                      <th className="pb-2 font-medium">Ingrédient principal</th>
+                      <th className="pb-2 font-medium">{t("dashboard.category")}</th>
+                      <th className="pb-2 text-right font-medium">{t("dashboard.totalCost")}</th>
+                      <th className="pb-2 text-right font-medium">{t("dashboard.percentOfTotal")}</th>
+                      <th className="pb-2 font-medium">{t("dashboard.mainIngredient")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -1267,14 +1277,14 @@ export default function Dashboard() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <Calculator className="w-5 h-5" />
-                <h3 className="text-lg font-semibold text-white">Projections de revenus</h3>
+                <h3 className="text-lg font-semibold text-white">{t("dashboard.revenueProjections")}</h3>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
-                  {([['all', 'Jour'], ['lunch', 'Déj.'], ['dinner', 'Dîn.']] as const).map(([key, label]) => (
+                  {([['all', t("dashboard.serviceAll")], ['lunch', t("dashboard.serviceLunch")], ['dinner', t("dashboard.serviceDinner")]] as [string, string][]).map(([key, label]) => (
                     <button
                       key={key}
-                      onClick={() => setServiceMode(key)}
+                      onClick={() => setServiceMode(key as 'all' | 'lunch' | 'dinner')}
                       className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                         serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
                       }`}
@@ -1284,7 +1294,7 @@ export default function Dashboard() {
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-blue-100">Couverts :</label>
+                  <label className="text-xs text-blue-100">{t("dashboard.covers")} :</label>
                   <input
                     type="number"
                     min={1}
@@ -1295,7 +1305,7 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-blue-100">Ticket moy. :</label>
+                  <label className="text-xs text-blue-100">{t("dashboard.avgTicket")} :</label>
                   <input
                     type="number"
                     min={1}
@@ -1311,19 +1321,19 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">CA / jour</p>
+                <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerDay")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">CA / semaine</p>
+                <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">CA / mois</p>
+                <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">Profit / jour</p>
+                <p className="text-xs text-blue-200 mb-1">{t("dashboard.profitPerDay")}</p>
                 <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
               </div>
             </div>
@@ -1333,8 +1343,8 @@ export default function Dashboard() {
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-indigo-600" />
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Projections sur 6 mois</h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">Revenus vs Coûts</span>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.projections6Months")}</h3>
+              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{t("dashboard.revenueVsCosts")}</span>
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={stats.projectionData} margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
@@ -1358,9 +1368,9 @@ export default function Dashboard() {
                     );
                   }}
                 />
-                <Line type="monotone" dataKey="revenue" name="Revenus" stroke="#2563eb" strokeWidth={2.5} dot={{ fill: '#2563eb', r: 4 }} />
-                <Line type="monotone" dataKey="costs" name="Coûts" stroke="#dc2626" strokeWidth={2.5} dot={{ fill: '#dc2626', r: 4 }} strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="profit" name="Profit" stroke="#059669" strokeWidth={2.5} dot={{ fill: '#059669', r: 4 }} />
+                <Line type="monotone" dataKey="revenue" name={t("dashboard.revenue")} stroke="#2563eb" strokeWidth={2.5} dot={{ fill: '#2563eb', r: 4 }} />
+                <Line type="monotone" dataKey="costs" name={t("dashboard.costs")} stroke="#dc2626" strokeWidth={2.5} dot={{ fill: '#dc2626', r: 4 }} strokeDasharray="5 5" />
+                <Line type="monotone" dataKey="profit" name={t("dashboard.profit")} stroke="#059669" strokeWidth={2.5} dot={{ fill: '#059669', r: 4 }} />
                 <Legend />
               </LineChart>
             </ResponsiveContainer>
@@ -1369,13 +1379,13 @@ export default function Dashboard() {
               <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg px-3 py-2">
                 <Target className="w-4 h-4 text-blue-600" />
                 <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">
-                  Seuil de rentabilité : {stats.seuilRentabilite > 0 ? `${stats.seuilRentabilite} couverts/jour` : 'Rentable dès le 1er couvert'}
+                  {t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite > 0 ? `${stats.seuilRentabilite} ${t("dashboard.coversPerDay")}` : t("dashboard.profitableFromFirst")}
                 </span>
               </div>
               <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg px-3 py-2">
                 <DollarSign className="w-4 h-4 text-green-600" />
                 <span className="text-sm text-green-800 dark:text-green-300 font-medium">
-                  Profit mensuel estimé : {(stats.dailyProfit * 26).toLocaleString('fr-FR')} €
+                  {t("dashboard.estimatedMonthlyProfit")} : {(stats.dailyProfit * 26).toLocaleString('fr-FR')} €
                 </span>
               </div>
             </div>
@@ -1387,28 +1397,28 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-5 h-5 text-blue-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Analyse de rentabilité</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.profitabilityAnalysis")}</h3>
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Coût ratio moyen</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.avgCostRatio")}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                       <AnimatedNumber value={stats.avgCostRatio * 100} decimals={1} suffix="%" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Profit / couvert</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.profitPerCover")}</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                       <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Couverts / jour</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.coversPerDay")}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Coût matière moy.</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.avgFoodCost")}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                       <AnimatedNumber value={stats.avgFoodCost} decimals={2} suffix=" €" />
                     </p>
@@ -1418,7 +1428,7 @@ export default function Dashboard() {
                   <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-4">
                     <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-300">
                       <AlertTriangle className="w-4 h-4" />
-                      <span className="text-sm font-semibold">Seuil de rentabilité : {stats.seuilRentabilite} couverts/jour</span>
+                      <span className="text-sm font-semibold">{t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite} {t("dashboard.coversPerDay")}</span>
                     </div>
                   </div>
                 )}
@@ -1429,7 +1439,7 @@ export default function Dashboard() {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Distribution des coefficients</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.coefficientDistribution")}</h3>
               </div>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={stats.coeffBuckets}>
@@ -1437,7 +1447,7 @@ export default function Dashboard() {
                   <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                   <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
                   <Tooltip content={<ChartTooltip />} />
-                  <Bar dataKey="count" name="Nb recettes" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="count" name={t("dashboard.nbRecipes")} radius={[4, 4, 0, 0]}>
                     {stats.coeffBuckets.map((entry, index) => (
                       <Cell key={index} fill={entry.color} />
                     ))}
@@ -1451,21 +1461,21 @@ export default function Dashboard() {
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
             <div className="flex items-center gap-2 mb-4">
               <ShieldAlert className="w-5 h-5 text-red-500" />
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">5 recettes les moins rentables</h3>
-              <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">Action requise</span>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.bottom5LeastProfitable")}</h3>
+              <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">{t("dashboard.actionRequired")}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                     <th className="pb-2 font-medium">#</th>
-                    <th className="pb-2 font-medium">Recette</th>
-                    <th className="pb-2 font-medium">Catégorie</th>
-                    <th className="pb-2 text-right font-medium">Prix vente</th>
-                    <th className="pb-2 text-right font-medium">Coût total</th>
-                    <th className="pb-2 text-right font-medium">Marge</th>
-                    <th className="pb-2 text-right font-medium">Coeff.</th>
-                    <th className="pb-2 text-center font-medium">Action</th>
+                    <th className="pb-2 font-medium">{t("dashboard.recipe")}</th>
+                    <th className="pb-2 font-medium">{t("dashboard.category")}</th>
+                    <th className="pb-2 text-right font-medium">{t("dashboard.sellingPrice")}</th>
+                    <th className="pb-2 text-right font-medium">{t("dashboard.totalCost")}</th>
+                    <th className="pb-2 text-right font-medium">{t("dashboard.margin")}</th>
+                    <th className="pb-2 text-right font-medium">{t("dashboard.coeff")}</th>
+                    <th className="pb-2 text-center font-medium">{t("dashboard.action")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -1482,7 +1492,7 @@ export default function Dashboard() {
                       <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
                       <td className="py-2.5 text-center">
                         <Link to={`/recipes/${r.id}`} className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium">
-                          Modifier <ArrowRight className="w-3 h-3" />
+                          {t("dashboard.edit")} <ArrowRight className="w-3 h-3" />
                         </Link>
                       </td>
                     </tr>
@@ -1495,23 +1505,23 @@ export default function Dashboard() {
           {/* Full Recipes Table */}
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
             <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Détail par plat</h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500">Trié par marge croissante</span>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.detailByDish")}</h3>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{t("dashboard.sortedByMarginAsc")}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
                   <tr>
-                    <th className="px-4 py-2.5 text-left font-medium">Plat</th>
-                    <th className="px-4 py-2.5 text-left font-medium">Cat.</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Prix</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Coût mat.</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Coût MO</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Coût total</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Marge €</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Marge %</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Coeff.</th>
-                    <th className="px-4 py-2.5 text-center font-medium">Fiche</th>
+                    <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.dish")}</th>
+                    <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.cat")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.price")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.foodCostShort")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.laborCostShort")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.totalCost")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.marginEuro")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.marginPercent")}</th>
+                    <th className="px-4 py-2.5 text-right font-medium">{t("dashboard.coeff")}</th>
+                    <th className="px-4 py-2.5 text-center font-medium">{t("dashboard.sheet")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-700">

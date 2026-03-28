@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import CookieBanner from './components/CookieBanner';
@@ -44,9 +44,11 @@ const Comptabilite = lazy(() => import('./pages/Comptabilite'));
 const Clients = lazy(() => import('./pages/Clients'));
 const DevCorp = lazy(() => import('./pages/DevCorp'));
 const HACCPPage = lazy(() => import('./pages/HACCP'));
+const AIAssistant = lazy(() => import('./pages/AIAssistant'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const CGV = lazy(() => import('./pages/CGV'));
 const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
+const Pricing = lazy(() => import('./pages/Pricing'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -209,6 +211,7 @@ function AppLayout() {
         { to: '/scanner-factures', icon: Receipt, label: 'Factures' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
+        { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
       ],
     },
     {
@@ -456,6 +459,7 @@ function AppLayout() {
               <Route path="/planning" element={<Planning />} />
               <Route path="/seminaires" element={<Seminaires />} />
               <Route path="/haccp" element={<HACCPPage />} />
+              <Route path="/assistant" element={<AIAssistant />} />
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/marketplace" element={<Marketplace />} />
@@ -512,6 +516,7 @@ function App() {
           <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
           <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
           <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
+          <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
           <Route
             path="/station"
             element={

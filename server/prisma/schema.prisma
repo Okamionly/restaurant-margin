@@ -9,18 +9,56 @@ datasource db {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  passwordHash String
-  name         String
-  role         String   @default("chef") // admin, chef
-  createdAt    DateTime @default(now())
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  passwordHash      String
+  name              String
+  role              String             @default("chef") // admin, chef
+  createdAt         DateTime           @default(now())
+  ownedRestaurants  Restaurant[]       @relation("OwnedRestaurants")
+  memberships       RestaurantMember[]
 
   @@map("users")
 }
 
+model Restaurant {
+  id            Int                @id @default(autoincrement())
+  name          String
+  address       String?
+  cuisineType   String?
+  phone         String?
+  coversPerDay  Int                @default(80)
+  ownerId       Int
+  owner         User               @relation("OwnedRestaurants", fields: [ownerId], references: [id])
+  members       RestaurantMember[]
+  ingredients   Ingredient[]
+  recipes       Recipe[]
+  suppliers     Supplier[]
+  inventory     InventoryItem[]
+  invoices      Invoice[]
+  priceHistory  PriceHistory[]
+  menuSales     MenuSale[]
+  conversations Conversation[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@map("restaurants")
+}
+
+model RestaurantMember {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  restaurantId Int
+  role         String     @default("member") // owner, admin, member
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, restaurantId])
+  @@map("restaurant_members")
+}
+
 model Supplier {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String
   phone        String?
   email        String?
@@ -28,35 +66,39 @@ model Supplier {
   city         String?
   postalCode   String?
   region       String?
-  country      String   @default("France")
+  country      String     @default("France")
   siret        String?
   website      String?
   notes        String?
   categories   String[]
   contactName  String?
-  delivery     Boolean  @default(true)
+  delivery     Boolean    @default(true)
   minOrder     String?
   paymentTerms String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   ingredients  Ingredient[]
 
   @@map("suppliers")
 }
 
 model Ingredient {
-  id           Int                @id @default(autoincrement())
-  name         String
-  unit         String
-  pricePerUnit Float
-  supplier     String?
-  supplierId   Int?
-  supplierRef  Supplier?          @relation(fields: [supplierId], references: [id])
-  category     String
-  allergens    String[]           @default([])
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-  recipes      RecipeIngredient[]
+  id            Int                @id @default(autoincrement())
+  name          String
+  unit          String
+  pricePerUnit  Float
+  supplier      String?
+  supplierId    Int?
+  supplierRef   Supplier?          @relation(fields: [supplierId], references: [id])
+  category      String
+  allergens     String[]           @default([])
+  restaurantId  Int
+  restaurant    Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
 
   @@map("ingredients")
@@ -72,6 +114,8 @@ model Recipe {
   prepTimeMinutes  Int?
   cookTimeMinutes  Int?
   laborCostPerHour Float              @default(0)
+  restaurantId     Int
+  restaurant       Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   ingredients      RecipeIngredient[]
@@ -103,6 +147,8 @@ model InventoryItem {
   lastRestockDate     DateTime?
   lastRestockQuantity Float?
   notes               String?
+  restaurantId        Int
+  restaurant          Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
 
@@ -117,6 +163,8 @@ model Invoice {
   invoiceDate   String
   totalAmount   Float
   status        String        @default("pending")
+  restaurantId  Int
+  restaurant    Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime      @default(now())
   items         InvoiceItem[]
 
@@ -141,12 +189,14 @@ model InvoiceItem {
 }
 
 model PriceHistory {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   ingredientId Int
   price        Float
   date         String
-  source       String   @default("manual")
-  createdAt    DateTime @default(now())
+  source       String     @default("manual")
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
 
   @@index([ingredientId])
   @@index([date])
@@ -155,13 +205,15 @@ model PriceHistory {
 }
 
 model MenuSale {
-  id         Int      @id @default(autoincrement())
-  recipeId   Int
-  recipeName String
-  quantity   Int
-  revenue    Float
-  date       String
-  createdAt  DateTime @default(now())
+  id           Int        @id @default(autoincrement())
+  recipeId     Int
+  recipeName   String
+  quantity     Int
+  revenue      Float
+  date         String
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
 
   @@index([recipeId])
   @@index([date])
@@ -170,15 +222,17 @@ model MenuSale {
 }
 
 model Conversation {
-  id           String    @id
+  id           String     @id
   name         String
   participants String[]
-  lastMessage  String    @default("")
-  unreadCount  Int       @default(0)
-  isGroup      Boolean   @default(false)
-  avatar       String    @default("")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  lastMessage  String     @default("")
+  unreadCount  Int        @default(0)
+  isGroup      Boolean    @default(false)
+  avatar       String     @default("")
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   messages     Message[]
 
   @@map("conversations")

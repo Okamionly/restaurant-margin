@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const recipesRouter = Router();
@@ -102,9 +102,10 @@ const recipeInclude = {
 } as const;
 
 // GET all recipes with margin data
-recipesRouter.get('/', async (_req: AuthRequest, res: Response) => {
+recipesRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: req.restaurantId! },
       include: recipeInclude,
       orderBy: { name: 'asc' },
     });
@@ -118,13 +119,13 @@ recipesRouter.get('/', async (_req: AuthRequest, res: Response) => {
 });
 
 // GET single recipe with full details
-recipesRouter.get('/:id', async (req: AuthRequest, res: Response) => {
+recipesRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
-    const recipe = await prisma.recipe.findUnique({
-      where: { id },
+    const recipe = await prisma.recipe.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
       include: recipeInclude,
     });
     if (!recipe) {
@@ -137,7 +138,7 @@ recipesRouter.get('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // POST create recipe
-recipesRouter.post('/', async (req: AuthRequest, res: Response) => {
+recipesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const {
       name,
@@ -174,6 +175,7 @@ recipesRouter.post('/', async (req: AuthRequest, res: Response) => {
         prepTimeMinutes: prepTimeMinutes != null ? parseInt(prepTimeMinutes) : null,
         cookTimeMinutes: cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null,
         laborCostPerHour: laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0,
+        restaurantId: req.restaurantId!,
         ingredients: {
           create:
             ingredients?.map(
@@ -196,7 +198,7 @@ recipesRouter.post('/', async (req: AuthRequest, res: Response) => {
 });
 
 // PUT update recipe
-recipesRouter.put('/:id', async (req: AuthRequest, res: Response) => {
+recipesRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const {
       name,
@@ -209,8 +211,14 @@ recipesRouter.put('/:id', async (req: AuthRequest, res: Response) => {
       laborCostPerHour,
       ingredients,
     } = req.body;
-    const recipeId = parseInt(req.params.id);
+    const recipeId = parseInt(req.params.id as string);
     if (isNaN(recipeId)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.recipe.findFirst({
+      where: { id: recipeId, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Recette non trouvée' });
 
     // Validation
     if (!name || !name.trim()) {
@@ -272,13 +280,13 @@ recipesRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // POST clone recipe
-recipesRouter.post('/:id/clone', async (req: AuthRequest, res: Response) => {
+recipesRouter.post('/:id/clone', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const sourceId = parseInt(req.params.id);
+    const sourceId = parseInt(req.params.id as string);
     if (isNaN(sourceId)) return res.status(400).json({ error: 'ID invalide' });
 
-    const source = await prisma.recipe.findUnique({
-      where: { id: sourceId },
+    const source = await prisma.recipe.findFirst({
+      where: { id: sourceId, restaurantId: req.restaurantId! },
       include: recipeInclude,
     });
 
@@ -296,6 +304,7 @@ recipesRouter.post('/:id/clone', async (req: AuthRequest, res: Response) => {
         prepTimeMinutes: source.prepTimeMinutes,
         cookTimeMinutes: source.cookTimeMinutes,
         laborCostPerHour: source.laborCostPerHour,
+        restaurantId: req.restaurantId!,
         ingredients: {
           create: source.ingredients.map((ri) => ({
             ingredientId: ri.ingredientId,
@@ -315,10 +324,16 @@ recipesRouter.post('/:id/clone', async (req: AuthRequest, res: Response) => {
 });
 
 // DELETE recipe
-recipesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
+recipesRouter.delete('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.recipe.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Recette non trouvée' });
 
     await prisma.recipe.delete({
       where: { id },

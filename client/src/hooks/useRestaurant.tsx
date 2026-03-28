@@ -1,104 +1,98 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
+import { fetchRestaurants, createRestaurantAPI, updateRestaurantAPI, deleteRestaurantAPI, getActiveRestaurantId, setActiveRestaurantId, getToken } from '../services/api';
 
 export interface Restaurant {
-  id: string;
-  nom: string;
-  adresse: string;
-  typeCuisine: string;
-  telephone: string;
-  couvertsJour: number;
-  caEstimeMensuel: number;
-  recettesCount: number;
-  margeMoyenne: number;
+  id: number;
+  name: string;
+  address: string | null;
+  cuisineType: string | null;
+  phone: string | null;
+  coversPerDay: number;
+  ownerId: number;
+  role?: string;
+  _count?: { ingredients: number; recipes: number; suppliers: number };
 }
 
 interface RestaurantContextType {
   restaurants: Restaurant[];
   selectedRestaurant: Restaurant | null;
-  switchRestaurant: (id: string) => void;
-  addRestaurant: (restaurant: Omit<Restaurant, 'id' | 'recettesCount' | 'margeMoyenne' | 'caEstimeMensuel'>) => void;
-  updateRestaurant: (id: string, data: Partial<Restaurant>) => void;
-  removeRestaurant: (id: string) => void;
+  loading: boolean;
+  switchRestaurant: (id: number) => void;
+  addRestaurant: (data: { name: string; address?: string; cuisineType?: string; phone?: string; coversPerDay?: number }) => Promise<Restaurant>;
+  updateRestaurant: (id: number, data: Partial<{ name: string; address: string; cuisineType: string; phone: string; coversPerDay: number }>) => Promise<void>;
+  removeRestaurant: (id: number) => Promise<void>;
+  refreshRestaurants: () => Promise<void>;
 }
 
 const RestaurantContext = createContext<RestaurantContextType | null>(null);
 
-const DEFAULT_RESTAURANTS: Restaurant[] = [
-  {
-    id: 'rest-1',
-    nom: 'Le Bistrot de Youssef',
-    adresse: '25 rue de la Paix, Paris',
-    typeCuisine: 'Cuisine française',
-    telephone: '01 42 00 00 01',
-    couvertsJour: 80,
-    caEstimeMensuel: 48000,
-    recettesCount: 34,
-    margeMoyenne: 72,
-  },
-  {
-    id: 'rest-2',
-    nom: 'Chez Youssef - Traiteur',
-    adresse: '12 avenue des Champs, Paris',
-    typeCuisine: 'Traiteur/événementiel',
-    telephone: '01 42 00 00 02',
-    couvertsJour: 120,
-    caEstimeMensuel: 85000,
-    recettesCount: 58,
-    margeMoyenne: 68,
-  },
-];
-
 export function RestaurantProvider({ children }: { children: ReactNode }) {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>(DEFAULT_RESTAURANTS);
-  const [selectedId, setSelectedId] = useState<string>(() => {
-    return localStorage.getItem('selectedRestaurantId') || DEFAULT_RESTAURANTS[0].id;
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(() => {
+    const stored = getActiveRestaurantId();
+    return stored ? parseInt(stored, 10) : null;
   });
+  const [loading, setLoading] = useState(true);
 
   const selectedRestaurant = restaurants.find((r) => r.id === selectedId) || restaurants[0] || null;
 
-  useEffect(() => {
-    localStorage.setItem('selectedRestaurantId', selectedId);
-  }, [selectedId]);
-
-  const switchRestaurant = useCallback((id: string) => {
-    setSelectedId(id);
-  }, []);
-
-  const addRestaurant = useCallback(
-    (data: Omit<Restaurant, 'id' | 'recettesCount' | 'margeMoyenne' | 'caEstimeMensuel'>) => {
-      const newRestaurant: Restaurant = {
-        ...data,
-        id: `rest-${Date.now()}`,
-        recettesCount: 0,
-        margeMoyenne: 0,
-        caEstimeMensuel: data.couvertsJour * 20 * 25, // estimation simple
-      };
-      setRestaurants((prev) => [...prev, newRestaurant]);
-      setSelectedId(newRestaurant.id);
-    },
-    []
-  );
-
-  const updateRestaurant = useCallback((id: string, data: Partial<Restaurant>) => {
-    setRestaurants((prev) => prev.map((r) => (r.id === id ? { ...r, ...data } : r)));
-  }, []);
-
-  const removeRestaurant = useCallback(
-    (id: string) => {
-      setRestaurants((prev) => {
-        const filtered = prev.filter((r) => r.id !== id);
-        if (selectedId === id && filtered.length > 0) {
-          setSelectedId(filtered[0].id);
+  const loadRestaurants = useCallback(async () => {
+    const token = getToken();
+    if (!token) {
+      setRestaurants([]);
+      setLoading(false);
+      return;
+    }
+    try {
+      const data = await fetchRestaurants();
+      setRestaurants(data);
+      // Auto-select first restaurant if none selected or current not found
+      if (data.length > 0) {
+        const stored = getActiveRestaurantId();
+        const storedId = stored ? parseInt(stored, 10) : null;
+        if (!storedId || !data.find((r: Restaurant) => r.id === storedId)) {
+          setSelectedId(data[0].id);
+          setActiveRestaurantId(data[0].id);
         }
-        return filtered;
-      });
-    },
-    [selectedId]
-  );
+      }
+    } catch {
+      // Not logged in or error — silently ignore
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { loadRestaurants(); }, [loadRestaurants]);
+
+  const switchRestaurant = useCallback((id: number) => {
+    setSelectedId(id);
+    setActiveRestaurantId(id);
+  }, []);
+
+  const addRestaurant = useCallback(async (data: { name: string; address?: string; cuisineType?: string; phone?: string; coversPerDay?: number }) => {
+    const restaurant = await createRestaurantAPI(data);
+    await loadRestaurants();
+    switchRestaurant(restaurant.id);
+    return restaurant;
+  }, [loadRestaurants, switchRestaurant]);
+
+  const updateRestaurant = useCallback(async (id: number, data: Partial<{ name: string; address: string; cuisineType: string; phone: string; coversPerDay: number }>) => {
+    await updateRestaurantAPI(id, data);
+    await loadRestaurants();
+  }, [loadRestaurants]);
+
+  const removeRestaurant = useCallback(async (id: number) => {
+    await deleteRestaurantAPI(id);
+    const remaining = restaurants.filter((r) => r.id !== id);
+    if (selectedId === id && remaining.length > 0) {
+      switchRestaurant(remaining[0].id);
+    }
+    await loadRestaurants();
+  }, [restaurants, selectedId, loadRestaurants, switchRestaurant]);
 
   return (
     <RestaurantContext.Provider
-      value={{ restaurants, selectedRestaurant, switchRestaurant, addRestaurant, updateRestaurant, removeRestaurant }}
+      value={{ restaurants, selectedRestaurant, loading, switchRestaurant, addRestaurant, updateRestaurant, removeRestaurant, refreshRestaurants: loadRestaurants }}
     >
       {children}
     </RestaurantContext.Provider>

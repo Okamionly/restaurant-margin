@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { User, LoginCredentials, RegisterData } from '../types';
-import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken } from '../services/api';
+import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken, setActiveRestaurantId, removeActiveRestaurantId } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -42,16 +42,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const result = await apiLogin(credentials);
     setToken(result.token);
     setUser(result.user);
+    if (result.restaurant?.id) {
+      setActiveRestaurantId(result.restaurant.id);
+    }
   };
 
   const register = async (data: RegisterData) => {
     const result = await apiRegister(data);
     setToken(result.token);
     setUser(result.user);
+    if (result.restaurant?.id) {
+      setActiveRestaurantId(result.restaurant.id);
+    }
   };
 
   const logout = () => {
     removeToken();
+    removeActiveRestaurantId();
     setUser(null);
   };
 

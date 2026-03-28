@@ -88,7 +88,7 @@ function SidebarRestaurantSelector() {
         className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-slate-800 dark:bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium transition-colors border border-slate-700"
       >
         <Building2 className="w-4 h-4 flex-shrink-0 text-blue-400" />
-        <span className="truncate flex-1 text-left sidebar-label">{selectedRestaurant.nom}</span>
+        <span className="truncate flex-1 text-left sidebar-label">{selectedRestaurant.name}</span>
         <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform sidebar-label ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
@@ -105,8 +105,8 @@ function SidebarRestaurantSelector() {
             >
               <Building2 className="w-4 h-4 flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="font-medium truncate">{r.nom}</div>
-                <div className="text-xs text-slate-400 dark:text-slate-500 truncate">{r.typeCuisine}</div>
+                <div className="font-medium truncate">{r.name}</div>
+                <div className="text-xs text-slate-400 dark:text-slate-500 truncate">{r.cuisineType || ''}</div>
               </div>
               {r.id === selectedRestaurant.id && <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />}
             </button>
@@ -142,6 +142,7 @@ interface NavSection {
 
 function AppLayout() {
   const { user, logout } = useAuth();
+  const { selectedRestaurant } = useRestaurant();
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
@@ -438,7 +439,7 @@ function AppLayout() {
         <ConnectivityBar />
 
         {/* Content */}
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <main key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>}>
             <Routes>
               <Route path="/" element={<Dashboard />} />

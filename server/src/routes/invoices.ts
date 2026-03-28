@@ -1,14 +1,15 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const invoicesRouter = Router();
 
 /* ─── GET /api/invoices ─── */
-invoicesRouter.get('/', async (_req: AuthRequest, res: Response) => {
+invoicesRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const invoices = await prisma.invoice.findMany({
+      where: { restaurantId: req.restaurantId! },
       include: { items: true },
       orderBy: { createdAt: 'desc' },
     });
@@ -19,7 +20,7 @@ invoicesRouter.get('/', async (_req: AuthRequest, res: Response) => {
 });
 
 /* ─── POST /api/invoices ─── */
-invoicesRouter.post('/', async (req: AuthRequest, res: Response) => {
+invoicesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { supplierName, invoiceNumber, invoiceDate, totalAmount, items } = req.body;
 
@@ -46,6 +47,7 @@ invoicesRouter.post('/', async (req: AuthRequest, res: Response) => {
         invoiceDate: invoiceDate || new Date().toISOString().slice(0, 10),
         totalAmount: computedTotal,
         status: 'pending',
+        restaurantId: req.restaurantId!,
         items: {
           create: invoiceItems,
         },
@@ -60,10 +62,16 @@ invoicesRouter.post('/', async (req: AuthRequest, res: Response) => {
 });
 
 /* ─── DELETE /api/invoices/:id ─── */
-invoicesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
+invoicesRouter.delete('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) { res.status(400).json({ error: 'ID invalide' }); return; }
+
+    // Verify ownership
+    const existing = await prisma.invoice.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) { res.status(404).json({ error: 'Facture non trouvée' }); return; }
 
     await prisma.invoice.delete({ where: { id } });
     res.json({ success: true });
@@ -77,12 +85,14 @@ invoicesRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 /* ─── POST /api/invoices/:id/apply ─── */
-invoicesRouter.post('/:id/apply', async (req: AuthRequest, res: Response) => {
+invoicesRouter.post('/:id/apply', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) { res.status(400).json({ error: 'ID invalide' }); return; }
 
-    const invoice = await prisma.invoice.findUnique({ where: { id } });
+    const invoice = await prisma.invoice.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
     if (!invoice) {
       res.status(404).json({ error: 'Facture non trouvée' });
       return;

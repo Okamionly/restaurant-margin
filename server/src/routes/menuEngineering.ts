@@ -1,18 +1,19 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const menuEngineeringRouter = Router();
 
 // Sales data now fetched from Prisma directly
 
-menuEngineeringRouter.get('/', async (req: AuthRequest, res: Response) => {
+menuEngineeringRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { days = '30', from, to } = req.query;
 
     // Get all recipes with ingredients
     const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: req.restaurantId! },
       include: {
         ingredients: {
           include: { ingredient: true },
@@ -37,6 +38,7 @@ menuEngineeringRouter.get('/', async (req: AuthRequest, res: Response) => {
     // Fetch sales from DB
     const filteredSales = await prisma.menuSale.findMany({
       where: {
+        restaurantId: req.restaurantId!,
         date: { gte: dateFrom, lte: dateTo },
       },
     });

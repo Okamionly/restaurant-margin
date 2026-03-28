@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const menuSalesRouter = Router();
@@ -71,11 +71,11 @@ async function seedDemoSalesIfEmpty() {
 seedDemoSalesIfEmpty().catch(console.error);
 
 /* ─── GET /api/menu-sales ─── */
-menuSalesRouter.get('/', async (req: AuthRequest, res: Response) => {
+menuSalesRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { from, to } = req.query;
 
-    const where: any = {};
+    const where: any = { restaurantId: req.restaurantId! };
     if (from) where.date = { ...where.date, gte: String(from) };
     if (to) where.date = { ...where.date, lte: String(to) };
 
@@ -91,7 +91,7 @@ menuSalesRouter.get('/', async (req: AuthRequest, res: Response) => {
 });
 
 /* ─── POST /api/menu-sales ─── */
-menuSalesRouter.post('/', async (req: AuthRequest, res: Response) => {
+menuSalesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { recipeId, recipeName, quantity, revenue, date } = req.body;
 
@@ -107,6 +107,7 @@ menuSalesRouter.post('/', async (req: AuthRequest, res: Response) => {
         quantity: Number(quantity),
         revenue: Number(revenue || 0),
         date: date || new Date().toISOString().slice(0, 10),
+        restaurantId: req.restaurantId!,
       },
     });
 
@@ -117,7 +118,7 @@ menuSalesRouter.post('/', async (req: AuthRequest, res: Response) => {
 });
 
 /* ─── POST /api/menu-sales/bulk ─── */
-menuSalesRouter.post('/bulk', async (req: AuthRequest, res: Response) => {
+menuSalesRouter.post('/bulk', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { sales } = req.body;
 
@@ -132,12 +133,14 @@ menuSalesRouter.post('/bulk', async (req: AuthRequest, res: Response) => {
       quantity: Number(s.quantity || 0),
       revenue: Number(s.revenue || 0),
       date: s.date || new Date().toISOString().slice(0, 10),
+      restaurantId: req.restaurantId!,
     }));
 
     const result = await prisma.menuSale.createMany({ data });
 
     // Return the created sales for the response
     const created = await prisma.menuSale.findMany({
+      where: { restaurantId: req.restaurantId! },
       orderBy: { id: 'desc' },
       take: data.length,
     });

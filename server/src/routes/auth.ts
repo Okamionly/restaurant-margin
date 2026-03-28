@@ -79,11 +79,21 @@ authRouter.post('/register', async (req: AuthRequest, res: Response) => {
       data: { email, passwordHash, name, role },
     });
 
+    // After user creation, create default restaurant
+    const restaurant = await prisma.restaurant.create({
+      data: {
+        name: `Restaurant de ${user.name}`,
+        ownerId: user.id,
+        members: { create: { userId: user.id, role: 'owner' } },
+      },
+    });
+
     const token = generateToken({ userId: user.id, email: user.email, role: user.role });
 
     res.status(201).json({
       token,
       user: { id: user.id, email: user.email, name: user.name, role: user.role },
+      restaurant: { id: restaurant.id, name: restaurant.name },
     });
   } catch (error) {
     console.error(error);
@@ -112,9 +122,15 @@ authRouter.post('/login', async (req: AuthRequest, res: Response) => {
 
     const token = generateToken({ userId: user.id, email: user.email, role: user.role });
 
+    const membership = await prisma.restaurantMember.findFirst({
+      where: { userId: user.id },
+      include: { restaurant: true },
+    });
+
     res.json({
       token,
       user: { id: user.id, email: user.email, name: user.name, role: user.role },
+      restaurant: membership?.restaurant || null,
     });
   } catch (error) {
     console.error(error);
@@ -165,7 +181,7 @@ authRouter.delete('/users/:id', authMiddleware, async (req: AuthRequest, res: Re
       return res.status(403).json({ error: 'Accès réservé aux administrateurs' });
     }
 
-    const targetId = parseInt(req.params.id);
+    const targetId = parseInt(req.params.id as string);
     if (isNaN(targetId)) return res.status(400).json({ error: 'ID invalide' });
 
     if (targetId === req.user!.userId) {

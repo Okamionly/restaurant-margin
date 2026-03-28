@@ -16,13 +16,64 @@ export function removeToken(): void {
   localStorage.removeItem('token');
 }
 
+// --- Restaurant ID Management ---
+
+export function getActiveRestaurantId(): string | null {
+  return localStorage.getItem('activeRestaurantId');
+}
+
+export function setActiveRestaurantId(id: number | string): void {
+  localStorage.setItem('activeRestaurantId', String(id));
+}
+
+export function removeActiveRestaurantId(): void {
+  localStorage.removeItem('activeRestaurantId');
+}
+
 function authHeaders(): Record<string, string> {
   const token = getToken();
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
+  const restaurantId = getActiveRestaurantId();
+  if (restaurantId) {
+    headers['X-Restaurant-Id'] = restaurantId;
+  }
   return headers;
+}
+
+// --- Restaurant API ---
+
+export async function fetchRestaurants(): Promise<any[]> {
+  const res = await fetch(`${API_BASE}/restaurants`, { headers: authHeaders() });
+  return handleResponse<any[]>(res);
+}
+
+export async function createRestaurantAPI(data: { name: string; address?: string; cuisineType?: string; phone?: string; coversPerDay?: number }): Promise<any> {
+  const res = await fetch(`${API_BASE}/restaurants`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function updateRestaurantAPI(id: number, data: Partial<{ name: string; address: string; cuisineType: string; phone: string; coversPerDay: number }>): Promise<any> {
+  const res = await fetch(`${API_BASE}/restaurants/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<any>(res);
+}
+
+export async function deleteRestaurantAPI(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/restaurants/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  return handleResponse<void>(res);
 }
 
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -40,7 +91,7 @@ async function handleResponse<T>(res: Response): Promise<T> {
 
 // --- Auth ---
 
-export async function login(credentials: LoginCredentials): Promise<{ token: string; user: User }> {
+export async function login(credentials: LoginCredentials): Promise<{ token: string; user: User; restaurant?: { id: number } }> {
   const res = await fetch(`${API_BASE}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -53,7 +104,7 @@ export async function login(credentials: LoginCredentials): Promise<{ token: str
   return res.json();
 }
 
-export async function register(data: RegisterData): Promise<{ token: string; user: User }> {
+export async function register(data: RegisterData): Promise<{ token: string; user: User; restaurant?: { id: number } }> {
   const res = await fetch(`${API_BASE}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

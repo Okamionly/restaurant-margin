@@ -176,9 +176,9 @@ export default function QRMenu() {
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
-      <head><title>QR Code Menu - ${selectedRestaurant?.nom || 'Restaurant'}</title></head>
+      <head><title>QR Code Menu - ${selectedRestaurant?.name || 'Restaurant'}</title></head>
       <body style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;font-family:system-ui,-apple-system,sans-serif;">
-        <h1 style="font-size:28px;margin-bottom:8px;color:#1e293b;">${selectedRestaurant?.nom || 'Notre Restaurant'}</h1>
+        <h1 style="font-size:28px;margin-bottom:8px;color:#1e293b;">${selectedRestaurant?.name || 'Notre Restaurant'}</h1>
         <p style="font-size:16px;color:#64748b;margin-bottom:32px;">Scannez pour decouvrir notre carte</p>
         <div style="padding:24px;border:3px solid #e2e8f0;border-radius:16px;">${svgData}</div>
         <p style="font-size:12px;color:#94a3b8;margin-top:24px;">${menuUrl}</p>
@@ -309,7 +309,7 @@ export default function QRMenu() {
             className="bg-white dark:bg-white rounded-2xl shadow-lg border border-slate-200 p-8 flex flex-col items-center"
           >
             <h3 className="text-lg font-bold text-slate-900 mb-1">
-              {selectedRestaurant?.nom || 'Votre Restaurant'}
+              {selectedRestaurant?.name || 'Votre Restaurant'}
             </h3>
             <p className="text-sm text-slate-500 mb-6">Scannez pour decouvrir notre carte</p>
             <QRCodeSVG text={menuUrl} size={240} />

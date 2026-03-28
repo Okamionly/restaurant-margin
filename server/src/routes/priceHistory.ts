@@ -1,16 +1,16 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const priceHistoryRouter = Router();
 
 /* ─── GET /api/price-history ─── */
-priceHistoryRouter.get('/', async (req: AuthRequest, res: Response) => {
+priceHistoryRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { ingredientId, days } = req.query;
 
-    const where: any = {};
+    const where: any = { restaurantId: req.restaurantId! };
 
     if (ingredientId) {
       where.ingredientId = Number(ingredientId);
@@ -35,9 +35,10 @@ priceHistoryRouter.get('/', async (req: AuthRequest, res: Response) => {
 });
 
 /* ─── GET /api/price-history/alerts ─── */
-priceHistoryRouter.get('/alerts', async (_req: AuthRequest, res: Response) => {
+priceHistoryRouter.get('/alerts', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const allEntries = await prisma.priceHistory.findMany({
+      where: { restaurantId: req.restaurantId! },
       orderBy: { date: 'asc' },
     });
 
@@ -75,7 +76,7 @@ priceHistoryRouter.get('/alerts', async (_req: AuthRequest, res: Response) => {
 });
 
 /* ─── POST /api/price-history ─── */
-priceHistoryRouter.post('/', async (req: AuthRequest, res: Response) => {
+priceHistoryRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { ingredientId, price, date, source } = req.body;
 
@@ -90,6 +91,7 @@ priceHistoryRouter.post('/', async (req: AuthRequest, res: Response) => {
         price: Number(price),
         date: date || new Date().toISOString().slice(0, 10),
         source: source || 'manual',
+        restaurantId: req.restaurantId!,
       },
     });
 

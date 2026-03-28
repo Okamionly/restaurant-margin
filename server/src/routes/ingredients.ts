@@ -1,14 +1,15 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const ingredientsRouter = Router();
 
 // GET all ingredients
-ingredientsRouter.get('/', async (_req: AuthRequest, res: Response) => {
+ingredientsRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const ingredients = await prisma.ingredient.findMany({
+      where: { restaurantId: req.restaurantId! },
       orderBy: { name: 'asc' },
     });
     res.json(ingredients);
@@ -18,9 +19,10 @@ ingredientsRouter.get('/', async (_req: AuthRequest, res: Response) => {
 });
 
 // GET ingredient usage count (how many recipes use each ingredient)
-ingredientsRouter.get('/usage', async (_req: AuthRequest, res: Response) => {
+ingredientsRouter.get('/usage', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const ingredients = await prisma.ingredient.findMany({
+      where: { restaurantId: req.restaurantId! },
       orderBy: { name: 'asc' },
       include: {
         _count: {
@@ -43,13 +45,13 @@ ingredientsRouter.get('/usage', async (_req: AuthRequest, res: Response) => {
 });
 
 // GET single ingredient
-ingredientsRouter.get('/:id', async (req: AuthRequest, res: Response) => {
+ingredientsRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
-    const ingredient = await prisma.ingredient.findUnique({
-      where: { id },
+    const ingredient = await prisma.ingredient.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
       include: {
         _count: {
           select: { recipes: true },
@@ -66,7 +68,7 @@ ingredientsRouter.get('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // POST create ingredient
-ingredientsRouter.post('/', async (req: AuthRequest, res: Response) => {
+ingredientsRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { name, unit, pricePerUnit, supplier, category, allergens } = req.body;
 
@@ -93,6 +95,7 @@ ingredientsRouter.post('/', async (req: AuthRequest, res: Response) => {
         supplier: supplier || null,
         category: category.trim(),
         allergens: Array.isArray(allergens) ? allergens : [],
+        restaurantId: req.restaurantId!,
       },
     });
 
@@ -104,10 +107,16 @@ ingredientsRouter.post('/', async (req: AuthRequest, res: Response) => {
 });
 
 // PUT update ingredient
-ingredientsRouter.put('/:id', async (req: AuthRequest, res: Response) => {
+ingredientsRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.ingredient.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé' });
 
     const { name, unit, pricePerUnit, supplier, category, allergens } = req.body;
 
@@ -145,10 +154,16 @@ ingredientsRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // DELETE ingredient
-ingredientsRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
+ingredientsRouter.delete('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.ingredient.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé' });
 
     await prisma.ingredient.delete({
       where: { id },

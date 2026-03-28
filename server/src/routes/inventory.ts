@@ -1,6 +1,6 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const inventoryRouter = Router();
@@ -64,12 +64,13 @@ async function seedFictiveStock() {
 }
 
 // GET all inventory items with ingredient details
-inventoryRouter.get('/', async (_req: AuthRequest, res: Response) => {
+inventoryRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     // One-time seed on first load
     await seedFictiveStock();
 
     const items = await prisma.inventoryItem.findMany({
+      where: { restaurantId: req.restaurantId! },
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },
     });
@@ -81,9 +82,10 @@ inventoryRouter.get('/', async (_req: AuthRequest, res: Response) => {
 });
 
 // GET items below minStock (alerts)
-inventoryRouter.get('/alerts', async (_req: AuthRequest, res: Response) => {
+inventoryRouter.get('/alerts', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const items = await prisma.inventoryItem.findMany({
+      where: { restaurantId: req.restaurantId! },
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },
     });
@@ -96,9 +98,10 @@ inventoryRouter.get('/alerts', async (_req: AuthRequest, res: Response) => {
 });
 
 // GET total inventory value estimation
-inventoryRouter.get('/value', async (_req: AuthRequest, res: Response) => {
+inventoryRouter.get('/value', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const items = await prisma.inventoryItem.findMany({
+      where: { restaurantId: req.restaurantId! },
       include: { ingredient: true },
     });
     const totalValue = items.reduce((sum, item) => {
@@ -125,10 +128,11 @@ inventoryRouter.get('/value', async (_req: AuthRequest, res: Response) => {
 });
 
 // POST suggest ingredients not yet in inventory
-inventoryRouter.post('/suggest', async (_req: AuthRequest, res: Response) => {
+inventoryRouter.post('/suggest', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const ingredients = await prisma.ingredient.findMany({
       where: {
+        restaurantId: req.restaurantId!,
         inventoryItem: null,
       },
       orderBy: { name: 'asc' },
@@ -141,12 +145,14 @@ inventoryRouter.post('/suggest', async (_req: AuthRequest, res: Response) => {
 });
 
 // POST add ingredient to inventory
-inventoryRouter.post('/', async (req: AuthRequest, res: Response) => {
+inventoryRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const { ingredientId, currentStock, unit, minStock, maxStock, notes } = req.body;
     if (!ingredientId) return res.status(400).json({ error: 'ingredientId requis' });
 
-    const ingredient = await prisma.ingredient.findUnique({ where: { id: ingredientId } });
+    const ingredient = await prisma.ingredient.findFirst({
+      where: { id: ingredientId, restaurantId: req.restaurantId! },
+    });
     if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
 
     const item = await prisma.inventoryItem.create({
@@ -157,6 +163,7 @@ inventoryRouter.post('/', async (req: AuthRequest, res: Response) => {
         minStock: minStock || 0,
         maxStock: maxStock || null,
         notes: notes || null,
+        restaurantId: req.restaurantId!,
       },
       include: { ingredient: true },
     });
@@ -171,10 +178,16 @@ inventoryRouter.post('/', async (req: AuthRequest, res: Response) => {
 });
 
 // PUT update stock (adjust quantity, set min/max)
-inventoryRouter.put('/:id', async (req: AuthRequest, res: Response) => {
+inventoryRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.inventoryItem.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Item non trouvé' });
 
     const { currentStock, minStock, maxStock, unit, notes } = req.body;
 
@@ -198,9 +211,9 @@ inventoryRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // POST restock event (adds to currentStock)
-inventoryRouter.post('/:id/restock', async (req: AuthRequest, res: Response) => {
+inventoryRouter.post('/:id/restock', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
     const { quantity } = req.body;
@@ -208,7 +221,9 @@ inventoryRouter.post('/:id/restock', async (req: AuthRequest, res: Response) => 
       return res.status(400).json({ error: 'La quantité doit être supérieure à 0' });
     }
 
-    const existing = await prisma.inventoryItem.findUnique({ where: { id } });
+    const existing = await prisma.inventoryItem.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
     if (!existing) return res.status(404).json({ error: 'Item non trouvé' });
 
     const item = await prisma.inventoryItem.update({
@@ -228,10 +243,16 @@ inventoryRouter.post('/:id/restock', async (req: AuthRequest, res: Response) => 
 });
 
 // DELETE remove from inventory
-inventoryRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
+inventoryRouter.delete('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.inventoryItem.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Item non trouvé' });
 
     await prisma.inventoryItem.delete({
       where: { id },

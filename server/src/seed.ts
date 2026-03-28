@@ -14,6 +14,15 @@ async function seed() {
   await prisma.ingredient.deleteMany();
   console.log('✅ Base de données nettoyée');
 
+  // Get first restaurant (or fail)
+  const restaurant = await prisma.restaurant.findFirst();
+  if (!restaurant) {
+    console.error('❌ Aucun restaurant trouvé. Créez un compte utilisateur d\'abord.');
+    return;
+  }
+  const restaurantId = restaurant.id;
+  console.log(`🏪 Seeding pour restaurant: ${restaurant.name} (id=${restaurantId})`);
+
   // ============================================
   // FOURNISSEURS & INGRÉDIENTS (200+)
   // ============================================
@@ -294,7 +303,7 @@ async function seed() {
   const createdIngredients: Record<string, number> = {};
 
   for (const ing of ingredientsData) {
-    const created = await prisma.ingredient.create({ data: ing });
+    const created = await prisma.ingredient.create({ data: { ...ing, restaurantId } });
     createdIngredients[ing.name] = created.id;
   }
   console.log(`✅ ${Object.keys(createdIngredients).length} ingrédients créés`);
@@ -1100,6 +1109,7 @@ async function seed() {
         prepTimeMinutes: recipe.prepTimeMinutes,
         cookTimeMinutes: recipe.cookTimeMinutes,
         laborCostPerHour: recipe.laborCostPerHour,
+        restaurantId,
         ingredients: {
           create: ingredientLinks,
         },

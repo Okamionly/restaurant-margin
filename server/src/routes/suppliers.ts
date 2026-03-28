@@ -1,14 +1,15 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { AuthRequest } from '../middleware/auth';
+import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
 export const suppliersRouter = Router();
 
 // GET /api/suppliers - List all suppliers
-suppliersRouter.get('/', async (_req: AuthRequest, res: Response) => {
+suppliersRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const suppliers = await prisma.supplier.findMany({
+      where: { restaurantId: req.restaurantId! },
       orderBy: { name: 'asc' },
       include: {
         _count: { select: { ingredients: true } },
@@ -26,13 +27,13 @@ suppliersRouter.get('/', async (_req: AuthRequest, res: Response) => {
 });
 
 // GET /api/suppliers/:id - Get supplier with its ingredients
-suppliersRouter.get('/:id', async (req: AuthRequest, res: Response) => {
+suppliersRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
-    const supplier = await prisma.supplier.findUnique({
-      where: { id },
+    const supplier = await prisma.supplier.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
       include: {
         ingredients: {
           orderBy: { name: 'asc' },
@@ -57,7 +58,7 @@ suppliersRouter.get('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // POST /api/suppliers - Create supplier
-suppliersRouter.post('/', async (req: AuthRequest, res: Response) => {
+suppliersRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const {
       name, phone, email, address, city, postalCode, region, country,
@@ -86,6 +87,7 @@ suppliersRouter.post('/', async (req: AuthRequest, res: Response) => {
         delivery: delivery !== undefined ? delivery : true,
         minOrder: minOrder || null,
         paymentTerms: paymentTerms || null,
+        restaurantId: req.restaurantId!,
       },
     });
 
@@ -97,7 +99,7 @@ suppliersRouter.post('/', async (req: AuthRequest, res: Response) => {
 });
 
 // PUT /api/suppliers/:id - Update supplier
-suppliersRouter.put('/:id', async (req: AuthRequest, res: Response) => {
+suppliersRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
     const {
       name, phone, email, address, city, postalCode, region, country,
@@ -108,8 +110,14 @@ suppliersRouter.put('/:id', async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Le nom est requis' });
     }
 
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.supplier.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Fournisseur non trouvé' });
 
     const supplier = await prisma.supplier.update({
       where: { id },
@@ -141,10 +149,16 @@ suppliersRouter.put('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // DELETE /api/suppliers/:id - Delete supplier (only if no ingredients linked)
-suppliersRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
+suppliersRouter.delete('/:id', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    // Verify ownership
+    const existing = await prisma.supplier.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
+    if (!existing) return res.status(404).json({ error: 'Fournisseur non trouvé' });
 
     const ingredientCount = await prisma.ingredient.count({
       where: { supplierId: id },
@@ -165,12 +179,14 @@ suppliersRouter.delete('/:id', async (req: AuthRequest, res: Response) => {
 });
 
 // POST /api/suppliers/:id/link-ingredients - Link existing ingredients by supplier name match
-suppliersRouter.post('/:id/link-ingredients', async (req: AuthRequest, res: Response) => {
+suppliersRouter.post('/:id/link-ingredients', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
 
-    const supplier = await prisma.supplier.findUnique({ where: { id } });
+    const supplier = await prisma.supplier.findFirst({
+      where: { id, restaurantId: req.restaurantId! },
+    });
     if (!supplier) {
       return res.status(404).json({ error: 'Fournisseur non trouvé' });
     }
@@ -180,6 +196,7 @@ suppliersRouter.post('/:id/link-ingredients', async (req: AuthRequest, res: Resp
       where: {
         supplier: { equals: supplier.name, mode: 'insensitive' },
         supplierId: null,
+        restaurantId: req.restaurantId!,
       },
       data: { supplierId: id },
     });

@@ -27,6 +27,8 @@ export function useTranslation() {
 
   useEffect(() => {
     localStorage.setItem('locale', locale);
+    // Set RTL direction for Arabic
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
   }, [locale]);
 
   const t = useCallback(

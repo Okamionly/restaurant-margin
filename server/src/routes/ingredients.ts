@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { validate, createIngredientSchema } from '../utils/validation';
 
 const prisma = new PrismaClient();
 export const ingredientsRouter = Router();
@@ -68,7 +69,7 @@ ingredientsRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: 
 });
 
 // POST create ingredient
-ingredientsRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
+ingredientsRouter.post('/', authWithRestaurant, validate(createIngredientSchema), async (req: AuthRequest, res: Response) => {
   try {
     const { name, unit, pricePerUnit, supplier, category, allergens } = req.body;
 

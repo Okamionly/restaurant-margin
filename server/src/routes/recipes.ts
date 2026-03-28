@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { validate, createRecipeSchema } from '../utils/validation';
 
 const prisma = new PrismaClient();
 export const recipesRouter = Router();
@@ -138,7 +139,7 @@ recipesRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: Resp
 });
 
 // POST create recipe
-recipesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
+recipesRouter.post('/', authWithRestaurant, validate(createRecipeSchema), async (req: AuthRequest, res: Response) => {
   try {
     const {
       name,

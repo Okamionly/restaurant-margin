@@ -59,6 +59,8 @@ model RestaurantMember {
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 
   @@unique([userId, restaurantId])
+  @@index([userId])
+  @@index([restaurantId])
   @@map("restaurant_members")
 }
 
@@ -86,6 +88,7 @@ model Supplier {
   updatedAt    DateTime   @updatedAt
   ingredients  Ingredient[]
 
+  @@index([restaurantId])
   @@map("suppliers")
 }
 
@@ -106,6 +109,7 @@ model Ingredient {
   recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
 
+  @@index([restaurantId, name])
   @@map("ingredients")
 }
 
@@ -125,6 +129,7 @@ model Recipe {
   updatedAt        DateTime           @updatedAt
   ingredients      RecipeIngredient[]
 
+  @@index([restaurantId, category])
   @@map("recipes")
 }
 
@@ -158,6 +163,7 @@ model InventoryItem {
   updatedAt           DateTime   @updatedAt
 
   @@unique([ingredientId])
+  @@index([restaurantId])
   @@map("inventory_items")
 }
 
@@ -175,6 +181,7 @@ model Invoice {
 
   @@index([supplierName])
   @@index([status])
+  @@index([restaurantId, createdAt])
   @@map("invoices")
 }
 
@@ -206,6 +213,7 @@ model PriceHistory {
   @@index([ingredientId])
   @@index([date])
   @@index([ingredientId, date])
+  @@index([ingredientId, createdAt])
   @@map("price_history")
 }
 

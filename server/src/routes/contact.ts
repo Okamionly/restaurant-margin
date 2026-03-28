@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { Resend } from 'resend';
+import { validate, contactSchema } from '../utils/validation';
 
 export const contactRouter = Router();
 
 // Simple in-memory rate limit
 const rateLimit = new Map<string, number[]>();
 
-contactRouter.post('/', async (req: Request, res: Response) => {
+contactRouter.post('/', validate(contactSchema), async (req: Request, res: Response) => {
   try {
     const { name, email, phone, message, source } = req.body;
 

@@ -37,7 +37,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
 }
 
 /** Full auth — validates JWT + X-Restaurant-Id header + membership (for data routes) */
-export function authWithRestaurant(req: AuthRequest, res: Response, next: NextFunction): void {
+export async function authWithRestaurant(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -50,7 +50,7 @@ export function authWithRestaurant(req: AuthRequest, res: Response, next: NextFu
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     req.user = decoded;
-  } catch (error) {
+  } catch {
     res.status(401).json({ error: 'Token expiré ou invalide' });
     return;
   }
@@ -67,17 +67,17 @@ export function authWithRestaurant(req: AuthRequest, res: Response, next: NextFu
     return;
   }
 
-  // Verify membership
-  prisma.restaurantMember.findFirst({
-    where: { userId: req.user!.userId, restaurantId },
-  }).then(member => {
+  try {
+    const member = await prisma.restaurantMember.findFirst({
+      where: { userId: req.user!.userId, restaurantId },
+    });
     if (!member) {
       res.status(403).json({ error: 'Accès refusé à ce restaurant' });
       return;
     }
     req.restaurantId = restaurantId;
     next();
-  }).catch(() => {
+  } catch {
     res.status(500).json({ error: 'Erreur vérification restaurant' });
-  });
+  }
 }

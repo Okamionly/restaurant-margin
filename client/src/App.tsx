@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
 import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles } from 'lucide-react';
+import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import CookieBanner from './components/CookieBanner';
@@ -535,6 +536,7 @@ function PublicHome() {
 
 function App() {
   return (
+    <ErrorBoundary>
     <AuthProvider>
       <ToastProvider>
         <RestaurantProvider>
@@ -574,6 +576,7 @@ function App() {
         </RestaurantProvider>
       </ToastProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

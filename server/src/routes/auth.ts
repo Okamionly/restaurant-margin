@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import { Resend } from 'resend';
 import { AuthRequest, authMiddleware, JwtPayload } from '../middleware/auth';
 import { JWT_SECRET, TOKEN_EXPIRY } from '../config';
+import { validate, loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from '../utils/validation';
 
 const prisma = new PrismaClient();
 export const authRouter = Router();
@@ -27,7 +28,7 @@ authRouter.get('/first-user', async (_req: AuthRequest, res: Response) => {
 });
 
 // POST /register
-authRouter.post('/register', async (req: AuthRequest, res: Response) => {
+authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, res: Response) => {
   try {
     const { email, password, name, invitationCode, role: requestedRole } = req.body;
 
@@ -202,7 +203,7 @@ authRouter.post('/resend-verification', authMiddleware, async (req: AuthRequest,
 });
 
 // POST /login
-authRouter.post('/login', async (req: AuthRequest, res: Response) => {
+authRouter.post('/login', validate(loginSchema), async (req: AuthRequest, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -296,7 +297,7 @@ authRouter.delete('/users/:id', authMiddleware, async (req: AuthRequest, res: Re
 });
 
 // POST /forgot-password
-authRouter.post('/forgot-password', async (req: AuthRequest, res: Response) => {
+authRouter.post('/forgot-password', validate(forgotPasswordSchema), async (req: AuthRequest, res: Response) => {
   try {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email requis' });
@@ -346,7 +347,7 @@ authRouter.post('/forgot-password', async (req: AuthRequest, res: Response) => {
 });
 
 // POST /reset-password
-authRouter.post('/reset-password', async (req: AuthRequest, res: Response) => {
+authRouter.post('/reset-password', validate(resetPasswordSchema), async (req: AuthRequest, res: Response) => {
   try {
     const { token, newPassword } = req.body;
     if (!token || !newPassword) return res.status(400).json({ error: 'Token et nouveau mot de passe requis' });

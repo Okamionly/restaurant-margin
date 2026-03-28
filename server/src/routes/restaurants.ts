@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { validate, createRestaurantSchema } from '../utils/validation';
 
 const prisma = new PrismaClient();
 const restaurantsRouter = Router();
@@ -23,7 +24,7 @@ restaurantsRouter.get('/', authMiddleware, async (req: AuthRequest, res: Respons
 });
 
 // POST /api/restaurants — create a new restaurant
-restaurantsRouter.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+restaurantsRouter.post('/', authMiddleware, validate(createRestaurantSchema), async (req: AuthRequest, res: Response) => {
   const { name, address, cuisineType, phone, coversPerDay } = req.body;
   if (!name?.trim()) { res.status(400).json({ error: 'Nom requis' }); return; }
   const restaurant = await prisma.restaurant.create({

@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { ALLOWED_ORIGINS } from './config';
 import { authRouter } from './routes/auth';
 import { ingredientsRouter } from './routes/ingredients';
@@ -20,11 +22,36 @@ import { authMiddleware } from './middleware/auth';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(helmet());
 app.use(cors({
   origin: ALLOWED_ORIGINS,
   credentials: true,
 }));
 app.use(express.json());
+
+// General API rate limit
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200,
+  message: { error: 'Trop de requêtes. Réessayez dans quelques minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Strict rate limit for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Trop de tentatives. Réessayez dans 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiters
+app.use('/api', apiLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
 
 // Public routes
 app.use('/api/auth', authRouter);

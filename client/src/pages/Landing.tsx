@@ -186,8 +186,12 @@ export default function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [proEmail, setProEmail] = useState('');
   const [proEmailSent, setProEmailSent] = useState(false);
+  const [proLoading, setProLoading] = useState(false);
+  const [proError, setProError] = useState('');
   const [kitForm, setKitForm] = useState({ nom: '', email: '', telephone: '', message: '' });
   const [kitFormSent, setKitFormSent] = useState(false);
+  const [kitLoading, setKitLoading] = useState(false);
+  const [kitError, setKitError] = useState('');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -832,23 +836,54 @@ export default function Landing() {
                       </div>
                     ) : (
                       <form
-                        onSubmit={(e) => { e.preventDefault(); if (proEmail) setProEmailSent(true); }}
-                        className="flex gap-2"
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          if (!proEmail) return;
+                          setProLoading(true);
+                          setProError('');
+                          try {
+                            const res = await fetch('/api/contact', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                name: 'Intéressé Pro',
+                                email: proEmail,
+                                source: 'pro-waitlist',
+                              }),
+                            });
+                            if (!res.ok) {
+                              const data = await res.json();
+                              throw new Error(data.error || 'Erreur');
+                            }
+                            setProEmailSent(true);
+                          } catch (err: any) {
+                            setProError(err.message || 'Erreur. Réessayez.');
+                          } finally {
+                            setProLoading(false);
+                          }
+                        }}
+                        className="flex flex-col gap-2"
                       >
-                        <input
-                          type="email"
-                          required
-                          value={proEmail}
-                          onChange={(e) => setProEmail(e.target.value)}
-                          placeholder="votre@email.com"
-                          className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                          type="submit"
-                          className="px-4 py-2.5 rounded-xl bg-slate-700 text-white text-sm font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5"
-                        >
-                          <Mail className="w-4 h-4" />
-                        </button>
+                        <div className="flex gap-2">
+                          <input
+                            type="email"
+                            required
+                            value={proEmail}
+                            onChange={(e) => setProEmail(e.target.value)}
+                            placeholder="votre@email.com"
+                            className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                          <button
+                            type="submit"
+                            disabled={proLoading}
+                            className="px-4 py-2.5 rounded-xl bg-slate-700 text-white text-sm font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                          >
+                            {proLoading ? '...' : <Mail className="w-4 h-4" />}
+                          </button>
+                        </div>
+                        {proError && (
+                          <p className="text-xs text-red-500">{proError}</p>
+                        )}
                       </form>
                     )}
                   </div>
@@ -906,7 +941,33 @@ export default function Landing() {
               </div>
             ) : (
               <form
-                onSubmit={(e) => { e.preventDefault(); setKitFormSent(true); }}
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setKitLoading(true);
+                  setKitError('');
+                  try {
+                    const res = await fetch('/api/contact', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        name: kitForm.nom,
+                        email: kitForm.email,
+                        phone: kitForm.telephone,
+                        message: kitForm.message,
+                        source: 'kit-station',
+                      }),
+                    });
+                    if (!res.ok) {
+                      const data = await res.json();
+                      throw new Error(data.error || 'Erreur lors de l\'envoi');
+                    }
+                    setKitFormSent(true);
+                  } catch (err: any) {
+                    setKitError(err.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
+                  } finally {
+                    setKitLoading(false);
+                  }
+                }}
                 className="bg-white rounded-2xl border border-slate-100 shadow-xl p-8 space-y-5"
               >
                 <div className="grid sm:grid-cols-2 gap-5">
@@ -953,12 +1014,18 @@ export default function Landing() {
                     placeholder="Décrivez votre besoin..."
                   />
                 </div>
+                {kitError && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700">
+                    {kitError}
+                  </div>
+                )}
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25"
+                  disabled={kitLoading}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Demander un devis
-                  <ArrowRight className="w-5 h-5" />
+                  {kitLoading ? 'Envoi en cours...' : 'Demander un devis'}
+                  {!kitLoading && <ArrowRight className="w-5 h-5" />}
                 </button>
               </form>
             )}

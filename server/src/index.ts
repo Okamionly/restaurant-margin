@@ -12,6 +12,7 @@ import { menuSalesRouter } from './routes/menuSales';
 import { messagesRouter } from './routes/messages';
 import { menuEngineeringRouter } from './routes/menuEngineering';
 import { publicMenuRouter } from './routes/publicMenu';
+import { contactRouter } from './routes/contact';
 import { emailRouter } from './routes/email';
 import restaurantsRouter from './routes/restaurants';
 import { authMiddleware } from './middleware/auth';
@@ -28,6 +29,7 @@ app.use(express.json());
 // Public routes
 app.use('/api/auth', authRouter);
 app.use('/api/public', publicMenuRouter);
+app.use('/api/contact', contactRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

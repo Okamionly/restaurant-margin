@@ -7,6 +7,7 @@ import CookieBanner from './components/CookieBanner';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
+import { getToken } from './services/api';
 // Critical pages loaded eagerly (first pages users see)
 import Login from './pages/Login';
 import Landing from './pages/Landing';
@@ -48,7 +49,9 @@ const AIAssistant = lazy(() => import('./pages/AIAssistant'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const CGV = lazy(() => import('./pages/CGV'));
 const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
+const CGU = lazy(() => import('./pages/CGU'));
 const Pricing = lazy(() => import('./pages/Pricing'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -147,7 +150,21 @@ function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const location = useLocation();
+
+  async function handleResendVerification() {
+    try {
+      const token = getToken();
+      await fetch('/api/auth/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      });
+      setVerificationSent(true);
+    } catch {
+      // silently fail
+    }
+  }
 
   // PWA Install prompt
   useEffect(() => {
@@ -438,6 +455,20 @@ function AppLayout() {
         {/* Connectivity status bar */}
         <ConnectivityBar />
 
+        {/* Email verification banner */}
+        {user && user.emailVerified === false && (
+          <div className="bg-amber-500/10 border-b border-amber-500/30 text-amber-400 px-4 py-2 flex items-center justify-between text-sm">
+            <span>Vérifiez votre adresse email pour sécuriser votre compte.</span>
+            {verificationSent ? (
+              <span className="text-emerald-400 ml-4">Email envoyé !</span>
+            ) : (
+              <button onClick={handleResendVerification} className="text-amber-300 hover:text-amber-200 underline ml-4 whitespace-nowrap">
+                Renvoyer l'email
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Content */}
         <main key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>}>
@@ -516,8 +547,10 @@ function App() {
           <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
           <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
           <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
+          <Route path="/cgu" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGU /></Suspense>} />
           <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
           <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
+          <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
           <Route
             path="/station"
             element={

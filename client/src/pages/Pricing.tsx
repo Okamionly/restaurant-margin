@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, X, ChefHat, Sparkles, Building2, HelpCircle, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { Check, X, ChefHat, Sparkles, Building2, HelpCircle, ChevronDown, ChevronUp, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface FAQItem {
@@ -150,6 +150,11 @@ function FAQSection() {
 
 export default function Pricing() {
   const [annual, setAnnual] = useState(false);
+  const [showDevisForm, setShowDevisForm] = useState(false);
+  const [devisForm, setDevisForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [devisLoading, setDevisLoading] = useState(false);
+  const [devisSent, setDevisSent] = useState(false);
+  const [devisError, setDevisError] = useState('');
 
   function getPrice(plan: Plan) {
     if (plan.priceMonthly === null) return plan.priceLabel || 'Sur mesure';
@@ -279,17 +284,114 @@ export default function Pricing() {
               </ul>
 
               {/* CTA */}
-              <Link
-                to={plan.ctaLink}
-                className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors ${
-                  plan.popular
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                    : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
-                }`}
-              >
-                {plan.cta}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              {plan.name === 'Enterprise' ? (
+                devisSent ? (
+                  <div className="flex items-center justify-center gap-2 py-3.5 text-emerald-400 text-sm font-semibold">
+                    <CheckCircle2 className="w-5 h-5" /> Demande envoyée !
+                  </div>
+                ) : showDevisForm ? (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setDevisLoading(true);
+                      setDevisError('');
+                      try {
+                        const res = await fetch('/api/contact', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            name: devisForm.name,
+                            email: devisForm.email,
+                            phone: devisForm.phone,
+                            message: devisForm.message,
+                            source: 'enterprise-devis',
+                          }),
+                        });
+                        if (!res.ok) {
+                          const data = await res.json();
+                          throw new Error(data.error || 'Erreur lors de l\'envoi');
+                        }
+                        setDevisSent(true);
+                      } catch (err: any) {
+                        setDevisError(err.message || 'Erreur. Veuillez réessayer.');
+                      } finally {
+                        setDevisLoading(false);
+                      }
+                    }}
+                    className="space-y-3"
+                  >
+                    <input
+                      type="text"
+                      required
+                      value={devisForm.name}
+                      onChange={(e) => setDevisForm({ ...devisForm, name: e.target.value })}
+                      placeholder="Votre nom"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    />
+                    <input
+                      type="email"
+                      required
+                      value={devisForm.email}
+                      onChange={(e) => setDevisForm({ ...devisForm, email: e.target.value })}
+                      placeholder="votre@email.com"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    />
+                    <input
+                      type="tel"
+                      value={devisForm.phone}
+                      onChange={(e) => setDevisForm({ ...devisForm, phone: e.target.value })}
+                      placeholder="Téléphone (optionnel)"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    />
+                    <textarea
+                      rows={2}
+                      value={devisForm.message}
+                      onChange={(e) => setDevisForm({ ...devisForm, message: e.target.value })}
+                      placeholder="Votre besoin (nb. de sites, etc.)"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+                    />
+                    {devisError && (
+                      <p className="text-xs text-red-400">{devisError}</p>
+                    )}
+                    <button
+                      type="submit"
+                      disabled={devisLoading}
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {devisLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" /> Envoi...
+                        </>
+                      ) : (
+                        <>
+                          Envoyer la demande
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  <button
+                    onClick={() => setShowDevisForm(true)}
+                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  >
+                    {plan.cta}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )
+              ) : (
+                <Link
+                  to={plan.ctaLink}
+                  className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors ${
+                    plan.popular
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                  }`}
+                >
+                  {plan.cta}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
             </div>
           ))}
         </div>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>RestauMargin Station — 3D Product Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0f; overflow: hidden; font-family: -apple-system, sans-serif; }
+  canvas { display: block; }
+  #ui {
+    position: fixed; top: 20px; left: 20px; z-index: 10;
+    color: #fff; pointer-events: none;
+  }
+  #ui h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  #ui p { font-size: 12px; color: #888; margin-top: 4px; }
+  #specs {
+    position: fixed; bottom: 20px; left: 20px; z-index: 10;
+    color: #aaa; font-size: 11px; line-height: 1.8;
+  }
+  #specs span { color: #60a5fa; font-weight: 600; }
+  #controls {
+    position: fixed; bottom: 20px; right: 20px; z-index: 10;
+    display: flex; gap: 8px;
+  }
+  #controls button {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-size: 12px; transition: all 0.2s;
+  }
+  #controls button:hover { background: rgba(255,255,255,0.15); }
+  #controls button.active { background: rgba(96,165,250,0.3); border-color: #60a5fa; }
+  .label3d {
+    position: absolute; color: #fff; font-size: 10px; background: rgba(0,0,0,0.7);
+    padding: 3px 8px; border-radius: 4px; pointer-events: none; white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+</style>
+</head>
+<body>
+<div id="ui">
+  <h1>RestauMargin Station</h1>
+  <p>Kit Balance + Tablette — Restauration Professionnelle</p>
+</div>
+<div id="specs">
+  <span>Tablette:</span> Samsung Tab A9+ (11")<br>
+  <span>Balance:</span> Précision 0.1g, BLE 5.0<br>
+  <span>Coque:</span> ABS/PC blanc alimentaire<br>
+  <span>Plateau:</span> Inox 304L brossé<br>
+  <span>Dimensions:</span> 350 × 300 × 284 mm<br>
+  <span>Autonomie:</span> ~8h (Li-Po 2000mAh)
+</div>
+<div id="controls">
+  <button onclick="autoRotate=!autoRotate" id="btnRotate" class="active">Auto-rotation</button>
+  <button onclick="toggleWireframe()">Wireframe</button>
+  <button onclick="resetView()">Reset vue</button>
+  <button onclick="toggleExplode()">Vue éclatée</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ── Scene setup ──
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a0f);
+scene.fog = new THREE.Fog(0x0a0a0f, 400, 900);
+
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 0.1, 2000);
+camera.position.set(350, 280, 450);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.target.set(0, 80, 0);
+controls.minDistance = 200;
+controls.maxDistance = 800;
+
+// ── Lights ──
+const ambientLight = new THREE.AmbientLight(0x404060, 0.5);
+scene.add(ambientLight);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+keyLight.position.set(200, 400, 300);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+keyLight.shadow.camera.near = 10;
+keyLight.shadow.camera.far = 1000;
+keyLight.shadow.camera.left = -300;
+keyLight.shadow.camera.right = 300;
+keyLight.shadow.camera.top = 300;
+keyLight.shadow.camera.bottom = -300;
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x8888ff, 0.4);
+fillLight.position.set(-200, 200, -100);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.6);
+rimLight.position.set(0, 100, -300);
+scene.add(rimLight);
+
+// Subtle ground reflection
+const groundGeo = new THREE.PlaneGeometry(1000, 1000);
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x111118, roughness: 0.8, metalness: 0.2
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -5;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ── Materials ──
+const whitePlastic = new THREE.MeshStandardMaterial({
+  color: 0xf0f0f0, roughness: 0.3, metalness: 0.05
+});
+const darkPlastic = new THREE.MeshStandardMaterial({
+  color: 0x1a1a2e, roughness: 0.4, metalness: 0.1
+});
+const screenMat = new THREE.MeshStandardMaterial({
+  color: 0x0f1923, roughness: 0.1, metalness: 0.3, emissive: 0x0a1520, emissiveIntensity: 0.3
+});
+const screenActiveMat = new THREE.MeshStandardMaterial({
+  color: 0x1a2940, roughness: 0.05, metalness: 0.2, emissive: 0x1a3050, emissiveIntensity: 0.8
+});
+const inoxMat = new THREE.MeshStandardMaterial({
+  color: 0xc0c0c8, roughness: 0.15, metalness: 0.9
+});
+const inoxBrushed = new THREE.MeshStandardMaterial({
+  color: 0xb8b8c0, roughness: 0.25, metalness: 0.85
+});
+const silicone = new THREE.MeshStandardMaterial({
+  color: 0x909090, roughness: 0.7, metalness: 0.0
+});
+const buttonMat = new THREE.MeshStandardMaterial({
+  color: 0xd0d0d5, roughness: 0.4, metalness: 0.1
+});
+const lcdMat = new THREE.MeshStandardMaterial({
+  color: 0x001a00, roughness: 0.1, metalness: 0.1, emissive: 0x00ff00, emissiveIntensity: 0.3
+});
+const ledMat = new THREE.MeshStandardMaterial({
+  color: 0x00ff88, roughness: 0.1, emissive: 0x00ff88, emissiveIntensity: 1.0
+});
+const bowlMat = new THREE.MeshStandardMaterial({
+  color: 0x8B7355, roughness: 0.5, metalness: 0.1
+});
+
+// ── Groups for exploded view ──
+const baseGroup = new THREE.Group();
+const plateGroup = new THREE.Group();
+const armGroup = new THREE.Group();
+const tabletGroup = new THREE.Group();
+const bowlGroup = new THREE.Group();
+scene.add(baseGroup, plateGroup, armGroup, tabletGroup, bowlGroup);
+
+// ── Helper functions ──
+function roundedBox(w, h, d, r) {
+  const shape = new THREE.Shape();
+  const x = -w/2, y = -h/2;
+  shape.moveTo(x + r, y);
+  shape.lineTo(x + w - r, y);
+  shape.quadraticCurveTo(x + w, y, x + w, y + r);
+  shape.lineTo(x + w, y + h - r);
+  shape.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  shape.lineTo(x + r, y + h);
+  shape.quadraticCurveTo(x, y + h, x, y + h - r);
+  shape.lineTo(x, y + r);
+  shape.quadraticCurveTo(x, y, x + r, y);
+
+  const extrudeSettings = { depth: d, bevelEnabled: true, bevelThickness: r*0.3, bevelSize: r*0.3, bevelSegments: 3 };
+  return new THREE.ExtrudeGeometry(shape, extrudeSettings);
+}
+
+// ══════════════════════════════════════════════════
+// 1. BASE SHELL
+// ══════════════════════════════════════════════════
+const baseGeo = roundedBox(350, 300, 55, 12);
+const baseMesh = new THREE.Mesh(baseGeo, whitePlastic);
+baseMesh.rotation.x = -Math.PI/2;
+baseMesh.position.set(0, 30, 0);
+baseMesh.castShadow = true;
+baseMesh.receiveShadow = true;
+baseGroup.add(baseMesh);
+
+// Front panel recess
+const panelGeo = roundedBox(320, 35, 2, 4);
+const panelMesh = new THREE.Mesh(panelGeo, new THREE.MeshStandardMaterial({
+  color: 0xe8e8e8, roughness: 0.35, metalness: 0.05
+}));
+panelMesh.position.set(0, 25, -148);
+baseGroup.add(panelMesh);
+
+// LCD Display
+const lcdGeo = roundedBox(50, 20, 2, 2);
+const lcdScreen = new THREE.Mesh(lcdGeo, lcdMat);
+lcdScreen.position.set(-95, 25, -152);
+baseGroup.add(lcdScreen);
+
+// Buttons (Tare, Valider, Reset)
+const btnLabels = ['TARE', 'ON', 'MODE'];
+for (let i = 0; i < 3; i++) {
+  const btnGeo = new THREE.CylinderGeometry(8, 8, 3, 16);
+  const btn = new THREE.Mesh(btnGeo, buttonMat);
+  btn.rotation.x = Math.PI/2;
+  btn.position.set(-30 + i * 40, 25, -155);
+  baseGroup.add(btn);
+}
+
+// Ventilation slots (back)
+for (let i = 0; i < 5; i++) {
+  const slotGeo = new THREE.BoxGeometry(35, 2, 1.5);
+  const slot = new THREE.Mesh(slotGeo, darkPlastic);
+  slot.position.set(60, 20 + i * 7, 148);
+  baseGroup.add(slot);
+}
+
+// USB-C port (back)
+const usbGeo = new THREE.BoxGeometry(10, 4, 3);
+const usb = new THREE.Mesh(usbGeo, darkPlastic);
+usb.position.set(-40, 22, 150);
+baseGroup.add(usb);
+
+// Power LED
+const ledGeo = new THREE.SphereGeometry(2.5, 8, 8);
+const led = new THREE.Mesh(ledGeo, ledMat);
+led.position.set(-60, 22, 150);
+baseGroup.add(led);
+
+// Anti-slip pads
+const padPositions = [[-155, -135], [155, -135], [-155, 135], [155, 135]];
+for (const [px, pz] of padPositions) {
+  const padGeo = new THREE.CylinderGeometry(10, 10, 4, 16);
+  const pad = new THREE.Mesh(padGeo, silicone);
+  pad.position.set(px, 0, pz);
+  baseGroup.add(pad);
+}
+
+// ══════════════════════════════════════════════════
+// 2. INOX PLATE
+// ══════════════════════════════════════════════════
+const plateGeo = roundedBox(200, 200, 2, 3);
+const plate = new THREE.Mesh(plateGeo, inoxBrushed);
+plate.rotation.x = -Math.PI/2;
+plate.position.set(0, 58, -15);
+plate.castShadow = true;
+plateGroup.add(plate);
+
+// Plate rim
+const rimShape = new THREE.Shape();
+rimShape.moveTo(-100, -100);
+rimShape.lineTo(100, -100);
+rimShape.lineTo(100, 100);
+rimShape.lineTo(-100, 100);
+rimShape.lineTo(-100, -100);
+const rimHole = new THREE.Path();
+rimHole.moveTo(-96, -96);
+rimHole.lineTo(96, -96);
+rimHole.lineTo(96, 96);
+rimHole.lineTo(-96, 96);
+rimHole.lineTo(-96, -96);
+rimShape.holes.push(rimHole);
+const rimGeo = new THREE.ExtrudeGeometry(rimShape, { depth: 6, bevelEnabled: false });
+const rim = new THREE.Mesh(rimGeo, inoxMat);
+rim.rotation.x = -Math.PI/2;
+rim.position.set(0, 59, -15);
+plateGroup.add(rim);
+
+// ══════════════════════════════════════════════════
+// 3. BOWL (demo)
+// ══════════════════════════════════════════════════
+const bowlOuterGeo = new THREE.LatheGeometry([
+  new THREE.Vector2(0, 0),
+  new THREE.Vector2(50, 0),
+  new THREE.Vector2(55, 5),
+  new THREE.Vector2(58, 15),
+  new THREE.Vector2(55, 30),
+  new THREE.Vector2(45, 40),
+], 24);
+const bowl = new THREE.Mesh(bowlOuterGeo, bowlMat);
+bowl.position.set(0, 61, -15);
+bowl.castShadow = true;
+bowlGroup.add(bowl);
+
+// ══════════════════════════════════════════════════
+// 4. ARM + HINGE
+// ══════════════════════════════════════════════════
+
+// Hinge block
+const hingeGeo = roundedBox(70, 25, 20, 4);
+const hinge = new THREE.Mesh(hingeGeo, whitePlastic);
+hinge.rotation.x = -Math.PI/2;
+hinge.position.set(0, 68, 125);
+hinge.castShadow = true;
+armGroup.add(hinge);
+
+// Hinge cylinders
+for (const hx of [-28, 28]) {
+  const hcGeo = new THREE.CylinderGeometry(7, 7, 12, 16);
+  const hc = new THREE.Mesh(hcGeo, inoxMat);
+  hc.rotation.z = Math.PI/2;
+  hc.position.set(hx, 70, 125);
+  armGroup.add(hc);
+}
+
+// Vertical arm
+const armGeo = roundedBox(45, 8, 190, 5);
+const arm = new THREE.Mesh(armGeo, whitePlastic);
+arm.position.set(0, 175, 132);
+arm.castShadow = true;
+armGroup.add(arm);
+
+// Arm base flare
+const flareGeo = roundedBox(60, 10, 35, 5);
+const flare = new THREE.Mesh(flareGeo, whitePlastic);
+flare.position.set(0, 95, 132);
+armGroup.add(flare);
+
+// ══════════════════════════════════════════════════
+// 5. TABLET CRADLE
+// ══════════════════════════════════════════════════
+const cradleW = 275, cradleH = 185;
+const cradleZ = 180;
+
+// Cradle back
+const cradleGeo = roundedBox(cradleW, cradleH, 12, 10);
+const cradle = new THREE.Mesh(cradleGeo, whitePlastic);
+cradle.position.set(0, cradleZ, 138);
+cradle.castShadow = true;
+tabletGroup.add(cradle);
+
+// Corner bumpers (silicone)
+const bumpPositions = [
+  [-cradleW/2+12, cradleZ-cradleH/2+12],
+  [cradleW/2-12, cradleZ-cradleH/2+12],
+  [-cradleW/2+12, cradleZ+cradleH/2-12],
+  [cradleW/2-12, cradleZ+cradleH/2-12]
+];
+for (const [bx, bz] of bumpPositions) {
+  const bGeo = new THREE.SphereGeometry(10, 12, 12);
+  const b = new THREE.Mesh(bGeo, silicone);
+  b.position.set(bx, bz, 130);
+  b.scale.set(1, 1, 0.6);
+  tabletGroup.add(b);
+}
+
+// Bottom lip
+const lipGeo = roundedBox(cradleW - 20, 12, 18, 3);
+const lip = new THREE.Mesh(lipGeo, whitePlastic);
+lip.position.set(0, cradleZ - cradleH/2 + 2, 126);
+tabletGroup.add(lip);
+
+// ══════════════════════════════════════════════════
+// 6. SAMSUNG TABLET
+// ══════════════════════════════════════════════════
+const tabW = 257, tabH = 169, tabD = 7;
+
+// Tablet body
+const tabGeo = roundedBox(tabW, tabH, tabD, 6);
+const tab = new THREE.Mesh(tabGeo, darkPlastic);
+tab.position.set(0, cradleZ, 125);
+tabletGroup.add(tab);
+
+// Screen
+const scrW = tabW - 14, scrH = tabH - 14;
+const scrGeo = roundedBox(scrW, scrH, 0.5, 3);
+const screen = new THREE.Mesh(scrGeo, screenActiveMat);
+screen.position.set(0, cradleZ, 121);
+tabletGroup.add(screen);
+
+// Screen content — green weight display
+const weightGeo = roundedBox(80, 35, 0.3, 2);
+const weightDisplay = new THREE.Mesh(weightGeo, new THREE.MeshStandardMaterial({
+  color: 0x002200, emissive: 0x00cc44, emissiveIntensity: 0.6, roughness: 0.1
+}));
+weightDisplay.position.set(0, cradleZ - 20, 120.5);
+tabletGroup.add(weightDisplay);
+
+// Screen UI bar (top)
+const barGeo = roundedBox(scrW - 20, 8, 0.3, 2);
+const bar = new THREE.Mesh(barGeo, new THREE.MeshStandardMaterial({
+  color: 0x1e293b, emissive: 0x3b82f6, emissiveIntensity: 0.4, roughness: 0.1
+}));
+bar.position.set(0, cradleZ + 55, 120.5);
+tabletGroup.add(bar);
+
+// Recipe title area
+const titleGeo = roundedBox(140, 12, 0.3, 2);
+const titleBar = new THREE.Mesh(titleGeo, new THREE.MeshStandardMaterial({
+  color: 0x1a1a30, emissive: 0xffffff, emissiveIntensity: 0.15, roughness: 0.1
+}));
+titleBar.position.set(0, cradleZ + 40, 120.5);
+tabletGroup.add(titleBar);
+
+// Color gauge bar (green to red)
+const gaugeW = 160;
+const gaugeGeo = roundedBox(gaugeW, 6, 0.3, 1);
+const gaugeMat = new THREE.MeshStandardMaterial({
+  color: 0x002200, emissive: 0x22cc44, emissiveIntensity: 0.5, roughness: 0.1
+});
+const gauge = new THREE.Mesh(gaugeGeo, gaugeMat);
+gauge.position.set(0, cradleZ - 45, 120.5);
+tabletGroup.add(gauge);
+
+// Camera
+const camGeo = new THREE.CylinderGeometry(3, 3, 1, 12);
+const cam = new THREE.Mesh(camGeo, darkPlastic);
+cam.rotation.x = Math.PI/2;
+cam.position.set(0, cradleZ + tabH/2 - 10, 120);
+tabletGroup.add(cam);
+
+// Samsung logo area (subtle)
+const logoGeo = roundedBox(30, 4, 0.2, 1);
+const logo = new THREE.Mesh(logoGeo, new THREE.MeshStandardMaterial({
+  color: 0x333340, roughness: 0.3
+}));
+logo.position.set(0, cradleZ - tabH/2 + 8, 120.5);
+tabletGroup.add(logo);
+
+// ══════════════════════════════════════════════════
+// ANIMATION
+// ══════════════════════════════════════════════════
+let autoRotate = true;
+let wireframeMode = false;
+let exploded = false;
+let explodeProgress = 0;
+
+function toggleWireframe() {
+  wireframeMode = !wireframeMode;
+  scene.traverse(obj => {
+    if (obj.isMesh && obj.material) {
+      obj.material.wireframe = wireframeMode;
+    }
+  });
+}
+
+function resetView() {
+  camera.position.set(350, 280, 450);
+  controls.target.set(0, 80, 0);
+}
+
+function toggleExplode() {
+  exploded = !exploded;
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  if (autoRotate) {
+    const t = Date.now() * 0.0003;
+    camera.position.x = Math.cos(t) * 500;
+    camera.position.z = Math.sin(t) * 500;
+    camera.position.y = 250 + Math.sin(t * 0.5) * 50;
+    camera.lookAt(0, 80, 0);
+  }
+
+  // Exploded view animation
+  const targetExplode = exploded ? 1 : 0;
+  explodeProgress += (targetExplode - explodeProgress) * 0.05;
+
+  baseGroup.position.y = -explodeProgress * 40;
+  plateGroup.position.y = explodeProgress * 30;
+  armGroup.position.z = explodeProgress * 50;
+  tabletGroup.position.z = explodeProgress * 80;
+  tabletGroup.position.y = explodeProgress * 30;
+  bowlGroup.position.y = explodeProgress * 80;
+
+  // LED pulse
+  led.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.003) * 0.5;
+
+  // Screen subtle pulse
+  weightDisplay.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.002) * 0.15;
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Toggle auto-rotate on orbit interaction
+controls.addEventListener('start', () => {
+  autoRotate = false;
+  document.getElementById('btnRotate').classList.remove('active');
+});
+</script>
+</body>
+</html>

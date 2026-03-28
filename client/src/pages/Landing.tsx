@@ -233,6 +233,9 @@ export default function Landing() {
             <button onClick={() => scrollTo('testimonials')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
               Témoignages
             </button>
+            <Link to="/station-produit" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1">
+              Kit Station <Zap className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
           {/* Desktop CTAs */}
@@ -554,17 +557,19 @@ export default function Landing() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Image */}
               <div className="relative">
-                <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
+                <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-100 to-blue-50">
                   <img
-                    src="/kit-station.jpg"
+                    src="/images/restaumargin-station.png"
                     alt="Kit Station RestauMargin — Tablette + Balance connectée"
                     className="w-full h-auto"
                     loading="lazy"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                 </div>
                 <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg font-bold text-lg">
-                  À partir de 1 200 €
+                  À partir de 450 € HT
+                </div>
+                <div className="absolute -top-3 -left-3 bg-emerald-500 text-white px-4 py-1.5 rounded-lg shadow-lg text-xs font-bold uppercase tracking-wide">
+                  Nouveau 2026
                 </div>
               </div>
               {/* Content */}
@@ -575,14 +580,14 @@ export default function Landing() {
                   <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">RestauMargin</span>
                 </h2>
                 <p className="text-lg text-slate-600 dark:text-slate-300 mb-8">
-                  La première station cuisine connectée. Pesez vos ingrédients, contrôlez vos coûts en temps réel et mettez à jour votre inventaire automatiquement.
+                  Le support EST la balance. Glissez votre tablette dans le moule silicone, pesez vos ingrédients sur le plateau inox et maîtrisez vos marges en temps réel.
                 </p>
                 <div className="space-y-4 mb-8">
                   {[
-                    { title: 'Tablette 10" enveloppée', desc: 'Interface cuisine tactile, résistante aux éclaboussures' },
-                    { title: 'Balance ultra-compacte', desc: 'Bluetooth, plateau inox, précision professionnelle' },
-                    { title: 'Support pliable intégré', desc: 'Posé sur plan de travail ou fixé au mur' },
-                    { title: 'Logiciel RestauMargin Pro inclus', desc: '29€/mois — toutes les fonctionnalités illimitées' },
+                    { title: 'Balance intégrée 5kg', desc: 'Le support est la balance — plateau inox 304L, précision 0.5g, BLE 5.0' },
+                    { title: 'Moule silicone tablette', desc: 'Glissez votre Samsung Tab A9+ dans le bras, écran tactile accessible' },
+                    { title: 'Bras solidaire', desc: 'Design monobloc, pas de pièce séparée, robuste pour la cuisine pro' },
+                    { title: 'App RestauMargin incluse', desc: 'Fiches techniques auto, calcul de marges, mercuriale fournisseurs' },
                   ].map((item, i) => (
                     <div key={i} className="flex gap-3">
                       <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mt-0.5">
@@ -597,15 +602,21 @@ export default function Landing() {
                     </div>
                   ))}
                 </div>
-                <a
-                  href="#kit-contact"
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all"
-                >
-                  Commander le Kit
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </a>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    to="/station-produit"
+                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all"
+                  >
+                    Découvrir le Kit Station
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                  <a
+                    href="#kit-contact"
+                    className="inline-flex items-center gap-2 border-2 border-blue-200 hover:border-blue-400 text-blue-700 font-semibold px-6 py-3 rounded-xl transition-all"
+                  >
+                    Demander un devis
+                  </a>
+                </div>
               </div>
             </div>
           </FadeIn>

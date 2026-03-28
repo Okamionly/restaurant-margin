@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck } from 'lucide-react';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
+import CookieBanner from './components/CookieBanner';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
 // Critical pages loaded eagerly (first pages users see)
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import StationLanding from './pages/StationLanding';
 import PublicMenu from './pages/PublicMenu';
 import NotFound from './pages/NotFound';
 
@@ -41,6 +43,10 @@ const DevisPage = lazy(() => import('./pages/Devis'));
 const Comptabilite = lazy(() => import('./pages/Comptabilite'));
 const Clients = lazy(() => import('./pages/Clients'));
 const DevCorp = lazy(() => import('./pages/DevCorp'));
+const HACCPPage = lazy(() => import('./pages/HACCP'));
+const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
+const CGV = lazy(() => import('./pages/CGV'));
+const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -212,6 +218,7 @@ function AppLayout() {
         { to: '/planning', icon: CalendarDays, label: 'Planning' },
         { to: '/seminaires', icon: PartyPopper, label: 'Séminaires' },
         { to: '/rfqs', icon: FileSearch, label: "Appels d'offres" },
+        { to: '/haccp', icon: ShieldCheck, label: 'HACCP' },
       ],
     },
     {
@@ -448,6 +455,7 @@ function AppLayout() {
               <Route path="/commandes" element={<AutoOrders />} />
               <Route path="/planning" element={<Planning />} />
               <Route path="/seminaires" element={<Seminaires />} />
+              <Route path="/haccp" element={<HACCPPage />} />
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/marketplace" element={<Marketplace />} />
@@ -499,7 +507,11 @@ function App() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/menu-public" element={<PublicMenu />} />
+          <Route path="/station-produit" element={<StationLanding />} />
           <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
+          <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
+          <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
+          <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
           <Route
             path="/station"
             element={
@@ -519,6 +531,7 @@ function App() {
             }
           />
           </Routes>
+          <CookieBanner />
         </RestaurantProvider>
       </ToastProvider>
     </AuthProvider>

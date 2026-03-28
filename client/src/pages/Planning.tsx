@@ -1,17 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, DragEvent } from 'react';
 import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
-  Edit, Trash2, X, UserPlus
+  Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
-
-const API = '';
-
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-}
 
 // ── Types ──────────────────────────────────────────────────────────────
 
@@ -22,6 +15,7 @@ interface Employee {
   role: EmployeeRole;
   tauxHoraire: number;
   heuresContrat: number;
+  couleur: string;
 }
 
 interface Shift {
@@ -35,6 +29,8 @@ interface Shift {
 
 type EmployeeRole = 'Chef' | 'Commis' | 'Serveur' | 'Serveuse' | 'Plongeur' | 'Plongeuse' | 'Patissier' | 'Patissiere';
 
+type ShiftType = 'matin' | 'midi' | 'soir';
+
 const ROLES: EmployeeRole[] = ['Chef', 'Commis', 'Serveur', 'Serveuse', 'Plongeur', 'Plongeuse', 'Patissier', 'Patissiere'];
 
 const ROLE_LABELS: Record<EmployeeRole, string> = {
@@ -44,20 +40,20 @@ const ROLE_LABELS: Record<EmployeeRole, string> = {
   Serveuse: 'Serveuse',
   Plongeur: 'Plongeur',
   Plongeuse: 'Plongeuse',
-  Patissier: 'Pâtissier',
-  Patissiere: 'Pâtissière',
+  Patissier: 'Patissier',
+  Patissiere: 'Patissiere',
 };
 
-const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  Chef:        { bg: 'bg-red-100 dark:bg-red-900/40',    text: 'text-red-700 dark:text-red-300',    border: 'border-red-300 dark:border-red-700' },
-  Commis:      { bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-300 dark:border-orange-700' },
-  Serveur:     { bg: 'bg-blue-100 dark:bg-blue-900/40',   text: 'text-blue-700 dark:text-blue-300',   border: 'border-blue-300 dark:border-blue-700' },
-  Serveuse:    { bg: 'bg-blue-100 dark:bg-blue-900/40',   text: 'text-blue-700 dark:text-blue-300',   border: 'border-blue-300 dark:border-blue-700' },
-  Plongeur:    { bg: 'bg-slate-100 dark:bg-slate-700/40', text: 'text-slate-700 dark:text-slate-300', border: 'border-slate-300 dark:border-slate-600' },
-  Plongeuse:   { bg: 'bg-slate-100 dark:bg-slate-700/40', text: 'text-slate-700 dark:text-slate-300', border: 'border-slate-300 dark:border-slate-600' },
-  Patissier:   { bg: 'bg-pink-100 dark:bg-pink-900/40',   text: 'text-pink-700 dark:text-pink-300',   border: 'border-pink-300 dark:border-pink-700' },
-  Patissiere:  { bg: 'bg-pink-100 dark:bg-pink-900/40',   text: 'text-pink-700 dark:text-pink-300',   border: 'border-pink-300 dark:border-pink-700' },
-};
+const EMPLOYEE_COLORS = [
+  '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
+  '#ec4899', '#06b6d4', '#f97316', '#14b8a6', '#6366f1',
+];
+
+const SHIFT_TYPES: { key: ShiftType; label: string; start: string; end: string; color: string; bg: string }[] = [
+  { key: 'matin', label: 'Matin', start: '06:00', end: '14:00', color: 'text-amber-400', bg: 'bg-amber-500/20 border-amber-500/30' },
+  { key: 'midi', label: 'Midi', start: '11:00', end: '15:00', color: 'text-blue-400', bg: 'bg-blue-500/20 border-blue-500/30' },
+  { key: 'soir', label: 'Soir', start: '17:00', end: '23:00', color: 'text-purple-400', bg: 'bg-purple-500/20 border-purple-500/30' },
+];
 
 const POSTES = [
   { value: 'cuisine', label: 'Cuisine' },
@@ -89,14 +85,17 @@ function formatDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-function formatDateFr(d: Date): string {
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
-}
-
 function shiftHours(start: string, end: string): number {
   const [sh, sm] = start.split(':').map(Number);
   const [eh, em] = end.split(':').map(Number);
   return Math.max(0, (eh * 60 + em - sh * 60 - sm) / 60);
+}
+
+function getShiftType(start: string): ShiftType {
+  const h = parseInt(start.split(':')[0]);
+  if (h < 11) return 'matin';
+  if (h < 17) return 'midi';
+  return 'soir';
 }
 
 // ── Sample data ────────────────────────────────────────────────────────
@@ -106,38 +105,50 @@ function buildSampleData() {
   const monday = getMonday(today);
 
   const employees: Employee[] = [
-    { id: 1, nom: 'Benali', prenom: 'Youssef', role: 'Chef', tauxHoraire: 25, heuresContrat: 39 },
-    { id: 2, nom: 'Kaddouri', prenom: 'Ali', role: 'Commis', tauxHoraire: 14, heuresContrat: 35 },
-    { id: 3, nom: 'Dupont', prenom: 'Marie', role: 'Serveuse', tauxHoraire: 12, heuresContrat: 35 },
-    { id: 4, nom: 'Bouzid', prenom: 'Ahmed', role: 'Plongeur', tauxHoraire: 11.65, heuresContrat: 35 },
-    { id: 5, nom: 'Moreau', prenom: 'Sofia', role: 'Patissiere', tauxHoraire: 16, heuresContrat: 35 },
+    { id: 1, nom: 'Benali', prenom: 'Youssef', role: 'Chef', tauxHoraire: 25, heuresContrat: 39, couleur: EMPLOYEE_COLORS[0] },
+    { id: 2, nom: 'Kaddouri', prenom: 'Ali', role: 'Commis', tauxHoraire: 14, heuresContrat: 35, couleur: EMPLOYEE_COLORS[1] },
+    { id: 3, nom: 'Dupont', prenom: 'Marie', role: 'Serveuse', tauxHoraire: 12, heuresContrat: 35, couleur: EMPLOYEE_COLORS[2] },
+    { id: 4, nom: 'Bouzid', prenom: 'Ahmed', role: 'Plongeur', tauxHoraire: 11.65, heuresContrat: 35, couleur: EMPLOYEE_COLORS[3] },
+    { id: 5, nom: 'Moreau', prenom: 'Sofia', role: 'Patissiere', tauxHoraire: 16, heuresContrat: 35, couleur: EMPLOYEE_COLORS[4] },
+    { id: 6, nom: 'Leroy', prenom: 'Thomas', role: 'Serveur', tauxHoraire: 12, heuresContrat: 35, couleur: EMPLOYEE_COLORS[5] },
   ];
 
   const shifts: Shift[] = [
-    { id: 1, employeeId: 1, date: formatDate(monday),         start: '08:00', end: '15:00', poste: 'cuisine' },
+    // Youssef - Chef - 39h
+    { id: 1, employeeId: 1, date: formatDate(monday), start: '08:00', end: '15:00', poste: 'cuisine' },
     { id: 2, employeeId: 1, date: formatDate(addDays(monday, 1)), start: '08:00', end: '15:00', poste: 'cuisine' },
     { id: 3, employeeId: 1, date: formatDate(addDays(monday, 2)), start: '08:00', end: '15:00', poste: 'cuisine' },
-    { id: 4, employeeId: 1, date: formatDate(addDays(monday, 3)), start: '15:00', end: '23:00', poste: 'cuisine' },
-    { id: 5, employeeId: 1, date: formatDate(addDays(monday, 4)), start: '15:00', end: '23:00', poste: 'cuisine' },
-    { id: 6, employeeId: 2, date: formatDate(monday),         start: '09:00', end: '17:00', poste: 'cuisine' },
+    { id: 4, employeeId: 1, date: formatDate(addDays(monday, 3)), start: '17:00', end: '23:00', poste: 'cuisine' },
+    { id: 5, employeeId: 1, date: formatDate(addDays(monday, 4)), start: '17:00', end: '23:00', poste: 'cuisine' },
+    // Ali - Commis - 37h (>35h alert)
+    { id: 6, employeeId: 2, date: formatDate(monday), start: '09:00', end: '17:00', poste: 'cuisine' },
     { id: 7, employeeId: 2, date: formatDate(addDays(monday, 1)), start: '09:00', end: '17:00', poste: 'cuisine' },
     { id: 8, employeeId: 2, date: formatDate(addDays(monday, 2)), start: '09:00', end: '17:00', poste: 'cuisine' },
     { id: 9, employeeId: 2, date: formatDate(addDays(monday, 3)), start: '09:00', end: '17:00', poste: 'cuisine' },
     { id: 10, employeeId: 2, date: formatDate(addDays(monday, 4)), start: '09:00', end: '14:00', poste: 'cuisine' },
-    { id: 11, employeeId: 3, date: formatDate(monday),         start: '11:00', end: '15:00', poste: 'salle' },
+    // Marie - Serveuse
+    { id: 11, employeeId: 3, date: formatDate(monday), start: '11:00', end: '15:00', poste: 'salle' },
     { id: 12, employeeId: 3, date: formatDate(addDays(monday, 1)), start: '11:00', end: '15:00', poste: 'salle' },
     { id: 13, employeeId: 3, date: formatDate(addDays(monday, 2)), start: '18:00', end: '23:00', poste: 'salle' },
     { id: 14, employeeId: 3, date: formatDate(addDays(monday, 4)), start: '11:00', end: '15:00', poste: 'salle' },
     { id: 15, employeeId: 3, date: formatDate(addDays(monday, 5)), start: '18:00', end: '23:00', poste: 'salle' },
-    { id: 16, employeeId: 4, date: formatDate(monday),         start: '11:00', end: '16:00', poste: 'plonge' },
+    // Ahmed - Plongeur
+    { id: 16, employeeId: 4, date: formatDate(monday), start: '11:00', end: '16:00', poste: 'plonge' },
     { id: 17, employeeId: 4, date: formatDate(addDays(monday, 1)), start: '11:00', end: '16:00', poste: 'plonge' },
     { id: 18, employeeId: 4, date: formatDate(addDays(monday, 2)), start: '11:00', end: '16:00', poste: 'plonge' },
     { id: 19, employeeId: 4, date: formatDate(addDays(monday, 3)), start: '18:00', end: '23:00', poste: 'plonge' },
     { id: 20, employeeId: 4, date: formatDate(addDays(monday, 4)), start: '18:00', end: '23:00', poste: 'plonge' },
-    { id: 21, employeeId: 5, date: formatDate(monday),         start: '06:00', end: '14:00', poste: 'cuisine' },
+    // Sofia - Patissiere
+    { id: 21, employeeId: 5, date: formatDate(monday), start: '06:00', end: '14:00', poste: 'cuisine' },
     { id: 22, employeeId: 5, date: formatDate(addDays(monday, 1)), start: '06:00', end: '14:00', poste: 'cuisine' },
     { id: 23, employeeId: 5, date: formatDate(addDays(monday, 3)), start: '06:00', end: '14:00', poste: 'cuisine' },
     { id: 24, employeeId: 5, date: formatDate(addDays(monday, 4)), start: '06:00', end: '14:00', poste: 'cuisine' },
+    // Thomas - Serveur
+    { id: 25, employeeId: 6, date: formatDate(monday), start: '17:00', end: '23:00', poste: 'salle' },
+    { id: 26, employeeId: 6, date: formatDate(addDays(monday, 1)), start: '17:00', end: '23:00', poste: 'salle' },
+    { id: 27, employeeId: 6, date: formatDate(addDays(monday, 3)), start: '17:00', end: '23:00', poste: 'salle' },
+    { id: 28, employeeId: 6, date: formatDate(addDays(monday, 4)), start: '17:00', end: '23:00', poste: 'salle' },
+    { id: 29, employeeId: 6, date: formatDate(addDays(monday, 5)), start: '11:00', end: '15:00', poste: 'salle' },
   ];
 
   return { employees, shifts };
@@ -152,21 +163,22 @@ export default function Planning() {
   const [employees, setEmployees] = useState<Employee[]>(sample.employees);
   const [shifts, setShifts] = useState<Shift[]>(sample.shifts);
   const [weekStart, setWeekStart] = useState<Date>(() => getMonday(new Date()));
-  const [mobileDayIdx, setMobileDayIdx] = useState(() => {
+  const [view, setView] = useState<'semaine' | 'jour'>('semaine');
+  const [selectedDayIdx, setSelectedDayIdx] = useState(() => {
     const today = new Date().getDay();
-    return today === 0 ? 6 : today - 1; // Monday=0 ... Sunday=6
+    return today === 0 ? 6 : today - 1;
   });
   const [nextId, setNextId] = useState(100);
+  const [dragEmployee, setDragEmployee] = useState<Employee | null>(null);
 
   // Modals
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showShiftModal, setShowShiftModal] = useState(false);
   const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
   const [editShift, setEditShift] = useState<Shift | null>(null);
-  const [shiftDayPrefill, setShiftDayPrefill] = useState<string | null>(null);
 
   // Employee form
-  const emptyEmpForm = { nom: '', prenom: '', role: 'Commis' as EmployeeRole, tauxHoraire: '', heuresContrat: '' };
+  const emptyEmpForm = { nom: '', prenom: '', role: 'Commis' as EmployeeRole, tauxHoraire: '', heuresContrat: '', couleur: EMPLOYEE_COLORS[0] };
   const [empForm, setEmpForm] = useState(emptyEmpForm);
 
   // Shift form
@@ -220,11 +232,43 @@ export default function Planning() {
 
   const laborRatio = weeklyRevenue > 0 ? (laborCost / weeklyRevenue) * 100 : 0;
 
+  // Per-employee weekly hours
+  const employeeWeeklyHours = useMemo(() => {
+    const map = new Map<number, number>();
+    for (const emp of employees) {
+      const hours = weekShifts
+        .filter(s => s.employeeId === emp.id)
+        .reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
+      map.set(emp.id, hours);
+    }
+    return map;
+  }, [employees, weekShifts]);
+
+  const alertCount = useMemo(() => {
+    let count = 0;
+    employeeWeeklyHours.forEach(h => { if (h > 35) count++; });
+    return count;
+  }, [employeeWeeklyHours]);
+
+  // Daily cost
+  const dailyCosts = useMemo(() => {
+    return weekDayStrings.map(dayStr => {
+      return shifts
+        .filter(s => s.date === dayStr)
+        .reduce((sum, s) => {
+          const emp = employees.find(e => e.id === s.employeeId);
+          return sum + (emp ? shiftHours(s.start, s.end) * emp.tauxHoraire : 0);
+        }, 0);
+    });
+  }, [weekDayStrings, shifts, employees]);
+
   // ── Employee CRUD ──────────────────────────────────────────────────
 
   function openAddEmployee() {
     setEditEmployee(null);
-    setEmpForm(emptyEmpForm);
+    const usedColors = new Set(employees.map(e => e.couleur));
+    const nextColor = EMPLOYEE_COLORS.find(c => !usedColors.has(c)) || EMPLOYEE_COLORS[employees.length % EMPLOYEE_COLORS.length];
+    setEmpForm({ ...emptyEmpForm, couleur: nextColor });
     setShowEmployeeModal(true);
   }
 
@@ -236,6 +280,7 @@ export default function Planning() {
       role: emp.role,
       tauxHoraire: String(emp.tauxHoraire),
       heuresContrat: String(emp.heuresContrat),
+      couleur: emp.couleur,
     });
     setShowEmployeeModal(true);
   }
@@ -248,10 +293,10 @@ export default function Planning() {
     if (editEmployee) {
       setEmployees(prev => prev.map(e =>
         e.id === editEmployee.id
-          ? { ...e, nom: empForm.nom, prenom: empForm.prenom, role: empForm.role, tauxHoraire: parseFloat(empForm.tauxHoraire), heuresContrat: parseFloat(empForm.heuresContrat) }
+          ? { ...e, nom: empForm.nom, prenom: empForm.prenom, role: empForm.role, tauxHoraire: parseFloat(empForm.tauxHoraire), heuresContrat: parseFloat(empForm.heuresContrat), couleur: empForm.couleur }
           : e
       ));
-      showToast('Employé modifié', 'success');
+      showToast('Employe modifie', 'success');
     } else {
       const id = nextId;
       setNextId(n => n + 1);
@@ -262,8 +307,9 @@ export default function Planning() {
         role: empForm.role,
         tauxHoraire: parseFloat(empForm.tauxHoraire),
         heuresContrat: parseFloat(empForm.heuresContrat),
+        couleur: empForm.couleur,
       }]);
-      showToast('Employé ajouté', 'success');
+      showToast('Employe ajoute', 'success');
     }
     setShowEmployeeModal(false);
   }
@@ -271,15 +317,20 @@ export default function Planning() {
   function deleteEmployee(id: number) {
     setEmployees(prev => prev.filter(e => e.id !== id));
     setShifts(prev => prev.filter(s => s.employeeId !== id));
-    showToast('Employé supprimé', 'success');
+    showToast('Employe supprime', 'success');
   }
 
   // ── Shift CRUD ────────────────────────────────────────────────────
 
-  function openAddShift(day?: string) {
+  function openAddShift(day?: string, shiftType?: ShiftType) {
     setEditShift(null);
-    setShiftForm({ ...emptyShiftForm, date: day || '' });
-    setShiftDayPrefill(day || null);
+    const st = shiftType ? SHIFT_TYPES.find(s => s.key === shiftType) : null;
+    setShiftForm({
+      ...emptyShiftForm,
+      date: day || '',
+      start: st?.start || '',
+      end: st?.end || '',
+    });
     setShowShiftModal(true);
   }
 
@@ -301,18 +352,17 @@ export default function Planning() {
       return;
     }
     if (shiftForm.start >= shiftForm.end) {
-      showToast('L\'heure de fin doit être après l\'heure de début', 'error');
+      showToast("L'heure de fin doit etre apres l'heure de debut", 'error');
       return;
     }
     const empId = parseInt(shiftForm.employeeId);
-    // Overlap check
     const overlap = shifts.some(s => {
       if (editShift && s.id === editShift.id) return false;
       if (s.employeeId !== empId || s.date !== shiftForm.date) return false;
       return s.start < shiftForm.end && s.end > shiftForm.start;
     });
     if (overlap) {
-      showToast('Chevauchement détecté pour cet employé ce jour', 'error');
+      showToast('Chevauchement detecte pour cet employe ce jour', 'error');
       return;
     }
 
@@ -322,7 +372,7 @@ export default function Planning() {
           ? { ...s, employeeId: empId, date: shiftForm.date, start: shiftForm.start, end: shiftForm.end, poste: shiftForm.poste }
           : s
       ));
-      showToast('Créneau modifié', 'success');
+      showToast('Creneau modifie', 'success');
     } else {
       const id = nextId;
       setNextId(n => n + 1);
@@ -334,15 +384,54 @@ export default function Planning() {
         end: shiftForm.end,
         poste: shiftForm.poste,
       }]);
-      showToast('Créneau ajouté', 'success');
+      showToast('Creneau ajoute', 'success');
     }
     setShowShiftModal(false);
   }
 
   function deleteShift(id: number) {
     setShifts(prev => prev.filter(s => s.id !== id));
-    showToast('Créneau supprimé', 'success');
+    showToast('Creneau supprime', 'success');
   }
+
+  // ── Drag & drop ──────────────────────────────────────────────────
+
+  const handleDragStart = useCallback((emp: Employee) => {
+    setDragEmployee(emp);
+  }, []);
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  }, []);
+
+  const handleDrop = useCallback((dayStr: string, shiftType: ShiftType) => {
+    if (!dragEmployee) return;
+    const st = SHIFT_TYPES.find(s => s.key === shiftType)!;
+    const overlap = shifts.some(s => {
+      if (s.employeeId !== dragEmployee.id || s.date !== dayStr) return false;
+      return s.start < st.end && s.end > st.start;
+    });
+    if (overlap) {
+      showToast('Chevauchement detecte', 'error');
+      setDragEmployee(null);
+      return;
+    }
+    const id = nextId;
+    setNextId(n => n + 1);
+    setShifts(prev => [...prev, {
+      id,
+      employeeId: dragEmployee.id,
+      date: dayStr,
+      start: st.start,
+      end: st.end,
+      poste: dragEmployee.role === 'Serveur' || dragEmployee.role === 'Serveuse' ? 'salle'
+        : dragEmployee.role === 'Plongeur' || dragEmployee.role === 'Plongeuse' ? 'plonge'
+        : 'cuisine',
+    }]);
+    showToast(`${dragEmployee.prenom} assigne`, 'success');
+    setDragEmployee(null);
+  }, [dragEmployee, shifts, nextId, showToast]);
 
   // ── Summary table data ────────────────────────────────────────────
 
@@ -350,8 +439,7 @@ export default function Planning() {
     return employees.map(emp => {
       const days = weekDayStrings.map(dayStr => {
         const dayShifts = weekShifts.filter(s => s.employeeId === emp.id && s.date === dayStr);
-        const hours = dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
-        return hours;
+        return dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
       });
       const total = days.reduce((a, b) => a + b, 0);
       return { emp, days, total, cost: total * emp.tauxHoraire };
@@ -372,220 +460,317 @@ export default function Planning() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <CalendarDays className="w-7 h-7 text-indigo-500" />
             Planning du personnel
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 mt-1">
             Gestion des horaires et planification hebdomadaire
           </p>
         </div>
-        <div className="flex gap-2">
-          <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm font-medium">
-            <UserPlus className="w-4 h-4" /> Ajouter employé
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-medium">
+            <UserPlus className="w-4 h-4" /> Employe
           </button>
-          <button onClick={() => openAddShift()} className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium">
-            <Plus className="w-4 h-4" /> Ajouter créneau
+          <button onClick={() => openAddShift()} className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-400 transition text-sm font-medium">
+            <Plus className="w-4 h-4" /> Creneau
           </button>
         </div>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard icon={<Users className="w-5 h-5 text-indigo-500" />} label="Employés actifs" value={String(employees.length)} />
-        <SummaryCard icon={<Clock className="w-5 h-5 text-amber-500" />} label="Heures cette semaine" value={`${totalHoursWeek.toFixed(1)}h`} />
-        <SummaryCard icon={<Euro className="w-5 h-5 text-emerald-500" />} label="Coût MO semaine" value={`${laborCost.toFixed(0)} €`} />
-        <SummaryCard
-          icon={<CalendarDays className="w-5 h-5 text-rose-500" />}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <StatCard icon={<Users className="w-5 h-5 text-indigo-400" />} label="Employes" value={String(employees.length)} />
+        <StatCard icon={<Clock className="w-5 h-5 text-amber-400" />} label="Heures/semaine" value={`${totalHoursWeek.toFixed(0)}h`} />
+        <StatCard icon={<Euro className="w-5 h-5 text-emerald-400" />} label="Cout MO" value={`${laborCost.toFixed(0)} EUR`} />
+        <StatCard
+          icon={<CalendarDays className="w-5 h-5 text-blue-400" />}
           label="Ratio MO/CA"
           value={`${laborRatio.toFixed(1)}%`}
           alert={laborRatio > 30}
-          subtitle={laborRatio > 30 ? 'Objectif : < 30%' : 'OK'}
+        />
+        <StatCard
+          icon={<AlertTriangle className="w-5 h-5 text-rose-400" />}
+          label="Alertes heures"
+          value={`${alertCount}`}
+          alert={alertCount > 0}
+          subtitle={alertCount > 0 ? `${alertCount} employe(s) >35h` : 'OK'}
         />
       </div>
 
-      {/* Week navigation */}
-      <div className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-        <button onClick={goPrev} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-          <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-        </button>
-        <div className="flex items-center gap-3">
-          <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition">
-            Cette semaine
+      {/* Week navigation + view toggle */}
+      <div className="flex flex-col sm:flex-row items-center justify-between bg-slate-900/50 border border-slate-800 rounded-2xl p-4 gap-3">
+        <div className="flex items-center gap-2">
+          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-slate-800 transition">
+            <ChevronLeft className="w-5 h-5 text-slate-300" />
           </button>
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{weekLabel}</h2>
+          <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-900/40 text-indigo-300 hover:bg-indigo-800/50 transition border border-indigo-700/30">
+            Aujourd'hui
+          </button>
+          <h2 className="text-lg font-semibold text-white px-2">{weekLabel}</h2>
+          <button onClick={goNext} className="p-2 rounded-lg hover:bg-slate-800 transition">
+            <ChevronRight className="w-5 h-5 text-slate-300" />
+          </button>
         </div>
-        <button onClick={goNext} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-          <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-        </button>
+        <div className="flex rounded-lg bg-slate-800 border border-slate-700 p-0.5">
+          <button
+            onClick={() => setView('semaine')}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'semaine' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+          >
+            Semaine
+          </button>
+          <button
+            onClick={() => setView('jour')}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'jour' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+          >
+            Jour
+          </button>
+        </div>
       </div>
 
-      {/* Week view — Desktop: 7-column grid, Mobile: single day with prev/next */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-
-        {/* ── Mobile: single day view (<768px) ── */}
-        <div className="lg:hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
-            <button
-              onClick={() => setMobileDayIdx(prev => (prev - 1 + 7) % 7)}
-              className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+      {/* Employee drag panel */}
+      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+        <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">
+          Glisser un employe sur un creneau pour l'assigner
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {employees.map(emp => (
+            <div
+              key={emp.id}
+              draggable
+              onDragStart={() => handleDragStart(emp)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 cursor-grab active:cursor-grabbing hover:border-slate-600 transition select-none"
             >
-              <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <GripVertical className="w-3.5 h-3.5 text-slate-500" />
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
+              <span className="text-sm text-slate-200 font-medium">{emp.prenom} {emp.nom.charAt(0)}.</span>
+              <span className="text-xs text-slate-500">{ROLE_LABELS[emp.role]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Vue semaine ── */}
+      {view === 'semaine' && (
+        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+          {/* Desktop grid */}
+          <div className="hidden lg:block overflow-x-auto">
+            <div className="grid grid-cols-7 min-w-[900px]">
+              {weekDays.map((day, i) => {
+                const dayStr = formatDate(day);
+                const dayShifts = shifts.filter(s => s.date === dayStr);
+                const isToday = formatDate(new Date()) === dayStr;
+                const dayCost = dailyCosts[i];
+
+                return (
+                  <div key={i} className={`border-r border-slate-800 last:border-r-0 ${isToday ? 'bg-indigo-950/20' : ''}`}>
+                    {/* Day header */}
+                    <div className={`px-3 py-2.5 border-b border-slate-800 text-center ${isToday ? 'bg-indigo-900/30' : 'bg-slate-800/40'}`}>
+                      <div className="text-xs font-medium text-slate-500 uppercase">{JOURS[i]}</div>
+                      <div className={`text-sm font-bold ${isToday ? 'text-indigo-400' : 'text-slate-200'}`}>
+                        {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
+                      </div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">{dayCost.toFixed(0)} EUR</div>
+                    </div>
+                    {/* Shift zones */}
+                    {SHIFT_TYPES.map(st => {
+                      const zoneShifts = dayShifts.filter(s => getShiftType(s.start) === st.key);
+                      return (
+                        <div
+                          key={st.key}
+                          onDragOver={handleDragOver}
+                          onDrop={() => handleDrop(dayStr, st.key)}
+                          className={`border-b border-slate-800/50 last:border-b-0 min-h-[60px] p-1.5 transition ${dragEmployee ? 'bg-slate-800/20 hover:bg-slate-700/30' : ''}`}
+                        >
+                          <div className={`text-[9px] font-medium uppercase tracking-wider mb-1 ${st.color}`}>
+                            {st.label} ({st.start}-{st.end})
+                          </div>
+                          <div className="space-y-1">
+                            {zoneShifts
+                              .sort((a, b) => a.start.localeCompare(b.start))
+                              .map(s => {
+                                const emp = employees.find(e => e.id === s.employeeId);
+                                if (!emp) return null;
+                                return (
+                                  <div
+                                    key={s.id}
+                                    className="rounded-md p-1.5 text-xs cursor-pointer hover:brightness-110 transition group relative border"
+                                    style={{
+                                      backgroundColor: emp.couleur + '20',
+                                      borderColor: emp.couleur + '40',
+                                    }}
+                                    onClick={() => openEditShift(s)}
+                                  >
+                                    <div className="font-semibold text-white truncate">{emp.prenom} {emp.nom.charAt(0)}.</div>
+                                    <div className="text-[10px] font-mono text-slate-400">{s.start}-{s.end}</div>
+                                    <button
+                                      onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
+                                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-slate-900/80 hover:bg-red-900/60 transition"
+                                    >
+                                      <X className="w-3 h-3 text-red-400" />
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {/* Add button */}
+                    <div className="p-1.5">
+                      <button
+                        onClick={() => openAddShift(dayStr)}
+                        className="w-full py-1.5 border border-dashed border-slate-700 rounded-lg text-slate-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Mobile: single day view */}
+          <div className="lg:hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-800/40">
+              <button
+                onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
+                className="p-2 rounded-lg hover:bg-slate-700 transition"
+              >
+                <ChevronLeft className="w-5 h-5 text-slate-300" />
+              </button>
+              <div className="text-center">
+                <div className="text-xs font-medium text-slate-400 uppercase">{JOURS_FULL[selectedDayIdx]}</div>
+                <div className="text-sm font-semibold text-white">
+                  {weekDays[selectedDayIdx].getDate()}/{(weekDays[selectedDayIdx].getMonth() + 1).toString().padStart(2, '0')}
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
+                className="p-2 rounded-lg hover:bg-slate-700 transition"
+              >
+                <ChevronRight className="w-5 h-5 text-slate-300" />
+              </button>
+            </div>
+            <MobileDayContent
+              day={weekDays[selectedDayIdx]}
+              shifts={shifts}
+              employees={employees}
+              onEditShift={openEditShift}
+              onDeleteShift={deleteShift}
+              onAddShift={(dayStr, shiftType) => openAddShift(dayStr, shiftType)}
+              dragEmployee={dragEmployee}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Vue jour ── */}
+      {view === 'jour' && (
+        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-800/40">
+            <button
+              onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
+              className="p-2 rounded-lg hover:bg-slate-700 transition"
+            >
+              <ChevronLeft className="w-5 h-5 text-slate-300" />
             </button>
             <div className="text-center">
-              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{JOURS_FULL[mobileDayIdx]}</div>
-              <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                {weekDays[mobileDayIdx].getDate()}/{(weekDays[mobileDayIdx].getMonth() + 1).toString().padStart(2, '0')}
+              <div className="text-xs font-medium text-slate-400 uppercase">{JOURS_FULL[selectedDayIdx]}</div>
+              <div className="text-lg font-bold text-white">
+                {weekDays[selectedDayIdx].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
             </div>
             <button
-              onClick={() => setMobileDayIdx(prev => (prev + 1) % 7)}
-              className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+              onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
+              className="p-2 rounded-lg hover:bg-slate-700 transition"
             >
-              <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <ChevronRight className="w-5 h-5 text-slate-300" />
             </button>
           </div>
-          {(() => {
-            const day = weekDays[mobileDayIdx];
-            const dayStr = formatDate(day);
-            const dayShifts = shifts.filter(s => s.date === dayStr);
-            return (
-              <div className="p-3 space-y-2 min-h-[200px]">
-                {dayShifts
-                  .sort((a, b) => a.start.localeCompare(b.start))
-                  .map(s => {
-                    const emp = employees.find(e => e.id === s.employeeId);
-                    if (!emp) return null;
-                    const colors = ROLE_COLORS[emp.role] || ROLE_COLORS.Commis;
-                    return (
-                      <div
-                        key={s.id}
-                        className={`rounded-lg p-2.5 text-sm border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition group relative`}
-                        onClick={() => openEditShift(s)}
-                      >
-                        <div className={`font-semibold ${colors.text}`}>{emp.prenom} {emp.nom}</div>
-                        <div className={`text-xs ${colors.text} opacity-75`}>{ROLE_LABELS[emp.role]}</div>
-                        <div className={`text-xs font-mono ${colors.text} mt-0.5`}>{s.start} - {s.end}</div>
-                        <button
-                          onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
-                          className="absolute top-2 right-2 p-1 rounded bg-white/80 dark:bg-slate-900/80 hover:bg-red-100 dark:hover:bg-red-900/40 transition"
-                        >
-                          <X className="w-3.5 h-3.5 text-red-500" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                {dayShifts.length === 0 && (
-                  <p className="text-center text-sm text-slate-400 dark:text-slate-500 py-6">Aucun créneau</p>
-                )}
-                <button
-                  onClick={() => openAddShift(dayStr)}
-                  className="w-full py-2.5 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-500 hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
-                >
-                  <Plus className="w-4 h-4" /> Ajouter
-                </button>
-              </div>
-            );
-          })()}
+          <DayDetailView
+            day={weekDays[selectedDayIdx]}
+            shifts={shifts}
+            employees={employees}
+            onEditShift={openEditShift}
+            onDeleteShift={deleteShift}
+            onAddShift={(dayStr, shiftType) => openAddShift(dayStr, shiftType)}
+          />
         </div>
-
-        {/* ── Desktop: 7-column grid (>=768px) ── */}
-        <div className="hidden lg:block overflow-x-auto">
-          <div className="grid grid-cols-7 min-w-[800px]">
-            {weekDays.map((day, i) => {
-              const dayStr = formatDate(day);
-              const dayShifts = shifts.filter(s => s.date === dayStr);
-              const isToday = formatDate(new Date()) === dayStr;
-
-              return (
-                <div key={i} className={`border-r border-slate-200 dark:border-slate-700 last:border-r-0 ${isToday ? 'bg-indigo-50/50 dark:bg-indigo-950/20' : ''}`}>
-                  {/* Day header */}
-                  <div className={`px-3 py-2 border-b border-slate-200 dark:border-slate-700 text-center ${isToday ? 'bg-indigo-100 dark:bg-indigo-900/30' : 'bg-slate-50 dark:bg-slate-800/80'}`}>
-                    <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{JOURS[i]}</div>
-                    <div className={`text-sm font-semibold ${isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200'}`}>
-                      {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
-                    </div>
-                  </div>
-                  {/* Shifts */}
-                  <div className="p-2 space-y-1.5 min-h-[180px]">
-                    {dayShifts
-                      .sort((a, b) => a.start.localeCompare(b.start))
-                      .map(s => {
-                        const emp = employees.find(e => e.id === s.employeeId);
-                        if (!emp) return null;
-                        const colors = ROLE_COLORS[emp.role] || ROLE_COLORS.Commis;
-                        return (
-                          <div
-                            key={s.id}
-                            className={`rounded-lg p-1.5 text-xs border ${colors.bg} ${colors.border} cursor-pointer hover:shadow-md transition group relative`}
-                            onClick={() => openEditShift(s)}
-                          >
-                            <div className={`font-semibold truncate ${colors.text}`}>{emp.prenom} {emp.nom.charAt(0)}.</div>
-                            <div className={`text-[10px] ${colors.text} opacity-75`}>{ROLE_LABELS[emp.role]}</div>
-                            <div className={`text-[10px] font-mono ${colors.text}`}>{s.start} - {s.end}</div>
-                            <button
-                              onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
-                              className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-white/80 dark:bg-slate-900/80 hover:bg-red-100 dark:hover:bg-red-900/40 transition"
-                            >
-                              <X className="w-3 h-3 text-red-500" />
-                            </button>
-                          </div>
-                        );
-                      })}
-                    <button
-                      onClick={() => openAddShift(dayStr)}
-                      className="w-full py-1.5 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-500 hover:border-indigo-400 hover:text-indigo-500 dark:hover:border-indigo-500 dark:hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
-                    >
-                      <Plus className="w-3 h-3" /> Ajouter
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Employee list */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <Users className="w-4 h-4 text-indigo-500" /> Équipe ({employees.length})
+      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+          <h3 className="font-semibold text-white flex items-center gap-2">
+            <Users className="w-4 h-4 text-indigo-400" /> Equipe ({employees.length})
           </h3>
-          <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+          <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-400 hover:underline flex items-center gap-1">
             <UserPlus className="w-3.5 h-3.5" /> Ajouter
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employé</th>
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Rôle</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Taux horaire</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Heures contrat</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Actions</th>
+              <tr className="bg-slate-800/60">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">Employe</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">Role</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Taux</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Contrat</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Heures/sem</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Statut</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-800">
               {employees.map(emp => {
-                const colors = ROLE_COLORS[emp.role] || ROLE_COLORS.Commis;
+                const hours = employeeWeeklyHours.get(emp.id) || 0;
+                const isOver35 = hours > 35;
+                const isOver48 = hours > 48;
                 return (
-                  <tr key={emp.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
-                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{emp.prenom} {emp.nom}</td>
+                  <tr key={emp.id} className="hover:bg-slate-800/30 transition">
                     <td className="px-4 py-3">
-                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${colors.bg} ${colors.text}`}>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
+                        <span className="font-medium text-white">{emp.prenom} {emp.nom}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: emp.couleur + '20', color: emp.couleur }}>
                         {ROLE_LABELS[emp.role]}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{emp.tauxHoraire.toFixed(2)} €/h</td>
-                    <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">{emp.heuresContrat}h/sem</td>
+                    <td className="px-4 py-3 text-right text-slate-300">{emp.tauxHoraire.toFixed(2)} EUR/h</td>
+                    <td className="px-4 py-3 text-right text-slate-300">{emp.heuresContrat}h</td>
+                    <td className="px-4 py-3 text-right">
+                      <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        {hours.toFixed(0)}h
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {isOver48 ? (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
+                          ILLEGAL &gt;48h
+                        </span>
+                      ) : isOver35 ? (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                          Heures sup
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          OK
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition">
-                          <Edit className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-slate-700 transition">
+                          <Edit className="w-3.5 h-3.5 text-slate-400" />
                         </button>
-                        <button onClick={() => deleteEmployee(emp.id)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                        <button onClick={() => deleteEmployee(emp.id)} className="p-1.5 rounded hover:bg-red-900/20 transition">
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
                         </button>
                       </div>
@@ -599,53 +784,81 @@ export default function Planning() {
       </div>
 
       {/* Weekly summary table */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700">
-          <h3 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-500" /> Récapitulatif hebdomadaire
+      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-800">
+          <h3 className="font-semibold text-white flex items-center gap-2">
+            <Clock className="w-4 h-4 text-amber-400" /> Recapitulatif hebdomadaire
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Employé</th>
+              <tr className="bg-slate-800/60">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">Employe</th>
                 {JOURS.map(j => (
-                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">{j}</th>
+                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{j}</th>
                 ))}
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Total</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Coût</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Total</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Cout</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Alerte</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-              {summaryRows.map(row => (
-                <tr key={row.emp.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition">
-                  <td className="px-4 py-2.5 font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
-                    {row.emp.prenom} {row.emp.nom.charAt(0)}.
-                  </td>
-                  {row.days.map((h, i) => (
-                    <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-slate-700 dark:text-slate-200 font-medium' : 'text-slate-300 dark:text-slate-600'}`}>
-                      {h > 0 ? `${h}h` : '-'}
+            <tbody className="divide-y divide-slate-800">
+              {summaryRows.map(row => {
+                const isOver35 = row.total > 35;
+                const isOver48 = row.total > 48;
+                return (
+                  <tr key={row.emp.id} className="hover:bg-slate-800/30 transition">
+                    <td className="px-4 py-2.5 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.couleur }} />
+                        <span className="font-medium text-white">{row.emp.prenom} {row.emp.nom.charAt(0)}.</span>
+                      </div>
                     </td>
-                  ))}
-                  <td className="px-3 py-2.5 text-center font-semibold text-slate-800 dark:text-slate-100">
-                    {row.total > 0 ? `${row.total}h` : '-'}
-                  </td>
-                  <td className="px-4 py-2.5 text-right font-medium text-slate-700 dark:text-slate-200">
-                    {row.cost > 0 ? `${row.cost.toFixed(0)} €` : '-'}
-                  </td>
-                </tr>
-              ))}
+                    {row.days.map((h, i) => (
+                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-slate-200 font-medium' : 'text-slate-600'}`}>
+                        {h > 0 ? `${h}h` : '-'}
+                      </td>
+                    ))}
+                    <td className={`px-3 py-2.5 text-center font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-white'}`}>
+                      {row.total > 0 ? `${row.total}h` : '-'}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-medium text-slate-300">
+                      {row.cost > 0 ? `${row.cost.toFixed(0)} EUR` : '-'}
+                    </td>
+                    <td className="px-3 py-2.5 text-center">
+                      {isOver48 ? (
+                        <AlertTriangle className="w-4 h-4 text-red-400 mx-auto" />
+                      ) : isOver35 ? (
+                        <AlertTriangle className="w-4 h-4 text-amber-400 mx-auto" />
+                      ) : null}
+                    </td>
+                  </tr>
+                );
+              })}
               {/* Totals */}
-              <tr className="bg-slate-50 dark:bg-slate-800/60 font-semibold">
-                <td className="px-4 py-2.5 text-slate-800 dark:text-slate-100">Total</td>
+              <tr className="bg-slate-800/60 font-semibold">
+                <td className="px-4 py-2.5 text-white">Total</td>
                 {totalRow.days.map((h, i) => (
-                  <td key={i} className="px-3 py-2.5 text-center text-xs text-slate-700 dark:text-slate-200">
+                  <td key={i} className="px-3 py-2.5 text-center text-xs text-slate-200">
                     {h > 0 ? `${h}h` : '-'}
                   </td>
                 ))}
-                <td className="px-3 py-2.5 text-center text-indigo-600 dark:text-indigo-400">{totalRow.total}h</td>
-                <td className="px-4 py-2.5 text-right text-indigo-600 dark:text-indigo-400">{totalRow.cost.toFixed(0)} €</td>
+                <td className="px-3 py-2.5 text-center text-indigo-400">{totalRow.total}h</td>
+                <td className="px-4 py-2.5 text-right text-indigo-400">{totalRow.cost.toFixed(0)} EUR</td>
+                <td />
+              </tr>
+              {/* Daily cost row */}
+              <tr className="bg-slate-800/40">
+                <td className="px-4 py-2.5 text-slate-400 text-xs">Cout/jour</td>
+                {dailyCosts.map((c, i) => (
+                  <td key={i} className="px-3 py-2.5 text-center text-xs text-slate-400">
+                    {c > 0 ? `${c.toFixed(0)}` : '-'}
+                  </td>
+                ))}
+                <td />
+                <td />
+                <td />
               </tr>
             </tbody>
           </table>
@@ -656,37 +869,37 @@ export default function Planning() {
       <Modal
         isOpen={showEmployeeModal}
         onClose={() => setShowEmployeeModal(false)}
-        title={editEmployee ? 'Modifier employé' : 'Ajouter un employé'}
+        title={editEmployee ? 'Modifier employe' : 'Ajouter un employe'}
       >
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Prénom</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Prenom</label>
               <input
                 type="text"
                 value={empForm.prenom}
                 onChange={e => setEmpForm(f => ({ ...f, prenom: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: Marie"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nom</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Nom</label>
               <input
                 type="text"
                 value={empForm.nom}
                 onChange={e => setEmpForm(f => ({ ...f, nom: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: Dupont"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rôle</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Role</label>
             <select
               value={empForm.role}
               onChange={e => setEmpForm(f => ({ ...f, role: e.target.value as EmployeeRole }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {ROLES.map(r => (
                 <option key={r} value={r}>{ROLE_LABELS[r]}</option>
@@ -695,34 +908,48 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Taux horaire (€/h)</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Taux horaire (EUR/h)</label>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 value={empForm.tauxHoraire}
                 onChange={e => setEmpForm(f => ({ ...f, tauxHoraire: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: 14.00"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{"Heures contrat / semaine"}</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Heures contrat/sem</label>
               <input
                 type="number"
                 min="0"
                 value={empForm.heuresContrat}
                 onChange={e => setEmpForm(f => ({ ...f, heuresContrat: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: 35"
               />
             </div>
           </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Couleur</label>
+            <div className="flex gap-2 flex-wrap">
+              {EMPLOYEE_COLORS.map(c => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setEmpForm(f => ({ ...f, couleur: c }))}
+                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.couleur === c ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
+          </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 rounded-lg transition">
               Annuler
             </button>
-            <button onClick={saveEmployee} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+            <button onClick={saveEmployee} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
               {editEmployee ? 'Modifier' : 'Ajouter'}
             </button>
           </div>
@@ -733,57 +960,77 @@ export default function Planning() {
       <Modal
         isOpen={showShiftModal}
         onClose={() => setShowShiftModal(false)}
-        title={editShift ? 'Modifier créneau' : 'Ajouter un créneau'}
+        title={editShift ? 'Modifier creneau' : 'Ajouter un creneau'}
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Employé</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Employe</label>
             <select
               value={shiftForm.employeeId}
               onChange={e => setShiftForm(f => ({ ...f, employeeId: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
-              <option value="">-- Sélectionner --</option>
+              <option value="">-- Selectionner --</option>
               {employees.map(emp => (
                 <option key={emp.id} value={emp.id}>{emp.prenom} {emp.nom} ({ROLE_LABELS[emp.role]})</option>
               ))}
             </select>
           </div>
+          {/* Quick shift type buttons */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Type de service</label>
+            <div className="flex gap-2">
+              {SHIFT_TYPES.map(st => (
+                <button
+                  key={st.key}
+                  type="button"
+                  onClick={() => setShiftForm(f => ({ ...f, start: st.start, end: st.end }))}
+                  className={`flex-1 py-2 rounded-lg text-xs font-medium border transition ${
+                    shiftForm.start === st.start && shiftForm.end === st.end
+                      ? st.bg + ' text-white'
+                      : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
+                  }`}
+                >
+                  {st.label}<br />{st.start}-{st.end}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Date</label>
             <input
               type="date"
               value={shiftForm.date}
               onChange={e => setShiftForm(f => ({ ...f, date: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Heure début</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Heure debut</label>
               <input
                 type="time"
                 value={shiftForm.start}
                 onChange={e => setShiftForm(f => ({ ...f, start: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Heure fin</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Heure fin</label>
               <input
                 type="time"
                 value={shiftForm.end}
                 onChange={e => setShiftForm(f => ({ ...f, end: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Poste</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Poste</label>
             <select
               value={shiftForm.poste}
               onChange={e => setShiftForm(f => ({ ...f, poste: e.target.value as Shift['poste'] }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {POSTES.map(p => (
                 <option key={p.value} value={p.value}>{p.label}</option>
@@ -791,18 +1038,18 @@ export default function Planning() {
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 rounded-lg transition">
               Annuler
             </button>
             {editShift && (
               <button
                 onClick={() => { deleteShift(editShift.id); setShowShiftModal(false); }}
-                className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-xl hover:bg-red-700 transition"
               >
                 Supprimer
               </button>
             )}
-            <button onClick={saveShift} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+            <button onClick={saveShift} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
               {editShift ? 'Modifier' : 'Ajouter'}
             </button>
           </div>
@@ -814,7 +1061,7 @@ export default function Planning() {
 
 // ── Sub-components ────────────────────────────────────────────────────
 
-function SummaryCard({ icon, label, value, alert, subtitle }: {
+function StatCard({ icon, label, value, alert, subtitle }: {
   icon: React.ReactNode;
   label: string;
   value: string;
@@ -822,17 +1069,233 @@ function SummaryCard({ icon, label, value, alert, subtitle }: {
   subtitle?: string;
 }) {
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border ${alert ? 'border-red-300 dark:border-red-700' : 'border-slate-200 dark:border-slate-700'}`}>
+    <div className={`bg-slate-900/50 rounded-2xl p-4 border ${alert ? 'border-red-700/50' : 'border-slate-800'}`}>
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${alert ? 'bg-red-100 dark:bg-red-900/30' : 'bg-slate-100 dark:bg-slate-700/50'}`}>
+        <div className={`p-2 rounded-lg ${alert ? 'bg-red-900/30' : 'bg-slate-800'}`}>
           {icon}
         </div>
         <div>
-          <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
-          <div className={`text-xl font-bold ${alert ? 'text-red-600 dark:text-red-400' : 'text-slate-800 dark:text-slate-100'}`}>{value}</div>
+          <div className="text-xs text-slate-400">{label}</div>
+          <div className={`text-xl font-bold ${alert ? 'text-red-400' : 'text-white'}`}>{value}</div>
           {subtitle && (
-            <div className={`text-xs ${alert ? 'text-red-500 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>{subtitle}</div>
+            <div className={`text-xs ${alert ? 'text-red-400' : 'text-emerald-400'}`}>{subtitle}</div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, onAddShift, dragEmployee, onDragOver, onDrop }: {
+  day: Date;
+  shifts: Shift[];
+  employees: Employee[];
+  onEditShift: (s: Shift) => void;
+  onDeleteShift: (id: number) => void;
+  onAddShift: (dayStr: string, shiftType?: ShiftType) => void;
+  dragEmployee: Employee | null;
+  onDragOver: (e: DragEvent<HTMLDivElement>) => void;
+  onDrop: (dayStr: string, shiftType: ShiftType) => void;
+}) {
+  const dayStr = formatDate(day);
+  const dayShifts = shifts.filter(s => s.date === dayStr);
+
+  return (
+    <div className="p-3 space-y-3">
+      {SHIFT_TYPES.map(st => {
+        const zoneShifts = dayShifts.filter(s => getShiftType(s.start) === st.key);
+        return (
+          <div
+            key={st.key}
+            onDragOver={onDragOver}
+            onDrop={() => onDrop(dayStr, st.key)}
+            className={`rounded-xl border p-3 ${st.bg} ${dragEmployee ? 'ring-2 ring-indigo-500/30' : ''}`}
+          >
+            <div className={`text-xs font-semibold uppercase tracking-wider mb-2 ${st.color}`}>
+              {st.label} ({st.start} - {st.end})
+            </div>
+            <div className="space-y-2">
+              {zoneShifts
+                .sort((a, b) => a.start.localeCompare(b.start))
+                .map(s => {
+                  const emp = employees.find(e => e.id === s.employeeId);
+                  if (!emp) return null;
+                  return (
+                    <div
+                      key={s.id}
+                      className="rounded-lg p-2.5 bg-slate-900/60 border border-slate-700 cursor-pointer hover:border-slate-600 transition group relative"
+                      onClick={() => onEditShift(s)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
+                        <span className="font-semibold text-white text-sm">{emp.prenom} {emp.nom}</span>
+                      </div>
+                      <div className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[emp.role]} -- {s.start} a {s.end}</div>
+                      <button
+                        onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
+                        className="absolute top-2 right-2 p-1 rounded bg-slate-800 hover:bg-red-900/40 transition"
+                      >
+                        <X className="w-3.5 h-3.5 text-red-400" />
+                      </button>
+                    </div>
+                  );
+                })}
+              {zoneShifts.length === 0 && (
+                <p className="text-center text-xs text-slate-500 py-2">Aucun creneau</p>
+              )}
+            </div>
+            <button
+              onClick={() => onAddShift(dayStr, st.key)}
+              className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-slate-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+            >
+              <Plus className="w-3.5 h-3.5" /> Ajouter
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onAddShift }: {
+  day: Date;
+  shifts: Shift[];
+  employees: Employee[];
+  onEditShift: (s: Shift) => void;
+  onDeleteShift: (id: number) => void;
+  onAddShift: (dayStr: string, shiftType?: ShiftType) => void;
+}) {
+  const dayStr = formatDate(day);
+  const dayShifts = shifts.filter(s => s.date === dayStr);
+  const totalHours = dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
+  const totalCost = dayShifts.reduce((sum, s) => {
+    const emp = employees.find(e => e.id === s.employeeId);
+    return sum + (emp ? shiftHours(s.start, s.end) * emp.tauxHoraire : 0);
+  }, 0);
+
+  // Group by employee for presence
+  const presenceMap = new Map<number, Shift[]>();
+  dayShifts.forEach(s => {
+    const arr = presenceMap.get(s.employeeId) || [];
+    arr.push(s);
+    presenceMap.set(s.employeeId, arr);
+  });
+
+  return (
+    <div className="p-5 space-y-5">
+      {/* Day stats */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
+          <div className="text-xs text-slate-400">Employes presents</div>
+          <div className="text-2xl font-bold text-white">{presenceMap.size}</div>
+        </div>
+        <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
+          <div className="text-xs text-slate-400">Heures totales</div>
+          <div className="text-2xl font-bold text-white">{totalHours.toFixed(0)}h</div>
+        </div>
+        <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
+          <div className="text-xs text-slate-400">Cout du jour</div>
+          <div className="text-2xl font-bold text-emerald-400">{totalCost.toFixed(0)} EUR</div>
+        </div>
+      </div>
+
+      {/* Shift type sections */}
+      {SHIFT_TYPES.map(st => {
+        const zoneShifts = dayShifts.filter(s => getShiftType(s.start) === st.key);
+        return (
+          <div key={st.key}>
+            <div className={`flex items-center gap-2 mb-3`}>
+              <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-blue-400' : 'bg-purple-400'}`} />
+              <h4 className={`font-semibold ${st.color}`}>{st.label} ({st.start} - {st.end})</h4>
+              <span className="text-xs text-slate-500">{zoneShifts.length} creneau(x)</span>
+            </div>
+            {zoneShifts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {zoneShifts
+                  .sort((a, b) => a.start.localeCompare(b.start))
+                  .map(s => {
+                    const emp = employees.find(e => e.id === s.employeeId);
+                    if (!emp) return null;
+                    const hours = shiftHours(s.start, s.end);
+                    return (
+                      <div
+                        key={s.id}
+                        className="rounded-xl p-4 border border-slate-700 bg-slate-800/40 cursor-pointer hover:border-slate-600 transition group relative"
+                        onClick={() => onEditShift(s)}
+                      >
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.couleur }}>
+                            {emp.prenom.charAt(0)}{emp.nom.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-white">{emp.prenom} {emp.nom}</div>
+                            <div className="text-xs text-slate-400">{ROLE_LABELS[emp.role]}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-mono text-slate-300">{s.start} - {s.end}</span>
+                          <span className="text-slate-400">{hours}h -- {(hours * emp.tauxHoraire).toFixed(0)} EUR</span>
+                        </div>
+                        <button
+                          onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
+                          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-slate-900/80 hover:bg-red-900/40 transition"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                        </button>
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <p className="text-sm text-slate-500 py-3 text-center bg-slate-800/20 rounded-xl border border-dashed border-slate-700">
+                Aucun creneau
+              </p>
+            )}
+            <button
+              onClick={() => onAddShift(dayStr, st.key)}
+              className="mt-2 w-full py-2 border border-dashed border-slate-700 rounded-xl text-slate-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
+            >
+              <Plus className="w-4 h-4" /> Ajouter un creneau {st.label.toLowerCase()}
+            </button>
+          </div>
+        );
+      })}
+
+      {/* Presence summary */}
+      <div>
+        <h4 className="font-semibold text-white flex items-center gap-2 mb-3">
+          <Eye className="w-4 h-4 text-indigo-400" /> Presences du jour
+        </h4>
+        <div className="space-y-2">
+          {employees.map(emp => {
+            const empShifts = presenceMap.get(emp.id);
+            const isPresent = !!empShifts && empShifts.length > 0;
+            const empHours = empShifts ? empShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0) : 0;
+            return (
+              <div
+                key={emp.id}
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl border transition ${
+                  isPresent ? 'border-slate-700 bg-slate-800/40' : 'border-slate-800/50 bg-slate-900/30 opacity-50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-slate-600'}`} />
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
+                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-500'}`}>{emp.prenom} {emp.nom}</span>
+                  <span className="text-xs text-slate-500">{ROLE_LABELS[emp.role]}</span>
+                </div>
+                <div className="text-sm">
+                  {isPresent ? (
+                    <span className="text-slate-300">
+                      {empShifts!.map(s => `${s.start}-${s.end}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
+                    </span>
+                  ) : (
+                    <span className="text-slate-600">Absent</span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

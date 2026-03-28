@@ -1,770 +1,517 @@
 import { useState, useMemo } from 'react';
 import {
-  Thermometer, ShieldCheck, CalendarClock, SprayCan, FileDown,
-  Plus, AlertTriangle, CheckCircle2, XCircle, Clock, Trash2,
-  ClipboardCheck, TrendingUp, ChevronDown, ChevronUp
+  Thermometer, Plus, ShieldCheck, AlertTriangle, Clock,
+  CheckCircle2, XCircle, Package, SprayCan, BarChart3, Search
 } from 'lucide-react';
-import { useToast } from '../hooks/useToast';
-import Modal from '../components/Modal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-interface TemperatureReading {
+interface TemperatureRecord {
   id: number;
-  lieu: string;
+  zone: 'frigo' | 'congelateur' | 'plat_chaud' | 'reception';
   temperature: number;
-  heure: string;
-  conforme: boolean;
-  actionCorrective: string;
+  timestamp: string;
+  agent: string;
+  notes: string;
 }
 
-interface DLCProduct {
+interface LotRecord {
   id: number;
-  produit: string;
-  dateReception: string;
+  lotNumber: string;
+  product: string;
+  supplier: string;
+  receptionDate: string;
   dlc: string;
-  type: 'DLC' | 'DLUO';
+  ddm: string;
+  status: 'conforme' | 'non_conforme' | 'en_attente';
 }
 
-interface CleaningTask {
+interface DluoAlert {
+  id: number;
+  product: string;
+  lotNumber: string;
+  dlc: string;
+  daysRemaining: number;
+  quantity: string;
+}
+
+interface CleaningRecord {
   id: number;
   zone: string;
-  tache: string;
-  frequence: 'quotidien' | 'hebdomadaire' | 'mensuel';
-  fait: boolean;
-  horodatage: string | null;
+  date: string;
+  time: string;
+  agent: string;
+  verified: boolean;
 }
 
-type TabKey = 'temperatures' | 'dlc' | 'nettoyage';
+type TabKey = 'dashboard' | 'temperatures' | 'lots' | 'alertes' | 'nettoyage';
+
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const ZONE_LABELS: Record<string, string> = {
+  frigo: 'Frigo (+)',
+  congelateur: 'Congélateur (-)',
+  plat_chaud: 'Plats chauds',
+  reception: 'Réception marchandise',
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  conforme: 'Conforme',
+  non_conforme: 'Non conforme',
+  en_attente: 'En attente',
+};
+
+const STATUS_BADGE: Record<string, string> = {
+  conforme: 'bg-emerald-900/40 text-emerald-300 border border-emerald-700/50',
+  non_conforme: 'bg-red-900/40 text-red-300 border border-red-700/50',
+  en_attente: 'bg-amber-900/40 text-amber-300 border border-amber-700/50',
+};
+
+const CLEANING_ZONES = [
+  'Cuisine - Plan de travail', 'Cuisine - Sols', 'Cuisine - Hottes',
+  'Chambre froide positive', 'Chambre froide négative',
+  'Salle - Tables', 'Salle - Sols', 'Sanitaires',
+  'Zone de stockage', 'Zone de réception', 'Plonge', 'Poubelles / Local déchets',
+];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const LOCATIONS = [
-  'Frigo 1', 'Frigo 2', 'Congélateur', 'Chambre froide',
-  'Vitrine réfrigérée', 'Bain-marie'
-];
-
-function isTemperatureConforme(lieu: string, temp: number): boolean {
-  const l = lieu.toLowerCase();
-  if (l.includes('congél') || l.includes('chambre froide')) return temp <= -18;
-  if (l.includes('bain-marie')) return temp >= 63;
-  return temp >= 0 && temp <= 4;
+function getTempColor(zone: string, temp: number): 'emerald' | 'amber' | 'red' | 'slate' {
+  if (zone === 'congelateur') return temp <= -18 ? 'emerald' : temp <= -15 ? 'amber' : 'red';
+  if (zone === 'frigo') return temp < 4 ? 'emerald' : temp <= 7 ? 'amber' : 'red';
+  if (zone === 'plat_chaud') return temp >= 63 ? 'emerald' : temp >= 55 ? 'amber' : 'red';
+  return 'slate';
 }
 
-function temperatureRange(lieu: string): string {
-  const l = lieu.toLowerCase();
-  if (l.includes('congél') || l.includes('chambre froide')) return '≤ -18°C';
-  if (l.includes('bain-marie')) return '≥ 63°C';
-  return '0 – 4°C';
+const TEMP_TEXT: Record<string, string> = { emerald: 'text-emerald-400', amber: 'text-amber-400', red: 'text-red-400', slate: 'text-slate-400' };
+const TEMP_BADGE: Record<string, string> = { emerald: 'bg-emerald-900/40 text-emerald-300', amber: 'bg-amber-900/40 text-amber-300', red: 'bg-red-900/40 text-red-300', slate: 'bg-slate-800 text-slate-300' };
+const TEMP_STATUS: Record<string, string> = { emerald: 'OK', amber: 'Attention', red: 'Danger', slate: '-' };
+
+function getDluoBadge(days: number) {
+  if (days <= 1) return 'bg-red-900/40 text-red-300 border border-red-700/50';
+  if (days <= 3) return 'bg-amber-900/40 text-amber-300 border border-amber-700/50';
+  return 'bg-emerald-900/40 text-emerald-300 border border-emerald-700/50';
 }
 
-function joursRestants(dlc: string): number {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(dlc);
-  target.setHours(0, 0, 0, 0);
-  return Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+function getDluoLabel(days: number) {
+  if (days <= 0) return 'EXPIRÉ';
+  return `J-${days}`;
 }
 
-function dlcColor(jours: number): string {
-  if (jours < 0) return 'bg-gray-900 text-white dark:bg-black';
-  if (jours < 3) return 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
-  if (jours <= 7) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300';
-  return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+// ─── Seed Data ───────────────────────────────────────────────────────────────
+
+function seedTemperatures(): TemperatureRecord[] {
+  const now = new Date();
+  const agents = ['Ali', 'Marie', 'Karim', 'Sophie'];
+  const zones: TemperatureRecord['zone'][] = ['frigo', 'congelateur', 'plat_chaud', 'reception'];
+  return Array.from({ length: 20 }, (_, i) => {
+    const d = new Date(now); d.setHours(d.getHours() - i * 2);
+    const zone = zones[i % 4];
+    const temp = zone === 'frigo' ? +(Math.random() * 8 + 0.5).toFixed(1)
+      : zone === 'congelateur' ? +(Math.random() * 10 - 25).toFixed(1)
+      : zone === 'plat_chaud' ? +(Math.random() * 20 + 50).toFixed(1)
+      : +(Math.random() * 10 + 5).toFixed(1);
+    return { id: i + 1, zone, temperature: temp, timestamp: d.toISOString(), agent: agents[i % 4], notes: i % 5 === 0 ? 'RAS' : '' };
+  });
 }
 
-function dlcLabel(jours: number): string {
-  if (jours < 0) return 'Expiré';
-  if (jours === 0) return "Aujourd'hui";
-  if (jours < 3) return 'Urgent';
-  if (jours <= 7) return 'Attention';
-  return 'OK';
+function seedLots(): LotRecord[] {
+  const items = [
+    { name: 'Filet de boeuf', supplier: 'Brake France' }, { name: 'Saumon frais', supplier: 'Pomona' },
+    { name: 'Poulet fermier', supplier: 'Metro' }, { name: 'Crème fraîche', supplier: 'Transgourmet' },
+    { name: 'Salade mesclun', supplier: 'Pomona' }, { name: 'Tomates grappe', supplier: 'Rungis Direct' },
+    { name: 'Fromage comté', supplier: 'Brake France' }, { name: 'Lait entier', supplier: 'Transgourmet' },
+  ];
+  const statuses: LotRecord['status'][] = ['conforme', 'conforme', 'conforme', 'non_conforme', 'en_attente'];
+  return items.map((p, i) => {
+    const rec = new Date(); rec.setDate(rec.getDate() - Math.floor(Math.random() * 5));
+    const dlc = new Date(rec); dlc.setDate(dlc.getDate() + Math.floor(Math.random() * 10 + 3));
+    return {
+      id: i + 1, lotNumber: `LOT-${String(rec.getFullYear()).slice(2)}${String(rec.getMonth() + 1).padStart(2, '0')}${String(i + 1).padStart(3, '0')}`,
+      product: p.name, supplier: p.supplier, receptionDate: rec.toISOString().split('T')[0],
+      dlc: dlc.toISOString().split('T')[0], ddm: '', status: statuses[i % 5],
+    };
+  });
 }
 
-const now = () => new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-const today = () => new Date().toISOString().split('T')[0];
+function seedDluo(): DluoAlert[] {
+  return [
+    { product: 'Crème fraîche', lot: 'LOT-260301', offset: 0, qty: '2 L' },
+    { product: 'Salade mesclun', lot: 'LOT-260302', offset: 1, qty: '1.5 kg' },
+    { product: 'Saumon frais', lot: 'LOT-260303', offset: 2, qty: '3 kg' },
+    { product: 'Poulet fermier', lot: 'LOT-260304', offset: 3, qty: '4 kg' },
+    { product: 'Lait entier', lot: 'LOT-260305', offset: 5, qty: '6 L' },
+    { product: 'Tomates grappe', lot: 'LOT-260306', offset: 7, qty: '2 kg' },
+  ].map((item, i) => {
+    const dlc = new Date(); dlc.setDate(dlc.getDate() + item.offset);
+    return { id: i + 1, product: item.product, lotNumber: item.lot, dlc: dlc.toISOString().split('T')[0], daysRemaining: item.offset, quantity: item.qty };
+  });
+}
 
-// ─── Default cleaning tasks ─────────────────────────────────────────────────
-
-const DEFAULT_CLEANING: Omit<CleaningTask, 'id'>[] = [
-  { zone: 'Cuisine', tache: 'Nettoyage des plans de travail', frequence: 'quotidien', fait: false, horodatage: null },
-  { zone: 'Cuisine', tache: 'Nettoyage des équipements (four, plaque)', frequence: 'quotidien', fait: false, horodatage: null },
-  { zone: 'Cuisine', tache: 'Nettoyage des sols', frequence: 'quotidien', fait: false, horodatage: null },
-  { zone: 'Chambre froide', tache: 'Nettoyage et vérification des étagères', frequence: 'hebdomadaire', fait: false, horodatage: null },
-  { zone: 'Chambre froide', tache: 'Dégivrage et nettoyage complet', frequence: 'mensuel', fait: false, horodatage: null },
-  { zone: 'Salle', tache: 'Nettoyage des tables et chaises', frequence: 'quotidien', fait: false, horodatage: null },
-  { zone: 'Sanitaires', tache: 'Désinfection complète', frequence: 'quotidien', fait: false, horodatage: null },
-  { zone: 'Stockage', tache: 'Rangement et nettoyage des étagères', frequence: 'hebdomadaire', fait: false, horodatage: null },
-  { zone: 'Poubelles', tache: 'Nettoyage et désinfection des bacs', frequence: 'quotidien', fait: false, horodatage: null },
-  { zone: 'Hotte', tache: 'Nettoyage des filtres de hotte', frequence: 'hebdomadaire', fait: false, horodatage: null },
-  { zone: 'Hotte', tache: 'Nettoyage complet de la hotte', frequence: 'mensuel', fait: false, horodatage: null },
-];
-
-let nextId = 1;
-function genId() { return nextId++; }
+function seedCleaning(): CleaningRecord[] {
+  const agents = ['Ali', 'Marie', 'Karim', 'Sophie'];
+  const today = new Date().toISOString().split('T')[0];
+  return CLEANING_ZONES.map((zone, i) => ({
+    id: i + 1, zone, date: today,
+    time: i < 8 ? `${8 + i}:00` : '',
+    agent: i < 8 ? agents[i % 4] : '',
+    verified: i < 6,
+  }));
+}
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function HACCP() {
-  const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<TabKey>('temperatures');
+  const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
+  const [temperatures, setTemperatures] = useState<TemperatureRecord[]>(seedTemperatures);
+  const [lots, setLots] = useState<LotRecord[]>(seedLots);
+  const [dluoAlerts] = useState<DluoAlert[]>(seedDluo);
+  const [cleaning, setCleaning] = useState<CleaningRecord[]>(seedCleaning);
 
-  // Temperature state
-  const [readings, setReadings] = useState<TemperatureReading[]>([]);
-  const [showTempModal, setShowTempModal] = useState(false);
-  const [tempForm, setTempForm] = useState({ lieu: LOCATIONS[0], temperature: '', actionCorrective: '' });
+  const [showTempForm, setShowTempForm] = useState(false);
+  const [tempForm, setTempForm] = useState({ zone: 'frigo' as TemperatureRecord['zone'], temperature: '', agent: '', notes: '' });
+  const [showLotForm, setShowLotForm] = useState(false);
+  const [lotForm, setLotForm] = useState({ lotNumber: '', product: '', supplier: '', dlc: '', ddm: '', status: 'en_attente' as LotRecord['status'] });
+  const [searchLots, setSearchLots] = useState('');
 
-  // DLC state
-  const [products, setProducts] = useState<DLCProduct[]>([]);
-  const [showDLCModal, setShowDLCModal] = useState(false);
-  const [dlcForm, setDlcForm] = useState({ produit: '', dateReception: today(), dlc: '', type: 'DLC' as 'DLC' | 'DLUO' });
+  // ─── Stats ───────────────────────────────────────────────────────────────
 
-  // Cleaning state
-  const [cleaning, setCleaning] = useState<CleaningTask[]>(
-    DEFAULT_CLEANING.map(t => ({ ...t, id: genId() }))
-  );
-  const [cleaningFilter, setCleaningFilter] = useState<'all' | 'quotidien' | 'hebdomadaire' | 'mensuel'>('all');
+  const stats = useMemo(() => {
+    const total = temperatures.length;
+    const ok = temperatures.filter(t => {
+      if (t.zone === 'frigo') return t.temperature < 4;
+      if (t.zone === 'congelateur') return t.temperature <= -18;
+      if (t.zone === 'plat_chaud') return t.temperature >= 63;
+      return true;
+    }).length;
+    const rate = total > 0 ? Math.round((ok / total) * 100) : 0;
+    const activeAlerts = dluoAlerts.filter(a => a.daysRemaining <= 3).length;
+    const expired = dluoAlerts.filter(a => a.daysRemaining <= 0).length;
+    const cleanDone = cleaning.filter(c => c.verified).length;
+    const cleanRate = cleaning.length > 0 ? Math.round((cleanDone / cleaning.length) * 100) : 0;
+    const lotsOk = lots.filter(l => l.status === 'conforme').length;
+    const lotsKo = lots.filter(l => l.status === 'non_conforme').length;
+    return { rate, total, activeAlerts, expired, cleanRate, cleanDone, cleanTotal: cleaning.length, lotsOk, lotsKo };
+  }, [temperatures, dluoAlerts, cleaning, lots]);
 
-  // ── Summary stats ──────────────────────────────────────────────────────────
+  // ─── Handlers ────────────────────────────────────────────────────────────
 
-  const todayReadings = readings.filter(r => {
-    const rDate = r.heure.split(' ')[0];
-    return rDate === today() || true; // In local-only mode, count all
-  });
-
-  const dlcAlerts = useMemo(() => products.filter(p => joursRestants(p.dlc) < 3).length, [products]);
-
-  const cleaningProgress = useMemo(() => {
-    if (cleaning.length === 0) return 0;
-    return Math.round((cleaning.filter(c => c.fait).length / cleaning.length) * 100);
-  }, [cleaning]);
-
-  const dernierControle = useMemo(() => {
-    if (readings.length === 0) return '—';
-    return readings[readings.length - 1].heure;
-  }, [readings]);
-
-  // ── Temperature handlers ───────────────────────────────────────────────────
-
-  function handleAddTemperature() {
-    const temp = parseFloat(tempForm.temperature);
-    if (isNaN(temp)) {
-      showToast('Veuillez entrer une température valide', 'error');
-      return;
-    }
-    const conforme = isTemperatureConforme(tempForm.lieu, temp);
-    const reading: TemperatureReading = {
-      id: genId(),
-      lieu: tempForm.lieu,
-      temperature: temp,
-      heure: `${today()} ${now()}`,
-      conforme,
-      actionCorrective: conforme ? '' : tempForm.actionCorrective,
-    };
-    setReadings(prev => [reading, ...prev]);
-    setShowTempModal(false);
-    setTempForm({ lieu: LOCATIONS[0], temperature: '', actionCorrective: '' });
-    showToast(conforme ? 'Relevé conforme enregistré' : 'Relevé NON conforme enregistré', conforme ? 'success' : 'error');
+  function addTemp() {
+    if (!tempForm.temperature || !tempForm.agent) return;
+    setTemperatures(prev => [{ id: Date.now(), zone: tempForm.zone, temperature: parseFloat(tempForm.temperature), timestamp: new Date().toISOString(), agent: tempForm.agent, notes: tempForm.notes }, ...prev]);
+    setTempForm({ zone: 'frigo', temperature: '', agent: '', notes: '' });
+    setShowTempForm(false);
   }
 
-  // ── DLC handlers ───────────────────────────────────────────────────────────
-
-  function handleAddProduct() {
-    if (!dlcForm.produit || !dlcForm.dlc) {
-      showToast('Veuillez remplir tous les champs obligatoires', 'error');
-      return;
-    }
-    const product: DLCProduct = {
-      id: genId(),
-      produit: dlcForm.produit,
-      dateReception: dlcForm.dateReception,
-      dlc: dlcForm.dlc,
-      type: dlcForm.type,
-    };
-    setProducts(prev => [product, ...prev]);
-    setShowDLCModal(false);
-    setDlcForm({ produit: '', dateReception: today(), dlc: '', type: 'DLC' });
-    showToast('Produit ajouté au suivi DLC', 'success');
+  function addLot() {
+    if (!lotForm.lotNumber || !lotForm.product || !lotForm.supplier) return;
+    setLots(prev => [{ id: Date.now(), ...lotForm, receptionDate: new Date().toISOString().split('T')[0] }, ...prev]);
+    setLotForm({ lotNumber: '', product: '', supplier: '', dlc: '', ddm: '', status: 'en_attente' });
+    setShowLotForm(false);
   }
 
-  // ── Cleaning handlers ──────────────────────────────────────────────────────
-
-  function toggleCleaning(id: number) {
+  function toggleClean(id: number) {
     setCleaning(prev => prev.map(c => {
       if (c.id !== id) return c;
-      const fait = !c.fait;
-      return { ...c, fait, horodatage: fait ? `${today()} ${now()}` : null };
+      const now = new Date();
+      return { ...c, verified: !c.verified, time: !c.verified ? `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}` : '', agent: !c.verified ? 'Moi' : '' };
     }));
   }
 
-  const filteredCleaning = useMemo(() => {
-    if (cleaningFilter === 'all') return cleaning;
-    return cleaning.filter(c => c.frequence === cleaningFilter);
-  }, [cleaning, cleaningFilter]);
+  const filteredLots = useMemo(() => {
+    if (!searchLots) return lots;
+    const q = searchLots.toLowerCase();
+    return lots.filter(l => l.lotNumber.toLowerCase().includes(q) || l.product.toLowerCase().includes(q) || l.supplier.toLowerCase().includes(q));
+  }, [lots, searchLots]);
 
-  // ── Export stub ────────────────────────────────────────────────────────────
-
-  function handleExportPDF() {
-    showToast('Export PDF en cours de préparation...', 'info');
-    // Future: call backend or use jsPDF
-  }
-
-  // ── Temp conformance preview ───────────────────────────────────────────────
-
-  const tempPreviewConforme = tempForm.temperature !== ''
-    ? isTemperatureConforme(tempForm.lieu, parseFloat(tempForm.temperature))
-    : null;
-
-  // ─── Render ────────────────────────────────────────────────────────────────
+  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+    { key: 'dashboard', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
+    { key: 'temperatures', label: 'Températures', icon: <Thermometer className="w-4 h-4" /> },
+    { key: 'lots', label: 'Traçabilité', icon: <Package className="w-4 h-4" /> },
+    { key: 'alertes', label: 'Alertes DLUO', icon: <AlertTriangle className="w-4 h-4" /> },
+    { key: 'nettoyage', label: 'Nettoyage', icon: <SprayCan className="w-4 h-4" /> },
+  ];
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-emerald-600" />
-            HACCP — Sécurité alimentaire
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Suivi des températures, DLC/DLUO et plan de nettoyage
-          </p>
-        </div>
-        <button
-          onClick={handleExportPDF}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-lg transition dark:bg-slate-600 dark:hover:bg-slate-500"
-        >
-          <FileDown className="w-4 h-4" />
-          Exporter PDF
-        </button>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard
-          icon={<Thermometer className="w-5 h-5 text-blue-600" />}
-          label="Relevés du jour"
-          value={String(todayReadings.length)}
-          sub="enregistrés"
-          color="blue"
-        />
-        <SummaryCard
-          icon={<AlertTriangle className="w-5 h-5 text-red-600" />}
-          label="Alertes DLC"
-          value={String(dlcAlerts)}
-          sub="produits < 3 jours"
-          color="red"
-        />
-        <SummaryCard
-          icon={<SprayCan className="w-5 h-5 text-emerald-600" />}
-          label="Nettoyage"
-          value={`${cleaningProgress}%`}
-          sub="complété"
-          color="emerald"
-          progress={cleaningProgress}
-        />
-        <SummaryCard
-          icon={<Clock className="w-5 h-5 text-violet-600" />}
-          label="Dernier contrôle"
-          value={dernierControle}
-          sub=""
-          color="violet"
-        />
+      <div>
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <ShieldCheck className="w-7 h-7 text-emerald-400" />
+          HACCP & Traçabilité
+        </h1>
+        <p className="text-slate-400 mt-1">Sécurité alimentaire, températures, lots et nettoyage</p>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-slate-200 dark:border-slate-700">
-        <nav className="flex gap-6">
-          {([
-            { key: 'temperatures' as TabKey, label: 'Températures', icon: <Thermometer className="w-4 h-4" /> },
-            { key: 'dlc' as TabKey, label: 'DLC / DLUO', icon: <CalendarClock className="w-4 h-4" /> },
-            { key: 'nettoyage' as TabKey, label: 'Plan de nettoyage', icon: <SprayCan className="w-4 h-4" /> },
-          ]).map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === tab.key
-                  ? 'border-emerald-600 text-emerald-700 dark:text-emerald-400 dark:border-emerald-400'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-              }`}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+      <div className="flex gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800 overflow-x-auto">
+        {tabs.map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}>
+            {tab.icon}{tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* Tab Content */}
+      {/* ═══ DASHBOARD ═══ */}
+      {activeTab === 'dashboard' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Conformité */}
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-sm">Conformité températures</span>
+                <Thermometer className="w-5 h-5 text-blue-400" />
+              </div>
+              <div className={`text-3xl font-bold ${stats.rate >= 90 ? 'text-emerald-400' : stats.rate >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{stats.rate}%</div>
+              <div className="text-xs text-slate-500 mt-1">{stats.total} relevés</div>
+              <div className="mt-3 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full ${stats.rate >= 90 ? 'bg-emerald-500' : stats.rate >= 70 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.rate}%` }} />
+              </div>
+            </div>
+            {/* Alertes */}
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-sm">Alertes DLUO</span>
+                <AlertTriangle className="w-5 h-5 text-amber-400" />
+              </div>
+              <div className="text-3xl font-bold text-amber-400">{stats.activeAlerts}</div>
+              <div className="text-xs text-slate-500 mt-1">dont {stats.expired} expiré{stats.expired > 1 ? 's' : ''}</div>
+              {stats.expired > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />Action requise</div>}
+            </div>
+            {/* Nettoyage */}
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-sm">Nettoyage du jour</span>
+                <SprayCan className="w-5 h-5 text-violet-400" />
+              </div>
+              <div className={`text-3xl font-bold ${stats.cleanRate === 100 ? 'text-emerald-400' : stats.cleanRate >= 50 ? 'text-amber-400' : 'text-red-400'}`}>{stats.cleanRate}%</div>
+              <div className="text-xs text-slate-500 mt-1">{stats.cleanDone}/{stats.cleanTotal} zones</div>
+              <div className="mt-3 h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className={`h-full rounded-full ${stats.cleanRate === 100 ? 'bg-emerald-500' : stats.cleanRate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.cleanRate}%` }} />
+              </div>
+            </div>
+            {/* Lots */}
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-slate-400 text-sm">Lots reçus</span>
+                <Package className="w-5 h-5 text-cyan-400" />
+              </div>
+              <div className="text-3xl font-bold text-white">{lots.length}</div>
+              <div className="text-xs text-slate-500 mt-1">{stats.lotsOk} conformes, {stats.lotsKo} non-conforme{stats.lotsKo > 1 ? 's' : ''}</div>
+              {stats.lotsKo > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />{stats.lotsKo} lot(s) à vérifier</div>}
+            </div>
+          </div>
+
+          {/* Recent temps */}
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-blue-400" />Derniers relevés</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                  <th className="text-left py-3 px-3">Zone</th><th className="text-left py-3 px-3">Temp.</th><th className="text-left py-3 px-3">Heure</th><th className="text-left py-3 px-3">Agent</th>
+                </tr></thead>
+                <tbody>{temperatures.slice(0, 6).map(t => {
+                  const c = getTempColor(t.zone, t.temperature);
+                  return (<tr key={t.id} className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <td className="py-2.5 px-3 text-slate-300">{ZONE_LABELS[t.zone]}</td>
+                    <td className="py-2.5 px-3"><span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${TEMP_BADGE[c]}`}>{t.temperature}°C</span></td>
+                    <td className="py-2.5 px-3 text-slate-400">{new Date(t.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td className="py-2.5 px-3 text-slate-400">{t.agent}</td>
+                  </tr>);
+                })}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ TEMPERATURES ═══ */}
       {activeTab === 'temperatures' && (
-        <TemperatureSection
-          readings={readings}
-          onAdd={() => setShowTempModal(true)}
-          onDelete={(id) => {
-            setReadings(prev => prev.filter(r => r.id !== id));
-            showToast('Relevé supprimé', 'info');
-          }}
-        />
-      )}
-
-      {activeTab === 'dlc' && (
-        <DLCSection
-          products={products}
-          onAdd={() => setShowDLCModal(true)}
-          onDelete={(id) => {
-            setProducts(prev => prev.filter(p => p.id !== id));
-            showToast('Produit retiré du suivi', 'info');
-          }}
-        />
-      )}
-
-      {activeTab === 'nettoyage' && (
-        <CleaningSection
-          tasks={filteredCleaning}
-          filter={cleaningFilter}
-          onFilterChange={setCleaningFilter}
-          onToggle={toggleCleaning}
-          progress={cleaningProgress}
-        />
-      )}
-
-      {/* Temperature Modal */}
-      <Modal isOpen={showTempModal} onClose={() => setShowTempModal(false)} title="Nouveau relevé de température">
-        <div className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Lieu</label>
-            <select
-              value={tempForm.lieu}
-              onChange={e => setTempForm(f => ({ ...f, lieu: e.target.value }))}
-              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-            >
-              {LOCATIONS.map(loc => <option key={loc} value={loc}>{loc}</option>)}
-            </select>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Plage conforme : {temperatureRange(tempForm.lieu)}
-            </p>
+        <div className="space-y-4">
+          {/* Legend */}
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+            <h3 className="text-sm font-semibold text-white mb-3">Zones de danger réglementaires</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 mt-0.5 flex-shrink-0" /><div><div className="text-emerald-400 font-medium">Conforme</div><div className="text-slate-500">Frigo &lt;4°C | Congél. &le;-18°C | Chaud &ge;63°C</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-amber-500 mt-0.5 flex-shrink-0" /><div><div className="text-amber-400 font-medium">Attention</div><div className="text-slate-500">Frigo 4-7°C | Congél. -18 à -15°C | Chaud 55-63°C</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-red-500 mt-0.5 flex-shrink-0" /><div><div className="text-red-400 font-medium">Danger</div><div className="text-slate-500">Frigo &gt;7°C | Congél. &gt;-15°C | Chaud &lt;55°C</div></div></div>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Température (°C)</label>
-            <input
-              type="number"
-              step="0.1"
-              value={tempForm.temperature}
-              onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))}
-              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-              placeholder="ex: 3.5"
-            />
-            {tempPreviewConforme !== null && (
-              <p className={`text-xs mt-1 font-medium ${tempPreviewConforme ? 'text-green-600' : 'text-red-600'}`}>
-                {tempPreviewConforme ? '✓ Conforme' : '✗ Non conforme — action corrective requise'}
-              </p>
-            )}
+
+          <div className="flex justify-end">
+            <button onClick={() => setShowTempForm(!showTempForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors">
+              <Plus className="w-4 h-4" />Nouveau relevé
+            </button>
           </div>
-          {tempPreviewConforme === false && (
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Action corrective</label>
-              <textarea
-                value={tempForm.actionCorrective}
-                onChange={e => setTempForm(f => ({ ...f, actionCorrective: e.target.value }))}
-                rows={2}
-                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-                placeholder="Décrire l'action corrective prise..."
-              />
+
+          {showTempForm && (
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-4">
+              <h3 className="text-white font-semibold">Enregistrer un relevé</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div><label className="block text-xs text-slate-400 mb-1">Zone</label>
+                  <select value={tempForm.zone} onChange={e => setTempForm(f => ({ ...f, zone: e.target.value as TemperatureRecord['zone'] }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+                    {Object.entries(ZONE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  </select></div>
+                <div><label className="block text-xs text-slate-400 mb-1">Température (°C)</label>
+                  <input type="number" step="0.1" value={tempForm.temperature} onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))} placeholder="Ex: 3.5" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">Agent</label>
+                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder="Votre nom" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">Notes</label>
+                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder="Optionnel" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" /></div>
+              </div>
+              <div className="flex gap-3">
+                <button onClick={addTemp} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
+                <button onClick={() => setShowTempForm(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-colors">Annuler</button>
+              </div>
             </div>
           )}
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              onClick={() => setShowTempModal(false)}
-              className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={handleAddTemperature}
-              className="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition"
-            >
-              Enregistrer
-            </button>
-          </div>
-        </div>
-      </Modal>
 
-      {/* DLC Modal */}
-      <Modal isOpen={showDLCModal} onClose={() => setShowDLCModal(false)} title="Ajouter un produit au suivi DLC">
-        <div className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Produit</label>
-            <input
-              type="text"
-              value={dlcForm.produit}
-              onChange={e => setDlcForm(f => ({ ...f, produit: e.target.value }))}
-              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-              placeholder="ex: Crème fraîche"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date de réception</label>
-              <input
-                type="date"
-                value={dlcForm.dateReception}
-                onChange={e => setDlcForm(f => ({ ...f, dateReception: e.target.value }))}
-                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Type</label>
-              <select
-                value={dlcForm.type}
-                onChange={e => setDlcForm(f => ({ ...f, type: e.target.value as 'DLC' | 'DLUO' }))}
-                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-              >
-                <option value="DLC">DLC (Date Limite de Consommation)</option>
-                <option value="DLUO">DLUO (Date de Durabilité Minimale)</option>
-              </select>
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-800/50">
+                  <th className="text-left py-3 px-4">Zone</th><th className="text-left py-3 px-4">Temp.</th><th className="text-left py-3 px-4">Statut</th><th className="text-left py-3 px-4">Date & Heure</th><th className="text-left py-3 px-4">Agent</th><th className="text-left py-3 px-4">Notes</th>
+                </tr></thead>
+                <tbody>{temperatures.map(t => {
+                  const c = getTempColor(t.zone, t.temperature);
+                  return (<tr key={t.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <td className="py-3 px-4 text-slate-300 font-medium">{ZONE_LABELS[t.zone]}</td>
+                    <td className={`py-3 px-4 font-bold ${TEMP_TEXT[c]}`}>{t.temperature}°C</td>
+                    <td className="py-3 px-4"><span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${TEMP_BADGE[c]}`}>{TEMP_STATUS[c]}</span></td>
+                    <td className="py-3 px-4 text-slate-400">{new Date(t.timestamp).toLocaleDateString('fr-FR')} {new Date(t.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td className="py-3 px-4 text-slate-400">{t.agent}</td>
+                    <td className="py-3 px-4 text-slate-500">{t.notes || '-'}</td>
+                  </tr>);
+                })}</tbody>
+              </table>
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date limite</label>
-            <input
-              type="date"
-              value={dlcForm.dlc}
-              onChange={e => setDlcForm(f => ({ ...f, dlc: e.target.value }))}
-              className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-700 text-slate-800 dark:text-white"
-            />
-          </div>
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              onClick={() => setShowDLCModal(false)}
-              className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
-            >
-              Annuler
-            </button>
-            <button
-              onClick={handleAddProduct}
-              className="px-4 py-2 text-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition"
-            >
-              Ajouter
-            </button>
-          </div>
-        </div>
-      </Modal>
-    </div>
-  );
-}
-
-// ─── Sub-components ──────────────────────────────────────────────────────────
-
-function SummaryCard({ icon, label, value, sub, color, progress }: {
-  icon: React.ReactNode; label: string; value: string; sub: string; color: string; progress?: number;
-}) {
-  return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-      <div className="flex items-center gap-3 mb-2">
-        <div className={`p-2 rounded-lg bg-${color}-50 dark:bg-${color}-900/20`}>{icon}</div>
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{label}</span>
-      </div>
-      <p className="text-2xl font-bold text-slate-800 dark:text-white">{value}</p>
-      {sub && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{sub}</p>}
-      {progress !== undefined && (
-        <div className="mt-2 w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-          <div
-            className="h-2 rounded-full bg-emerald-500 transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
         </div>
       )}
-    </div>
-  );
-}
 
-function TemperatureSection({ readings, onAdd, onDelete }: {
-  readings: TemperatureReading[]; onAdd: () => void; onDelete: (id: number) => void;
-}) {
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-          <Thermometer className="w-5 h-5 text-blue-600" />
-          Relevés de température
-        </h2>
-        <button
-          onClick={onAdd}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg transition"
-        >
-          <Plus className="w-4 h-4" />
-          Nouveau relevé
-        </button>
-      </div>
+      {/* ═══ TRACABILITE ═══ */}
+      {activeTab === 'lots' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3 justify-between">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder="Rechercher un lot, produit, fournisseur..." className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-slate-600" />
+            </div>
+            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />Nouveau lot</button>
+          </div>
 
-      {readings.length === 0 ? (
-        <EmptyState message="Aucun relevé de température enregistré aujourd'hui." />
-      ) : (
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-700/50 text-left">
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Lieu</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Température</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Plage</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Heure</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Conforme</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Action corrective</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                {readings.map(r => (
-                  <tr key={r.id} className={`${r.conforme ? '' : 'bg-red-50/50 dark:bg-red-900/10'}`}>
-                    <td className="px-4 py-3 font-medium text-slate-800 dark:text-white">{r.lieu}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 font-mono font-semibold ${
-                        r.conforme ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'
-                      }`}>
-                        {r.temperature.toFixed(1)}°C
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">{temperatureRange(r.lieu)}</td>
-                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{r.heure}</td>
-                    <td className="px-4 py-3">
-                      {r.conforme ? (
-                        <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full text-xs font-medium">
-                          <CheckCircle2 className="w-3 h-3" /> Oui
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded-full text-xs font-medium">
-                          <XCircle className="w-3 h-3" /> Non
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300 max-w-[200px] truncate">
-                      {r.actionCorrective || '—'}
-                    </td>
-                    <td className="px-4 py-3">
-                      <button onClick={() => onDelete(r.id)} className="text-slate-400 hover:text-red-500 transition">
-                        <Trash2 className="w-4 h-4" />
+          {showLotForm && (
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-4">
+              <h3 className="text-white font-semibold">Enregistrer un lot</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div><label className="block text-xs text-slate-400 mb-1">N° de lot</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">Produit</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder="Nom du produit" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">Fournisseur</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder="Fournisseur" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-600" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">DLC</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">DDM (optionnel)</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">Statut</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"><option value="en_attente">En attente</option><option value="conforme">Conforme</option><option value="non_conforme">Non conforme</option></select></div>
+              </div>
+              <div className="flex gap-3">
+                <button onClick={addLot} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
+                <button onClick={() => setShowLotForm(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-colors">Annuler</button>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-800/50">
+                  <th className="text-left py-3 px-4">N° Lot</th><th className="text-left py-3 px-4">Produit</th><th className="text-left py-3 px-4">Fournisseur</th><th className="text-left py-3 px-4">Réception</th><th className="text-left py-3 px-4">DLC</th><th className="text-left py-3 px-4">DDM</th><th className="text-left py-3 px-4">Statut</th>
+                </tr></thead>
+                <tbody>{filteredLots.map(l => (
+                  <tr key={l.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <td className="py-3 px-4 text-blue-400 font-mono text-xs font-semibold">{l.lotNumber}</td>
+                    <td className="py-3 px-4 text-white font-medium">{l.product}</td>
+                    <td className="py-3 px-4 text-slate-400">{l.supplier}</td>
+                    <td className="py-3 px-4 text-slate-400">{new Date(l.receptionDate).toLocaleDateString('fr-FR')}</td>
+                    <td className="py-3 px-4 text-slate-300">{l.dlc ? new Date(l.dlc).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td className="py-3 px-4 text-slate-500">{l.ddm ? new Date(l.ddm).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td className="py-3 px-4"><span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${STATUS_BADGE[l.status]}`}>{STATUS_LABELS[l.status]}</span></td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+            {filteredLots.length === 0 && <div className="text-center py-8 text-slate-500">Aucun lot trouvé</div>}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ ALERTES DLUO ═══ */}
+      {activeTab === 'alertes' && (
+        <div className="space-y-4">
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+            <h3 className="text-sm font-semibold text-white mb-3">Légende</h3>
+            <div className="flex flex-wrap gap-4 text-xs">
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500" /><span className="text-slate-400">Expiré ou J-1</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-slate-400">J-2 à J-3</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-slate-400">J-4+</span></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {dluoAlerts.map(a => (
+              <div key={a.id} className={`bg-slate-900/50 border rounded-2xl p-5 transition-all ${a.daysRemaining <= 1 ? 'border-red-700/50 shadow-[0_0_15px_rgba(220,38,38,0.1)]' : a.daysRemaining <= 3 ? 'border-amber-700/50' : 'border-slate-800'}`}>
+                <div className="flex items-start justify-between mb-3">
+                  <div><h4 className="text-white font-semibold">{a.product}</h4><p className="text-xs text-slate-500 font-mono">{a.lotNumber}</p></div>
+                  <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getDluoBadge(a.daysRemaining)}`}>{getDluoLabel(a.daysRemaining)}</span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between"><span className="text-slate-500">DLC</span><span className="text-slate-300">{new Date(a.dlc).toLocaleDateString('fr-FR')}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-500">Quantité</span><span className="text-slate-300">{a.quantity}</span></div>
+                </div>
+                {a.daysRemaining <= 1 && (
+                  <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-3 py-2 rounded-lg">
+                    <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                    {a.daysRemaining <= 0 ? 'Produit expiré — retirer immédiatement' : 'À consommer ou retirer aujourd\'hui'}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ NETTOYAGE ═══ */}
+      {activeTab === 'nettoyage' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-white font-semibold flex items-center gap-2"><SprayCan className="w-5 h-5 text-violet-400" />Registre de nettoyage — {new Date().toLocaleDateString('fr-FR')}</h3>
+            <div className="text-sm text-slate-400">{cleaning.filter(c => c.verified).length}/{cleaning.length} zones</div>
+          </div>
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead><tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-800/50">
+                  <th className="text-left py-3 px-4 w-8">Fait</th><th className="text-left py-3 px-4">Zone</th><th className="text-left py-3 px-4">Heure</th><th className="text-left py-3 px-4">Agent</th><th className="text-left py-3 px-4">Statut</th>
+                </tr></thead>
+                <tbody>{cleaning.map(c => (
+                  <tr key={c.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+                    <td className="py-3 px-4">
+                      <button onClick={() => toggleClean(c.id)} className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${c.verified ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-600 hover:border-slate-500'}`}>
+                        {c.verified && <CheckCircle2 className="w-4 h-4" />}
                       </button>
                     </td>
+                    <td className="py-3 px-4 text-white font-medium">{c.zone}</td>
+                    <td className="py-3 px-4 text-slate-400">{c.time || '-'}</td>
+                    <td className="py-3 px-4 text-slate-400">{c.agent || '-'}</td>
+                    <td className="py-3 px-4">
+                      {c.verified
+                        ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-emerald-900/40 text-emerald-300"><CheckCircle2 className="w-3 h-3" />Nettoyé</span>
+                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400"><Clock className="w-3 h-3" />En attente</span>}
+                    </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function DLCSection({ products, onAdd, onDelete }: {
-  products: DLCProduct[]; onAdd: () => void; onDelete: (id: number) => void;
-}) {
-  const sorted = useMemo(() =>
-    [...products].sort((a, b) => joursRestants(a.dlc) - joursRestants(b.dlc)),
-    [products]
-  );
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-          <CalendarClock className="w-5 h-5 text-orange-600" />
-          {"Suivi DLC / DLUO"}
-        </h2>
-        <button
-          onClick={onAdd}
-          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg transition"
-        >
-          <Plus className="w-4 h-4" />
-          Ajouter un produit
-        </button>
-      </div>
-
-      {sorted.length === 0 ? (
-        <EmptyState message="Aucun produit suivi. Ajoutez des produits pour surveiller leurs dates limites." />
-      ) : (
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-700/50 text-left">
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Produit</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Type</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Réception</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Date limite</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Jours restants</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300">Statut</th>
-                  <th className="px-4 py-3 font-medium text-slate-600 dark:text-slate-300"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                {sorted.map(p => {
-                  const jours = joursRestants(p.dlc);
-                  return (
-                    <tr key={p.id} className={jours < 0 ? 'opacity-60' : ''}>
-                      <td className="px-4 py-3 font-medium text-slate-800 dark:text-white">{p.produit}</td>
-                      <td className="px-4 py-3">
-                        <span className="text-xs font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-                          {p.type}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{p.dateReception}</td>
-                      <td className="px-4 py-3 text-slate-600 dark:text-slate-300 font-mono">{p.dlc}</td>
-                      <td className="px-4 py-3 font-semibold">
-                        <span className={jours < 0 ? 'text-gray-500' : jours < 3 ? 'text-red-600 dark:text-red-400' : jours <= 7 ? 'text-orange-600 dark:text-orange-400' : 'text-green-600 dark:text-green-400'}>
-                          {jours < 0 ? `${Math.abs(jours)}j expiré` : `${jours}j`}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${dlcColor(jours)}`}>
-                          {dlcLabel(jours)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <button onClick={() => onDelete(p.id)} className="text-slate-400 hover:text-red-500 transition">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Legend */}
-      <div className="flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> &gt; 7 jours</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> 3–7 jours</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span> &lt; 3 jours</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-gray-800 inline-block"></span> Expiré</span>
-      </div>
-    </div>
-  );
-}
-
-function CleaningSection({ tasks, filter, onFilterChange, onToggle, progress }: {
-  tasks: CleaningTask[];
-  filter: 'all' | 'quotidien' | 'hebdomadaire' | 'mensuel';
-  onFilterChange: (f: 'all' | 'quotidien' | 'hebdomadaire' | 'mensuel') => void;
-  onToggle: (id: number) => void;
-  progress: number;
-}) {
-  const zones = useMemo(() => {
-    const map = new Map<string, CleaningTask[]>();
-    tasks.forEach(t => {
-      const list = map.get(t.zone) || [];
-      list.push(t);
-      map.set(t.zone, list);
-    });
-    return Array.from(map.entries());
-  }, [tasks]);
-
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2">
-          <ClipboardCheck className="w-5 h-5 text-emerald-600" />
-          Plan de nettoyage
-        </h2>
-        <div className="flex items-center gap-2">
-          {(['all', 'quotidien', 'hebdomadaire', 'mensuel'] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => onFilterChange(f)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition ${
-                filter === f
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-              }`}
-            >
-              {f === 'all' ? 'Tout' : f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Global progress */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Progression globale</span>
-          <span className={`text-sm font-bold ${
-            progress === 100 ? 'text-emerald-600' : progress >= 50 ? 'text-orange-600' : 'text-red-600'
-          }`}>{progress}%</span>
-        </div>
-        <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
-          <div
-            className={`h-3 rounded-full transition-all duration-500 ${
-              progress === 100 ? 'bg-emerald-500' : progress >= 50 ? 'bg-orange-500' : 'bg-red-500'
-            }`}
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Tasks by zone */}
-      <div className="space-y-3">
-        {zones.map(([zone, zoneTasks]) => {
-          const done = zoneTasks.filter(t => t.fait).length;
-          return (
-            <div key={zone} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-700/50">
-                <span className="font-medium text-slate-800 dark:text-white text-sm">{zone}</span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">
-                  {done}/{zoneTasks.length} terminé{done > 1 ? 's' : ''}
-                </span>
-              </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                {zoneTasks.map(task => (
-                  <label
-                    key={task.id}
-                    className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 transition"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={task.fait}
-                      onChange={() => onToggle(task.id)}
-                      className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-emerald-600 focus:ring-emerald-500"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm ${task.fait ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-white'}`}>
-                        {task.tache}
-                      </p>
-                      {task.horodatage && (
-                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-                          Fait le {task.horodatage}
-                        </p>
-                      )}
-                    </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      task.frequence === 'quotidien'
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                        : task.frequence === 'hebdomadaire'
-                        ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                        : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                    }`}>
-                      {task.frequence}
-                    </span>
-                  </label>
-                ))}
-              </div>
+                ))}</tbody>
+              </table>
             </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function EmptyState({ message }: { message: string }) {
-  return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-12 text-center">
-      <ShieldCheck className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-      <p className="text-slate-500 dark:text-slate-400">{message}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

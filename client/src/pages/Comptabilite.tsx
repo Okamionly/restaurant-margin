@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Calculator, TrendingUp, TrendingDown, Receipt, PieChart as PieChartIcon,
   BarChart3, Download, FileText, Printer, Plus, Filter, Calendar,
   Target, Gauge, ArrowUpRight, ArrowDownRight, Euro, Search,
-  ChevronDown, ChevronUp, X
+  ChevronDown, ChevronUp, X, Trash2, Loader2
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, LineChart, Line,
@@ -14,11 +14,63 @@ import Modal from '../components/Modal';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-const API = '';
+const API_BASE = '/api/comptabilite';
 
-function authHeaders(): Record<string, string> {
+function apiHeaders(): Record<string, string> {
   const token = localStorage.getItem('token');
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
+}
+
+// API entry shape from backend
+interface ApiEntry {
+  id: number;
+  date: string;
+  type: 'revenue' | 'expense';
+  category: string;
+  label: string;
+  amount: number;
+  tvaRate: number;
+  tvaAmount: number;
+  paymentMode?: string | null;
+  reference?: string | null;
+}
+
+// Convert API entries to the UI SaleEntry / ExpenseEntry shapes
+function apiToSales(entries: ApiEntry[]): SaleEntry[] {
+  return entries
+    .filter(e => e.type === 'revenue')
+    .map(e => ({
+      id: e.id,
+      date: e.date,
+      invoiceNum: e.reference || `FC-${e.id}`,
+      client: '',
+      description: e.label,
+      montantHT: e.amount,
+      tva: e.tvaAmount,
+      ttc: e.amount + e.tvaAmount,
+      paiement: (e.paymentMode as PaymentMode) || 'CB',
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function apiToExpenses(entries: ApiEntry[]): ExpenseEntry[] {
+  return entries
+    .filter(e => e.type === 'expense')
+    .map(e => ({
+      id: e.id,
+      date: e.date,
+      fournisseur: e.label,
+      categorie: e.category,
+      montantHT: e.amount,
+      tva: e.tvaAmount,
+      ttc: e.amount + e.tvaAmount,
+      description: e.category + ' - ' + e.label,
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
 }
 
 type TabId = 'journal' | 'charges' | 'ratios' | 'export';
@@ -250,10 +302,67 @@ const EXPENSE_CATEGORIES = [
 export default function Comptabilite() {
   const { showToast } = useToast();
 
-  // Data
-  const [monthlyData] = useState(() => generateMonthlyData());
-  const [sales] = useState(() => generateSalesData(monthlyData));
-  const [expenses, setExpenses] = useState(() => generateExpensesData(monthlyData));
+  // Data — mock as fallback, replaced by API data on load
+  const [mockMonthly] = useState(() => generateMonthlyData());
+  const [monthlyData, setMonthlyData] = useState(() => generateMonthlyData());
+  const [sales, setSales] = useState<SaleEntry[]>(() => generateSalesData(mockMonthly));
+  const [expenses, setExpenses] = useState<ExpenseEntry[]>(() => generateExpensesData(mockMonthly));
+  const [loading, setLoading] = useState(true);
+
+  // Fetch all entries from API
+  const fetchEntries = useCallback(async () => {
+    try {
+      const res = await fetch(API_BASE, { headers: apiHeaders() });
+      if (!res.ok) throw new Error('API error');
+      const data: ApiEntry[] = await res.json();
+      if (data.length > 0) {
+        setSales(apiToSales(data));
+        setExpenses(apiToExpenses(data));
+
+        // Rebuild monthlyData from real entries
+        const monthMap: Record<string, MonthlyData> = {};
+        for (const e of data) {
+          const mois = e.date.substring(0, 7);
+          if (!monthMap[mois]) {
+            const [y, m] = mois.split('-');
+            const monthNames: Record<string, string> = {
+              '01': 'Jan', '02': 'Fév', '03': 'Mar', '04': 'Avr', '05': 'Mai', '06': 'Juin',
+              '07': 'Juil', '08': 'Août', '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Déc',
+            };
+            monthMap[mois] = {
+              mois, moisLabel: `${monthNames[m] || m} ${y}`,
+              ca: 0, charges: 0, matiere: 0, personnel: 0, loyer: 0, energie: 0, divers: 0,
+              tva55: 0, tva10: 0, tva20: 0,
+            };
+          }
+          const md = monthMap[mois];
+          if (e.type === 'revenue') {
+            md.ca += e.amount;
+            if (e.tvaRate <= 6) md.tva55 += e.amount;
+            else if (e.tvaRate <= 11) md.tva10 += e.amount;
+            else md.tva20 += e.amount;
+          } else {
+            md.charges += e.amount;
+            const cat = e.category.toLowerCase();
+            if (cat.includes('matière') || cat.includes('matiere')) md.matiere += e.amount;
+            else if (cat.includes('personnel') || cat.includes('salaire')) md.personnel += e.amount;
+            else if (cat.includes('loyer')) md.loyer += e.amount;
+            else if (cat.includes('énergie') || cat.includes('energie')) md.energie += e.amount;
+            else md.divers += e.amount;
+          }
+        }
+        const sorted = Object.values(monthMap).sort((a, b) => a.mois.localeCompare(b.mois));
+        if (sorted.length > 0) setMonthlyData(sorted);
+      }
+      // If data is empty, keep mock data as fallback
+    } catch {
+      // Keep mock data as fallback — no toast to avoid noise
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
   // UI state
   const [activeTab, setActiveTab] = useState<TabId>('journal');
@@ -406,7 +515,7 @@ export default function Comptabilite() {
 
   // ─── Handlers ──────────────────────────────────────────────────────────
 
-  function handleAddExpense() {
+  async function handleAddExpense() {
     if (!newExpense.fournisseur || !newExpense.montantHT) {
       showToast('Veuillez remplir tous les champs obligatoires', 'error');
       return;
@@ -416,29 +525,110 @@ export default function Comptabilite() {
       showToast('Montant invalide', 'error');
       return;
     }
-    const tvaRate = parseFloat(newExpense.tva) / 100;
-    const tva = Math.round(ht * tvaRate);
-    const entry: ExpenseEntry = {
-      id: Date.now(),
-      date: newExpense.date,
-      fournisseur: newExpense.fournisseur,
-      categorie: newExpense.categorie,
-      montantHT: ht,
-      tva,
-      ttc: ht + tva,
-      description: newExpense.description,
-    };
-    setExpenses((prev) => [entry, ...prev]);
-    setShowExpenseModal(false);
-    setNewExpense({ date: new Date().toISOString().slice(0, 10), fournisseur: '', categorie: EXPENSE_CATEGORIES[0], montantHT: '', tva: '20', description: '' });
-    showToast('Dépense ajoutée avec succès', 'success');
+    const tvaRateNum = parseFloat(newExpense.tva);
+
+    try {
+      const res = await fetch(API_BASE, {
+        method: 'POST',
+        headers: apiHeaders(),
+        body: JSON.stringify({
+          date: newExpense.date,
+          type: 'expense',
+          category: newExpense.categorie,
+          label: newExpense.fournisseur,
+          amount: ht,
+          tvaRate: tvaRateNum,
+        }),
+      });
+      if (!res.ok) throw new Error('API error');
+      const created: ApiEntry = await res.json();
+      const entry: ExpenseEntry = {
+        id: created.id,
+        date: created.date,
+        fournisseur: created.label,
+        categorie: created.category,
+        montantHT: created.amount,
+        tva: created.tvaAmount,
+        ttc: created.amount + created.tvaAmount,
+        description: newExpense.description || `${created.category} - ${created.label}`,
+      };
+      setExpenses((prev) => [entry, ...prev]);
+      setShowExpenseModal(false);
+      setNewExpense({ date: new Date().toISOString().slice(0, 10), fournisseur: '', categorie: EXPENSE_CATEGORIES[0], montantHT: '', tva: '20', description: '' });
+      showToast('Dépense ajoutée avec succès', 'success');
+    } catch {
+      // Fallback to local-only if API fails
+      const tva = Math.round(ht * tvaRateNum / 100);
+      const entry: ExpenseEntry = {
+        id: Date.now(),
+        date: newExpense.date,
+        fournisseur: newExpense.fournisseur,
+        categorie: newExpense.categorie,
+        montantHT: ht,
+        tva,
+        ttc: ht + tva,
+        description: newExpense.description,
+      };
+      setExpenses((prev) => [entry, ...prev]);
+      setShowExpenseModal(false);
+      setNewExpense({ date: new Date().toISOString().slice(0, 10), fournisseur: '', categorie: EXPENSE_CATEGORIES[0], montantHT: '', tva: '20', description: '' });
+      showToast('Dépense ajoutée localement (hors-ligne)', 'info');
+    }
   }
 
-  function handleExportFEC() {
-    showToast('Export FEC généré — fichier téléchargé', 'success');
+  async function handleDeleteExpense(id: number) {
+    try {
+      const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE', headers: apiHeaders() });
+      if (!res.ok) throw new Error('API error');
+    } catch {
+      // silent — remove locally anyway
+    }
+    setExpenses((prev) => prev.filter((e) => e.id !== id));
+    showToast('Dépense supprimée', 'success');
+  }
+
+  async function handleExportFEC() {
+    try {
+      const h = apiHeaders();
+      // Remove Content-Type for download
+      delete h['Content-Type'];
+      const res = await fetch(`${API_BASE}/export/fec`, { headers: h });
+      if (!res.ok) throw new Error('Export FEC failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'FEC.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Export FEC téléchargé', 'success');
+    } catch {
+      showToast('Erreur lors de l\'export FEC', 'error');
+    }
   }
 
   function handleExportCSV(target: string) {
+    // Build CSV from current sales + expenses data
+    const rows: string[] = [];
+    rows.push('Date;Type;Catégorie;Libellé;Montant HT;TVA;TTC;Paiement');
+    for (const s of sales) {
+      rows.push(`${s.date};Vente;Service;${s.description};${s.montantHT};${s.tva};${s.ttc};${s.paiement}`);
+    }
+    for (const e of expenses) {
+      rows.push(`${e.date};Charge;${e.categorie};${e.fournisseur};${e.montantHT};${e.tva};${e.ttc};`);
+    }
+    const csvContent = '\uFEFF' + rows.join('\n'); // BOM for Excel
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `export_${target.toLowerCase()}_${selectedMonth}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
     showToast(`Export CSV pour ${target} téléchargé`, 'success');
   }
 
@@ -491,6 +681,12 @@ export default function Comptabilite() {
 
   return (
     <div className="space-y-6">
+      {loading && (
+        <div className="flex items-center justify-center py-4 text-slate-400">
+          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+          Chargement des données...
+        </div>
+      )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -839,6 +1035,7 @@ export default function Comptabilite() {
                     <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">TVA</th>
                     <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">TTC</th>
                     <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Description</th>
+                    <th className="py-2.5 px-3 w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -855,6 +1052,15 @@ export default function Comptabilite() {
                       <td className="py-2 px-3 text-right text-blue-600 dark:text-blue-400">{fmt(e.tva)}</td>
                       <td className="py-2 px-3 text-right font-medium text-slate-900 dark:text-white">{fmt(e.ttc)}</td>
                       <td className="py-2 px-3 text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{e.description}</td>
+                      <td className="py-2 px-3">
+                        <button
+                          onClick={() => handleDeleteExpense(e.id)}
+                          className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

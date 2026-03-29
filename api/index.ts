@@ -1017,6 +1017,232 @@ app.delete('/api/devis/:id', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur suppression devis' }); }
 });
 
+// ============ COMPTABILITE ============
+app.get('/api/comptabilite/summary', authMiddleware, async (req: any, res) => {
+  try {
+    const { from, to } = req.query;
+    const where: any = { restaurantId: 1 };
+    if (from || to) {
+      where.date = {};
+      if (from) where.date.gte = String(from);
+      if (to) where.date.lte = String(to);
+    }
+    const entries = await prisma.financialEntry.findMany({ where });
+    const monthly: Record<string, { month: string; totalRevenue: number; totalExpenses: number; profit: number; byCategory: Record<string, number> }> = {};
+    for (const entry of entries) {
+      const month = entry.date.substring(0, 7);
+      if (!monthly[month]) monthly[month] = { month, totalRevenue: 0, totalExpenses: 0, profit: 0, byCategory: {} };
+      const m = monthly[month];
+      if (entry.type === 'revenue') m.totalRevenue += entry.amount;
+      else m.totalExpenses += entry.amount;
+      m.byCategory[entry.category] = (m.byCategory[entry.category] || 0) + entry.amount;
+    }
+    for (const m of Object.values(monthly)) m.profit = m.totalRevenue - m.totalExpenses;
+    const summary = Object.values(monthly).sort((a, b) => b.month.localeCompare(a.month));
+    res.json(summary);
+  } catch { res.status(500).json({ error: 'Erreur calcul résumé' }); }
+});
+
+app.get('/api/comptabilite/export/fec', authMiddleware, async (req: any, res) => {
+  try {
+    const { from, to } = req.query;
+    const where: any = { restaurantId: 1 };
+    if (from || to) {
+      where.date = {};
+      if (from) where.date.gte = String(from);
+      if (to) where.date.lte = String(to);
+    }
+    const entries = await prisma.financialEntry.findMany({ where, orderBy: { date: 'asc' } });
+    const header = ['JournalCode', 'JournalLib', 'EcritureNum', 'EcritureDate', 'CompteNum', 'CompteLib', 'CompAuxNum', 'CompAuxLib', 'PieceRef', 'PieceDate', 'EcritureLib', 'Debit', 'Credit', 'EcritureLet', 'DateLet', 'ValidDate', 'Montantdevise', 'Idevise'].join('\t');
+    const lines = entries.map((entry: any, index: number) => {
+      const journalCode = entry.type === 'revenue' ? 'VE' : 'AC';
+      const journalLib = entry.type === 'revenue' ? 'Ventes' : 'Achats';
+      const ecritureNum = String(index + 1).padStart(6, '0');
+      const ecritureDate = entry.date.replace(/-/g, '');
+      const compteNum = entry.type === 'revenue' ? '701000' : '601000';
+      const debit = entry.type === 'expense' ? entry.amount.toFixed(2) : '0.00';
+      const credit = entry.type === 'revenue' ? entry.amount.toFixed(2) : '0.00';
+      const pieceRef = entry.reference || '';
+      return [journalCode, journalLib, ecritureNum, ecritureDate, compteNum, entry.category, '', '', pieceRef, ecritureDate, entry.label, debit, credit, '', '', ecritureDate, '', 'EUR'].join('\t');
+    });
+    const fecContent = [header, ...lines].join('\n');
+    res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="FEC.txt"');
+    res.send(fecContent);
+  } catch { res.status(500).json({ error: 'Erreur export FEC' }); }
+});
+
+app.get('/api/comptabilite', authMiddleware, async (req: any, res) => {
+  try {
+    const { from, to, type } = req.query;
+    const where: any = { restaurantId: 1 };
+    if (from || to) {
+      where.date = {};
+      if (from) where.date.gte = String(from);
+      if (to) where.date.lte = String(to);
+    }
+    if (type) where.type = String(type);
+    const entries = await prisma.financialEntry.findMany({ where, orderBy: { date: 'desc' } });
+    res.json(entries);
+  } catch { res.status(500).json({ error: 'Erreur récupération écritures' }); }
+});
+
+app.post('/api/comptabilite', authMiddleware, async (req: any, res) => {
+  try {
+    const { date, type, category, label, amount, tvaRate, paymentMode, reference } = req.body;
+    if (!date || !type || !category || !label || amount === undefined) return res.status(400).json({ error: 'Champs requis : date, type, category, label, amount' });
+    if (!['revenue', 'expense'].includes(type)) return res.status(400).json({ error: 'Type doit être "revenue" ou "expense"' });
+    const rate = tvaRate !== undefined ? tvaRate : 20;
+    const tvaAmount = amount * rate / 100;
+    const entry = await prisma.financialEntry.create({
+      data: { date, type, category, label, amount, tvaRate: rate, tvaAmount, paymentMode: paymentMode || null, reference: reference || null, restaurantId: 1 },
+    });
+    res.status(201).json(entry);
+  } catch { res.status(500).json({ error: 'Erreur création écriture' }); }
+});
+
+app.put('/api/comptabilite/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const existing = await prisma.financialEntry.findFirst({ where: { id, restaurantId: 1 } });
+    if (!existing) return res.status(404).json({ error: 'Écriture non trouvée' });
+    const { date, type, category, label, amount, tvaRate, paymentMode, reference } = req.body;
+    const updatedAmount = amount !== undefined ? amount : existing.amount;
+    const updatedRate = tvaRate !== undefined ? tvaRate : existing.tvaRate;
+    const tvaAmount = updatedAmount * updatedRate / 100;
+    const entry = await prisma.financialEntry.update({
+      where: { id },
+      data: {
+        ...(date !== undefined && { date }), ...(type !== undefined && { type }),
+        ...(category !== undefined && { category }), ...(label !== undefined && { label }),
+        ...(amount !== undefined && { amount }), tvaRate: updatedRate, tvaAmount,
+        ...(paymentMode !== undefined && { paymentMode }), ...(reference !== undefined && { reference }),
+      },
+    });
+    res.json(entry);
+  } catch { res.status(500).json({ error: 'Erreur mise à jour écriture' }); }
+});
+
+app.delete('/api/comptabilite/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const existing = await prisma.financialEntry.findFirst({ where: { id, restaurantId: 1 } });
+    if (!existing) return res.status(404).json({ error: 'Écriture non trouvée' });
+    await prisma.financialEntry.delete({ where: { id } });
+    res.json({ success: true });
+  } catch { res.status(500).json({ error: 'Erreur suppression écriture' }); }
+});
+
+// ============ WASTE ============
+app.get('/api/waste/summary', authMiddleware, async (_req: any, res) => {
+  try {
+    const restaurantId = 1;
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const currentMonthStart = `${currentMonth}-01`;
+    const currentMonthEnd = `${currentMonth}-31`;
+    const thisMonthLogs = await prisma.wasteLog.findMany({
+      where: { restaurantId, date: { gte: currentMonthStart, lte: currentMonthEnd } },
+      include: { ingredient: { select: { name: true } } },
+    });
+    const totalWasteCost = thisMonthLogs.reduce((sum: number, l: any) => sum + l.costImpact, 0);
+    const totalWasteKg = thisMonthLogs
+      .filter((l: any) => l.unit === 'kg' || l.unit === 'g' || l.unit === 'L' || l.unit === 'mL')
+      .reduce((sum: number, l: any) => {
+        if (l.unit === 'g' || l.unit === 'mL') return sum + l.quantity / 1000;
+        return sum + l.quantity;
+      }, 0);
+    const ingredientMap = new Map<string, { name: string; totalCost: number; totalQty: number }>();
+    for (const log of thisMonthLogs as any[]) {
+      const key = String(log.ingredientId);
+      const existing = ingredientMap.get(key) || { name: log.ingredient.name, totalCost: 0, totalQty: 0 };
+      existing.totalCost += log.costImpact;
+      existing.totalQty += log.quantity;
+      ingredientMap.set(key, existing);
+    }
+    const topWastedIngredients = Array.from(ingredientMap.entries())
+      .map(([id, data]) => ({ ingredientId: Number(id), ...data }))
+      .sort((a, b) => b.totalCost - a.totalCost)
+      .slice(0, 5);
+    const wasteByReason: Record<string, { count: number; cost: number }> = {};
+    for (const log of thisMonthLogs as any[]) {
+      if (!wasteByReason[log.reason]) wasteByReason[log.reason] = { count: 0, cost: 0 };
+      wasteByReason[log.reason].count++;
+      wasteByReason[log.reason].cost += log.costImpact;
+    }
+    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    const sixMonthsAgoStr = `${sixMonthsAgo.getFullYear()}-${String(sixMonthsAgo.getMonth() + 1).padStart(2, '0')}-01`;
+    const trendLogs = await prisma.wasteLog.findMany({ where: { restaurantId, date: { gte: sixMonthsAgoStr } } });
+    const monthlyTrend: Record<string, { cost: number; count: number }> = {};
+    for (const log of trendLogs) {
+      const month = log.date.substring(0, 7);
+      if (!monthlyTrend[month]) monthlyTrend[month] = { cost: 0, count: 0 };
+      monthlyTrend[month].cost += log.costImpact;
+      monthlyTrend[month].count++;
+    }
+    const sortedTrend = Object.entries(monthlyTrend).sort(([a], [b]) => a.localeCompare(b)).map(([month, data]) => ({ month, ...data }));
+    res.json({
+      totalWasteCost: Math.round(totalWasteCost * 100) / 100,
+      totalWasteKg: Math.round(totalWasteKg * 100) / 100,
+      topWastedIngredients,
+      wasteByReason,
+      monthlyTrend: sortedTrend,
+    });
+  } catch (error) { console.error('Error fetching waste summary:', error); res.status(500).json({ error: 'Erreur calcul résumé pertes' }); }
+});
+
+app.get('/api/waste', authMiddleware, async (req: any, res) => {
+  try {
+    const { from, to } = req.query;
+    const where: any = { restaurantId: 1 };
+    if (from || to) {
+      where.date = {};
+      if (from) where.date.gte = from as string;
+      if (to) where.date.lte = to as string;
+    }
+    const logs = await prisma.wasteLog.findMany({
+      where,
+      include: { ingredient: { select: { id: true, name: true, unit: true, category: true, pricePerUnit: true } } },
+      orderBy: { date: 'desc' },
+    });
+    res.json(logs);
+  } catch { res.status(500).json({ error: 'Erreur récupération pertes' }); }
+});
+
+app.post('/api/waste', authMiddleware, async (req: any, res) => {
+  try {
+    const { ingredientId, quantity, unit, reason, date, notes } = req.body;
+    if (!ingredientId || quantity == null || !unit || !reason || !date) return res.status(400).json({ error: 'Champs requis : ingredientId, quantity, unit, reason, date' });
+    const validReasons = ['expired', 'spoiled', 'overproduction', 'damaged', 'other'];
+    if (!validReasons.includes(reason)) return res.status(400).json({ error: `Raison invalide. Valeurs acceptées : ${validReasons.join(', ')}` });
+    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId } });
+    if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
+    let costImpact = quantity * ingredient.pricePerUnit;
+    if (unit !== ingredient.unit) {
+      if (unit === 'g' && ingredient.unit === 'kg') costImpact = (quantity / 1000) * ingredient.pricePerUnit;
+      else if (unit === 'kg' && ingredient.unit === 'g') costImpact = (quantity * 1000) * ingredient.pricePerUnit;
+      else if (unit === 'mL' && ingredient.unit === 'L') costImpact = (quantity / 1000) * ingredient.pricePerUnit;
+      else if (unit === 'L' && ingredient.unit === 'mL') costImpact = (quantity * 1000) * ingredient.pricePerUnit;
+    }
+    const wasteLog = await prisma.wasteLog.create({
+      data: { ingredientId, quantity, unit, reason, costImpact: Math.round(costImpact * 100) / 100, date, notes: notes || null, restaurantId: 1 },
+      include: { ingredient: { select: { id: true, name: true, unit: true, category: true, pricePerUnit: true } } },
+    });
+    res.status(201).json(wasteLog);
+  } catch { res.status(500).json({ error: 'Erreur création perte' }); }
+});
+
+app.delete('/api/waste/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.wasteLog.findFirst({ where: { id, restaurantId: 1 } });
+    if (!existing) return res.status(404).json({ error: 'Entrée de perte non trouvée' });
+    await prisma.wasteLog.delete({ where: { id } });
+    res.json({ message: 'Entrée supprimée' });
+  } catch { res.status(500).json({ error: 'Erreur suppression perte' }); }
+});
+
 // ============ CONTACT (PUBLIC) — Resend (admin only) + log ============
 const contactRateLimit = new Map<string, number[]>();
 

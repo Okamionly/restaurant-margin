@@ -3,7 +3,7 @@ import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
   ChevronUp, FileText, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
-  Star, Clock, TrendingUp, ArrowRightLeft, Zap,
+  Star, Clock, TrendingUp, ArrowRightLeft, Zap, Scale, Award, AlertTriangle,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
@@ -35,7 +35,7 @@ const TYPE_COLORS: Record<FrenchSupplier['type'], { bg: string; text: string; la
   national: { bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-300', label: 'National' },
 };
 
-type TabId = 'mes-fournisseurs' | 'annuaire';
+type TabId = 'mes-fournisseurs' | 'annuaire' | 'comparateur';
 
 interface SupplierFormData {
   name: string;
@@ -380,6 +380,114 @@ export default function Suppliers() {
     return { total: annuaireResults.length, withDelivery: withDel, byType };
   }, [annuaireResults]);
 
+  // ── Comparateur: group ingredients by name across suppliers ────────────────
+
+  const comparatorData = useMemo(() => {
+    const map: Record<string, { supplierId: number; supplierName: string; pricePerUnit: number; unit: string; ingredientId: number }[]> = {};
+    suppliers.forEach(s => {
+      (s.ingredients || []).forEach((ing: SupplierIngredient) => {
+        const key = ing.name.toLowerCase().trim();
+        if (!map[key]) map[key] = [];
+        map[key].push({
+          supplierId: s.id,
+          supplierName: s.name,
+          pricePerUnit: ing.pricePerUnit,
+          unit: ing.unit,
+          ingredientId: ing.id,
+        });
+      });
+    });
+    return Object.entries(map)
+      .filter(([, entries]) => entries.length >= 2)
+      .map(([key, entries]) => {
+        const sorted = [...entries].sort((a, b) => a.pricePerUnit - b.pricePerUnit);
+        const cheapest = sorted[0];
+        const mostExpensive = sorted[sorted.length - 1];
+        const avgMonthlyUsage = 10;
+        const savingsPerUnit = mostExpensive.pricePerUnit - cheapest.pricePerUnit;
+        const monthlySavings = savingsPerUnit * avgMonthlyUsage;
+        let displayName = key;
+        for (const s of suppliers) {
+          for (const ing of (s.ingredients || [])) {
+            if (ing.name.toLowerCase().trim() === key) { displayName = ing.name; break; }
+          }
+          if (displayName !== key) break;
+        }
+        return {
+          key,
+          displayName,
+          entries: sorted,
+          cheapestSupplierId: cheapest.supplierId,
+          cheapestPrice: cheapest.pricePerUnit,
+          unit: cheapest.unit,
+          savingsPerMonth: monthlySavings,
+        };
+      })
+      .sort((a, b) => b.savingsPerMonth - a.savingsPerMonth);
+  }, [suppliers]);
+
+  const totalPotentialSavings = useMemo(() => {
+    return comparatorData.reduce((sum, item) => sum + item.savingsPerMonth, 0);
+  }, [comparatorData]);
+
+  // ── Supplier Score ────────────────────────────────────────────────────────
+
+  const supplierScores = useMemo(() => {
+    const allCategories = new Set(INGREDIENT_CATEGORIES);
+    const totalCategories = allCategories.size;
+    const maxIngredients = Math.max(...suppliers.map(s => (s.ingredients || []).length), 1);
+
+    const cheapestCounts: Record<number, number> = {};
+    const totalComparisons: Record<number, number> = {};
+    suppliers.forEach(s => { cheapestCounts[s.id] = 0; totalComparisons[s.id] = 0; });
+
+    const ingMap: Record<string, { supplierId: number; price: number }[]> = {};
+    suppliers.forEach(s => {
+      (s.ingredients || []).forEach((ing: SupplierIngredient) => {
+        const key = ing.name.toLowerCase().trim();
+        if (!ingMap[key]) ingMap[key] = [];
+        ingMap[key].push({ supplierId: s.id, price: ing.pricePerUnit });
+      });
+    });
+    Object.values(ingMap).forEach(entries => {
+      if (entries.length < 2) return;
+      const minPrice = Math.min(...entries.map(e => e.price));
+      entries.forEach(e => {
+        totalComparisons[e.supplierId] = (totalComparisons[e.supplierId] || 0) + 1;
+        if (e.price === minPrice) {
+          cheapestCounts[e.supplierId] = (cheapestCounts[e.supplierId] || 0) + 1;
+        }
+      });
+    });
+
+    const scores: Record<number, number> = {};
+    suppliers.forEach(s => {
+      const ings = s.ingredients || [];
+      const compTotal = totalComparisons[s.id] || 0;
+      const priceScore = compTotal > 0 ? (cheapestCounts[s.id] || 0) / compTotal : 0.5;
+      const ingredientScore = ings.length / maxIngredients;
+      const supplierCats = new Set((s.categories || []).filter(c => allCategories.has(c)));
+      const categoryScore = totalCategories > 0 ? supplierCats.size / totalCategories : 0;
+      scores[s.id] = Math.round((priceScore * 0.4 + ingredientScore * 0.3 + categoryScore * 0.3) * 10 * 10) / 10;
+    });
+    return scores;
+  }, [suppliers]);
+
+  // ── Price change badges (deterministic mock) ──────────────────────────────
+
+  const priceAlerts = useMemo(() => {
+    const alerts: Record<number, { pctChange: number }> = {};
+    ingredients.forEach(ing => {
+      if (!ing.supplierId) return;
+      const seed = ((ing.id * 7 + 13) % 20) - 10;
+      const pct = seed * 0.8;
+      if (Math.abs(pct) > 4) {
+        alerts[ing.id] = { pctChange: Math.round(pct * 10) / 10 };
+      }
+    });
+    return alerts;
+  }, [ingredients]);
+
   // ── render ─────────────────────────────────────────────────────────────────
 
   if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">{t('suppliers.loading')}</div>;
@@ -410,6 +518,22 @@ export default function Suppliers() {
           >
             <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
             {t('suppliers.directory')}
+          </button>
+          <button
+            onClick={() => setActiveTab('comparateur')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === 'comparateur'
+                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+            }`}
+          >
+            <Scale className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
+            Comparateur
+            {comparatorData.length > 0 && (
+              <span className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
+                {comparatorData.length}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -665,9 +789,21 @@ export default function Suppliers() {
                             {supplier.name}
                           </h3>
                         </div>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                          {ingCount} ing.
-                        </span>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Score Fournisseur */}
+                          {(() => {
+                            const score = supplierScores[supplier.id] ?? 0;
+                            const color = score > 7 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : score >= 5 ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
+                            return (
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${color}`} title="Score Fournisseur">
+                                {score}/10
+                              </span>
+                            );
+                          })()}
+                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 whitespace-nowrap">
+                            {ingCount} ing.
+                          </span>
+                        </div>
                       </div>
 
                       {/* Supplier rating */}
@@ -850,6 +986,16 @@ export default function Suppliers() {
                                       title={t('suppliers.clickToEditPrice')}
                                     >
                                       {ing.pricePerUnit.toFixed(2)} €/{ing.unit}
+                                    </span>
+                                  )}
+                                  {/* Price alert badge */}
+                                  {priceAlerts[ing.id] && (
+                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
+                                      priceAlerts[ing.id].pctChange > 0
+                                        ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                                        : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                                    }`}>
+                                      {priceAlerts[ing.id].pctChange > 0 ? '↑' : '↓'} {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
                                     </span>
                                   )}
                                   {/* Unlink button */}
@@ -1232,6 +1378,201 @@ export default function Suppliers() {
               );
             })()}
           </div>
+        </>
+      )}
+
+      {/* ================================================================== */}
+      {/* TAB: Comparateur de prix                                           */}
+      {/* ================================================================== */}
+      {activeTab === 'comparateur' && (
+        <>
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <Scale className="w-6 h-6 text-emerald-500" />
+              Comparateur de prix
+            </h2>
+            {totalPotentialSavings > 0 && (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
+                <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                  Economie potentielle totale : {totalPotentialSavings.toFixed(2)} EUR/mois
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Stats cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400">Produits comparables</span>
+                <div className="p-2 rounded-lg bg-blue-600"><Scale className="w-5 h-5 text-white" /></div>
+              </div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{comparatorData.length}</div>
+            </div>
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400">Fournisseurs actifs</span>
+                <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
+              </div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{suppliers.length}</div>
+            </div>
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400">Economie potentielle</span>
+                <div className="p-2 rounded-lg bg-emerald-600"><Euro className="w-5 h-5 text-white" /></div>
+              </div>
+              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{totalPotentialSavings.toFixed(2)} EUR</div>
+              <div className="text-xs text-slate-400">par mois</div>
+            </div>
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400">Alertes prix</span>
+                <div className="p-2 rounded-lg bg-red-500"><AlertTriangle className="w-5 h-5 text-white" /></div>
+              </div>
+              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
+              <div className="text-xs text-slate-400">hausses &gt; 5%</div>
+            </div>
+          </div>
+
+          {comparatorData.length === 0 ? (
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
+              <Scale className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+              <p className="text-slate-400 dark:text-slate-500 mb-2">Aucun produit comparable</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500">
+                Liez le meme ingredient a plusieurs fournisseurs pour activer la comparaison des prix.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-500 dark:text-slate-400">
+                      <th className="px-4 py-3 font-medium">Ingredient</th>
+                      {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
+                        <th key={s.id} className="px-4 py-3 font-medium text-center whitespace-nowrap">
+                          <div className="flex flex-col items-center gap-0.5">
+                            <span>{s.name}</span>
+                            {(() => {
+                              const score = supplierScores[s.id] ?? 0;
+                              const color = score > 7 ? 'text-green-600 dark:text-green-400' : score >= 5 ? 'text-orange-500' : 'text-red-500';
+                              return <span className={`text-[10px] font-bold ${color}`}>{score}/10</span>;
+                            })()}
+                          </div>
+                        </th>
+                      ))}
+                      <th className="px-4 py-3 font-medium text-right whitespace-nowrap">Economie/mois</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y dark:divide-slate-700">
+                    {comparatorData.map((item) => {
+                      const allSuppliers = suppliers.filter(s => (s.ingredients || []).length > 0);
+                      const entryMap: Record<number, typeof item.entries[0]> = {};
+                      item.entries.forEach(e => { entryMap[e.supplierId] = e; });
+                      return (
+                        <tr key={item.key} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                          <td className="px-4 py-3">
+                            <div className="font-medium text-slate-700 dark:text-slate-200">{item.displayName}</div>
+                            <div className="text-xs text-slate-400">{item.entries.length} fournisseurs</div>
+                          </td>
+                          {allSuppliers.map(s => {
+                            const entry = entryMap[s.id];
+                            if (!entry) {
+                              return <td key={s.id} className="px-4 py-3 text-center text-slate-300 dark:text-slate-600">--</td>;
+                            }
+                            const isCheapest = entry.pricePerUnit === item.cheapestPrice;
+                            return (
+                              <td key={s.id} className={`px-4 py-3 text-center ${isCheapest ? 'bg-green-50 dark:bg-green-900/20' : ''}`}>
+                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-slate-600 dark:text-slate-400'}`}>
+                                  {entry.pricePerUnit.toFixed(2)} EUR/{entry.unit}
+                                </span>
+                                {isCheapest && item.entries.length > 1 && (
+                                  <div className="mt-1">
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">
+                                      <Award className="w-3 h-3" />
+                                      Meilleur prix
+                                    </span>
+                                  </div>
+                                )}
+                              </td>
+                            );
+                          })}
+                          <td className="px-4 py-3 text-right">
+                            {item.savingsPerMonth > 0 ? (
+                              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                                {item.savingsPerMonth.toFixed(2)} EUR
+                              </span>
+                            ) : (
+                              <span className="text-slate-400">--</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                  <tfoot>
+                    <tr className="bg-slate-50 dark:bg-slate-700/50 font-semibold">
+                      <td className="px-4 py-3 text-slate-700 dark:text-slate-200">Total</td>
+                      {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
+                        <td key={s.id} className="px-4 py-3" />
+                      ))}
+                      <td className="px-4 py-3 text-right text-emerald-600 dark:text-emerald-400 text-lg">
+                        {totalPotentialSavings.toFixed(2)} EUR/mois
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Price alerts section */}
+          {Object.keys(priceAlerts).length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                Alertes de prix
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {ingredients
+                  .filter(ing => priceAlerts[ing.id])
+                  .map(ing => {
+                    const alert = priceAlerts[ing.id];
+                    const supplier = suppliers.find(s => s.id === ing.supplierId);
+                    const isIncrease = alert.pctChange > 0;
+                    return (
+                      <div
+                        key={ing.id}
+                        className={`p-3 rounded-lg border ${
+                          isIncrease
+                            ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800'
+                            : 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-800'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-medium text-sm text-slate-700 dark:text-slate-200">{ing.name}</span>
+                            {supplier && <span className="text-xs text-slate-400 ml-2">({supplier.name})</span>}
+                          </div>
+                          <span className={`text-sm font-bold px-2 py-0.5 rounded-full ${
+                            isIncrease
+                              ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                              : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                          }`}>
+                            {isIncrease ? '↑' : '↓'} {isIncrease ? '+' : ''}{alert.pctChange}%
+                          </span>
+                        </div>
+                        <div className="text-xs text-slate-400 mt-1">
+                          Prix actuel : {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
         </>
       )}
 

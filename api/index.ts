@@ -928,6 +928,95 @@ app.get('/api/alerts', authMiddleware, async (_req, res) => {
   } catch { res.status(500).json({ error: 'Erreur alertes' }); }
 });
 
+// ============ DEVIS CRUD ============
+app.get('/api/devis', authMiddleware, async (req: any, res) => {
+  try {
+    const devis = await prisma.devis.findMany({ include: { items: true }, orderBy: { createdAt: 'desc' } });
+    res.json(devis);
+  } catch { res.status(500).json({ error: 'Erreur récupération devis' }); }
+});
+
+app.get('/api/devis/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const devis = await prisma.devis.findUnique({ where: { id: parseInt(req.params.id) }, include: { items: true } });
+    if (!devis) return res.status(404).json({ error: 'Devis non trouvé' });
+    res.json(devis);
+  } catch { res.status(500).json({ error: 'Erreur récupération devis' }); }
+});
+
+app.post('/api/devis', authMiddleware, async (req: any, res) => {
+  try {
+    const { clientName, clientEmail, clientPhone, clientAddress, subject, tvaRate, validUntil, notes, items } = req.body;
+    if (!clientName || !subject) return res.status(400).json({ error: 'Nom client et objet requis' });
+
+    const count = await prisma.devis.count();
+    const number = `DEV-${new Date().getFullYear()}-${String(count + 1).padStart(3, '0')}`;
+
+    const devisItems = (items || []).map((item: any) => ({
+      description: item.description || '', quantity: item.quantity || 1,
+      unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),
+    }));
+    const totalHT = devisItems.reduce((s: number, i: any) => s + i.total, 0);
+    const rate = tvaRate || 20;
+
+    const devis = await prisma.devis.create({
+      data: {
+        number, clientName, clientEmail: clientEmail || null, clientPhone: clientPhone || null,
+        clientAddress: clientAddress || null, subject, tvaRate: rate, totalHT, totalTTC: totalHT * (1 + rate / 100),
+        validUntil: validUntil || null, notes: notes || null, restaurantId: 1,
+        items: { create: devisItems },
+      },
+      include: { items: true },
+    });
+    res.status(201).json(devis);
+  } catch (e: any) { console.error('Devis create:', e.message); res.status(500).json({ error: 'Erreur création devis' }); }
+});
+
+app.put('/api/devis/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const existing = await prisma.devis.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'Devis non trouvé' });
+
+    const { clientName, clientEmail, clientPhone, clientAddress, subject, status, tvaRate, validUntil, notes, items } = req.body;
+    let totalHT = existing.totalHT;
+    let totalTTC = existing.totalTTC;
+
+    if (items) {
+      await prisma.devisItem.deleteMany({ where: { devisId: id } });
+      const devisItems = items.map((item: any) => ({
+        devisId: id, description: item.description || '', quantity: item.quantity || 1,
+        unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),
+      }));
+      await prisma.devisItem.createMany({ data: devisItems });
+      totalHT = devisItems.reduce((s: number, i: any) => s + i.total, 0);
+      totalTTC = totalHT * (1 + (tvaRate || existing.tvaRate) / 100);
+    }
+
+    const devis = await prisma.devis.update({
+      where: { id },
+      data: {
+        clientName: clientName || existing.clientName, clientEmail: clientEmail !== undefined ? clientEmail : existing.clientEmail,
+        clientPhone: clientPhone !== undefined ? clientPhone : existing.clientPhone,
+        clientAddress: clientAddress !== undefined ? clientAddress : existing.clientAddress,
+        subject: subject || existing.subject, status: status || existing.status,
+        tvaRate: tvaRate || existing.tvaRate, totalHT, totalTTC,
+        validUntil: validUntil !== undefined ? validUntil : existing.validUntil,
+        notes: notes !== undefined ? notes : existing.notes,
+      },
+      include: { items: true },
+    });
+    res.json(devis);
+  } catch { res.status(500).json({ error: 'Erreur mise à jour devis' }); }
+});
+
+app.delete('/api/devis/:id', authMiddleware, async (req: any, res) => {
+  try {
+    await prisma.devis.delete({ where: { id: parseInt(req.params.id) } });
+    res.status(204).send();
+  } catch { res.status(500).json({ error: 'Erreur suppression devis' }); }
+});
+
 // ============ CONTACT (PUBLIC) — Resend (admin only) + log ============
 const contactRateLimit = new Map<string, number[]>();
 

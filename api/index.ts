@@ -928,16 +928,8 @@ app.get('/api/alerts', authMiddleware, async (_req, res) => {
   } catch { res.status(500).json({ error: 'Erreur alertes' }); }
 });
 
-// ============ CONTACT (PUBLIC) — Gmail/Nodemailer ============
+// ============ CONTACT (PUBLIC) — Resend (admin only) + log ============
 const contactRateLimit = new Map<string, number[]>();
-
-const gmailTransporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER || 'marketphaseai@gmail.com',
-    pass: process.env.EMAIL_PASS,
-  },
-});
 
 app.post('/api/contact', async (req, res) => {
   try {
@@ -964,58 +956,37 @@ app.post('/api/contact', async (req, res) => {
     };
     const sourceLabel = sourceLabels[source] || source || 'Contact';
 
-    // 1. Notification to admin via Gmail
-    await gmailTransporter.sendMail({
-      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
-      to: 'Mr.guessousyoussef@gmail.com',
-      subject: `[RestauMargin] Nouvelle demande — ${sourceLabel}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-          <div style="background:#1e293b;padding:20px;border-radius:12px 12px 0 0;">
-            <h2 style="color:white;margin:0;">RestauMargin — Nouvelle demande</h2>
+    // Send notification to admin via Resend
+    // Resend free tier only delivers to the account owner's verified email
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      const resendClient = new Resend(resendKey);
+      await resendClient.emails.send({
+        from: 'RestauMargin <onboarding@resend.dev>',
+        to: 'marketphaseai@gmail.com', // Resend verified email
+        subject: `[RestauMargin] ${sourceLabel} — ${name}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:600px;">
+            <h2 style="color:#1e293b;">Nouvelle demande — ${sourceLabel}</h2>
+            <table style="width:100%;border-collapse:collapse;">
+              <tr><td style="padding:8px;font-weight:bold;color:#64748b;">Nom</td><td style="padding:8px;">${name}</td></tr>
+              <tr><td style="padding:8px;font-weight:bold;color:#64748b;">Email</td><td style="padding:8px;">${email}</td></tr>
+              ${phone ? `<tr><td style="padding:8px;font-weight:bold;color:#64748b;">Tel</td><td style="padding:8px;">${phone}</td></tr>` : ''}
+              ${message ? `<tr><td style="padding:8px;font-weight:bold;color:#64748b;">Message</td><td style="padding:8px;">${message.replace(/\n/g, '<br>')}</td></tr>` : ''}
+            </table>
+            <p style="color:#94a3b8;font-size:11px;margin-top:16px;">restaumargin.vercel.app</p>
           </div>
-          <div style="background:white;padding:24px;border:1px solid #e2e8f0;">
-            <p><strong>Source :</strong> <span style="color:#2563eb;">${sourceLabel}</span></p>
-            <p><strong>Nom :</strong> ${name}</p>
-            <p><strong>Email :</strong> <a href="mailto:${email}">${email}</a></p>
-            ${phone ? `<p><strong>Téléphone :</strong> <a href="tel:${phone}">${phone}</a></p>` : ''}
-            ${message ? `<p><strong>Message :</strong></p><div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">${message.replace(/\n/g, '<br>')}</div>` : ''}
-          </div>
-          <div style="background:#f1f5f9;padding:12px;text-align:center;border-radius:0 0 12px 12px;">
-            <p style="color:#64748b;font-size:12px;margin:0;">RestauMargin — restaumargin.vercel.app</p>
-          </div>
-        </div>
-      `,
-    });
+        `,
+      });
+    }
 
-    // 2. Confirmation to submitter via Gmail
-    await gmailTransporter.sendMail({
-      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
-      to: email.trim(),
-      subject: 'RestauMargin — Votre demande a bien été reçue',
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-          <div style="background:linear-gradient(135deg,#1e293b,#334155);padding:24px;border-radius:12px 12px 0 0;">
-            <h2 style="color:white;margin:0;">Merci ${name} !</h2>
-          </div>
-          <div style="background:white;padding:24px;border:1px solid #e2e8f0;">
-            <p>Nous avons bien reçu votre demande <strong>(${sourceLabel})</strong>.</p>
-            <p>Notre équipe reviendra vers vous dans les <strong>24 heures</strong>.</p>
-            <br>
-            <p>Cordialement,<br><strong>L'équipe RestauMargin</strong></p>
-          </div>
-          <div style="background:#f1f5f9;padding:12px;text-align:center;border-radius:0 0 12px 12px;">
-            <p style="color:#64748b;font-size:12px;margin:0;">RestauMargin — Gestion de marge intelligente</p>
-          </div>
-        </div>
-      `,
-    });
-
-    console.log(`Contact form submitted: ${sourceLabel} from ${email}`);
+    console.log(`[CONTACT] ${sourceLabel} | ${name} | ${email} | ${phone || '-'} | ${message?.substring(0, 100) || '-'}`);
     res.json({ success: true });
   } catch (error: unknown) {
     console.error('Contact form error:', error);
-    res.status(500).json({ error: "Erreur lors de l'envoi. Veuillez réessayer." });
+    // Even if email fails, log the lead and return success so user isn't blocked
+    console.log(`[CONTACT-FALLBACK] ${req.body?.name} | ${req.body?.email} | ${req.body?.source}`);
+    res.json({ success: true, note: 'Demande enregistrée' });
   }
 });
 

@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
+import nodemailer from 'nodemailer';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -810,17 +811,16 @@ app.put('/api/messages/conversations/:id/read', authMiddleware, (req, res) => {
 // ── Email (nodemailer) ──
 const sentEmails: any[] = [];
 
-app.post('/api/email/send', authMiddleware, async (req, res) => {
+app.post('/api/email/send', authMiddleware, async (req: any, res) => {
   try {
     const { to, subject, body } = req.body;
     if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send({
-      from: 'RestauMargin <onboarding@resend.dev>',
+    const info = await gmailTransporter.sendMail({
+      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
       to: to.trim(), subject: subject.trim(),
       html: body.trim().replace(/\n/g, '<br>'),
     });
-    if (error) return res.status(500).json({ error: error.message });
+    const data = { id: info.messageId };
     const email = { id: `e-${Date.now()}`, to, subject, body, from: 'onboarding@resend.dev', messageId: data?.id, sentAt: new Date().toISOString() };
     sentEmails.push(email);
     res.json({ success: true, messageId: data?.id });
@@ -928,8 +928,16 @@ app.get('/api/alerts', authMiddleware, async (_req, res) => {
   } catch { res.status(500).json({ error: 'Erreur alertes' }); }
 });
 
-// ============ CONTACT (PUBLIC) ============
+// ============ CONTACT (PUBLIC) — Gmail/Nodemailer ============
 const contactRateLimit = new Map<string, number[]>();
+
+const gmailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'marketphaseai@gmail.com',
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 app.post('/api/contact', async (req, res) => {
   try {
@@ -949,14 +957,6 @@ app.post('/api/contact', async (req, res) => {
     attempts.push(now);
     contactRateLimit.set(key, attempts);
 
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      console.error('RESEND_API_KEY not set');
-      return res.status(500).json({ error: 'Service email non configuré' });
-    }
-
-    const resend = new Resend(apiKey);
-
     const sourceLabels: Record<string, string> = {
       'kit-station': 'Kit Station WeighStation',
       'pro-waitlist': "Liste d'attente Pro",
@@ -964,34 +964,50 @@ app.post('/api/contact', async (req, res) => {
     };
     const sourceLabel = sourceLabels[source] || source || 'Contact';
 
-    // 1. Notification to admin
-    await resend.emails.send({
-      from: 'RestauMargin <onboarding@resend.dev>',
+    // 1. Notification to admin via Gmail
+    await gmailTransporter.sendMail({
+      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
       to: 'Mr.guessousyoussef@gmail.com',
       subject: `[RestauMargin] Nouvelle demande — ${sourceLabel}`,
       html: `
-        <h2>Nouvelle demande de contact</h2>
-        <p><strong>Source :</strong> ${sourceLabel}</p>
-        <p><strong>Nom :</strong> ${name}</p>
-        <p><strong>Email :</strong> ${email}</p>
-        ${phone ? `<p><strong>Téléphone :</strong> ${phone}</p>` : ''}
-        ${message ? `<p><strong>Message :</strong></p><p>${message.replace(/\n/g, '<br>')}</p>` : ''}
-        <hr>
-        <p style="color:#666;font-size:12px;">Envoyé depuis restaumargin.vercel.app</p>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#1e293b;padding:20px;border-radius:12px 12px 0 0;">
+            <h2 style="color:white;margin:0;">RestauMargin — Nouvelle demande</h2>
+          </div>
+          <div style="background:white;padding:24px;border:1px solid #e2e8f0;">
+            <p><strong>Source :</strong> <span style="color:#2563eb;">${sourceLabel}</span></p>
+            <p><strong>Nom :</strong> ${name}</p>
+            <p><strong>Email :</strong> <a href="mailto:${email}">${email}</a></p>
+            ${phone ? `<p><strong>Téléphone :</strong> <a href="tel:${phone}">${phone}</a></p>` : ''}
+            ${message ? `<p><strong>Message :</strong></p><div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0;">${message.replace(/\n/g, '<br>')}</div>` : ''}
+          </div>
+          <div style="background:#f1f5f9;padding:12px;text-align:center;border-radius:0 0 12px 12px;">
+            <p style="color:#64748b;font-size:12px;margin:0;">RestauMargin — restaumargin.vercel.app</p>
+          </div>
+        </div>
       `,
     });
 
-    // 2. Confirmation to submitter
-    await resend.emails.send({
-      from: 'RestauMargin <onboarding@resend.dev>',
+    // 2. Confirmation to submitter via Gmail
+    await gmailTransporter.sendMail({
+      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
       to: email.trim(),
       subject: 'RestauMargin — Votre demande a bien été reçue',
       html: `
-        <h2>Merci ${name} !</h2>
-        <p>Nous avons bien reçu votre demande (${sourceLabel}).</p>
-        <p>Notre équipe reviendra vers vous dans les plus brefs délais.</p>
-        <br>
-        <p>Cordialement,<br>L'équipe RestauMargin</p>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:linear-gradient(135deg,#1e293b,#334155);padding:24px;border-radius:12px 12px 0 0;">
+            <h2 style="color:white;margin:0;">Merci ${name} !</h2>
+          </div>
+          <div style="background:white;padding:24px;border:1px solid #e2e8f0;">
+            <p>Nous avons bien reçu votre demande <strong>(${sourceLabel})</strong>.</p>
+            <p>Notre équipe reviendra vers vous dans les <strong>24 heures</strong>.</p>
+            <br>
+            <p>Cordialement,<br><strong>L'équipe RestauMargin</strong></p>
+          </div>
+          <div style="background:#f1f5f9;padding:12px;text-align:center;border-radius:0 0 12px 12px;">
+            <p style="color:#64748b;font-size:12px;margin:0;">RestauMargin — Gestion de marge intelligente</p>
+          </div>
+        </div>
       `,
     });
 

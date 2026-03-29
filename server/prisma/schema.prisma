@@ -47,6 +47,10 @@ model Restaurant {
   conversations    Conversation[]
   financialEntries FinancialEntry[]
   wasteLogs        WasteLog[]
+  haccpTemperatures HaccpTemperature[]
+  haccpCleanings   HaccpCleaning[]
+  employees        Employee[]
+  shifts           Shift[]
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -311,6 +315,74 @@ model WasteLog {
 
   @@index([restaurantId, date])
   @@map("waste_logs")
+}
+
+model Employee {
+  id           Int        @id @default(autoincrement())
+  name         String
+  role         String     // Chef, Commis, Serveur, Plongeur, Barman, Manager
+  email        String?
+  phone        String?
+  hourlyRate   Float      @default(12)
+  color        String     @default("#3b82f6")
+  active       Boolean    @default(true)
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  shifts       Shift[]
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId])
+  @@map("employees")
+}
+
+model Shift {
+  id           Int        @id @default(autoincrement())
+  employeeId   Int
+  employee     Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date         String     // YYYY-MM-DD
+  startTime    String     // HH:MM
+  endTime      String     // HH:MM
+  type         String     // Matin, Midi, Soir, Coupure
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@index([employeeId, date])
+  @@map("shifts")
+}
+
+model HaccpTemperature {
+  id           Int        @id @default(autoincrement())
+  zone         String     // Frigo, Congélateur, Plats chauds, Réception
+  temperature  Float
+  status       String     @default("conforme") // conforme, non_conforme, en_attente
+  recordedBy   String?
+  notes        String?
+  date         String     // YYYY-MM-DD
+  time         String?    // HH:MM
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@map("haccp_temperatures")
+}
+
+model HaccpCleaning {
+  id           Int        @id @default(autoincrement())
+  zone         String     // Cuisine, Salle, Toilettes, Chambre froide, etc.
+  task         String     // Description of cleaning task
+  status       String     @default("en_attente") // fait, en_attente, non_fait
+  doneBy       String?
+  date         String
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@map("haccp_cleanings")
 }
 
 model Conversation {

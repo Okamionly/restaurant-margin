@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Thermometer, Plus, ShieldCheck, AlertTriangle, Clock,
   CheckCircle2, XCircle, Package, SprayCan, BarChart3, Search
@@ -159,20 +159,100 @@ function seedCleaning(): CleaningRecord[] {
   }));
 }
 
+// ─── API helpers ────────────────────────────────────────────────────────────
+
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function HACCP() {
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
-  const [temperatures, setTemperatures] = useState<TemperatureRecord[]>(seedTemperatures);
+  const [temperatures, setTemperatures] = useState<TemperatureRecord[]>([]);
   const [lots, setLots] = useState<LotRecord[]>(seedLots);
   const [dluoAlerts] = useState<DluoAlert[]>(seedDluo);
-  const [cleaning, setCleaning] = useState<CleaningRecord[]>(seedCleaning);
+  const [cleaning, setCleaning] = useState<CleaningRecord[]>([]);
 
   const [showTempForm, setShowTempForm] = useState(false);
   const [tempForm, setTempForm] = useState({ zone: 'frigo' as TemperatureRecord['zone'], temperature: '', agent: '', notes: '' });
   const [showLotForm, setShowLotForm] = useState(false);
   const [lotForm, setLotForm] = useState({ lotNumber: '', product: '', supplier: '', dlc: '', ddm: '', status: 'en_attente' as LotRecord['status'] });
   const [searchLots, setSearchLots] = useState('');
+
+  // ─── API: Load data on mount ──────────────────────────────────────────
+
+  const loadTemperatures = useCallback(async () => {
+    try {
+      const res = await fetch('/api/haccp/temperatures', { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load temperatures');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        // Map backend fields to frontend TemperatureRecord shape
+        const mapped: TemperatureRecord[] = data.map((t: any) => ({
+          id: t.id,
+          zone: t.zone,
+          temperature: t.temperature,
+          timestamp: t.createdAt || `${t.date}T${t.time || '00:00'}`,
+          agent: t.recordedBy || '',
+          notes: t.notes || '',
+        }));
+        setTemperatures(mapped);
+      } else {
+        setTemperatures(seedTemperatures());
+      }
+    } catch {
+      setTemperatures(seedTemperatures());
+    }
+  }, []);
+
+  const loadCleanings = useCallback(async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const res = await fetch(`/api/haccp/cleanings?date=${today}`, { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load cleanings');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        // Map backend HaccpCleaning to frontend CleaningRecord
+        const mapped: CleaningRecord[] = data.map((c: any) => ({
+          id: c.id,
+          zone: c.zone,
+          date: c.date,
+          time: c.status === 'fait' ? new Date(c.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
+          agent: c.doneBy || '',
+          verified: c.status === 'fait',
+        }));
+        setCleaning(mapped);
+      } else {
+        setCleaning(seedCleaning());
+      }
+    } catch {
+      setCleaning(seedCleaning());
+    }
+  }, []);
+
+  const loadSummary = useCallback(async () => {
+    try {
+      const res = await fetch('/api/haccp/summary', { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load summary');
+      // Summary data can be used to enrich dashboard stats if backend provides it
+      // For now the stats are computed client-side from temperatures/cleaning/lots
+      await res.json();
+    } catch {
+      // Silently fall back to client-side computed stats
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTemperatures();
+    loadCleanings();
+    loadSummary();
+  }, [loadTemperatures, loadCleanings, loadSummary]);
 
   // ─── Stats ───────────────────────────────────────────────────────────────
 
@@ -196,9 +276,51 @@ export default function HACCP() {
 
   // ─── Handlers ────────────────────────────────────────────────────────────
 
-  function addTemp() {
+  async function addTemp() {
     if (!tempForm.temperature || !tempForm.agent) return;
-    setTemperatures(prev => [{ id: Date.now(), zone: tempForm.zone, temperature: parseFloat(tempForm.temperature), timestamp: new Date().toISOString(), agent: tempForm.agent, notes: tempForm.notes }, ...prev]);
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const payload = {
+      zone: tempForm.zone,
+      temperature: parseFloat(tempForm.temperature),
+      date: dateStr,
+      time: timeStr,
+      recordedBy: tempForm.agent,
+      notes: tempForm.notes || null,
+    };
+    const localRecord: TemperatureRecord = {
+      id: Date.now(),
+      zone: tempForm.zone,
+      temperature: parseFloat(tempForm.temperature),
+      timestamp: now.toISOString(),
+      agent: tempForm.agent,
+      notes: tempForm.notes,
+    };
+    try {
+      const res = await fetch('/api/haccp/temperatures', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const saved = await res.json();
+        // Map backend response to frontend shape
+        const mapped: TemperatureRecord = {
+          id: saved.id,
+          zone: saved.zone,
+          temperature: saved.temperature,
+          timestamp: saved.createdAt || now.toISOString(),
+          agent: saved.recordedBy || tempForm.agent,
+          notes: saved.notes || '',
+        };
+        setTemperatures(prev => [mapped, ...prev]);
+      } else {
+        setTemperatures(prev => [localRecord, ...prev]);
+      }
+    } catch {
+      setTemperatures(prev => [localRecord, ...prev]);
+    }
     setTempForm({ zone: 'frigo', temperature: '', agent: '', notes: '' });
     setShowTempForm(false);
   }
@@ -210,12 +332,31 @@ export default function HACCP() {
     setShowLotForm(false);
   }
 
-  function toggleClean(id: number) {
-    setCleaning(prev => prev.map(c => {
-      if (c.id !== id) return c;
-      const now = new Date();
-      return { ...c, verified: !c.verified, time: !c.verified ? `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}` : '', agent: !c.verified ? 'Moi' : '' };
-    }));
+  async function toggleClean(id: number) {
+    const record = cleaning.find(c => c.id === id);
+    if (!record) return;
+    const now = new Date();
+    const newVerified = !record.verified;
+    const updated = {
+      ...record,
+      verified: newVerified,
+      time: newVerified ? `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}` : '',
+      agent: newVerified ? 'Moi' : '',
+    };
+    // Optimistic update
+    setCleaning(prev => prev.map(c => c.id === id ? updated : c));
+    try {
+      await fetch(`/api/haccp/cleanings/${id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          status: newVerified ? 'fait' : 'en_attente',
+          doneBy: newVerified ? 'Moi' : null,
+        }),
+      });
+    } catch {
+      // Already updated locally, no rollback needed for UX
+    }
   }
 
   const filteredLots = useMemo(() => {

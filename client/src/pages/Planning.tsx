@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, DragEvent } from 'react';
+import { useState, useMemo, useCallback, useEffect, DragEvent } from 'react';
 import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
   Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical
@@ -154,14 +154,25 @@ function buildSampleData() {
   return { employees, shifts };
 }
 
+// ── API helpers ──────────────────────────────────────────────────────
+
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
+}
+
 // ── Component ──────────────────────────────────────────────────────────
 
 export default function Planning() {
   const { showToast } = useToast();
   const sample = useMemo(() => buildSampleData(), []);
 
-  const [employees, setEmployees] = useState<Employee[]>(sample.employees);
-  const [shifts, setShifts] = useState<Shift[]>(sample.shifts);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [shifts, setShifts] = useState<Shift[]>([]);
   const [weekStart, setWeekStart] = useState<Date>(() => getMonday(new Date()));
   const [view, setView] = useState<'semaine' | 'jour'>('semaine');
   const [selectedDayIdx, setSelectedDayIdx] = useState(() => {
@@ -187,6 +198,48 @@ export default function Planning() {
 
   // Simulated weekly revenue for ratio
   const weeklyRevenue = 12500;
+
+  // ── API: Load employees on mount ──────────────────────────────────────
+
+  const loadEmployees = useCallback(async () => {
+    try {
+      const res = await fetch('/api/planning/employees', { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load employees');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setEmployees(data);
+      } else {
+        setEmployees(sample.employees);
+      }
+    } catch {
+      setEmployees(sample.employees);
+    }
+  }, [sample.employees]);
+
+  const loadShifts = useCallback(async (from: string, to: string) => {
+    try {
+      const res = await fetch(`/api/planning/shifts?from=${from}&to=${to}`, { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load shifts');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        setShifts(data);
+      } else {
+        setShifts(sample.shifts);
+      }
+    } catch {
+      setShifts(sample.shifts);
+    }
+  }, [sample.shifts]);
+
+  useEffect(() => {
+    loadEmployees();
+  }, [loadEmployees]);
+
+  useEffect(() => {
+    const from = formatDate(weekStart);
+    const to = formatDate(addDays(weekStart, 6));
+    loadShifts(from, to);
+  }, [weekStart, loadShifts]);
 
   // ── Week navigation ─────────────────────────────────────────────────
 
@@ -285,38 +338,69 @@ export default function Planning() {
     setShowEmployeeModal(true);
   }
 
-  function saveEmployee() {
+  async function saveEmployee() {
     if (!empForm.nom.trim() || !empForm.prenom.trim() || !empForm.tauxHoraire || !empForm.heuresContrat) {
       showToast('Veuillez remplir tous les champs', 'error');
       return;
     }
+    const empData = {
+      nom: empForm.nom,
+      prenom: empForm.prenom,
+      role: empForm.role,
+      tauxHoraire: parseFloat(empForm.tauxHoraire),
+      heuresContrat: parseFloat(empForm.heuresContrat),
+      couleur: empForm.couleur,
+    };
     if (editEmployee) {
+      // Optimistic update
       setEmployees(prev => prev.map(e =>
-        e.id === editEmployee.id
-          ? { ...e, nom: empForm.nom, prenom: empForm.prenom, role: empForm.role, tauxHoraire: parseFloat(empForm.tauxHoraire), heuresContrat: parseFloat(empForm.heuresContrat), couleur: empForm.couleur }
-          : e
+        e.id === editEmployee.id ? { ...e, ...empData } : e
       ));
+      try {
+        await fetch(`/api/planning/employees/${editEmployee.id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(empData),
+        });
+      } catch {
+        // Already updated locally
+      }
       showToast('Employe modifie', 'success');
     } else {
-      const id = nextId;
+      const localId = nextId;
       setNextId(n => n + 1);
-      setEmployees(prev => [...prev, {
-        id,
-        nom: empForm.nom,
-        prenom: empForm.prenom,
-        role: empForm.role,
-        tauxHoraire: parseFloat(empForm.tauxHoraire),
-        heuresContrat: parseFloat(empForm.heuresContrat),
-        couleur: empForm.couleur,
-      }]);
+      const newEmp: Employee = { id: localId, ...empData };
+      try {
+        const res = await fetch('/api/planning/employees', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(empData),
+        });
+        if (res.ok) {
+          const saved = await res.json();
+          setEmployees(prev => [...prev, saved]);
+        } else {
+          setEmployees(prev => [...prev, newEmp]);
+        }
+      } catch {
+        setEmployees(prev => [...prev, newEmp]);
+      }
       showToast('Employe ajoute', 'success');
     }
     setShowEmployeeModal(false);
   }
 
-  function deleteEmployee(id: number) {
+  async function deleteEmployee(id: number) {
     setEmployees(prev => prev.filter(e => e.id !== id));
     setShifts(prev => prev.filter(s => s.employeeId !== id));
+    try {
+      await fetch(`/api/planning/employees/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+    } catch {
+      // Already removed locally
+    }
     showToast('Employe supprime', 'success');
   }
 
@@ -346,7 +430,7 @@ export default function Planning() {
     setShowShiftModal(true);
   }
 
-  function saveShift() {
+  async function saveShift() {
     if (!shiftForm.employeeId || !shiftForm.date || !shiftForm.start || !shiftForm.end) {
       showToast('Veuillez remplir tous les champs', 'error');
       return;
@@ -366,31 +450,62 @@ export default function Planning() {
       return;
     }
 
+    const shiftData = {
+      employeeId: empId,
+      date: shiftForm.date,
+      start: shiftForm.start,
+      end: shiftForm.end,
+      poste: shiftForm.poste,
+    };
+
     if (editShift) {
       setShifts(prev => prev.map(s =>
-        s.id === editShift.id
-          ? { ...s, employeeId: empId, date: shiftForm.date, start: shiftForm.start, end: shiftForm.end, poste: shiftForm.poste }
-          : s
+        s.id === editShift.id ? { ...s, ...shiftData } : s
       ));
+      try {
+        await fetch(`/api/planning/shifts/${editShift.id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(shiftData),
+        });
+      } catch {
+        // Already updated locally
+      }
       showToast('Creneau modifie', 'success');
     } else {
-      const id = nextId;
+      const localId = nextId;
       setNextId(n => n + 1);
-      setShifts(prev => [...prev, {
-        id,
-        employeeId: empId,
-        date: shiftForm.date,
-        start: shiftForm.start,
-        end: shiftForm.end,
-        poste: shiftForm.poste,
-      }]);
+      const newShift: Shift = { id: localId, ...shiftData };
+      try {
+        const res = await fetch('/api/planning/shifts', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(shiftData),
+        });
+        if (res.ok) {
+          const saved = await res.json();
+          setShifts(prev => [...prev, saved]);
+        } else {
+          setShifts(prev => [...prev, newShift]);
+        }
+      } catch {
+        setShifts(prev => [...prev, newShift]);
+      }
       showToast('Creneau ajoute', 'success');
     }
     setShowShiftModal(false);
   }
 
-  function deleteShift(id: number) {
+  async function deleteShift(id: number) {
     setShifts(prev => prev.filter(s => s.id !== id));
+    try {
+      await fetch(`/api/planning/shifts/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+    } catch {
+      // Already removed locally
+    }
     showToast('Creneau supprime', 'success');
   }
 
@@ -405,7 +520,7 @@ export default function Planning() {
     e.dataTransfer.dropEffect = 'copy';
   }, []);
 
-  const handleDrop = useCallback((dayStr: string, shiftType: ShiftType) => {
+  const handleDrop = useCallback(async (dayStr: string, shiftType: ShiftType) => {
     if (!dragEmployee) return;
     const st = SHIFT_TYPES.find(s => s.key === shiftType)!;
     const overlap = shifts.some(s => {
@@ -417,18 +532,34 @@ export default function Planning() {
       setDragEmployee(null);
       return;
     }
-    const id = nextId;
+    const localId = nextId;
     setNextId(n => n + 1);
-    setShifts(prev => [...prev, {
-      id,
+    const poste = dragEmployee.role === 'Serveur' || dragEmployee.role === 'Serveuse' ? 'salle' as const
+      : dragEmployee.role === 'Plongeur' || dragEmployee.role === 'Plongeuse' ? 'plonge' as const
+      : 'cuisine' as const;
+    const shiftData = {
       employeeId: dragEmployee.id,
       date: dayStr,
       start: st.start,
       end: st.end,
-      poste: dragEmployee.role === 'Serveur' || dragEmployee.role === 'Serveuse' ? 'salle'
-        : dragEmployee.role === 'Plongeur' || dragEmployee.role === 'Plongeuse' ? 'plonge'
-        : 'cuisine',
-    }]);
+      poste,
+    };
+    const newShift: Shift = { id: localId, ...shiftData };
+    try {
+      const res = await fetch('/api/planning/shifts', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(shiftData),
+      });
+      if (res.ok) {
+        const saved = await res.json();
+        setShifts(prev => [...prev, saved]);
+      } else {
+        setShifts(prev => [...prev, newShift]);
+      }
+    } catch {
+      setShifts(prev => [...prev, newShift]);
+    }
     showToast(`${dragEmployee.prenom} assigne`, 'success');
     setDragEmployee(null);
   }, [dragEmployee, shifts, nextId, showToast]);

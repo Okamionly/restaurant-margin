@@ -22,6 +22,8 @@ import { aiRouter } from './routes/ai';
 import { alertsRouter } from './routes/alerts';
 import { comptabiliteRouter } from './routes/comptabilite';
 import { wasteRouter } from './routes/waste';
+import { haccpRouter } from './routes/haccp';
+import { planningRouter } from './routes/planning';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -84,6 +86,8 @@ app.use('/api/ai', aiRouter);
 app.use('/api/alerts', alertsRouter);
 app.use('/api/comptabilite', comptabiliteRouter);
 app.use('/api/waste', wasteRouter);
+app.use('/api/haccp', haccpRouter);
+app.use('/api/planning', planningRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

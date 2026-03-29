@@ -1045,27 +1045,82 @@ app.post('/api/contact', async (req, res) => {
     };
     const sourceLabel = sourceLabels[source] || source || 'Contact';
 
-    // Send notification to admin via Resend
-    // Resend free tier only delivers to the account owner's verified email
+    // Send professional notification to admin via Resend
     const resendKey = process.env.RESEND_API_KEY;
     if (resendKey) {
       const resendClient = new Resend(resendKey);
+      const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
+
       await resendClient.emails.send({
         from: 'RestauMargin <onboarding@resend.dev>',
-        to: 'mr.guessousyoussef@gmail.com', // Resend account owner email
+        to: 'mr.guessousyoussef@gmail.com',
         subject: `[RestauMargin] ${sourceLabel} — ${name}`,
         html: `
-          <div style="font-family:Arial,sans-serif;max-width:600px;">
-            <h2 style="color:#1e293b;">Nouvelle demande — ${sourceLabel}</h2>
-            <table style="width:100%;border-collapse:collapse;">
-              <tr><td style="padding:8px;font-weight:bold;color:#64748b;">Nom</td><td style="padding:8px;">${name}</td></tr>
-              <tr><td style="padding:8px;font-weight:bold;color:#64748b;">Email</td><td style="padding:8px;">${email}</td></tr>
-              ${phone ? `<tr><td style="padding:8px;font-weight:bold;color:#64748b;">Tel</td><td style="padding:8px;">${phone}</td></tr>` : ''}
-              ${message ? `<tr><td style="padding:8px;font-weight:bold;color:#64748b;">Message</td><td style="padding:8px;">${message.replace(/\n/g, '<br>')}</td></tr>` : ''}
-            </table>
-            <p style="color:#94a3b8;font-size:11px;margin-top:16px;">restaumargin.vercel.app</p>
-          </div>
-        `,
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;padding:20px;">
+    <!-- Header avec logo -->
+    <div style="background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-radius:16px 16px 0 0;padding:32px;text-align:center;">
+      <div style="display:inline-block;background:linear-gradient(135deg,#10b981,#3b82f6);border-radius:12px;padding:12px;margin-bottom:16px;">
+        <span style="font-size:24px;color:white;font-weight:800;">RM</span>
+      </div>
+      <h1 style="color:white;margin:0;font-size:22px;font-weight:700;">RestauMargin</h1>
+      <p style="color:#94a3b8;margin:4px 0 0;font-size:13px;">Gestion de marge intelligente pour la restauration</p>
+    </div>
+
+    <!-- Badge source -->
+    <div style="background:white;padding:24px 32px 0;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">
+      <div style="display:inline-block;background:${source === 'kit-station' ? '#ecfdf5' : source === 'enterprise-devis' ? '#eff6ff' : '#fefce8'};color:${source === 'kit-station' ? '#059669' : source === 'enterprise-devis' ? '#2563eb' : '#ca8a04'};padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">
+        ${sourceLabel}
+      </div>
+      <h2 style="color:#0f172a;margin:16px 0 4px;font-size:20px;">Nouvelle demande de ${name}</h2>
+      <p style="color:#64748b;margin:0 0 20px;font-size:14px;">Reçue le ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+    </div>
+
+    <!-- Détails contact -->
+    <div style="background:white;padding:0 32px 24px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:14px 0;color:#64748b;font-size:13px;font-weight:600;width:120px;vertical-align:top;">Nom complet</td>
+          <td style="padding:14px 0;color:#0f172a;font-size:15px;font-weight:500;">${name}</td>
+        </tr>
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:14px 0;color:#64748b;font-size:13px;font-weight:600;vertical-align:top;">Email</td>
+          <td style="padding:14px 0;"><a href="mailto:${email}" style="color:#2563eb;text-decoration:none;font-size:15px;">${email}</a></td>
+        </tr>
+        ${phone ? `<tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:14px 0;color:#64748b;font-size:13px;font-weight:600;vertical-align:top;">Téléphone</td>
+          <td style="padding:14px 0;"><a href="tel:${phone}" style="color:#2563eb;text-decoration:none;font-size:15px;">${phone}</a></td>
+        </tr>` : ''}
+        ${message ? `<tr>
+          <td style="padding:14px 0;color:#64748b;font-size:13px;font-weight:600;vertical-align:top;">Message</td>
+          <td style="padding:14px 0;color:#0f172a;font-size:14px;line-height:1.6;">${message.replace(/\n/g, '<br>')}</td>
+        </tr>` : ''}
+      </table>
+    </div>
+
+    <!-- Action buttons -->
+    <div style="background:white;padding:0 32px 28px;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;">
+      <div style="text-align:center;">
+        <a href="mailto:${email}?subject=Re: Votre demande RestauMargin (${sourceLabel})&body=Bonjour ${name},%0A%0AMerci pour votre demande.%0A%0A" style="display:inline-block;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:600;font-size:15px;margin-right:12px;">
+          Répondre à ${name.split(' ')[0]}
+        </a>
+        <a href="${frontendUrl}/dashboard" style="display:inline-block;background:#f1f5f9;color:#475569;padding:14px 24px;border-radius:10px;text-decoration:none;font-weight:500;font-size:14px;">
+          Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
+      <p style="color:#94a3b8;font-size:11px;margin:0;">RestauMargin © ${new Date().getFullYear()} — ${frontendUrl}</p>
+      <p style="color:#cbd5e1;font-size:10px;margin:4px 0 0;">Cet email est une notification automatique de votre plateforme RestauMargin.</p>
+    </div>
+  </div>
+</body>
+</html>`,
       });
     }
 

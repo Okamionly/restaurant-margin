@@ -133,6 +133,82 @@ comptabiliteRouter.get('/export/fec', authWithRestaurant, async (req: AuthReques
   }
 });
 
+// GET /pnl — Profit & Loss statement + financial ratios
+comptabiliteRouter.get('/pnl', authWithRestaurant, async (req: AuthRequest, res: Response) => {
+  try {
+    const { year } = req.query;
+    const targetYear = year ? String(year) : new Date().getFullYear().toString();
+
+    const entries = await prisma.financialEntry.findMany({
+      where: {
+        restaurantId: req.restaurantId!,
+        date: { gte: `${targetYear}-01-01`, lte: `${targetYear}-12-31` },
+      },
+    });
+
+    // Revenue breakdown
+    const revenueByCategory: Record<string, number> = {};
+    const expenseByCategory: Record<string, number> = {};
+    let totalRevenue = 0;
+    let totalExpenses = 0;
+    let totalTVACollected = 0;
+    let totalTVAPaid = 0;
+    const monthlyPnL: Record<string, { revenue: number; expenses: number; profit: number }> = {};
+
+    for (const e of entries) {
+      const month = e.date.substring(0, 7);
+      if (!monthlyPnL[month]) monthlyPnL[month] = { revenue: 0, expenses: 0, profit: 0 };
+
+      if (e.type === 'revenue') {
+        totalRevenue += e.amount;
+        revenueByCategory[e.category] = (revenueByCategory[e.category] || 0) + e.amount;
+        totalTVACollected += e.tvaAmount;
+        monthlyPnL[month].revenue += e.amount;
+      } else {
+        totalExpenses += e.amount;
+        expenseByCategory[e.category] = (expenseByCategory[e.category] || 0) + e.amount;
+        totalTVAPaid += e.tvaAmount;
+        monthlyPnL[month].expenses += e.amount;
+      }
+      monthlyPnL[month].profit = monthlyPnL[month].revenue - monthlyPnL[month].expenses;
+    }
+
+    const grossProfit = totalRevenue - totalExpenses;
+    const netProfit = grossProfit - (totalTVACollected - totalTVAPaid);
+
+    // Financial ratios
+    const ratios = {
+      grossMarginPct: totalRevenue > 0 ? (grossProfit / totalRevenue * 100) : 0,
+      netMarginPct: totalRevenue > 0 ? (netProfit / totalRevenue * 100) : 0,
+      foodCostRatio: totalRevenue > 0 ? ((expenseByCategory['Matières premières'] || 0) / totalRevenue * 100) : 0,
+      laborCostRatio: totalRevenue > 0 ? ((expenseByCategory['Personnel'] || 0) / totalRevenue * 100) : 0,
+      primeCostRatio: totalRevenue > 0 ? (((expenseByCategory['Matières premières'] || 0) + (expenseByCategory['Personnel'] || 0)) / totalRevenue * 100) : 0,
+      tvaBalance: totalTVACollected - totalTVAPaid,
+    };
+
+    const monthly = Object.entries(monthlyPnL)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, data]) => ({ month, ...data }));
+
+    res.json({
+      year: targetYear,
+      totalRevenue,
+      totalExpenses,
+      grossProfit,
+      netProfit,
+      totalTVACollected,
+      totalTVAPaid,
+      revenueByCategory,
+      expenseByCategory,
+      ratios,
+      monthly,
+      entryCount: entries.length,
+    });
+  } catch {
+    res.status(500).json({ error: 'Erreur calcul P&L' });
+  }
+});
+
 // POST / — create entry
 comptabiliteRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {

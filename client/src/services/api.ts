@@ -416,3 +416,21 @@ export async function deleteInventoryItem(id: number): Promise<void> {
   }
   if (!res.ok) throw new Error('Erreur suppression inventaire');
 }
+
+// --- Waste ---
+
+export async function createWasteLog(data: {
+  ingredientId: number;
+  quantity: number;
+  unit: string;
+  reason: string;
+  date: string;
+  notes?: string;
+}): Promise<unknown> {
+  const res = await fetch(`${API_BASE}/waste`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<unknown>(res);
+}

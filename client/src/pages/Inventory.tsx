@@ -2,11 +2,12 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
   ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
-  PackagePlus, Loader2, PieChart, Scale
+  PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash
 } from 'lucide-react';
 import {
   fetchInventory, fetchInventoryAlerts, fetchInventoryValue, fetchInventorySuggestions,
-  addToInventory, updateInventoryItem, restockInventoryItem, deleteInventoryItem
+  addToInventory, updateInventoryItem, restockInventoryItem, deleteInventoryItem,
+  createWasteLog
 } from '../services/api';
 import type { InventoryItem, InventoryValue, Ingredient } from '../types';
 import { INGREDIENT_CATEGORIES } from '../types';
@@ -29,8 +30,66 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   'Autres': '📦',
 };
 
+const LOCATIONS = ['Cuisine', 'Chambre froide', 'Congélateur', 'Réserve sèche', 'Bar'] as const;
+type LocationType = typeof LOCATIONS[number] | '';
+
+const LOCATION_COLORS: Record<string, string> = {
+  'Cuisine': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  'Chambre froide': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
+  'Congélateur': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  'Réserve sèche': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+  'Bar': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+};
+
+const WASTE_REASONS = [
+  { value: 'expired', label: 'Périmé' },
+  { value: 'damaged', label: 'Abîmé' },
+  { value: 'overproduction', label: 'Surproduction' },
+  { value: 'spoiled', label: 'Avarié' },
+  { value: 'other', label: 'Autre' },
+];
+
 type SortKey = 'name' | 'currentStock' | 'value' | 'status';
 type SortDir = 'asc' | 'desc';
+
+// Parse extra metadata from notes field (JSON encoded)
+interface ItemMeta {
+  expirationDate?: string;
+  location?: string;
+  _originalNotes?: string;
+}
+
+function parseMeta(notes: string | null): ItemMeta {
+  if (!notes) return {};
+  try {
+    const parsed = JSON.parse(notes);
+    if (typeof parsed === 'object' && parsed !== null && (parsed.expirationDate || parsed.location)) {
+      return parsed;
+    }
+  } catch { /* not JSON, treat as plain notes */ }
+  return { _originalNotes: notes || undefined };
+}
+
+function serializeMeta(meta: ItemMeta): string {
+  const clean: Record<string, unknown> = {};
+  if (meta.expirationDate) clean.expirationDate = meta.expirationDate;
+  if (meta.location) clean.location = meta.location;
+  if (meta._originalNotes) clean._originalNotes = meta._originalNotes;
+  return Object.keys(clean).length > 0 ? JSON.stringify(clean) : '';
+}
+
+function getExpirationStatus(expirationDate?: string): 'expired' | 'soon3' | 'soon7' | 'ok' {
+  if (!expirationDate) return 'ok';
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const exp = new Date(expirationDate);
+  exp.setHours(0, 0, 0, 0);
+  const diffDays = Math.floor((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return 'expired';
+  if (diffDays <= 3) return 'soon3';
+  if (diffDays <= 7) return 'soon7';
+  return 'ok';
+}
 
 function getStatus(item: InventoryItem): 'ok' | 'low' | 'critical' {
   if (item.currentStock <= 0) return 'critical';
@@ -44,6 +103,13 @@ function getStatusOrder(status: string): number {
   return 2;
 }
 
+function getExpirationOrder(expStatus: string): number {
+  if (expStatus === 'expired') return 0;
+  if (expStatus === 'soon3') return 1;
+  if (expStatus === 'soon7') return 2;
+  return 3;
+}
+
 export default function Inventory() {
   const { showToast } = useToast();
   const [items, setItems] = useState<InventoryItem[]>([]);
@@ -53,25 +119,34 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
+  const [filterLocation, setFilterLocation] = useState<LocationType>('');
+  const [filterAlertOnly, setFilterAlertOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
+
+  // Low stock banner
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   // Modals
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRestockModal, setShowRestockModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [showWasteModal, setShowWasteModal] = useState(false);
 
   // Weigh modal
   const [weighTarget, setWeighTarget] = useState<InventoryItem | null>(null);
 
   // Forms
-  const [addForm, setAddForm] = useState({ ingredientId: 0, currentStock: '', minStock: '', unit: '' });
+  const [addForm, setAddForm] = useState({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' as LocationType });
   const [restockForm, setRestockForm] = useState({ id: 0, name: '', quantity: '' });
-  const [editForm, setEditForm] = useState({ id: 0, currentStock: '', minStock: '', maxStock: '', unit: '', notes: '' });
+  const [editForm, setEditForm] = useState({ id: 0, currentStock: '', minStock: '', maxStock: '', unit: '', notes: '', expirationDate: '', location: '' as LocationType });
   const [editingStockId, setEditingStockId] = useState<number | null>(null);
   const [inlineStock, setInlineStock] = useState('');
   const [savingBulk, setSavingBulk] = useState(false);
+
+  // Waste form
+  const [wasteForm, setWasteForm] = useState({ itemId: 0, ingredientId: 0, ingredientName: '', unit: '', quantity: '', reason: 'expired', notes: '' });
 
   async function loadData() {
     try {
@@ -96,6 +171,10 @@ export default function Inventory() {
 
   useEffect(() => { loadData(); }, []);
 
+  // Compute alert counts
+  const criticalCount = useMemo(() => items.filter(i => i.currentStock <= 0).length, [items]);
+  const lowCount = useMemo(() => items.filter(i => i.currentStock > 0 && i.currentStock < i.minStock).length, [items]);
+
   // Filtered and sorted items
   const filteredItems = useMemo(() => {
     let result = [...items];
@@ -106,7 +185,27 @@ export default function Inventory() {
     if (filterCategory) {
       result = result.filter(item => item.ingredient.category === filterCategory);
     }
+    if (filterLocation) {
+      result = result.filter(item => {
+        const meta = parseMeta(item.notes);
+        return meta.location === filterLocation;
+      });
+    }
+    if (filterAlertOnly) {
+      result = result.filter(item => {
+        const status = getStatus(item);
+        return status === 'critical' || status === 'low';
+      });
+    }
+
     result.sort((a, b) => {
+      // Always sort expired items to top
+      const metaA = parseMeta(a.notes);
+      const metaB = parseMeta(b.notes);
+      const expA = getExpirationOrder(getExpirationStatus(metaA.expirationDate));
+      const expB = getExpirationOrder(getExpirationStatus(metaB.expirationDate));
+      if (expA !== expB) return expA - expB;
+
       let cmp = 0;
       switch (sortKey) {
         case 'name':
@@ -125,7 +224,7 @@ export default function Inventory() {
       return sortDir === 'asc' ? cmp : -cmp;
     });
     return result;
-  }, [items, search, filterCategory, sortKey, sortDir]);
+  }, [items, search, filterCategory, filterLocation, filterAlertOnly, sortKey, sortDir]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
@@ -142,15 +241,21 @@ export default function Inventory() {
   async function handleAdd() {
     if (!addForm.ingredientId) { showToast('Sélectionnez un ingrédient', 'error'); return; }
     try {
+      const meta: ItemMeta = {};
+      if (addForm.expirationDate) meta.expirationDate = addForm.expirationDate;
+      if (addForm.location) meta.location = addForm.location;
+      const notesStr = serializeMeta(meta);
+
       await addToInventory({
         ingredientId: addForm.ingredientId,
         currentStock: parseFloat(addForm.currentStock) || 0,
         minStock: parseFloat(addForm.minStock) || 0,
         unit: addForm.unit || undefined,
+        notes: notesStr || undefined,
       });
       showToast('Ingrédient ajouté à l\'inventaire', 'success');
       setShowAddModal(false);
-      setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '' });
+      setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' });
       loadData();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erreur';
@@ -175,12 +280,26 @@ export default function Inventory() {
 
   async function handleEdit() {
     try {
+      // Merge existing meta with new values
+      const existingItem = items.find(i => i.id === editForm.id);
+      const existingMeta = existingItem ? parseMeta(existingItem.notes) : {};
+      const meta: ItemMeta = {
+        ...existingMeta,
+        expirationDate: editForm.expirationDate || undefined,
+        location: editForm.location || undefined,
+      };
+      // Preserve original notes text
+      if (editForm.notes && editForm.notes !== serializeMeta(existingMeta)) {
+        meta._originalNotes = editForm.notes;
+      }
+      const notesStr = serializeMeta(meta);
+
       const data: Partial<{ currentStock: number; minStock: number; maxStock: number | null; unit: string; notes: string }> = {};
       if (editForm.currentStock !== '') data.currentStock = parseFloat(editForm.currentStock);
       if (editForm.minStock !== '') data.minStock = parseFloat(editForm.minStock);
       data.maxStock = editForm.maxStock ? parseFloat(editForm.maxStock) : null;
       if (editForm.unit) data.unit = editForm.unit;
-      data.notes = editForm.notes || undefined;
+      data.notes = notesStr || undefined;
       await updateInventoryItem(editForm.id, data);
       showToast('Inventaire mis à jour', 'success');
       setShowEditModal(false);
@@ -258,12 +377,55 @@ export default function Inventory() {
     }
   }
 
+  // Waste handler
+  async function handleWasteSubmit() {
+    const qty = parseFloat(wasteForm.quantity);
+    if (!qty || qty <= 0) { showToast('Quantité invalide', 'error'); return; }
+    try {
+      await createWasteLog({
+        ingredientId: wasteForm.ingredientId,
+        quantity: qty,
+        unit: wasteForm.unit,
+        reason: wasteForm.reason,
+        date: new Date().toISOString(),
+        notes: wasteForm.notes || undefined,
+      });
+      // Also reduce stock
+      const item = items.find(i => i.id === wasteForm.itemId);
+      if (item) {
+        const newStock = Math.max(0, item.currentStock - qty);
+        await updateInventoryItem(wasteForm.itemId, { currentStock: newStock });
+      }
+      showToast('Perte déclarée et stock mis à jour', 'success');
+      setShowWasteModal(false);
+      setWasteForm({ itemId: 0, ingredientId: 0, ingredientName: '', unit: '', quantity: '', reason: 'expired', notes: '' });
+      loadData();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
+    }
+  }
+
+  function openWaste(item: InventoryItem) {
+    setWasteForm({
+      itemId: item.id,
+      ingredientId: item.ingredientId,
+      ingredientName: item.ingredient.name,
+      unit: item.unit,
+      quantity: '',
+      reason: 'expired',
+      notes: '',
+    });
+    setShowWasteModal(true);
+  }
+
   function handleExportCSV() {
-    const header = 'Ingrédient,Catégorie,Stock actuel,Unité,Stock min,Stock max,Valeur,Statut\n';
+    const header = 'Ingrédient,Catégorie,Stock actuel,Unité,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
     const rows = filteredItems.map(item => {
       const val = (item.currentStock * item.ingredient.pricePerUnit).toFixed(2);
       const status = getStatus(item) === 'ok' ? 'OK' : getStatus(item) === 'low' ? 'Bas' : 'Critique';
-      return `"${item.ingredient.name}","${item.ingredient.category}",${item.currentStock},"${item.unit}",${item.minStock},${item.maxStock || ''},${val},${status}`;
+      const meta = parseMeta(item.notes);
+      return `"${item.ingredient.name}","${item.ingredient.category}",${item.currentStock},"${item.unit}",${item.minStock},${item.maxStock || ''},${val},${status},"${meta.location || ''}","${meta.expirationDate || ''}"`;
     }).join('\n');
     const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -285,13 +447,16 @@ export default function Inventory() {
   }
 
   function openEdit(item: InventoryItem) {
+    const meta = parseMeta(item.notes);
     setEditForm({
       id: item.id,
       currentStock: String(item.currentStock),
       minStock: String(item.minStock),
       maxStock: item.maxStock ? String(item.maxStock) : '',
       unit: item.unit,
-      notes: item.notes || '',
+      notes: meta._originalNotes || '',
+      expirationDate: meta.expirationDate || '',
+      location: (meta.location as LocationType) || '',
     });
     setShowEditModal(true);
   }
@@ -313,6 +478,41 @@ export default function Inventory() {
 
   return (
     <div className="space-y-6">
+      {/* Low Stock Notification Banner */}
+      {!bannerDismissed && (criticalCount > 0 || lowCount > 0) && (
+        <div
+          className={`rounded-xl border p-4 flex items-center justify-between cursor-pointer transition-colors ${
+            criticalCount > 0
+              ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+              : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
+          }`}
+          onClick={() => { setFilterAlertOnly(true); setBannerDismissed(true); }}
+        >
+          <div className="flex items-center gap-3">
+            <AlertTriangle className={`w-5 h-5 ${criticalCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`} />
+            <div>
+              <span className="font-semibold text-sm">
+                {criticalCount > 0 && (
+                  <span className="text-red-700 dark:text-red-400">{criticalCount} article{criticalCount > 1 ? 's' : ''} en rupture</span>
+                )}
+                {criticalCount > 0 && lowCount > 0 && <span className="text-slate-500 dark:text-slate-400">, </span>}
+                {lowCount > 0 && (
+                  <span className="text-amber-700 dark:text-amber-400">{lowCount} article{lowCount > 1 ? 's' : ''} en stock bas</span>
+                )}
+              </span>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Cliquez pour filtrer les alertes</p>
+            </div>
+          </div>
+          <button
+            onClick={e => { e.stopPropagation(); setBannerDismissed(true); }}
+            className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+            title="Masquer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -325,7 +525,7 @@ export default function Inventory() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
           </button>
           {suggestions.length > 0 && (
@@ -390,7 +590,7 @@ export default function Inventory() {
                 <div>
                   <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'} {item.ingredient.name}</span>
                   <div className="text-xs text-slate-500 dark:text-slate-400">
-                    {item.currentStock}{" / "}{item.minStock} {item.unit}
+                    {item.currentStock}{" / "}{item.minStock} {item.unit}
                   </div>
                 </div>
                 <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
@@ -451,6 +651,24 @@ export default function Inventory() {
             <option key={cat} value={cat}>{CATEGORY_EMOJIS[cat] || ''} {cat}</option>
           ))}
         </select>
+        <select
+          value={filterLocation}
+          onChange={e => setFilterLocation(e.target.value as LocationType)}
+          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+        >
+          <option value="">Tous emplacements</option>
+          {LOCATIONS.map(loc => (
+            <option key={loc} value={loc}>{loc}</option>
+          ))}
+        </select>
+        {filterAlertOnly && (
+          <button
+            onClick={() => setFilterAlertOnly(false)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+          >
+            <X className="w-3.5 h-3.5" /> Alertes uniquement
+          </button>
+        )}
       </div>
 
       {/* Inventory Table */}
@@ -487,14 +705,52 @@ export default function Inventory() {
               ) : filteredItems.map(item => {
                 const status = getStatus(item);
                 const value = item.currentStock * item.ingredient.pricePerUnit;
+                const meta = parseMeta(item.notes);
+                const expStatus = getExpirationStatus(meta.expirationDate);
                 return (
-                  <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr key={item.id} className={`hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors ${expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span>{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
                         <div>
-                          <div className="font-medium">{item.ingredient.name}</div>
+                          <div className="font-medium flex items-center gap-1.5 flex-wrap">
+                            {item.ingredient.name}
+                            {/* Expiration badges */}
+                            {expStatus === 'expired' && (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">
+                                <Clock className="w-2.5 h-2.5" /> Expiré
+                              </span>
+                            )}
+                            {expStatus === 'soon3' && (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 animate-pulse">
+                                <Clock className="w-2.5 h-2.5" /> Expire bientôt
+                              </span>
+                            )}
+                            {expStatus === 'soon7' && (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400">
+                                <Clock className="w-2.5 h-2.5" /> Expire bientôt
+                              </span>
+                            )}
+                            {/* Location tag */}
+                            {meta.location && (
+                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
+                                <MapPin className="w-2.5 h-2.5" /> {meta.location}
+                              </span>
+                            )}
+                          </div>
                           <div className="text-xs text-slate-400">{item.ingredient.category}</div>
+                          {/* Expiration date display */}
+                          {meta.expirationDate && (
+                            <div className={`text-[10px] ${expStatus === 'expired' || expStatus === 'soon3' ? 'text-red-500 dark:text-red-400' : expStatus === 'soon7' ? 'text-orange-500 dark:text-orange-400' : 'text-slate-400'}`}>
+                              Exp: {new Date(meta.expirationDate).toLocaleDateString('fr-FR')}
+                            </div>
+                          )}
+                          {/* Last restock info */}
+                          {item.lastRestockDate && item.lastRestockQuantity && (
+                            <div className="text-[10px] text-slate-400">
+                              Dernier réappro: {item.lastRestockQuantity}{item.unit} le {new Date(item.lastRestockDate).toLocaleDateString('fr-FR')}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -550,6 +806,9 @@ export default function Inventory() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
+                        <button onClick={() => openWaste(item)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors" title="Déclarer perte">
+                          <Trash className="w-4 h-4" />
+                        </button>
                         <button onClick={() => setWeighTarget(item)} className="p-1.5 rounded hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 transition-colors" title="Peser avec la balance">
                           <Scale className="w-4 h-4" />
                         </button>
@@ -617,6 +876,30 @@ export default function Inventory() {
                 placeholder="0"
                 step="0.01"
               />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Date d'expiration</label>
+              <input
+                type="date"
+                value={addForm.expirationDate}
+                onChange={e => setAddForm(f => ({ ...f, expirationDate: e.target.value }))}
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Emplacement</label>
+              <select
+                value={addForm.location}
+                onChange={e => setAddForm(f => ({ ...f, location: e.target.value as LocationType }))}
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">-- Aucun --</option>
+                {LOCATIONS.map(loc => (
+                  <option key={loc} value={loc}>{loc}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
@@ -703,6 +986,30 @@ export default function Inventory() {
               />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Date d'expiration</label>
+              <input
+                type="date"
+                value={editForm.expirationDate}
+                onChange={e => setEditForm(f => ({ ...f, expirationDate: e.target.value }))}
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Emplacement</label>
+              <select
+                value={editForm.location}
+                onChange={e => setEditForm(f => ({ ...f, location: e.target.value as LocationType }))}
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">-- Aucun --</option>
+                {LOCATIONS.map(loc => (
+                  <option key={loc} value={loc}>{loc}</option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div>
             <label className="block text-sm font-medium mb-1">Notes</label>
             <textarea
@@ -719,6 +1026,54 @@ export default function Inventory() {
             </button>
             <button onClick={handleEdit} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Enregistrer
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Waste Modal */}
+      <Modal isOpen={showWasteModal} onClose={() => setShowWasteModal(false)} title={`Déclarer perte : ${wasteForm.ingredientName}`}>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Quantité perdue ({wasteForm.unit})</label>
+            <input
+              type="number"
+              value={wasteForm.quantity}
+              onChange={e => setWasteForm(f => ({ ...f, quantity: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="Quantité"
+              step="0.01"
+              autoFocus
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Raison</label>
+            <select
+              value={wasteForm.reason}
+              onChange={e => setWasteForm(f => ({ ...f, reason: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              {WASTE_REASONS.map(r => (
+                <option key={r.value} value={r.value}>{r.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Notes (optionnel)</label>
+            <textarea
+              value={wasteForm.notes}
+              onChange={e => setWasteForm(f => ({ ...f, notes: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              rows={2}
+              placeholder="Détails supplémentaires..."
+            />
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              Annuler
+            </button>
+            <button onClick={handleWasteSubmit} className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1.5">
+              <Trash className="w-4 h-4" /> Déclarer perte
             </button>
           </div>
         </div>

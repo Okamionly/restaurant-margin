@@ -652,6 +652,24 @@ export default function Devis() {
 
   useEffect(() => { fetchDevis(); }, [fetchDevis]);
 
+  // ── Auto-detect "en_retard" (sent > 30 days ago and not paid) ───────
+  useEffect(() => {
+    if (loading) return;
+    const thirtyDaysAgo = Date.now() - 30 * 86400000;
+    const hasOverdue = documents.some(
+      d => d.statut === 'envoye' && new Date(d.dateCreation).getTime() < thirtyDaysAgo
+    );
+    if (hasOverdue) {
+      setDocuments(prev => prev.map(d => {
+        if (d.statut === 'envoye' && new Date(d.dateCreation).getTime() < thirtyDaysAgo) {
+          return { ...d, statut: 'en_retard' as DocStatus };
+        }
+        return d;
+      }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]); // run once after data loads
+
   // ── Counters for numbering ───────────────────────────────────────────
   const nextNumber = useCallback((type: DocType): string => {
     const prefix = type === 'devis' ? 'DEV' : type === 'facture' ? 'FAC' : 'AVO';
@@ -1104,9 +1122,34 @@ export default function Devis() {
                         <button onClick={() => handleDuplicate(doc)} title="Dupliquer" className="p-1.5 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
                           <Copy className="w-4 h-4" />
                         </button>
-                        {doc.type === 'devis' && (doc.statut === 'accepte' || doc.statut === 'envoye') && (
+                        {doc.statut === 'brouillon' && (
+                          <button onClick={() => handleSendEmail(doc)} title="Envoyer" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                            <Send className="w-4 h-4" />
+                          </button>
+                        )}
+                        {doc.type === 'devis' && doc.statut === 'accepte' && (
+                          <button
+                            onClick={() => handleConvertToFacture(doc)}
+                            title="Convertir en facture"
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                          >
+                            <ArrowRight className="w-3.5 h-3.5" />
+                            Facture
+                          </button>
+                        )}
+                        {doc.type === 'devis' && doc.statut === 'envoye' && (
                           <button onClick={() => handleConvertToFacture(doc)} title="Convertir en facture" className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
                             <ArrowRight className="w-4 h-4" />
+                          </button>
+                        )}
+                        {doc.type === 'devis' && doc.statut === 'accepte' && (
+                          <button
+                            onClick={() => { setPaymentDocId(doc.id); setShowPaymentModal(true); }}
+                            title="Marquer comme payé"
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                          >
+                            <CreditCard className="w-3.5 h-3.5" />
+                            Payé
                           </button>
                         )}
                         {doc.type === 'facture' && doc.statut !== 'paye' && (
@@ -1350,7 +1393,8 @@ export default function Devis() {
                   Convertir en facture
                 </button>
               )}
-              {previewDoc.type === 'facture' && previewDoc.statut !== 'paye' && (
+              {((previewDoc.type === 'facture' && previewDoc.statut !== 'paye') ||
+                (previewDoc.type === 'devis' && previewDoc.statut === 'accepte')) && (
                 <button
                   onClick={() => {
                     setPaymentDocId(previewDoc.id);
@@ -1360,7 +1404,7 @@ export default function Devis() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
                 >
                   <CreditCard className="w-4 h-4" />
-                  Marquer payé
+                  Marquer comme payé
                 </button>
               )}
             </div>

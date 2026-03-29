@@ -3,7 +3,7 @@ import {
   Star, TrendingUp, Target, Zap, AlertCircle, BarChart3, Plus,
   Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Printer, Upload, X,
   Loader2, ShoppingBag, DollarSign, Percent, ChefHat, Eye,
-  Filter, RefreshCw,
+  Filter, RefreshCw, SlidersHorizontal, AlertTriangle, Lightbulb, Shield,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
@@ -49,6 +49,7 @@ interface RecipeIngredient {
     id: number;
     name: string;
     pricePerUnit: number;
+    allergens?: string[];
   };
 }
 
@@ -142,6 +143,137 @@ function fmt(n: number, decimals = 2) {
 
 function fmtEur(n: number) {
   return `${fmt(n, 2)} €`;
+}
+
+// ── Allergen helpers ──────────────────────────────────────────────────────────
+const ALLERGEN_COLORS: Record<string, string> = {
+  gluten: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300',
+  lactose: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+  lait: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+  noix: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
+  'fruits à coque': 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
+  arachide: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+  soja: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+  oeuf: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+  oeufs: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+  poisson: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/50 dark:text-cyan-300',
+  crustacé: 'bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300',
+  crustacés: 'bg-pink-100 text-pink-800 dark:bg-pink-900/50 dark:text-pink-300',
+  mollusque: 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
+  mollusques: 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
+  sésame: 'bg-lime-100 text-lime-800 dark:bg-lime-900/50 dark:text-lime-300',
+  céleri: 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
+  moutarde: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+  lupin: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300',
+  sulfites: 'bg-violet-100 text-violet-800 dark:bg-violet-900/50 dark:text-violet-300',
+};
+
+function getAllergenColor(allergen: string): string {
+  const key = allergen.toLowerCase().trim();
+  return ALLERGEN_COLORS[key] || 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300';
+}
+
+function getRecipeAllergens(recipe: Recipe): string[] {
+  const set = new Set<string>();
+  (recipe.ingredients || []).forEach(ri => {
+    (ri.ingredient.allergens || []).forEach(a => set.add(a));
+  });
+  return Array.from(set).sort();
+}
+
+// ── Profitability score ───────────────────────────────────────────────────────
+function computeProfitabilityScore(item: EngineeringItem, maxSalesQty: number): number {
+  // Margin % component (40%) — scale to 0-100 where 80%+ margin = 100
+  const marginScore = Math.min(100, (item.marginPercent / 80) * 100);
+  // Popularity component (30%) — relative to max sales
+  const popScore = maxSalesQty > 0 ? (item.salesQty / maxSalesQty) * 100 : 0;
+  // Food cost ratio component (30%) — lower is better, invert
+  const costRatio = item.sellingPrice > 0 ? (item.costPerPortion / item.sellingPrice) * 100 : 100;
+  const costScore = Math.max(0, 100 - costRatio);
+  return Math.round(marginScore * 0.4 + popScore * 0.3 + costScore * 0.3);
+}
+
+function scoreColor(score: number): string {
+  if (score > 70) return 'text-emerald-600 dark:text-emerald-400';
+  if (score >= 40) return 'text-amber-600 dark:text-amber-400';
+  return 'text-red-600 dark:text-red-400';
+}
+
+function scoreBg(score: number): string {
+  if (score > 70) return 'bg-emerald-100 dark:bg-emerald-900/40';
+  if (score >= 40) return 'bg-amber-100 dark:bg-amber-900/40';
+  return 'bg-red-100 dark:bg-red-900/40';
+}
+
+// ── AI Recommendation generator ─────────────────────────────────────────────
+function generateRecommendations(items: EngineeringItem[]): { icon: string; text: string; type: 'success' | 'info' | 'warning' | 'danger' }[] {
+  const tips: { icon: string; text: string; type: 'success' | 'info' | 'warning' | 'danger' }[] = [];
+  const stars = items.filter(i => i.quadrant === 'star');
+  const puzzles = items.filter(i => i.quadrant === 'puzzle');
+  const plows = items.filter(i => i.quadrant === 'plow');
+  const dogs = items.filter(i => i.quadrant === 'dog');
+
+  // Stars recommendations
+  if (stars.length > 0) {
+    const topStar = stars.sort((a, b) => b.salesRevenue - a.salesRevenue)[0];
+    tips.push({
+      icon: '⭐',
+      text: `Mettez "${topStar.name}" en avant sur la carte (vedette n°1 avec ${fmtEur(topStar.salesRevenue)} de CA et ${fmt(topStar.marginPercent, 1)}% de marge).`,
+      type: 'success',
+    });
+  }
+
+  // Puzzles recommendations
+  if (puzzles.length > 0) {
+    const topPuzzle = puzzles.sort((a, b) => b.marginPercent - a.marginPercent)[0];
+    const suggestedDiscount = Math.round(topPuzzle.sellingPrice * 0.05 * 100) / 100;
+    tips.push({
+      icon: '🧩',
+      text: `"${topPuzzle.name}" a une excellente marge (${fmt(topPuzzle.marginPercent, 1)}%) mais se vend peu. Augmentez sa visibilité ou proposez une réduction de ${fmtEur(suggestedDiscount)} pour stimuler les ventes.`,
+      type: 'info',
+    });
+  }
+
+  // Plows recommendations
+  if (plows.length > 0) {
+    const topPlow = plows.sort((a, b) => b.salesQty - a.salesQty)[0];
+    const suggestedIncrease = Math.round(topPlow.sellingPrice * 0.08 * 100) / 100;
+    tips.push({
+      icon: '🐮',
+      text: `"${topPlow.name}" est populaire (${topPlow.salesQty} ventes) mais la marge est faible. Augmentez le prix de ${fmtEur(suggestedIncrease)} sans perdre de clients.`,
+      type: 'warning',
+    });
+  }
+
+  // Dogs recommendations
+  if (dogs.length > 0) {
+    const worstDog = dogs.sort((a, b) => a.marginPercent - b.marginPercent)[0];
+    tips.push({
+      icon: '🐕',
+      text: `Envisagez de retirer "${worstDog.name}" du menu (marge de seulement ${fmt(worstDog.marginPercent, 1)}% et ${worstDog.salesQty} ventes). Reformulez la recette ou remplacez-le.`,
+      type: 'danger',
+    });
+  }
+
+  // General optimization tips
+  const avgMargin = items.length > 0 ? items.reduce((s, i) => s + i.marginPercent, 0) / items.length : 0;
+  if (avgMargin < 65) {
+    tips.push({
+      icon: '📊',
+      text: `Votre marge moyenne est de ${fmt(avgMargin, 1)}%, en dessous de l'objectif de 65%. Concentrez-vous sur la réduction des coûts matières ou l'augmentation des prix des plats les plus populaires.`,
+      type: 'warning',
+    });
+  }
+
+  if (dogs.length > stars.length && items.length > 4) {
+    tips.push({
+      icon: '🔄',
+      text: `Vous avez ${dogs.length} poids morts contre ${stars.length} vedettes. Réduisez votre carte en supprimant les plats peu rentables pour simplifier la cuisine et améliorer la marge globale.`,
+      type: 'danger',
+    });
+  }
+
+  return tips.slice(0, 5);
 }
 
 // ── BCG Matrix Component ─────────────────────────────────────────────────────
@@ -369,6 +501,11 @@ export default function MenuEngineering() {
   const [bulkCsv, setBulkCsv] = useState('');
   const [bulkSubmitting, setBulkSubmitting] = useState(false);
 
+  // What-if scenario
+  const [showWhatIf, setShowWhatIf] = useState(false);
+  const [whatIfRecipeId, setWhatIfRecipeId] = useState<number | ''>('');
+  const [whatIfPriceAdjust, setWhatIfPriceAdjust] = useState(0); // percentage -30 to +30
+
   // ── Fetch data ─────────────────────────────────────────────────────────────
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -580,6 +717,43 @@ export default function MenuEngineering() {
     }
   };
 
+  // ── What-if computed values ─────────────────────────────────────────────────
+  const whatIfData = useMemo(() => {
+    if (!whatIfRecipeId) return null;
+    const item = items.find(i => i.id === Number(whatIfRecipeId));
+    if (!item) return null;
+    const originalPrice = item.sellingPrice;
+    const newPrice = Math.round(originalPrice * (1 + whatIfPriceAdjust / 100) * 100) / 100;
+    const newMargin = newPrice - item.costPerPortion;
+    const newMarginPercent = newPrice > 0 ? (newMargin / newPrice) * 100 : 0;
+    const newFoodCostRatio = newPrice > 0 ? (item.costPerPortion / newPrice) * 100 : 0;
+    const originalFoodCostRatio = originalPrice > 0 ? (item.costPerPortion / originalPrice) * 100 : 0;
+    const revenueImpact = (newPrice - originalPrice) * item.salesQty;
+    return {
+      item,
+      originalPrice,
+      newPrice,
+      originalMargin: item.margin,
+      newMargin: Math.round(newMargin * 100) / 100,
+      originalMarginPercent: item.marginPercent,
+      newMarginPercent: Math.round(newMarginPercent * 10) / 10,
+      originalFoodCostRatio: Math.round(originalFoodCostRatio * 10) / 10,
+      newFoodCostRatio: Math.round(newFoodCostRatio * 10) / 10,
+      revenueImpact: Math.round(revenueImpact * 100) / 100,
+    };
+  }, [whatIfRecipeId, whatIfPriceAdjust, items]);
+
+  const maxSalesQty = useMemo(() => Math.max(...items.map(i => i.salesQty), 1), [items]);
+
+  const recommendations = useMemo(() => generateRecommendations([...items]), [items]);
+
+  // ── Allergens per recipe (map recipeId -> allergens) ──────────────────────
+  const recipeAllergens = useMemo(() => {
+    const map: Record<number, string[]> = {};
+    recipes.forEach(r => { map[r.id] = getRecipeAllergens(r); });
+    return map;
+  }, [recipes]);
+
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />;
     return sortDir === 'asc'
@@ -777,7 +951,7 @@ export default function MenuEngineering() {
 
             {/* ── Detailed table ───────────────────────────────────────────── */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <Award className="w-5 h-5 text-violet-500" />
                   Détail par recette
@@ -822,6 +996,12 @@ export default function MenuEngineering() {
                           </span>
                         </th>
                       ))}
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Score
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        Allergènes
+                      </th>
                       <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         Action
                       </th>
@@ -830,13 +1010,15 @@ export default function MenuEngineering() {
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
                     {sortedItems.length === 0 ? (
                       <tr>
-                        <td colSpan={10} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500">
+                        <td colSpan={12} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500">
                           Aucun plat trouvé pour ce filtre
                         </td>
                       </tr>
                     ) : (
                       sortedItems.map(item => {
                         const cfg = QUADRANT_CONFIG[item.quadrant];
+                        const score = computeProfitabilityScore(item, maxSalesQty);
+                        const allergens = recipeAllergens[item.id] || [];
                         return (
                           <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                             <td className="px-4 py-3 font-medium text-slate-900 dark:text-white whitespace-nowrap">
@@ -868,8 +1050,37 @@ export default function MenuEngineering() {
                                 {cfg.emoji} {cfg.label}
                               </span>
                             </td>
-                            <td className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400 max-w-[200px]">
-                              {cfg.recommendation}
+                            <td className="px-4 py-3 text-center">
+                              <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold ${scoreBg(score)} ${scoreColor(score)}`}>
+                                {score}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex flex-wrap gap-1 max-w-[180px]">
+                                {allergens.length > 0 ? (
+                                  <>
+                                    {allergens.length >= 3 && (
+                                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 mr-0.5 flex-shrink-0 mt-0.5" />
+                                    )}
+                                    {allergens.map(a => (
+                                      <span key={a} className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium leading-tight ${getAllergenColor(a)}`}>
+                                        {a}
+                                      </span>
+                                    ))}
+                                  </>
+                                ) : (
+                                  <span className="text-xs text-slate-400">-</span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => { setWhatIfRecipeId(item.id); setWhatIfPriceAdjust(0); setShowWhatIf(true); }}
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors"
+                                title="Simuler un changement de prix"
+                              >
+                                <SlidersHorizontal className="w-3.5 h-3.5" /> Simuler
+                              </button>
                             </td>
                           </tr>
                         );
@@ -879,9 +1090,202 @@ export default function MenuEngineering() {
                 </table>
               </div>
             </div>
+
+            {/* ── AI Recommendations ─────────────────────────────────────────── */}
+            {recommendations.length > 0 && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-2.5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl text-white shadow-lg">
+                    <Lightbulb className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                      Recommandations IA
+                    </h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Suggestions d&apos;optimisation basées sur vos données réelles
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {recommendations.map((tip, idx) => {
+                    const borderColors = {
+                      success: 'border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20',
+                      info: 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-950/20',
+                      warning: 'border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20',
+                      danger: 'border-l-red-500 bg-red-50/50 dark:bg-red-950/20',
+                    };
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-start gap-3 p-4 rounded-xl border-l-4 ${borderColors[tip.type]}`}
+                      >
+                        <span className="text-xl flex-shrink-0 mt-0.5">{tip.icon}</span>
+                        <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
+                          {tip.text}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── Score Legend ────────────────────────────────────────────────── */}
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-lg">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                    Légende du score de rentabilité
+                  </h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Score /100 basé sur la marge (40%), popularité (30%) et ratio coût matière (30%)
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 text-sm font-bold">71+</span>
+                  <div>
+                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 text-sm">Excellent</div>
+                    <div className="text-xs text-emerald-600/70 dark:text-emerald-400/70">Plat très rentable</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 text-sm font-bold">40-70</span>
+                  <div>
+                    <div className="font-semibold text-amber-700 dark:text-amber-300 text-sm">Moyen</div>
+                    <div className="text-xs text-amber-600/70 dark:text-amber-400/70">A optimiser</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
+                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 text-sm font-bold">&lt;40</span>
+                  <div>
+                    <div className="font-semibold text-red-700 dark:text-red-300 text-sm">Faible</div>
+                    <div className="text-xs text-red-600/70 dark:text-red-400/70">Action requise</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>
+
+      {/* ── Modal: What-If Scenario ─────────────────────────────────────────── */}
+      <Modal isOpen={showWhatIf} onClose={() => setShowWhatIf(false)} title="Simulation de prix (What-If)">
+        <div className="space-y-5">
+          {/* Recipe selector */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Recette</label>
+            <select
+              value={whatIfRecipeId}
+              onChange={e => { setWhatIfRecipeId(e.target.value ? Number(e.target.value) : ''); setWhatIfPriceAdjust(0); }}
+              className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+            >
+              <option value="">Sélectionner une recette...</option>
+              {items.map(r => (
+                <option key={r.id} value={r.id}>{r.name} ({fmtEur(r.sellingPrice)})</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Price slider */}
+          {whatIfRecipeId && whatIfData && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                  Ajustement du prix: <span className={`font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600' : whatIfPriceAdjust < 0 ? 'text-red-600' : 'text-slate-600'}`}>
+                    {whatIfPriceAdjust > 0 ? '+' : ''}{whatIfPriceAdjust}%
+                  </span>
+                </label>
+                <input
+                  type="range"
+                  min={-30}
+                  max={30}
+                  step={1}
+                  value={whatIfPriceAdjust}
+                  onChange={e => setWhatIfPriceAdjust(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                />
+                <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <span>-30%</span>
+                  <span>0%</span>
+                  <span>+30%</span>
+                </div>
+              </div>
+
+              {/* Results */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Price comparison */}
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Prix actuel</div>
+                    <div className="text-lg font-bold text-slate-700 dark:text-slate-200">{fmtEur(whatIfData.originalPrice)}</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Nouveau prix</div>
+                    <div className={`text-lg font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfPriceAdjust < 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                      {fmtEur(whatIfData.newPrice)}
+                    </div>
+                  </div>
+
+                  {/* Margin comparison */}
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Marge actuelle</div>
+                    <div className="text-lg font-bold text-slate-700 dark:text-slate-200">{fmt(whatIfData.originalMarginPercent, 1)}%</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Nouvelle marge</div>
+                    <div className={`text-lg font-bold ${whatIfData.newMarginPercent > whatIfData.originalMarginPercent ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newMarginPercent < whatIfData.originalMarginPercent ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                      {fmt(whatIfData.newMarginPercent, 1)}%
+                    </div>
+                  </div>
+
+                  {/* Food cost ratio */}
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Ratio coût matière</div>
+                    <div className="text-lg font-bold text-slate-700 dark:text-slate-200">{fmt(whatIfData.originalFoodCostRatio, 1)}%</div>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Nouveau ratio</div>
+                    <div className={`text-lg font-bold ${whatIfData.newFoodCostRatio < whatIfData.originalFoodCostRatio ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newFoodCostRatio > whatIfData.originalFoodCostRatio ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                      {fmt(whatIfData.newFoodCostRatio, 1)}%
+                    </div>
+                  </div>
+                </div>
+
+                {/* Revenue impact */}
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">Impact CA estimé (sur {whatIfData.item.salesQty} ventes)</div>
+                  <div className={`text-xl font-bold ${whatIfData.revenueImpact > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.revenueImpact < 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-600'}`}>
+                    {whatIfData.revenueImpact > 0 ? '+' : ''}{fmtEur(whatIfData.revenueImpact)}
+                  </div>
+                </div>
+
+                {/* Summary message */}
+                {whatIfPriceAdjust !== 0 && (
+                  <div className={`p-3 rounded-lg text-sm ${whatIfPriceAdjust > 0 ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'}`}>
+                    Si vous {whatIfPriceAdjust > 0 ? 'augmentez' : 'baissez'} le prix de {fmtEur(Math.abs(whatIfData.newPrice - whatIfData.originalPrice))}, la marge passe de {fmt(whatIfData.originalMarginPercent, 1)}% à {fmt(whatIfData.newMarginPercent, 1)}%.
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          <div className="flex justify-end pt-2">
+            <button
+              onClick={() => setShowWhatIf(false)}
+              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* ── Modal: Saisie de vente ──────────────────────────────────────────── */}
       <Modal isOpen={showSalesModal} onClose={() => setShowSalesModal(false)} title="Saisir une vente">

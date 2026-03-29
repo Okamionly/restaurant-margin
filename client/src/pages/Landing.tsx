@@ -921,7 +921,7 @@ export default function Landing() {
       </section>
 
       {/* ════════════════ Kit Contact Form ════════════════ */}
-      <section id="kit-contact" className="py-20 sm:py-28 bg-slate-50">
+      <section id="kit-form" className="py-20 sm:py-28 bg-slate-50 scroll-mt-24">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
@@ -1067,8 +1067,8 @@ export default function Landing() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Ressources</h4>
               <ul className="space-y-2.5">
-                <li><a href="mailto:contact@restaumargin.fr" className="text-sm hover:text-white transition-colors">Contact</a></li>
-                <li><a href="mailto:support@restaumargin.fr" className="text-sm hover:text-white transition-colors">Support</a></li>
+                <li><a href="#kit-form" className="text-sm hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#kit-form" className="text-sm hover:text-white transition-colors">Support</a></li>
               </ul>
             </div>
 

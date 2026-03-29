@@ -117,10 +117,16 @@ export default function StationLanding() {
     setOrderStatus('sending');
     setOrderError('');
     try {
-      const res = await fetch('/api/station-orders', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderForm),
+        body: JSON.stringify({
+          name: orderForm.name,
+          email: orderForm.email,
+          phone: orderForm.phone,
+          message: `Commande Kit Station x${orderForm.quantity}${orderForm.message ? ' — ' + orderForm.message : ''}`,
+          source: 'kit-station',
+        }),
       });
       if (!res.ok) throw new Error('Erreur lors de l\'envoi');
       setOrderStatus('success');
@@ -455,7 +461,7 @@ export default function StationLanding() {
           </div>
 
           {/* ═══ FORMULAIRE DE COMMANDE ═══ */}
-          <div id="order" className="mt-16 max-w-2xl mx-auto">
+          <div id="order-form" className="mt-16 max-w-2xl mx-auto scroll-mt-24">
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-8">
               <div className="text-center mb-8">
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
@@ -602,7 +608,7 @@ export default function StationLanding() {
                 <Package className="w-5 h-5" />
                 Commander le Kit — 1 200€ HT
               </a>
-              <a href="mailto:mr.guessousyoussef@gmail.com" className="px-8 py-3 border border-slate-700 hover:border-slate-500 rounded-xl font-medium transition flex items-center gap-2 text-slate-300">
+              <a href="#order-form" className="px-8 py-3 border border-slate-700 hover:border-slate-500 rounded-xl font-medium transition flex items-center gap-2 text-slate-300">
                 <Mail className="w-5 h-5" />
                 Nous contacter
               </a>
@@ -656,7 +662,7 @@ export default function StationLanding() {
             © 2026 RestauMargin — Solution de gestion de marge pour la restauration
           </div>
           <div className="flex gap-6 text-xs text-slate-500">
-            <a href="mailto:mr.guessousyoussef@gmail.com" className="hover:text-white transition">Contact</a>
+            <a href="#order-form" className="hover:text-white transition">Contact</a>
             <Link to="/landing" className="hover:text-white transition">App RestauMargin</Link>
           </div>
         </div>

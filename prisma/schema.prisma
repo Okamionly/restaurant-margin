@@ -3,23 +3,95 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  passwordHash String
-  name         String
-  role         String   @default("chef") // admin, chef
-  createdAt    DateTime @default(now())
+  id                Int                @id @default(autoincrement())
+  email             String             @unique
+  passwordHash      String
+  name              String
+  role              String             @default("chef") // admin, chef
+  plan              String             @default("basic") // basic, pro, business
+  stripeCustomerId  String?
+  stripeSubId       String?
+  emailVerified     Boolean            @default(true)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  acceptedCguAt     DateTime?
+  createdAt         DateTime           @default(now())
+  ownedRestaurants  Restaurant[]       @relation("OwnedRestaurants")
+  memberships       RestaurantMember[]
 
   @@map("users")
 }
 
+model ActivationCode {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  plan      String   // basic, pro, business
+  used      Boolean  @default(false)
+  usedBy    String?  // email of user who used it
+  usedAt    DateTime?
+  stripePaymentId String?
+  createdAt DateTime @default(now())
+
+  @@index([code])
+  @@map("activation_codes")
+}
+
+model Restaurant {
+  id            Int                @id @default(autoincrement())
+  name          String
+  address       String?
+  cuisineType   String?
+  phone         String?
+  coversPerDay  Int                @default(80)
+  ownerId       Int
+  owner         User               @relation("OwnedRestaurants", fields: [ownerId], references: [id])
+  members       RestaurantMember[]
+  ingredients   Ingredient[]
+  recipes       Recipe[]
+  suppliers     Supplier[]
+  inventory     InventoryItem[]
+  invoices      Invoice[]
+  priceHistory  PriceHistory[]
+  menuSales     MenuSale[]
+  devis         Devis[]
+  conversations    Conversation[]
+  financialEntries FinancialEntry[]
+  wasteLogs        WasteLog[]
+  haccpTemperatures HaccpTemperature[]
+  haccpCleanings   HaccpCleaning[]
+  employees        Employee[]
+  shifts           Shift[]
+  seminaires       Seminaire[]
+  marketplaceOrders MarketplaceOrder[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@map("restaurants")
+}
+
+model RestaurantMember {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  restaurantId Int
+  role         String     @default("member") // owner, admin, member
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, restaurantId])
+  @@index([userId])
+  @@index([restaurantId])
+  @@map("restaurant_members")
+}
+
 model Supplier {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String
   phone        String?
   email        String?
@@ -27,148 +99,45 @@ model Supplier {
   city         String?
   postalCode   String?
   region       String?
-  country      String   @default("France")
+  country      String     @default("France")
   siret        String?
   website      String?
   notes        String?
   categories   String[]
   contactName  String?
-  delivery     Boolean  @default(true)
+  delivery     Boolean    @default(true)
   minOrder     String?
   paymentTerms String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   ingredients  Ingredient[]
-  rfqSuppliers RFQSupplier[]
-  rfqQuotes    RFQQuote[]
 
+  @@index([restaurantId])
   @@map("suppliers")
 }
 
 model Ingredient {
-  id           Int                @id @default(autoincrement())
-  name         String
-  unit         String
-  pricePerUnit Float
-  supplier     String?
-  supplierId   Int?
-  supplierRef  Supplier?          @relation(fields: [supplierId], references: [id])
-  category     String
-  allergens    String[]           @default([])
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-  recipes      RecipeIngredient[]
+  id            Int                @id @default(autoincrement())
+  name          String
+  unit          String
+  pricePerUnit  Float
+  supplier      String?
+  supplierId    Int?
+  supplierRef   Supplier?          @relation(fields: [supplierId], references: [id])
+  category      String
+  allergens     String[]           @default([])
+  restaurantId  Int
+  restaurant    Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
-  rfqItems     RFQItem[]
-  priceHistory PriceHistory[]
+  wasteLogs     WasteLog[]
 
+  @@index([restaurantId, name])
   @@map("ingredients")
-}
-
-model PriceHistory {
-  id           Int        @id @default(autoincrement())
-  ingredientId Int
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
-  price        Float
-  source       String?    // "manual", "invoice", "rfq"
-  invoiceRef   String?
-  createdAt    DateTime   @default(now())
-
-  @@map("price_history")
-}
-
-model Invoice {
-  id           Int            @id @default(autoincrement())
-  supplierId   Int?
-  supplierName String
-  invoiceNumber String?
-  invoiceDate  DateTime?
-  totalHT      Float?
-  totalTTC     Float?
-  imageUrl     String?
-  status       String         @default("pending") // pending, processed, error
-  rawText      String?
-  createdAt    DateTime       @default(now())
-  items        InvoiceItem[]
-
-  @@map("invoices")
-}
-
-model InvoiceItem {
-  id           Int      @id @default(autoincrement())
-  invoiceId    Int
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  productName  String
-  quantity     Float?
-  unit         String?
-  unitPrice    Float?
-  totalPrice   Float?
-  matched      Boolean  @default(false)
-  ingredientId Int?
-
-  @@map("invoice_items")
-}
-
-model MenuSales {
-  id        Int      @id @default(autoincrement())
-  recipeId  Int
-  date      DateTime @default(now())
-  quantity  Int      @default(1)
-  revenue   Float?
-
-  @@map("menu_sales")
-}
-
-model RFQ {
-  id          Int           @id @default(autoincrement())
-  title       String
-  status      String        @default("draft") // draft, sent, closed
-  dueDate     DateTime?
-  notes       String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  items       RFQItem[]
-  suppliers   RFQSupplier[]
-
-  @@map("rfqs")
-}
-
-model RFQItem {
-  id           Int        @id @default(autoincrement())
-  rfqId        Int
-  ingredientId Int
-  quantity     Float
-  rfq          RFQ        @relation(fields: [rfqId], references: [id], onDelete: Cascade)
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
-  quotes       RFQQuote[]
-
-  @@unique([rfqId, ingredientId])
-  @@map("rfq_items")
-}
-
-model RFQSupplier {
-  id         Int      @id @default(autoincrement())
-  rfqId      Int
-  supplierId Int
-  rfq        RFQ      @relation(fields: [rfqId], references: [id], onDelete: Cascade)
-  supplier   Supplier @relation(fields: [supplierId], references: [id])
-
-  @@unique([rfqId, supplierId])
-  @@map("rfq_suppliers")
-}
-
-model RFQQuote {
-  id         Int      @id @default(autoincrement())
-  rfqItemId  Int
-  supplierId Int
-  unitPrice  Float?
-  notes      String?
-  selected   Boolean  @default(false)
-  rfqItem    RFQItem  @relation(fields: [rfqItemId], references: [id], onDelete: Cascade)
-  supplier   Supplier @relation(fields: [supplierId], references: [id])
-
-  @@unique([rfqItemId, supplierId])
-  @@map("rfq_quotes")
 }
 
 model Recipe {
@@ -181,10 +150,13 @@ model Recipe {
   prepTimeMinutes  Int?
   cookTimeMinutes  Int?
   laborCostPerHour Float              @default(0)
+  restaurantId     Int
+  restaurant       Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   ingredients      RecipeIngredient[]
 
+  @@index([restaurantId, category])
   @@map("recipes")
 }
 
@@ -212,9 +184,310 @@ model InventoryItem {
   lastRestockDate     DateTime?
   lastRestockQuantity Float?
   notes               String?
+  restaurantId        Int
+  restaurant          Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
 
   @@unique([ingredientId])
+  @@index([restaurantId])
   @@map("inventory_items")
+}
+
+model Invoice {
+  id            Int           @id @default(autoincrement())
+  supplierName  String
+  invoiceNumber String
+  invoiceDate   String
+  totalAmount   Float
+  status        String        @default("pending")
+  restaurantId  Int
+  restaurant    Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  items         InvoiceItem[]
+
+  @@index([supplierName])
+  @@index([status])
+  @@index([restaurantId, createdAt])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id           Int      @id @default(autoincrement())
+  invoiceId    Int
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productName  String
+  quantity     Float
+  unit         String
+  unitPrice    Float
+  total        Float
+  ingredientId Int?
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model PriceHistory {
+  id           Int        @id @default(autoincrement())
+  ingredientId Int
+  price        Float
+  date         String
+  source       String     @default("manual")
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([ingredientId])
+  @@index([date])
+  @@index([ingredientId, date])
+  @@index([ingredientId, createdAt])
+  @@map("price_history")
+}
+
+model MenuSale {
+  id           Int        @id @default(autoincrement())
+  recipeId     Int
+  recipeName   String
+  quantity     Int
+  revenue      Float
+  date         String
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([recipeId])
+  @@index([date])
+  @@index([recipeId, date])
+  @@map("menu_sales")
+}
+
+model Devis {
+  id           Int         @id @default(autoincrement())
+  number       String      // DEV-2026-001
+  clientName   String
+  clientEmail  String?
+  clientPhone  String?
+  clientAddress String?
+  subject      String
+  status       String      @default("draft") // draft, sent, accepted, rejected
+  totalHT      Float       @default(0)
+  totalTTC     Float       @default(0)
+  tvaRate      Float       @default(20)
+  validUntil   String?
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items        DevisItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([restaurantId, status])
+  @@map("devis")
+}
+
+model DevisItem {
+  id          Int    @id @default(autoincrement())
+  devisId     Int
+  devis       Devis  @relation(fields: [devisId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float
+  unitPrice   Float
+  total       Float
+
+  @@index([devisId])
+  @@map("devis_items")
+}
+
+model FinancialEntry {
+  id           Int        @id @default(autoincrement())
+  date         String     // YYYY-MM-DD
+  type         String     // revenue, expense
+  category     String     // Matières premières, Personnel, Loyer, Énergie, etc.
+  label        String     // Description
+  amount       Float
+  tvaRate      Float      @default(20)
+  tvaAmount    Float      @default(0)
+  paymentMode  String?    // CB, Espèces, Chèque, Virement, Ticket resto
+  reference    String?    // Invoice number, receipt number
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@index([restaurantId, type])
+  @@map("financial_entries")
+}
+
+model WasteLog {
+  id           Int        @id @default(autoincrement())
+  ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  quantity     Float
+  unit         String
+  reason       String     // expired, spoiled, overproduction, damaged, other
+  costImpact   Float      // quantity * ingredient pricePerUnit
+  date         String     // YYYY-MM-DD
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@map("waste_logs")
+}
+
+model Employee {
+  id           Int        @id @default(autoincrement())
+  name         String
+  role         String     // Chef, Commis, Serveur, Plongeur, Barman, Manager
+  email        String?
+  phone        String?
+  hourlyRate   Float      @default(12)
+  color        String     @default("#3b82f6")
+  active       Boolean    @default(true)
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  shifts       Shift[]
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId])
+  @@map("employees")
+}
+
+model Shift {
+  id           Int        @id @default(autoincrement())
+  employeeId   Int
+  employee     Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date         String     // YYYY-MM-DD
+  startTime    String     // HH:MM
+  endTime      String     // HH:MM
+  type         String     // Matin, Midi, Soir, Coupure
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@index([employeeId, date])
+  @@map("shifts")
+}
+
+model HaccpTemperature {
+  id           Int        @id @default(autoincrement())
+  zone         String     // Frigo, Congélateur, Plats chauds, Réception
+  temperature  Float
+  status       String     @default("conforme") // conforme, non_conforme, en_attente
+  recordedBy   String?
+  notes        String?
+  date         String     // YYYY-MM-DD
+  time         String?    // HH:MM
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@map("haccp_temperatures")
+}
+
+model HaccpCleaning {
+  id           Int        @id @default(autoincrement())
+  zone         String     // Cuisine, Salle, Toilettes, Chambre froide, etc.
+  task         String     // Description of cleaning task
+  status       String     @default("en_attente") // fait, en_attente, non_fait
+  doneBy       String?
+  date         String
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@map("haccp_cleanings")
+}
+
+model Seminaire {
+  id           Int        @id @default(autoincrement())
+  title        String
+  clientName   String
+  clientEmail  String?
+  clientPhone  String?
+  eventType    String     // Séminaire, Mariage, Anniversaire, Corporate, Autre
+  date         String     // YYYY-MM-DD
+  startTime    String?
+  endTime      String?
+  guestCount   Int        @default(20)
+  status       String     @default("demande") // demande, devis_envoye, confirme, en_cours, solde, annule
+  budget       Float?
+  menuDetails  String?
+  equipment    String[]   @default([])
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([restaurantId, status])
+  @@index([restaurantId, date])
+  @@map("seminaires")
+}
+
+model MarketplaceOrder {
+  id           Int        @id @default(autoincrement())
+  supplierName String
+  status       String     @default("draft") // draft, sent, confirmed, received
+  totalHT      Float      @default(0)
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items        MarketplaceOrderItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([restaurantId, status])
+  @@map("marketplace_orders")
+}
+
+model MarketplaceOrderItem {
+  id          Int              @id @default(autoincrement())
+  orderId     Int
+  order       MarketplaceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName String
+  quantity    Float
+  unit        String
+  unitPrice   Float
+  total       Float
+
+  @@index([orderId])
+  @@map("marketplace_order_items")
+}
+
+model Conversation {
+  id           String     @id
+  name         String
+  participants String[]
+  lastMessage  String     @default("")
+  unreadCount  Int        @default(0)
+  isGroup      Boolean    @default(false)
+  avatar       String     @default("")
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  senderName     String
+  content        String
+  timestamp      String
+  read           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@map("messages")
 }

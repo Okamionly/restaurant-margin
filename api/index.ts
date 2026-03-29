@@ -963,7 +963,7 @@ app.post('/api/contact', async (req, res) => {
       const resendClient = new Resend(resendKey);
       await resendClient.emails.send({
         from: 'RestauMargin <onboarding@resend.dev>',
-        to: 'marketphaseai@gmail.com', // Resend verified email
+        to: 'mr.guessousyoussef@gmail.com', // Resend account owner email
         subject: `[RestauMargin] ${sourceLabel} — ${name}`,
         html: `
           <div style="font-family:Arial,sans-serif;max-width:600px;">

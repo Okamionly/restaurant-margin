@@ -48,6 +48,7 @@ interface Plan {
   cta: string;
   ctaLink: string;
   popular?: boolean;
+  external?: boolean;
   icon: React.ReactNode;
 }
 
@@ -88,25 +89,27 @@ const plans: Plan[] = [
       { text: 'Support prioritaire', included: true },
     ],
     cta: 'Essai gratuit 14 jours',
-    ctaLink: '/login',
+    ctaLink: 'https://buy.stripe.com/eVq4gs5Ki10o3sw1b187K01',
+    external: true,
   },
   {
     name: 'Enterprise',
     description: 'Pour les groupes et chaines',
-    priceMonthly: null,
-    priceLabel: 'Sur mesure',
+    priceMonthly: 79,
     icon: <Building2 className="w-6 h-6 text-emerald-400" />,
     features: [
       { text: 'Tout Pro +', included: true },
       { text: 'Kit Station (Balance + Tablette)', included: true },
       { text: 'Multi-etablissements', included: true },
-      { text: 'API personnalisee', included: true },
-      { text: 'Formation sur site', included: true },
+      { text: 'Assistant IA illimite', included: true },
+      { text: 'Auto-commandes fournisseurs', included: true },
+      { text: 'Planning equipe', included: true },
       { text: 'Utilisateurs illimites', included: true },
-      { text: 'Account manager dedie', included: true },
+      { text: 'Support prioritaire 24/7', included: true },
     ],
-    cta: 'Nous contacter',
-    ctaLink: '/dev-corp',
+    cta: 'Commencer maintenant',
+    ctaLink: 'https://buy.stripe.com/bJe00c2y638w7IMdXN87K02',
+    external: true,
   },
 ];
 
@@ -380,14 +383,24 @@ export default function Pricing() {
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 )
-              ) : (
-                <Link
-                  to={plan.ctaLink}
+              ) : plan.external ? (
+                <a
+                  href={plan.ctaLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors ${
                     plan.popular
                       ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                      : 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                   }`}
+                >
+                  {plan.cta}
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              ) : (
+                <Link
+                  to={plan.ctaLink}
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
                 >
                   {plan.cta}
                   <ArrowRight className="w-4 h-4" />

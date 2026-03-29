@@ -20,6 +20,8 @@ import restaurantsRouter from './routes/restaurants';
 import { devisRouter } from './routes/devis';
 import { aiRouter } from './routes/ai';
 import { alertsRouter } from './routes/alerts';
+import { comptabiliteRouter } from './routes/comptabilite';
+import { wasteRouter } from './routes/waste';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -80,6 +82,8 @@ app.use('/api/restaurants', restaurantsRouter);
 app.use('/api/devis', devisRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/alerts', alertsRouter);
+app.use('/api/comptabilite', comptabiliteRouter);
+app.use('/api/waste', wasteRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

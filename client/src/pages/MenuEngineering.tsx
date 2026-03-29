@@ -10,9 +10,13 @@ import Modal from '../components/Modal';
 
 const API = '';
 
-function authHeaders() {
+function authHeaders(): Record<string, string> {
   const token = localStorage.getItem('token');
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
 }
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -37,10 +41,37 @@ interface EngineeringData {
   days: number;
 }
 
+interface RecipeIngredient {
+  id: number;
+  quantity: number;
+  wastePercent: number;
+  ingredient: {
+    id: number;
+    name: string;
+    pricePerUnit: number;
+  };
+}
+
 interface Recipe {
   id: number;
   name: string;
   category: string;
+  sellingPrice: number;
+  nbPortions: number;
+  ingredients: RecipeIngredient[];
+  margin?: {
+    costPerPortion: number;
+    marginAmount: number;
+    marginPercent: number;
+  };
+}
+
+interface MenuSale {
+  id: number;
+  recipeId: number;
+  quantity: number;
+  revenue: number;
+  date: string;
 }
 
 // ── Quadrant config ──────────────────────────────────────────────────────────
@@ -342,14 +373,95 @@ export default function MenuEngineering() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      let url = `${API}/api/menu-engineering?days=${period}`;
-      if (period === 'custom' && customFrom && customTo) {
-        url = `${API}/api/menu-engineering?from=${customFrom}&to=${customTo}`;
-      }
-      const res = await fetch(url, { headers: authHeaders() });
-      if (!res.ok) throw new Error('Erreur chargement');
-      const json = await res.json();
-      setData(json);
+      // Fetch recipes and sales in parallel
+      const [recipesRes, salesRes] = await Promise.all([
+        fetch(`${API}/api/recipes`, { headers: authHeaders() }),
+        fetch(`${API}/api/menu-sales${period === 'custom' && customFrom && customTo
+          ? `?from=${customFrom}&to=${customTo}`
+          : ''}`, { headers: authHeaders() }),
+      ]);
+
+      if (!recipesRes.ok) throw new Error('Erreur chargement recettes');
+      const recipesJson: Recipe[] = await recipesRes.json();
+      setRecipes(recipesJson);
+
+      const salesJson: MenuSale[] = salesRes.ok ? await salesRes.json() : [];
+
+      // Filter sales by period (if not custom)
+      const now = Date.now();
+      const daysNum = period === 'custom' ? 0 : Number(period);
+      const filteredSales = period === 'custom'
+        ? salesJson
+        : salesJson.filter(s => {
+            const saleDate = new Date(s.date).getTime();
+            return saleDate >= now - daysNum * 86400000;
+          });
+
+      // Aggregate sales by recipeId
+      const salesByRecipe: Record<number, { qty: number; revenue: number }> = {};
+      filteredSales.forEach(s => {
+        if (!salesByRecipe[s.recipeId]) salesByRecipe[s.recipeId] = { qty: 0, revenue: 0 };
+        salesByRecipe[s.recipeId].qty += s.quantity;
+        salesByRecipe[s.recipeId].revenue += s.revenue || 0;
+      });
+
+      const totalSales = Object.values(salesByRecipe).reduce((sum, s) => sum + s.qty, 0);
+      const avgSalesQty = totalSales / Math.max(recipesJson.length, 1);
+
+      // Calculate food cost per recipe and build engineering items
+      const engineeringItems: EngineeringItem[] = recipesJson.map(recipe => {
+        // Calculate food cost from ingredients
+        const foodCost = (recipe.ingredients || []).reduce((total, ri) => {
+          const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
+          return total + ri.quantity * ri.ingredient.pricePerUnit * wasteMultiplier;
+        }, 0);
+        const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
+
+        // Use API-computed margin if available, otherwise compute
+        const sellingPrice = recipe.sellingPrice || 0;
+        const margin = sellingPrice - costPerPortion;
+        const marginPercent = sellingPrice > 0 ? (margin / sellingPrice) * 100 : 0;
+
+        const salesData = salesByRecipe[recipe.id] || { qty: 0, revenue: 0 };
+        const popularity = totalSales > 0 ? (salesData.qty / totalSales) * 100 : 0;
+        const salesRevenue = salesData.revenue > 0 ? salesData.revenue : salesData.qty * sellingPrice;
+
+        return {
+          id: recipe.id,
+          name: recipe.name,
+          category: recipe.category || 'Non classé',
+          sellingPrice,
+          costPerPortion: Math.round(costPerPortion * 100) / 100,
+          margin: Math.round(margin * 100) / 100,
+          marginPercent: Math.round(marginPercent * 10) / 10,
+          salesQty: salesData.qty,
+          salesRevenue: Math.round(salesRevenue * 100) / 100,
+          popularity: Math.round(popularity * 10) / 10,
+          quadrant: 'dog' as const, // placeholder, will be assigned below
+        };
+      });
+
+      // Compute average margin for quadrant classification
+      const avgMarginAmount = engineeringItems.reduce((s, e) => s + e.margin, 0) / Math.max(engineeringItems.length, 1);
+
+      // Assign quadrants based on averages
+      engineeringItems.forEach(item => {
+        if (item.margin >= avgMarginAmount && item.salesQty >= avgSalesQty) item.quadrant = 'star';
+        else if (item.margin >= avgMarginAmount && item.salesQty < avgSalesQty) item.quadrant = 'puzzle';
+        else if (item.margin < avgMarginAmount && item.salesQty >= avgSalesQty) item.quadrant = 'plow';
+        else item.quadrant = 'dog';
+      });
+
+      const avgMarginPct = engineeringItems.length > 0
+        ? engineeringItems.reduce((s, e) => s + e.marginPercent, 0) / engineeringItems.length
+        : 0;
+
+      setData({
+        engineering: engineeringItems,
+        totalSales,
+        avgMargin: Math.round(avgMarginPct * 10) / 10,
+        days: daysNum || Math.ceil((new Date(customTo).getTime() - new Date(customFrom).getTime()) / 86400000) || 30,
+      });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erreur de chargement';
       showToast(message, 'error');
@@ -358,17 +470,7 @@ export default function MenuEngineering() {
     }
   }, [period, customFrom, customTo, showToast]);
 
-  const fetchRecipes = useCallback(async () => {
-    try {
-      const res = await fetch(`${API}/api/recipes`, { headers: authHeaders() });
-      if (!res.ok) return;
-      const json = await res.json();
-      setRecipes(json);
-    } catch { /* silent */ }
-  }, []);
-
   useEffect(() => { fetchData(); }, [fetchData]);
-  useEffect(() => { fetchRecipes(); }, [fetchRecipes]);
 
   // ── Submit single sale ─────────────────────────────────────────────────────
   const handleSubmitSale = async () => {
@@ -667,8 +769,8 @@ export default function MenuEngineering() {
               ) : (
                 <div className="text-center py-16 text-slate-400 dark:text-slate-500">
                   <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p className="font-medium">Aucune donnée de vente</p>
-                  <p className="text-sm mt-1">Commencez par saisir des ventes pour alimenter l&apos;analyse</p>
+                  <p className="font-medium">Ajoutez des recettes et des ventes pour voir l&apos;analyse</p>
+                  <p className="text-sm mt-1">Créez vos recettes puis saisissez des ventes pour alimenter la matrice BCG</p>
                 </div>
               )}
             </div>

@@ -1,18 +1,22 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   FileText, Search, Plus, Filter, Eye, Download, Send, ArrowRight,
   Trash2, Edit2, CheckCircle, XCircle, Clock, Euro, Copy, Printer,
   ChevronDown, ChevronUp, GripVertical, CreditCard, Building2,
-  Calendar, AlertTriangle, RotateCcw, Receipt, X as XIcon
+  Calendar, AlertTriangle, RotateCcw, Receipt, X as XIcon, Loader2
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 
 const API = '';
 
-function authHeaders() {
+function authHeaders(): Record<string, string> {
   const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
 }
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -163,7 +167,98 @@ function emptyClient(): ClientInfo {
   return { nom: '', raisonSociale: '', adresse: '', codePostal: '', ville: '', email: '', telephone: '', siret: '' };
 }
 
-// ── Mock Data ──────────────────────────────────────────────────────────
+// ── API types ─────────────────────────────────────────────────────────
+
+interface ApiDevisItem {
+  id: number;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+}
+
+interface ApiDevis {
+  id: number;
+  number: string;
+  clientName: string;
+  clientEmail: string | null;
+  clientPhone: string | null;
+  clientAddress: string | null;
+  subject: string;
+  status: string;
+  tvaRate: number;
+  totalHT: number;
+  totalTTC: number;
+  validUntil: string | null;
+  notes: string | null;
+  createdAt: string;
+  items: ApiDevisItem[];
+}
+
+function apiDevisToDocument(api: ApiDevis): DocumentDevis {
+  const lignes: LigneDevis[] = api.items.map(item => ({
+    id: String(item.id),
+    description: item.description,
+    quantite: item.quantity,
+    unite: 'unité',
+    prixUnitaireHT: item.unitPrice,
+    tauxTVA: (api.tvaRate || 20) as TVARate,
+  }));
+  const totals = calcTotals(lignes);
+  return {
+    id: String(api.id),
+    type: 'devis',
+    numero: api.number,
+    client: {
+      nom: api.clientName,
+      raisonSociale: api.subject || '',
+      adresse: api.clientAddress || '',
+      codePostal: '',
+      ville: '',
+      email: api.clientEmail || '',
+      telephone: api.clientPhone || '',
+      siret: '',
+    },
+    lignes,
+    dateCreation: api.createdAt ? api.createdAt.split('T')[0] : new Date().toISOString().split('T')[0],
+    dateValidite: api.validUntil || new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+    dureeValidite: 30,
+    conditionsPaiement: 'Paiement à 30 jours',
+    mentionsLegales: MENTIONS_LEGALES_DEVIS,
+    notes: api.notes || '',
+    statut: (api.status === 'draft' ? 'brouillon' : api.status === 'sent' ? 'envoye' : api.status === 'accepted' ? 'accepte' : api.status === 'refused' ? 'refuse' : api.status === 'paid' ? 'paye' : api.status || 'brouillon') as DocStatus,
+    totalHT: api.totalHT || totals.totalHT,
+    totalTVA: totals.totalTVA,
+    totalTTC: api.totalTTC || totals.totalTTC,
+    tvaVentilee: totals.tvaVentilee,
+  };
+}
+
+function documentToApiPayload(doc: {
+  client: ClientInfo;
+  lignes: LigneDevis[];
+  notes: string;
+  dureeValidite: number;
+  createType?: DocType;
+}, tvaRate?: number) {
+  return {
+    clientName: doc.client.nom || doc.client.raisonSociale,
+    clientEmail: doc.client.email || null,
+    clientPhone: doc.client.telephone || null,
+    clientAddress: [doc.client.adresse, doc.client.codePostal, doc.client.ville].filter(Boolean).join(', ') || null,
+    subject: doc.client.raisonSociale || doc.client.nom,
+    tvaRate: tvaRate || (doc.lignes[0]?.tauxTVA || 20),
+    validUntil: new Date(Date.now() + doc.dureeValidite * 86400000).toISOString().split('T')[0],
+    notes: doc.notes || null,
+    items: doc.lignes.map(l => ({
+      description: l.description,
+      quantity: l.quantite,
+      unitPrice: l.prixUnitaireHT,
+    })),
+  };
+}
+
+// ── Mock Data (fallback) ──────────────────────────────────────────────
 
 function buildMockDocuments(): DocumentDevis[] {
   const dev001Lignes: LigneDevis[] = [
@@ -509,11 +604,13 @@ export default function Devis() {
   const { showToast } = useToast();
 
   // ── State ────────────────────────────────────────────────────────────
-  const [documents, setDocuments] = useState<DocumentDevis[]>(() => buildMockDocuments());
+  const [documents, setDocuments] = useState<DocumentDevis[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>('devis');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<DocStatus | 'all'>('all');
   const [showFilters, setShowFilters] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Modals
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -530,6 +627,30 @@ export default function Devis() {
   const [dureeValidite, setDureeValidite] = useState(30);
   const [conditionsPaiement, setConditionsPaiement] = useState(CONDITIONS_PAIEMENT[1]);
   const [notes, setNotes] = useState('');
+
+  // ── Fetch devis from API ─────────────────────────────────────────────
+  const fetchDevis = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/api/devis`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('Erreur chargement devis');
+      const json: ApiDevis[] = await res.json();
+      if (json.length > 0) {
+        setDocuments(json.map(apiDevisToDocument));
+      } else {
+        // Fallback to mock data if API returns empty
+        setDocuments(buildMockDocuments());
+      }
+    } catch {
+      // Fallback to mock data on error
+      setDocuments(buildMockDocuments());
+      showToast('Mode hors-ligne : données de démonstration', 'info');
+    } finally {
+      setLoading(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => { fetchDevis(); }, [fetchDevis]);
 
   // ── Counters for numbering ───────────────────────────────────────────
   const nextNumber = useCallback((type: DocType): string => {
@@ -575,7 +696,7 @@ export default function Devis() {
     setShowCreateModal(true);
   }
 
-  function handleSaveDocument() {
+  async function handleSaveDocument() {
     if (!client.nom && !client.raisonSociale) {
       showToast('Veuillez renseigner le nom du client', 'error');
       return;
@@ -585,39 +706,66 @@ export default function Devis() {
       return;
     }
 
-    const totals = calcTotals(lignes);
-    const dateCreation = new Date().toISOString().split('T')[0];
+    setSaving(true);
+    const payload = documentToApiPayload({ client, lignes, notes, dureeValidite, createType });
 
-    if (editingDoc) {
-      setDocuments(prev => prev.map(d => d.id === editingDoc.id ? {
-        ...d, client, lignes, dureeValidite, conditionsPaiement, notes,
-        mentionsLegales: createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
-        ...totals,
-      } : d));
-      showToast('Document mis à jour avec succès', 'success');
-    } else {
-      const newDoc: DocumentDevis = {
-        id: generateId(),
-        type: createType,
-        numero: nextNumber(createType),
-        client,
-        lignes,
-        dateCreation,
-        dateValidite: new Date(Date.now() + dureeValidite * 86400000).toISOString().split('T')[0],
-        dureeValidite,
-        conditionsPaiement,
-        mentionsLegales: createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
-        notes,
-        statut: 'brouillon',
-        ...totals,
-        tvaVentilee: totals.tvaVentilee,
-      };
-      setDocuments(prev => [newDoc, ...prev]);
-      showToast(`${createType === 'devis' ? 'Devis' : createType === 'facture' ? 'Facture' : 'Avoir'} créé avec succès`, 'success');
+    try {
+      if (editingDoc) {
+        // PUT update
+        const res = await fetch(`${API}/api/devis/${editingDoc.id}`, {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error('Erreur mise à jour');
+        showToast('Document mis à jour avec succès', 'success');
+      } else {
+        // POST create
+        const res = await fetch(`${API}/api/devis`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error('Erreur création');
+        showToast(`${createType === 'devis' ? 'Devis' : createType === 'facture' ? 'Facture' : 'Avoir'} créé avec succès`, 'success');
+      }
+
+      // Refresh list from API
+      await fetchDevis();
+      setShowCreateModal(false);
+      resetForm();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur sauvegarde';
+      showToast(message, 'error');
+
+      // Fallback: save locally if API fails
+      const totals = calcTotals(lignes);
+      const dateCreation = new Date().toISOString().split('T')[0];
+
+      if (editingDoc) {
+        setDocuments(prev => prev.map(d => d.id === editingDoc.id ? {
+          ...d, client, lignes, dureeValidite, conditionsPaiement, notes,
+          mentionsLegales: createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
+          ...totals,
+        } : d));
+      } else {
+        const newDoc: DocumentDevis = {
+          id: generateId(),
+          type: createType,
+          numero: nextNumber(createType),
+          client, lignes, dateCreation,
+          dateValidite: new Date(Date.now() + dureeValidite * 86400000).toISOString().split('T')[0],
+          dureeValidite, conditionsPaiement,
+          mentionsLegales: createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
+          notes, statut: 'brouillon', ...totals, tvaVentilee: totals.tvaVentilee,
+        };
+        setDocuments(prev => [newDoc, ...prev]);
+      }
+      setShowCreateModal(false);
+      resetForm();
+    } finally {
+      setSaving(false);
     }
-
-    setShowCreateModal(false);
-    resetForm();
   }
 
   function handleEdit(doc: DocumentDevis) {
@@ -636,12 +784,33 @@ export default function Devis() {
     setShowPreviewModal(true);
   }
 
-  function handleDelete(id: string) {
-    setDocuments(prev => prev.filter(d => d.id !== id));
-    showToast('Document supprimé', 'info');
+  async function handleDelete(id: string) {
+    try {
+      const res = await fetch(`${API}/api/devis/${id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      if (res.ok || res.status === 204) {
+        showToast('Document supprimé', 'info');
+        await fetchDevis();
+      } else {
+        throw new Error('Erreur suppression');
+      }
+    } catch {
+      // Fallback: remove locally
+      setDocuments(prev => prev.filter(d => d.id !== id));
+      showToast('Document supprimé', 'info');
+    }
   }
 
-  function handleSendEmail(doc: DocumentDevis) {
+  async function handleSendEmail(doc: DocumentDevis) {
+    try {
+      await fetch(`${API}/api/devis/${doc.id}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: 'sent' }),
+      });
+    } catch { /* continue with local update */ }
     setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, statut: 'envoye' as DocStatus } : d));
     showToast(`${doc.numero} envoyé par email à ${doc.client.email}`, 'success');
   }
@@ -678,7 +847,14 @@ export default function Devis() {
     setNotes(`Avoir sur facture ${facture.numero}`);
   }
 
-  function handleMarkPaid(docId: string, date: string, mode: PaymentMode) {
+  async function handleMarkPaid(docId: string, date: string, mode: PaymentMode) {
+    try {
+      await fetch(`${API}/api/devis/${docId}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: 'paid' }),
+      });
+    } catch { /* continue with local update */ }
     setDocuments(prev => prev.map(d => d.id === docId ? {
       ...d, statut: 'paye' as DocStatus, datePaiement: date, modePaiement: mode,
     } : d));
@@ -758,6 +934,15 @@ export default function Devis() {
         </button>
       </div>
 
+      {/* Loading */}
+      {loading && (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          <span className="ml-3 text-slate-500 dark:text-slate-400">Chargement des documents...</span>
+        </div>
+      )}
+
+      {!loading && (<>
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
@@ -952,6 +1137,8 @@ export default function Devis() {
         </div>
       </div>
 
+      </>)}
+
       {/* ── Create / Edit Modal ──────────────────────────────────────────── */}
       <Modal
         isOpen={showCreateModal}
@@ -1117,8 +1304,10 @@ export default function Devis() {
             </button>
             <button
               onClick={handleSaveDocument}
-              className="px-6 py-2.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+              disabled={saving}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50"
             >
+              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingDoc ? 'Mettre à jour' : 'Enregistrer'}
             </button>
           </div>

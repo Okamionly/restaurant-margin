@@ -44,9 +44,11 @@ model Restaurant {
   priceHistory  PriceHistory[]
   menuSales     MenuSale[]
   devis         Devis[]
-  conversations Conversation[]
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
+  conversations    Conversation[]
+  financialEntries FinancialEntry[]
+  wasteLogs        WasteLog[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   @@map("restaurants")
 }
@@ -109,6 +111,7 @@ model Ingredient {
   updatedAt     DateTime           @updatedAt
   recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
+  wasteLogs     WasteLog[]
 
   @@index([restaurantId, name])
   @@map("ingredients")
@@ -270,6 +273,44 @@ model DevisItem {
 
   @@index([devisId])
   @@map("devis_items")
+}
+
+model FinancialEntry {
+  id           Int        @id @default(autoincrement())
+  date         String     // YYYY-MM-DD
+  type         String     // revenue, expense
+  category     String     // Matières premières, Personnel, Loyer, Énergie, etc.
+  label        String     // Description
+  amount       Float
+  tvaRate      Float      @default(20)
+  tvaAmount    Float      @default(0)
+  paymentMode  String?    // CB, Espèces, Chèque, Virement, Ticket resto
+  reference    String?    // Invoice number, receipt number
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@index([restaurantId, type])
+  @@map("financial_entries")
+}
+
+model WasteLog {
+  id           Int        @id @default(autoincrement())
+  ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  quantity     Float
+  unit         String
+  reason       String     // expired, spoiled, overproduction, damaged, other
+  costImpact   Float      // quantity * ingredient pricePerUnit
+  date         String     // YYYY-MM-DD
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@map("waste_logs")
 }
 
 model Conversation {

@@ -350,8 +350,9 @@ export default function MenuEngineering() {
       if (!res.ok) throw new Error('Erreur chargement');
       const json = await res.json();
       setData(json);
-    } catch (err: any) {
-      showToast(err.message || 'Erreur de chargement', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur de chargement';
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }
@@ -394,8 +395,9 @@ export default function MenuEngineering() {
       setSaleRecipeId('');
       setSaleQty('');
       fetchData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     } finally {
       setSaleSubmitting(false);
     }
@@ -435,8 +437,9 @@ export default function MenuEngineering() {
       setShowBulkModal(false);
       setBulkCsv('');
       fetchData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur import', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur import';
+      showToast(message, 'error');
     } finally {
       setBulkSubmitting(false);
     }

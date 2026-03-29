@@ -249,6 +249,11 @@ function SectionSaveButton({ onClick, label = 'Sauvegarder' }: { onClick: () => 
 // Main component
 // ---------------------------------------------------------------------------
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export default function Settings() {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -282,7 +287,7 @@ export default function Settings() {
   const [stats, setStats] = useState({ recipes: 0, ingredients: 0, users: 0 });
 
   // PWA install
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
 
   // Seeding state
@@ -312,9 +317,9 @@ export default function Settings() {
   }, []);
 
   useEffect(() => {
-    const handler = (e: any) => {
+    const handler = (e: Event) => {
       e.preventDefault();
-      setInstallPrompt(e);
+      setInstallPrompt(e as BeforeInstallPromptEvent);
     };
     window.addEventListener('beforeinstallprompt', handler);
 

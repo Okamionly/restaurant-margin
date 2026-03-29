@@ -10,6 +10,8 @@ import {
   linkSupplierIngredients, fetchIngredients, updateIngredient, createIngredient,
 } from '../services/api';
 import type { Supplier, Ingredient } from '../types';
+
+type SupplierIngredient = Pick<Ingredient, 'id' | 'name' | 'unit' | 'pricePerUnit' | 'category'>;
 import { INGREDIENT_CATEGORIES } from '../types';
 import {
   FRENCH_SUPPLIERS,
@@ -300,13 +302,14 @@ export default function Suppliers() {
         await updateSupplier(editingSupplier.id, payload);
         showToast(t('suppliers.updated'), 'success');
       } else {
-        await createSupplier(payload as any);
+        await createSupplier(payload as Omit<Supplier, 'id' | 'createdAt' | 'updatedAt' | '_count' | 'ingredients'>);
         showToast(t('suppliers.created'), 'success');
       }
       setModalOpen(false);
       await loadData();
-    } catch (e: any) {
-      showToast(e.message || t('suppliers.error'), 'error');
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : t('suppliers.error');
+      showToast(message, 'error');
     } finally {
       setSaving(false);
     }
@@ -319,8 +322,9 @@ export default function Suppliers() {
       showToast(t('suppliers.deleted'), 'success');
       setDeleteTarget(null);
       await loadData();
-    } catch (e: any) {
-      showToast(e.message || t('suppliers.error'), 'error');
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : t('suppliers.error');
+      showToast(message, 'error');
     }
   }
 
@@ -330,8 +334,9 @@ export default function Suppliers() {
       const result = await linkSupplierIngredients(s.id);
       showToast(`${result.linked} ${t('suppliers.ingredientsLinkedTo')} ${result.supplierName}`, 'success');
       await loadData();
-    } catch (e: any) {
-      showToast(e.message || t('suppliers.error'), 'error');
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : t('suppliers.error');
+      showToast(message, 'error');
     } finally {
       setLinking(null);
     }
@@ -521,7 +526,7 @@ export default function Suppliers() {
               // Build a map of ingredient name -> { supplier name -> price, unit }
               const ingredientMap: Record<string, Record<string, { price: number; unit: string }>> = {};
               comparedSuppliers.forEach(s => {
-                (s.ingredients || []).forEach((ing: any) => {
+                (s.ingredients || []).forEach((ing: SupplierIngredient) => {
                   if (!ingredientMap[ing.name]) ingredientMap[ing.name] = {};
                   ingredientMap[ing.name][s.name] = { price: ing.pricePerUnit, unit: ing.unit };
                 });
@@ -804,8 +809,8 @@ export default function Suppliers() {
                             {/* Ingredient rows */}
                             <div className="max-h-80 overflow-y-auto space-y-0.5">
                               {supplier.ingredients
-                                .filter((ing: any) => !ingSearch || ing.name.toLowerCase().includes(ingSearch.toLowerCase()))
-                                .map((ing: any) => (
+                                .filter((ing: SupplierIngredient) => !ingSearch || ing.name.toLowerCase().includes(ingSearch.toLowerCase()))
+                                .map((ing: SupplierIngredient) => (
                                 <div key={ing.id} className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-white dark:hover:bg-slate-800 group text-sm">
                                   <input
                                     type="checkbox"
@@ -878,7 +883,7 @@ export default function Suppliers() {
                                     <span>{t('suppliers.catAvg')}</span>
                                     <span>{t('suppliers.gap')}</span>
                                   </div>
-                                  {supplier.ingredients.filter((i: any) => compareIds.has(i.id)).map((ing: any) => {
+                                  {supplier.ingredients.filter((i: SupplierIngredient) => compareIds.has(i.id)).map((ing: SupplierIngredient) => {
                                     const match = searchCatalog(ing.name, 1)[0];
                                     const ecart = match ? Math.round(((ing.pricePerUnit - match.prixMoy) / match.prixMoy) * 100) : null;
                                     return (
@@ -1280,7 +1285,7 @@ export default function Suppliers() {
                   <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
                 ) : (
                   <div className="space-y-3">
-                    {ings.map((ing: any) => {
+                    {ings.map((ing: SupplierIngredient) => {
                       const priceHistory = getMockPriceHistory(ing.pricePerUnit);
                       const trend = priceHistory[priceHistory.length - 1] - priceHistory[0];
                       return (

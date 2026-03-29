@@ -86,8 +86,9 @@ export default function Inventory() {
       setAlerts(alertsData);
       setValueData(val);
       setSuggestions(sugg);
-    } catch (err: any) {
-      showToast(err.message || 'Erreur de chargement', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur de chargement';
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }
@@ -151,8 +152,9 @@ export default function Inventory() {
       setShowAddModal(false);
       setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '' });
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     }
   }
 
@@ -165,25 +167,27 @@ export default function Inventory() {
       setShowRestockModal(false);
       setRestockForm({ id: 0, name: '', quantity: '' });
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     }
   }
 
   async function handleEdit() {
     try {
-      const data: any = {};
+      const data: Partial<{ currentStock: number; minStock: number; maxStock: number | null; unit: string; notes: string }> = {};
       if (editForm.currentStock !== '') data.currentStock = parseFloat(editForm.currentStock);
       if (editForm.minStock !== '') data.minStock = parseFloat(editForm.minStock);
       data.maxStock = editForm.maxStock ? parseFloat(editForm.maxStock) : null;
       if (editForm.unit) data.unit = editForm.unit;
-      data.notes = editForm.notes || null;
+      data.notes = editForm.notes || undefined;
       await updateInventoryItem(editForm.id, data);
       showToast('Inventaire mis à jour', 'success');
       setShowEditModal(false);
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     }
   }
 
@@ -194,8 +198,9 @@ export default function Inventory() {
       showToast('Supprimé de l\'inventaire', 'success');
       setDeleteTarget(null);
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     }
   }
 
@@ -206,8 +211,9 @@ export default function Inventory() {
       await updateInventoryItem(itemId, { currentStock: val });
       setEditingStockId(null);
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     }
   }
 
@@ -223,8 +229,9 @@ export default function Inventory() {
       }
       showToast(`${added} ingrédient(s) ajouté(s) à l'inventaire`, 'success');
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
     } finally {
       setSavingBulk(false);
     }
@@ -245,8 +252,9 @@ export default function Inventory() {
       }
       setWeighTarget(null);
       loadData();
-    } catch (err: any) {
-      showToast(err.message || 'Erreur lors de la mise à jour', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour';
+      showToast(message, 'error');
     }
   }
 

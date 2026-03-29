@@ -57,9 +57,10 @@ emailRouter.post('/send', async (req: AuthRequest, res: Response) => {
     sentEmails.unshift(sent);
     console.log(`Email sent to ${to} via Resend — id: ${data?.id}`);
     res.json({ success: true, messageId: data?.id });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Email send error:', error);
-    res.status(500).json({ error: error.message || "Erreur lors de l'envoi de l'email" });
+    const message = error instanceof Error ? error.message : "Erreur lors de l'envoi de l'email";
+    res.status(500).json({ error: message });
   }
 });
 

@@ -29,7 +29,16 @@ invoicesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Respo
       return;
     }
 
-    const invoiceItems = (items || []).map((item: any) => ({
+    interface InvoiceItemInput {
+      productName?: string;
+      quantity?: number;
+      unit?: string;
+      unitPrice?: number;
+      total?: number;
+      ingredientId?: number | null;
+    }
+
+    const invoiceItems = (items || []).map((item: InvoiceItemInput) => ({
       productName: item.productName || '',
       quantity: item.quantity || 0,
       unit: item.unit || '',
@@ -38,7 +47,7 @@ invoicesRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Respo
       ingredientId: item.ingredientId || null,
     }));
 
-    const computedTotal = totalAmount || invoiceItems.reduce((s: number, i: any) => s + i.total, 0);
+    const computedTotal = totalAmount || invoiceItems.reduce((s: number, i: { total: number }) => s + i.total, 0);
 
     const invoice = await prisma.invoice.create({
       data: {
@@ -75,8 +84,8 @@ invoicesRouter.delete('/:id', authWithRestaurant, async (req: AuthRequest, res: 
 
     await prisma.invoice.delete({ where: { id } });
     res.json({ success: true });
-  } catch (error: any) {
-    if (error.code === 'P2025') {
+  } catch (error: unknown) {
+    if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2025') {
       res.status(404).json({ error: 'Facture non trouvée' });
       return;
     }

@@ -144,12 +144,17 @@ interface NavSection {
   items: NavItem[];
 }
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 function AppLayout() {
   const { user, logout } = useAuth();
   const { selectedRestaurant } = useRestaurant();
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const location = useLocation();
@@ -171,7 +176,7 @@ function AppLayout() {
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
-      setInstallPrompt(e);
+      setInstallPrompt(e as BeforeInstallPromptEvent);
     };
     window.addEventListener('beforeinstallprompt', handler);
     if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -334,7 +339,7 @@ function AppLayout() {
       </div>
 
       {/* Nav sections - scrollable area */}
-      <nav className="flex-1 overflow-y-auto px-3 space-y-1 pb-4 sidebar-scroll">
+      <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1 pb-4 sidebar-scroll">
         {navSections.map((section, idx) => (
           <div key={section.title} className={idx > 0 ? 'pt-3' : ''}>
             {!collapsed && idx > 0 && <div className="border-t border-slate-700/30 mb-3" />}
@@ -405,6 +410,9 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen flex bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+        Aller au contenu principal
+      </a>
       {/* Desktop sidebar (>= 1024px): full width */}
       <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-30 no-print">
         {sidebarContent(false)}
@@ -471,7 +479,7 @@ function AppLayout() {
         )}
 
         {/* Content */}
-        <main key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>}>
             <Routes>
               <Route path="/" element={<Dashboard />} />

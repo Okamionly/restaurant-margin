@@ -119,8 +119,8 @@ export default function Ingredients() {
       return matchSearch && matchCategory;
     });
     result.sort((a, b) => {
-      let aVal: any = a[sortKey];
-      let bVal: any = b[sortKey];
+      let aVal: string | number = a[sortKey as keyof typeof a] as string | number;
+      let bVal: string | number = b[sortKey as keyof typeof b] as string | number;
       if (typeof aVal === 'string') aVal = (aVal || '').toLowerCase();
       if (typeof bVal === 'string') bVal = (bVal || '').toLowerCase();
       if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
@@ -345,8 +345,9 @@ export default function Ingredients() {
       }
       setWeighTarget(null);
       loadIngredients();
-    } catch (err: any) {
-      showToast(err.message || t('ingredients.inventoryError'), 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t('ingredients.inventoryError');
+      showToast(message, 'error');
     }
   }
 

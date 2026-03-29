@@ -125,9 +125,10 @@ export default function StationLanding() {
       if (!res.ok) throw new Error('Erreur lors de l\'envoi');
       setOrderStatus('success');
       setOrderForm({ name: '', email: '', phone: '', quantity: 1, message: '' });
-    } catch (err: any) {
+    } catch (err: unknown) {
       setOrderStatus('error');
-      setOrderError(err.message || 'Une erreur est survenue');
+      const message = err instanceof Error ? err.message : 'Une erreur est survenue';
+      setOrderError(message);
     }
   };
 

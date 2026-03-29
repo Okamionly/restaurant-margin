@@ -45,27 +45,39 @@ function authHeaders(): Record<string, string> {
 
 // --- Restaurant API ---
 
-export async function fetchRestaurants(): Promise<any[]> {
-  const res = await fetch(`${API_BASE}/restaurants`, { headers: authHeaders() });
-  return handleResponse<any[]>(res);
+export interface RestaurantResponse {
+  id: number;
+  name: string;
+  address: string | null;
+  cuisineType: string | null;
+  phone: string | null;
+  coversPerDay: number;
+  ownerId: number;
+  role?: string;
+  _count?: { ingredients: number; recipes: number; suppliers: number };
 }
 
-export async function createRestaurantAPI(data: { name: string; address?: string; cuisineType?: string; phone?: string; coversPerDay?: number }): Promise<any> {
+export async function fetchRestaurants(): Promise<RestaurantResponse[]> {
+  const res = await fetch(`${API_BASE}/restaurants`, { headers: authHeaders() });
+  return handleResponse<RestaurantResponse[]>(res);
+}
+
+export async function createRestaurantAPI(data: { name: string; address?: string; cuisineType?: string; phone?: string; coversPerDay?: number }): Promise<RestaurantResponse> {
   const res = await fetch(`${API_BASE}/restaurants`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<any>(res);
+  return handleResponse<RestaurantResponse>(res);
 }
 
-export async function updateRestaurantAPI(id: number, data: Partial<{ name: string; address: string; cuisineType: string; phone: string; coversPerDay: number }>): Promise<any> {
+export async function updateRestaurantAPI(id: number, data: Partial<{ name: string; address: string; cuisineType: string; phone: string; coversPerDay: number }>): Promise<RestaurantResponse> {
   const res = await fetch(`${API_BASE}/restaurants/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<any>(res);
+  return handleResponse<RestaurantResponse>(res);
 }
 
 export async function deleteRestaurantAPI(id: number): Promise<void> {

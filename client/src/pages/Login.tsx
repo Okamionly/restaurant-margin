@@ -76,8 +76,9 @@ export default function Login() {
         await login({ email, password });
       }
       navigate('/dashboard', { replace: true });
-    } catch (err: any) {
-      setError(err.message || 'Erreur de connexion');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur de connexion';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -99,8 +100,9 @@ export default function Login() {
         throw new Error(data.error || 'Erreur');
       }
       setForgotPasswordSuccess(`Un email de reinitialisation a ete envoye a ${email}`);
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la demande');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de la demande';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -234,14 +236,16 @@ export default function Login() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {isRegisterMode && (
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-1">Nom</label>
+                      <label htmlFor="register-name" className="block text-sm font-medium text-slate-300 mb-1">Nom</label>
                       <div className="relative">
                         <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <input
+                          id="register-name"
                           type="text"
                           required
                           value={name}
                           onChange={(e) => setName(e.target.value)}
+                          aria-label="Nom complet"
                           className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           placeholder="Votre nom"
                         />
@@ -250,14 +254,16 @@ export default function Login() {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
+                    <label htmlFor="login-email" className="block text-sm font-medium text-slate-300 mb-1">Email</label>
                     <div className="relative">
                       <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
+                        id="login-email"
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        aria-label="Adresse email"
                         className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="votre@email.com"
                       />
@@ -265,15 +271,17 @@ export default function Login() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">Mot de passe</label>
+                    <label htmlFor="login-password" className="block text-sm font-medium text-slate-300 mb-1">Mot de passe</label>
                     <div className="relative">
                       <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
+                        id="login-password"
                         type="password"
                         required
                         minLength={6}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        aria-label="Mot de passe"
                         className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="........"
                       />

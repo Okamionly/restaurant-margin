@@ -103,7 +103,7 @@ function AnimatedNumber({ value, decimals = 1, suffix = '', prefix = '', duratio
 
 // ── Enhanced Stat Card ─────────────────────────────────────────────────────
 function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, colorKey, decimals = 1, suffix = '', prefix = '', trend }: {
-  title: string; value?: string; numericValue?: number; subtitle?: string; icon: any; color: string;
+  title: string; value?: string; numericValue?: number; subtitle?: string; icon: React.ComponentType<{ className?: string }>; color: string;
   colorKey: string; decimals?: number; suffix?: string; prefix?: string; trend?: 'up' | 'down' | null;
 }) {
   const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.blue;
@@ -162,14 +162,29 @@ function RankBar({ rank, name, value, maxValue, color, unit = '%', link }: {
 }
 
 // ── Custom Recharts Tooltip ────────────────────────────────────────────────
-function ChartTooltip({ active, payload, label }: any) {
+interface TooltipPayloadEntry {
+  name: string;
+  value: number;
+  color?: string;
+  fill?: string;
+  dataKey?: string;
+  payload?: Record<string, unknown>;
+}
+
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadEntry[];
+  label?: string;
+}
+
+function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm min-w-[180px]">
       <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1.5">
-        {payload[0]?.payload?.fullName || label || payload[0]?.payload?.name}
+        {String(payload[0]?.payload?.fullName || label || payload[0]?.payload?.name || '')}
       </p>
-      {payload.map((p: any, i: number) => (
+      {payload.map((p: TooltipPayloadEntry, i: number) => (
         <div key={i} className="flex items-center gap-2 mt-0.5">
           <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color || p.fill }} />
           <span className="text-slate-500 dark:text-slate-400">{p.name}:</span>
@@ -189,7 +204,17 @@ function ChartTooltip({ active, payload, label }: any) {
 }
 
 // ── Treemap Custom Content ────────────────────────────────────────────────
-function TreemapContent({ x, y, width, height, name, value, totalFoodCost }: any) {
+interface TreemapContentProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  name: string;
+  value: number;
+  totalFoodCost: number;
+}
+
+function TreemapContent({ x, y, width, height, name, value, totalFoodCost }: TreemapContentProps) {
   if (width < 40 || height < 30) return null;
   const pct = totalFoodCost > 0 ? ((value / totalFoodCost) * 100).toFixed(0) : '0';
   return (
@@ -260,7 +285,7 @@ export default function Dashboard() {
   const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
   const navigate = useNavigate();
 
-  const TABS: { key: TabKey; label: string; desc: string; icon: any }[] = [
+  const TABS: { key: TabKey; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { key: 'overview', label: t("dashboard.tabOverview"), desc: t("dashboard.tabOverviewDesc"), icon: TAB_ICONS.overview },
     { key: 'margins', label: t("dashboard.tabMargins"), desc: t("dashboard.tabMarginsDesc"), icon: TAB_ICONS.margins },
     { key: 'costs', label: t("dashboard.tabCosts"), desc: t("dashboard.tabCostsDesc"), icon: TAB_ICONS.costs },
@@ -913,8 +938,8 @@ export default function Dashboard() {
                       paddingAngle={2}
                       dataKey="count"
                       nameKey="name"
-                      label={(props: any) => {
-                        const { cx, cy, midAngle, innerRadius, outerRadius, name, count, percent } = props;
+                      label={(props: unknown) => {
+                        const { cx, cy, midAngle, innerRadius, outerRadius, name, count, percent } = props as { cx: number; cy: number; midAngle: number; innerRadius: number; outerRadius: number; name: string; count: number; percent: number };
                         const RADIAN = Math.PI / 180;
                         const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.55;
                         const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
@@ -1104,8 +1129,8 @@ export default function Dashboard() {
                       paddingAngle={1}
                       dataKey="value"
                       nameKey="name"
-                      label={(props: any) => {
-                        const { cx, cy, midAngle, innerRadius, outerRadius, name, percent } = props;
+                      label={(props: unknown) => {
+                        const { cx, cy, midAngle, innerRadius, outerRadius, name, percent } = props as { cx: number; cy: number; midAngle: number; innerRadius: number; outerRadius: number; name: string; percent: number };
                         const RADIAN = Math.PI / 180;
                         const radius = (innerRadius || 0) + ((outerRadius || 0) - (innerRadius || 0)) * 0.5;
                         const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
@@ -1357,7 +1382,7 @@ export default function Dashboard() {
                     return (
                       <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm min-w-[180px]">
                         <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1.5">{label}</p>
-                        {payload.map((p: any, i: number) => (
+                        {payload.map((p, i: number) => (
                           <div key={i} className="flex items-center gap-2 mt-0.5">
                             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                             <span className="text-slate-500 dark:text-slate-400">{p.name}:</span>

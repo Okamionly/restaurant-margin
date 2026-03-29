@@ -312,8 +312,9 @@ export default function Pricing() {
                           throw new Error(data.error || 'Erreur lors de l\'envoi');
                         }
                         setDevisSent(true);
-                      } catch (err: any) {
-                        setDevisError(err.message || 'Erreur. Veuillez réessayer.');
+                      } catch (err: unknown) {
+                        const message = err instanceof Error ? err.message : 'Erreur. Veuillez réessayer.';
+                        setDevisError(message);
                       } finally {
                         setDevisLoading(false);
                       }

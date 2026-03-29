@@ -856,8 +856,9 @@ export default function Landing() {
                               throw new Error(data.error || 'Erreur');
                             }
                             setProEmailSent(true);
-                          } catch (err: any) {
-                            setProError(err.message || 'Erreur. Réessayez.');
+                          } catch (err: unknown) {
+                            const message = err instanceof Error ? err.message : 'Erreur. Réessayez.';
+                            setProError(message);
                           } finally {
                             setProLoading(false);
                           }
@@ -962,8 +963,9 @@ export default function Landing() {
                       throw new Error(data.error || 'Erreur lors de l\'envoi');
                     }
                     setKitFormSent(true);
-                  } catch (err: any) {
-                    setKitError(err.message || 'Erreur lors de l\'envoi. Veuillez réessayer.');
+                  } catch (err: unknown) {
+                    const message = err instanceof Error ? err.message : 'Erreur lors de l\'envoi. Veuillez réessayer.';
+                    setKitError(message);
                   } finally {
                     setKitLoading(false);
                   }

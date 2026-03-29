@@ -1,5 +1,5 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 
 const prisma = new PrismaClient();
@@ -10,7 +10,7 @@ priceHistoryRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Re
   try {
     const { ingredientId, days } = req.query;
 
-    const where: any = { restaurantId: req.restaurantId! };
+    const where: Prisma.PriceHistoryWhereInput = { restaurantId: req.restaurantId! };
 
     if (ingredientId) {
       where.ingredientId = Number(ingredientId);

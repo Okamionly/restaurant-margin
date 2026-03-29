@@ -168,8 +168,8 @@ inventoryRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Resp
       include: { ingredient: true },
     });
     res.status(201).json(item);
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error: unknown) {
+    if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2002') {
       return res.status(409).json({ error: 'Cet ingrédient est déjà dans l\'inventaire' });
     }
     console.error(error);
@@ -191,7 +191,7 @@ inventoryRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: Re
 
     const { currentStock, minStock, maxStock, unit, notes } = req.body;
 
-    const data: any = {};
+    const data: Partial<Pick<import('@prisma/client').InventoryItem, 'currentStock' | 'minStock' | 'maxStock' | 'unit' | 'notes'>> = {};
     if (currentStock !== undefined) data.currentStock = parseFloat(currentStock);
     if (minStock !== undefined) data.minStock = parseFloat(minStock);
     if (maxStock !== undefined) data.maxStock = maxStock === null ? null : parseFloat(maxStock);

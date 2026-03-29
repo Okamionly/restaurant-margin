@@ -73,7 +73,7 @@ contactRouter.post('/', validate(contactSchema), async (req: Request, res: Respo
 
     console.log(`Contact form submitted: ${sourceLabel} from ${email}`);
     res.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Contact form error:', error);
     res.status(500).json({ error: 'Erreur lors de l\'envoi. Veuillez réessayer.' });
   }

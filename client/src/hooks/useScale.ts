@@ -92,21 +92,23 @@ export function useScale() {
       const characteristic = await service.getCharacteristic(MI_SCALE_CHARACTERISTIC);
       charRef.current = characteristic;
 
-      characteristic.addEventListener('characteristicvaluechanged', (event: any) => {
-        const data: DataView = event.target.value;
+      characteristic.addEventListener('characteristicvaluechanged', (event: Event) => {
+        const target = event.target as BluetoothRemoteGATTCharacteristic;
+        const data: DataView = target.value!;
         const reading = parseMiScale2(data);
         setReading(reading);
       });
 
       await characteristic.startNotifications();
       setStatus('connected');
-    } catch (e: any) {
-      if (e.name === 'NotFoundError') {
+    } catch (e: unknown) {
+      if (e instanceof DOMException && e.name === 'NotFoundError') {
         setStatus('disconnected');
         setError('Balance non trouvée. Vérifiez que la balance est allumée.');
       } else {
         setStatus('error');
-        setError(e.message || 'Erreur de connexion Bluetooth');
+        const message = e instanceof Error ? e.message : 'Erreur de connexion Bluetooth';
+        setError(message);
       }
     }
   }, [isSupported]);

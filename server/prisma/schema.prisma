@@ -51,6 +51,8 @@ model Restaurant {
   haccpCleanings   HaccpCleaning[]
   employees        Employee[]
   shifts           Shift[]
+  seminaires       Seminaire[]
+  marketplaceOrders MarketplaceOrder[]
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -383,6 +385,62 @@ model HaccpCleaning {
 
   @@index([restaurantId, date])
   @@map("haccp_cleanings")
+}
+
+model Seminaire {
+  id           Int        @id @default(autoincrement())
+  title        String
+  clientName   String
+  clientEmail  String?
+  clientPhone  String?
+  eventType    String     // Séminaire, Mariage, Anniversaire, Corporate, Autre
+  date         String     // YYYY-MM-DD
+  startTime    String?
+  endTime      String?
+  guestCount   Int        @default(20)
+  status       String     @default("demande") // demande, devis_envoye, confirme, en_cours, solde, annule
+  budget       Float?
+  menuDetails  String?
+  equipment    String[]   @default([])
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([restaurantId, status])
+  @@index([restaurantId, date])
+  @@map("seminaires")
+}
+
+model MarketplaceOrder {
+  id           Int        @id @default(autoincrement())
+  supplierName String
+  status       String     @default("draft") // draft, sent, confirmed, received
+  totalHT      Float      @default(0)
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items        MarketplaceOrderItem[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([restaurantId, status])
+  @@map("marketplace_orders")
+}
+
+model MarketplaceOrderItem {
+  id          Int              @id @default(autoincrement())
+  orderId     Int
+  order       MarketplaceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName String
+  quantity    Float
+  unit        String
+  unitPrice   Float
+  total       Float
+
+  @@index([orderId])
+  @@map("marketplace_order_items")
 }
 
 model Conversation {

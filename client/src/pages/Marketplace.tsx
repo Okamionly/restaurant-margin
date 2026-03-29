@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
-import { Search, ShoppingBag, Star, Truck, Clock, Filter, ChevronDown, Plus, Minus, X, Store, Award, Leaf, MapPin, ArrowUpDown, ShoppingCart, Package, Phone } from 'lucide-react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Search, ShoppingBag, Star, Truck, Clock, Filter, ChevronDown, Plus, Minus, X, Store, Award, Leaf, MapPin, ArrowUpDown, ShoppingCart, Package, Phone, History, CheckCircle, Send, Inbox, Trash2 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { getToken, getActiveRestaurantId } from '../services/api';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -42,7 +43,37 @@ interface CartItem {
   unit: string;
 }
 
+interface MarketplaceOrderItem {
+  id: number;
+  productName: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  total: number;
+}
+
+interface MarketplaceOrder {
+  id: number;
+  supplierName: string;
+  status: string;
+  totalHT: number;
+  notes: string | null;
+  items: MarketplaceOrderItem[];
+  createdAt: string;
+}
+
 type SortOption = 'price_asc' | 'price_desc' | 'rating' | 'delivery';
+
+// ── API helpers ──────────────────────────────────────────────────────────────
+
+function marketplaceHeaders(): Record<string, string> {
+  const token = getToken();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const restaurantId = getActiveRestaurantId();
+  if (restaurantId) headers['X-Restaurant-Id'] = restaurantId;
+  return headers;
+}
 
 // ── Sample Data ───────────────────────────────────────────────────────────────
 
@@ -227,6 +258,31 @@ export default function Marketplace() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [orders, setOrders] = useState<MarketplaceOrder[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [showOrders, setShowOrders] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  // ── Fetch orders ──────────────────────────────────────────────────────────
+
+  const fetchOrders = useCallback(async () => {
+    setOrdersLoading(true);
+    try {
+      const res = await fetch('/api/marketplace/orders', { headers: marketplaceHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data);
+      }
+    } catch {
+      // silent
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   // ── Cart logic ────────────────────────────────────────────────────────────
 
@@ -268,11 +324,83 @@ export default function Marketplace() {
     setCart([]);
   }
 
-  function submitOrder() {
+  async function submitOrder() {
     if (cart.length === 0) return;
-    showToast(`Commande de ${cart.length} produit(s) envoyée avec succès !`, 'success');
-    setCart([]);
-    setCartOpen(false);
+    setSubmitting(true);
+
+    // Group cart items by supplier and create one order per supplier
+    const bySupplier: Record<string, CartItem[]> = {};
+    cart.forEach(item => {
+      if (!bySupplier[item.supplierId]) bySupplier[item.supplierId] = [];
+      bySupplier[item.supplierId].push(item);
+    });
+
+    let successCount = 0;
+    for (const [supplierId, items] of Object.entries(bySupplier)) {
+      const supplier = getSupplier(supplierId);
+      const orderItems = items.map(item => {
+        const product = PRODUCTS.find(p => p.id === item.productId);
+        return {
+          productName: product?.name || item.productId,
+          quantity: item.quantity,
+          unit: item.unit,
+          unitPrice: item.price,
+        };
+      });
+
+      try {
+        const res = await fetch('/api/marketplace/orders', {
+          method: 'POST',
+          headers: marketplaceHeaders(),
+          body: JSON.stringify({ supplierName: supplier.name, items: orderItems }),
+        });
+        if (res.ok) successCount++;
+      } catch {
+        // continue with other suppliers
+      }
+    }
+
+    setSubmitting(false);
+
+    if (successCount > 0) {
+      showToast(`${successCount} commande(s) créée(s) avec succès !`, 'success');
+      setCart([]);
+      setCartOpen(false);
+      fetchOrders();
+    } else {
+      showToast('Erreur lors de la création des commandes', 'error');
+    }
+  }
+
+  async function updateOrderStatus(orderId: number, status: string) {
+    try {
+      const res = await fetch(`/api/marketplace/orders/${orderId}`, {
+        method: 'PUT',
+        headers: marketplaceHeaders(),
+        body: JSON.stringify({ status }),
+      });
+      if (res.ok) {
+        showToast('Statut mis à jour', 'success');
+        fetchOrders();
+      }
+    } catch {
+      showToast('Erreur mise à jour', 'error');
+    }
+  }
+
+  async function deleteOrder(orderId: number) {
+    try {
+      const res = await fetch(`/api/marketplace/orders/${orderId}`, {
+        method: 'DELETE',
+        headers: marketplaceHeaders(),
+      });
+      if (res.ok) {
+        showToast('Commande supprimée', 'success');
+        fetchOrders();
+      }
+    } catch {
+      showToast('Erreur suppression', 'error');
+    }
   }
 
   // ── Cart totals by supplier ───────────────────────────────────────────────
@@ -359,18 +487,32 @@ export default function Marketplace() {
             Comparez les prix et commandez directement aupres de vos fournisseurs
           </p>
         </div>
-        <button
-          onClick={() => setCartOpen(!cartOpen)}
-          className="relative inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-colors"
-        >
-          <ShoppingCart className="w-5 h-5" />
-          Mon panier
-          {cart.length > 0 && (
-            <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-              {cart.length}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => { setShowOrders(!showOrders); if (!showOrders) fetchOrders(); }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium text-sm transition-colors"
+          >
+            <History className="w-5 h-5" />
+            Commandes
+            {orders.length > 0 && (
+              <span className="w-5 h-5 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {orders.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setCartOpen(!cartOpen)}
+            className="relative inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-colors"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            Mon panier
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                {cart.length}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Search bar */}
@@ -725,9 +867,10 @@ export default function Marketplace() {
                     </div>
                     <button
                       onClick={submitOrder}
-                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors"
+                      disabled={submitting}
+                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg text-sm font-semibold transition-colors"
                     >
-                      Passer commande
+                      {submitting ? 'Envoi en cours...' : 'Passer commande'}
                     </button>
                     <button
                       onClick={clearCart}
@@ -834,6 +977,108 @@ export default function Marketplace() {
               </>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Order history */}
+      {showOrders && (
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <History className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              Historique des commandes
+            </h2>
+            <button onClick={() => setShowOrders(false)} className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              <X className="w-4 h-4 text-slate-400" />
+            </button>
+          </div>
+
+          {ordersLoading ? (
+            <div className="p-8 text-center text-sm text-slate-400">Chargement...</div>
+          ) : orders.length === 0 ? (
+            <div className="p-8 text-center">
+              <Inbox className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+              <p className="text-sm text-slate-400">Aucune commande pour le moment</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100 dark:divide-slate-700">
+              {orders.map(order => (
+                <div key={order.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-sm text-slate-900 dark:text-white">
+                        {order.supplierName}
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        order.status === 'draft' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
+                        order.status === 'sent' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                        order.status === 'confirmed' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                        'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      }`}>
+                        {order.status === 'draft' ? 'Brouillon' :
+                         order.status === 'sent' ? 'Envoyée' :
+                         order.status === 'confirmed' ? 'Confirmée' : 'Reçue'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                        {order.totalHT.toFixed(2)} EUR
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {new Date(order.createdAt).toLocaleDateString('fr-FR')}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Order items */}
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                    {order.items.map((item, idx) => (
+                      <span key={item.id}>
+                        {item.quantity}x {item.productName}
+                        {idx < order.items.length - 1 ? ', ' : ''}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2">
+                    {order.status === 'draft' && (
+                      <button
+                        onClick={() => updateOrderStatus(order.id, 'sent')}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                      >
+                        <Send className="w-3 h-3" /> Envoyer
+                      </button>
+                    )}
+                    {order.status === 'sent' && (
+                      <button
+                        onClick={() => updateOrderStatus(order.id, 'confirmed')}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors"
+                      >
+                        <CheckCircle className="w-3 h-3" /> Confirmer
+                      </button>
+                    )}
+                    {order.status === 'confirmed' && (
+                      <button
+                        onClick={() => updateOrderStatus(order.id, 'received')}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-600 hover:bg-green-700 text-white transition-colors"
+                      >
+                        <CheckCircle className="w-3 h-3" /> Reçue
+                      </button>
+                    )}
+                    {order.status === 'draft' && (
+                      <button
+                        onClick={() => deleteOrder(order.id)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors"
+                      >
+                        <Trash2 className="w-3 h-3" /> Supprimer
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   CalendarDays, Users, Euro, TrendingUp, Plus, ChevronLeft, ChevronRight,
   Edit, Trash2, Send, CheckCircle2, XCircle, Clock, Building2, Utensils,
@@ -13,7 +13,52 @@ const API = '';
 
 function authHeaders() {
   const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+  const rid = localStorage.getItem('selectedRestaurantId') || '';
+  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Restaurant-Id': rid };
+}
+
+// ── Status mapping (backend <-> frontend) ──
+const STATUS_TO_BACKEND: Record<string, string> = {
+  'Demande': 'demande',
+  'Devis envoyé': 'devis_envoye',
+  'Confirmé': 'confirme',
+  'En cours': 'en_cours',
+  'Soldé': 'solde',
+};
+const STATUS_TO_FRONTEND: Record<string, EventStatus> = {
+  'demande': 'Demande',
+  'devis_envoye': 'Devis envoyé',
+  'confirme': 'Confirmé',
+  'en_cours': 'En cours',
+  'solde': 'Soldé',
+};
+
+// Map backend seminaire record to frontend SeminaireEvent
+function mapFromApi(s: Record<string, unknown>): SeminaireEvent {
+  const budget = (s.budget as number) || 0;
+  return {
+    id: s.id as number,
+    clientNom: (s.clientName as string) || '',
+    clientEmail: (s.clientEmail as string) || '',
+    clientTelephone: (s.clientPhone as string) || '',
+    clientEntreprise: '',
+    type: (s.eventType as EventType) || 'Autre',
+    date: (s.date as string) || '',
+    heureDebut: (s.startTime as string) || '',
+    heureFin: (s.endTime as string) || '',
+    nbConvivesMin: (s.guestCount as number) || 20,
+    nbConvivesMax: (s.guestCount as number) || 20,
+    salle: '',
+    menu: { entree: '', plat: '', dessert: '', prixParPersonne: 0 },
+    equipements: (s.equipment as string[]) || [],
+    prixParPersonne: (s.guestCount as number) > 0 ? Math.round(budget / (s.guestCount as number)) : 0,
+    totalEstime: budget,
+    arrhes: Math.round(budget * 0.3),
+    arrhesPercent: 30,
+    notes: (s.notes as string) || '',
+    status: STATUS_TO_FRONTEND[(s.status as string)] || 'Demande',
+    timeline: [],
+  };
 }
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -88,128 +133,7 @@ const EQUIPEMENTS = [
   { id: 'photobooth', label: 'Photobooth', icon: Camera },
 ];
 
-// ── Mock data ──────────────────────────────────────────────────────────
-
-const MOCK_EVENTS: SeminaireEvent[] = [
-  {
-    id: 1, clientNom: 'Jean-Marc Bertrand', clientEmail: 'jm.bertrand@techcorp.fr', clientTelephone: '06 12 34 56 78',
-    clientEntreprise: 'TechCorp', type: 'Corporate', date: '2026-04-15', heureDebut: '09:00', heureFin: '17:00',
-    nbConvivesMin: 40, nbConvivesMax: 50, salle: 'Salle principale',
-    menu: { entree: 'Salade César revisitée', plat: 'Suprême de volaille aux morilles', dessert: 'Fondant au chocolat', prixParPersonne: 65 },
-    equipements: ['videoprojecteur', 'sono', 'micro', 'ecran'],
-    prixParPersonne: 65, totalEstime: 3250, arrhes: 975, arrhesPercent: 30,
-    notes: 'Pause café matin et après-midi incluse. Allergies: 2 végétariens.',
-    status: 'Confirmé',
-    timeline: [
-      { date: '2026-03-01', action: 'Demande reçue par email' },
-      { date: '2026-03-03', action: 'Devis envoyé - 3 250 €' },
-      { date: '2026-03-10', action: 'Devis accepté, arrhes reçues (975 €)' },
-    ],
-  },
-  {
-    id: 2, clientNom: 'Sophie Dupont & Pierre Martin', clientEmail: 'sophie.dupont@mail.com', clientTelephone: '06 98 76 54 32',
-    clientEntreprise: '', type: 'Mariage', date: '2026-06-21', heureDebut: '18:00', heureFin: '02:00',
-    nbConvivesMin: 110, nbConvivesMax: 130, salle: 'Salle principale',
-    menu: { entree: 'Foie gras mi-cuit', plat: 'Filet de boeuf Rossini', dessert: 'Pièce montée', prixParPersonne: 95 },
-    equipements: ['sono', 'micro', 'decoration', 'photobooth'],
-    prixParPersonne: 95, totalEstime: 12350, arrhes: 3705, arrhesPercent: 30,
-    notes: 'Vin d\'honneur en terrasse si beau temps. Orchestre à partir de 22h.',
-    status: 'Devis envoyé',
-    timeline: [
-      { date: '2026-02-15', action: 'Premier contact téléphonique' },
-      { date: '2026-02-20', action: 'Visite des lieux' },
-      { date: '2026-03-05', action: 'Devis envoyé - 12 350 €' },
-    ],
-  },
-  {
-    id: 3, clientNom: 'Michel Lefebvre', clientEmail: 'm.lefebvre@orange.fr', clientTelephone: '06 55 44 33 22',
-    clientEntreprise: '', type: 'Anniversaire', date: '2026-03-29', heureDebut: '19:30', heureFin: '23:30',
-    nbConvivesMin: 25, nbConvivesMax: 35, salle: 'Salon privé',
-    menu: { entree: 'Velouté de butternut', plat: 'Magret de canard', dessert: 'Gâteau anniversaire personnalisé', prixParPersonne: 55 },
-    equipements: ['sono', 'decoration'],
-    prixParPersonne: 55, totalEstime: 1925, arrhes: 578, arrhesPercent: 30,
-    notes: 'Anniversaire 50 ans. Surprise organisée par sa femme. Arrivée discrète à 19h.',
-    status: 'En cours',
-    timeline: [
-      { date: '2026-02-28', action: 'Demande reçue' },
-      { date: '2026-03-02', action: 'Devis envoyé - 1 925 €' },
-      { date: '2026-03-05', action: 'Confirmé, arrhes reçues' },
-      { date: '2026-03-28', action: 'Mise en place effectuée' },
-    ],
-  },
-  {
-    id: 4, clientNom: 'Marie-Claire Renaud', clientEmail: 'mc.renaud@innovatech.com', clientTelephone: '07 11 22 33 44',
-    clientEntreprise: 'InnovaTech', type: 'Séminaire', date: '2026-04-22', heureDebut: '08:30', heureFin: '18:00',
-    nbConvivesMin: 20, nbConvivesMax: 25, salle: 'Salle de réunion',
-    menu: { entree: 'Carpaccio de saumon', plat: 'Risotto aux cèpes', dessert: 'Tarte tatin', prixParPersonne: 58 },
-    equipements: ['videoprojecteur', 'ecran', 'micro'],
-    prixParPersonne: 58, totalEstime: 1450, arrhes: 435, arrhesPercent: 30,
-    notes: 'Séminaire stratégie annuelle. Besoin wifi haut débit.',
-    status: 'Demande',
-    timeline: [
-      { date: '2026-03-20', action: 'Demande reçue via le site web' },
-    ],
-  },
-  {
-    id: 5, clientNom: 'Philippe & Anne Moreau', clientEmail: 'moreau.famille@gmail.com', clientTelephone: '06 77 88 99 00',
-    clientEntreprise: '', type: 'Anniversaire', date: '2026-05-10', heureDebut: '12:00', heureFin: '16:00',
-    nbConvivesMin: 15, nbConvivesMax: 20, salle: 'Terrasse',
-    menu: { entree: 'Bruschetta variées', plat: 'Côte de boeuf grillée', dessert: 'Pavlova fruits rouges', prixParPersonne: 48 },
-    equipements: ['sono'],
-    prixParPersonne: 48, totalEstime: 960, arrhes: 288, arrhesPercent: 30,
-    notes: 'Communion du fils, 15 ans. Menu enfant pour 5 convives.',
-    status: 'Demande',
-    timeline: [
-      { date: '2026-03-25', action: 'Demande téléphonique' },
-    ],
-  },
-  {
-    id: 6, clientNom: 'Laurent Girard', clientEmail: 'l.girard@consulting-plus.fr', clientTelephone: '06 44 55 66 77',
-    clientEntreprise: 'Consulting Plus', type: 'Corporate', date: '2026-04-03', heureDebut: '12:00', heureFin: '14:30',
-    nbConvivesMin: 10, nbConvivesMax: 12, salle: 'Salon privé',
-    menu: { entree: 'Tartare de thon', plat: 'Pavé de saumon grillé', dessert: 'Crème brûlée', prixParPersonne: 72 },
-    equipements: ['videoprojecteur'],
-    prixParPersonne: 72, totalEstime: 864, arrhes: 259, arrhesPercent: 30,
-    notes: 'Déjeuner d\'affaires mensuel. Client fidèle.',
-    status: 'Confirmé',
-    timeline: [
-      { date: '2026-03-15', action: 'Réservation habituelle confirmée' },
-      { date: '2026-03-16', action: 'Arrhes reçues' },
-    ],
-  },
-  {
-    id: 7, clientNom: 'Association Les Amis du Vin', clientEmail: 'contact@amisduvin.org', clientTelephone: '05 61 22 33 44',
-    clientEntreprise: 'Les Amis du Vin', type: 'Autre', date: '2026-03-15', heureDebut: '19:00', heureFin: '23:00',
-    nbConvivesMin: 35, nbConvivesMax: 40, salle: 'Salle principale',
-    menu: { entree: 'Planche charcuterie & fromages', plat: 'Souris d\'agneau confite', dessert: 'Assiette de fromages affinés', prixParPersonne: 70 },
-    equipements: ['sono', 'micro'],
-    prixParPersonne: 70, totalEstime: 2800, arrhes: 840, arrhesPercent: 30,
-    notes: 'Soirée dégustation avec sommelier invité. 8 vins à accorder.',
-    status: 'Soldé',
-    timeline: [
-      { date: '2026-02-01', action: 'Demande reçue' },
-      { date: '2026-02-05', action: 'Devis envoyé' },
-      { date: '2026-02-10', action: 'Confirmé' },
-      { date: '2026-03-15', action: 'Événement réalisé' },
-      { date: '2026-03-20', action: 'Facture soldée - 2 800 €' },
-    ],
-  },
-  {
-    id: 8, clientNom: 'Caroline Petit', clientEmail: 'caroline.petit@startuplab.io', clientTelephone: '07 99 88 77 66',
-    clientEntreprise: 'StartupLab', type: 'Séminaire', date: '2026-05-05', heureDebut: '09:00', heureFin: '13:00',
-    nbConvivesMin: 55, nbConvivesMax: 65, salle: 'Salle principale',
-    menu: { entree: 'Gaspacho andalou', plat: 'Bowl méditerranéen', dessert: 'Panna cotta mangue-passion', prixParPersonne: 42 },
-    equipements: ['videoprojecteur', 'sono', 'micro', 'ecran'],
-    prixParPersonne: 42, totalEstime: 2730, arrhes: 819, arrhesPercent: 30,
-    notes: 'Matinée team building + brunch. Besoins: espace modulable, 4 sous-groupes.',
-    status: 'Devis envoyé',
-    timeline: [
-      { date: '2026-03-18', action: 'Demande reçue via LinkedIn' },
-      { date: '2026-03-22', action: 'Visite + dégustation test' },
-      { date: '2026-03-25', action: 'Devis envoyé - 2 730 €' },
-    ],
-  },
-];
+// (mock data removed — loaded from API)
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -241,7 +165,23 @@ function getFirstDayOfMonth(year: number, month: number): number {
 export default function Seminaires() {
   const { showToast } = useToast();
 
-  const [events, setEvents] = useState<SeminaireEvent[]>(MOCK_EVENTS);
+  const [events, setEvents] = useState<SeminaireEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchEvents = useCallback(async () => {
+    try {
+      const res = await fetch(`${API}/api/seminaires`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('fetch failed');
+      const data = await res.json();
+      setEvents(data.map(mapFromApi));
+    } catch {
+      showToast('Erreur chargement séminaires', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchEvents(); }, [fetchEvents]);
   const [viewMode, setViewMode] = useState<'kanban' | 'calendar'>('kanban');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewModal, setShowNewModal] = useState(false);
@@ -297,104 +237,100 @@ export default function Seminaires() {
     .sort((a, b) => a.date.localeCompare(b.date))[0] || null;
 
   // ── Move event to next/prev status ──
-  function moveEvent(id: number, direction: 'next' | 'prev') {
-    setEvents(prev => prev.map(e => {
-      if (e.id !== id) return e;
-      const idx = STATUS_COLUMNS.indexOf(e.status);
-      const newIdx = direction === 'next' ? Math.min(idx + 1, STATUS_COLUMNS.length - 1) : Math.max(idx - 1, 0);
-      if (newIdx === idx) return e;
-      const newStatus = STATUS_COLUMNS[newIdx];
-      return {
-        ...e,
-        status: newStatus,
-        timeline: [...e.timeline, { date: new Date().toISOString().slice(0, 10), action: `Statut changé vers "${newStatus}"` }],
-      };
-    }));
-    showToast('Statut mis à jour', 'success');
+  async function moveEvent(id: number, direction: 'next' | 'prev') {
+    const ev = events.find(e => e.id === id);
+    if (!ev) return;
+    const idx = STATUS_COLUMNS.indexOf(ev.status);
+    const newIdx = direction === 'next' ? Math.min(idx + 1, STATUS_COLUMNS.length - 1) : Math.max(idx - 1, 0);
+    if (newIdx === idx) return;
+    const newStatus = STATUS_COLUMNS[newIdx];
+    try {
+      await fetch(`${API}/api/seminaires/${id}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: STATUS_TO_BACKEND[newStatus] }),
+      });
+      setEvents(prev => prev.map(e => e.id === id ? { ...e, status: newStatus } : e));
+      showToast('Statut mis à jour', 'success');
+    } catch {
+      showToast('Erreur mise à jour statut', 'error');
+    }
   }
 
   // ── Create event ──
-  function handleCreate() {
+  async function handleCreate() {
     if (!form.clientNom || !form.date) {
       showToast('Veuillez remplir le nom du client et la date', 'error');
       return;
     }
     const total = form.prixParPersonne * form.nbConvivesMax;
-    const newEvent: SeminaireEvent = {
-      id: Date.now(),
-      clientNom: form.clientNom,
-      clientEmail: form.clientEmail,
-      clientTelephone: form.clientTelephone,
-      clientEntreprise: form.clientEntreprise,
-      type: form.type,
-      date: form.date,
-      heureDebut: form.heureDebut,
-      heureFin: form.heureFin,
-      nbConvivesMin: form.nbConvivesMin,
-      nbConvivesMax: form.nbConvivesMax,
-      salle: form.salle,
-      menu: {
-        entree: form.menuEntree,
-        plat: form.menuPlat,
-        dessert: form.menuDessert,
-        prixParPersonne: form.menuPrix,
-      },
-      equipements: form.equipements,
-      prixParPersonne: form.prixParPersonne,
-      totalEstime: total,
-      arrhes: Math.round(total * form.arrhesPercent / 100),
-      arrhesPercent: form.arrhesPercent,
-      notes: form.notes,
-      status: 'Demande',
-      timeline: [{ date: new Date().toISOString().slice(0, 10), action: 'Demande créée' }],
-    };
-    setEvents(prev => [...prev, newEvent]);
-    setForm(emptyForm);
-    setShowNewModal(false);
-    showToast('Événement créé avec succès', 'success');
+    const menuStr = [form.menuEntree, form.menuPlat, form.menuDessert].filter(Boolean).join(' / ');
+    try {
+      const res = await fetch(`${API}/api/seminaires`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          title: `${form.type} - ${form.clientNom}`,
+          clientName: form.clientNom,
+          clientEmail: form.clientEmail || null,
+          clientPhone: form.clientTelephone || null,
+          eventType: form.type,
+          date: form.date,
+          startTime: form.heureDebut || null,
+          endTime: form.heureFin || null,
+          guestCount: form.nbConvivesMax,
+          budget: total,
+          menuDetails: menuStr || null,
+          equipment: form.equipements,
+          notes: form.notes || null,
+        }),
+      });
+      if (!res.ok) throw new Error('create failed');
+      const created = await res.json();
+      setEvents(prev => [mapFromApi(created), ...prev]);
+      setForm(emptyForm);
+      setShowNewModal(false);
+      showToast('Événement créé avec succès', 'success');
+    } catch {
+      showToast('Erreur création événement', 'error');
+    }
   }
 
   // ── Status actions ──
-  function handleStatusAction(event: SeminaireEvent, action: string) {
-    setEvents(prev => prev.map(e => {
-      if (e.id !== event.id) return e;
-      let newStatus = e.status;
-      let timelineAction = action;
-      switch (action) {
-        case 'envoyer_devis':
-          newStatus = 'Devis envoyé';
-          timelineAction = `Devis envoyé - ${formatEuro(e.totalEstime)}`;
-          break;
-        case 'confirmer':
-          newStatus = 'Confirmé';
-          timelineAction = 'Événement confirmé';
-          break;
-        case 'annuler':
-          newStatus = 'Demande';
-          timelineAction = 'Événement annulé, retour en demande';
-          break;
-        case 'solder':
-          newStatus = 'Soldé';
-          timelineAction = `Facture soldée - ${formatEuro(e.totalEstime)}`;
-          break;
-      }
-      return {
-        ...e,
-        status: newStatus,
-        timeline: [...e.timeline, { date: new Date().toISOString().slice(0, 10), action: timelineAction }],
-      };
-    }));
-    showToast('Action effectuée', 'success');
+  async function handleStatusAction(event: SeminaireEvent, action: string) {
+    let newStatus: EventStatus = event.status;
+    switch (action) {
+      case 'envoyer_devis': newStatus = 'Devis envoyé'; break;
+      case 'confirmer': newStatus = 'Confirmé'; break;
+      case 'annuler': newStatus = 'Demande'; break;
+      case 'solder': newStatus = 'Soldé'; break;
+    }
+    try {
+      await fetch(`${API}/api/seminaires/${event.id}`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: STATUS_TO_BACKEND[newStatus] }),
+      });
+      setEvents(prev => prev.map(e => e.id === event.id ? { ...e, status: newStatus } : e));
+      showToast('Action effectuée', 'success');
+    } catch {
+      showToast('Erreur mise à jour statut', 'error');
+    }
     setShowDetailModal(false);
     setSelectedEvent(null);
   }
 
   // ── Delete event ──
-  function handleDelete(id: number) {
-    setEvents(prev => prev.filter(e => e.id !== id));
-    setShowDetailModal(false);
-    setSelectedEvent(null);
-    showToast('Événement supprimé', 'success');
+  async function handleDelete(id: number) {
+    try {
+      await fetch(`${API}/api/seminaires/${id}`, { method: 'DELETE', headers: authHeaders() });
+      setEvents(prev => prev.filter(e => e.id !== id));
+      setShowDetailModal(false);
+      setSelectedEvent(null);
+      showToast('Événement supprimé', 'success');
+    } catch {
+      showToast('Erreur suppression', 'error');
+    }
   }
 
   // ── Toggle equipment in form ──

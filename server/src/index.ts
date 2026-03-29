@@ -17,6 +17,8 @@ import { publicMenuRouter } from './routes/publicMenu';
 import { contactRouter } from './routes/contact';
 import { emailRouter } from './routes/email';
 import restaurantsRouter from './routes/restaurants';
+import { aiRouter } from './routes/ai';
+import { alertsRouter } from './routes/alerts';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -74,6 +76,8 @@ app.use('/api/messages', authMiddleware, messagesRouter);
 app.use('/api/menu-engineering', authMiddleware, menuEngineeringRouter);
 app.use('/api/email', authMiddleware, emailRouter);
 app.use('/api/restaurants', restaurantsRouter);
+app.use('/api/ai', aiRouter);
+app.use('/api/alerts', alertsRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

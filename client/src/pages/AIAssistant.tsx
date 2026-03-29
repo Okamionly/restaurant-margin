@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb } from 'lucide-react';
+import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, AlertTriangle } from 'lucide-react';
+import { sendAIMessage } from '../services/api';
 
 interface Message {
   id: string;
@@ -10,124 +11,37 @@ interface Message {
 
 const QUICK_QUESTIONS = [
   'Comment reduire mes couts matiere ?',
-  'Quelle marge pour un plat a 15\u20ac ?',
-  "Conseils pour ma carte d'ete",
-  'Analyser mes ingredients les plus chers',
-  'Comment optimiser mes achats fournisseurs ?',
+  'Quels plats ont la meilleure marge ?',
+  'Analyse mes stocks critiques',
+  'Comment optimiser ma carte ?',
+  'Quels ingredients me coutent le plus cher ?',
 ];
 
 function getMockResponse(question: string): string {
   const q = question.toLowerCase();
-
-  if (q.includes('marge') || q.includes('cout') || q.includes('co\u00fbt')) {
-    return `Excellent sujet ! Voici mes conseils pour optimiser vos marges :
-
-**Objectif : ratio cout matiere a 30%**
-
-1. **Analysez chaque fiche technique** - Verifiez que le cout matiere de chaque plat ne depasse pas 30% du prix de vente TTC.
-
-2. **Identifiez les plats a faible marge** - Utilisez le Menu Engineering de RestauMargin pour reperer les plats qui coutent trop cher par rapport a leur prix.
-
-3. **Negociez avec vos fournisseurs** - Comparez les prix dans la Mercuriale et lancez des appels d'offres pour les produits cles.
-
-4. **Reduisez le gaspillage** - Suivez vos pertes dans le module Gaspillage. Chaque kilo jete impacte directement votre marge.
-
-5. **Ajustez vos portions** - Utilisez la Station Balance pour standardiser les grammages et eviter le surdosage.
-
-Conseil : commencez par vos 5 plats les plus vendus, c'est la que l'impact sera le plus fort !`;
-  }
-
-  if (q.includes('carte') || q.includes('menu')) {
-    return `Voici mes recommandations pour optimiser votre carte :
-
-**Les regles d'or du Menu Engineering**
-
-1. **Limitez le nombre de plats** - Idealement 7 a 10 plats par categorie. Trop de choix paralyse le client et complique votre gestion des stocks.
-
-2. **Classez vos plats en 4 categories** :
-   - Stars (populaires + rentables) : mettez-les en avant
-   - Vaches a lait (populaires mais faible marge) : augmentez legerement le prix
-   - Enigmes (rentables mais peu vendus) : ameliorez leur visibilite
-   - Poids morts (peu vendus + faible marge) : a remplacer
-
-3. **Positionnement strategique** - Placez vos plats a forte marge en haut a droite de la carte, c'est la zone la plus regardee.
-
-4. **Carte saisonniere** - Adaptez votre offre aux produits de saison pour reduire les couts et proposer de la fraicheur.
-
-5. **Descriptions appetissantes** - Un bon intitule peut augmenter les ventes d'un plat de 27%.
-
-Utilisez le module Menu Engineering de RestauMargin pour analyser la performance de chaque plat !`;
-  }
-
-  if (q.includes('fournisseur') || q.includes('achat')) {
-    return `Voici comment optimiser vos achats fournisseurs :
-
-**Strategie d'achat intelligente**
-
-1. **Diversifiez vos fournisseurs** - Ne dependez jamais d'un seul fournisseur. Ayez au moins 2-3 alternatives par categorie de produit.
-
-2. **Comparez regulierement les prix** - Utilisez la Mercuriale RestauMargin pour suivre l'evolution des prix et detecter les hausses anormales.
-
-3. **Groupez vos commandes** - Commandez en volume pour negocier de meilleurs tarifs. Le module Commandes Automatiques peut vous aider.
-
-4. **Lancez des appels d'offres** - Pour les gros volumes (viande, poisson, produits laitiers), utilisez le module RFQ pour mettre en concurrence vos fournisseurs.
-
-5. **Respectez la saisonnalite** - Les produits de saison sont moins chers et de meilleure qualite.
-
-6. **Verifiez vos factures** - Scannez chaque facture avec le module Factures pour detecter les ecarts de prix automatiquement.
-
-7. **Negociez les conditions** - Delais de paiement, franco de port, remises de fin d'annee... tout se negocie !
-
-Astuce : dans RestauMargin, activez les alertes de prix pour etre notifie quand un ingredient depasse votre seuil.`;
-  }
-
-  if (q.includes('ingredient') || q.includes('cher') || q.includes('co\u00fbteux')) {
-    return `Pour analyser et reduire le cout de vos ingredients :
-
-**Analyse des ingredients les plus chers**
-
-1. **Identifiez votre Top 10** - Dans le module Ingredients de RestauMargin, triez par prix au kilo pour voir vos produits les plus couteux.
-
-2. **Calculez l'impact reel** - Un ingredient cher n'est pas forcement un probleme s'il est utilise en petite quantite. Regardez le cout par portion.
-
-3. **Trouvez des alternatives** :
-   - Beurre AOP -> beurre classique pour les cuissons
-   - Vanille en gousse -> extrait de vanille pour certaines preparations
-   - Saumon frais -> truite pour certains plats
-
-4. **Optimisez l'utilisation** - Utilisez les parures et chutes dans d'autres preparations (bouillons, farces, garnitures).
-
-5. **Ajustez les grammages** - Pesez systematiquement avec la Station Balance. 10g de trop par assiette sur 100 couverts, ca chiffre vite !
-
-6. **Stockage optimal** - Un mauvais stockage = du gaspillage = de l'argent perdu. Respectez la chaine du froid et le FIFO.
-
-Rendez-vous dans Ingredients > Trier par cout pour commencer votre analyse !`;
-  }
-
-  return `Merci pour votre question ! Voici quelques conseils generaux pour ameliorer la gestion de votre restaurant :
-
-**Bonnes pratiques de gestion**
-
-1. **Suivez vos indicateurs cles** - Consultez votre Tableau de Bord RestauMargin chaque matin : chiffre d'affaires, marge brute, ratio cout matiere.
-
-2. **Maitrisez votre food cost** - L'objectif est de rester sous les 30% de cout matiere. Chaque point gagne, c'est de la marge en plus.
-
-3. **Formez votre equipe** - Un personnel forme aux bonnes pratiques de dosage et de stockage peut vous faire economiser 5 a 10% sur les matieres premieres.
-
-4. **Digitalisez vos process** - Fiches techniques, inventaires, commandes... RestauMargin centralise tout pour vous faire gagner du temps.
-
-5. **Anticipez** - Utilisez le Planning pour prevoir vos besoins et eviter les ruptures comme le surstockage.
-
-N'hesitez pas a me poser une question plus precise, je suis la pour vous aider !`;
+  if (q.includes('marge') || q.includes('cout') || q.includes('coût'))
+    return "**Conseil marge** : Analysez vos fiches techniques dans l'onglet Recettes. L'objectif est un ratio cout matiere sous 30%. Commencez par vos 5 plats les plus vendus — c'est la que l'impact sera le plus fort.";
+  if (q.includes('carte') || q.includes('menu'))
+    return "**Optimisation carte** : Limitez a 7-10 plats par categorie. Utilisez le Menu Engineering pour classer vos plats en Stars, Vaches a lait, Enigmes et Poids morts.";
+  if (q.includes('fournisseur') || q.includes('achat'))
+    return "**Achats** : Diversifiez vos fournisseurs (2-3 par categorie). Utilisez la Mercuriale pour comparer les prix et lancez des appels d'offres via le module RFQ.";
+  if (q.includes('stock') || q.includes('inventaire'))
+    return "**Stocks** : Verifiez vos alertes dans Inventaire > Alertes. Les articles en dessous du seuil minimum doivent etre reapprovisionnes rapidement.";
+  return "**Conseil** : Consultez votre Tableau de Bord chaque matin pour suivre vos indicateurs cles. L'objectif est de rester sous 30% de cout matiere.";
 }
 
-// TODO: Replace with real Claude API call
 async function getAIResponse(message: string): Promise<string> {
-  // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1200 + Math.random() * 800));
-  // For now, mock responses
-  return getMockResponse(message);
-  // Future: POST /api/ai/chat with { message, context }
+  try {
+    const result = await sendAIMessage(message);
+    return result.response;
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : '';
+    if (msg.includes('non configuré') || msg.includes('503')) {
+      // API key not set — use mock with notice
+      return `⚠️ *Mode demo* — L'IA analyse vos donnees reelles quand la cle API est configuree.\n\n${getMockResponse(message)}`;
+    }
+    throw error;
+  }
 }
 
 export default function AIAssistant() {
@@ -136,7 +50,7 @@ export default function AIAssistant() {
       id: 'welcome',
       role: 'assistant',
       content:
-        "Bonjour ! Je suis votre assistant IA RestauMargin. Je peux vous aider a optimiser vos marges, ameliorer votre carte, analyser vos couts et bien plus encore. Posez-moi une question ou selectionnez une suggestion ci-dessous !",
+        "Bonjour ! Je suis votre **assistant IA RestauMargin**. J'analyse les donnees reelles de votre restaurant — recettes, marges, stocks, ventes — pour vous donner des conseils personnalises. Posez-moi une question !",
       timestamp: new Date(),
     },
   ]);
@@ -194,7 +108,6 @@ export default function AIAssistant() {
   }
 
   function formatContent(content: string) {
-    // Simple markdown-like rendering for bold and line breaks
     return content.split('\n').map((line, i) => {
       const parts = line.split(/(\*\*[^*]+\*\*)/).map((part, j) => {
         if (part.startsWith('**') && part.endsWith('**')) {
@@ -226,7 +139,11 @@ export default function AIAssistant() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-white">Assistant IA RestauMargin</h1>
-            <p className="text-sm text-slate-400">Votre conseiller cuisine & marges</p>
+            <p className="text-sm text-slate-400">Analyse vos donnees en temps reel</p>
+          </div>
+          <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-emerald-400 font-medium">Claude AI</span>
           </div>
         </div>
       </div>
@@ -240,7 +157,6 @@ export default function AIAssistant() {
               key={msg.id}
               className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              {/* Avatar */}
               <div
                 className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                   msg.role === 'user'
@@ -254,8 +170,6 @@ export default function AIAssistant() {
                   <Bot className="w-4 h-4 text-white" />
                 )}
               </div>
-
-              {/* Bubble */}
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   msg.role === 'user'
@@ -278,17 +192,19 @@ export default function AIAssistant() {
             </div>
           ))}
 
-          {/* Typing indicator */}
           {isTyping && (
             <div className="flex gap-3">
               <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
                 <Bot className="w-4 h-4 text-white" />
               </div>
               <div className="bg-slate-800 border border-slate-700/50 rounded-2xl rounded-bl-md px-4 py-3">
-                <div className="flex gap-1.5 items-center h-5">
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1.5 items-center h-5">
+                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                  </div>
+                  <span className="text-xs text-slate-500">Analyse de vos donnees...</span>
                 </div>
               </div>
             </div>
@@ -350,7 +266,7 @@ export default function AIAssistant() {
             </button>
           </div>
           <p className="text-[10px] text-slate-600 mt-2 text-center">
-            Assistant IA en version beta - Les reponses sont generees localement pour le moment
+            Propulse par Claude AI — Analyse vos donnees restaurant en temps reel
           </p>
         </div>
       </div>

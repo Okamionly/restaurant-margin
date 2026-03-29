@@ -143,6 +143,39 @@ export async function checkFirstUser(): Promise<boolean> {
   return data.isFirstUser;
 }
 
+// --- AI Chat ---
+
+export async function sendAIMessage(message: string): Promise<{ response: string; usage?: { input_tokens: number; output_tokens: number } }> {
+  const res = await fetch(`${API_BASE}/ai/chat`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ message }),
+  });
+  return handleResponse(res);
+}
+
+// --- Alerts ---
+
+export interface AlertItem {
+  type: 'stock' | 'margin' | 'price';
+  severity: 'critical' | 'warning' | 'info';
+  title: string;
+  detail: string;
+}
+
+export async function fetchAlerts(): Promise<{ alerts: AlertItem[]; count: number }> {
+  const res = await fetch(`${API_BASE}/alerts`, { headers: authHeaders() });
+  return handleResponse(res);
+}
+
+export async function sendAlertEmail(): Promise<{ sent: boolean; alertCount?: number }> {
+  const res = await fetch(`${API_BASE}/alerts/send`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  return handleResponse(res);
+}
+
 // --- Ingredients ---
 
 export async function fetchIngredients(): Promise<Ingredient[]> {

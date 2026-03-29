@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
+import Anthropic from '@anthropic-ai/sdk';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -840,6 +841,91 @@ app.get('/api/public/menu', async (_req, res) => {
       allergens: [...new Set(r.ingredients.flatMap(ri => ri.ingredient.allergens || []))],
     })));
   } catch { res.status(500).json({ error: 'Erreur' }); }
+});
+
+// ── AI Chat ──
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
+const aiRateLimit = new Map<number, { count: number; resetAt: number }>();
+
+app.post('/api/ai/chat', authMiddleware, async (req: any, res) => {
+  try {
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ error: 'Message requis' });
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré' });
+
+    // Rate limit per user
+    const userId = req.user?.userId || 0;
+    const now = Date.now();
+    const entry = aiRateLimit.get(userId);
+    if (entry && now < entry.resetAt && entry.count >= 20) {
+      return res.status(429).json({ error: 'Limite atteinte (20 questions/heure)' });
+    }
+    if (!entry || now > (entry?.resetAt || 0)) {
+      aiRateLimit.set(userId, { count: 1, resetAt: now + 3600000 });
+    } else { entry.count++; }
+
+    // Build context from restaurant data
+    const [recipes, ingredients, inventory] = await Promise.all([
+      prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } }, take: 50 }),
+      prisma.ingredient.findMany({ orderBy: { pricePerUnit: 'desc' }, take: 30 }),
+      prisma.inventoryItem.findMany({ include: { ingredient: true } }),
+    ]);
+
+    const recipesSummary = recipes.map(r => {
+      const cost = r.ingredients.reduce((s, ri) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+      const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
+      return `- ${r.name} (${r.category}): vente ${r.sellingPrice}€, coût ${cost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
+    }).join('\n');
+
+    const lowStock = inventory.filter(i => i.currentStock < i.minStock);
+    const stockAlerts = lowStock.length > 0
+      ? lowStock.map(i => `- ${i.ingredient.name}: ${i.currentStock}/${i.minStock} ${i.ingredient.unit}`).join('\n')
+      : 'Aucune alerte';
+
+    const context = `${recipes.length} recettes:\n${recipesSummary || 'Aucune'}\n\nAlertes stock:\n${stockAlerts}`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1024,
+      system: `Tu es l'assistant IA RestauMargin, expert en gestion restaurant. Réponds en français, sois concis et actionnable (max 300 mots). Base tes conseils sur les données réelles:\n\n${context}`,
+      messages: [{ role: 'user', content: message.trim() }],
+    });
+
+    const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
+    res.json({ response: text, usage: response.usage });
+  } catch (e: any) {
+    console.error('AI error:', e.message);
+    res.status(500).json({ error: e.message || 'Erreur IA' });
+  }
+});
+
+// ── Alerts ──
+app.get('/api/alerts', authMiddleware, async (_req, res) => {
+  try {
+    const inventory = await prisma.inventoryItem.findMany({ include: { ingredient: true } });
+    const recipes = await prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } } });
+
+    const alerts: { type: string; severity: string; title: string; detail: string }[] = [];
+
+    for (const item of inventory) {
+      if (item.currentStock <= 0) {
+        alerts.push({ type: 'stock', severity: 'critical', title: `Rupture: ${item.ingredient.name}`, detail: `Stock: 0 ${item.ingredient.unit}` });
+      } else if (item.currentStock < item.minStock) {
+        alerts.push({ type: 'stock', severity: 'warning', title: `Stock bas: ${item.ingredient.name}`, detail: `${item.currentStock}/${item.minStock} ${item.ingredient.unit}` });
+      }
+    }
+
+    for (const r of recipes) {
+      if (r.sellingPrice <= 0) continue;
+      const cost = r.ingredients.reduce((s, ri) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+      const margin = (r.sellingPrice - cost) / r.sellingPrice * 100;
+      if (margin < 60) {
+        alerts.push({ type: 'margin', severity: margin < 40 ? 'critical' : 'warning', title: `Marge faible: ${r.name}`, detail: `${margin.toFixed(1)}% (coût ${cost.toFixed(2)}€)` });
+      }
+    }
+
+    res.json({ alerts, count: alerts.length });
+  } catch { res.status(500).json({ error: 'Erreur alertes' }); }
 });
 
 // 404 catch-all

@@ -87,29 +87,77 @@ app.get('/api/auth/first-user', async (_req, res) => {
   } catch (e: any) { console.error('DB Error:', e.message); res.status(500).json({ error: 'Erreur serveur', detail: e.message }); }
 });
 
+// ── Activation codes ──
+function generateActivationCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'RM-';
+  for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+app.post('/api/activation/generate', async (req: any, res) => {
+  try {
+    const { plan, secret } = req.body;
+    if (secret !== process.env.ACTIVATION_SECRET && secret !== 'admin') return res.status(401).json({ error: 'Non autorisé' });
+    if (!plan || !['basic', 'pro', 'business'].includes(plan)) return res.status(400).json({ error: 'Plan invalide' });
+    const code = generateActivationCode();
+    const activation = await prisma.activationCode.create({ data: { code, plan } });
+    res.status(201).json({ code: activation.code, plan: activation.plan });
+  } catch { res.status(500).json({ error: 'Erreur génération code' }); }
+});
+
+app.post('/api/activation/validate', async (req: any, res) => {
+  try {
+    const { code } = req.body;
+    if (!code) return res.status(400).json({ error: 'Code requis' });
+    const activation = await prisma.activationCode.findUnique({ where: { code: code.trim().toUpperCase() } });
+    if (!activation) return res.status(404).json({ error: 'Code invalide' });
+    if (activation.used) return res.status(400).json({ error: 'Code déjà utilisé' });
+    res.json({ valid: true, plan: activation.plan });
+  } catch { res.status(500).json({ error: 'Erreur validation' }); }
+});
+
+app.get('/api/activation/list', async (req: any, res) => {
+  try {
+    const { secret } = req.query;
+    if (secret !== process.env.ACTIVATION_SECRET && secret !== 'admin') return res.status(401).json({ error: 'Non autorisé' });
+    const codes = await prisma.activationCode.findMany({ orderBy: { createdAt: 'desc' } });
+    res.json(codes);
+  } catch { res.status(500).json({ error: 'Erreur liste codes' }); }
+});
+
+// ── Register with activation code ──
 app.post('/api/auth/register', async (req: any, res) => {
   try {
-    const { email, password, name, invitationCode, role: requestedRole } = req.body;
+    const { email, password, name, activationCode } = req.body;
     if (!email || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
     if (password.length < 6) return res.status(400).json({ error: 'Min. 6 caractères' });
+
     const userCount = await prisma.user.count();
+    let plan = 'basic';
+
     if (userCount > 0) {
       const authHeader = req.headers.authorization;
       const hasAdminToken = authHeader && authHeader.startsWith('Bearer ');
       if (hasAdminToken) {
         try { const d = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload; if (d.role !== 'admin') return res.status(403).json({ error: 'Admin requis' }); } catch { return res.status(403).json({ error: 'Token invalide' }); }
       } else {
-        if (!invitationCode) return res.status(400).json({ error: "Le code d'invitation est requis" });
-        if (invitationCode !== INVITATION_CODE) return res.status(403).json({ error: "Code d'invitation invalide" });
+        if (!activationCode) return res.status(400).json({ error: "Code d'activation requis. Abonnez-vous sur la page Tarifs." });
+        const activation = await prisma.activationCode.findUnique({ where: { code: activationCode.trim().toUpperCase() } });
+        if (!activation) return res.status(403).json({ error: "Code d'activation invalide" });
+        if (activation.used) return res.status(403).json({ error: "Ce code a déjà été utilisé" });
+        plan = activation.plan;
+        await prisma.activationCode.update({ where: { code: activation.code }, data: { used: true, usedBy: email, usedAt: new Date() } });
       }
     }
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
     const passwordHash = await bcrypt.hash(password, 12);
     const role = userCount === 0 ? 'admin' : 'chef';
-    const user = await prisma.user.create({ data: { email, passwordHash, name, role } });
+    const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan } });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
-    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan } });
   } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }
 });
 
@@ -122,7 +170,7 @@ app.post('/api/auth/login', async (req, res) => {
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
-    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'basic' } });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur connexion' }); }
 });
 

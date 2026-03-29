@@ -14,6 +14,9 @@ model User {
   passwordHash      String
   name              String
   role              String             @default("chef") // admin, chef
+  plan              String             @default("basic") // basic, pro, business
+  stripeCustomerId  String?
+  stripeSubId       String?
   emailVerified     Boolean            @default(true)
   verificationToken String?
   resetToken        String?
@@ -24,6 +27,20 @@ model User {
   memberships       RestaurantMember[]
 
   @@map("users")
+}
+
+model ActivationCode {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  plan      String   // basic, pro, business
+  used      Boolean  @default(false)
+  usedBy    String?  // email of user who used it
+  usedAt    DateTime?
+  stripePaymentId String?
+  createdAt DateTime @default(now())
+
+  @@index([code])
+  @@map("activation_codes")
 }
 
 model Restaurant {

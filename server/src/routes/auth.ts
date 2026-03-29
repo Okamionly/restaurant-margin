@@ -30,7 +30,7 @@ authRouter.get('/first-user', async (_req: AuthRequest, res: Response) => {
 // POST /register
 authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, res: Response) => {
   try {
-    const { email, password, name, invitationCode, role: requestedRole } = req.body;
+    const { email, password, name, activationCode, role: requestedRole } = req.body;
 
     if (!email || !password || !name) {
       return res.status(400).json({ error: 'Email, mot de passe et nom sont requis' });
@@ -43,13 +43,15 @@ authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, 
     // Check if any users exist
     const userCount = await prisma.user.count();
 
+    let plan = 'basic';
+
     if (userCount > 0) {
-      // Users exist: check invitation code or admin token
+      // Users exist: check activation code or admin token
       const authHeader = req.headers.authorization;
       const hasAdminToken = authHeader && authHeader.startsWith('Bearer ');
 
       if (hasAdminToken) {
-        // Admin creating a user (existing behavior)
+        // Admin creating a user
         try {
           const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
           if (decoded.role !== 'admin') {
@@ -59,13 +61,30 @@ authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, 
           return res.status(403).json({ error: 'Token invalide' });
         }
       } else {
-        // Self-registration: require invitation code
-        if (!invitationCode) {
-          return res.status(400).json({ error: "Le code d'invitation est requis" });
+        // Self-registration: require activation code
+        if (!activationCode) {
+          return res.status(400).json({ error: "Le code d'activation est requis. Abonnez-vous sur la page Tarifs." });
         }
-        if (invitationCode !== INVITATION_CODE) {
-          return res.status(403).json({ error: "Code d'invitation invalide" });
+
+        // Validate activation code
+        const activation = await prisma.activationCode.findUnique({
+          where: { code: activationCode.trim().toUpperCase() },
+        });
+
+        if (!activation) {
+          return res.status(403).json({ error: "Code d'activation invalide" });
         }
+        if (activation.used) {
+          return res.status(403).json({ error: "Ce code a déjà été utilisé" });
+        }
+
+        plan = activation.plan;
+
+        // Mark code as used
+        await prisma.activationCode.update({
+          where: { code: activation.code },
+          data: { used: true, usedBy: email, usedAt: new Date() },
+        });
       }
     }
 
@@ -79,7 +98,7 @@ authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, 
     const role = userCount === 0 ? 'admin' : 'chef';
 
     const user = await prisma.user.create({
-      data: { email, passwordHash, name, role },
+      data: { email, passwordHash, name, role, plan },
     });
 
     // After user creation, create default restaurant
@@ -129,7 +148,7 @@ authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, 
 
     res.status(201).json({
       token,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role, emailVerified: false },
+      user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan, emailVerified: false },
       restaurant: { id: restaurant.id, name: restaurant.name },
     });
   } catch (error) {
@@ -230,7 +249,7 @@ authRouter.post('/login', validate(loginSchema), async (req: AuthRequest, res: R
 
     res.json({
       token,
-      user: { id: user.id, email: user.email, name: user.name, role: user.role, emailVerified: user.emailVerified },
+      user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan || 'basic', emailVerified: user.emailVerified },
       restaurant: membership?.restaurant || null,
     });
   } catch (error) {

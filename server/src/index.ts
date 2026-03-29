@@ -26,6 +26,7 @@ import { haccpRouter } from './routes/haccp';
 import { planningRouter } from './routes/planning';
 import { seminairesRouter } from './routes/seminaires';
 import { marketplaceRouter } from './routes/marketplace';
+import { activationRouter } from './routes/activation';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -64,6 +65,7 @@ app.use('/api/auth/forgot-password', authLimiter);
 
 // Public routes
 app.use('/api/auth', authRouter);
+app.use('/api/activation', activationRouter);
 app.use('/api/public', publicMenuRouter);
 app.use('/api/contact', contactRouter);
 

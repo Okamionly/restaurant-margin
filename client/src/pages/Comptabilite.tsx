@@ -646,7 +646,7 @@ export default function Comptabilite() {
                     <Cell key={idx} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v: number) => fmt(v)} />
+                <Tooltip formatter={(v) => fmt(Number(v))} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -816,7 +816,7 @@ export default function Comptabilite() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis type="number" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k€`} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(v: number) => fmt(v)} />
+                <Tooltip formatter={(v) => fmt(Number(v))} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                   {chargesByCategory.map((_, idx) => (
                     <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
@@ -916,7 +916,7 @@ export default function Comptabilite() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="mois" tick={{ fontSize: 11 }} />
                 <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
-                <Tooltip formatter={(v: number) => `${v}%`} />
+                <Tooltip formatter={(v) => `${Number(v)}%`} />
                 <Legend />
                 <Line type="monotone" dataKey="coutMatiere" name="Coût matière" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }} />
                 <Line type="monotone" dataKey="masseSalariale" name="Masse salariale" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} />

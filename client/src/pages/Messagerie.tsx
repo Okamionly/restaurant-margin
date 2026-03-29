@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   MessageSquare, Send, Paperclip, Search, Phone, Video, MoreVertical,
-  Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package,
+  Users, Check, CheckCheck, Image, X, Plus, ArrowLeft, Package, Loader2,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 
@@ -25,6 +25,7 @@ interface Conversation {
   online: boolean;
   messages: Message[];
   unread: number;
+  lastMessage?: string;
 }
 
 interface Contact {
@@ -33,6 +34,19 @@ interface Contact {
   role: string;
   avatar: string;
 }
+
+// ── API helpers ──────────────────────────────────────────────────────────────
+function getHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const restaurantId = localStorage.getItem('activeRestaurantId');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+    'X-Restaurant-Id': restaurantId || '1',
+  };
+}
+
+const API = '/api/messages';
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 const ME = 'me';
@@ -49,88 +63,6 @@ const CONTACTS: Contact[] = [
   { id: 'rungis', name: "Rungis Express", role: 'Fournisseur', avatar: 'RE' },
 ];
 
-function buildConversations(): Conversation[] {
-  return [
-    {
-      id: 'transgourmet',
-      name: 'Transgourmet - Commercial',
-      isGroup: false,
-      members: ['transgourmet'],
-      avatar: 'TC',
-      online: true,
-      unread: 2,
-      messages: [
-        { id: '1', senderId: 'transgourmet', text: 'Bonjour, votre commande #1247 a été préparée.', timestamp: '10:15', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Parfait, merci ! Livraison prévue à quelle heure ?', timestamp: '10:20', read: true, type: 'text' },
-        { id: '3', senderId: 'transgourmet', text: 'Livraison entre 14h et 16h.', timestamp: '10:25', read: true, type: 'text' },
-        {
-          id: '4', senderId: 'transgourmet', text: '', timestamp: '10:28', read: false, type: 'order',
-          orderData: { id: '#1247', supplier: 'Transgourmet', items: 12, total: '847,50 €', status: 'Expédiée' },
-        },
-        { id: '5', senderId: 'transgourmet', text: 'Votre commande #1247 a été expédiée', timestamp: '10:30', read: false, type: 'text' },
-      ],
-    },
-    {
-      id: 'metro',
-      name: 'Metro - Service client',
-      isGroup: false,
-      members: ['metro'],
-      avatar: 'MS',
-      online: false,
-      unread: 1,
-      messages: [
-        { id: '1', senderId: ME, text: 'Bonjour, je cherche des offres sur les produits frais cette semaine.', timestamp: 'Hier 09:00', read: true, type: 'text' },
-        { id: '2', senderId: 'metro', text: 'Bonjour ! Nous avons -20% sur les légumes bio et -15% sur la volaille.', timestamp: 'Hier 09:45', read: true, type: 'text' },
-        { id: '3', senderId: 'metro', text: 'Nouvelle promotion disponible', timestamp: 'Hier 14:30', read: false, type: 'text' },
-      ],
-    },
-    {
-      id: 'cuisine',
-      name: 'Équipe Cuisine',
-      isGroup: true,
-      members: ['sofia', 'lucas', 'cuisine'],
-      avatar: 'EC',
-      online: true,
-      unread: 0,
-      messages: [
-        { id: '1', senderId: 'lucas', text: 'Les légumes du jour sont arrivés, tout est conforme.', timestamp: '08:30', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Super, merci Lucas. Sofia, le dessert du jour est prêt ?', timestamp: '08:45', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Oui, tarte tatin prête ! 🍎', timestamp: '09:00', read: true, type: 'text' },
-        { id: '4', senderId: 'lucas', text: 'Chef: Le poisson est arrivé', timestamp: '09:15', read: true, type: 'text' },
-      ],
-    },
-    {
-      id: 'sofia',
-      name: 'Sofia M. - Pâtissière',
-      isGroup: false,
-      members: ['sofia'],
-      avatar: 'SM',
-      online: true,
-      unread: 0,
-      messages: [
-        { id: '1', senderId: 'sofia', text: 'Bonjour chef, j\'ai testé la nouvelle recette de fondant.', timestamp: 'Lun 14:00', read: true, type: 'text' },
-        { id: '2', senderId: ME, text: 'Génial ! Comment ça s\'est passé ?', timestamp: 'Lun 14:15', read: true, type: 'text' },
-        { id: '3', senderId: 'sofia', text: 'Très bien, je vous montre demain matin.', timestamp: 'Lun 14:20', read: true, type: 'text' },
-        { id: '4', senderId: 'sofia', text: 'Je serai en retard demain', timestamp: 'Lun 16:30', read: true, type: 'text' },
-      ],
-    },
-    {
-      id: 'pomona',
-      name: 'Fournisseur Pomona',
-      isGroup: false,
-      members: ['pomona'],
-      avatar: 'FP',
-      online: false,
-      unread: 0,
-      messages: [
-        { id: '1', senderId: ME, text: 'Bonjour, pouvez-vous me faire un devis pour les légumes bio ?', timestamp: '25/03 10:00', read: true, type: 'text' },
-        { id: '2', senderId: 'pomona', text: 'Bien sûr, je prépare ça et vous l\'envoie dans l\'après-midi.', timestamp: '25/03 10:30', read: true, type: 'text' },
-        { id: '3', senderId: 'pomona', text: 'Devis envoyé pour les légumes bio', timestamp: '25/03 15:00', read: true, type: 'text' },
-      ],
-    },
-  ];
-}
-
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getLastMessage(conv: Conversation) {
   return conv.messages[conv.messages.length - 1];
@@ -143,42 +75,125 @@ function getLastTimestamp(conv: Conversation) {
 
 function getLastPreview(conv: Conversation) {
   const last = getLastMessage(conv);
-  if (!last) return '';
-  if (last.type === 'order') return `📦 Commande ${last.orderData?.id}`;
-  const prefix = last.senderId === ME ? 'Vous: ' : '';
-  const text = last.text;
-  return prefix + (text.length > 40 ? text.slice(0, 40) + '...' : text);
+  if (last) {
+    if (last.type === 'order') return `📦 Commande ${last.orderData?.id}`;
+    const prefix = last.senderId === ME ? 'Vous: ' : '';
+    const text = last.text;
+    return prefix + (text.length > 40 ? text.slice(0, 40) + '...' : text);
+  }
+  // Fallback to lastMessage from API when messages not yet loaded
+  if (conv.lastMessage) return conv.lastMessage;
+  return '';
+}
+
+// Map API conversation to local Conversation type
+function mapApiConversation(apiConv: any): Conversation {
+  return {
+    id: apiConv.id,
+    name: apiConv.name,
+    isGroup: apiConv.isGroup || false,
+    members: apiConv.participants || [],
+    avatar: apiConv.avatar || apiConv.name.slice(0, 2).toUpperCase(),
+    online: false,
+    unread: apiConv.unreadCount || 0,
+    messages: [],
+    lastMessage: apiConv.lastMessage || '',
+  };
+}
+
+// Map API message to local Message type
+function mapApiMessage(apiMsg: any): Message {
+  return {
+    id: String(apiMsg.id),
+    senderId: apiMsg.senderId,
+    text: apiMsg.content,
+    timestamp: apiMsg.timestamp,
+    read: apiMsg.read,
+    type: 'text',
+  };
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function Messagerie() {
   const { showToast } = useToast();
-  const [conversations, setConversations] = useState<Conversation[]>(buildConversations);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [input, setInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewModal, setShowNewModal] = useState(false);
   const [mobileShowChat, setMobileShowChat] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
+
+  // ── Fetch conversations on mount ───────────────────────────────────────
+  const fetchConversations = useCallback(async () => {
+    try {
+      const res = await fetch(`${API}/conversations`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Erreur réseau');
+      const data = await res.json();
+      const mapped: Conversation[] = (data || []).map(mapApiConversation);
+      setConversations(mapped);
+    } catch (err) {
+      console.error('Erreur chargement conversations:', err);
+      showToast('Impossible de charger les conversations', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
+
+  // ── Fetch messages when selecting a conversation ───────────────────────
+  const fetchMessages = useCallback(async (convId: string) => {
+    try {
+      const res = await fetch(`${API}/conversations/${convId}`, { headers: getHeaders() });
+      if (!res.ok) throw new Error('Erreur réseau');
+      const data = await res.json();
+      const messages: Message[] = (data.messages || []).map(mapApiMessage);
+      setConversations((prev) =>
+        prev.map((c) => (c.id === convId ? { ...c, messages } : c))
+      );
+    } catch (err) {
+      console.error('Erreur chargement messages:', err);
+      showToast('Impossible de charger les messages', 'error');
+    }
+  }, [showToast]);
+
+  // ── Mark as read on the API ────────────────────────────────────────────
+  const markAsRead = useCallback(async (convId: string) => {
+    try {
+      await fetch(`${API}/conversations/${convId}/read`, {
+        method: 'PUT',
+        headers: getHeaders(),
+      });
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === convId
+            ? { ...c, unread: 0, messages: c.messages.map((m) => ({ ...m, read: true })) }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error('Erreur marquage lu:', err);
+    }
+  }, []);
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeConv?.messages.length]);
 
-  // Mark as read when opening
+  // Fetch messages + mark as read when opening a conversation
   useEffect(() => {
     if (!activeId) return;
-    setConversations((prev) =>
-      prev.map((c) =>
-        c.id === activeId
-          ? { ...c, unread: 0, messages: c.messages.map((m) => ({ ...m, read: true })) }
-          : c
-      )
-    );
-  }, [activeId]);
+    fetchMessages(activeId);
+    markAsRead(activeId);
+  }, [activeId, fetchMessages, markAsRead]);
 
   const totalUnread = conversations.reduce((sum, c) => sum + c.unread, 0);
 
@@ -191,20 +206,61 @@ export default function Messagerie() {
     setMobileShowChat(true);
   }
 
-  function handleSend() {
-    if (!input.trim() || !activeId) return;
-    const newMsg: Message = {
-      id: Date.now().toString(),
+  async function handleSend() {
+    if (!input.trim() || !activeId || sendingMessage) return;
+    const content = input.trim();
+    setInput('');
+
+    // Optimistic update
+    const optimisticMsg: Message = {
+      id: `temp-${Date.now()}`,
       senderId: ME,
-      text: input.trim(),
+      text: content,
       timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       read: false,
       type: 'text',
     };
     setConversations((prev) =>
-      prev.map((c) => (c.id === activeId ? { ...c, messages: [...c.messages, newMsg] } : c))
+      prev.map((c) => (c.id === activeId ? { ...c, messages: [...c.messages, optimisticMsg] } : c))
     );
-    setInput('');
+
+    setSendingMessage(true);
+    try {
+      const res = await fetch(`${API}/conversations/${activeId}/messages`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ content, senderId: 'me', senderName: 'Moi' }),
+      });
+      if (!res.ok) throw new Error('Erreur envoi');
+      const savedMsg = await res.json();
+      // Replace optimistic message with server response
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === activeId
+            ? {
+                ...c,
+                messages: c.messages.map((m) =>
+                  m.id === optimisticMsg.id ? mapApiMessage(savedMsg) : m
+                ),
+              }
+            : c
+        )
+      );
+    } catch (err) {
+      console.error('Erreur envoi message:', err);
+      showToast("Impossible d'envoyer le message", 'error');
+      // Remove optimistic message on failure
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === activeId
+            ? { ...c, messages: c.messages.filter((m) => m.id !== optimisticMsg.id) }
+            : c
+        )
+      );
+      setInput(content); // Restore input
+    } finally {
+      setSendingMessage(false);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -214,25 +270,36 @@ export default function Messagerie() {
     }
   }
 
-  function handleNewConversation(contact: Contact) {
+  async function handleNewConversation(contact: Contact) {
     const existing = conversations.find((c) => c.id === contact.id);
     if (existing) {
       setActiveId(contact.id);
       setMobileShowChat(true);
     } else {
-      const newConv: Conversation = {
-        id: contact.id,
-        name: contact.name,
-        isGroup: false,
-        members: [contact.id],
-        avatar: contact.avatar,
-        online: false,
-        unread: 0,
-        messages: [],
-      };
-      setConversations((prev) => [newConv, ...prev]);
-      setActiveId(contact.id);
-      setMobileShowChat(true);
+      try {
+        const res = await fetch(`${API}/conversations`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify({
+            id: contact.id,
+            name: contact.name,
+            participants: [contact.id],
+            isGroup: false,
+            avatar: contact.avatar,
+          }),
+        });
+        if (!res.ok) throw new Error('Erreur création');
+        const created = await res.json();
+        const newConv = mapApiConversation(created);
+        setConversations((prev) => [newConv, ...prev]);
+        setActiveId(contact.id);
+        setMobileShowChat(true);
+      } catch (err) {
+        console.error('Erreur création conversation:', err);
+        showToast('Impossible de créer la conversation', 'error');
+        setShowNewModal(false);
+        return;
+      }
     }
     setShowNewModal(false);
     showToast(`Conversation avec ${contact.name} ouverte`, 'info');
@@ -285,8 +352,22 @@ export default function Messagerie() {
 
           {/* Conversations */}
           <div className="flex-1 overflow-y-auto">
-            {filteredConversations.length === 0 && (
-              <div className="p-4 text-center text-sm text-slate-400">Aucune conversation</div>
+            {loading && (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+              </div>
+            )}
+            {!loading && filteredConversations.length === 0 && (
+              <div className="p-6 text-center">
+                <MessageSquare className="w-10 h-10 mx-auto mb-2 text-slate-300 dark:text-slate-600" />
+                <p className="text-sm text-slate-400 mb-3">Aucune conversation</p>
+                <button
+                  onClick={() => setShowNewModal(true)}
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                >
+                  Démarrer une conversation
+                </button>
+              </div>
             )}
             {filteredConversations.map((conv) => (
               <button
@@ -476,10 +557,10 @@ export default function Messagerie() {
                   />
                   <button
                     onClick={handleSend}
-                    disabled={!input.trim()}
+                    disabled={!input.trim() || sendingMessage}
                     className="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                   >
-                    <Send className="w-5 h-5" />
+                    {sendingMessage ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                   </button>
                 </div>
               </div>

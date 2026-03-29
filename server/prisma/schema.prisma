@@ -43,6 +43,7 @@ model Restaurant {
   invoices      Invoice[]
   priceHistory  PriceHistory[]
   menuSales     MenuSale[]
+  devis         Devis[]
   conversations Conversation[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
@@ -232,6 +233,43 @@ model MenuSale {
   @@index([date])
   @@index([recipeId, date])
   @@map("menu_sales")
+}
+
+model Devis {
+  id           Int         @id @default(autoincrement())
+  number       String      // DEV-2026-001
+  clientName   String
+  clientEmail  String?
+  clientPhone  String?
+  clientAddress String?
+  subject      String
+  status       String      @default("draft") // draft, sent, accepted, rejected
+  totalHT      Float       @default(0)
+  totalTTC     Float       @default(0)
+  tvaRate      Float       @default(20)
+  validUntil   String?
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items        DevisItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([restaurantId, status])
+  @@map("devis")
+}
+
+model DevisItem {
+  id          Int    @id @default(autoincrement())
+  devisId     Int
+  devis       Devis  @relation(fields: [devisId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float
+  unitPrice   Float
+  total       Float
+
+  @@index([devisId])
+  @@map("devis_items")
 }
 
 model Conversation {

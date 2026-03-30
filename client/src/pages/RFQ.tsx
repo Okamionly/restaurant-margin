@@ -177,13 +177,16 @@ function BannerAd() {
   const [currentBanner, setCurrentBanner] = useState(0);
 
   useEffect(() => {
+    if (BANNER_ADS.length === 0) return;
     const interval = setInterval(() => {
       setCurrentBanner(prev => (prev + 1) % BANNER_ADS.length);
     }, 6000);
     return () => clearInterval(interval);
   }, []);
 
+  if (BANNER_ADS.length === 0) return null;
   const banner = BANNER_ADS[currentBanner];
+  if (!banner) return null;
 
   return (
     <div className={`relative rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden ${banner.bg} transition-all duration-500`}>
@@ -729,8 +732,8 @@ export default function RFQPage() {
                   onClick={() => setExpandedId(isExpanded ? null : rfq.id)}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0 ${STATUS_COLORS[rfq.status]}`}>
-                      {STATUS_LABELS[rfq.status]}
+                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium shrink-0 ${STATUS_COLORS[rfq.status] || STATUS_COLORS['draft']}`}>
+                      {STATUS_LABELS[rfq.status] || rfq.status}
                     </span>
                     <div className="min-w-0">
                       <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">{rfq.title}</p>

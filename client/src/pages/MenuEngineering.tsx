@@ -408,7 +408,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
           const cx = scaleX(item.popularity);
           const cy = scaleY(item.marginPercent);
           const r = Math.max(8, Math.min(22, Math.sqrt(item.salesRevenue) / 7));
-          const cfg = QUADRANT_CONFIG[item.quadrant];
+          const cfg = QUADRANT_CONFIG[item.quadrant] || QUADRANT_CONFIG['star'];
           const isHovered = hovered?.id === item.id;
           return (
             <g key={item.id}
@@ -460,8 +460,8 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
             <span className="font-medium text-slate-700 dark:text-slate-200">{fmtEur(hovered.salesRevenue)}</span>
           </div>
           <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700">
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${QUADRANT_CONFIG[hovered.quadrant].badge}`}>
-              {QUADRANT_CONFIG[hovered.quadrant].emoji} {QUADRANT_CONFIG[hovered.quadrant].action}
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).badge}`}>
+              {(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).emoji} {(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).action}
             </span>
           </div>
         </div>
@@ -1016,7 +1016,7 @@ export default function MenuEngineering() {
                       </tr>
                     ) : (
                       sortedItems.map(item => {
-                        const cfg = QUADRANT_CONFIG[item.quadrant];
+                        const cfg = QUADRANT_CONFIG[item.quadrant] || QUADRANT_CONFIG['star'];
                         const score = computeProfitabilityScore(item, maxSalesQty);
                         const allergens = recipeAllergens[item.id] || [];
                         return (

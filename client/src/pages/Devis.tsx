@@ -263,7 +263,7 @@ function documentToApiPayload(doc: {
 // ── Components ─────────────────────────────────────────────────────────
 
 function StatusBadge({ statut }: { statut: DocStatus }) {
-  const cfg = STATUS_CONFIG[statut];
+  const cfg = STATUS_CONFIG[statut] || STATUS_CONFIG['brouillon'];
   const Icon = cfg.icon;
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.bg} ${cfg.text}`}>
@@ -995,7 +995,7 @@ export default function Devis() {
                       : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
-                  {s === 'all' ? 'Tous' : STATUS_CONFIG[s as DocStatus].label}
+                  {s === 'all' ? 'Tous' : (STATUS_CONFIG[s as DocStatus] || STATUS_CONFIG['brouillon']).label}
                 </button>
               ))}
             </div>

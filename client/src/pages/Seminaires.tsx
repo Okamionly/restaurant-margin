@@ -482,7 +482,7 @@ export default function Seminaires() {
       {viewMode === 'kanban' && (
         <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           {STATUS_COLUMNS.map(status => {
-            const col = STATUS_COLORS[status];
+            const col = STATUS_COLORS[status] || STATUS_COLORS['Demande'];
             const columnEvents = filtered.filter(e => e.status === status);
             return (
               <div key={status} className="flex-shrink-0 w-72">
@@ -506,7 +506,7 @@ export default function Seminaires() {
                       className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 cursor-pointer hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all group"
                     >
                       {/* Type badge */}
-                      <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2 ${TYPE_COLORS[ev.type]}`}>
+                      <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2 ${TYPE_COLORS[ev.type] || TYPE_COLORS['Autre']}`}>
                         {ev.type}
                       </span>
                       {/* Client */}
@@ -605,7 +605,7 @@ export default function Seminaires() {
                       <button
                         key={ev.id}
                         onClick={() => { setSelectedEvent(ev); setShowDetailModal(true); }}
-                        className={`w-full text-left text-[10px] leading-tight px-1.5 py-1 rounded truncate font-medium ${TYPE_COLORS[ev.type]} hover:opacity-80 transition-opacity`}
+                        className={`w-full text-left text-[10px] leading-tight px-1.5 py-1 rounded truncate font-medium ${TYPE_COLORS[ev.type] || TYPE_COLORS['Autre']} hover:opacity-80 transition-opacity`}
                       >
                         {ev.clientNom.split(' ')[0]} ({ev.nbConvivesMax})
                       </button>
@@ -889,7 +889,7 @@ export default function Seminaires() {
         >
           {(() => {
             const ev = selectedEvent;
-            const col = STATUS_COLORS[ev.status];
+            const col = STATUS_COLORS[ev.status] || STATUS_COLORS['Demande'];
             return (
               <div className="space-y-6">
                 {/* Status + type */}
@@ -898,7 +898,7 @@ export default function Seminaires() {
                     <span className={`w-2 h-2 rounded-full ${col.dot}`} />
                     {ev.status}
                   </span>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${TYPE_COLORS[ev.type]}`}>
+                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${TYPE_COLORS[ev.type] || TYPE_COLORS['Autre']}`}>
                     {ev.type}
                   </span>
                 </div>

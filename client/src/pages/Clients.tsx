@@ -362,7 +362,7 @@ export default function Clients() {
 
   function renderTags(tags: ClientTag[]) {
     return tags.map(t => (
-      <span key={t} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${TAG_COLORS[t].bg} ${TAG_COLORS[t].text} ${TAG_COLORS[t].border}`}>
+      <span key={t} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${(TAG_COLORS[t] || TAG_COLORS['VIP']).bg} ${(TAG_COLORS[t] || TAG_COLORS['VIP']).text} ${(TAG_COLORS[t] || TAG_COLORS['VIP']).border}`}>
         {t === 'VIP' && <Star className="w-3 h-3" />}
         {t}
       </span>
@@ -393,7 +393,7 @@ export default function Clients() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-semibold text-slate-900 dark:text-white truncate">{c.prenom} {c.nom}</h3>
-              <span className={`px-2 py-0.5 rounded text-xs font-medium ${TYPE_COLORS[c.type].bg} ${TYPE_COLORS[c.type].text}`}>{c.type}</span>
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).text}`}>{c.type}</span>
             </div>
             {c.entreprise && (
               <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 mt-0.5">
@@ -622,7 +622,7 @@ export default function Clients() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${TYPE_COLORS[c.type].bg} ${TYPE_COLORS[c.type].text}`}>{c.type}</span>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).text}`}>{c.type}</span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 flex-wrap">{renderTags(c.tags)}</div>
@@ -666,7 +666,7 @@ export default function Clients() {
               {renderAvatar(selectedClient, 'w-16 h-16 text-xl')}
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${TYPE_COLORS[selectedClient.type].bg} ${TYPE_COLORS[selectedClient.type].text}`}>{selectedClient.type}</span>
+                  <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[selectedClient.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[selectedClient.type] || TYPE_COLORS['Particulier']).text}`}>{selectedClient.type}</span>
                   {renderTags(selectedClient.tags)}
                 </div>
                 {selectedClient.entreprise && (
@@ -964,7 +964,7 @@ export default function Clients() {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                       form.tags.includes(tag)
-                        ? `${TAG_COLORS[tag].bg} ${TAG_COLORS[tag].text} ${TAG_COLORS[tag].border}`
+                        ? `${(TAG_COLORS[tag] || TAG_COLORS['VIP']).bg} ${(TAG_COLORS[tag] || TAG_COLORS['VIP']).text} ${(TAG_COLORS[tag] || TAG_COLORS['VIP']).border}`
                         : 'bg-slate-50 dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-slate-700'
                     }`}>
                     {tag}

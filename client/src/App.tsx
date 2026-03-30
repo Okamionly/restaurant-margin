@@ -9,6 +9,20 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
 import { getToken } from './services/api';
+
+// Auto-retry lazy imports on chunk load failure (stale deploy)
+function lazyRetry(importFn: () => Promise<any>) {
+  return lazy(() => importFn().catch(() => {
+    // Chunk failed — new deploy likely changed hashes. Reload once.
+    const key = 'chunk-retry';
+    if (!sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, '1');
+      window.location.reload();
+    }
+    return importFn();
+  }));
+}
+
 // Critical pages loaded eagerly (first pages users see)
 import Login from './pages/Login';
 import Landing from './pages/Landing';
@@ -17,43 +31,43 @@ import PublicMenu from './pages/PublicMenu';
 import NotFound from './pages/NotFound';
 
 // Lazy-loaded pages for code splitting
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Ingredients = lazy(() => import('./pages/Ingredients'));
-const Recipes = lazy(() => import('./pages/Recipes'));
-const RecipeDetail = lazy(() => import('./pages/RecipeDetail'));
-const Suppliers = lazy(() => import('./pages/Suppliers'));
-const Inventory = lazy(() => import('./pages/Inventory'));
-const RFQPage = lazy(() => import('./pages/RFQ'));
-const MenuBuilder = lazy(() => import('./pages/MenuBuilder'));
-const SettingsPage = lazy(() => import('./pages/Settings'));
-const UserManagement = lazy(() => import('./pages/UserManagement'));
-const WeighStation = lazy(() => import('./pages/WeighStation'));
-const InvoiceScanner = lazy(() => import('./pages/InvoiceScanner'));
-const Mercuriale = lazy(() => import('./pages/Mercuriale'));
-const MenuEngineering = lazy(() => import('./pages/MenuEngineering'));
-const AutoOrders = lazy(() => import('./pages/AutoOrders'));
-const Subscription = lazy(() => import('./pages/Subscription'));
-const Planning = lazy(() => import('./pages/Planning'));
-const Messagerie = lazy(() => import('./pages/Messagerie'));
-const Restaurants = lazy(() => import('./pages/Restaurants'));
-const Marketplace = lazy(() => import('./pages/Marketplace'));
-const WasteTracker = lazy(() => import('./pages/WasteTracker'));
-const QRMenu = lazy(() => import('./pages/QRMenu'));
-const Integrations = lazy(() => import('./pages/Integrations'));
-const Seminaires = lazy(() => import('./pages/Seminaires'));
-const DevisPage = lazy(() => import('./pages/Devis'));
-const Comptabilite = lazy(() => import('./pages/Comptabilite'));
-const Clients = lazy(() => import('./pages/Clients'));
-const DevCorp = lazy(() => import('./pages/DevCorp'));
-const HACCPPage = lazy(() => import('./pages/HACCP'));
-const AIAssistant = lazy(() => import('./pages/AIAssistant'));
-const Actualites = lazy(() => import('./pages/Actualites'));
-const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
-const CGV = lazy(() => import('./pages/CGV'));
-const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
-const CGU = lazy(() => import('./pages/CGU'));
-const Pricing = lazy(() => import('./pages/Pricing'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const Dashboard = lazyRetry(() => import('./pages/Dashboard'));
+const Ingredients = lazyRetry(() => import('./pages/Ingredients'));
+const Recipes = lazyRetry(() => import('./pages/Recipes'));
+const RecipeDetail = lazyRetry(() => import('./pages/RecipeDetail'));
+const Suppliers = lazyRetry(() => import('./pages/Suppliers'));
+const Inventory = lazyRetry(() => import('./pages/Inventory'));
+const RFQPage = lazyRetry(() => import('./pages/RFQ'));
+const MenuBuilder = lazyRetry(() => import('./pages/MenuBuilder'));
+const SettingsPage = lazyRetry(() => import('./pages/Settings'));
+const UserManagement = lazyRetry(() => import('./pages/UserManagement'));
+const WeighStation = lazyRetry(() => import('./pages/WeighStation'));
+const InvoiceScanner = lazyRetry(() => import('./pages/InvoiceScanner'));
+const Mercuriale = lazyRetry(() => import('./pages/Mercuriale'));
+const MenuEngineering = lazyRetry(() => import('./pages/MenuEngineering'));
+const AutoOrders = lazyRetry(() => import('./pages/AutoOrders'));
+const Subscription = lazyRetry(() => import('./pages/Subscription'));
+const Planning = lazyRetry(() => import('./pages/Planning'));
+const Messagerie = lazyRetry(() => import('./pages/Messagerie'));
+const Restaurants = lazyRetry(() => import('./pages/Restaurants'));
+const Marketplace = lazyRetry(() => import('./pages/Marketplace'));
+const WasteTracker = lazyRetry(() => import('./pages/WasteTracker'));
+const QRMenu = lazyRetry(() => import('./pages/QRMenu'));
+const Integrations = lazyRetry(() => import('./pages/Integrations'));
+const Seminaires = lazyRetry(() => import('./pages/Seminaires'));
+const DevisPage = lazyRetry(() => import('./pages/Devis'));
+const Comptabilite = lazyRetry(() => import('./pages/Comptabilite'));
+const Clients = lazyRetry(() => import('./pages/Clients'));
+const DevCorp = lazyRetry(() => import('./pages/DevCorp'));
+const HACCPPage = lazyRetry(() => import('./pages/HACCP'));
+const AIAssistant = lazyRetry(() => import('./pages/AIAssistant'));
+const Actualites = lazyRetry(() => import('./pages/Actualites'));
+const MentionsLegales = lazyRetry(() => import('./pages/MentionsLegales'));
+const CGV = lazyRetry(() => import('./pages/CGV'));
+const PolitiqueConfidentialite = lazyRetry(() => import('./pages/PolitiqueConfidentialite'));
+const CGU = lazyRetry(() => import('./pages/CGU'));
+const Pricing = lazyRetry(() => import('./pages/Pricing'));
+const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();

@@ -231,8 +231,9 @@ export default function Comptabilite() {
 
   // ─── Computed data ───────────────────────────────────────────────────────
 
+  const emptyMonth: MonthlyData = { mois: selectedMonth, moisLabel: '', ca: 0, charges: 0, matiere: 0, personnel: 0, loyer: 0, energie: 0, divers: 0, tva55: 0, tva10: 0, tva20: 0 };
   const currentMonth = useMemo(
-    () => monthlyData.find((m) => m.mois === selectedMonth) || monthlyData[monthlyData.length - 1],
+    () => monthlyData.find((m) => m.mois === selectedMonth) || monthlyData[monthlyData.length - 1] || emptyMonth,
     [monthlyData, selectedMonth]
   );
 

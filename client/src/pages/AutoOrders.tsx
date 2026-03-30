@@ -337,15 +337,6 @@ export default function AutoOrders() {
     setEmailOrder(order);
   }
 
-  function handleSendEmail() {
-    if (!emailOrder) return;
-    const subject = encodeURIComponent(buildEmailSubject(emailOrder));
-    const body = encodeURIComponent(buildEmailBody(emailOrder));
-    const mailto = `mailto:${encodeURIComponent(emailTo)}?subject=${subject}&body=${body}`;
-    window.open(mailto, '_blank');
-    markSent(emailOrder.id);
-    setEmailOrder(null);
-  }
 
   function handleCopyToClipboard() {
     if (!emailOrder) return;

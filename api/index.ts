@@ -453,9 +453,10 @@ app.post('/api/suppliers/:id/link-ingredients', authWithRestaurant, async (req: 
 });
 
 // ============ INVENTORY ============
-app.get('/api/inventory', authMiddleware, async (_req, res) => {
+app.get('/api/inventory', authWithRestaurant, async (req: any, res) => {
   try {
     const items = await prisma.inventoryItem.findMany({
+      where: { restaurantId: req.restaurantId },
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },
     });
@@ -463,9 +464,10 @@ app.get('/api/inventory', authMiddleware, async (_req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération inventaire' }); }
 });
 
-app.get('/api/inventory/alerts', authMiddleware, async (_req, res) => {
+app.get('/api/inventory/alerts', authWithRestaurant, async (req: any, res) => {
   try {
     const items = await prisma.inventoryItem.findMany({
+      where: { restaurantId: req.restaurantId },
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },
     });
@@ -474,9 +476,9 @@ app.get('/api/inventory/alerts', authMiddleware, async (_req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur alertes' }); }
 });
 
-app.get('/api/inventory/value', authMiddleware, async (_req, res) => {
+app.get('/api/inventory/value', authWithRestaurant, async (req: any, res) => {
   try {
-    const items = await prisma.inventoryItem.findMany({ include: { ingredient: true } });
+    const items = await prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true } });
     const totalValue = items.reduce((sum: number, item: any) => sum + item.currentStock * item.ingredient.pricePerUnit, 0);
     const byCategory: Record<string, number> = {};
     for (const item of items) {
@@ -492,24 +494,24 @@ app.get('/api/inventory/value', authMiddleware, async (_req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur calcul valeur' }); }
 });
 
-app.post('/api/inventory/suggest', authMiddleware, async (_req, res) => {
+app.post('/api/inventory/suggest', authWithRestaurant, async (req: any, res) => {
   try {
     const ingredients = await prisma.ingredient.findMany({
-      where: { inventoryItem: null },
+      where: { restaurantId: req.restaurantId, inventoryItem: null },
       orderBy: { name: 'asc' },
     });
     res.json(ingredients);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suggestions' }); }
 });
 
-app.post('/api/inventory', authMiddleware, async (req, res) => {
+app.post('/api/inventory', authWithRestaurant, async (req, res) => {
   try {
     const { ingredientId, currentStock, unit, minStock, maxStock, notes } = req.body;
     if (!ingredientId) return res.status(400).json({ error: 'ingredientId requis' });
-    const ingredient = await prisma.ingredient.findUnique({ where: { id: ingredientId } });
+    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, restaurantId: req.restaurantId } });
     if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
     const item = await prisma.inventoryItem.create({
-      data: { ingredientId, currentStock: currentStock || 0, unit: unit || ingredient.unit, minStock: minStock || 0, maxStock: maxStock || null, notes: notes || null },
+      data: { ingredientId, currentStock: currentStock || 0, unit: unit || ingredient.unit, minStock: minStock || 0, maxStock: maxStock || null, notes: notes || null, restaurantId: req.restaurantId },
       include: { ingredient: true },
     });
     res.status(201).json(item);
@@ -519,7 +521,7 @@ app.post('/api/inventory', authMiddleware, async (req, res) => {
   }
 });
 
-app.put('/api/inventory/:id', authMiddleware, async (req, res) => {
+app.put('/api/inventory/:id', authWithRestaurant, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { currentStock, minStock, maxStock, unit, notes } = req.body;
@@ -534,7 +536,7 @@ app.put('/api/inventory/:id', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour' }); }
 });
 
-app.post('/api/inventory/:id/restock', authMiddleware, async (req, res) => {
+app.post('/api/inventory/:id/restock', authWithRestaurant, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { quantity } = req.body;
@@ -550,7 +552,7 @@ app.post('/api/inventory/:id/restock', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur réapprovisionnement' }); }
 });
 
-app.delete('/api/inventory/:id', authMiddleware, async (req, res) => {
+app.delete('/api/inventory/:id', authWithRestaurant, async (req, res) => {
   try { await prisma.inventoryItem.delete({ where: { id: parseInt(req.params.id) } }); res.status(204).send(); }
   catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
 });
@@ -561,14 +563,14 @@ const rfqInclude = {
   suppliers: { include: { supplier: true } },
 } as const;
 
-app.get('/api/rfqs', authMiddleware, async (_req, res) => {
+app.get('/api/rfqs', authWithRestaurant, async (req: any, res) => {
   try {
     const rfqs = await prisma.rFQ.findMany({ include: rfqInclude, orderBy: { createdAt: 'desc' } });
     res.json(rfqs);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération appels d\'offres' }); }
 });
 
-app.get('/api/rfqs/:id', authMiddleware, async (req, res) => {
+app.get('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
   try {
     const rfq = await prisma.rFQ.findUnique({ where: { id: parseInt(req.params.id) }, include: rfqInclude });
     if (!rfq) return res.status(404).json({ error: 'Appel d\'offres non trouvé' });
@@ -576,7 +578,7 @@ app.get('/api/rfqs/:id', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération' }); }
 });
 
-app.post('/api/rfqs', authMiddleware, async (req, res) => {
+app.post('/api/rfqs', authWithRestaurant, async (req, res) => {
   try {
     const { title, dueDate, notes, items, supplierIds } = req.body;
     if (!title?.trim()) return res.status(400).json({ error: 'Le titre est requis' });
@@ -607,7 +609,7 @@ app.post('/api/rfqs', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création appel d\'offres' }); }
 });
 
-app.put('/api/rfqs/:id', authMiddleware, async (req, res) => {
+app.put('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { title, status, dueDate, notes } = req.body;
@@ -625,7 +627,7 @@ app.put('/api/rfqs/:id', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour' }); }
 });
 
-app.delete('/api/rfqs/:id', authMiddleware, async (req, res) => {
+app.delete('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
   try {
     await prisma.rFQ.delete({ where: { id: parseInt(req.params.id) } });
     res.status(204).send();
@@ -633,7 +635,7 @@ app.delete('/api/rfqs/:id', authMiddleware, async (req, res) => {
 });
 
 // Update a quote (enter supplier price)
-app.put('/api/rfqs/:rfqId/quotes/:quoteId', authMiddleware, async (req, res) => {
+app.put('/api/rfqs/:rfqId/quotes/:quoteId', authWithRestaurant, async (req, res) => {
   try {
     const quoteId = parseInt(req.params.quoteId);
     const { unitPrice, notes } = req.body;
@@ -650,7 +652,7 @@ app.put('/api/rfqs/:rfqId/quotes/:quoteId', authMiddleware, async (req, res) => 
 });
 
 // Select best quote and optionally apply price to ingredient
-app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authMiddleware, async (req, res) => {
+app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authWithRestaurant, async (req, res) => {
   try {
     const quoteId = parseInt(req.params.quoteId);
     const { applyPrice } = req.body;
@@ -677,7 +679,7 @@ app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authMiddleware, async (req, 
 });
 
 // ============ PRICE HISTORY (MERCURIALE) ============
-app.get('/api/price-history', authMiddleware, async (req: any, res) => {
+app.get('/api/price-history', authWithRestaurant, async (req: any, res) => {
   try {
     const { ingredientId, days } = req.query;
     const where: any = {};
@@ -693,7 +695,7 @@ app.get('/api/price-history', authMiddleware, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur historique prix' }); }
 });
 
-app.get('/api/price-history/alerts', authMiddleware, async (_req, res) => {
+app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) => {
   try {
     // Find ingredients with significant price changes (>10%) in last 30 days
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
@@ -719,7 +721,7 @@ app.get('/api/price-history/alerts', authMiddleware, async (_req, res) => {
 });
 
 // ============ INVOICES (SCANNER FACTURES) ============
-app.get('/api/invoices', authMiddleware, async (_req, res) => {
+app.get('/api/invoices', authWithRestaurant, async (req: any, res) => {
   try {
     const invoices = await prisma.invoice.findMany({
       include: { items: true },
@@ -729,7 +731,7 @@ app.get('/api/invoices', authMiddleware, async (_req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur factures' }); }
 });
 
-app.post('/api/invoices', authMiddleware, async (req, res) => {
+app.post('/api/invoices', authWithRestaurant, async (req, res) => {
   try {
     const { supplierName, invoiceNumber, invoiceDate, totalHT, totalTTC, items, rawText } = req.body;
     const invoice = await prisma.invoice.create({
@@ -756,7 +758,7 @@ app.post('/api/invoices', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création facture' }); }
 });
 
-app.post('/api/invoices/:id/apply', authMiddleware, async (req, res) => {
+app.post('/api/invoices/:id/apply', authWithRestaurant, async (req, res) => {
   try {
     const invoiceId = parseInt(req.params.id);
     const { matches } = req.body; // [{ itemId, ingredientId }]
@@ -785,7 +787,7 @@ app.post('/api/invoices/:id/apply', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur application facture' }); }
 });
 
-app.delete('/api/invoices/:id', authMiddleware, async (req, res) => {
+app.delete('/api/invoices/:id', authWithRestaurant, async (req, res) => {
   try {
     await prisma.invoice.delete({ where: { id: parseInt(req.params.id) } });
     res.status(204).send();
@@ -793,7 +795,7 @@ app.delete('/api/invoices/:id', authMiddleware, async (req, res) => {
 });
 
 // ============ MENU SALES (MENU ENGINEERING) ============
-app.get('/api/menu-sales', authMiddleware, async (req: any, res) => {
+app.get('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
   try {
     const { days } = req.query;
     const where: any = {};
@@ -803,7 +805,7 @@ app.get('/api/menu-sales', authMiddleware, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ventes' }); }
 });
 
-app.post('/api/menu-sales', authMiddleware, async (req, res) => {
+app.post('/api/menu-sales', authWithRestaurant, async (req, res) => {
   try {
     const { recipeId, quantity, revenue, date } = req.body;
     const sale = await prisma.menuSales.create({
@@ -813,7 +815,7 @@ app.post('/api/menu-sales', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout vente' }); }
 });
 
-app.post('/api/menu-sales/bulk', authMiddleware, async (req, res) => {
+app.post('/api/menu-sales/bulk', authWithRestaurant, async (req, res) => {
   try {
     const { sales } = req.body; // [{ recipeId, quantity, revenue, date }]
     const result = await prisma.menuSales.createMany({
@@ -825,7 +827,7 @@ app.post('/api/menu-sales/bulk', authMiddleware, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur import ventes' }); }
 });
 
-app.get('/api/menu-engineering', authMiddleware, async (req: any, res) => {
+app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
   try {
     const days = parseInt(req.query.days || '30');
     const since = new Date(Date.now() - days * 86400000);
@@ -892,20 +894,20 @@ const messagesStore: Record<string, any[]> = {
   'conv-3': [{ id: 'm3', senderId: 'chef', senderName: 'Chef', content: 'Le poisson est arrivé', timestamp: new Date().toISOString(), read: true }],
 };
 
-app.get('/api/messages/conversations', authMiddleware, (_req, res) => { res.json(conversations); });
-app.get('/api/messages/conversations/:id', authMiddleware, (req, res) => {
+app.get('/api/messages/conversations', authWithRestaurant, (_req, res) => { res.json(conversations); });
+app.get('/api/messages/conversations/:id', authWithRestaurant, (req, res) => {
   const conv = conversations.find(c => c.id === req.params.id);
   if (!conv) return res.status(404).json({ error: 'Conversation non trouvée' });
   res.json({ ...conv, messages: messagesStore[conv.id] || [] });
 });
-app.post('/api/messages/conversations/:id/messages', authMiddleware, (req: any, res) => {
+app.post('/api/messages/conversations/:id/messages', authWithRestaurant, (req: any, res) => {
   const { content } = req.body;
   const msg = { id: `m-${Date.now()}`, senderId: 'user', senderName: req.user?.email || 'Moi', content, timestamp: new Date().toISOString(), read: true };
   if (!messagesStore[req.params.id]) messagesStore[req.params.id] = [];
   messagesStore[req.params.id].push(msg);
   res.status(201).json(msg);
 });
-app.put('/api/messages/conversations/:id/read', authMiddleware, (req, res) => {
+app.put('/api/messages/conversations/:id/read', authWithRestaurant, (req, res) => {
   const conv = conversations.find(c => c.id === req.params.id);
   if (conv) conv.unreadCount = 0;
   res.json({ success: true });
@@ -914,7 +916,7 @@ app.put('/api/messages/conversations/:id/read', authMiddleware, (req, res) => {
 // ── Email (nodemailer) ──
 const sentEmails: any[] = [];
 
-app.post('/api/email/send', authMiddleware, async (req: any, res) => {
+app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
   try {
     const { to, subject, body } = req.body;
     if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
@@ -930,7 +932,7 @@ app.post('/api/email/send', authMiddleware, async (req: any, res) => {
   } catch (e: any) { res.status(500).json({ error: e.message || 'Erreur envoi email' }); }
 });
 
-app.get('/api/email/sent', authMiddleware, (_req, res) => { res.json(sentEmails); });
+app.get('/api/email/sent', authWithRestaurant, (_req, res) => { res.json(sentEmails); });
 
 // ── Public menu ──
 app.get('/api/public/menu', async (_req, res) => {
@@ -950,7 +952,7 @@ app.get('/api/public/menu', async (_req, res) => {
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 const aiRateLimit = new Map<number, { count: number; resetAt: number }>();
 
-app.post('/api/ai/chat', authMiddleware, async (req: any, res) => {
+app.post('/api/ai/chat', authWithRestaurant, async (req: any, res) => {
   try {
     const { message } = req.body;
     if (!message) return res.status(400).json({ error: 'Message requis' });
@@ -1003,7 +1005,7 @@ app.post('/api/ai/chat', authMiddleware, async (req: any, res) => {
 });
 
 // ── Alerts ──
-app.get('/api/alerts', authMiddleware, async (_req, res) => {
+app.get('/api/alerts', authWithRestaurant, async (req: any, res) => {
   try {
     const inventory = await prisma.inventoryItem.findMany({ include: { ingredient: true } });
     const recipes = await prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } } });
@@ -1032,27 +1034,27 @@ app.get('/api/alerts', authMiddleware, async (_req, res) => {
 });
 
 // ============ DEVIS CRUD ============
-app.get('/api/devis', authMiddleware, async (req: any, res) => {
+app.get('/api/devis', authWithRestaurant, async (req: any, res) => {
   try {
-    const devis = await prisma.devis.findMany({ include: { items: true }, orderBy: { createdAt: 'desc' } });
+    const devis = await prisma.devis.findMany({ where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' } });
     res.json(devis);
   } catch { res.status(500).json({ error: 'Erreur récupération devis' }); }
 });
 
-app.get('/api/devis/:id', authMiddleware, async (req: any, res) => {
+app.get('/api/devis/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    const devis = await prisma.devis.findUnique({ where: { id: parseInt(req.params.id) }, include: { items: true } });
+    const devis = await prisma.devis.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId }, include: { items: true } });
     if (!devis) return res.status(404).json({ error: 'Devis non trouvé' });
     res.json(devis);
   } catch { res.status(500).json({ error: 'Erreur récupération devis' }); }
 });
 
-app.post('/api/devis', authMiddleware, async (req: any, res) => {
+app.post('/api/devis', authWithRestaurant, async (req: any, res) => {
   try {
     const { clientName, clientEmail, clientPhone, clientAddress, subject, tvaRate, validUntil, notes, items } = req.body;
     if (!clientName || !subject) return res.status(400).json({ error: 'Nom client et objet requis' });
 
-    const count = await prisma.devis.count();
+    const count = await prisma.devis.count({ where: { restaurantId: req.restaurantId } });
     const number = `DEV-${new Date().getFullYear()}-${String(count + 1).padStart(3, '0')}`;
 
     const devisItems = (items || []).map((item: any) => ({
@@ -1066,7 +1068,7 @@ app.post('/api/devis', authMiddleware, async (req: any, res) => {
       data: {
         number, clientName, clientEmail: clientEmail || null, clientPhone: clientPhone || null,
         clientAddress: clientAddress || null, subject, tvaRate: rate, totalHT, totalTTC: totalHT * (1 + rate / 100),
-        validUntil: validUntil || null, notes: notes || null, restaurantId: 1,
+        validUntil: validUntil || null, notes: notes || null, restaurantId: req.restaurantId,
         items: { create: devisItems },
       },
       include: { items: true },
@@ -1075,10 +1077,10 @@ app.post('/api/devis', authMiddleware, async (req: any, res) => {
   } catch (e: any) { console.error('Devis create:', e.message); res.status(500).json({ error: 'Erreur création devis' }); }
 });
 
-app.put('/api/devis/:id', authMiddleware, async (req: any, res) => {
+app.put('/api/devis/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
-    const existing = await prisma.devis.findUnique({ where: { id } });
+    const existing = await prisma.devis.findFirst({ where: { id, restaurantId: req.restaurantId } });
     if (!existing) return res.status(404).json({ error: 'Devis non trouvé' });
 
     const { clientName, clientEmail, clientPhone, clientAddress, subject, status, tvaRate, validUntil, notes, items } = req.body;
@@ -1113,18 +1115,21 @@ app.put('/api/devis/:id', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur mise à jour devis' }); }
 });
 
-app.delete('/api/devis/:id', authMiddleware, async (req: any, res) => {
+app.delete('/api/devis/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    await prisma.devis.delete({ where: { id: parseInt(req.params.id) } });
+    const id = parseInt(req.params.id);
+    const existing = await prisma.devis.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Devis non trouvé' });
+    await prisma.devis.delete({ where: { id } });
     res.status(204).send();
   } catch { res.status(500).json({ error: 'Erreur suppression devis' }); }
 });
 
 // ============ COMPTABILITE ============
-app.get('/api/comptabilite/summary', authMiddleware, async (req: any, res) => {
+app.get('/api/comptabilite/summary', authWithRestaurant, async (req: any, res) => {
   try {
     const { from, to } = req.query;
-    const where: any = { restaurantId: 1 };
+    const where: any = { restaurantId: req.restaurantId };
     if (from || to) {
       where.date = {};
       if (from) where.date.gte = String(from);
@@ -1146,10 +1151,10 @@ app.get('/api/comptabilite/summary', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur calcul résumé' }); }
 });
 
-app.get('/api/comptabilite/export/fec', authMiddleware, async (req: any, res) => {
+app.get('/api/comptabilite/export/fec', authWithRestaurant, async (req: any, res) => {
   try {
     const { from, to } = req.query;
-    const where: any = { restaurantId: 1 };
+    const where: any = { restaurantId: req.restaurantId };
     if (from || to) {
       where.date = {};
       if (from) where.date.gte = String(from);
@@ -1175,10 +1180,10 @@ app.get('/api/comptabilite/export/fec', authMiddleware, async (req: any, res) =>
   } catch { res.status(500).json({ error: 'Erreur export FEC' }); }
 });
 
-app.get('/api/comptabilite', authMiddleware, async (req: any, res) => {
+app.get('/api/comptabilite', authWithRestaurant, async (req: any, res) => {
   try {
     const { from, to, type } = req.query;
-    const where: any = { restaurantId: 1 };
+    const where: any = { restaurantId: req.restaurantId };
     if (from || to) {
       where.date = {};
       if (from) where.date.gte = String(from);
@@ -1190,7 +1195,7 @@ app.get('/api/comptabilite', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur récupération écritures' }); }
 });
 
-app.post('/api/comptabilite', authMiddleware, async (req: any, res) => {
+app.post('/api/comptabilite', authWithRestaurant, async (req: any, res) => {
   try {
     const { date, type, category, label, amount, tvaRate, paymentMode, reference } = req.body;
     if (!date || !type || !category || !label || amount === undefined) return res.status(400).json({ error: 'Champs requis : date, type, category, label, amount' });
@@ -1198,16 +1203,16 @@ app.post('/api/comptabilite', authMiddleware, async (req: any, res) => {
     const rate = tvaRate !== undefined ? tvaRate : 20;
     const tvaAmount = amount * rate / 100;
     const entry = await prisma.financialEntry.create({
-      data: { date, type, category, label, amount, tvaRate: rate, tvaAmount, paymentMode: paymentMode || null, reference: reference || null, restaurantId: 1 },
+      data: { date, type, category, label, amount, tvaRate: rate, tvaAmount, paymentMode: paymentMode || null, reference: reference || null, restaurantId: req.restaurantId },
     });
     res.status(201).json(entry);
   } catch { res.status(500).json({ error: 'Erreur création écriture' }); }
 });
 
-app.put('/api/comptabilite/:id', authMiddleware, async (req: any, res) => {
+app.put('/api/comptabilite/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
-    const existing = await prisma.financialEntry.findFirst({ where: { id, restaurantId: 1 } });
+    const existing = await prisma.financialEntry.findFirst({ where: { id, restaurantId: req.restaurantId } });
     if (!existing) return res.status(404).json({ error: 'Écriture non trouvée' });
     const { date, type, category, label, amount, tvaRate, paymentMode, reference } = req.body;
     const updatedAmount = amount !== undefined ? amount : existing.amount;
@@ -1226,10 +1231,10 @@ app.put('/api/comptabilite/:id', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur mise à jour écriture' }); }
 });
 
-app.delete('/api/comptabilite/:id', authMiddleware, async (req: any, res) => {
+app.delete('/api/comptabilite/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
-    const existing = await prisma.financialEntry.findFirst({ where: { id, restaurantId: 1 } });
+    const existing = await prisma.financialEntry.findFirst({ where: { id, restaurantId: req.restaurantId } });
     if (!existing) return res.status(404).json({ error: 'Écriture non trouvée' });
     await prisma.financialEntry.delete({ where: { id } });
     res.json({ success: true });
@@ -1237,7 +1242,7 @@ app.delete('/api/comptabilite/:id', authMiddleware, async (req: any, res) => {
 });
 
 // ============ WASTE ============
-app.get('/api/waste/summary', authMiddleware, async (_req: any, res) => {
+app.get('/api/waste/summary', authWithRestaurant, async (req: any, res) => {
   try {
     const restaurantId = 1;
     const now = new Date();
@@ -1294,10 +1299,10 @@ app.get('/api/waste/summary', authMiddleware, async (_req: any, res) => {
   } catch (error) { console.error('Error fetching waste summary:', error); res.status(500).json({ error: 'Erreur calcul résumé pertes' }); }
 });
 
-app.get('/api/waste', authMiddleware, async (req: any, res) => {
+app.get('/api/waste', authWithRestaurant, async (req: any, res) => {
   try {
     const { from, to } = req.query;
-    const where: any = { restaurantId: 1 };
+    const where: any = { restaurantId: req.restaurantId };
     if (from || to) {
       where.date = {};
       if (from) where.date.gte = from as string;
@@ -1312,7 +1317,7 @@ app.get('/api/waste', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur récupération pertes' }); }
 });
 
-app.post('/api/waste', authMiddleware, async (req: any, res) => {
+app.post('/api/waste', authWithRestaurant, async (req: any, res) => {
   try {
     const { ingredientId, quantity, unit, reason, date, notes } = req.body;
     if (!ingredientId || quantity == null || !unit || !reason || !date) return res.status(400).json({ error: 'Champs requis : ingredientId, quantity, unit, reason, date' });
@@ -1328,18 +1333,18 @@ app.post('/api/waste', authMiddleware, async (req: any, res) => {
       else if (unit === 'L' && ingredient.unit === 'mL') costImpact = (quantity * 1000) * ingredient.pricePerUnit;
     }
     const wasteLog = await prisma.wasteLog.create({
-      data: { ingredientId, quantity, unit, reason, costImpact: Math.round(costImpact * 100) / 100, date, notes: notes || null, restaurantId: 1 },
+      data: { ingredientId, quantity, unit, reason, costImpact: Math.round(costImpact * 100) / 100, date, notes: notes || null, restaurantId: req.restaurantId },
       include: { ingredient: { select: { id: true, name: true, unit: true, category: true, pricePerUnit: true } } },
     });
     res.status(201).json(wasteLog);
   } catch { res.status(500).json({ error: 'Erreur création perte' }); }
 });
 
-app.delete('/api/waste/:id', authMiddleware, async (req: any, res) => {
+app.delete('/api/waste/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
-    const existing = await prisma.wasteLog.findFirst({ where: { id, restaurantId: 1 } });
+    const existing = await prisma.wasteLog.findFirst({ where: { id, restaurantId: req.restaurantId } });
     if (!existing) return res.status(404).json({ error: 'Entrée de perte non trouvée' });
     await prisma.wasteLog.delete({ where: { id } });
     res.json({ message: 'Entrée supprimée' });

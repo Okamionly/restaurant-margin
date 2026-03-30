@@ -291,7 +291,6 @@ export default function Settings() {
   const [isInstalled, setIsInstalled] = useState(false);
 
   // Seeding state
-  const [seeding, setSeeding] = useState(false);
 
   // Danger zone modals
   const [showDeleteDataModal, setShowDeleteDataModal] = useState(false);
@@ -520,27 +519,6 @@ export default function Settings() {
     }
   }
 
-  async function handleSeedDemo() {
-    if (seeding) return;
-    if (!confirm('Cela va reinitialiser les donnees de demonstration. Continuer ?')) return;
-    setSeeding(true);
-    try {
-      const res = await fetch(`${API_BASE}/seed`, {
-        method: 'POST',
-        headers: authHeaders(),
-      });
-      if (res.ok) {
-        showToast('Donnees de demonstration reinitialisees', 'success');
-        loadStats();
-      } else {
-        showToast("Le endpoint de seed n'est pas disponible sur ce serveur", 'error');
-      }
-    } catch {
-      showToast("Le endpoint de seed n'est pas disponible sur ce serveur", 'error');
-    } finally {
-      setSeeding(false);
-    }
-  }
 
   async function handleInstall() {
     if (!installPrompt) return;
@@ -1305,17 +1283,6 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={handleSeedDemo}
-                disabled={seeding}
-                className="btn-secondary flex items-center justify-center gap-2 flex-1 text-orange-600 dark:text-orange-400 border-orange-300 dark:border-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${seeding ? 'animate-spin' : ''}`} />
-                {seeding ? 'Reinitialisation...' : 'Reinitialiser les donnees demo'}
-              </button>
-            </div>
           </div>
         </Section>
 

@@ -302,11 +302,10 @@ const EXPENSE_CATEGORIES = [
 export default function Comptabilite() {
   const { showToast } = useToast();
 
-  // Data — mock as fallback, replaced by API data on load
-  const [mockMonthly] = useState(() => generateMonthlyData());
-  const [monthlyData, setMonthlyData] = useState(() => generateMonthlyData());
-  const [sales, setSales] = useState<SaleEntry[]>(() => generateSalesData(mockMonthly));
-  const [expenses, setExpenses] = useState<ExpenseEntry[]>(() => generateExpensesData(mockMonthly));
+  // Data — starts empty, populated by API
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
+  const [sales, setSales] = useState<SaleEntry[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch all entries from API
@@ -354,9 +353,8 @@ export default function Comptabilite() {
         const sorted = Object.values(monthMap).sort((a, b) => a.mois.localeCompare(b.mois));
         if (sorted.length > 0) setMonthlyData(sorted);
       }
-      // If data is empty, keep mock data as fallback
     } catch {
-      // Keep mock data as fallback — no toast to avoid noise
+      // Silently fail — page shows empty state
     } finally {
       setLoading(false);
     }
@@ -367,7 +365,7 @@ export default function Comptabilite() {
   // UI state
   const [activeTab, setActiveTab] = useState<TabId>('journal');
   const [period, setPeriod] = useState<PeriodType>('mois');
-  const [selectedMonth, setSelectedMonth] = useState(monthlyData[monthlyData.length - 1].mois);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().substring(0, 7));
   const [showExpenseModal, setShowExpenseModal] = useState(false);
 
   // Filters for journal

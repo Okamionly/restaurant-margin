@@ -98,66 +98,7 @@ function getDluoLabel(days: number) {
   return `J-${days}`;
 }
 
-// ─── Seed Data ───────────────────────────────────────────────────────────────
-
-function seedTemperatures(): TemperatureRecord[] {
-  const now = new Date();
-  const agents = ['Ali', 'Marie', 'Karim', 'Sophie'];
-  const zones: TemperatureRecord['zone'][] = ['frigo', 'congelateur', 'plat_chaud', 'reception'];
-  return Array.from({ length: 20 }, (_, i) => {
-    const d = new Date(now); d.setHours(d.getHours() - i * 2);
-    const zone = zones[i % 4];
-    const temp = zone === 'frigo' ? +(Math.random() * 8 + 0.5).toFixed(1)
-      : zone === 'congelateur' ? +(Math.random() * 10 - 25).toFixed(1)
-      : zone === 'plat_chaud' ? +(Math.random() * 20 + 50).toFixed(1)
-      : +(Math.random() * 10 + 5).toFixed(1);
-    return { id: i + 1, zone, temperature: temp, timestamp: d.toISOString(), agent: agents[i % 4], notes: i % 5 === 0 ? 'RAS' : '' };
-  });
-}
-
-function seedLots(): LotRecord[] {
-  const items = [
-    { name: 'Filet de boeuf', supplier: 'Brake France' }, { name: 'Saumon frais', supplier: 'Pomona' },
-    { name: 'Poulet fermier', supplier: 'Metro' }, { name: 'Crème fraîche', supplier: 'Transgourmet' },
-    { name: 'Salade mesclun', supplier: 'Pomona' }, { name: 'Tomates grappe', supplier: 'Rungis Direct' },
-    { name: 'Fromage comté', supplier: 'Brake France' }, { name: 'Lait entier', supplier: 'Transgourmet' },
-  ];
-  const statuses: LotRecord['status'][] = ['conforme', 'conforme', 'conforme', 'non_conforme', 'en_attente'];
-  return items.map((p, i) => {
-    const rec = new Date(); rec.setDate(rec.getDate() - Math.floor(Math.random() * 5));
-    const dlc = new Date(rec); dlc.setDate(dlc.getDate() + Math.floor(Math.random() * 10 + 3));
-    return {
-      id: i + 1, lotNumber: `LOT-${String(rec.getFullYear()).slice(2)}${String(rec.getMonth() + 1).padStart(2, '0')}${String(i + 1).padStart(3, '0')}`,
-      product: p.name, supplier: p.supplier, receptionDate: rec.toISOString().split('T')[0],
-      dlc: dlc.toISOString().split('T')[0], ddm: '', status: statuses[i % 5],
-    };
-  });
-}
-
-function seedDluo(): DluoAlert[] {
-  return [
-    { product: 'Crème fraîche', lot: 'LOT-260301', offset: 0, qty: '2 L' },
-    { product: 'Salade mesclun', lot: 'LOT-260302', offset: 1, qty: '1.5 kg' },
-    { product: 'Saumon frais', lot: 'LOT-260303', offset: 2, qty: '3 kg' },
-    { product: 'Poulet fermier', lot: 'LOT-260304', offset: 3, qty: '4 kg' },
-    { product: 'Lait entier', lot: 'LOT-260305', offset: 5, qty: '6 L' },
-    { product: 'Tomates grappe', lot: 'LOT-260306', offset: 7, qty: '2 kg' },
-  ].map((item, i) => {
-    const dlc = new Date(); dlc.setDate(dlc.getDate() + item.offset);
-    return { id: i + 1, product: item.product, lotNumber: item.lot, dlc: dlc.toISOString().split('T')[0], daysRemaining: item.offset, quantity: item.qty };
-  });
-}
-
-function seedCleaning(): CleaningRecord[] {
-  const agents = ['Ali', 'Marie', 'Karim', 'Sophie'];
-  const today = new Date().toISOString().split('T')[0];
-  return CLEANING_ZONES.map((zone, i) => ({
-    id: i + 1, zone, date: today,
-    time: i < 8 ? `${8 + i}:00` : '',
-    agent: i < 8 ? agents[i % 4] : '',
-    verified: i < 6,
-  }));
-}
+// (seed data removed — starts empty, loaded from API)
 
 // ─── API helpers ────────────────────────────────────────────────────────────
 
@@ -175,8 +116,8 @@ function getAuthHeaders(): Record<string, string> {
 export default function HACCP() {
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
   const [temperatures, setTemperatures] = useState<TemperatureRecord[]>([]);
-  const [lots, setLots] = useState<LotRecord[]>(seedLots);
-  const [dluoAlerts] = useState<DluoAlert[]>(seedDluo);
+  const [lots, setLots] = useState<LotRecord[]>([]);
+  const [dluoAlerts] = useState<DluoAlert[]>([]);
   const [cleaning, setCleaning] = useState<CleaningRecord[]>([]);
 
   const [showTempForm, setShowTempForm] = useState(false);
@@ -192,22 +133,17 @@ export default function HACCP() {
       const res = await fetch('/api/haccp/temperatures', { headers: getAuthHeaders() });
       if (!res.ok) throw new Error('Failed to load temperatures');
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        // Map backend fields to frontend TemperatureRecord shape
-        const mapped: TemperatureRecord[] = data.map((t: any) => ({
-          id: t.id,
-          zone: t.zone,
-          temperature: t.temperature,
-          timestamp: t.createdAt || `${t.date}T${t.time || '00:00'}`,
-          agent: t.recordedBy || '',
-          notes: t.notes || '',
-        }));
-        setTemperatures(mapped);
-      } else {
-        setTemperatures(seedTemperatures());
-      }
+      const mapped: TemperatureRecord[] = (Array.isArray(data) ? data : []).map((t: any) => ({
+        id: t.id,
+        zone: t.zone,
+        temperature: t.temperature,
+        timestamp: t.createdAt || `${t.date}T${t.time || '00:00'}`,
+        agent: t.recordedBy || '',
+        notes: t.notes || '',
+      }));
+      setTemperatures(mapped);
     } catch {
-      setTemperatures(seedTemperatures());
+      setTemperatures([]);
     }
   }, []);
 
@@ -217,22 +153,17 @@ export default function HACCP() {
       const res = await fetch(`/api/haccp/cleanings?date=${today}`, { headers: getAuthHeaders() });
       if (!res.ok) throw new Error('Failed to load cleanings');
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        // Map backend HaccpCleaning to frontend CleaningRecord
-        const mapped: CleaningRecord[] = data.map((c: any) => ({
-          id: c.id,
-          zone: c.zone,
-          date: c.date,
-          time: c.status === 'fait' ? new Date(c.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
-          agent: c.doneBy || '',
-          verified: c.status === 'fait',
-        }));
-        setCleaning(mapped);
-      } else {
-        setCleaning(seedCleaning());
-      }
+      const mapped: CleaningRecord[] = (Array.isArray(data) ? data : []).map((c: any) => ({
+        id: c.id,
+        zone: c.zone,
+        date: c.date,
+        time: c.status === 'fait' ? new Date(c.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
+        agent: c.doneBy || '',
+        verified: c.status === 'fait',
+      }));
+      setCleaning(mapped);
     } catch {
-      setCleaning(seedCleaning());
+      setCleaning([]);
     }
   }, []);
 

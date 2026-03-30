@@ -51,17 +51,8 @@ const API = '/api/messages';
 // ── Data ─────────────────────────────────────────────────────────────────────
 const ME = 'me';
 
-const CONTACTS: Contact[] = [
-  { id: 'transgourmet', name: 'Transgourmet - Commercial', role: 'Fournisseur', avatar: 'TC' },
-  { id: 'metro', name: 'Metro - Service client', role: 'Fournisseur', avatar: 'MS' },
-  { id: 'cuisine', name: 'Équipe Cuisine', role: 'Groupe interne', avatar: 'EC' },
-  { id: 'sofia', name: 'Sofia M. - Pâtissière', role: 'Employée', avatar: 'SM' },
-  { id: 'pomona', name: 'Fournisseur Pomona', role: 'Fournisseur', avatar: 'FP' },
-  { id: 'lucas', name: 'Lucas D. - Commis', role: 'Employé', avatar: 'LD' },
-  { id: 'marie', name: 'Marie L. - Serveuse', role: 'Employée', avatar: 'ML' },
-  { id: 'brake', name: 'Brake France', role: 'Fournisseur', avatar: 'BF' },
-  { id: 'rungis', name: "Rungis Express", role: 'Fournisseur', avatar: 'RE' },
-];
+// Contacts chargés depuis l'API — tableau vide par défaut
+const CONTACTS: Contact[] = [];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function getLastMessage(conv: Conversation) {
@@ -616,7 +607,7 @@ export default function Messagerie() {
   );
 }
 
-/** Returns total unread count across all default conversations */
+/** Returns total unread count — 0 when no data */
 export function getUnreadCount(): number {
-  return 3; // Static count for nav badge (2 transgourmet + 1 metro)
+  return 0;
 }

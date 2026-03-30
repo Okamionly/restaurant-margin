@@ -137,6 +137,8 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   badge?: number;
+  badgeText?: string;
+  disabled?: boolean;
 }
 
 interface NavSection {
@@ -261,9 +263,9 @@ function AppLayout() {
         { to: '/comptabilite', icon: Calculator, label: 'Comptabilité' },
         { to: '/devis', icon: FileText, label: 'Devis & Factures' },
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
-        { to: '/integrations', icon: Plug, label: 'Integrations' },
+        { to: '/integrations', icon: Plug, label: 'Integrations', badgeText: 'Bientôt', disabled: true },
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
-        { to: '/abonnement', icon: CreditCard, label: 'Abonnement' },
+        { to: '/pricing', icon: CreditCard, label: 'Mon abonnement' },
       ],
     },
   ];
@@ -282,33 +284,63 @@ function AppLayout() {
     .toUpperCase()
     .slice(0, 2);
 
-  const renderNavItem = (item: NavItem, collapsed = false) => (
-    <NavLink
-      key={item.to}
-      to={item.to}
-      end={item.to === '/dashboard'}
-      title={collapsed ? item.label : undefined}
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
-          collapsed ? 'justify-center' : ''
-        } ${
-          isActive
-            ? 'bg-blue-600/20 text-blue-400 border-l-[3px] border-blue-500 pl-[9px]'
-            : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1 hover:shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]'
-        }`
-      }
-    >
-      <span className="relative flex-shrink-0">
-        <item.icon className="w-5 h-5" />
-        {item.badge && item.badge > 0 && (
-          <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">
-            {item.badge}
+  const renderNavItem = (item: NavItem, collapsed = false) => {
+    if (item.disabled) {
+      return (
+        <button
+          key={item.to}
+          type="button"
+          title={collapsed ? item.label : 'Cette fonctionnalité sera disponible prochainement'}
+          onClick={() => alert('Cette fonctionnalité sera disponible prochainement')}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group w-full opacity-50 cursor-not-allowed ${
+            collapsed ? 'justify-center' : ''
+          } text-slate-500`}
+        >
+          <span className="relative flex-shrink-0">
+            <item.icon className="w-5 h-5" />
           </span>
-        )}
-      </span>
-      {!collapsed && <span className="sidebar-label truncate">{item.label}</span>}
-    </NavLink>
-  );
+          {!collapsed && (
+            <>
+              <span className="sidebar-label truncate">{item.label}</span>
+              {item.badgeText && (
+                <span className="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                  {item.badgeText}
+                </span>
+              )}
+            </>
+          )}
+        </button>
+      );
+    }
+
+    return (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        end={item.to === '/dashboard'}
+        title={collapsed ? item.label : undefined}
+        className={({ isActive }) =>
+          `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
+            collapsed ? 'justify-center' : ''
+          } ${
+            isActive
+              ? 'bg-blue-600/20 text-blue-400 border-l-[3px] border-blue-500 pl-[9px]'
+              : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1 hover:shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]'
+          }`
+        }
+      >
+        <span className="relative flex-shrink-0">
+          <item.icon className="w-5 h-5" />
+          {item.badge && item.badge > 0 && (
+            <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">
+              {item.badge}
+            </span>
+          )}
+        </span>
+        {!collapsed && <span className="sidebar-label truncate">{item.label}</span>}
+      </NavLink>
+    );
+  };
 
   // Sidebar content (shared between desktop and mobile)
   const sidebarContent = (collapsed = false) => (
@@ -508,7 +540,8 @@ function AppLayout() {
               <Route path="/comptabilite" element={<Comptabilite />} />
               <Route path="/devis" element={<DevisPage />} />
               <Route path="/restaurants" element={<Restaurants />} />
-              <Route path="/abonnement" element={<Subscription />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/abonnement" element={<Navigate to="/pricing" replace />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/users" element={<UserManagement />} />
               <Route path="*" element={<NotFound />} />

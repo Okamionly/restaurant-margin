@@ -61,63 +61,7 @@ function calcTotals(lines: OrderLine[]) {
   return { totalHT, tva, totalTTC: totalHT + tva };
 }
 
-// ── sample data ─────────────────────────────────────────────────────────────
-
-function makeSampleOrders(): Order[] {
-  return [
-    {
-      id: 1,
-      supplierId: null,
-      supplierName: 'Transgourmet',
-      lines: [
-        { id: 1, ingredientId: null, name: 'Farine T55', quantity: 25, unit: 'kg', pricePerUnit: 1.20, total: 30 },
-        { id: 2, ingredientId: null, name: 'Beurre AOP', quantity: 10, unit: 'kg', pricePerUnit: 12.50, total: 125 },
-        { id: 3, ingredientId: null, name: 'Sucre semoule', quantity: 15, unit: 'kg', pricePerUnit: 1.10, total: 16.50 },
-        { id: 4, ingredientId: null, name: 'Crème fraîche', quantity: 20, unit: 'L', pricePerUnit: 3.80, total: 76 },
-        { id: 5, ingredientId: null, name: 'Oeufs bio', quantity: 180, unit: 'pièce', pricePerUnit: 0.35, total: 63 },
-      ],
-      totalHT: 310.50,
-      tva: 62.10,
-      totalTTC: 372.60,
-      status: 'brouillon',
-      date: new Date(Date.now() - 86400000).toISOString(),
-      notes: 'Livraison souhaitée mardi matin',
-    },
-    {
-      id: 2,
-      supplierId: null,
-      supplierName: 'Metro',
-      lines: [
-        { id: 6, ingredientId: null, name: 'Saumon frais', quantity: 8, unit: 'kg', pricePerUnit: 22.00, total: 176 },
-        { id: 7, ingredientId: null, name: 'Crevettes', quantity: 5, unit: 'kg', pricePerUnit: 18.50, total: 92.50 },
-        { id: 8, ingredientId: null, name: 'Citron bio', quantity: 3, unit: 'kg', pricePerUnit: 3.80, total: 11.40 },
-      ],
-      totalHT: 279.90,
-      tva: 55.98,
-      totalTTC: 335.88,
-      status: 'envoyé',
-      date: new Date(Date.now() - 2 * 86400000).toISOString(),
-      notes: '',
-    },
-    {
-      id: 3,
-      supplierId: null,
-      supplierName: 'Pomona',
-      lines: [
-        { id: 9, ingredientId: null, name: 'Tomates grappe', quantity: 10, unit: 'kg', pricePerUnit: 3.20, total: 32 },
-        { id: 10, ingredientId: null, name: 'Courgettes', quantity: 8, unit: 'kg', pricePerUnit: 2.50, total: 20 },
-        { id: 11, ingredientId: null, name: 'Poivrons', quantity: 5, unit: 'kg', pricePerUnit: 4.80, total: 24 },
-        { id: 12, ingredientId: null, name: 'Salade mesclun', quantity: 6, unit: 'kg', pricePerUnit: 11.00, total: 66 },
-      ],
-      totalHT: 142,
-      tva: 28.40,
-      totalTTC: 170.40,
-      status: 'reçu',
-      date: new Date(Date.now() - 5 * 86400000).toISOString(),
-      notes: 'Reçu complet, qualité OK',
-    },
-  ];
-}
+// (mock data removed — starts empty, loaded from API)
 
 // ── empty form line ─────────────────────────────────────────────────────────
 
@@ -133,7 +77,7 @@ export default function AutoOrders() {
   // Data
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [orders, setOrders] = useState<Order[]>(makeSampleOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   // UI state

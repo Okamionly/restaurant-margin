@@ -1408,6 +1408,397 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
+// --- Restaurant-aware auth middleware ---
+async function authWithRestaurant(req: any, res: any, next: any) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Token requis' });
+  }
+  try {
+    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
+    req.user = decoded;
+  } catch {
+    return res.status(401).json({ error: 'Token invalide' });
+  }
+  const restaurantHeader = req.headers['x-restaurant-id'];
+  if (!restaurantHeader) return res.status(400).json({ error: 'X-Restaurant-Id header requis' });
+  const restaurantId = parseInt(String(restaurantHeader), 10);
+  if (isNaN(restaurantId)) return res.status(400).json({ error: 'X-Restaurant-Id invalide' });
+  try {
+    const member = await prisma.restaurantMember.findFirst({ where: { userId: req.user.userId, restaurantId } });
+    if (!member) return res.status(403).json({ error: 'Accès refusé à ce restaurant' });
+    req.restaurantId = restaurantId;
+    next();
+  } catch { res.status(500).json({ error: 'Erreur vérification restaurant' }); }
+}
+
+// ============ HACCP ============
+function getTemperatureStatus(zone: string, temperature: number): string {
+  const z = zone.toLowerCase();
+  if (z === 'frigo' || z === 'réfrigérateur') return temperature >= 0 && temperature <= 4 ? 'conforme' : 'non_conforme';
+  if (z === 'congélateur' || z === 'congelateur') return temperature <= -18 ? 'conforme' : 'non_conforme';
+  if (z === 'plats chauds' || z === 'plat_chaud') return temperature >= 63 ? 'conforme' : 'non_conforme';
+  if (z === 'réception' || z === 'reception') return temperature >= 0 && temperature <= 4 ? 'conforme' : 'non_conforme';
+  return 'en_attente';
+}
+
+app.get('/api/haccp/temperatures', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { from, to, zone } = req.query;
+    const where: any = { restaurantId: req.restaurantId };
+    if (from || to) { where.date = {}; if (from) where.date.gte = from; if (to) where.date.lte = to; }
+    if (zone) where.zone = zone;
+    const temperatures = await prisma.haccpTemperature.findMany({ where, orderBy: { createdAt: 'desc' } });
+    res.json(temperatures);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération températures' }); }
+});
+
+app.post('/api/haccp/temperatures', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { zone, temperature, recordedBy, notes, date, time } = req.body;
+    if (!zone || temperature == null || !date) return res.status(400).json({ error: 'Champs requis : zone, temperature, date' });
+    const status = getTemperatureStatus(zone, temperature);
+    const record = await prisma.haccpTemperature.create({
+      data: { zone, temperature: parseFloat(temperature), status, recordedBy: recordedBy || null, notes: notes || null, date, time: time || null, restaurantId: req.restaurantId },
+    });
+    res.status(201).json(record);
+  } catch (e) { console.error(e); res.status(500).json({ error: "Erreur enregistrement température" }); }
+});
+
+app.get('/api/haccp/cleanings', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { date } = req.query;
+    const where: any = { restaurantId: req.restaurantId };
+    if (date) where.date = date;
+    const cleanings = await prisma.haccpCleaning.findMany({ where, orderBy: { createdAt: 'desc' } });
+    res.json(cleanings);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération nettoyage' }); }
+});
+
+app.post('/api/haccp/cleanings', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { zone, task, status, doneBy, date } = req.body;
+    if (!zone || !task || !date) return res.status(400).json({ error: 'Champs requis : zone, task, date' });
+    const validStatuses = ['fait', 'en_attente', 'non_fait'];
+    if (status && !validStatuses.includes(status)) return res.status(400).json({ error: `Statut invalide. Valeurs acceptées : ${validStatuses.join(', ')}` });
+    const record = await prisma.haccpCleaning.create({
+      data: { zone, task, status: status || 'en_attente', doneBy: doneBy || null, date, restaurantId: req.restaurantId },
+    });
+    res.status(201).json(record);
+  } catch (e) { console.error(e); res.status(500).json({ error: "Erreur enregistrement nettoyage" }); }
+});
+
+app.put('/api/haccp/cleanings/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.haccpCleaning.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Enregistrement non trouvé' });
+    const { status, doneBy } = req.body;
+    const validStatuses = ['fait', 'en_attente', 'non_fait'];
+    if (status && !validStatuses.includes(status)) return res.status(400).json({ error: `Statut invalide. Valeurs acceptées : ${validStatuses.join(', ')}` });
+    const updated = await prisma.haccpCleaning.update({ where: { id }, data: { ...(status && { status }), ...(doneBy !== undefined && { doneBy }) } });
+    res.json(updated);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour nettoyage' }); }
+});
+
+app.get('/api/haccp/summary', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    const today = new Date().toISOString().split('T')[0];
+    const todayTemps = await prisma.haccpTemperature.findMany({ where: { restaurantId, date: today } });
+    const totalChecks = todayTemps.length;
+    const conformes = todayTemps.filter((t: any) => t.status === 'conforme').length;
+    const nonConformes = todayTemps.filter((t: any) => t.status === 'non_conforme').length;
+    const todayCleanings = await prisma.haccpCleaning.findMany({ where: { restaurantId, date: today } });
+    const totalCleanings = todayCleanings.length;
+    const cleaningsDone = todayCleanings.filter((c: any) => c.status === 'fait').length;
+    const cleaningCompletion = totalCleanings > 0 ? Math.round((cleaningsDone / totalCleanings) * 100) : 0;
+    res.json({
+      date: today,
+      temperatures: { totalChecks, conformes, nonConformes, complianceRate: totalChecks > 0 ? Math.round((conformes / totalChecks) * 100) : 100 },
+      cleanings: { total: totalCleanings, done: cleaningsDone, completion: cleaningCompletion },
+    });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé HACCP' }); }
+});
+
+// ============ PLANNING ============
+app.get('/api/planning/employees', authWithRestaurant, async (req: any, res) => {
+  try {
+    const employees = await prisma.employee.findMany({ where: { restaurantId: req.restaurantId, active: true }, orderBy: { name: 'asc' } });
+    res.json(employees);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération employés' }); }
+});
+
+app.post('/api/planning/employees', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { name, role, email, phone, hourlyRate, color } = req.body;
+    if (!name || !role) return res.status(400).json({ error: 'Champs requis : name, role' });
+    const validRoles = ['Chef', 'Commis', 'Serveur', 'Plongeur', 'Barman', 'Manager'];
+    if (!validRoles.includes(role)) return res.status(400).json({ error: `Rôle invalide. Valeurs acceptées : ${validRoles.join(', ')}` });
+    const employee = await prisma.employee.create({
+      data: { name, role, email: email || null, phone: phone || null, hourlyRate: hourlyRate ?? 12, color: color || '#3b82f6', restaurantId: req.restaurantId },
+    });
+    res.status(201).json(employee);
+  } catch (e) { console.error(e); res.status(500).json({ error: "Erreur création employé" }); }
+});
+
+app.put('/api/planning/employees/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.employee.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Employé non trouvé' });
+    const { name, role, email, phone, hourlyRate, color, active } = req.body;
+    const employee = await prisma.employee.update({
+      where: { id },
+      data: { ...(name !== undefined && { name }), ...(role !== undefined && { role }), ...(email !== undefined && { email: email || null }), ...(phone !== undefined && { phone: phone || null }), ...(hourlyRate !== undefined && { hourlyRate }), ...(color !== undefined && { color }), ...(active !== undefined && { active }) },
+    });
+    res.json(employee);
+  } catch (e) { console.error(e); res.status(500).json({ error: "Erreur mise à jour employé" }); }
+});
+
+app.delete('/api/planning/employees/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.employee.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Employé non trouvé' });
+    await prisma.employee.update({ where: { id }, data: { active: false } });
+    res.json({ message: 'Employé désactivé' });
+  } catch (e) { console.error(e); res.status(500).json({ error: "Erreur suppression employé" }); }
+});
+
+app.get('/api/planning/shifts', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { from, to, employeeId } = req.query;
+    const where: any = { restaurantId: req.restaurantId };
+    if (from || to) { where.date = {}; if (from) where.date.gte = from; if (to) where.date.lte = to; }
+    if (employeeId) where.employeeId = parseInt(employeeId);
+    const shifts = await prisma.shift.findMany({
+      where, include: { employee: { select: { id: true, name: true, role: true, color: true } } }, orderBy: [{ date: 'asc' }, { startTime: 'asc' }],
+    });
+    res.json(shifts);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération shifts' }); }
+});
+
+app.post('/api/planning/shifts', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { employeeId, date, startTime, endTime, type, notes } = req.body;
+    if (!employeeId || !date || !startTime || !endTime || !type) return res.status(400).json({ error: 'Champs requis : employeeId, date, startTime, endTime, type' });
+    const validTypes = ['Matin', 'Midi', 'Soir', 'Coupure'];
+    if (!validTypes.includes(type)) return res.status(400).json({ error: `Type invalide. Valeurs acceptées : ${validTypes.join(', ')}` });
+    const employee = await prisma.employee.findFirst({ where: { id: employeeId, restaurantId: req.restaurantId, active: true } });
+    if (!employee) return res.status(404).json({ error: 'Employé non trouvé' });
+    const shift = await prisma.shift.create({
+      data: { employeeId, date, startTime, endTime, type, notes: notes || null, restaurantId: req.restaurantId },
+      include: { employee: { select: { id: true, name: true, role: true, color: true } } },
+    });
+    res.status(201).json(shift);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création shift' }); }
+});
+
+app.put('/api/planning/shifts/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.shift.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Shift non trouvé' });
+    const { employeeId, date, startTime, endTime, type, notes } = req.body;
+    if (employeeId && employeeId !== existing.employeeId) {
+      const employee = await prisma.employee.findFirst({ where: { id: employeeId, restaurantId: req.restaurantId, active: true } });
+      if (!employee) return res.status(404).json({ error: 'Employé non trouvé' });
+    }
+    const shift = await prisma.shift.update({
+      where: { id },
+      data: { ...(employeeId !== undefined && { employeeId }), ...(date !== undefined && { date }), ...(startTime !== undefined && { startTime }), ...(endTime !== undefined && { endTime }), ...(type !== undefined && { type }), ...(notes !== undefined && { notes: notes || null }) },
+      include: { employee: { select: { id: true, name: true, role: true, color: true } } },
+    });
+    res.json(shift);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour shift' }); }
+});
+
+app.delete('/api/planning/shifts/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.shift.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Shift non trouvé' });
+    await prisma.shift.delete({ where: { id } });
+    res.json({ message: 'Shift supprimé' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression shift' }); }
+});
+
+app.get('/api/planning/summary', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { from, to } = req.query;
+    if (!from || !to) return res.status(400).json({ error: 'Paramètres requis : from, to (YYYY-MM-DD)' });
+    const shifts = await prisma.shift.findMany({
+      where: { restaurantId: req.restaurantId, date: { gte: from as string, lte: to as string } },
+      include: { employee: { select: { id: true, name: true, role: true, hourlyRate: true, color: true } } },
+    });
+    const employeeMap = new Map<number, { id: number; name: string; role: string; color: string; hourlyRate: number; totalHours: number; totalCost: number; shiftCount: number }>();
+    for (const shift of shifts) {
+      const [startH, startM] = shift.startTime.split(':').map(Number);
+      const [endH, endM] = shift.endTime.split(':').map(Number);
+      let hours = (endH + endM / 60) - (startH + startM / 60);
+      if (hours < 0) hours += 24;
+      const existing = employeeMap.get(shift.employeeId) || { id: shift.employee.id, name: shift.employee.name, role: shift.employee.role, color: shift.employee.color, hourlyRate: shift.employee.hourlyRate, totalHours: 0, totalCost: 0, shiftCount: 0 };
+      existing.totalHours += hours;
+      existing.totalCost += hours * shift.employee.hourlyRate;
+      existing.shiftCount++;
+      employeeMap.set(shift.employeeId, existing);
+    }
+    const employees = Array.from(employeeMap.values()).map(e => ({ ...e, totalHours: Math.round(e.totalHours * 100) / 100, totalCost: Math.round(e.totalCost * 100) / 100 }));
+    const totalHours = employees.reduce((sum, e) => sum + e.totalHours, 0);
+    const totalCost = employees.reduce((sum, e) => sum + e.totalCost, 0);
+    res.json({ from, to, employees, totalHours: Math.round(totalHours * 100) / 100, totalCost: Math.round(totalCost * 100) / 100, totalShifts: shifts.length });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé planning' }); }
+});
+
+// ============ SEMINAIRES ============
+app.get('/api/seminaires/summary', authWithRestaurant, async (req: any, res) => {
+  try {
+    const all = await prisma.seminaire.findMany({ where: { restaurantId: req.restaurantId } });
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const byStatus: Record<string, number> = {};
+    let totalRevenue = 0;
+    let upcomingThisMonth = 0;
+    for (const s of all) {
+      byStatus[s.status] = (byStatus[s.status] || 0) + 1;
+      if (['confirme', 'en_cours', 'solde'].includes(s.status) && s.budget) totalRevenue += s.budget;
+      const d = new Date(s.date + 'T00:00:00');
+      if (d.getMonth() === currentMonth && d.getFullYear() === currentYear && d >= now) upcomingThisMonth++;
+    }
+    res.json({ total: all.length, byStatus, upcomingThisMonth, totalRevenue });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé séminaires' }); }
+});
+
+app.get('/api/seminaires', authWithRestaurant, async (req: any, res) => {
+  try {
+    const seminaires = await prisma.seminaire.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { date: 'desc' } });
+    res.json(seminaires);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération séminaires' }); }
+});
+
+app.get('/api/seminaires/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const seminaire = await prisma.seminaire.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!seminaire) return res.status(404).json({ error: 'Séminaire non trouvé' });
+    res.json(seminaire);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération séminaire' }); }
+});
+
+app.post('/api/seminaires', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { title, clientName, clientEmail, clientPhone, eventType, date, startTime, endTime, guestCount, budget, menuDetails, equipment, notes } = req.body;
+    if (!title || !clientName || !eventType || !date) return res.status(400).json({ error: 'Titre, nom client, type et date requis' });
+    const seminaire = await prisma.seminaire.create({
+      data: {
+        title, clientName, clientEmail: clientEmail || null, clientPhone: clientPhone || null, eventType, date,
+        startTime: startTime || null, endTime: endTime || null, guestCount: guestCount || 20, status: 'demande',
+        budget: budget || null, menuDetails: menuDetails || null, equipment: equipment || [], notes: notes || null, restaurantId: req.restaurantId,
+      },
+    });
+    res.status(201).json(seminaire);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création séminaire' }); }
+});
+
+app.put('/api/seminaires/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const existing = await prisma.seminaire.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Séminaire non trouvé' });
+    const { title, clientName, clientEmail, clientPhone, eventType, date, startTime, endTime, guestCount, status, budget, menuDetails, equipment, notes } = req.body;
+    const seminaire = await prisma.seminaire.update({
+      where: { id },
+      data: {
+        ...(title !== undefined && { title }), ...(clientName !== undefined && { clientName }),
+        ...(clientEmail !== undefined && { clientEmail }), ...(clientPhone !== undefined && { clientPhone }),
+        ...(eventType !== undefined && { eventType }), ...(date !== undefined && { date }),
+        ...(startTime !== undefined && { startTime }), ...(endTime !== undefined && { endTime }),
+        ...(guestCount !== undefined && { guestCount }), ...(status !== undefined && { status }),
+        ...(budget !== undefined && { budget }), ...(menuDetails !== undefined && { menuDetails }),
+        ...(equipment !== undefined && { equipment }), ...(notes !== undefined && { notes }),
+      },
+    });
+    res.json(seminaire);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour séminaire' }); }
+});
+
+app.delete('/api/seminaires/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const existing = await prisma.seminaire.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Séminaire non trouvé' });
+    await prisma.seminaire.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression séminaire' }); }
+});
+
+// ============ MARKETPLACE ============
+app.get('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {
+  try {
+    const orders = await prisma.marketplaceOrder.findMany({
+      where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' },
+    });
+    res.json(orders);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération commandes marketplace' }); }
+});
+
+app.get('/api/marketplace/orders/summary', authWithRestaurant, async (req: any, res) => {
+  try {
+    const orders = await prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId } });
+    const totalOrders = orders.length;
+    const totalSpent = orders.reduce((sum: number, o: any) => sum + o.totalHT, 0);
+    const byStatus: Record<string, number> = {};
+    orders.forEach((o: any) => { byStatus[o.status] = (byStatus[o.status] || 0) + 1; });
+    res.json({ totalOrders, totalSpent, byStatus });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé marketplace' }); }
+});
+
+app.post('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { supplierName, items, notes } = req.body;
+    if (!supplierName || !items || !Array.isArray(items) || items.length === 0) return res.status(400).json({ error: 'Fournisseur et articles requis' });
+    const orderItems = items.map((item: any) => ({
+      productName: item.productName || '', quantity: item.quantity || 1, unit: item.unit || '', unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),
+    }));
+    const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);
+    const order = await prisma.marketplaceOrder.create({
+      data: { supplierName, totalHT, notes: notes || null, restaurantId: req.restaurantId, items: { create: orderItems } },
+      include: { items: true },
+    });
+    res.status(201).json(order);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création commande marketplace' }); }
+});
+
+app.put('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { status, notes } = req.body;
+    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Commande non trouvée' });
+    const order = await prisma.marketplaceOrder.update({
+      where: { id }, data: { ...(status && { status }), ...(notes !== undefined && { notes }) }, include: { items: true },
+    });
+    res.json(order);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour commande marketplace' }); }
+});
+
+app.delete('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Commande non trouvée' });
+    await prisma.marketplaceOrder.delete({ where: { id } });
+    res.json({ message: 'Commande supprimée' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression commande marketplace' }); }
+});
+
 // 404 catch-all
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });

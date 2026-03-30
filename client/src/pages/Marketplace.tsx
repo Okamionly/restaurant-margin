@@ -75,130 +75,13 @@ function marketplaceHeaders(): Record<string, string> {
   return headers;
 }
 
-// ── Sample Data ───────────────────────────────────────────────────────────────
+// ── Data (loaded from API, empty by default) ─────────────────────────────────
 
-const SUPPLIERS: Supplier[] = [
-  { id: 'transgourmet', name: 'Transgourmet', logo: 'TG', rating: 4.5, reviewCount: 234, deliveryDays: 1, premium: true, bio: false, local: false, description: 'Grossiste alimentaire leader en France, large gamme de produits frais et secs.', phone: '01 49 38 90 00' },
-  { id: 'metro', name: 'Metro', logo: 'M', rating: 4.3, reviewCount: 189, deliveryDays: 1, premium: true, bio: false, local: false, description: 'Cash & carry et livraison pour les professionnels de la restauration.', phone: '01 45 61 20 00' },
-  { id: 'pomona', name: 'Pomona', logo: 'P', rating: 4.6, reviewCount: 156, deliveryDays: 2, premium: false, bio: true, local: true, description: 'Distributeur de fruits, legumes et produits de la mer, circuits courts.', phone: '01 56 20 56 20' },
-  { id: 'sysco', name: 'Sysco France', logo: 'SY', rating: 4.1, reviewCount: 98, deliveryDays: 2, premium: false, bio: false, local: false, description: 'Leader mondial de la distribution alimentaire pour la restauration.', phone: '01 39 30 60 00' },
-  { id: 'brake', name: 'Brake France', logo: 'BK', rating: 4.2, reviewCount: 112, deliveryDays: 3, premium: false, bio: false, local: false, description: 'Specialiste de la livraison de produits alimentaires surgeles et frais.', phone: '02 51 85 85 85' },
-];
+const SUPPLIERS: Supplier[] = [];
 
 const CATEGORIES = ['Viandes', 'Poissons', 'Legumes', 'Fruits', 'Epicerie', 'Boissons', 'Surgeles', 'Produits laitiers'];
 
-const PRODUCTS: Product[] = [
-  // Viandes
-  { id: 'p1', name: 'Filet de boeuf', category: 'Viandes', description: 'Piece de 2kg minimum, race charolaise', offers: [
-    { supplierId: 'transgourmet', price: 42.50, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'metro', price: 44.90, unit: 'kg', minOrder: 1, inStock: true },
-    { supplierId: 'sysco', price: 43.20, unit: 'kg', minOrder: 3, inStock: true },
-  ]},
-  { id: 'p2', name: 'Magret de canard', category: 'Viandes', description: 'Canard du Sud-Ouest IGP, 350-400g', offers: [
-    { supplierId: 'transgourmet', price: 14.90, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'pomona', price: 13.80, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'metro', price: 15.20, unit: 'kg', minOrder: 1, inStock: false },
-  ]},
-  { id: 'p3', name: 'Poulet fermier entier', category: 'Viandes', description: 'Label Rouge, 1.5kg', offers: [
-    { supplierId: 'metro', price: 8.90, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'brake', price: 9.10, unit: 'kg', minOrder: 3, inStock: true },
-    { supplierId: 'pomona', price: 8.50, unit: 'kg', minOrder: 2, inStock: true },
-  ]},
-  // Poissons
-  { id: 'p4', name: 'Saumon frais filet', category: 'Poissons', description: 'Ecosse, Label Rouge, piece 1.2kg', offers: [
-    { supplierId: 'transgourmet', price: 24.90, unit: 'kg', minOrder: 1, inStock: true },
-    { supplierId: 'pomona', price: 23.50, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'metro', price: 25.40, unit: 'kg', minOrder: 1, inStock: true },
-  ]},
-  { id: 'p5', name: 'Bar de ligne', category: 'Poissons', description: 'Peche du jour, 400-600g piece', offers: [
-    { supplierId: 'pomona', price: 28.90, unit: 'kg', minOrder: 1, inStock: true },
-    { supplierId: 'transgourmet', price: 30.50, unit: 'kg', minOrder: 2, inStock: false },
-  ]},
-  { id: 'p6', name: 'Crevettes roses', category: 'Poissons', description: 'Calibre 30/40, Madagascar', offers: [
-    { supplierId: 'sysco', price: 18.90, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'brake', price: 19.50, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'metro', price: 17.80, unit: 'kg', minOrder: 3, inStock: true },
-  ]},
-  // Legumes
-  { id: 'p7', name: 'Tomates grappe', category: 'Legumes', description: 'Cat. I, France, colis 5kg', offers: [
-    { supplierId: 'pomona', price: 3.20, unit: 'kg', minOrder: 5, inStock: true },
-    { supplierId: 'metro', price: 3.50, unit: 'kg', minOrder: 3, inStock: true },
-    { supplierId: 'transgourmet', price: 3.40, unit: 'kg', minOrder: 5, inStock: true },
-  ]},
-  { id: 'p8', name: 'Pommes de terre Agata', category: 'Legumes', description: 'Calibre 40-70mm, sac 10kg', offers: [
-    { supplierId: 'transgourmet', price: 1.10, unit: 'kg', minOrder: 10, inStock: true },
-    { supplierId: 'sysco', price: 1.25, unit: 'kg', minOrder: 10, inStock: true },
-    { supplierId: 'pomona', price: 0.95, unit: 'kg', minOrder: 10, inStock: true },
-  ]},
-  { id: 'p9', name: 'Mesclun bio', category: 'Legumes', description: 'Melange jeunes pousses bio, barquette 500g', offers: [
-    { supplierId: 'pomona', price: 12.50, unit: 'kg', minOrder: 1, inStock: true },
-    { supplierId: 'metro', price: 13.90, unit: 'kg', minOrder: 1, inStock: true },
-  ]},
-  // Fruits
-  { id: 'p10', name: 'Fraises Gariguette', category: 'Fruits', description: 'France, plateau 1kg, cat. Extra', offers: [
-    { supplierId: 'pomona', price: 9.80, unit: 'kg', minOrder: 2, inStock: true },
-    { supplierId: 'metro', price: 10.50, unit: 'kg', minOrder: 1, inStock: true },
-    { supplierId: 'transgourmet', price: 10.20, unit: 'kg', minOrder: 2, inStock: false },
-  ]},
-  { id: 'p11', name: 'Citrons jaunes', category: 'Fruits', description: 'Non traites, Espagne, filet 5kg', offers: [
-    { supplierId: 'pomona', price: 2.40, unit: 'kg', minOrder: 5, inStock: true },
-    { supplierId: 'sysco', price: 2.60, unit: 'kg', minOrder: 5, inStock: true },
-  ]},
-  // Epicerie
-  { id: 'p12', name: 'Huile d\'olive extra vierge 5L', category: 'Epicerie', description: 'Premiere pression a froid, Espagne', offers: [
-    { supplierId: 'metro', price: 12.99, unit: 'bidon', minOrder: 1, inStock: true },
-    { supplierId: 'transgourmet', price: 13.50, unit: 'bidon', minOrder: 1, inStock: true },
-    { supplierId: 'sysco', price: 14.20, unit: 'bidon', minOrder: 2, inStock: true },
-  ]},
-  { id: 'p13', name: 'Farine T55 25kg', category: 'Epicerie', description: 'Farine de ble, sac 25kg', offers: [
-    { supplierId: 'transgourmet', price: 14.80, unit: 'sac', minOrder: 1, inStock: true },
-    { supplierId: 'brake', price: 15.50, unit: 'sac', minOrder: 2, inStock: true },
-  ]},
-  { id: 'p14', name: 'Vinaigre balsamique 1L', category: 'Epicerie', description: 'Modene IGP, bouteille 1L', offers: [
-    { supplierId: 'metro', price: 8.90, unit: 'bouteille', minOrder: 1, inStock: true },
-    { supplierId: 'transgourmet', price: 9.20, unit: 'bouteille', minOrder: 2, inStock: true },
-  ]},
-  // Boissons
-  { id: 'p15', name: 'Eau minerale 1.5L x6', category: 'Boissons', description: 'Pack de 6 bouteilles, Evian', offers: [
-    { supplierId: 'metro', price: 4.50, unit: 'pack', minOrder: 5, inStock: true },
-    { supplierId: 'transgourmet', price: 4.20, unit: 'pack', minOrder: 5, inStock: true },
-    { supplierId: 'sysco', price: 4.80, unit: 'pack', minOrder: 3, inStock: true },
-  ]},
-  { id: 'p16', name: 'Jus d\'orange 100% pur jus 1L', category: 'Boissons', description: 'Brique 1L, lot de 12', offers: [
-    { supplierId: 'sysco', price: 1.80, unit: 'brique', minOrder: 12, inStock: true },
-    { supplierId: 'brake', price: 1.95, unit: 'brique', minOrder: 12, inStock: true },
-  ]},
-  // Surgeles
-  { id: 'p17', name: 'Frites 9mm sac 2.5kg', category: 'Surgeles', description: 'Frites precuites surgelees', offers: [
-    { supplierId: 'brake', price: 3.50, unit: 'sac', minOrder: 4, inStock: true },
-    { supplierId: 'sysco', price: 3.30, unit: 'sac', minOrder: 4, inStock: true },
-    { supplierId: 'transgourmet', price: 3.60, unit: 'sac', minOrder: 4, inStock: true },
-  ]},
-  { id: 'p18', name: 'Petits pois surgeles 2.5kg', category: 'Surgeles', description: 'Extra fins, sac 2.5kg', offers: [
-    { supplierId: 'brake', price: 4.80, unit: 'sac', minOrder: 2, inStock: true },
-    { supplierId: 'sysco', price: 4.50, unit: 'sac', minOrder: 3, inStock: true },
-  ]},
-  // Produits laitiers
-  { id: 'p19', name: 'Beurre doux 250g', category: 'Produits laitiers', description: 'Beurre AOP Charentes-Poitou', offers: [
-    { supplierId: 'transgourmet', price: 3.20, unit: 'plaquette', minOrder: 10, inStock: true },
-    { supplierId: 'metro', price: 3.40, unit: 'plaquette', minOrder: 5, inStock: true },
-    { supplierId: 'pomona', price: 3.10, unit: 'plaquette', minOrder: 10, inStock: true },
-  ]},
-  { id: 'p20', name: 'Creme fraiche epaisse 1L', category: 'Produits laitiers', description: 'Creme entiere 30% MG, pot 1L', offers: [
-    { supplierId: 'transgourmet', price: 4.50, unit: 'pot', minOrder: 6, inStock: true },
-    { supplierId: 'metro', price: 4.80, unit: 'pot', minOrder: 4, inStock: true },
-    { supplierId: 'pomona', price: 4.30, unit: 'pot', minOrder: 6, inStock: true },
-  ]},
-  { id: 'p21', name: 'Parmesan Reggiano 1kg', category: 'Produits laitiers', description: 'Parmigiano Reggiano DOP, 24 mois', offers: [
-    { supplierId: 'metro', price: 18.90, unit: 'kg', minOrder: 1, inStock: true },
-    { supplierId: 'transgourmet', price: 19.50, unit: 'kg', minOrder: 1, inStock: true },
-  ]},
-  { id: 'p22', name: 'Mozzarella di Bufala', category: 'Produits laitiers', description: 'DOP Campanie, boule 125g x8', offers: [
-    { supplierId: 'pomona', price: 2.80, unit: 'boule', minOrder: 8, inStock: true },
-    { supplierId: 'metro', price: 3.10, unit: 'boule', minOrder: 8, inStock: true },
-    { supplierId: 'transgourmet', price: 2.90, unit: 'boule', minOrder: 8, inStock: true },
-  ]},
-];
+const PRODUCTS: Product[] = [];
 
 // ── Category colors ───────────────────────────────────────────────────────────
 
@@ -216,7 +99,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 // ── Helper ────────────────────────────────────────────────────────────────────
 
 function getSupplier(id: string): Supplier {
-  return SUPPLIERS.find(s => s.id === id)!;
+  return SUPPLIERS.find(s => s.id === id) as Supplier;
 }
 
 function getBestPrice(offers: SupplierOffer[]): number {

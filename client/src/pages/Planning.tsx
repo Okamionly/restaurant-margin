@@ -98,61 +98,7 @@ function getShiftType(start: string): ShiftType {
   return 'soir';
 }
 
-// ── Sample data ────────────────────────────────────────────────────────
-
-function buildSampleData() {
-  const today = new Date();
-  const monday = getMonday(today);
-
-  const employees: Employee[] = [
-    { id: 1, nom: 'Benali', prenom: 'Youssef', role: 'Chef', tauxHoraire: 25, heuresContrat: 39, couleur: EMPLOYEE_COLORS[0] },
-    { id: 2, nom: 'Kaddouri', prenom: 'Ali', role: 'Commis', tauxHoraire: 14, heuresContrat: 35, couleur: EMPLOYEE_COLORS[1] },
-    { id: 3, nom: 'Dupont', prenom: 'Marie', role: 'Serveuse', tauxHoraire: 12, heuresContrat: 35, couleur: EMPLOYEE_COLORS[2] },
-    { id: 4, nom: 'Bouzid', prenom: 'Ahmed', role: 'Plongeur', tauxHoraire: 11.65, heuresContrat: 35, couleur: EMPLOYEE_COLORS[3] },
-    { id: 5, nom: 'Moreau', prenom: 'Sofia', role: 'Patissiere', tauxHoraire: 16, heuresContrat: 35, couleur: EMPLOYEE_COLORS[4] },
-    { id: 6, nom: 'Leroy', prenom: 'Thomas', role: 'Serveur', tauxHoraire: 12, heuresContrat: 35, couleur: EMPLOYEE_COLORS[5] },
-  ];
-
-  const shifts: Shift[] = [
-    // Youssef - Chef - 39h
-    { id: 1, employeeId: 1, date: formatDate(monday), start: '08:00', end: '15:00', poste: 'cuisine' },
-    { id: 2, employeeId: 1, date: formatDate(addDays(monday, 1)), start: '08:00', end: '15:00', poste: 'cuisine' },
-    { id: 3, employeeId: 1, date: formatDate(addDays(monday, 2)), start: '08:00', end: '15:00', poste: 'cuisine' },
-    { id: 4, employeeId: 1, date: formatDate(addDays(monday, 3)), start: '17:00', end: '23:00', poste: 'cuisine' },
-    { id: 5, employeeId: 1, date: formatDate(addDays(monday, 4)), start: '17:00', end: '23:00', poste: 'cuisine' },
-    // Ali - Commis - 37h (>35h alert)
-    { id: 6, employeeId: 2, date: formatDate(monday), start: '09:00', end: '17:00', poste: 'cuisine' },
-    { id: 7, employeeId: 2, date: formatDate(addDays(monday, 1)), start: '09:00', end: '17:00', poste: 'cuisine' },
-    { id: 8, employeeId: 2, date: formatDate(addDays(monday, 2)), start: '09:00', end: '17:00', poste: 'cuisine' },
-    { id: 9, employeeId: 2, date: formatDate(addDays(monday, 3)), start: '09:00', end: '17:00', poste: 'cuisine' },
-    { id: 10, employeeId: 2, date: formatDate(addDays(monday, 4)), start: '09:00', end: '14:00', poste: 'cuisine' },
-    // Marie - Serveuse
-    { id: 11, employeeId: 3, date: formatDate(monday), start: '11:00', end: '15:00', poste: 'salle' },
-    { id: 12, employeeId: 3, date: formatDate(addDays(monday, 1)), start: '11:00', end: '15:00', poste: 'salle' },
-    { id: 13, employeeId: 3, date: formatDate(addDays(monday, 2)), start: '18:00', end: '23:00', poste: 'salle' },
-    { id: 14, employeeId: 3, date: formatDate(addDays(monday, 4)), start: '11:00', end: '15:00', poste: 'salle' },
-    { id: 15, employeeId: 3, date: formatDate(addDays(monday, 5)), start: '18:00', end: '23:00', poste: 'salle' },
-    // Ahmed - Plongeur
-    { id: 16, employeeId: 4, date: formatDate(monday), start: '11:00', end: '16:00', poste: 'plonge' },
-    { id: 17, employeeId: 4, date: formatDate(addDays(monday, 1)), start: '11:00', end: '16:00', poste: 'plonge' },
-    { id: 18, employeeId: 4, date: formatDate(addDays(monday, 2)), start: '11:00', end: '16:00', poste: 'plonge' },
-    { id: 19, employeeId: 4, date: formatDate(addDays(monday, 3)), start: '18:00', end: '23:00', poste: 'plonge' },
-    { id: 20, employeeId: 4, date: formatDate(addDays(monday, 4)), start: '18:00', end: '23:00', poste: 'plonge' },
-    // Sofia - Patissiere
-    { id: 21, employeeId: 5, date: formatDate(monday), start: '06:00', end: '14:00', poste: 'cuisine' },
-    { id: 22, employeeId: 5, date: formatDate(addDays(monday, 1)), start: '06:00', end: '14:00', poste: 'cuisine' },
-    { id: 23, employeeId: 5, date: formatDate(addDays(monday, 3)), start: '06:00', end: '14:00', poste: 'cuisine' },
-    { id: 24, employeeId: 5, date: formatDate(addDays(monday, 4)), start: '06:00', end: '14:00', poste: 'cuisine' },
-    // Thomas - Serveur
-    { id: 25, employeeId: 6, date: formatDate(monday), start: '17:00', end: '23:00', poste: 'salle' },
-    { id: 26, employeeId: 6, date: formatDate(addDays(monday, 1)), start: '17:00', end: '23:00', poste: 'salle' },
-    { id: 27, employeeId: 6, date: formatDate(addDays(monday, 3)), start: '17:00', end: '23:00', poste: 'salle' },
-    { id: 28, employeeId: 6, date: formatDate(addDays(monday, 4)), start: '17:00', end: '23:00', poste: 'salle' },
-    { id: 29, employeeId: 6, date: formatDate(addDays(monday, 5)), start: '11:00', end: '15:00', poste: 'salle' },
-  ];
-
-  return { employees, shifts };
-}
+// (mock data removed — starts empty, loaded from API)
 
 // ── API helpers ──────────────────────────────────────────────────────
 
@@ -169,8 +115,6 @@ function getAuthHeaders(): Record<string, string> {
 
 export default function Planning() {
   const { showToast } = useToast();
-  const sample = useMemo(() => buildSampleData(), []);
-
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [weekStart, setWeekStart] = useState<Date>(() => getMonday(new Date()));
@@ -196,8 +140,8 @@ export default function Planning() {
   const emptyShiftForm = { employeeId: '', date: '', start: '', end: '', poste: 'cuisine' as Shift['poste'] };
   const [shiftForm, setShiftForm] = useState(emptyShiftForm);
 
-  // Simulated weekly revenue for ratio
-  const weeklyRevenue = 12500;
+  // Weekly revenue for ratio (0 when no data)
+  const weeklyRevenue = 0;
 
   // ── API: Load employees on mount ──────────────────────────────────────
 
@@ -206,30 +150,22 @@ export default function Planning() {
       const res = await fetch('/api/planning/employees', { headers: getAuthHeaders() });
       if (!res.ok) throw new Error('Failed to load employees');
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setEmployees(data);
-      } else {
-        setEmployees(sample.employees);
-      }
+      setEmployees(Array.isArray(data) ? data : []);
     } catch {
-      setEmployees(sample.employees);
+      setEmployees([]);
     }
-  }, [sample.employees]);
+  }, []);
 
   const loadShifts = useCallback(async (from: string, to: string) => {
     try {
       const res = await fetch(`/api/planning/shifts?from=${from}&to=${to}`, { headers: getAuthHeaders() });
       if (!res.ok) throw new Error('Failed to load shifts');
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setShifts(data);
-      } else {
-        setShifts(sample.shifts);
-      }
+      setShifts(Array.isArray(data) ? data : []);
     } catch {
-      setShifts(sample.shifts);
+      setShifts([]);
     }
-  }, [sample.shifts]);
+  }, []);
 
   useEffect(() => {
     loadEmployees();

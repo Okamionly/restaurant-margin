@@ -51,68 +51,10 @@ const REASON_BADGE: Record<WasteReason, string> = {
   retour_client: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
 };
 
-const INGREDIENTS_CATALOG = [
-  { name: 'Filet de boeuf', unit: 'kg', cost: 38.50 },
-  { name: 'Saumon frais', unit: 'kg', cost: 24.00 },
-  { name: 'Poulet fermier', unit: 'kg', cost: 12.80 },
-  { name: 'Crème fraîche', unit: 'L', cost: 4.20 },
-  { name: 'Beurre AOP', unit: 'kg', cost: 14.50 },
-  { name: 'Salade mesclun', unit: 'kg', cost: 8.90 },
-  { name: 'Tomates', unit: 'kg', cost: 3.50 },
-  { name: 'Fromage comté', unit: 'kg', cost: 22.00 },
-  { name: 'Pain de mie', unit: 'kg', cost: 3.80 },
-  { name: 'Lait entier', unit: 'L', cost: 1.20 },
-  { name: 'Oeufs bio', unit: 'dz', cost: 5.40 },
-  { name: 'Pommes de terre', unit: 'kg', cost: 1.80 },
-  { name: 'Oignons', unit: 'kg', cost: 2.10 },
-  { name: 'Ail', unit: 'kg', cost: 9.00 },
-  { name: 'Herbes fraîches', unit: 'botte', cost: 2.50 },
-  { name: 'Huile d\'olive', unit: 'L', cost: 8.50 },
-  { name: 'Riz basmati', unit: 'kg', cost: 3.20 },
-  { name: 'Pâtes fraîches', unit: 'kg', cost: 6.80 },
-  { name: 'Chocolat noir', unit: 'kg', cost: 18.00 },
-  { name: 'Fruits rouges', unit: 'kg', cost: 16.50 },
-];
+// Catalogue vide — les ingrédients seront chargés depuis l'API
+const INGREDIENTS_CATALOG: { name: string; unit: string; cost: number }[] = [];
 
-// ─── Seed Data Generator ─────────────────────────────────────────────────────
-
-function generateWasteData(): WasteEntry[] {
-  const entries: WasteEntry[] = [];
-  const reasons: WasteReason[] = ['perime', 'surproduction', 'erreur_cuisine', 'retour_client'];
-  const reasonWeights = [0.35, 0.30, 0.20, 0.15];
-  let id = 1;
-
-  for (let dayOffset = 29; dayOffset >= 0; dayOffset--) {
-    const date = new Date();
-    date.setDate(date.getDate() - dayOffset);
-    const dateStr = date.toISOString().split('T')[0];
-    const entriesPerDay = 2 + Math.floor(Math.random() * 4);
-
-    for (let j = 0; j < entriesPerDay; j++) {
-      const ing = INGREDIENTS_CATALOG[Math.floor(Math.random() * INGREDIENTS_CATALOG.length)];
-      const rand = Math.random();
-      let cumulative = 0;
-      let reason: WasteReason = 'perime';
-      for (let r = 0; r < reasons.length; r++) {
-        cumulative += reasonWeights[r];
-        if (rand < cumulative) { reason = reasons[r]; break; }
-      }
-      const qty = parseFloat((0.1 + Math.random() * 2.5).toFixed(2));
-
-      entries.push({
-        id: id++,
-        date: dateStr,
-        ingredient: ing.name,
-        quantity: qty,
-        unit: ing.unit,
-        costPerUnit: ing.cost,
-        reason,
-        notes: '',
-      });
-    }
-  }
-  return entries;
-}
+// (mock data generator removed — starts empty)
 
 // ─── AI Suggestions ──────────────────────────────────────────────────────────
 
@@ -172,7 +114,7 @@ function getWeekNumber(d: Date): number {
 
 export default function WasteTracker() {
   const { showToast } = useToast();
-  const [entries, setEntries] = useState<WasteEntry[]>(() => generateWasteData());
+  const [entries, setEntries] = useState<WasteEntry[]>([]);
   const [period, setPeriod] = useState<Period>('semaine');
   const [search, setSearch] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);

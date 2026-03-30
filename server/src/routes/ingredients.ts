@@ -71,29 +71,15 @@ ingredientsRouter.get('/:id', authWithRestaurant, async (req: AuthRequest, res: 
 // POST create ingredient
 ingredientsRouter.post('/', authWithRestaurant, validate(createIngredientSchema), async (req: AuthRequest, res: Response) => {
   try {
-    const { name, unit, pricePerUnit, supplier, category, allergens } = req.body;
-
-    // Validation
-    if (!name || !name.trim()) {
-      return res.status(400).json({ error: 'Le nom est requis' });
-    }
-    if (!unit || !unit.trim()) {
-      return res.status(400).json({ error: "L'unité est requise" });
-    }
-    if (!category || !category.trim()) {
-      return res.status(400).json({ error: 'La catégorie est requise' });
-    }
-    const parsedPrice = parseFloat(pricePerUnit);
-    if (isNaN(parsedPrice) || parsedPrice <= 0) {
-      return res.status(400).json({ error: 'Le prix unitaire doit être supérieur à 0' });
-    }
+    const { name, unit, pricePerUnit, supplier, supplierId, category, allergens } = req.body;
 
     const ingredient = await prisma.ingredient.create({
       data: {
         name: name.trim(),
         unit: unit.trim(),
-        pricePerUnit: parsedPrice,
+        pricePerUnit,
         supplier: supplier || null,
+        supplierId: supplierId || null,
         category: category.trim(),
         allergens: Array.isArray(allergens) ? allergens : [],
         restaurantId: req.restaurantId!,
@@ -119,7 +105,7 @@ ingredientsRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: 
     });
     if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé' });
 
-    const { name, unit, pricePerUnit, supplier, category, allergens } = req.body;
+    const { name, unit, pricePerUnit, supplier, supplierId, category, allergens } = req.body;
 
     // Validation
     if (!name || !name.trim()) {
@@ -131,7 +117,7 @@ ingredientsRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: 
     if (!category || !category.trim()) {
       return res.status(400).json({ error: 'La catégorie est requise' });
     }
-    const parsedPrice = parseFloat(pricePerUnit);
+    const parsedPrice = typeof pricePerUnit === 'number' ? pricePerUnit : parseFloat(pricePerUnit);
     if (isNaN(parsedPrice) || parsedPrice <= 0) {
       return res.status(400).json({ error: 'Le prix unitaire doit être supérieur à 0' });
     }
@@ -143,6 +129,7 @@ ingredientsRouter.put('/:id', authWithRestaurant, async (req: AuthRequest, res: 
         unit: unit.trim(),
         pricePerUnit: parsedPrice,
         supplier: supplier || null,
+        supplierId: supplierId || null,
         category: category.trim(),
         allergens: Array.isArray(allergens) ? allergens : [],
       },

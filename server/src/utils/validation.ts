@@ -42,8 +42,9 @@ export const resetPasswordSchema = z.object({
 export const createIngredientSchema = z.object({
   name: z.string().min(1, 'Nom requis').max(255),
   unit: z.string().min(1, 'Unité requise'),
-  pricePerUnit: z.number().nonnegative('Le prix doit être positif'),
-  supplier: z.string().optional().default(''),
+  pricePerUnit: z.number().positive('Le prix unitaire doit être supérieur à 0'),
+  supplier: z.string().optional().nullable().default(''),
+  supplierId: z.number().int().positive().optional().nullable(),
   category: z.string().optional().default('Autre'),
   allergens: z.array(z.string()).optional().default([]),
 });

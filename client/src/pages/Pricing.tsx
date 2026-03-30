@@ -119,12 +119,12 @@ function FAQSection() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold text-white text-center mb-10">Questions frequentes</h2>
+      <h2 className="text-3xl font-bold text-slate-900 text-center mb-10">Questions frequentes</h2>
       <div className="space-y-3">
         {faqs.map((faq, index) => (
           <div
             key={index}
-            className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden"
+            className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm"
           >
             <button
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -132,17 +132,17 @@ function FAQSection() {
             >
               <div className="flex items-center gap-3">
                 <HelpCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
-                <span className="text-white font-medium">{faq.question}</span>
+                <span className="text-slate-900 font-medium">{faq.question}</span>
               </div>
               {openIndex === index ? (
-                <ChevronUp className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                <ChevronUp className="w-5 h-5 text-slate-500 flex-shrink-0" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                <ChevronDown className="w-5 h-5 text-slate-500 flex-shrink-0" />
               )}
             </button>
             {openIndex === index && (
               <div className="px-6 pb-5 pt-0">
-                <p className="text-slate-400 leading-relaxed pl-8">{faq.answer}</p>
+                <p className="text-slate-600 leading-relaxed pl-8">{faq.answer}</p>
               </div>
             )}
           </div>
@@ -168,13 +168,13 @@ export default function Pricing() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-white text-slate-900">
       {/* Header */}
-      <header className="border-b border-slate-800/50">
+      <header className="border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <ChefHat className="w-8 h-8 text-blue-400" />
-            <span className="text-lg font-bold text-white">RestauMargin</span>
+            <ChefHat className="w-8 h-8 text-blue-500" />
+            <span className="text-lg font-bold text-slate-900">RestauMargin</span>
           </Link>
           <Link
             to="/login"
@@ -187,25 +187,25 @@ export default function Pricing() {
 
       {/* Hero */}
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-slate-900">
           Tarifs simples,{' '}
-          <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-blue-500 to-emerald-500 bg-clip-text text-transparent">
             marge maximale
           </span>
         </h1>
-        <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
+        <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
           Choisissez le plan adapte a votre etablissement. A partir de 9€/mois.
         </p>
 
         {/* Toggle mensuel / annuel */}
         <div className="flex items-center justify-center gap-4 mb-16">
-          <span className={`text-sm font-medium ${!annual ? 'text-white' : 'text-slate-500'}`}>
+          <span className={`text-sm font-medium ${!annual ? 'text-slate-900' : 'text-slate-500'}`}>
             Mensuel
           </span>
           <button
             onClick={() => setAnnual(!annual)}
             className={`relative w-14 h-7 rounded-full transition-colors ${
-              annual ? 'bg-blue-600' : 'bg-slate-700'
+              annual ? 'bg-blue-600' : 'bg-slate-300'
             }`}
           >
             <div
@@ -214,7 +214,7 @@ export default function Pricing() {
               }`}
             />
           </button>
-          <span className={`text-sm font-medium ${annual ? 'text-white' : 'text-slate-500'}`}>
+          <span className={`text-sm font-medium ${annual ? 'text-slate-900' : 'text-slate-500'}`}>
             Annuel
           </span>
           {annual && (
@@ -231,10 +231,10 @@ export default function Pricing() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative flex flex-col bg-slate-900/50 rounded-2xl border p-8 transition-transform hover:-translate-y-1 ${
+              className={`relative flex flex-col bg-white rounded-2xl border p-8 transition-transform hover:-translate-y-1 shadow-sm ${
                 plan.popular
-                  ? 'border-blue-500 shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)]'
-                  : 'border-slate-800'
+                  ? 'border-blue-500 shadow-[0_0_40px_-10px_rgba(59,130,246,0.2)]'
+                  : 'border-slate-200'
               }`}
             >
               {plan.popular && (
@@ -248,21 +248,21 @@ export default function Pricing() {
               {/* Plan header */}
               <div className="flex items-center gap-3 mb-4">
                 {plan.icon}
-                <h3 className="text-xl font-bold text-white">{plan.name}</h3>
+                <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
               </div>
-              <p className="text-slate-400 text-sm mb-6">{plan.description}</p>
+              <p className="text-slate-600 text-sm mb-6">{plan.description}</p>
 
               {/* Price */}
               <div className="mb-8">
                 {plan.priceMonthly !== null && plan.priceMonthly > 0 ? (
                   <div className="flex items-baseline gap-1">
-                    <span className="text-4xl font-extrabold text-white">{getPrice(plan)}</span>
+                    <span className="text-4xl font-extrabold text-slate-900">{getPrice(plan)}</span>
                     <span className="text-slate-500 text-sm">/mois</span>
                   </div>
                 ) : plan.priceMonthly === 0 ? (
-                  <span className="text-4xl font-extrabold text-white">Gratuit</span>
+                  <span className="text-4xl font-extrabold text-slate-900">Gratuit</span>
                 ) : (
-                  <span className="text-3xl font-extrabold text-white">{plan.priceLabel}</span>
+                  <span className="text-3xl font-extrabold text-slate-900">{plan.priceLabel}</span>
                 )}
                 {plan.priceMonthly !== null && plan.priceMonthly > 0 && annual && (
                   <p className="text-emerald-400 text-xs mt-1">
@@ -280,7 +280,7 @@ export default function Pricing() {
                     ) : (
                       <X className="w-5 h-5 text-slate-600 flex-shrink-0 mt-0.5" />
                     )}
-                    <span className={feature.included ? 'text-slate-300' : 'text-slate-600'}>
+                    <span className={feature.included ? 'text-slate-700' : 'text-slate-400'}>
                       {feature.text}
                     </span>
                   </li>
@@ -331,7 +331,7 @@ export default function Pricing() {
                       value={devisForm.name}
                       onChange={(e) => setDevisForm({ ...devisForm, name: e.target.value })}
                       placeholder="Votre nom"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                     <input
                       type="email"
@@ -339,14 +339,14 @@ export default function Pricing() {
                       value={devisForm.email}
                       onChange={(e) => setDevisForm({ ...devisForm, email: e.target.value })}
                       placeholder="votre@email.com"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                     <input
                       type="tel"
                       value={devisForm.phone}
                       onChange={(e) => setDevisForm({ ...devisForm, phone: e.target.value })}
                       placeholder="Téléphone (optionnel)"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                     <textarea
                       rows={2}
@@ -378,7 +378,7 @@ export default function Pricing() {
                 ) : (
                   <button
                     onClick={() => setShowDevisForm(true)}
-                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300"
                   >
                     {plan.cta}
                     <ArrowRight className="w-4 h-4" />
@@ -401,7 +401,7 @@ export default function Pricing() {
               ) : (
                 <Link
                   to={plan.ctaLink}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-slate-800 hover:bg-slate-700 text-white border border-slate-700"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300"
                 >
                   {plan.cta}
                   <ArrowRight className="w-4 h-4" />
@@ -413,16 +413,18 @@ export default function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-24">
-        <FAQSection />
+      <section className="bg-gray-50 py-24 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <FAQSection />
+        </div>
       </section>
 
       {/* Footer CTA */}
-      <section className="border-t border-slate-800/50 py-16 px-4 sm:px-6 text-center">
-        <h2 className="text-2xl font-bold text-white mb-3">
+      <section className="border-t border-slate-200 bg-gray-50 py-16 px-4 sm:px-6 text-center">
+        <h2 className="text-2xl font-bold text-slate-900 mb-3">
           Pret a optimiser vos marges ?
         </h2>
-        <p className="text-slate-400 mb-8 max-w-lg mx-auto">
+        <p className="text-slate-600 mb-8 max-w-lg mx-auto">
           Rejoignez des centaines de restaurateurs qui utilisent RestauMargin pour augmenter leur rentabilite.
         </p>
         <a

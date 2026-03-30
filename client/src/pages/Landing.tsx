@@ -10,7 +10,7 @@ import {
 
 /* ─────────────────────── Hooks ─────────────────────── */
 
-function useInView(threshold = 0.15) {
+function useInView(threshold = 0.01) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {

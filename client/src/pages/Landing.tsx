@@ -62,7 +62,7 @@ function StatCounter({ value, suffix = '', label }: { value: number; suffix?: st
   const count = useAnimatedCounter(value, 1800, visible);
   return (
     <div ref={ref} className="text-center px-6">
-      <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+      <div className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-white to-blue-200 bg-clip-text text-transparent tracking-tight drop-shadow-[0_0_20px_rgba(59,130,246,0.3)]">
         {count}{suffix}
       </div>
       <div className="text-sm text-slate-400 mt-1 font-medium">{label}</div>
@@ -209,7 +209,7 @@ export default function Landing() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link to="/login" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">Connexion</Link>
-            <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/25">
+            <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-blue-600/40 hover:shadow-blue-500/60">
               Voir les tarifs <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -237,9 +237,14 @@ export default function Landing() {
       {/* ═══════════════════ 1. HERO ═══════════════════ */}
       <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+          {/* Neon glow orbs */}
+          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+          {/* Dot grid */}
+          <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, #60a5fa 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+          {/* Gradient line top */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -247,7 +252,7 @@ export default function Landing() {
             {/* Left */}
             <div className="text-center lg:text-left">
               <FadeIn>
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-6 tracking-wide">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.2)] animate-pulse">
                   <Zap className="w-3.5 h-3.5" />
                   PLATEFORME #1 DES RESTAURATEURS
                 </div>
@@ -258,7 +263,7 @@ export default function Landing() {
                   <span className="text-white">Maitrisez vos marges.</span>
                   <br />
                   <span className="text-white">Augmentez vos </span>
-                  <span className="bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
                     profits.
                   </span>
                 </h1>
@@ -329,7 +334,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 2. TRUSTED BY ═══════════════════ */}
-      <section className="py-10 border-y border-slate-800 bg-slate-900/30">
+      <section className="py-10 border-y border-slate-800/50 bg-slate-900/30" style={{ borderImage: 'linear-gradient(to right, transparent, rgba(59,130,246,0.3), rgba(168,85,247,0.3), transparent) 1' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-center text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">
@@ -358,7 +363,7 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
             {/* Problem */}
             <FadeIn>
-              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 sm:p-10 h-full">
+              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 sm:p-10 h-full hover:border-blue-500/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-500">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold mb-6">
                   <XCircle className="w-3.5 h-3.5" /> Le probleme
                 </div>
@@ -381,7 +386,7 @@ export default function Landing() {
 
             {/* Solution */}
             <FadeIn delay={150}>
-              <div className="bg-slate-900/50 border border-emerald-500/20 rounded-2xl p-8 sm:p-10 h-full">
+              <div className="bg-slate-900/50 border border-emerald-500/30 rounded-2xl p-8 sm:p-10 h-full hover:border-emerald-400/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)] transition-all duration-500">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
                   <CheckCircle2 className="w-3.5 h-3.5" /> La solution RestauMargin
                 </div>
@@ -665,7 +670,7 @@ export default function Landing() {
 
             {/* Pro — Popular */}
             <FadeIn delay={100}>
-              <div className="relative bg-slate-900/50 border-2 border-blue-500 rounded-2xl p-8 h-full flex flex-col shadow-lg shadow-blue-500/10">
+              <div className="relative bg-slate-900/50 border-2 border-blue-500 rounded-2xl p-8 h-full flex flex-col shadow-[0_0_40px_rgba(59,130,246,0.2)] hover:shadow-[0_0_60px_rgba(59,130,246,0.35)] transition-all duration-500">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-500 text-white text-xs font-bold uppercase tracking-wide">
                   Populaire
                 </div>
@@ -741,7 +746,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 100}>
-                <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-7 h-full flex flex-col">
+                <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-7 h-full flex flex-col hover:border-purple-500/30 hover:shadow-[0_0_25px_rgba(168,85,247,0.1)] transition-all duration-500 group">
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, j) => (
                       <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-700'}`} />

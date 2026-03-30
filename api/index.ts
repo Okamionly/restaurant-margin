@@ -796,6 +796,43 @@ app.delete('/api/invoices/:id', authWithRestaurant, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
 });
 
+app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré' });
+    const { imageBase64, mimeType } = req.body as { imageBase64: string; mimeType: string };
+    if (!imageBase64 || !mimeType) return res.status(400).json({ error: 'imageBase64 et mimeType requis' });
+
+    const response = await anthropic.messages.create({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: 'Tu es un expert comptable. Analyse cette facture fournisseur et extrais les données en JSON. Réponds UNIQUEMENT avec un objet JSON valide, sans markdown ni explication.',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: mimeType as any, data: imageBase64 },
+            },
+            {
+              type: 'text',
+              text: 'Extrais les données de cette facture: fournisseur (string), numeroFacture (string), dateFacture (string YYYY-MM-DD), totalHT (number), totalTTC (number), tva (number), items (array of {designation: string, quantite: number, unite: string, prixUnitaire: number, total: number}). Si une valeur est inconnue, utilise null.',
+            },
+          ],
+        },
+      ],
+    });
+
+    const text = (response.content[0] as any).text as string;
+    try {
+      const data = JSON.parse(text);
+      res.json(data);
+    } catch {
+      res.status(422).json({ error: "Impossible d'analyser la réponse", raw: text });
+    }
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur scan facture' }); }
+});
+
 // ============ MENU SALES (MENU ENGINEERING) ============
 app.get('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
   try {

@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Trash2, Plus, TrendingDown, AlertTriangle, Lightbulb,
   Target, PieChart as PieChartIcon, BarChart3, Leaf, Search,
-  ChevronDown, ChevronUp, Calendar, ArrowDown
+  ChevronDown, ChevronUp, Calendar, ArrowDown, Loader2
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -10,6 +10,8 @@ import {
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
+import { fetchIngredients } from '../services/api';
+import type { Ingredient } from '../types';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -18,12 +20,35 @@ type WasteReason = 'perime' | 'surproduction' | 'erreur_cuisine' | 'retour_clien
 interface WasteEntry {
   id: number;
   date: string;
-  ingredient: string;
+  /** Display name of the ingredient */
+  ingredientName: string;
+  /** FK to ingredients table */
+  ingredientId: number;
   quantity: number;
   unit: string;
   costPerUnit: number;
   reason: WasteReason;
   notes: string;
+}
+
+// Shape returned by GET /api/waste/summary
+interface WasteSummary {
+  totalCost: number;
+  itemCount: number;
+  topWasted: { ingredientName: string; totalCost: number; totalQuantity: number; unit: string }[];
+  wasteByReason: Record<string, number>;
+  trend: { date: string; cost: number }[];
+}
+
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
 }
 
 type Period = 'jour' | 'semaine' | 'mois';
@@ -51,10 +76,7 @@ const REASON_BADGE: Record<WasteReason, string> = {
   retour_client: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
 };
 
-// Catalogue vide — les ingrédients seront chargés depuis l'API
-const INGREDIENTS_CATALOG: { name: string; unit: string; cost: number }[] = [];
-
-// (mock data generator removed — starts empty)
+// (ingredients are loaded from the API — no static catalog needed)
 
 // ─── AI Suggestions ──────────────────────────────────────────────────────────
 
@@ -66,7 +88,7 @@ function generateSuggestions(entries: WasteEntry[]): string[] {
   entries.forEach(e => {
     const cost = e.quantity * e.costPerUnit;
     byReason[e.reason] += cost;
-    byIngredient[e.ingredient] = (byIngredient[e.ingredient] || 0) + cost;
+    byIngredient[e.ingredientName] = (byIngredient[e.ingredientName] || 0) + cost;
   });
 
   const topReason = (Object.entries(byReason) as [WasteReason, number][]).sort((a, b) => b[1] - a[1])[0];
@@ -115,6 +137,9 @@ function getWeekNumber(d: Date): number {
 export default function WasteTracker() {
   const { showToast } = useToast();
   const [entries, setEntries] = useState<WasteEntry[]>([]);
+  const [loadingEntries, setLoadingEntries] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [period, setPeriod] = useState<Period>('semaine');
   const [search, setSearch] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -122,11 +147,48 @@ export default function WasteTracker() {
 
   // Form state
   const [form, setForm] = useState({
-    ingredient: '',
+    ingredientId: '',
     quantity: '',
     reason: 'perime' as WasteReason,
     notes: '',
   });
+
+  // ─── Data fetching ────────────────────────────────────────────────────────
+
+  async function loadEntries() {
+    setLoadingEntries(true);
+    try {
+      const res = await fetch(`${API_BASE}/waste`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('Erreur chargement des pertes');
+      const data: WasteEntry[] = await res.json();
+      setEntries(data);
+    } catch {
+      showToast('Impossible de charger les pertes', 'error');
+    } finally {
+      setLoadingEntries(false);
+    }
+  }
+
+  async function loadSummary() {
+    try {
+      const res = await fetch(`${API_BASE}/waste/summary`, { headers: authHeaders() });
+      if (res.ok) {
+        // summary data is computed locally from entries — kept for future enrichment
+        await res.json() as WasteSummary;
+      }
+    } catch {
+      // non-blocking — summary enrichment is optional
+    }
+  }
+
+  useEffect(() => {
+    loadEntries();
+    loadSummary();
+    fetchIngredients()
+      .then(setIngredients)
+      .catch(() => showToast('Impossible de charger les ingrédients', 'error'));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ─── Computed data ───────────────────────────────────────────────────────
 
@@ -246,9 +308,9 @@ export default function WasteTracker() {
   const topWasted = useMemo(() => {
     const byIng: Record<string, { cost: number; qty: number; unit: string }> = {};
     filteredByPeriod.forEach(e => {
-      if (!byIng[e.ingredient]) byIng[e.ingredient] = { cost: 0, qty: 0, unit: e.unit };
-      byIng[e.ingredient].cost += e.quantity * e.costPerUnit;
-      byIng[e.ingredient].qty += e.quantity;
+      if (!byIng[e.ingredientName]) byIng[e.ingredientName] = { cost: 0, qty: 0, unit: e.unit };
+      byIng[e.ingredientName].cost += e.quantity * e.costPerUnit;
+      byIng[e.ingredientName].qty += e.quantity;
     });
     return Object.entries(byIng)
       .sort((a, b) => b[1].cost - a[1].cost)
@@ -280,7 +342,7 @@ export default function WasteTracker() {
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(e =>
-        e.ingredient.toLowerCase().includes(s) || REASON_LABELS[e.reason].toLowerCase().includes(s)
+        e.ingredientName.toLowerCase().includes(s) || REASON_LABELS[e.reason].toLowerCase().includes(s)
       );
     }
     return result.slice(0, 20);
@@ -288,27 +350,55 @@ export default function WasteTracker() {
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
 
-  function handleAddWaste() {
-    const ing = INGREDIENTS_CATALOG.find(i => i.name === form.ingredient);
+  async function handleAddWaste() {
+    const ing = ingredients.find(i => i.id === parseInt(form.ingredientId));
     if (!ing) { showToast('Sélectionnez un ingrédient', 'error'); return; }
     const qty = parseFloat(form.quantity);
     if (!qty || qty <= 0) { showToast('Quantité invalide', 'error'); return; }
 
-    const newEntry: WasteEntry = {
-      id: Math.max(0, ...entries.map(e => e.id)) + 1,
-      date: todayStr,
-      ingredient: ing.name,
-      quantity: qty,
-      unit: ing.unit,
-      costPerUnit: ing.cost,
-      reason: form.reason,
-      notes: form.notes,
-    };
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE}/waste`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          ingredientId: ing.id,
+          ingredientName: ing.name,
+          quantity: qty,
+          unit: ing.unit,
+          costPerUnit: ing.pricePerUnit,
+          reason: form.reason,
+          notes: form.notes,
+          date: todayStr,
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(body.error || 'Erreur lors de la déclaration');
+      }
+      setForm({ ingredientId: '', quantity: '', reason: 'perime', notes: '' });
+      setShowAddModal(false);
+      showToast(`Perte déclarée : ${qty} ${ing.unit} de ${ing.name} (${formatEuro(qty * ing.pricePerUnit)})`, 'success');
+      await loadEntries();
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : 'Erreur déclaration', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
-    setEntries(prev => [...prev, newEntry]);
-    setForm({ ingredient: '', quantity: '', reason: 'perime', notes: '' });
-    setShowAddModal(false);
-    showToast(`Perte déclarée : ${qty} ${ing.unit} de ${ing.name} (${formatEuro(qty * ing.cost)})`, 'success');
+  async function handleDeleteEntry(id: number) {
+    try {
+      const res = await fetch(`${API_BASE}/waste/${id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
+      if (!res.ok) throw new Error('Erreur suppression');
+      showToast('Déclaration supprimée', 'success');
+      await loadEntries();
+    } catch {
+      showToast('Impossible de supprimer la déclaration', 'error');
+    }
   }
 
   // ─── Render ────────────────────────────────────────────────────────────────
@@ -595,34 +685,54 @@ export default function WasteTracker() {
                 <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Quantité</th>
                 <th className="text-left py-2 px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Cause</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase">Coût</th>
+                <th className="py-2 px-3"></th>
               </tr>
             </thead>
             <tbody>
-              {recentEntries.map(e => (
-                <tr key={e.id} className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
-                  <td className="py-2.5 px-3 text-slate-600 dark:text-slate-300">
-                    {new Date(e.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
-                  </td>
-                  <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-100">{e.ingredient}</td>
-                  <td className="py-2.5 px-3 text-right text-slate-600 dark:text-slate-300">
-                    {e.quantity.toFixed(2)} {e.unit}
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${REASON_BADGE[e.reason]}`}>
-                      {REASON_LABELS[e.reason]}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-semibold text-red-600 dark:text-red-400">
-                    {formatEuro(e.quantity * e.costPerUnit)}
-                  </td>
-                </tr>
-              ))}
-              {recentEntries.length === 0 && (
+              {loadingEntries ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-slate-400">
-                    Aucune perte déclarée pour cette période
+                  <td colSpan={6} className="py-8 text-center text-slate-400">
+                    <Loader2 className="w-5 h-5 animate-spin mx-auto" />
                   </td>
                 </tr>
+              ) : (
+                <>
+                  {recentEntries.map(e => (
+                    <tr key={e.id} className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                      <td className="py-2.5 px-3 text-slate-600 dark:text-slate-300">
+                        {new Date(e.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
+                      </td>
+                      <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-100">{e.ingredientName}</td>
+                      <td className="py-2.5 px-3 text-right text-slate-600 dark:text-slate-300">
+                        {e.quantity.toFixed(2)} {e.unit}
+                      </td>
+                      <td className="py-2.5 px-3">
+                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${REASON_BADGE[e.reason]}`}>
+                          {REASON_LABELS[e.reason]}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-semibold text-red-600 dark:text-red-400">
+                        {formatEuro(e.quantity * e.costPerUnit)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right">
+                        <button
+                          onClick={() => handleDeleteEntry(e.id)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {recentEntries.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-slate-400">
+                        Aucune perte déclarée pour cette période
+                      </td>
+                    </tr>
+                  )}
+                </>
               )}
             </tbody>
           </table>
@@ -636,13 +746,13 @@ export default function WasteTracker() {
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Ingrédient</label>
             <select
-              value={form.ingredient}
-              onChange={e => setForm(f => ({ ...f, ingredient: e.target.value }))}
+              value={form.ingredientId}
+              onChange={e => setForm(f => ({ ...f, ingredientId: e.target.value }))}
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Sélectionner un ingrédient</option>
-              {INGREDIENTS_CATALOG.map(ing => (
-                <option key={ing.name} value={ing.name}>{ing.name} ({formatEuro(ing.cost)}/{ing.unit})</option>
+              {ingredients.map(ing => (
+                <option key={ing.id} value={ing.id}>{ing.name} ({formatEuro(ing.pricePerUnit)}/{ing.unit})</option>
               ))}
             </select>
           </div>
@@ -660,9 +770,9 @@ export default function WasteTracker() {
                 placeholder="0.00"
                 className="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500"
               />
-              {form.ingredient && (
+              {form.ingredientId && (
                 <span className="text-sm text-slate-400 font-medium">
-                  {INGREDIENTS_CATALOG.find(i => i.name === form.ingredient)?.unit}
+                  {ingredients.find(i => i.id === parseInt(form.ingredientId))?.unit}
                 </span>
               )}
             </div>
@@ -701,28 +811,33 @@ export default function WasteTracker() {
           </div>
 
           {/* Estimated cost preview */}
-          {form.ingredient && form.quantity && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg p-3 text-sm">
-              <span className="text-slate-600 dark:text-slate-300">Coût estimé : </span>
-              <span className="font-bold text-red-600 dark:text-red-400">
-                {formatEuro(parseFloat(form.quantity || '0') * (INGREDIENTS_CATALOG.find(i => i.name === form.ingredient)?.cost || 0))}
-              </span>
-            </div>
-          )}
+          {form.ingredientId && form.quantity && (() => {
+            const ing = ingredients.find(i => i.id === parseInt(form.ingredientId));
+            return ing ? (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg p-3 text-sm">
+                <span className="text-slate-600 dark:text-slate-300">Coût estimé : </span>
+                <span className="font-bold text-red-600 dark:text-red-400">
+                  {formatEuro(parseFloat(form.quantity || '0') * ing.pricePerUnit)}
+                </span>
+              </div>
+            ) : null;
+          })()}
 
           {/* Submit */}
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setShowAddModal(false)}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              disabled={submitting}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
             >
               Annuler
             </button>
             <button
               onClick={handleAddWaste}
-              className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
+              disabled={submitting}
+              className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"
             >
-              <Trash2 className="w-4 h-4" />
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
               Déclarer la perte
             </button>
           </div>

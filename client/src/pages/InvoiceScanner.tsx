@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import {
   FileText, Upload, Image, Grid, List, Search, Filter,
   Download, Trash2, Eye, Plus, FolderOpen, Euro, Calendar,
-  X, File, SortAsc, ScanLine, Check, Link2, Pencil, AlertCircle,
+  X, File, SortAsc, ScanLine, Check, Link2, Pencil, AlertCircle, Loader2,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
@@ -13,6 +13,7 @@ import type { Ingredient } from '../types';
 
 interface InvoiceFile {
   id: string;
+  dbId?: number;           // backend database id (undefined for local-only entries)
   file: File | null;       // null for sample data
   name: string;
   type: 'pdf' | 'image';
@@ -43,6 +44,18 @@ function generateId(): string {
 
 function today(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+/* ─── Auth & API helpers ─── */
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token') || '';
+  const restaurantId = localStorage.getItem('restaurantId') || '';
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+    'X-Restaurant-Id': restaurantId,
+  };
 }
 
 /* ─── OCR Types & Helpers ─── */
@@ -150,6 +163,14 @@ export default function InvoiceScanner() {
     notes: '',
   });
 
+  /* Loading state */
+  const [loadingInvoices, setLoadingInvoices] = useState(false);
+  const [savingInvoice, setSavingInvoice] = useState(false);
+
+  /* AI scan state */
+  const [scanLoading, setScanLoading] = useState(false);
+  const [aiDetected, setAiDetected] = useState(false);
+
   /* Active tab */
   const [activeTab, setActiveTab] = useState<'fichiers' | 'ocr'>('fichiers');
 
@@ -167,6 +188,36 @@ export default function InvoiceScanner() {
     fetchIngredients()
       .then(setIngredientsList)
       .catch(() => {/* silent – matching just won't work */});
+  }, []);
+
+  /* Load invoices from backend on mount */
+  useEffect(() => {
+    setLoadingInvoices(true);
+    fetch('/api/invoices', { headers: authHeaders() })
+      .then((r) => r.ok ? r.json() : Promise.reject(r))
+      .then((data: any[]) => {
+        const mapped: InvoiceFile[] = data.map((inv) => ({
+          id: `db-${inv.id}`,
+          dbId: inv.id,
+          file: null,
+          name: inv.invoiceNumber
+            ? `${inv.supplierName}_${inv.invoiceNumber}`
+            : `${inv.supplierName}_${inv.invoiceDate?.slice(0, 10) ?? inv.id}`,
+          type: 'pdf' as const,
+          fournisseur: inv.supplierName || 'Inconnu',
+          invoiceNumber: inv.invoiceNumber || '',
+          dateFacture: inv.invoiceDate ? inv.invoiceDate.slice(0, 10) : '',
+          dateAjout: inv.createdAt ? inv.createdAt.slice(0, 10) : today(),
+          montantHT: inv.totalHT ?? null,
+          montantTTC: inv.totalTTC ?? null,
+          notes: inv.rawText || '',
+          size: 0,
+          previewUrl: null,
+        }));
+        setInvoices(mapped);
+      })
+      .catch(() => { /* silent fail – local state stays empty */ })
+      .finally(() => setLoadingInvoices(false));
   }, []);
 
   /* Refs */
@@ -234,15 +285,53 @@ export default function InvoiceScanner() {
     }
     setPendingFiles(valid);
     setCurrentPendingIndex(0);
-    setMetaForm({
+    setAiDetected(false);
+    const emptyForm = {
       fournisseur: '',
       invoiceNumber: '',
       dateFacture: today(),
       montantHT: '',
       montantTTC: '',
       notes: '',
-    });
+    };
+    setMetaForm(emptyForm);
     setShowMetadataModal(true);
+
+    // Auto-OCR for the first image file
+    const firstFile = valid[0];
+    if (firstFile && firstFile.type !== 'application/pdf') {
+      setScanLoading(true);
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        // dataUrl format: "data:<mimeType>;base64,<data>"
+        const commaIdx = dataUrl.indexOf(',');
+        const imageBase64 = dataUrl.slice(commaIdx + 1);
+        const mimeType = firstFile.type;
+        fetch('/api/invoices/scan', {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ imageBase64, mimeType }),
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data && !data.error) {
+              setMetaForm({
+                fournisseur: data.fournisseur || '',
+                invoiceNumber: data.numeroFacture || '',
+                dateFacture: data.dateFacture || today(),
+                montantHT: data.totalHT != null ? String(data.totalHT) : '',
+                montantTTC: data.totalTTC != null ? String(data.totalTTC) : '',
+                notes: '',
+              });
+              setAiDetected(true);
+            }
+          })
+          .catch(() => { /* silent – user can fill manually */ })
+          .finally(() => setScanLoading(false));
+      };
+      reader.readAsDataURL(firstFile);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -267,14 +356,37 @@ export default function InvoiceScanner() {
   }, []);
 
   /* Save current pending file with metadata */
-  const saveCurrentFile = () => {
+  const saveCurrentFile = async () => {
     const file = pendingFiles[currentPendingIndex];
     if (!file) return;
     const isPdf = file.type === 'application/pdf';
     const url = isPdf ? null : URL.createObjectURL(file);
 
+    setSavingInvoice(true);
+    let dbId: number | undefined;
+    try {
+      const res = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          supplierName: metaForm.fournisseur || 'Non renseigne',
+          invoiceNumber: metaForm.invoiceNumber || null,
+          invoiceDate: metaForm.dateFacture || null,
+          totalHT: metaForm.montantHT ? parseFloat(metaForm.montantHT) : null,
+          totalTTC: metaForm.montantTTC ? parseFloat(metaForm.montantTTC) : null,
+          rawText: metaForm.notes || null,
+        }),
+      });
+      if (res.ok) {
+        const created = await res.json();
+        dbId = created.id;
+      }
+    } catch { /* silent – still add to local state */ }
+    setSavingInvoice(false);
+
     const newInvoice: InvoiceFile = {
-      id: generateId(),
+      id: dbId ? `db-${dbId}` : generateId(),
+      dbId,
       file,
       name: file.name,
       type: isPdf ? 'pdf' : 'image',
@@ -293,6 +405,7 @@ export default function InvoiceScanner() {
 
     if (currentPendingIndex < pendingFiles.length - 1) {
       setCurrentPendingIndex((i) => i + 1);
+      setAiDetected(false);
       setMetaForm({
         fournisseur: '',
         invoiceNumber: '',
@@ -343,6 +456,12 @@ export default function InvoiceScanner() {
     if (inv?.previewUrl && inv.file) URL.revokeObjectURL(inv.previewUrl);
     setInvoices((prev) => prev.filter((i) => i.id !== id));
     showToast('Facture supprimée', 'success');
+    if (inv?.dbId) {
+      fetch(`/api/invoices/${inv.dbId}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      }).catch(() => { /* silent */ });
+    }
   };
 
   /* ─── OCR handlers ─── */
@@ -642,7 +761,12 @@ export default function InvoiceScanner() {
       </div>
 
       {/* Files display */}
-      {filtered.length === 0 ? (
+      {loadingInvoices ? (
+        <div className="flex items-center justify-center py-12 text-gray-400 dark:text-gray-500 gap-2">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Chargement des factures...</span>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-12 text-gray-400 dark:text-gray-500">
           <FolderOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
           <p>Aucune facture trouvee</p>
@@ -1125,6 +1249,8 @@ export default function InvoiceScanner() {
         onClose={() => {
           setShowMetadataModal(false);
           setPendingFiles([]);
+          setScanLoading(false);
+          setAiDetected(false);
         }}
         title={`Ajouter les informations ${pendingFiles.length > 1 ? `(${currentPendingIndex + 1}/${pendingFiles.length})` : ''}`}
       >
@@ -1142,10 +1268,29 @@ export default function InvoiceScanner() {
             </div>
           )}
 
+          {/* AI scan status banner */}
+          {scanLoading && (
+            <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-700 dark:text-blue-300">
+              <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
+              Scan IA en cours... Extraction des données de la facture
+            </div>
+          )}
+          {aiDetected && !scanLoading && (
+            <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm text-emerald-700 dark:text-emerald-300">
+              <Check className="w-4 h-4 flex-shrink-0" />
+              Données détectées automatiquement par IA — vérifiez et corrigez si nécessaire
+            </div>
+          )}
+
           {/* Fournisseur */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Fournisseur *
+              {aiDetected && metaForm.fournisseur && (
+                <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
+                  ✓ Détecté par IA
+                </span>
+              )}
             </label>
             <input
               type="text"
@@ -1166,8 +1311,13 @@ export default function InvoiceScanner() {
 
           {/* Numero facture */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Numero de facture
+              {aiDetected && metaForm.invoiceNumber && (
+                <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
+                  ✓ Détecté par IA
+                </span>
+              )}
             </label>
             <input
               type="text"
@@ -1182,8 +1332,13 @@ export default function InvoiceScanner() {
 
           {/* Date facture */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Date de facture
+              {aiDetected && metaForm.dateFacture && (
+                <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
+                  ✓ Détecté par IA
+                </span>
+              )}
             </label>
             <input
               type="date"
@@ -1198,8 +1353,13 @@ export default function InvoiceScanner() {
           {/* Amounts */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Montant HT
+                {aiDetected && metaForm.montantHT && (
+                  <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
+                    ✓ IA
+                  </span>
+                )}
               </label>
               <input
                 type="number"
@@ -1213,8 +1373,13 @@ export default function InvoiceScanner() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Montant TTC
+                {aiDetected && metaForm.montantTTC && (
+                  <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
+                    ✓ IA
+                  </span>
+                )}
               </label>
               <input
                 type="number"
@@ -1251,6 +1416,8 @@ export default function InvoiceScanner() {
               onClick={() => {
                 setShowMetadataModal(false);
                 setPendingFiles([]);
+                setScanLoading(false);
+                setAiDetected(false);
               }}
               className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100
                          dark:hover:bg-gray-700 rounded-lg"
@@ -1259,10 +1426,15 @@ export default function InvoiceScanner() {
             </button>
             <button
               onClick={saveCurrentFile}
+              disabled={savingInvoice || scanLoading}
               className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium
-                         flex items-center gap-1"
+                         flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Plus className="w-4 h-4" />
+              {savingInvoice ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4" />
+              )}
               {currentPendingIndex < pendingFiles.length - 1 ? 'Suivant' : 'Ajouter'}
             </button>
           </div>

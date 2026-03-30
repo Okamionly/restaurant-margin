@@ -297,7 +297,7 @@ export default function Settings() {
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
-  // Bluetooth / printer mock state
+  // Hardware integration: future feature
   const [bluetoothConnected, setBluetoothConnected] = useState(false);
   const [printerConnected, setPrinterConnected] = useState(false);
 

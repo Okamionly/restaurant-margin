@@ -44,93 +44,9 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 // ── Mock supplier promotions (would come from API in production) ────────────
-const SUPPLIER_PROMOS: SupplierPromo[] = [
-  {
-    id: 'promo-1',
-    supplier: 'Transgourmet',
-    supplierColor: 'text-red-700 dark:text-red-400',
-    supplierBg: 'from-red-50 to-red-100/50 dark:from-red-950/30 dark:to-red-900/20 border-red-200 dark:border-red-800/40',
-    supplierIcon: 'TG',
-    product: 'Saumon frais d\'Ecosse',
-    description: 'Filet de saumon frais Label Rouge, pièce de 1.2kg minimum',
-    discount: '-20%',
-    expiryDate: '31/03/2026',
-    badge: 'Promo Semaine',
-    highlight: true,
-  },
-  {
-    id: 'promo-2',
-    supplier: 'Metro',
-    supplierColor: 'text-blue-700 dark:text-blue-400',
-    supplierBg: 'from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 border-blue-200 dark:border-blue-800/40',
-    supplierIcon: 'M',
-    product: 'Huile d\'olive extra vierge 5L',
-    description: 'Huile d\'olive première pression à froid, origine Espagne',
-    price: '12.99€',
-    expiryDate: '05/04/2026',
-    badge: 'Offre spéciale',
-  },
-  {
-    id: 'promo-3',
-    supplier: 'Pomona',
-    supplierColor: 'text-green-700 dark:text-green-400',
-    supplierBg: 'from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20 border-green-200 dark:border-green-800/40',
-    supplierIcon: 'P',
-    product: 'Fraises Gariguette',
-    description: 'Arrivage direct producteur, catégorie Extra, plateau 1kg',
-    price: '3.50€/kg',
-    expiryDate: '28/03/2026',
-    badge: 'Arrivage',
-  },
-  {
-    id: 'promo-4',
-    supplier: 'Sysco France',
-    supplierColor: 'text-indigo-700 dark:text-indigo-400',
-    supplierBg: 'from-indigo-50 to-indigo-100/50 dark:from-indigo-950/30 dark:to-indigo-900/20 border-indigo-200 dark:border-indigo-800/40',
-    supplierIcon: 'SF',
-    product: 'Filet de boeuf Charolais',
-    description: 'Race Charolaise, maturation 21 jours, pièce de 2kg',
-    discount: '-15%',
-    expiryDate: '02/04/2026',
-    badge: 'Exclusivité',
-  },
-  {
-    id: 'promo-5',
-    supplier: 'Brake France',
-    supplierColor: 'text-orange-700 dark:text-orange-400',
-    supplierBg: 'from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20 border-orange-200 dark:border-orange-800/40',
-    supplierIcon: 'BF',
-    product: 'Crème fraîche 35% MG 5L',
-    description: 'Crème fraîche épaisse, idéale cuisson et pâtisserie',
-    price: '8.49€',
-    expiryDate: '10/04/2026',
-    badge: 'Prix bas',
-  },
-];
+const SUPPLIER_PROMOS: SupplierPromo[] = [];
 
-const BANNER_ADS = [
-  {
-    id: 'banner-1',
-    supplier: 'Transgourmet',
-    message: 'Livraison offerte dès 250€ de commande cette semaine',
-    color: 'text-red-700 dark:text-red-300',
-    bg: 'bg-gradient-to-r from-red-50 via-white to-red-50 dark:from-red-950/20 dark:via-slate-800 dark:to-red-950/20',
-  },
-  {
-    id: 'banner-2',
-    supplier: 'Metro',
-    message: 'Nouveaux produits bio : découvrez notre gamme éco-responsable',
-    color: 'text-blue-700 dark:text-blue-300',
-    bg: 'bg-gradient-to-r from-blue-50 via-white to-blue-50 dark:from-blue-950/20 dark:via-slate-800 dark:to-blue-950/20',
-  },
-  {
-    id: 'banner-3',
-    supplier: 'Pomona',
-    message: 'Saison des asperges : commandez avant jeudi pour livraison vendredi',
-    color: 'text-green-700 dark:text-green-300',
-    bg: 'bg-gradient-to-r from-green-50 via-white to-green-50 dark:from-green-950/20 dark:via-slate-800 dark:to-green-950/20',
-  },
-];
+const BANNER_ADS: { id: string; supplier: string; message: string; color: string; bg: string }[] = [];
 
 // ── Mock RFQ History ────────────────────────────────────────────────────────
 interface RFQHistoryEntry {
@@ -145,13 +61,7 @@ interface RFQHistoryEntry {
   selectedSupplier: string;
 }
 
-const MOCK_RFQ_HISTORY: RFQHistoryEntry[] = [
-  { id: 101, title: 'Légumes bio - Semaine 11', status: 'closed', createdAt: '2026-03-09', closedAt: '2026-03-12', supplierCount: 3, itemCount: 8, bestSaving: '-12%', selectedSupplier: 'Pomona' },
-  { id: 102, title: 'Viandes Charolaises', status: 'closed', createdAt: '2026-03-01', closedAt: '2026-03-05', supplierCount: 2, itemCount: 4, bestSaving: '-8%', selectedSupplier: 'Transgourmet' },
-  { id: 103, title: 'Produits laitiers Mars', status: 'cancelled', createdAt: '2026-02-25', closedAt: '2026-02-27', supplierCount: 4, itemCount: 6, bestSaving: '-', selectedSupplier: '-' },
-  { id: 104, title: 'Fruits de mer St-Valentin', status: 'closed', createdAt: '2026-02-10', closedAt: '2026-02-13', supplierCount: 3, itemCount: 5, bestSaving: '-18%', selectedSupplier: 'Brake France' },
-  { id: 105, title: 'Huiles et condiments Q1', status: 'closed', createdAt: '2026-01-15', closedAt: '2026-01-20', supplierCount: 3, itemCount: 10, bestSaving: '-15%', selectedSupplier: 'Metro' },
-];
+const MOCK_RFQ_HISTORY: RFQHistoryEntry[] = [];
 
 // ── Promo Card Component (enhanced) ────────────────────────────────────────
 function PromoCard({ promo, onOrder, isSelected, onToggleSelect }: {

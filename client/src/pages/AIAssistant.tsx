@@ -17,19 +17,6 @@ const QUICK_QUESTIONS = [
   'Quels ingredients me coutent le plus cher ?',
 ];
 
-function getMockResponse(question: string): string {
-  const q = question.toLowerCase();
-  if (q.includes('marge') || q.includes('cout') || q.includes('coût'))
-    return "**Conseil marge** : Analysez vos fiches techniques dans l'onglet Recettes. L'objectif est un ratio cout matiere sous 30%. Commencez par vos 5 plats les plus vendus — c'est la que l'impact sera le plus fort.";
-  if (q.includes('carte') || q.includes('menu'))
-    return "**Optimisation carte** : Limitez a 7-10 plats par categorie. Utilisez le Menu Engineering pour classer vos plats en Stars, Vaches a lait, Enigmes et Poids morts.";
-  if (q.includes('fournisseur') || q.includes('achat'))
-    return "**Achats** : Diversifiez vos fournisseurs (2-3 par categorie). Utilisez la Mercuriale pour comparer les prix et lancez des appels d'offres via le module RFQ.";
-  if (q.includes('stock') || q.includes('inventaire'))
-    return "**Stocks** : Verifiez vos alertes dans Inventaire > Alertes. Les articles en dessous du seuil minimum doivent etre reapprovisionnes rapidement.";
-  return "**Conseil** : Consultez votre Tableau de Bord chaque matin pour suivre vos indicateurs cles. L'objectif est de rester sous 30% de cout matiere.";
-}
-
 async function getAIResponse(message: string): Promise<string> {
   try {
     const result = await sendAIMessage(message);
@@ -37,8 +24,7 @@ async function getAIResponse(message: string): Promise<string> {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : '';
     if (msg.includes('non configuré') || msg.includes('503')) {
-      // API key not set — use mock with notice
-      return `⚠️ *Mode demo* — L'IA analyse vos donnees reelles quand la cle API est configuree.\n\n${getMockResponse(message)}`;
+      return 'Service IA temporairement indisponible. Veuillez verifier la configuration de la cle API dans les parametres.';
     }
     throw error;
   }

@@ -12,6 +12,7 @@ import {
 import type { InventoryItem, InventoryValue, Ingredient } from '../types';
 import { INGREDIENT_CATEGORIES } from '../types';
 import { useToast } from '../hooks/useToast';
+import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
@@ -112,6 +113,7 @@ function getExpirationOrder(expStatus: string): number {
 
 export default function Inventory() {
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [alerts, setAlerts] = useState<InventoryItem[]>([]);
   const [valueData, setValueData] = useState<InventoryValue | null>(null);
@@ -169,7 +171,10 @@ export default function Inventory() {
     }
   }
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
+    loadData();
+  }, [selectedRestaurant, restaurantLoading]);
 
   // Compute alert counts
   const criticalCount = useMemo(() => items.filter(i => i.currentStock <= 0).length, [items]);

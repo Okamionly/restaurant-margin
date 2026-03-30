@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { TrendingUp, TrendingDown, AlertTriangle, History, Search, Euro, BarChart3, Plus, Loader2, X } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useRestaurant } from '../hooks/useRestaurant';
 
 const API = '';
 
@@ -148,6 +149,7 @@ function PriceChart({ data, width = 700, height = 260 }: { data: PricePoint[]; w
 
 export default function Mercuriale() {
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [alerts, setAlerts] = useState<PriceAlert[]>([]);
@@ -260,6 +262,7 @@ export default function Mercuriale() {
   }, []);
 
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     (async () => {
       setLoading(true);
       const ings = await fetchIngredients();
@@ -267,7 +270,7 @@ export default function Mercuriale() {
       await buildTableRows(ings);
       setLoading(false);
     })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedRestaurant, restaurantLoading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (selectedIngredientId) {

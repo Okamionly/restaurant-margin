@@ -9,6 +9,7 @@ import {
   Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
+import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import { fetchIngredients } from '../services/api';
 import type { Ingredient } from '../types';
@@ -136,6 +137,7 @@ function getWeekNumber(d: Date): number {
 
 export default function WasteTracker() {
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [entries, setEntries] = useState<WasteEntry[]>([]);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -182,13 +184,14 @@ export default function WasteTracker() {
   }
 
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     loadEntries();
     loadSummary();
     fetchIngredients()
       .then(setIngredients)
       .catch(() => showToast('Impossible de charger les ingrédients', 'error'));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   // ─── Computed data ───────────────────────────────────────────────────────
 

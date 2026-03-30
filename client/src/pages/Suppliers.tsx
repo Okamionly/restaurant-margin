@@ -25,6 +25,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
+import { useRestaurant } from '../hooks/useRestaurant';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -166,6 +167,7 @@ function supplierToForm(s: Supplier): SupplierFormData {
 export default function Suppliers() {
   const { showToast } = useToast();
   const { t } = useTranslation();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   // Tab
   const [activeTab, setActiveTab] = useState<TabId>('mes-fournisseurs');
@@ -228,6 +230,7 @@ export default function Suppliers() {
   // ── data loading ───────────────────────────────────────────────────────────
 
   const loadData = useCallback(async () => {
+    if (restaurantLoading || !selectedRestaurant) return;
     try {
       const [s, i] = await Promise.all([fetchSuppliers(), fetchIngredients()]);
       setSuppliers(s);
@@ -237,7 +240,7 @@ export default function Suppliers() {
     } finally {
       setLoading(false);
     }
-  }, [showToast]);
+  }, [showToast, selectedRestaurant, restaurantLoading]);
 
   useEffect(() => { loadData(); }, [loadData]);
 

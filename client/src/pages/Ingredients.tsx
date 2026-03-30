@@ -6,6 +6,7 @@ import type { Ingredient, Supplier, InventoryItem } from '../types';
 import { INGREDIENT_CATEGORIES, UNITS, ALLERGENS } from '../types';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
+import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
@@ -18,6 +19,7 @@ type SortDir = 'asc' | 'desc';
 export default function Ingredients() {
   const { showToast } = useToast();
   const { t } = useTranslation();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,8 +97,9 @@ export default function Ingredients() {
   }, []);
 
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     loadIngredients();
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   async function loadIngredients() {
     try {

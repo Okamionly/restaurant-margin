@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { fetchRecipes, updateRecipe } from '../services/api';
 import { useToast } from '../hooks/useToast';
+import { useRestaurant } from '../hooks/useRestaurant';
 import type { Recipe } from '../types';
 import { RECIPE_CATEGORIES, ALLERGENS } from '../types';
 
@@ -111,6 +112,7 @@ export default function MenuBuilder() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   // UI toggles
   const [showPrices, setShowPrices] = useState(true);
@@ -146,11 +148,12 @@ export default function MenuBuilder() {
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     fetchRecipes()
       .then(setRecipes)
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   // Focus price input when editing
   useEffect(() => {

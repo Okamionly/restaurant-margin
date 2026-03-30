@@ -6,6 +6,7 @@ import type { Recipe, Ingredient } from '../types';
 import { RECIPE_CATEGORIES } from '../types';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
+import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';
@@ -217,6 +218,7 @@ function RecipePhotoPlaceholder({ category }: { category: string }) {
 export default function Recipes() {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -250,8 +252,9 @@ export default function Recipes() {
   const [templateApplyInfo, setTemplateApplyInfo] = useState<{ found: number; total: number; missing: string[] } | null>(null);
 
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     loadData();
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   async function loadData() {
     try {

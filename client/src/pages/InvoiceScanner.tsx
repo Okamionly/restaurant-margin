@@ -5,6 +5,7 @@ import {
   X, File, SortAsc, ScanLine, Check, Link2, Pencil, AlertCircle, Loader2,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import { fetchIngredients, updateIngredient } from '../services/api';
 import type { Ingredient } from '../types';
@@ -141,6 +142,7 @@ function parseOcrText(text: string): OcrItem[] {
 
 export default function InvoiceScanner() {
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   /* State */
   const [invoices, setInvoices] = useState<InvoiceFile[]>([]);
@@ -185,13 +187,15 @@ export default function InvoiceScanner() {
 
   /* Load ingredients for matching */
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     fetchIngredients()
       .then(setIngredientsList)
       .catch(() => {/* silent – matching just won't work */});
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   /* Load invoices from backend on mount */
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     setLoadingInvoices(true);
     fetch('/api/invoices', { headers: authHeaders() })
       .then((r) => r.ok ? r.json() : Promise.reject(r))
@@ -218,7 +222,7 @@ export default function InvoiceScanner() {
       })
       .catch(() => { /* silent fail – local state stays empty */ })
       .finally(() => setLoadingInvoices(false));
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   /* Refs */
   const fileInputRef = useRef<HTMLInputElement>(null);

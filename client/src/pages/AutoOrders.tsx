@@ -10,6 +10,7 @@ import type { Ingredient, Supplier, InventoryItem } from '../types';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
+import { useRestaurant } from '../hooks/useRestaurant';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -140,6 +141,7 @@ function emptyLine(): OrderLine {
 
 export default function AutoOrders() {
   const { showToast } = useToast();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   // Data
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -179,6 +181,7 @@ export default function AutoOrders() {
   // ── fetch data ─────────────────────────────────────────────────────────────
 
   const loadData = useCallback(async () => {
+    if (restaurantLoading || !selectedRestaurant) return;
     try {
       setLoading(true);
       const [ings, supps] = await Promise.all([fetchIngredients(), fetchSuppliers()]);
@@ -211,7 +214,7 @@ export default function AutoOrders() {
     } finally {
       setLoading(false);
     }
-  }, [showToast]);
+  }, [showToast, selectedRestaurant, restaurantLoading]);
 
   useEffect(() => { loadData(); }, [loadData]);
 

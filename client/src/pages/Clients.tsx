@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
   Tag, Filter, LayoutGrid, List, ChevronDown, ChevronUp, Eye, FileText,
@@ -110,9 +110,25 @@ const EMAIL_TEMPLATES = [
   { id: 'promo', label: 'Offre spéciale / promotion', subject: 'Offre spéciale pour vous !', body: 'Bonjour,\n\nNous avons le plaisir de vous faire parvenir une offre exclusive.\n\nCordialement,' },
 ];
 
-// ── Mock Data ──────────────────────────────────────────────────────────
+// ── Local Storage Persistence (no backend Client model yet) ───────────
 
-function generateMockClients(): Client[] {
+const CLIENTS_STORAGE_KEY = 'restaumargin_clients';
+
+function loadClientsFromStorage(): Client[] {
+  try {
+    const raw = localStorage.getItem(CLIENTS_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* corrupt data */ }
+  return [];
+}
+
+function saveClientsToStorage(clients: Client[]) {
+  try { localStorage.setItem(CLIENTS_STORAGE_KEY, JSON.stringify(clients)); } catch { /* quota */ }
+}
+
+// ── Seed Data (used only on first visit when storage is empty) ────────
+
+function generateSeedClients(): Client[] {
   return [
     {
       id: '1', nom: 'Dupont', prenom: 'Marie', entreprise: 'TechCorp SAS', siret: '123 456 789 00012',
@@ -338,6 +354,14 @@ function generateMockClients(): Client[] {
   ];
 }
 
+function initClients(): Client[] {
+  const stored = loadClientsFromStorage();
+  if (stored.length > 0) return stored;
+  const seed = generateSeedClients();
+  saveClientsToStorage(seed);
+  return seed;
+}
+
 // ── Helpers ─────────────────────────────────────────────────────────────
 
 function fmt(n: number) {
@@ -366,8 +390,9 @@ const interactionIcons: Record<string, { icon: string; color: string }> = {
 export default function Clients() {
   const { showToast } = useToast();
 
-  // State
-  const [clients, setClients] = useState<Client[]>(generateMockClients);
+  // State (persisted to localStorage — no backend Client model yet)
+  const [clients, setClients] = useState<Client[]>(initClients);
+  useEffect(() => { saveClientsToStorage(clients); }, [clients]);
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<ClientType | ''>('');
   const [filterTag, setFilterTag] = useState<ClientTag | ''>('');

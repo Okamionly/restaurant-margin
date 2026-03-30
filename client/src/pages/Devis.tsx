@@ -258,78 +258,7 @@ function documentToApiPayload(doc: {
   };
 }
 
-// ── Mock Data (fallback) ──────────────────────────────────────────────
-
-function buildMockDocuments(): DocumentDevis[] {
-  const dev001Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Menu séminaire complet (entrée + plat + dessert)', quantite: 50, unite: 'personne', prixUnitaireHT: 55, tauxTVA: 10 },
-    { id: generateId(), description: 'Location salle équipée (vidéoprojecteur, wifi)', quantite: 1, unite: 'jour', prixUnitaireHT: 500, tauxTVA: 20 },
-    { id: generateId(), description: 'Pause café matin + après-midi', quantite: 50, unite: 'personne', prixUnitaireHT: 8, tauxTVA: 10 },
-  ];
-
-  const dev002Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Cocktail dîner (120 pièces)', quantite: 120, unite: 'personne', prixUnitaireHT: 45, tauxTVA: 10 },
-    { id: generateId(), description: 'Pièce montée 5 étages', quantite: 1, unite: 'unité', prixUnitaireHT: 450, tauxTVA: 5.5 },
-    { id: generateId(), description: 'Décoration florale tables', quantite: 15, unite: 'unité', prixUnitaireHT: 85, tauxTVA: 20 },
-    { id: generateId(), description: 'Service en salle (maîtres d\'hôtel)', quantite: 8, unite: 'personne', prixUnitaireHT: 200, tauxTVA: 20 },
-  ];
-
-  const dev003Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Cocktail dînatoire 80 personnes', quantite: 80, unite: 'personne', prixUnitaireHT: 35, tauxTVA: 10 },
-  ];
-
-  const fac002Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Menu business déjeuner (entrée + plat + dessert + café)', quantite: 12, unite: 'personne', prixUnitaireHT: 75, tauxTVA: 10 },
-    { id: generateId(), description: 'Sélection vins (Bordeaux, Bourgogne)', quantite: 6, unite: 'unité', prixUnitaireHT: 45, tauxTVA: 20 },
-    { id: generateId(), description: 'Salon privé', quantite: 1, unite: 'forfait', prixUnitaireHT: 150, tauxTVA: 20 },
-  ];
-
-  const avo001Lignes: LigneDevis[] = [
-    { id: generateId(), description: 'Avoir partiel - 3 couverts non servis', quantite: 3, unite: 'personne', prixUnitaireHT: -75, tauxTVA: 10 },
-    { id: generateId(), description: 'Avoir partiel - 1 bouteille retournée', quantite: 1, unite: 'unité', prixUnitaireHT: -45, tauxTVA: 20 },
-  ];
-
-  const docBuilder = (
-    type: DocType, numero: string, clientNom: string, raisonSociale: string,
-    lignes: LigneDevis[], dateCreation: string, statut: DocStatus,
-    opts: Partial<DocumentDevis> = {}
-  ): DocumentDevis => {
-    const totals = calcTotals(lignes);
-    return {
-      id: generateId(),
-      type, numero,
-      client: {
-        nom: clientNom, raisonSociale,
-        adresse: '123 avenue des Champs', codePostal: '75001', ville: 'Paris',
-        email: `contact@${raisonSociale.toLowerCase().replace(/\s/g, '')}.fr`,
-        telephone: '01 98 76 54 32',
-        siret: '123 456 789 00012',
-      },
-      lignes, dateCreation,
-      dateValidite: new Date(new Date(dateCreation).getTime() + 30 * 86400000).toISOString().split('T')[0],
-      dureeValidite: 30,
-      conditionsPaiement: 'Paiement à 30 jours',
-      mentionsLegales: type === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE,
-      notes: '',
-      statut,
-      ...totals,
-      ...opts,
-    };
-  };
-
-  return [
-    docBuilder('devis', 'DEV-2026-001', 'Jean Martin', 'TechCorp', dev001Lignes, '2026-03-01', 'accepte'),
-    docBuilder('devis', 'DEV-2026-002', 'Marie Dupont', 'Famille Dupont', dev002Lignes, '2026-03-10', 'envoye'),
-    docBuilder('devis', 'DEV-2026-003', 'Pierre Lefebvre', 'Agence Événements Plus', dev003Lignes, '2026-03-20', 'brouillon'),
-    docBuilder('facture', 'FAC-2026-001', 'Jean Martin', 'TechCorp', dev001Lignes, '2026-03-05', 'paye', {
-      refDevis: 'DEV-2026-001', datePaiement: '2026-03-15', modePaiement: 'virement',
-    }),
-    docBuilder('facture', 'FAC-2026-002', 'Sophie Bernard', 'Groupe Alpha', fac002Lignes, '2026-02-15', 'en_retard'),
-    docBuilder('avoir', 'AVO-2026-001', 'Sophie Bernard', 'Groupe Alpha', avo001Lignes, '2026-03-18', 'envoye', {
-      refFacture: 'FAC-2026-002',
-    }),
-  ];
-}
+// (mock data removed — starts empty, loaded from API)
 
 // ── Components ─────────────────────────────────────────────────────────
 
@@ -636,16 +565,10 @@ export default function Devis() {
       const res = await fetch(`${API}/api/devis`, { headers: authHeaders() });
       if (!res.ok) throw new Error('Erreur chargement devis');
       const json: ApiDevis[] = await res.json();
-      if (json.length > 0) {
-        setDocuments(json.map(apiDevisToDocument));
-      } else {
-        // Fallback to mock data if API returns empty
-        setDocuments(buildMockDocuments());
-      }
+      setDocuments(json.map(apiDevisToDocument));
     } catch {
-      // Fallback to mock data on error
-      setDocuments(buildMockDocuments());
-      showToast('Mode hors-ligne : données de démonstration', 'info');
+      setDocuments([]);
+      showToast('Erreur de chargement des devis', 'error');
     } finally {
       setLoading(false);
     }

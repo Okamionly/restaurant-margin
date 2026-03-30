@@ -27,85 +27,7 @@ interface InvoiceFile {
   previewUrl: string | null;
 }
 
-/* ─── Sample data ─── */
-
-const sampleInvoices: InvoiceFile[] = [
-  {
-    id: 'sample-1',
-    file: null,
-    name: 'Facture_Transgourmet_Mars2026.pdf',
-    type: 'pdf',
-    fournisseur: 'Transgourmet',
-    invoiceNumber: 'TG-2026-0342',
-    dateFacture: '2026-03-15',
-    dateAjout: '2026-03-15',
-    montantHT: 1245.80,
-    montantTTC: 1495.00,
-    notes: 'Commande hebdomadaire produits secs',
-    size: 245000,
-    previewUrl: null,
-  },
-  {
-    id: 'sample-2',
-    file: null,
-    name: 'Facture_Metro_240326.pdf',
-    type: 'pdf',
-    fournisseur: 'Metro',
-    invoiceNumber: 'MET-8834',
-    dateFacture: '2026-03-24',
-    dateAjout: '2026-03-24',
-    montantHT: 876.50,
-    montantTTC: 1051.80,
-    notes: '',
-    size: 189000,
-    previewUrl: null,
-  },
-  {
-    id: 'sample-3',
-    file: null,
-    name: 'Bon_livraison_Pomona.jpg',
-    type: 'image',
-    fournisseur: 'Pomona',
-    invoiceNumber: '',
-    dateFacture: '2026-03-20',
-    dateAjout: '2026-03-20',
-    montantHT: 632.00,
-    montantTTC: 758.40,
-    notes: 'Fruits et legumes semaine 12',
-    size: 1420000,
-    previewUrl: null,
-  },
-  {
-    id: 'sample-4',
-    file: null,
-    name: 'Facture_Brake_Fev2026.pdf',
-    type: 'pdf',
-    fournisseur: 'Brake France',
-    invoiceNumber: 'BRK-2026-1187',
-    dateFacture: '2026-02-28',
-    dateAjout: '2026-02-28',
-    montantHT: 2150.00,
-    montantTTC: 2580.00,
-    notes: 'Surgeles et produits laitiers',
-    size: 312000,
-    previewUrl: null,
-  },
-  {
-    id: 'sample-5',
-    file: null,
-    name: 'Facture_EauMinerale_Mars.pdf',
-    type: 'pdf',
-    fournisseur: 'Transgourmet',
-    invoiceNumber: 'TG-2026-0358',
-    dateFacture: '2026-03-22',
-    dateAjout: '2026-03-22',
-    montantHT: 320.00,
-    montantTTC: 384.00,
-    notes: 'Boissons',
-    size: 98000,
-    previewUrl: null,
-  },
-];
+// (sample data removed — starts empty, user uploads real invoices)
 
 /* ─── Helpers ─── */
 
@@ -208,7 +130,7 @@ export default function InvoiceScanner() {
   const { showToast } = useToast();
 
   /* State */
-  const [invoices, setInvoices] = useState<InvoiceFile[]>(sampleInvoices);
+  const [invoices, setInvoices] = useState<InvoiceFile[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'pdf' | 'image'>('all');

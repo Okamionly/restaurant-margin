@@ -882,19 +882,21 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur menu engineering' }); }
 });
 
-// ── Messages (in-memory) ──
-const conversations: any[] = [
-  { id: 'conv-1', name: 'Transgourmet - Commercial', participants: ['user', 'transgourmet'], lastMessage: 'Votre commande a été expédiée', unreadCount: 2, isGroup: false },
-  { id: 'conv-2', name: 'Metro - Service client', participants: ['user', 'metro'], lastMessage: 'Nouvelle promotion disponible', unreadCount: 1, isGroup: false },
-  { id: 'conv-3', name: 'Équipe Cuisine', participants: ['user', 'chef', 'commis'], lastMessage: 'Le poisson est arrivé', unreadCount: 0, isGroup: true },
-];
-const messagesStore: Record<string, any[]> = {
-  'conv-1': [{ id: 'm1', senderId: 'transgourmet', senderName: 'Transgourmet', content: 'Votre commande #1247 a été expédiée', timestamp: new Date().toISOString(), read: false }],
-  'conv-2': [{ id: 'm2', senderId: 'metro', senderName: 'Metro', content: 'Nouvelle promotion disponible sur les produits frais', timestamp: new Date().toISOString(), read: false }],
-  'conv-3': [{ id: 'm3', senderId: 'chef', senderName: 'Chef', content: 'Le poisson est arrivé', timestamp: new Date().toISOString(), read: true }],
-};
+// ── Messages (in-memory — empty, no mock data) ──
+const conversations: any[] = [];
+const messagesStore: Record<string, any[]> = {};
 
 app.get('/api/messages/conversations', authWithRestaurant, (_req, res) => { res.json(conversations); });
+app.post('/api/messages/conversations', authWithRestaurant, (req: any, res) => {
+  const { id, name, participants, isGroup, avatar } = req.body;
+  const convId = id || `conv-${Date.now()}`;
+  const existing = conversations.find(c => c.id === convId);
+  if (existing) return res.json(existing);
+  const conv = { id: convId, name, participants: participants || [], isGroup: isGroup || false, avatar: avatar || '', lastMessage: '', unreadCount: 0 };
+  conversations.push(conv);
+  messagesStore[convId] = [];
+  res.status(201).json(conv);
+});
 app.get('/api/messages/conversations/:id', authWithRestaurant, (req, res) => {
   const conv = conversations.find(c => c.id === req.params.id);
   if (!conv) return res.status(404).json({ error: 'Conversation non trouvée' });

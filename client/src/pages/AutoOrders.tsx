@@ -992,11 +992,12 @@ export default function AutoOrders() {
                 {emailCopied ? 'Copié !' : 'Copier dans le presse-papier'}
               </button>
               <button
-                onClick={handleSendEmail}
-                className="flex items-center justify-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm shadow-sm"
+                onClick={() => emailOrder && handleSendOrderEmail(emailOrder)}
+                disabled={!!sendingEmail}
+                className="flex items-center justify-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm shadow-sm disabled:opacity-50"
               >
-                <Mail className="w-4 h-4" />
-                Envoyer par email
+                {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                {sendingEmail ? 'Envoi...' : 'Envoyer par email'}
               </button>
             </div>
           </div>

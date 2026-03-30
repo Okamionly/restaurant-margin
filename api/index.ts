@@ -6,13 +6,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import Anthropic from '@anthropic-ai/sdk';
-import nodemailer from 'nodemailer';
+
 
 const app = express();
 const prisma = new PrismaClient();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'rM$9xK#2pL7vQ!dW4nZ8jF0tY6bA3hU5cE1gI';
-const INVITATION_CODE = process.env.INVITATION_CODE || 'RESTAUMARGIN2024';
+
 const TOKEN_EXPIRY = '7d';
 
 app.use(cors({
@@ -132,7 +132,7 @@ function generateActivationCode(): string {
 app.post('/api/activation/generate', async (req: any, res) => {
   try {
     const { plan, secret } = req.body;
-    if (secret !== process.env.ACTIVATION_SECRET && secret !== 'admin') return res.status(401).json({ error: 'Non autorisé' });
+    if (secret !== process.env.ACTIVATION_SECRET) return res.status(401).json({ error: 'Non autorisé' });
     if (!plan || !['basic', 'pro', 'business'].includes(plan)) return res.status(400).json({ error: 'Plan invalide' });
     const code = generateActivationCode();
     const activation = await prisma.activationCode.create({ data: { code, plan } });
@@ -154,7 +154,7 @@ app.post('/api/activation/validate', async (req: any, res) => {
 app.get('/api/activation/list', async (req: any, res) => {
   try {
     const { secret } = req.query;
-    if (secret !== process.env.ACTIVATION_SECRET && secret !== 'admin') return res.status(401).json({ error: 'Non autorisé' });
+    if (secret !== process.env.ACTIVATION_SECRET) return res.status(401).json({ error: 'Non autorisé' });
     const codes = await prisma.activationCode.findMany({ orderBy: { createdAt: 'desc' } });
     res.json(codes);
   } catch { res.status(500).json({ error: 'Erreur liste codes' }); }
@@ -679,9 +679,13 @@ app.post('/api/inventory/:id/restock', authWithRestaurant, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur réapprovisionnement' }); }
 });
 
-app.delete('/api/inventory/:id', authWithRestaurant, async (req, res) => {
-  try { await prisma.inventoryItem.delete({ where: { id: parseInt(req.params.id) } }); res.status(204).send(); }
-  catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
+app.delete('/api/inventory/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const existing = await prisma.inventoryItem.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Non trouvé' });
+    await prisma.inventoryItem.delete({ where: { id: existing.id } });
+    res.status(204).send();
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
 });
 
 // ============ RFQ (APPELS D'OFFRES) ============
@@ -754,11 +758,14 @@ app.put('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour' }); }
 });
 
-app.delete('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
+app.delete('/api/rfqs/:id', authWithRestaurant, async (req: any, res) => {
   try {
     await prisma.rFQ.delete({ where: { id: parseInt(req.params.id) } });
     res.status(204).send();
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
+  } catch (e: any) {
+    console.error('RFQ delete error:', e.message);
+    res.status(500).json({ error: 'Erreur suppression RFQ — le modèle n\'existe peut-être pas encore' });
+  }
 });
 
 // Update a quote (enter supplier price)
@@ -862,22 +869,21 @@ app.get('/api/invoices', authWithRestaurant, async (req: any, res) => {
 
 app.post('/api/invoices', authWithRestaurant, async (req, res) => {
   try {
-    const { supplierName, invoiceNumber, invoiceDate, totalHT, totalTTC, items, rawText } = req.body;
+    const { supplierName, invoiceNumber, invoiceDate, totalAmount, totalHT, totalTTC, items } = req.body;
     const invoice = await prisma.invoice.create({
       data: {
         supplierName: supplierName || 'Inconnu',
-        invoiceNumber: invoiceNumber || null,
-        invoiceDate: invoiceDate ? new Date(invoiceDate) : null,
-        totalHT: totalHT || null,
-        totalTTC: totalTTC || null,
-        rawText: rawText || null,
+        invoiceNumber: invoiceNumber || '',
+        invoiceDate: invoiceDate || new Date().toISOString().slice(0, 10),
+        totalAmount: totalAmount || totalTTC || totalHT || 0,
+        restaurantId: (req as any).restaurantId,
         items: {
           create: (items || []).map((item: any) => ({
             productName: item.productName,
-            quantity: item.quantity || null,
-            unit: item.unit || null,
-            unitPrice: item.unitPrice || null,
-            totalPrice: item.totalPrice || null,
+            quantity: item.quantity || 0,
+            unit: item.unit || '',
+            unitPrice: item.unitPrice || 0,
+            total: item.total || item.totalPrice || 0,
           })),
         },
       },
@@ -902,12 +908,12 @@ app.post('/api/invoices/:id/apply', authWithRestaurant, async (req, res) => {
       });
       // Record price history
       await prisma.priceHistory.create({
-        data: { ingredientId: match.ingredientId, price: item.unitPrice, source: 'invoice', invoiceRef: String(invoiceId) },
+        data: { ingredientId: match.ingredientId, price: item.unitPrice, date: new Date().toISOString().slice(0, 10), source: 'invoice', restaurantId: (req as any).restaurantId },
       });
-      // Mark item as matched
+      // Mark item as matched by setting ingredientId
       await prisma.invoiceItem.update({
         where: { id: match.itemId },
-        data: { matched: true, ingredientId: match.ingredientId },
+        data: { ingredientId: match.ingredientId },
       });
       applied++;
     }
@@ -916,9 +922,11 @@ app.post('/api/invoices/:id/apply', authWithRestaurant, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur application facture' }); }
 });
 
-app.delete('/api/invoices/:id', authWithRestaurant, async (req, res) => {
+app.delete('/api/invoices/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    await prisma.invoice.delete({ where: { id: parseInt(req.params.id) } });
+    const existing = await prisma.invoice.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Non trouvé' });
+    await prisma.invoice.delete({ where: { id: existing.id } });
     res.status(204).send();
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
 });
@@ -965,17 +973,17 @@ app.get('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
   try {
     const { days } = req.query;
     const where: any = { restaurantId: req.restaurantId };
-    if (days) where.date = { gte: new Date(Date.now() - parseInt(days) * 86400000) };
-    const sales = await prisma.menuSales.findMany({ where, orderBy: { date: 'desc' }, take: 1000 });
+    if (days) where.date = { gte: new Date(Date.now() - parseInt(days) * 86400000).toISOString().slice(0, 10) };
+    const sales = await prisma.menuSale.findMany({ where, orderBy: { date: 'desc' }, take: 1000 });
     res.json(sales);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ventes' }); }
 });
 
 app.post('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
   try {
-    const { recipeId, quantity, revenue, date } = req.body;
-    const sale = await prisma.menuSales.create({
-      data: { recipeId, quantity: quantity || 1, revenue: revenue || null, date: date ? new Date(date) : new Date(), restaurantId: req.restaurantId },
+    const { recipeId, recipeName, quantity, revenue, date } = req.body;
+    const sale = await prisma.menuSale.create({
+      data: { recipeId, recipeName: recipeName || 'Unknown', quantity: quantity || 1, revenue: revenue || 0, date: date || new Date().toISOString().slice(0, 10), restaurantId: req.restaurantId },
     });
     res.status(201).json(sale);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout vente' }); }
@@ -984,9 +992,9 @@ app.post('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
 app.post('/api/menu-sales/bulk', authWithRestaurant, async (req: any, res) => {
   try {
     const { sales } = req.body; // [{ recipeId, quantity, revenue, date }]
-    const result = await prisma.menuSales.createMany({
+    const result = await prisma.menuSale.createMany({
       data: (sales || []).map((s: any) => ({
-        recipeId: s.recipeId, quantity: s.quantity || 1, revenue: s.revenue || null, date: s.date ? new Date(s.date) : new Date(), restaurantId: req.restaurantId,
+        recipeId: s.recipeId, recipeName: s.recipeName || 'Unknown', quantity: s.quantity || 1, revenue: s.revenue || 0, date: s.date || new Date().toISOString().slice(0, 10), restaurantId: req.restaurantId,
       })),
     });
     res.status(201).json({ created: result.count });
@@ -1002,7 +1010,7 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
     const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredients: { include: { ingredient: true } } } });
 
     // Get sales data (scoped to restaurant)
-    const sales = await prisma.menuSales.findMany({ where: { restaurantId: req.restaurantId, date: { gte: since } } });
+    const sales = await prisma.menuSale.findMany({ where: { restaurantId: req.restaurantId, date: { gte: since.toISOString().slice(0, 10) } } });
     const salesByRecipe: Record<number, { qty: number; revenue: number }> = {};
     sales.forEach(s => {
       if (!salesByRecipe[s.recipeId]) salesByRecipe[s.recipeId] = { qty: 0, revenue: 0 };
@@ -1081,22 +1089,17 @@ app.put('/api/messages/conversations/:id/read', authWithRestaurant, (req, res) =
   res.json({ success: true });
 });
 
-// ── Email (nodemailer) ──
+// ── Email ──
 const sentEmails: any[] = [];
 
 app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
   try {
     const { to, subject, body } = req.body;
     if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
-    const info = await gmailTransporter.sendMail({
-      from: `RestauMargin <${process.env.EMAIL_USER || 'marketphaseai@gmail.com'}>`,
-      to: to.trim(), subject: subject.trim(),
-      html: body.trim().replace(/\n/g, '<br>'),
-    });
-    const data = { id: info.messageId };
-    const email = { id: `e-${Date.now()}`, to, subject, body, from: 'onboarding@resend.dev', messageId: data?.id, sentAt: new Date().toISOString() };
+    console.warn('Email SMTP not configured — skipping send. Use Resend instead.');
+    const email = { id: `e-${Date.now()}`, to, subject, body, from: 'noreply@restaumargin.com', messageId: `local-${Date.now()}`, sentAt: new Date().toISOString() };
     sentEmails.push(email);
-    res.json({ success: true, messageId: data?.id });
+    res.json({ success: true, messageId: email.messageId, warning: 'SMTP not configured, email not actually sent' });
   } catch (e: any) { res.status(500).json({ error: e.message || 'Erreur envoi email' }); }
 });
 
@@ -1635,30 +1638,6 @@ app.post('/api/contact', async (req, res) => {
     res.json({ success: true, note: 'Demande enregistrée' });
   }
 });
-
-// --- Restaurant-aware auth middleware ---
-async function authWithRestaurant(req: any, res: any, next: any) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token requis' });
-  }
-  try {
-    const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload;
-    req.user = decoded;
-  } catch {
-    return res.status(401).json({ error: 'Token invalide' });
-  }
-  const restaurantHeader = req.headers['x-restaurant-id'];
-  if (!restaurantHeader) return res.status(400).json({ error: 'X-Restaurant-Id header requis' });
-  const restaurantId = parseInt(String(restaurantHeader), 10);
-  if (isNaN(restaurantId)) return res.status(400).json({ error: 'X-Restaurant-Id invalide' });
-  try {
-    const member = await prisma.restaurantMember.findFirst({ where: { userId: req.user.userId, restaurantId } });
-    if (!member) return res.status(403).json({ error: 'Accès refusé à ce restaurant' });
-    req.restaurantId = restaurantId;
-    next();
-  } catch { res.status(500).json({ error: 'Erreur vérification restaurant' }); }
-}
 
 // ============ HACCP ============
 function getTemperatureStatus(zone: string, temperature: number): string {

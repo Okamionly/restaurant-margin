@@ -136,6 +136,7 @@ model Ingredient {
   recipes       RecipeIngredient[]
   inventoryItem InventoryItem?
   wasteLogs     WasteLog[]
+  priceHistory  PriceHistory[]
 
   @@index([restaurantId, name])
   @@map("ingredients")
@@ -231,6 +232,7 @@ model InvoiceItem {
 model PriceHistory {
   id           Int        @id @default(autoincrement())
   ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   price        Float
   date         String
   source       String     @default("manual")

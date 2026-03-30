@@ -565,7 +565,7 @@ const rfqInclude = {
 
 app.get('/api/rfqs', authWithRestaurant, async (req: any, res) => {
   try {
-    const rfqs = await prisma.rFQ.findMany({ include: rfqInclude, orderBy: { createdAt: 'desc' } });
+    const rfqs = await prisma.rFQ.findMany({ where: { restaurantId: req.restaurantId }, include: rfqInclude, orderBy: { createdAt: 'desc' } });
     res.json(rfqs);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération appels d\'offres' }); }
 });
@@ -685,6 +685,7 @@ app.get('/api/price-history', authWithRestaurant, async (req: any, res) => {
     const where: any = {};
     if (ingredientId) where.ingredientId = parseInt(ingredientId);
     if (days) where.createdAt = { gte: new Date(Date.now() - parseInt(days) * 86400000) };
+    where.restaurantId = req.restaurantId;
     const history = await prisma.priceHistory.findMany({
       where,
       include: { ingredient: { select: { id: true, name: true, unit: true, category: true } } },
@@ -700,7 +701,7 @@ app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) =
     // Find ingredients with significant price changes (>10%) in last 30 days
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
     const history = await prisma.priceHistory.findMany({
-      where: { createdAt: { gte: thirtyDaysAgo } },
+      where: { restaurantId: req.restaurantId, createdAt: { gte: thirtyDaysAgo } },
       include: { ingredient: { select: { id: true, name: true, unit: true, pricePerUnit: true, category: true } } },
       orderBy: { createdAt: 'asc' },
     });
@@ -724,6 +725,7 @@ app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) =
 app.get('/api/invoices', authWithRestaurant, async (req: any, res) => {
   try {
     const invoices = await prisma.invoice.findMany({
+      where: { restaurantId: req.restaurantId },
       include: { items: true },
       orderBy: { createdAt: 'desc' },
     });
@@ -798,29 +800,29 @@ app.delete('/api/invoices/:id', authWithRestaurant, async (req, res) => {
 app.get('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
   try {
     const { days } = req.query;
-    const where: any = {};
+    const where: any = { restaurantId: req.restaurantId };
     if (days) where.date = { gte: new Date(Date.now() - parseInt(days) * 86400000) };
     const sales = await prisma.menuSales.findMany({ where, orderBy: { date: 'desc' }, take: 1000 });
     res.json(sales);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ventes' }); }
 });
 
-app.post('/api/menu-sales', authWithRestaurant, async (req, res) => {
+app.post('/api/menu-sales', authWithRestaurant, async (req: any, res) => {
   try {
     const { recipeId, quantity, revenue, date } = req.body;
     const sale = await prisma.menuSales.create({
-      data: { recipeId, quantity: quantity || 1, revenue: revenue || null, date: date ? new Date(date) : new Date() },
+      data: { recipeId, quantity: quantity || 1, revenue: revenue || null, date: date ? new Date(date) : new Date(), restaurantId: req.restaurantId },
     });
     res.status(201).json(sale);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout vente' }); }
 });
 
-app.post('/api/menu-sales/bulk', authWithRestaurant, async (req, res) => {
+app.post('/api/menu-sales/bulk', authWithRestaurant, async (req: any, res) => {
   try {
     const { sales } = req.body; // [{ recipeId, quantity, revenue, date }]
     const result = await prisma.menuSales.createMany({
       data: (sales || []).map((s: any) => ({
-        recipeId: s.recipeId, quantity: s.quantity || 1, revenue: s.revenue || null, date: s.date ? new Date(s.date) : new Date(),
+        recipeId: s.recipeId, quantity: s.quantity || 1, revenue: s.revenue || null, date: s.date ? new Date(s.date) : new Date(), restaurantId: req.restaurantId,
       })),
     });
     res.status(201).json({ created: result.count });
@@ -832,11 +834,11 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
     const days = parseInt(req.query.days || '30');
     const since = new Date(Date.now() - days * 86400000);
 
-    // Get all recipes with margins
-    const recipes = await prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } } });
+    // Get all recipes with margins (scoped to restaurant)
+    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredients: { include: { ingredient: true } } } });
 
-    // Get sales data
-    const sales = await prisma.menuSales.findMany({ where: { date: { gte: since } } });
+    // Get sales data (scoped to restaurant)
+    const sales = await prisma.menuSales.findMany({ where: { restaurantId: req.restaurantId, date: { gte: since } } });
     const salesByRecipe: Record<number, { qty: number; revenue: number }> = {};
     sales.forEach(s => {
       if (!salesByRecipe[s.recipeId]) salesByRecipe[s.recipeId] = { qty: 0, revenue: 0 };
@@ -973,9 +975,9 @@ app.post('/api/ai/chat', authWithRestaurant, async (req: any, res) => {
 
     // Build context from restaurant data
     const [recipes, ingredients, inventory] = await Promise.all([
-      prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } }, take: 50 }),
-      prisma.ingredient.findMany({ orderBy: { pricePerUnit: 'desc' }, take: 30 }),
-      prisma.inventoryItem.findMany({ include: { ingredient: true } }),
+      prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredients: { include: { ingredient: true } } }, take: 50 }),
+      prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { pricePerUnit: 'desc' }, take: 30 }),
+      prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true } }),
     ]);
 
     const recipesSummary = recipes.map(r => {
@@ -1009,8 +1011,8 @@ app.post('/api/ai/chat', authWithRestaurant, async (req: any, res) => {
 // ── Alerts ──
 app.get('/api/alerts', authWithRestaurant, async (req: any, res) => {
   try {
-    const inventory = await prisma.inventoryItem.findMany({ include: { ingredient: true } });
-    const recipes = await prisma.recipe.findMany({ include: { ingredients: { include: { ingredient: true } } } });
+    const inventory = await prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true } });
+    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredients: { include: { ingredient: true } } } });
 
     const alerts: { type: string; severity: string; title: string; detail: string }[] = [];
 
@@ -1246,7 +1248,7 @@ app.delete('/api/comptabilite/:id', authWithRestaurant, async (req: any, res) =>
 // ============ WASTE ============
 app.get('/api/waste/summary', authWithRestaurant, async (req: any, res) => {
   try {
-    const restaurantId = 1;
+    const restaurantId = req.restaurantId;
     const now = new Date();
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     const currentMonthStart = `${currentMonth}-01`;

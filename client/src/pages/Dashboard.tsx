@@ -11,10 +11,11 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, Treemap, LineChart, Line, LabelList,
 } from 'recharts';
-import { fetchRecipes, fetchIngredients } from '../services/api';
+import { fetchRecipes, fetchIngredients, getActiveRestaurantId } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
+import { useRestaurant } from '../hooks/useRestaurant';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -275,6 +276,7 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
 // ══════════════════════════════════════════════════════════════════════════════
 export default function Dashboard() {
   const { t } = useTranslation();
+  const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -293,11 +295,12 @@ export default function Dashboard() {
   ];
 
   useEffect(() => {
+    if (restaurantLoading || !selectedRestaurant) return;
     Promise.all([fetchRecipes(), fetchIngredients()])
       .then(([r, i]) => { setRecipes(r); setIngredients(i); })
       .catch(() => console.error('Erreur chargement'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedRestaurant, restaurantLoading]);
 
   // ── Computed stats ─────────────────────────────────────────────────────
   const stats = useMemo(() => {

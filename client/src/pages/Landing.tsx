@@ -142,6 +142,7 @@ const faqItems = [
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [heroSlide, setHeroSlide] = useState(0);
   const [contactForm, setContactForm] = useState({ nom: '', email: '', telephone: '', message: '' });
   const [contactSent, setContactSent] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
@@ -151,6 +152,12 @@ export default function Landing() {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Hero carousel auto-rotation
+  useEffect(() => {
+    const timer = setInterval(() => setHeroSlide(s => (s + 1) % 3), 4000);
+    return () => clearInterval(timer);
   }, []);
 
   const scrollTo = useCallback((id: string) => {
@@ -293,15 +300,23 @@ export default function Landing() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.07] to-indigo-500/[0.07] rounded-3xl blur-2xl" />
                 <div className="relative bg-white border border-slate-200 rounded-3xl p-8 shadow-lg">
-                  <img
-                    src="/images/restaumargin-station-opt.webp"
-                    alt="RestauMargin Station — Kit Balance + Tablette"
-                    className="w-full h-auto rounded-2xl"
-                    loading="eager"
-                  />
+                  {/* Hero image carousel */}
+                  <div className="relative overflow-hidden rounded-2xl">
+                    <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
+                      <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" className="w-full h-auto flex-shrink-0" loading="eager" />
+                      <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" className="w-full h-auto flex-shrink-0" loading="eager" />
+                      <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" className="w-full h-auto flex-shrink-0" loading="eager" />
+                    </div>
+                    {/* Dots */}
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                      {[0, 1, 2].map(i => (
+                        <button key={i} onClick={() => setHeroSlide(i)} className={`w-2 h-2 rounded-full transition-all ${heroSlide === i ? 'bg-blue-600 w-6' : 'bg-slate-400/50'}`} />
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 {/* Floating badge */}
-                <div className="absolute -top-4 -right-4 bg-emerald-500 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
+                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
                   Nouveau 2026
                 </div>
               </div>
@@ -587,11 +602,14 @@ export default function Landing() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.07] to-blue-500/[0.07] rounded-3xl blur-2xl" />
                 <div className="relative bg-white border border-slate-200 rounded-3xl p-8 shadow-lg">
-                  <img
-                    src="/images/restaumargin-station-opt.webp"
-                    alt="RestauMargin Station — Kit Balance + Tablette"
+                  <video
+                    src="/images/hero/station-demo.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                     className="w-full h-auto rounded-2xl"
-                    loading="lazy"
+                    poster="/images/hero/hero-1.webp"
                   />
                   <div className="grid grid-cols-3 gap-3 mt-6 text-center">
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">

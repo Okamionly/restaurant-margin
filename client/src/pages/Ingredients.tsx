@@ -7,6 +7,7 @@ import { INGREDIENT_CATEGORIES, UNITS, ALLERGENS } from '../types';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { isInSeason } from '../data/seasons';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
@@ -509,7 +510,12 @@ export default function Ingredients() {
             ) : (
               filtered.map((ing) => (
                 <tr key={ing.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">{ing.name}</td>
+                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
+                    {ing.name}
+                    {isInSeason(ing.name) && (
+                      <span className="ml-1 text-xs text-emerald-500" title="Produit de saison">🌿</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">{ing.category}</span>
                   </td>

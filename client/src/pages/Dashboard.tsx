@@ -16,6 +16,7 @@ import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { getCurrentSeason, getCurrentSeasonLabel, getSeasonalProducts, getSeasonIcon } from '../data/seasons';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -819,6 +820,26 @@ export default function Dashboard() {
       {/* ══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'overview' && (
         <div className="space-y-6">
+          {/* Produits de saison */}
+          <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">{getSeasonIcon(getCurrentSeason())}</span>
+              <h3 className="text-lg font-bold text-emerald-800 dark:text-emerald-200">{getCurrentSeasonLabel()}</h3>
+              <span className="text-sm text-emerald-600 dark:text-emerald-400">— Produits de saison</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {getSeasonalProducts().slice(0, 8).map(p => (
+                <span key={p.name} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 dark:bg-slate-800/70 text-sm border border-emerald-200 dark:border-emerald-700">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">{p.name}</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 text-xs">{p.avgPrice.toFixed(2)}€/{p.unit}</span>
+                </span>
+              ))}
+            </div>
+            <Link to="/seasonal" className="inline-flex items-center gap-1 mt-3 text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
+              Voir tous les produits de saison <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-6">
             {/* LEFT SIDE */}
             <div className="space-y-6">

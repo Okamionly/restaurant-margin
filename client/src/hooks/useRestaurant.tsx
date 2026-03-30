@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import { fetchRestaurants, createRestaurantAPI, updateRestaurantAPI, deleteRestaurantAPI, getActiveRestaurantId, setActiveRestaurantId, getToken } from '../services/api';
+import { fetchRestaurants, createRestaurantAPI, updateRestaurantAPI, deleteRestaurantAPI, getActiveRestaurantId, setActiveRestaurantId, removeActiveRestaurantId, getToken } from '../services/api';
 
 export interface Restaurant {
   id: number;
@@ -54,6 +54,10 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
           setSelectedId(data[0].id);
           setActiveRestaurantId(data[0].id);
         }
+      } else {
+        // No restaurants — clear stale activeRestaurantId from previous user
+        removeActiveRestaurantId();
+        setSelectedId(null);
       }
     } catch {
       // Not logged in or error — silently ignore

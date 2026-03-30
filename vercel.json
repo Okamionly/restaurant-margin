@@ -3,6 +3,16 @@
   "buildCommand": "npx prisma generate && cd client && npx vite build",
   "outputDirectory": "client/dist",
   "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
+  "headers": [
+    {
+      "source": "/index.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.ts" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }

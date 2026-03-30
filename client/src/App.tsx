@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles, Newspaper } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
@@ -47,6 +47,7 @@ const Clients = lazy(() => import('./pages/Clients'));
 const DevCorp = lazy(() => import('./pages/DevCorp'));
 const HACCPPage = lazy(() => import('./pages/HACCP'));
 const AIAssistant = lazy(() => import('./pages/AIAssistant'));
+const Actualites = lazy(() => import('./pages/Actualites'));
 const MentionsLegales = lazy(() => import('./pages/MentionsLegales'));
 const CGV = lazy(() => import('./pages/CGV'));
 const PolitiqueConfidentialite = lazy(() => import('./pages/PolitiqueConfidentialite'));
@@ -235,6 +236,7 @@ function AppLayout() {
       title: 'INTELLIGENCE',
       items: [
         { to: '/scanner-factures', icon: Receipt, label: 'Factures' },
+        { to: '/actualites', icon: Newspaper, label: 'Actualités IA' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
@@ -525,6 +527,7 @@ function AppLayout() {
               <Route path="/gaspillage" element={<WasteTracker />} />
               <Route path="/rfqs" element={<RFQPage />} />
               <Route path="/scanner-factures" element={<InvoiceScanner />} />
+              <Route path="/actualites" element={<Actualites />} />
               <Route path="/mercuriale" element={<Mercuriale />} />
               <Route path="/menu-engineering" element={<MenuEngineering />} />
               <Route path="/qr-menu" element={<QRMenu />} />

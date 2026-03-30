@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X, Sparkles, Clock, ChevronRight } from 'lucide-react';
-import { useTranslation } from '../hooks/useTranslation';
 import { useToast } from '../hooks/useToast';
 
 interface NewsItem {
@@ -61,7 +60,6 @@ const PRIORITY_CONFIG = {
 };
 
 export default function Actualites() {
-  const { t } = useTranslation();
   const { showToast: addToast } = useToast();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);

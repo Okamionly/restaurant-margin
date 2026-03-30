@@ -27,6 +27,7 @@ import { planningRouter } from './routes/planning';
 import { seminairesRouter } from './routes/seminaires';
 import { marketplaceRouter } from './routes/marketplace';
 import { activationRouter } from './routes/activation';
+import { newsRouter } from './routes/news';
 import { authMiddleware } from './middleware/auth';
 
 const app = express();
@@ -94,6 +95,7 @@ app.use('/api/haccp', haccpRouter);
 app.use('/api/planning', planningRouter);
 app.use('/api/seminaires', seminairesRouter);
 app.use('/api/marketplace', marketplaceRouter);
+app.use('/api/news', newsRouter);
 
 // 404 catch-all
 app.use((_req, res) => {

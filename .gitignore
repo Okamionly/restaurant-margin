@@ -7,3 +7,8 @@ client/dist/
 server/dist/
 
 .vercel
+
+# Agent reports (local only)
+docs/rapports/
+docs/data/
+docs/sprints/

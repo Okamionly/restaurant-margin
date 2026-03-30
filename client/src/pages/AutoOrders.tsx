@@ -762,7 +762,7 @@ export default function AutoOrders() {
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
-                {s === 'tous' ? 'Tous' : STATUS_BADGE[s].label}
+                {s === 'tous' ? 'Tous' : (STATUS_BADGE[s] || STATUS_BADGE['brouillon']).label}
               </button>
             ))}
           </div>
@@ -849,8 +849,8 @@ export default function AutoOrders() {
                         {fmtEuro(order.totalTTC)}
                       </td>
                       <td className="py-3 px-4 text-center">
-                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[order.status].bg}`}>
-                          {STATUS_BADGE[order.status].label}
+                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).bg}`}>
+                          {(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).label}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400 max-w-[200px] truncate">
@@ -1246,8 +1246,8 @@ function OrderRow({
         </span>
         <span className="font-medium text-gray-900 dark:text-white">{fmtEuro(order.totalHT)}</span>
         <span className="text-sm text-gray-500 dark:text-gray-400">{fmtDate(order.date)}</span>
-        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_BADGE[order.status].bg}`}>
-          {STATUS_BADGE[order.status].label}
+        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).bg}`}>
+          {(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).label}
         </span>
 
         {/* Actions */}

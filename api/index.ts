@@ -233,6 +233,56 @@ app.delete('/api/auth/users/:id', authMiddleware, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur suppression' }); }
 });
 
+// ============ RESTAURANTS ============
+app.get('/api/restaurants', authMiddleware, async (req: any, res) => {
+  try {
+    const memberships = await prisma.restaurantMember.findMany({
+      where: { userId: req.user.userId },
+      include: { restaurant: { include: { _count: { select: { ingredients: true, recipes: true, suppliers: true } } } } },
+    });
+    res.json(memberships.map((m: any) => ({ ...m.restaurant, role: m.role })));
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération restaurants' }); }
+});
+
+app.post('/api/restaurants', authMiddleware, async (req: any, res) => {
+  try {
+    const { name, address, cuisineType, phone, coversPerDay } = req.body;
+    if (!name?.trim()) return res.status(400).json({ error: 'Nom requis' });
+    const restaurant = await prisma.restaurant.create({
+      data: {
+        name: name.trim(), address: address || null, cuisineType: cuisineType || null,
+        phone: phone || null, coversPerDay: coversPerDay || 80, ownerId: req.user.userId,
+        members: { create: { userId: req.user.userId, role: 'owner' } },
+      },
+    });
+    res.status(201).json(restaurant);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création restaurant' }); }
+});
+
+app.put('/api/restaurants/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const membership = await prisma.restaurantMember.findFirst({ where: { userId: req.user.userId, restaurantId: id, role: 'owner' } });
+    if (!membership) return res.status(403).json({ error: 'Accès refusé' });
+    const { name, address, cuisineType, phone, coversPerDay } = req.body;
+    const restaurant = await prisma.restaurant.update({
+      where: { id },
+      data: { name: name || undefined, address: address ?? undefined, cuisineType: cuisineType ?? undefined, phone: phone ?? undefined, coversPerDay: coversPerDay ?? undefined },
+    });
+    res.json(restaurant);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour restaurant' }); }
+});
+
+app.delete('/api/restaurants/:id', authMiddleware, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const restaurant = await prisma.restaurant.findFirst({ where: { id, ownerId: req.user.userId } });
+    if (!restaurant) return res.status(403).json({ error: 'Accès refusé' });
+    await prisma.restaurant.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression restaurant' }); }
+});
+
 // ============ INGREDIENTS ============
 app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
   try { res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { name: 'asc' } })); } catch { res.status(500).json({ error: 'Erreur' }); }

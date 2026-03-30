@@ -2027,101 +2027,110 @@ app.delete('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, r
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression commande marketplace' }); }
 });
 
-// ============ NEWS / ACTUALITES ============
-// Computed from existing data (price_history + waste_logs) — no extra DB table needed
-const dismissedNews = new Map<string, Set<string>>(); // restaurantId → Set<newsId>
+// ============ NEWS / ACTUALITES (DB-backed, IA generation with mercuriale) ============
+const generateRateLimit = new Map<number, number>();
+const GENERATE_COOLDOWN_MS = 60 * 60 * 1000;
 
 app.get('/api/news', authWithRestaurant, async (req: any, res) => {
   try {
-    const rid = req.restaurantId;
-    const dismissed = dismissedNews.get(String(rid)) || new Set();
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
-    const news: any[] = [];
-
-    // Price alerts from price_history
-    const priceHistory = await prisma.priceHistory.findMany({
-      where: { restaurantId: rid, createdAt: { gte: thirtyDaysAgo } },
-      include: { ingredient: { select: { id: true, name: true, pricePerUnit: true } } },
+    const news = await prisma.newsItem.findMany({
+      where: { dismissed: false, OR: [{ restaurantId: req.restaurantId }, { restaurantId: null }] },
       orderBy: { createdAt: 'desc' },
     });
-
-    // Group by ingredient, compute last vs first price
-    const byIngredient: Record<number, typeof priceHistory> = {};
-    for (const h of priceHistory) {
-      if (!byIngredient[h.ingredientId]) byIngredient[h.ingredientId] = [];
-      byIngredient[h.ingredientId].push(h);
-    }
-    let newsId = 1;
-    for (const [ingId, entries] of Object.entries(byIngredient)) {
-      if (entries.length < 2) continue;
-      const sorted = entries.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      const first = sorted[0].price;
-      const last = sorted[sorted.length - 1].price;
-      const pct = first > 0 ? ((last - first) / first) * 100 : 0;
-      if (Math.abs(pct) < 5) continue;
-      const currentId = newsId++;
-      if (dismissed.has(String(currentId))) continue;
-      news.push({
-        id: currentId, title: pct > 0 ? `Hausse prix : ${entries[0].ingredient.name}` : `Baisse prix : ${entries[0].ingredient.name}`,
-        content: `Le prix a ${pct > 0 ? 'augmenté' : 'baissé'} de ${Math.abs(pct).toFixed(1)}% ce mois (${first.toFixed(2)}€ → ${last.toFixed(2)}€)`,
-        type: pct > 0 ? 'price_alert' : 'opportunity', priority: Math.abs(pct) > 15 ? 'high' : 'normal',
-        dismissed: false, mercurialeRef: String(ingId), createdAt: sorted[sorted.length - 1].createdAt,
-      });
-    }
-
-    // Waste alerts from waste_logs
-    const currentMonth = new Date().toISOString().substring(0, 7);
-    const wasteLogs = await prisma.wasteLog.findMany({
-      where: { restaurantId: rid, date: { startsWith: currentMonth } },
-      include: { ingredient: { select: { name: true } } },
-      orderBy: { costImpact: 'desc' },
-      take: 5,
-    });
-    for (const w of wasteLogs) {
-      const currentId = newsId++;
-      if (dismissed.has(String(currentId))) continue;
-      news.push({
-        id: currentId, title: `Gaspillage : ${w.ingredient?.name || 'Produit inconnu'}`,
-        content: `${w.quantity} ${w.unit} gaspillés ce mois — impact coût : ${w.costImpact.toFixed(2)}€`,
-        type: 'tip', priority: w.costImpact > 50 ? 'high' : 'low',
-        dismissed: false, mercurialeRef: null, createdAt: new Date(w.createdAt).toISOString(),
-      });
-    }
-
-    res.json(news.slice(0, 20));
+    const priorityOrder: Record<string, number> = { high: 0, normal: 1, low: 2 };
+    news.sort((a: any, b: any) => (priorityOrder[a.priority] ?? 1) - (priorityOrder[b.priority] ?? 1) || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    res.json(news);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur actualités' }); }
 });
 
 app.post('/api/news/generate', authWithRestaurant, async (req: any, res) => {
   try {
-    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré' });
     const rid = req.restaurantId;
-    const [recipes, inventory] = await Promise.all([
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré' });
+
+    const lastGen = generateRateLimit.get(rid);
+    if (lastGen && Date.now() - lastGen < GENERATE_COOLDOWN_MS) {
+      const waitMin = Math.ceil((GENERATE_COOLDOWN_MS - (Date.now() - lastGen)) / 60000);
+      return res.status(429).json({ error: `Actualités déjà générées récemment. Réessayez dans ${waitMin} min.` });
+    }
+
+    // Build restaurant context
+    const [ingredients, recipes, priceHist] = await Promise.all([
+      prisma.ingredient.findMany({ where: { restaurantId: rid }, orderBy: { pricePerUnit: 'desc' }, take: 30 }),
       prisma.recipe.findMany({ where: { restaurantId: rid }, include: { ingredients: { include: { ingredient: true } } }, take: 20 }),
-      prisma.inventoryItem.findMany({ where: { restaurantId: rid }, include: { ingredient: true } }),
+      prisma.priceHistory.findMany({ where: { restaurantId: rid }, orderBy: { date: 'desc' }, take: 50 }),
     ]);
-    const lowStock = inventory.filter(i => i.currentStock < i.minStock);
-    const context = `${recipes.length} recettes. ${lowStock.length} produits en stock bas: ${lowStock.map(i => i.ingredient.name).join(', ')}`;
+
+    const ingList = ingredients.map((i: any) => `- ${i.name} (${i.category}): ${i.pricePerUnit}€/${i.unit}`).join('\n');
+    const recList = recipes.map((r: any) => {
+      const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+      const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
+      return `- ${r.name}: vente ${r.sellingPrice}€, coût ${cost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
+    }).join('\n');
+
+    // Detect recent price changes
+    const grouped = new Map<number, any[]>();
+    for (const ph of priceHist) { if (!grouped.has(ph.ingredientId)) grouped.set(ph.ingredientId, []); grouped.get(ph.ingredientId)!.push(ph); }
+    const alerts: string[] = [];
+    for (const [, history] of grouped) {
+      if (history.length >= 2) {
+        const change = ((history[0].price - history[1].price) / history[1].price) * 100;
+        if (Math.abs(change) >= 5) {
+          const ing = ingredients.find((i: any) => i.id === history[0].ingredientId);
+          if (ing) alerts.push(`- ${(ing as any).name}: ${change > 0 ? '+' : ''}${change.toFixed(1)}%`);
+        }
+      }
+    }
+
+    const prompt = `Tu es l'agent Actualités de RestauMargin pour un restaurateur français.
+
+=== MES INGRÉDIENTS (${ingredients.length}) ===
+${ingList || 'Aucun'}
+
+=== MES FICHES TECHNIQUES (${recipes.length}) ===
+${recList || 'Aucune'}
+
+=== VARIATIONS DE PRIX RÉCENTES ===
+${alerts.length > 0 ? alerts.join('\n') : 'Aucune'}
+
+Génère 5 à 7 actualités personnalisées en JSON. Réponds UNIQUEMENT avec un tableau JSON valide :
+[{"title":"...", "content":"...", "type":"price_alert|opportunity|trend|tip", "priority":"high|normal|low"}]`;
+
     const response = await anthropic.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 800,
-      system: 'Tu es un conseiller expert en gestion de restaurant. Génère 3 conseils pratiques courts en JSON. Réponds UNIQUEMENT avec un tableau JSON.',
-      messages: [{ role: 'user', content: `Données restaurant: ${context}\n\nGénère 3 actualités/conseils en JSON: [{"title": "...", "content": "...", "type": "tip|opportunity|trend", "priority": "normal|high|low"}]` }],
+      model: 'claude-sonnet-4-20250514', max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
     });
-    const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    const tips = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
-    const items = tips.map((t: any, i: number) => ({ id: 9000 + i, title: t.title, content: t.content, type: t.type || 'tip', priority: t.priority || 'normal', dismissed: false, mercurialeRef: null, createdAt: new Date().toISOString() }));
-    res.json({ items, count: items.length });
-  } catch (e: any) { res.status(500).json({ error: e.message || 'Erreur génération IA' }); }
+    const rawText = response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+    const cleaned = rawText.trim().replace(/^```json?\n?/, '').replace(/\n?```$/, '');
+    let newsItems: any[];
+    try { newsItems = JSON.parse(cleaned); if (!Array.isArray(newsItems)) throw new Error(); } catch { return res.status(500).json({ error: 'Erreur parsing IA' }); }
+
+    await prisma.newsItem.deleteMany({ where: { restaurantId: rid } });
+    const created = await prisma.newsItem.createMany({
+      data: newsItems.map((item: any) => ({
+        restaurantId: rid,
+        title: String(item.title).slice(0, 200),
+        content: String(item.content).slice(0, 1000),
+        type: ['price_alert', 'opportunity', 'trend', 'tip'].includes(item.type) ? item.type : 'tip',
+        priority: ['high', 'normal', 'low'].includes(item.priority) ? item.priority : 'normal',
+        dismissed: false, mercurialeRef: new Date().toISOString().slice(0, 10),
+      })),
+    });
+    generateRateLimit.set(rid, Date.now());
+    const newsList = await prisma.newsItem.findMany({ where: { restaurantId: rid, dismissed: false }, orderBy: { createdAt: 'desc' } });
+    res.json({ count: created.count, items: newsList });
+  } catch (e: any) { console.error(e); res.status(500).json({ error: e.message || 'Erreur génération IA' }); }
 });
 
-app.patch('/api/news/:id/dismiss', authWithRestaurant, (req: any, res) => {
-  const rid = String(req.restaurantId);
-  const newsId = req.params.id;
-  if (!dismissedNews.has(rid)) dismissedNews.set(rid, new Set());
-  dismissedNews.get(rid)!.add(String(newsId));
-  res.json({ success: true });
+app.patch('/api/news/:id/dismiss', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const item = await prisma.newsItem.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!item) return res.status(404).json({ error: 'Actualité non trouvée' });
+    await prisma.newsItem.update({ where: { id }, data: { dismissed: true } });
+    res.json({ success: true });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur dismiss' }); }
 });
 
 // 404 catch-all

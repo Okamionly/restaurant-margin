@@ -26,7 +26,7 @@ interface Integration {
 
 // ── Mock Data ────────────────────────────────────────────────────────────────
 
-const MOCK_API_KEY = 'rm_live_a8f3k2d9x1b7m4n6p0q5r8s2t4u6v9w1y3z';
+const MOCK_API_KEY = '';
 
 const INITIAL_WEBHOOKS: WebhookConfig[] = [
   { id: 'wh1', name: 'Nouvelle commande', url: 'https://hooks.example.com/orders', active: true, lastTriggered: '2026-03-27 09:14' },

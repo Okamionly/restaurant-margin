@@ -85,26 +85,11 @@ interface SupplierRating {
 }
 
 function getMockRating(supplierId: number): SupplierRating {
-  const ratings: SupplierRating[] = [
-    { reliability: 5, deliveryDays: '24h', minOrderAmount: '150 EUR' },
-    { reliability: 4, deliveryDays: '48h', minOrderAmount: '200 EUR' },
-    { reliability: 3, deliveryDays: '72h', minOrderAmount: '100 EUR' },
-    { reliability: 5, deliveryDays: '24-48h', minOrderAmount: '300 EUR' },
-    { reliability: 4, deliveryDays: '48-72h', minOrderAmount: '80 EUR' },
-    { reliability: 3, deliveryDays: '3-5 jours', minOrderAmount: '250 EUR' },
-  ];
-  return ratings[supplierId % ratings.length];
+  return { reliability: 0, deliveryDays: '-', minOrderAmount: '-' };
 }
 
 function getMockPriceHistory(basePrice: number): number[] {
-  const points: number[] = [];
-  let price = basePrice * (0.9 + Math.random() * 0.1);
-  for (let i = 0; i < 30; i++) {
-    price += (Math.random() - 0.48) * basePrice * 0.03;
-    price = Math.max(basePrice * 0.75, Math.min(basePrice * 1.25, price));
-    points.push(Math.round(price * 100) / 100);
-  }
-  return points;
+  return [];
 }
 
 // ── Mini sparkline chart (SVG) ──────────────────────────────────────────────

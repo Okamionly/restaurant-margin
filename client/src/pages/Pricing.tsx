@@ -9,8 +9,8 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: "Puis-je essayer gratuitement avant de m'engager ?",
-    answer: "Oui ! Le plan Professionnel inclut un essai gratuit de 14 jours sans carte bancaire requise. Vous pouvez aussi commencer avec le plan Decouverte qui est entierement gratuit.",
+    question: "Comment fonctionne l'abonnement ?",
+    answer: "Choisissez votre plan (Basic 9€, Pro 29€ ou Business 79€/mois), payez par carte bancaire via notre plateforme securisee Stripe, et recevez votre code d'activation instantanement.",
   },
   {
     question: "Comment fonctionne la facturation annuelle ?",
@@ -21,8 +21,8 @@ const faqs: FAQItem[] = [
     answer: "Absolument. Vous pouvez upgrader ou downgrader votre plan a tout moment. Le changement prend effet immediatement et le montant est ajuste au prorata.",
   },
   {
-    question: "Que se passe-t-il a la fin de mon essai gratuit ?",
-    answer: "A la fin de votre essai de 14 jours, vous pouvez choisir de continuer avec le plan Professionnel ou repasser au plan Decouverte gratuit. Aucune facturation automatique.",
+    question: "Comment recevoir mon code d'activation ?",
+    answer: "Apres le paiement, vous recevez un code unique (ex: RM-A3F8K2XY) par email. Entrez ce code lors de la creation de votre compte pour activer votre abonnement.",
   },
   {
     question: "Comment fonctionne le plan Enterprise ?",
@@ -89,7 +89,7 @@ const plans: Plan[] = [
       { text: '5 utilisateurs', included: true },
       { text: 'Support prioritaire', included: true },
     ],
-    cta: 'Essai gratuit 14 jours',
+    cta: "S'abonner — 29€/mois",
     ctaLink: 'https://buy.stripe.com/eVq4gs5Ki10o3sw1b187K01',
     external: true,
   },
@@ -194,7 +194,7 @@ export default function Pricing() {
           </span>
         </h1>
         <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
-          Choisissez le plan adapte a votre etablissement. Commencez gratuitement, evoluez quand vous etes pret.
+          Choisissez le plan adapte a votre etablissement. A partir de 9€/mois.
         </p>
 
         {/* Toggle mensuel / annuel */}
@@ -425,13 +425,15 @@ export default function Pricing() {
         <p className="text-slate-400 mb-8 max-w-lg mx-auto">
           Rejoignez des centaines de restaurateurs qui utilisent RestauMargin pour augmenter leur rentabilite.
         </p>
-        <Link
-          to="/login"
+        <a
+          href="https://buy.stripe.com/8x2fZagoWbF26EI3j987K03"
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
         >
-          Commencer gratuitement
+          S'abonner a partir de 9€/mois
           <ArrowRight className="w-5 h-5" />
-        </Link>
+        </a>
       </section>
     </div>
   );

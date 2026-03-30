@@ -129,7 +129,7 @@ const features = [
 ];
 
 const steps = [
-  { num: '01', title: 'Créez votre compte gratuitement', desc: 'Inscription en 30 secondes, sans carte bancaire.', icon: Users },
+  { num: '01', title: 'Choisissez votre abonnement', desc: 'Basic 9€, Pro 29€ ou Business 79€/mois. Activation instantanée.', icon: Users },
   { num: '02', title: 'Ajoutez vos ingrédients et fournisseurs', desc: 'Importez ou saisissez votre catalogue avec les prix.', icon: Utensils },
   { num: '03', title: 'Composez vos recettes', desc: 'Créez vos fiches techniques avec calcul automatique.', icon: BookOpen },
   { num: '04', title: 'Analysez et optimisez', desc: 'Pilotez vos marges avec des données précises.', icon: TrendingUp },
@@ -251,10 +251,10 @@ export default function Landing() {
               Connexion
             </Link>
             <Link
-              to="/login?mode=register"
+              to="/pricing"
               className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
             >
-              Essai gratuit
+              Voir les tarifs
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -286,10 +286,10 @@ export default function Landing() {
                 Connexion
               </Link>
               <Link
-                to="/login?mode=register"
+                to="/pricing"
                 className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all"
               >
-                Essai gratuit
+                Voir les tarifs
               </Link>
             </div>
           </div>
@@ -361,10 +361,10 @@ export default function Landing() {
               <FadeIn delay={300}>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
-                    to="/login?mode=register"
+                    to="/pricing"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition-colors"
                   >
-                    Essai gratuit <ArrowRight className="w-4 h-4" />
+                    Voir les tarifs <ArrowRight className="w-4 h-4" />
                   </Link>
                   <a
                     href="#how-it-works"
@@ -765,7 +765,7 @@ export default function Landing() {
                 </span>
               </h2>
               <p className="mt-4 text-lg text-slate-500">
-                Profitez de toutes les fonctionnalités gratuitement pendant la phase bêta.
+                A partir de 9€/mois. Accédez à tous les outils de gestion de marge.
               </p>
             </div>
           </FadeIn>
@@ -1076,9 +1076,9 @@ export default function Landing() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Légal</h4>
               <ul className="space-y-2.5">
-                <li><Link to="/login" className="text-sm text-slate-500 hover:text-white transition-colors">Mentions légales</Link></li>
-                <li><Link to="/login" className="text-sm text-slate-500 hover:text-white transition-colors">CGU</Link></li>
-                <li><Link to="/login" className="text-sm text-slate-500 hover:text-white transition-colors">Politique de confidentialité</Link></li>
+                <li><Link to="/mentions-legales" className="text-sm text-slate-500 hover:text-white transition-colors">Mentions légales</Link></li>
+                <li><Link to="/cgu" className="text-sm text-slate-500 hover:text-white transition-colors">CGU</Link></li>
+                <li><Link to="/politique-confidentialite" className="text-sm text-slate-500 hover:text-white transition-colors">Politique de confidentialité</Link></li>
               </ul>
             </div>
           </div>

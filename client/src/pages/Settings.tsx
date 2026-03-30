@@ -96,7 +96,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   emailNotifications: false,
 };
 
-const INVITATION_CODE = 'RESTAUMARGIN2024';
+const PLAN_LABELS: Record<string, string> = { basic: 'Basic — 9€/mois', pro: 'Pro — 29€/mois', business: 'Business — 79€/mois' };
 const APP_VERSION = '1.0.0';
 
 const CUISINE_TYPES = [
@@ -444,7 +444,7 @@ export default function Settings() {
 
   const handleCopyCode = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText(INVITATION_CODE);
+      await navigator.clipboard.writeText('restaumargin.vercel.app/pricing');
       setCopied(true);
       showToast('Code copié dans le presse-papier', 'success');
       setTimeout(() => setCopied(false), 2000);
@@ -1243,10 +1243,10 @@ export default function Settings() {
           <div className="space-y-4">
             {/* Invitation code */}
             <div>
-              <label className="label">Code d'invitation</label>
+              <label className="label">Abonnement</label>
               <div className="flex items-center gap-2">
                 <div className="input flex-1 bg-slate-50 dark:bg-slate-700 font-mono text-sm tracking-wider select-all">
-                  {INVITATION_CODE}
+                  {PLAN_LABELS[(user as any)?.plan] || 'Basic — 9€/mois'}
                 </div>
                 <button
                   onClick={handleCopyCode}

@@ -163,9 +163,10 @@ app.get('/api/activation/list', async (req: any, res) => {
 // ── Register with activation code ──
 app.post('/api/auth/register', async (req: any, res) => {
   try {
-    const { email, password, name, activationCode } = req.body;
-    if (!email || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
+    const { email: rawEmail, password, name, activationCode } = req.body;
+    if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
     if (password.length < 6) return res.status(400).json({ error: 'Min. 6 caractères' });
+    const email = rawEmail.toLowerCase().trim();
 
     const userCount = await prisma.user.count();
     let plan = 'basic';
@@ -199,7 +200,8 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
-    const user = await prisma.user.findUnique({ where: { email } });
+    // Case-insensitive email lookup
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
     if (!user) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });

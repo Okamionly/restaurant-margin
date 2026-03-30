@@ -277,7 +277,7 @@ function AppLayout() {
     {
       title: 'COMMUNICATION',
       items: [
-        { to: '/messagerie', icon: MessageSquare, label: 'Messages', badge: 3 },
+        { to: '/messagerie', icon: MessageSquare, label: 'Messages' },
         { to: '/clients', icon: Contact, label: 'Clients CRM' },
       ],
     },

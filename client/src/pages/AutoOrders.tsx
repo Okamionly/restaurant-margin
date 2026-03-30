@@ -27,6 +27,7 @@ interface OrderLine {
 
 interface Order {
   id: number;
+  dbId?: number;
   supplierId: number | null;
   supplierName: string;
   lines: OrderLine[];
@@ -36,6 +37,72 @@ interface Order {
   status: OrderStatus;
   date: string;
   notes: string;
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────────
+
+function autoOrdersAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
+}
+
+const STATUS_TO_API: Record<OrderStatus, string> = {
+  brouillon: 'draft',
+  'envoyé': 'sent',
+  'reçu': 'received',
+};
+
+const STATUS_FROM_API: Record<string, OrderStatus> = {
+  draft: 'brouillon',
+  sent: 'envoyé',
+  received: 'reçu',
+};
+
+interface ApiOrderItem {
+  id: number;
+  productName: string;
+  quantity: number;
+  unit: string;
+  unitPrice: number;
+  total: number;
+}
+
+interface ApiOrder {
+  id: number;
+  supplierName: string;
+  status: string;
+  totalHT: number;
+  notes: string;
+  items: ApiOrderItem[];
+  createdAt: string;
+}
+
+function apiOrderToLocal(apiOrder: ApiOrder): Order {
+  const lines: OrderLine[] = apiOrder.items.map((item) => ({
+    id: item.id,
+    ingredientId: null,
+    name: item.productName,
+    quantity: item.quantity,
+    unit: item.unit,
+    pricePerUnit: item.unitPrice,
+    total: item.total,
+  }));
+  const totals = calcTotals(lines);
+  return {
+    id: apiOrder.id,
+    dbId: apiOrder.id,
+    supplierId: null,
+    supplierName: apiOrder.supplierName,
+    lines,
+    ...totals,
+    status: STATUS_FROM_API[apiOrder.status] ?? 'brouillon',
+    date: apiOrder.createdAt,
+    notes: apiOrder.notes ?? '',
+  };
 }
 
 const STATUS_BADGE: Record<OrderStatus, { bg: string; label: string }> = {
@@ -117,6 +184,20 @@ export default function AutoOrders() {
       const [ings, supps] = await Promise.all([fetchIngredients(), fetchSuppliers()]);
       setIngredients(ings);
       setSuppliers(supps);
+
+      // Fetch orders from backend
+      try {
+        const ordersRes = await fetch('/api/marketplace/orders', {
+          headers: autoOrdersAuthHeaders(),
+        });
+        if (ordersRes.ok) {
+          const apiOrders: ApiOrder[] = await ordersRes.json();
+          setOrders(apiOrders.map(apiOrderToLocal));
+        }
+      } catch {
+        // Orders fetch is non-fatal; start with empty list
+      }
+
       // Fetch inventory alerts for auto-reorder
       try {
         const alerts = await fetchInventoryAlerts();
@@ -218,7 +299,7 @@ export default function AutoOrders() {
 
   const formTotals = useMemo(() => calcTotals(formLines), [formLines]);
 
-  function saveOrder() {
+  async function saveOrder() {
     if (!formSupplierName.trim()) {
       showToast('Veuillez sélectionner ou saisir un fournisseur', 'error');
       return;
@@ -230,27 +311,65 @@ export default function AutoOrders() {
     }
 
     const totals = calcTotals(validLines);
+    const existing = editingOrderId ? orders.find((o) => o.id === editingOrderId) : null;
+
     const orderData: Order = {
       id: editingOrderId ?? nextOrderId++,
+      dbId: existing?.dbId,
       supplierId: formSupplierId,
       supplierName: formSupplierName.trim(),
       lines: validLines,
       ...totals,
-      status: 'brouillon',
-      date: editingOrderId
-        ? (orders.find((o) => o.id === editingOrderId)?.date ?? new Date().toISOString())
-        : new Date().toISOString(),
+      status: existing ? existing.status : 'brouillon',
+      date: existing ? existing.date : new Date().toISOString(),
       notes: formNotes,
     };
 
-    if (editingOrderId) {
-      // preserve status when editing
-      const existing = orders.find((o) => o.id === editingOrderId);
-      if (existing) orderData.status = existing.status;
+    if (editingOrderId && existing?.dbId) {
+      // Existing DB order: only update notes via PUT (status+notes only endpoint)
+      try {
+        await fetch(`/api/marketplace/orders/${existing.dbId}`, {
+          method: 'PUT',
+          headers: autoOrdersAuthHeaders(),
+          body: JSON.stringify({ notes: formNotes }),
+        });
+      } catch {
+        // Non-fatal: local state still updated
+      }
+      setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
+      showToast('Commande modifiée avec succès', 'success');
+    } else if (editingOrderId) {
+      // Local-only draft (no dbId yet) — just update locally
       setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
       showToast('Commande modifiée avec succès', 'success');
     } else {
-      setOrders((prev) => [orderData, ...prev]);
+      // New order: POST to backend
+      try {
+        const res = await fetch('/api/marketplace/orders', {
+          method: 'POST',
+          headers: autoOrdersAuthHeaders(),
+          body: JSON.stringify({
+            supplierName: orderData.supplierName,
+            notes: orderData.notes,
+            items: validLines.map((l) => ({
+              productName: l.name,
+              quantity: l.quantity,
+              unit: l.unit,
+              unitPrice: l.pricePerUnit,
+            })),
+          }),
+        });
+        if (res.ok) {
+          const created: ApiOrder = await res.json();
+          const fromApi = apiOrderToLocal(created);
+          setOrders((prev) => [fromApi, ...prev]);
+        } else {
+          // Fallback: add locally with temp id
+          setOrders((prev) => [orderData, ...prev]);
+        }
+      } catch {
+        setOrders((prev) => [orderData, ...prev]);
+      }
       showToast('Commande créée en brouillon', 'success');
     }
 
@@ -260,23 +379,46 @@ export default function AutoOrders() {
   // ── order actions ──────────────────────────────────────────────────────────
 
   function markSent(id: number) {
+    const order = orders.find((o) => o.id === id);
     setOrders((prev) =>
       prev.map((o) => (o.id === id ? { ...o, status: 'envoyé' as OrderStatus } : o)),
     );
+    if (order?.dbId) {
+      fetch(`/api/marketplace/orders/${order.dbId}`, {
+        method: 'PUT',
+        headers: autoOrdersAuthHeaders(),
+        body: JSON.stringify({ status: STATUS_TO_API['envoyé'] }),
+      }).catch(() => {/* non-fatal */});
+    }
     showToast('Commande marquée comme envoyée', 'success');
   }
 
   function markReceived(id: number) {
+    const order = orders.find((o) => o.id === id);
     setOrders((prev) =>
       prev.map((o) => (o.id === id ? { ...o, status: 'reçu' as OrderStatus } : o)),
     );
+    if (order?.dbId) {
+      fetch(`/api/marketplace/orders/${order.dbId}`, {
+        method: 'PUT',
+        headers: autoOrdersAuthHeaders(),
+        body: JSON.stringify({ status: STATUS_TO_API['reçu'] }),
+      }).catch(() => {/* non-fatal */});
+    }
     showToast('Commande marquée comme reçue', 'success');
   }
 
   function confirmDeleteOrder() {
     if (deleteTarget === null) return;
+    const order = orders.find((o) => o.id === deleteTarget);
     setOrders((prev) => prev.filter((o) => o.id !== deleteTarget));
     setDeleteTarget(null);
+    if (order?.dbId) {
+      fetch(`/api/marketplace/orders/${order.dbId}`, {
+        method: 'DELETE',
+        headers: autoOrdersAuthHeaders(),
+      }).catch(() => {/* non-fatal */});
+    }
     showToast('Commande supprimée', 'success');
   }
 
@@ -284,6 +426,7 @@ export default function AutoOrders() {
     const dup: Order = {
       ...order,
       id: nextOrderId++,
+      dbId: undefined,
       status: 'brouillon',
       date: new Date().toISOString(),
       notes: `Copie de la commande ${order.supplierName}`,
@@ -398,12 +541,43 @@ export default function AutoOrders() {
     setShowAutoReviewModal(true);
   }
 
-  function confirmAutoOrders() {
+  async function confirmAutoOrders() {
+    // Optimistically add all generated orders to local state
     setOrders((prev) => [...autoGeneratedOrders, ...prev]);
     setShowAutoReviewModal(false);
     setAutoGeneratedOrders([]);
     setLowStockItems([]);
     showToast(`${autoGeneratedOrders.length} commande(s) auto-générée(s) en brouillon`, 'success');
+
+    // POST each to backend, replacing local temp entries with DB-returned ones on success
+    for (const order of autoGeneratedOrders) {
+      try {
+        const res = await fetch('/api/marketplace/orders', {
+          method: 'POST',
+          headers: autoOrdersAuthHeaders(),
+          body: JSON.stringify({
+            supplierName: order.supplierName,
+            notes: order.notes,
+            items: order.lines.map((l) => ({
+              productName: l.name,
+              quantity: l.quantity,
+              unit: l.unit,
+              unitPrice: l.pricePerUnit,
+            })),
+          }),
+        });
+        if (res.ok) {
+          const created: ApiOrder = await res.json();
+          const fromApi = apiOrderToLocal(created);
+          // Replace the local temp order (matched by supplierName+date proximity) with the DB one
+          setOrders((prev) =>
+            prev.map((o) => (o.id === order.id ? fromApi : o)),
+          );
+        }
+      } catch {
+        // Non-fatal: order already in local state
+      }
+    }
   }
 
   // ── send email via /api/contact ───────────────────────────────────────────

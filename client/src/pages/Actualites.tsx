@@ -15,7 +15,7 @@ interface NewsItem {
 
 function authHeaders(): Record<string, string> {
   const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('selectedRestaurantId');
+  const restaurantId = localStorage.getItem('activeRestaurantId');
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (restaurantId) headers['X-Restaurant-Id'] = restaurantId;

@@ -13,7 +13,7 @@ const API = '';
 
 function authHeaders() {
   const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('selectedRestaurantId') || '';
+  const rid = localStorage.getItem('activeRestaurantId') || '';
   return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Restaurant-Id': rid };
 }
 

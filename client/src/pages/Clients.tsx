@@ -3,7 +3,7 @@ import {
   Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
   Tag, Filter, LayoutGrid, List, ChevronDown, ChevronUp, Eye, FileText,
   Download, Shield, Clock, BarChart3, PieChart, TrendingUp, X, AlertTriangle,
-  Upload, Copy, ExternalLink, Heart, UserPlus, Send,
+  Upload, Copy, ExternalLink, Heart, UserPlus, Send, Loader2,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
@@ -395,6 +395,9 @@ export default function Clients() {
   const [form, setForm] = useState<Client>(emptyForm);
   const [duplicateWarning, setDuplicateWarning] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [sendingClientEmail, setSendingClientEmail] = useState(false);
 
   // ── Filtering & sorting ───────────────────────────────────────────────
 
@@ -481,14 +484,47 @@ export default function Clients() {
   function openEmailModal(c: Client) {
     setSelectedClient(c);
     setSelectedTemplate('');
+    setEmailSubject('');
+    setEmailMessage('');
     setShowEmail(true);
   }
 
-  function sendEmail(c: Client, template: typeof EMAIL_TEMPLATES[0]) {
-    const mailto = `mailto:${c.email}?subject=${encodeURIComponent(template.subject)}&body=${encodeURIComponent(template.body)}`;
-    window.open(mailto, '_blank');
-    showToast(`Email "${template.label}" ouvert pour ${c.prenom} ${c.nom}`, 'success');
-    setShowEmail(false);
+  function applyTemplate(template: typeof EMAIL_TEMPLATES[0]) {
+    setEmailSubject(template.subject);
+    setEmailMessage(template.body);
+    setSelectedTemplate(template.id);
+  }
+
+  async function handleSendClientEmail() {
+    if (!selectedClient) return;
+    if (!emailSubject.trim() || !emailMessage.trim()) {
+      showToast('Veuillez remplir l\'objet et le message', 'error');
+      return;
+    }
+    setSendingClientEmail(true);
+    try {
+      const message = `Email pour ${selectedClient.prenom} ${selectedClient.nom} (${selectedClient.email})\n\nObjet: ${emailSubject}\n\n${emailMessage}`;
+      const res = await fetch(`${API}/api/contact`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          name: 'RestauMargin — Message client',
+          email: 'mr.guessousyoussef@gmail.com',
+          source: 'crm-email',
+          message,
+        }),
+      });
+      if (!res.ok) throw new Error('Erreur envoi');
+      showToast(`Email envoyé pour ${selectedClient.prenom} ${selectedClient.nom}`, 'success');
+      setShowEmail(false);
+      setEmailSubject('');
+      setEmailMessage('');
+      setSelectedTemplate('');
+    } catch {
+      showToast('Erreur lors de l\'envoi de l\'email', 'error');
+    } finally {
+      setSendingClientEmail(false);
+    }
   }
 
   function exportClientData(c: Client) {
@@ -1221,25 +1257,62 @@ export default function Clients() {
       </Modal>
 
       {/* ── Email Modal ──────────────────────────────────────────────── */}
-      <Modal isOpen={showEmail} onClose={() => setShowEmail(false)}
+      <Modal isOpen={showEmail} onClose={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
         title={selectedClient ? `Envoyer un email à ${selectedClient.prenom} ${selectedClient.nom}` : 'Email'}>
         {selectedClient && (
-          <div className="space-y-3">
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-              Choisissez un modèle d'email. Il sera ouvert dans votre client de messagerie.
-            </p>
-            {EMAIL_TEMPLATES.map(t => (
-              <button key={t.id}
-                onClick={() => sendEmail(selectedClient, t)}
-                className="w-full flex items-center gap-3 p-4 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all text-left">
-                <Send className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                <div>
-                  <div className="text-sm font-medium text-slate-900 dark:text-white">{t.label}</div>
-                  <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Objet : {t.subject}</div>
-                </div>
-                <ExternalLink className="w-4 h-4 text-slate-300 dark:text-slate-600 ml-auto" />
+          <div className="space-y-4">
+            {/* Template shortcuts */}
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Modèles rapides</label>
+              <div className="flex flex-wrap gap-2">
+                {EMAIL_TEMPLATES.map(t => (
+                  <button key={t.id}
+                    onClick={() => applyTemplate(t)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === t.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-300 dark:hover:border-blue-600'}`}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Subject */}
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Objet</label>
+              <input
+                type="text"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Objet de l'email..."
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              />
+            </div>
+            {/* Message body */}
+            <div>
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Message</label>
+              <textarea
+                value={emailMessage}
+                onChange={(e) => setEmailMessage(e.target.value)}
+                placeholder="Votre message..."
+                rows={6}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-vertical"
+              />
+            </div>
+            {/* Send button */}
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                Annuler
               </button>
-            ))}
+              <button
+                onClick={handleSendClientEmail}
+                disabled={sendingClientEmail || !emailSubject.trim() || !emailMessage.trim()}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50"
+              >
+                {sendingClientEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                Envoyer
+              </button>
+            </div>
           </div>
         )}
       </Modal>

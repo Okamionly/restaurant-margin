@@ -474,16 +474,13 @@ export default function AutoOrders() {
   // ── send email via /api/contact ───────────────────────────────────────────
 
   async function handleSendOrderEmail(order: Order) {
-    const supplier = suppliers.find((s) => s.id === order.supplierId);
-    const supplierEmail = supplier?.email;
-
-    if (!supplierEmail) {
-      showToast('Aucun email trouvé pour ce fournisseur', 'error');
-      return;
-    }
-
     setSendingEmail(order.id);
     try {
+      const linesText = order.lines
+        .map((l) => `- ${l.name} x ${l.quantity} ${l.unit} = ${fmtEuro(l.total)}`)
+        .join('\n');
+      const message = `Commande pour ${order.supplierName}\n\nArticles:\n${linesText}\n\nTotal HT: ${fmtEuro(order.totalHT)}`;
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -491,15 +488,15 @@ export default function AutoOrders() {
           ...(localStorage.getItem('token') ? { Authorization: `Bearer ${localStorage.getItem('token')}` } : {}),
         },
         body: JSON.stringify({
+          name: 'RestauMargin — Commande',
+          email: 'mr.guessousyoussef@gmail.com',
           source: 'auto-order',
-          name: 'RestauMargin',
-          email: supplierEmail,
-          message: buildEmailBody(order),
+          message,
         }),
       });
       if (!res.ok) throw new Error('Erreur envoi');
       markSent(order.id);
-      showToast('Envoyé', 'success');
+      showToast('Email envoyé', 'success');
     } catch {
       showToast('Erreur lors de l\'envoi de l\'email', 'error');
     } finally {

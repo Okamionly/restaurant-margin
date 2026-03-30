@@ -619,6 +619,7 @@ export default function Devis() {
   const [previewDoc, setPreviewDoc] = useState<DocumentDevis | null>(null);
   const [editingDoc, setEditingDoc] = useState<DocumentDevis | null>(null);
   const [paymentDocId, setPaymentDocId] = useState<string | null>(null);
+  const [sendingEmailId, setSendingEmailId] = useState<string | null>(null);
 
   // Create form state
   const [createType, setCreateType] = useState<DocType>('devis');
@@ -822,15 +823,39 @@ export default function Devis() {
   }
 
   async function handleSendEmail(doc: DocumentDevis) {
+    setSendingEmailId(doc.id);
     try {
-      await fetch(`${API}/api/devis/${doc.id}`, {
-        method: 'PUT',
+      // Send email via /api/contact
+      const message = `Devis ${doc.numero} pour ${doc.client.nom || doc.client.raisonSociale}\n\nObjet: ${doc.client.raisonSociale || doc.client.nom}\nMontant HT: ${formatEuro(doc.totalHT)}\nMontant TTC: ${formatEuro(doc.totalTTC)}\n\nClient: ${doc.client.nom} - ${doc.client.email} - ${doc.client.telephone}`;
+
+      const contactRes = await fetch(`${API}/api/contact`, {
+        method: 'POST',
         headers: authHeaders(),
-        body: JSON.stringify({ status: 'sent' }),
+        body: JSON.stringify({
+          name: 'RestauMargin — Devis',
+          email: 'mr.guessousyoussef@gmail.com',
+          source: 'devis-envoi',
+          message,
+        }),
       });
-    } catch { /* continue with local update */ }
-    setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, statut: 'envoye' as DocStatus } : d));
-    showToast(`${doc.numero} envoyé par email à ${doc.client.email}`, 'success');
+      if (!contactRes.ok) throw new Error('Erreur envoi email');
+
+      // Update devis status
+      try {
+        await fetch(`${API}/api/devis/${doc.id}`, {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify({ status: 'sent' }),
+        });
+      } catch { /* continue with local update */ }
+
+      setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, statut: 'envoye' as DocStatus } : d));
+      showToast(`${doc.numero} envoyé par email`, 'success');
+    } catch {
+      showToast('Erreur lors de l\'envoi de l\'email', 'error');
+    } finally {
+      setSendingEmailId(null);
+    }
   }
 
   function handleDownloadPDF(doc: DocumentDevis) {
@@ -1123,8 +1148,8 @@ export default function Devis() {
                           <Copy className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleSendEmail(doc)} title="Envoyer" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-                            <Send className="w-4 h-4" />
+                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title="Envoyer par email" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50">
+                            {sendingEmailId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                           </button>
                         )}
                         {doc.type === 'devis' && doc.statut === 'accepte' && (

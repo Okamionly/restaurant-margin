@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -231,6 +232,82 @@ app.delete('/api/auth/users/:id', authMiddleware, async (req: any, res) => {
     await prisma.user.delete({ where: { id: targetId } });
     res.status(204).send();
   } catch { res.status(500).json({ error: 'Erreur suppression' }); }
+});
+
+// ============ ERROR TRACKING ============
+app.post('/api/errors', authMiddleware, (req: any, res) => {
+  console.warn('[CLIENT ERROR]', req.user?.userId, req.body?.message, req.body?.url);
+  res.json({ received: true });
+});
+
+// ============ AUTH: VERIFY EMAIL, RESEND, FORGOT/RESET PASSWORD ============
+app.get('/api/auth/verify-email', async (req: any, res) => {
+  try {
+    const token = req.query.token as string;
+    if (!token) return res.status(400).json({ error: 'Token manquant' });
+    const user = await prisma.user.findFirst({ where: { verificationToken: token } });
+    if (!user) return res.status(400).json({ error: 'Token invalide' });
+    await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true, verificationToken: null } });
+    res.json({ success: true, message: 'Email vérifié avec succès' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+app.post('/api/auth/resend-verification', authMiddleware, async (req: any, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    if (user.emailVerified) return res.json({ message: 'Email déjà vérifié' });
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    await prisma.user.update({ where: { id: user.id }, data: { verificationToken } });
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const resend = new Resend(apiKey);
+      const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
+      await resend.emails.send({
+        from: 'RestauMargin <onboarding@resend.dev>', to: user.email,
+        subject: 'RestauMargin — Vérifiez votre adresse email',
+        html: `<h2>Vérification d'email</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/login?verify=${verificationToken}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Vérifier mon email</a></p><p>L'équipe RestauMargin</p>`,
+      });
+    }
+    res.json({ message: 'Email de vérification envoyé' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+app.post('/api/auth/forgot-password', async (req: any, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email requis' });
+    const genericMsg = 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.';
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+    if (!user) return res.json({ message: genericMsg });
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiry = new Date(Date.now() + 3600000);
+    await prisma.user.update({ where: { id: user.id }, data: { resetToken: token, resetTokenExpiry: expiry } });
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const resend = new Resend(apiKey);
+      const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
+      await resend.emails.send({
+        from: 'RestauMargin <onboarding@resend.dev>', to: user.email,
+        subject: 'RestauMargin — Réinitialisation de votre mot de passe',
+        html: `<h2>Réinitialisation de mot de passe</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/reset-password?token=${token}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Réinitialiser mon mot de passe</a></p><p>Ce lien expire dans 1 heure.</p><p>L'équipe RestauMargin</p>`,
+      });
+    }
+    res.json({ message: genericMsg });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+app.post('/api/auth/reset-password', async (req: any, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) return res.status(400).json({ error: 'Token et nouveau mot de passe requis' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 6 caractères' });
+    const user = await prisma.user.findFirst({ where: { resetToken: token, resetTokenExpiry: { gt: new Date() } } });
+    if (!user) return res.status(400).json({ error: 'Lien invalide ou expiré' });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({ where: { id: user.id }, data: { passwordHash: hashedPassword, resetToken: null, resetTokenExpiry: null } });
+    res.json({ message: 'Mot de passe réinitialisé avec succès' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
 // ============ RESTAURANTS ============

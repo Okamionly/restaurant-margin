@@ -16,7 +16,7 @@ import type { Ingredient } from '../types';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type WasteReason = 'perime' | 'surproduction' | 'erreur_cuisine' | 'retour_client';
+type WasteReason = 'expired' | 'spoiled' | 'overproduction' | 'damaged' | 'other';
 
 interface WasteEntry {
   id: number;
@@ -57,24 +57,27 @@ type Period = 'jour' | 'semaine' | 'mois';
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const REASON_LABELS: Record<WasteReason, string> = {
-  perime: 'Périmé',
-  surproduction: 'Surproduction',
-  erreur_cuisine: 'Erreur cuisine',
-  retour_client: 'Retour client',
+  expired: 'Périmé',
+  spoiled: 'Avarié',
+  overproduction: 'Surproduction',
+  damaged: 'Endommagé',
+  other: 'Autre',
 };
 
 const REASON_COLORS: Record<WasteReason, string> = {
-  perime: '#dc2626',
-  surproduction: '#d97706',
-  erreur_cuisine: '#7c3aed',
-  retour_client: '#0891b2',
+  expired: '#dc2626',
+  spoiled: '#d97706',
+  overproduction: '#7c3aed',
+  damaged: '#0891b2',
+  other: '#6b7280',
 };
 
 const REASON_BADGE: Record<WasteReason, string> = {
-  perime: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-  surproduction: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-  erreur_cuisine: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
-  retour_client: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+  expired: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+  spoiled: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  overproduction: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
+  damaged: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+  other: 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300',
 };
 
 // (ingredients are loaded from the API — no static catalog needed)
@@ -83,7 +86,7 @@ const REASON_BADGE: Record<WasteReason, string> = {
 
 function generateSuggestions(entries: WasteEntry[]): string[] {
   const tips: string[] = [];
-  const byReason: Record<WasteReason, number> = { perime: 0, surproduction: 0, erreur_cuisine: 0, retour_client: 0 };
+  const byReason: Record<WasteReason, number> = { expired: 0, spoiled: 0, overproduction: 0, damaged: 0, other: 0 };
   const byIngredient: Record<string, number> = {};
 
   entries.forEach(e => {
@@ -95,20 +98,20 @@ function generateSuggestions(entries: WasteEntry[]): string[] {
   const topReason = (Object.entries(byReason) as [WasteReason, number][]).sort((a, b) => b[1] - a[1])[0];
   const topIngredients = Object.entries(byIngredient).sort((a, b) => b[1] - a[1]).slice(0, 3);
 
-  if (topReason[0] === 'perime') {
+  if (topReason[0] === 'expired') {
     tips.push('📦 Appliquez le FIFO (First In, First Out) pour réduire les pertes par péremption. Vérifiez les DLC chaque matin.');
     tips.push('🔄 Réduisez les volumes de commande pour les produits fréquemment périmés et passez à des livraisons plus fréquentes.');
   }
-  if (topReason[0] === 'surproduction') {
+  if (topReason[0] === 'overproduction') {
     tips.push('📊 Analysez vos données de fréquentation pour ajuster les quantités préparées. Utilisez les prévisions du planning.');
     tips.push('🍽️ Proposez un "plat du jour" avec les surplus de la veille pour valoriser les excédents.');
   }
-  if (topReason[0] === 'erreur_cuisine') {
+  if (topReason[0] === 'damaged') {
     tips.push('👨‍🍳 Renforcez la formation des équipes sur les fiches techniques. Affichez les procédures clés en cuisine.');
     tips.push('⚖️ Utilisez la station balance pour un dosage précis et réduire les erreurs de préparation.');
   }
-  if (topReason[0] === 'retour_client') {
-    tips.push('🎯 Analysez les retours clients par plat pour identifier les recettes à améliorer ou retirer de la carte.');
+  if (topReason[0] === 'spoiled') {
+    tips.push('🎯 Analysez les conditions de stockage — température, humidité, rotation des stocks.');
     tips.push('💬 Formez le service en salle à mieux décrire les plats pour éviter les commandes inadaptées.');
   }
 
@@ -151,7 +154,7 @@ export default function WasteTracker() {
   const [form, setForm] = useState({
     ingredientId: '',
     quantity: '',
-    reason: 'perime' as WasteReason,
+    reason: 'expired' as WasteReason,
     notes: '',
   });
 
@@ -245,7 +248,7 @@ export default function WasteTracker() {
 
   // Pie chart: waste by reason
   const pieData = useMemo(() => {
-    const byReason: Record<WasteReason, number> = { perime: 0, surproduction: 0, erreur_cuisine: 0, retour_client: 0 };
+    const byReason: Record<WasteReason, number> = { expired: 0, spoiled: 0, overproduction: 0, damaged: 0, other: 0 };
     filteredByPeriod.forEach(e => { byReason[e.reason] += e.quantity * e.costPerUnit; });
     return (Object.entries(byReason) as [WasteReason, number][])
       .filter(([, v]) => v > 0)
@@ -379,7 +382,7 @@ export default function WasteTracker() {
         const body = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(body.error || 'Erreur lors de la déclaration');
       }
-      setForm({ ingredientId: '', quantity: '', reason: 'perime', notes: '' });
+      setForm({ ingredientId: '', quantity: '', reason: 'expired', notes: '' });
       setShowAddModal(false);
       showToast(`Perte déclarée : ${qty} ${ing.unit} de ${ing.name} (${formatEuro(qty * ing.pricePerUnit)})`, 'success');
       await loadEntries();

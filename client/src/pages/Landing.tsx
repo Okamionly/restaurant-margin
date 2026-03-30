@@ -250,54 +250,46 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
-            <div className="text-center lg:text-left">
-              <FadeIn>
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.2)] animate-pulse">
-                  <Zap className="w-3.5 h-3.5" />
-                  PLATEFORME #1 DES RESTAURATEURS
-                </div>
-              </FadeIn>
+            <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.2)] animate-pulse">
+                <Zap className="w-3.5 h-3.5" />
+                PLATEFORME #1 DES RESTAURATEURS
+              </div>
 
-              <FadeIn delay={100}>
-                <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight">
-                  <span className="text-white">Maitrisez vos marges.</span>
-                  <br />
-                  <span className="text-white">Augmentez vos </span>
-                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
-                    profits.
-                  </span>
-                </h1>
-              </FadeIn>
+              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
+                <span className="text-white">Maitrisez vos marges.</span>
+                <br />
+                <span className="text-white">Augmentez vos </span>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                  profits.
+                </span>
+              </h1>
 
-              <FadeIn delay={200}>
-                <p className="mt-6 text-lg sm:text-xl text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
-                </p>
-              </FadeIn>
+              <p className="mt-6 text-lg sm:text-xl text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+                La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
+              </p>
 
-              <FadeIn delay={300}>
-                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link
-                    to="/pricing"
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition-all text-base"
-                  >
-                    Voir les tarifs <ArrowRight className="w-4 h-4" />
-                  </Link>
-                  <button
-                    onClick={() => scrollTo('demo')}
-                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-white font-semibold border border-slate-700 hover:border-slate-500 transition-all text-base"
-                  >
-                    Voir la demo <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-                <p className="mt-3 text-sm text-slate-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5">
-                  <Lock className="w-3.5 h-3.5" /> Pas de carte bancaire requise
-                </p>
-              </FadeIn>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:from-blue-500 hover:to-purple-500 transition-all text-base"
+                >
+                  Voir les tarifs <ArrowRight className="w-4 h-4" />
+                </Link>
+                <button
+                  onClick={() => scrollTo('demo')}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-white font-semibold border border-slate-700 hover:border-blue-500/50 hover:shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-all text-base"
+                >
+                  Voir la demo <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="mt-3 text-sm text-slate-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+                <Lock className="w-3.5 h-3.5" /> Paiement securise via Stripe
+              </p>
             </div>
 
             {/* Right — Product image */}
-            <FadeIn delay={400} className="hidden lg:block">
+            <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-3xl blur-2xl" />
                 <div className="relative bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm">
@@ -313,11 +305,11 @@ export default function Landing() {
                   Nouveau 2026
                 </div>
               </div>
-            </FadeIn>
+            </div>
           </div>
 
           {/* Stats bar */}
-          <FadeIn delay={500}>
+          <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
             <div className="mt-16 bg-slate-900/60 border border-slate-800 rounded-2xl py-8 px-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-slate-800 md:divide-x">
                 <StatCounter value={150} suffix="+" label="Restaurants equipes" />
@@ -329,7 +321,7 @@ export default function Landing() {
                 </div>
               </div>
             </div>
-          </FadeIn>
+          </div>
         </div>
       </section>
 

@@ -1,34 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChefHat,
-  Calculator,
-  ClipboardList,
-  Sparkles,
-  Truck,
-  BarChart3,
-  Smartphone,
-  ArrowRight,
-  CheckCircle2,
-  TrendingUp,
-  BookOpen,
-  Utensils,
-  Zap,
-  Star,
-  StarHalf,
-  Play,
-  Package,
-  Users,
-  Quote,
-  Menu,
-  X,
-  Shield,
-  Lock,
-  Mail,
-  BadgeCheck,
+  ChefHat, Calculator, ClipboardList, Sparkles, Truck, BarChart3,
+  ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
+  Package, Users, Menu, X as XIcon, Shield, Lock, Mail,
+  Scale, Tablet, Bluetooth, ChevronDown, Phone, Send, Loader2,
+  XCircle, Brain, Thermometer,
 } from 'lucide-react';
 
-/* ───────────────────────── Hooks ───────────────────────── */
+/* ─────────────────────── Hooks ─────────────────────── */
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -62,7 +42,7 @@ function useAnimatedCounter(target: number, duration = 2000, trigger = false) {
   return count;
 }
 
-/* ───────────────────────── Components ───────────────────────── */
+/* ─────────────────────── Components ─────────────────────── */
 
 function FadeIn({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const { ref, visible } = useInView();
@@ -77,121 +57,95 @@ function FadeIn({ children, delay = 0, className = '' }: { children: React.React
   );
 }
 
-function AnimatedStat({ value, suffix = '', label, icon: Icon }: { value: number; suffix?: string; label: string; icon: React.ElementType }) {
+function StatCounter({ value, suffix = '', label }: { value: number; suffix?: string; label: string }) {
   const { ref, visible } = useInView(0.3);
   const count = useAnimatedCounter(value, 1800, visible);
   return (
-    <div ref={ref} className="text-center">
-      <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 mb-4">
-        <Icon className="w-7 h-7 text-blue-200" />
-      </div>
-      <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+    <div ref={ref} className="text-center px-6">
+      <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
         {count}{suffix}
       </div>
-      <div className="text-sm text-blue-200/80 mt-2 font-medium">{label}</div>
+      <div className="text-sm text-slate-400 mt-1 font-medium">{label}</div>
     </div>
   );
 }
 
-/* ───────────────────────── Data ───────────────────────── */
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border border-slate-800 rounded-2xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-slate-800/40 transition-colors"
+      >
+        <span className="font-semibold text-white pr-4">{q}</span>
+        <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
+        <p className="px-6 text-sm text-slate-400 leading-relaxed">{a}</p>
+      </div>
+    </div>
+  );
+}
 
-const features = [
-  {
-    icon: ClipboardList,
-    title: 'Fiches techniques professionnelles',
-    desc: 'Créez des fiches techniques détaillées avec ingrédients, quantités, étapes de préparation et coûts actualisés automatiquement.',
-  },
-  {
-    icon: Calculator,
-    title: 'Calcul de marge en temps réel',
-    desc: 'Visualisez instantanément vos coûts matière, marges brutes et prix de vente recommandés sur chaque plat.',
-  },
-  {
-    icon: Truck,
-    title: 'Gestion des fournisseurs',
-    desc: 'Centralisez vos fournisseurs, comparez les prix, suivez les évolutions tarifaires et optimisez vos achats.',
-  },
-  {
-    icon: Package,
-    title: 'Inventaire et stock',
-    desc: 'Suivez vos stocks en temps réel, anticipez les ruptures et réduisez le gaspillage alimentaire.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Suggestions intelligentes (IA)',
-    desc: "L'intelligence artificielle analyse vos données pour suggérer des optimisations de recettes et de prix.",
-  },
-  {
-    icon: Smartphone,
-    title: 'Application installable (PWA)',
-    desc: "Accédez à RestauMargin depuis n'importe quel appareil — smartphone, tablette ou ordinateur, même hors connexion.",
-  },
-];
-
-const steps = [
-  { num: '01', title: 'Choisissez votre abonnement', desc: 'Basic 9€, Pro 29€ ou Business 79€/mois. Activation instantanée.', icon: Users },
-  { num: '02', title: 'Ajoutez vos ingrédients et fournisseurs', desc: 'Importez ou saisissez votre catalogue avec les prix.', icon: Utensils },
-  { num: '03', title: 'Composez vos recettes', desc: 'Créez vos fiches techniques avec calcul automatique.', icon: BookOpen },
-  { num: '04', title: 'Analysez et optimisez', desc: 'Pilotez vos marges avec des données précises.', icon: TrendingUp },
-];
+/* ─────────────────────── Data ─────────────────────── */
 
 const testimonials = [
   {
-    quote: "+4 points de marge en 3 mois. Les fiches techniques automatisées nous ont tout changé.",
+    quote: "+4 points de marge en 3 mois. Les fiches techniques automatiques nous ont tout change.",
     name: 'Laurent Dubois',
     role: 'Chef de cuisine',
     place: 'Restaurant gastronomique, Lyon',
-    rating: 4.5,
+    rating: 5,
   },
   {
-    quote: "Interface intuitive, calcul en temps réel. Exactement ce qu'il manquait aux restaurateurs.",
+    quote: "Interface intuitive, calcul en temps reel. Exactement ce qu'il manquait aux restaurateurs.",
     name: 'Sophie Martin',
     role: 'Directrice',
     place: 'Brasserie Le Comptoir, Paris',
     rating: 5,
   },
   {
-    quote: "Chaque centime compte en food truck. RestauMargin m'aide à rester compétitif et rentable.",
+    quote: "Chaque centime compte en food truck. RestauMargin m'aide a rester competitif et rentable.",
     name: 'Karim Benali',
-    role: 'Gérant',
+    role: 'Gerant',
     place: 'Food truck Street Flavors, Bordeaux',
-    rating: 4.5,
+    rating: 4,
   },
 ];
 
-const pricingFeaturesFree = [
-  'Calcul de marge illimité',
-  'Fiches techniques complètes',
-  'Suggestions intelligentes (IA)',
-  'Gestion fournisseurs',
-  'Tableau de bord analytics',
-  'Application PWA installable',
-  'Support par email',
+const faqItems = [
+  {
+    q: 'Comment fonctionne l\'abonnement ?',
+    a: 'Choisissez votre plan (Basic, Pro ou Business), payez par carte bancaire et recevez votre code d\'activation instantanement. L\'abonnement est mensuel, sans engagement. Vous pouvez annuler a tout moment depuis votre espace.',
+  },
+  {
+    q: 'Comment recevoir mon code d\'activation ?',
+    a: 'Apres le paiement, vous recevez un email avec votre code d\'activation et un lien pour creer votre compte. Connectez-vous, entrez le code et commencez a utiliser RestauMargin immediatement.',
+  },
+  {
+    q: 'Puis-je changer de plan ?',
+    a: 'Oui, vous pouvez upgrader ou downgrader votre plan a tout moment. Le changement prend effet au prochain cycle de facturation. Le prorata est calcule automatiquement.',
+  },
+  {
+    q: 'Le Kit Station est-il obligatoire ?',
+    a: 'Non. Le Kit Station est un accessoire optionnel pour les cuisines qui veulent la pesee connectee en temps reel. L\'application RestauMargin fonctionne parfaitement seule sur smartphone, tablette ou ordinateur.',
+  },
+  {
+    q: 'Mes donnees sont-elles securisees ?',
+    a: 'Vos donnees sont hebergees en Europe (Supabase), chiffrees en transit (SSL/TLS) et au repos. Nous sommes conformes RGPD. Aucune donnee n\'est revendue a des tiers.',
+  },
 ];
 
-const pricingFeaturesPro = [
-  'Tout du plan Gratuit',
-  'Multi-restaurant',
-  'Export avancé (PDF, Excel)',
-  'Support prioritaire 24/7',
-  'Intégrations fournisseurs',
-  'API & webhooks',
-  'Formation personnalisée',
-];
-
-/* ───────────────────────── Page ───────────────────────── */
+/* ─────────────────────── Page ─────────────────────── */
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [proEmail, setProEmail] = useState('');
-  const [proEmailSent, setProEmailSent] = useState(false);
-  const [proLoading, setProLoading] = useState(false);
-  const [proError, setProError] = useState('');
-  const [kitForm, setKitForm] = useState({ nom: '', email: '', telephone: '', message: '' });
-  const [kitFormSent, setKitFormSent] = useState(false);
-  const [kitLoading, setKitLoading] = useState(false);
-  const [kitError, setKitError] = useState('');
+  const [contactForm, setContactForm] = useState({ nom: '', email: '', telephone: '', message: '' });
+  const [contactSent, setContactSent] = useState(false);
+  const [contactLoading, setContactLoading] = useState(false);
+  const [contactError, setContactError] = useState('');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -204,157 +158,115 @@ export default function Landing() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  return (
-    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden scroll-smooth">
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactLoading(true);
+    setContactError('');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: contactForm.nom,
+          email: contactForm.email,
+          phone: contactForm.telephone,
+          message: contactForm.message,
+          source: 'landing-contact',
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Erreur lors de l\'envoi');
+      }
+      setContactSent(true);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de l\'envoi. Veuillez reessayer.';
+      setContactError(message);
+    } finally {
+      setContactLoading(false);
+    }
+  };
 
-      {/* ════════════════ Navbar ════════════════ */}
-      <nav
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-slate-900/5 border-b border-slate-100'
-            : 'bg-transparent'
-        }`}
-      >
+  return (
+    <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden scroll-smooth">
+
+      {/* ═══════════════════ NAVBAR ═══════════════════ */}
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/90 backdrop-blur-xl border-b border-slate-800' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-700/25 group-hover:shadow-blue-700/40 transition-shadow">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-700/25">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-800 to-blue-600 bg-clip-text text-transparent">
-              RestauMargin
-            </span>
+            <span className="text-xl font-bold text-white">RestauMargin</span>
           </Link>
 
-          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('features')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
-              Fonctionnalités
-            </button>
-            <button onClick={() => scrollTo('pricing')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
-              Tarifs
-            </button>
-            <button onClick={() => scrollTo('testimonials')} className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors cursor-pointer">
-              Témoignages
-            </button>
-            <Link to="/station-produit" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors flex items-center gap-1">
-              Kit Station <Zap className="w-3.5 h-3.5" />
-            </Link>
+            <button onClick={() => scrollTo('features')} className="text-sm text-slate-400 hover:text-white transition-colors cursor-pointer">Fonctionnalites</button>
+            <button onClick={() => scrollTo('station')} className="text-sm text-slate-400 hover:text-white transition-colors cursor-pointer">Kit Station</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-slate-400 hover:text-white transition-colors cursor-pointer">Tarifs</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-slate-400 hover:text-white transition-colors cursor-pointer">FAQ</button>
           </div>
 
-          {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="/login"
-              className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors px-3 py-2"
-            >
-              Connexion
-            </Link>
-            <Link
-              to="/pricing"
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
-            >
-              Voir les tarifs
-              <ArrowRight className="w-4 h-4" />
+            <Link to="/login" className="text-sm text-slate-400 hover:text-white transition-colors px-3 py-2">Connexion</Link>
+            <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/25">
+              Voir les tarifs <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-slate-600 hover:text-blue-700"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-slate-400 hover:text-white">
+            {mobileMenuOpen ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 shadow-xl">
+          <div className="md:hidden bg-slate-950/95 backdrop-blur-xl border-t border-slate-800">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
-                Fonctionnalités
-              </button>
-              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
-                Tarifs
-              </button>
-              <button onClick={() => scrollTo('testimonials')} className="block w-full text-left text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
-                Témoignages
-              </button>
-              <hr className="border-slate-100" />
-              <Link to="/login" className="block text-sm font-medium text-slate-700 hover:text-blue-700 py-2">
-                Connexion
-              </Link>
-              <Link
-                to="/pricing"
-                className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-700 text-white text-sm font-semibold hover:bg-blue-800 transition-all"
-              >
-                Voir les tarifs
-              </Link>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-slate-300 hover:text-white py-2">Fonctionnalites</button>
+              <button onClick={() => scrollTo('station')} className="block w-full text-left text-sm text-slate-300 hover:text-white py-2">Kit Station</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-slate-300 hover:text-white py-2">Tarifs</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-slate-300 hover:text-white py-2">FAQ</button>
+              <hr className="border-slate-800" />
+              <Link to="/login" className="block text-sm text-slate-300 hover:text-white py-2">Connexion</Link>
+              <Link to="/pricing" className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold">Voir les tarifs</Link>
             </div>
           </div>
         )}
       </nav>
 
-      {/* ════════════════ Hero ════════════════ */}
-      <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-40 lg:pb-28 overflow-hidden">
-        {/* Animated gradient mesh background */}
+      {/* ═══════════════════ 1. HERO ═══════════════════ */}
+      <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 opacity-30" style={{
-            backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(59,130,246,0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(99,102,241,0.25) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(37,99,235,0.15) 0%, transparent 60%)',
-            animation: 'meshMove 12s ease-in-out infinite alternate',
-          }} />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] rounded-full bg-gradient-to-b from-blue-50 to-transparent opacity-80" />
-          <div className="absolute top-20 right-0 w-96 h-96 rounded-full bg-blue-100/40 blur-3xl" style={{ animation: 'meshFloat 8s ease-in-out infinite alternate' }} />
-          <div className="absolute top-48 -left-20 w-72 h-72 rounded-full bg-indigo-100/30 blur-3xl" style={{ animation: 'meshFloat 10s ease-in-out infinite alternate-reverse' }} />
-          {/* Dot grid pattern */}
-          <div className="absolute inset-0 opacity-[0.035]" style={{
-            backgroundImage: 'radial-gradient(circle, #1e40af 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
-          }} />
+          <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
         </div>
-        <style>{`
-          @keyframes meshMove {
-            0% { transform: scale(1) rotate(0deg); }
-            100% { transform: scale(1.08) rotate(2deg); }
-          }
-          @keyframes meshFloat {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-20px) scale(1.05); }
-          }
-        `}</style>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <div className="text-center lg:text-left">
               <FadeIn>
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-6 tracking-wide">
-                  <Star className="w-3.5 h-3.5 fill-blue-700" />
-                  GRATUIT PENDANT LA BETA
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-6 tracking-wide">
+                  <Zap className="w-3.5 h-3.5" />
+                  PLATEFORME #1 DES RESTAURATEURS
                 </div>
               </FadeIn>
 
               <FadeIn delay={100}>
                 <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight">
-                  <span className="bg-gradient-to-r from-blue-800 via-blue-700 to-blue-500 bg-clip-text text-transparent">
-                    La solution complète
-                  </span>
+                  <span className="text-white">Maitrisez vos marges.</span>
                   <br />
-                  <span className="text-slate-900">
-                    de gestion des marges
-                  </span>
-                  <br />
-                  <span className="bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
-                    pour la restauration
+                  <span className="text-white">Augmentez vos </span>
+                  <span className="bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                    profits.
                   </span>
                 </h1>
               </FadeIn>
 
               <FadeIn delay={200}>
-                <p className="mt-6 text-lg sm:text-xl text-slate-500 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  Calculez vos coûts, optimisez vos prix, maîtrisez votre rentabilité.
-                  <span className="text-blue-700 font-semibold"> Utilisé par +100 restaurateurs en France.</span>
+                <p className="mt-6 text-lg sm:text-xl text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                  La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
                 </p>
               </FadeIn>
 
@@ -362,127 +274,76 @@ export default function Landing() {
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link
                     to="/pricing"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition-all text-base"
                   >
                     Voir les tarifs <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <a
-                    href="#how-it-works"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-700 font-semibold border border-slate-200 hover:border-slate-300 transition-colors"
+                  <button
+                    onClick={() => scrollTo('demo')}
+                    className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-white font-semibold border border-slate-700 hover:border-slate-500 transition-all text-base"
                   >
-                    <Play className="w-4 h-4" /> Voir une démo
-                  </a>
+                    Voir la demo <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
-                <p className="mt-3 text-sm text-slate-400 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5">
+                <p className="mt-3 text-sm text-slate-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5">
                   <Lock className="w-3.5 h-3.5" /> Pas de carte bancaire requise
                 </p>
               </FadeIn>
             </div>
 
-            {/* Right — Mock dashboard */}
+            {/* Right — Product image */}
             <FadeIn delay={400} className="hidden lg:block">
               <div className="relative">
-                {/* Main card — glassmorphism */}
-                <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-slate-200/60 border border-white/50 p-6 relative z-10" style={{ boxShadow: '0 8px 32px rgba(31,38,135,0.12), inset 0 0 0 1px rgba(255,255,255,0.3)' }}>
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                        <ChefHat className="w-4 h-4 text-white" />
-                      </div>
-                      <span className="font-bold text-sm text-slate-800">Tableau de bord</span>
-                    </div>
-                    <div className="flex gap-1.5">
-                      <div className="w-3 h-3 rounded-full bg-red-400" />
-                      <div className="w-3 h-3 rounded-full bg-amber-400" />
-                      <div className="w-3 h-3 rounded-full bg-green-400" />
-                    </div>
-                  </div>
-
-                  {/* Stats row */}
-                  <div className="grid grid-cols-3 gap-3 mb-5">
-                    {[
-                      { label: 'Marge moyenne', val: '68%', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-                      { label: 'Coût matière', val: '32%', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
-                      { label: 'Recettes', val: '47', color: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-100' },
-                    ].map((s) => (
-                      <div key={s.label} className={`${s.bg} border ${s.border} rounded-xl p-3`}>
-                        <div className={`text-2xl font-extrabold ${s.color}`}>{s.val}</div>
-                        <div className="text-[11px] text-slate-500 mt-0.5 font-medium">{s.label}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Chart bars */}
-                  <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                    <div className="text-xs font-semibold text-slate-500 mb-3">Marges par catégorie</div>
-                    <div className="space-y-2.5">
-                      {[
-                        { name: 'Entrées', pct: 72, color: 'bg-blue-500' },
-                        { name: 'Plats', pct: 65, color: 'bg-blue-600' },
-                        { name: 'Desserts', pct: 78, color: 'bg-blue-700' },
-                        { name: 'Boissons', pct: 85, color: 'bg-blue-800' },
-                      ].map((bar) => (
-                        <div key={bar.name} className="flex items-center gap-3">
-                          <span className="text-xs text-slate-500 w-16 font-medium">{bar.name}</span>
-                          <div className="flex-1 h-3 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className={`h-full ${bar.color} rounded-full transition-all duration-1000`}
-                              style={{ width: `${bar.pct}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold text-slate-700 w-8 text-right">{bar.pct}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-3xl blur-2xl" />
+                <div className="relative bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm">
+                  <img
+                    src="/images/restaumargin-station-opt.webp"
+                    alt="RestauMargin Station — Kit Balance + Tablette"
+                    className="w-full h-auto rounded-2xl"
+                    loading="eager"
+                  />
                 </div>
-
-                {/* Floating cards */}
-                <div className="absolute -top-4 -right-4 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg shadow-slate-200/50 border border-white/50 px-4 py-3 flex items-center gap-2.5 animate-bounce" style={{ animationDuration: '3s' }}>
-                  <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
-                    <TrendingUp className="w-4.5 h-4.5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-emerald-600">+12%</div>
-                    <div className="text-[10px] text-slate-400">ce mois</div>
-                  </div>
-                </div>
-
-                <div className="absolute -bottom-3 -left-4 bg-white/80 backdrop-blur-lg rounded-xl shadow-lg shadow-slate-200/50 border border-white/50 px-4 py-3 flex items-center gap-2.5" style={{ animation: 'bounce 3.5s infinite' }}>
-                  <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Calculator className="w-4.5 h-4.5 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-blue-800">Marge: 68%</div>
-                    <div className="text-[10px] text-slate-400">Risotto truffe</div>
-                  </div>
+                {/* Floating badge */}
+                <div className="absolute -top-4 -right-4 bg-emerald-500 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
+                  Nouveau 2026
                 </div>
               </div>
             </FadeIn>
           </div>
+
+          {/* Stats bar */}
+          <FadeIn delay={500}>
+            <div className="mt-16 bg-slate-900/60 border border-slate-800 rounded-2xl py-8 px-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-slate-800 md:divide-x">
+                <StatCounter value={150} suffix="+" label="Restaurants equipes" />
+                <StatCounter value={8} suffix="%" label="Cout matiere economise" />
+                <StatCounter value={50} suffix="k" label="Pesees par mois" />
+                <div className="text-center px-6">
+                  <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">4.8/5</div>
+                  <div className="text-sm text-slate-400 mt-1 font-medium">Satisfaction clients</div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
-      {/* ════════════════ Trusted By ════════════════ */}
-      <section className="py-10 border-y border-slate-100 bg-slate-50/50">
+      {/* ═══════════════════ 2. TRUSTED BY ═══════════════════ */}
+      <section className="py-10 border-y border-slate-800 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
-              Compatible avec vos fournisseurs
+            <p className="text-center text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">
+              Ils nous font confiance
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               {[
-                { name: 'METRO', bg: 'bg-[#003D7A]', text: 'text-white' },
-                { name: 'Transgourmet', bg: 'bg-[#E30613]', text: 'text-white' },
-                { name: 'Pomona', bg: 'bg-[#00833E]', text: 'text-white' },
-                { name: 'Sysco', bg: 'bg-[#004B87]', text: 'text-white' },
-                { name: 'Brake', bg: 'bg-[#D4202C]', text: 'text-white' },
+                { name: 'METRO', color: 'bg-slate-800 text-slate-400' },
+                { name: 'Transgourmet', color: 'bg-slate-800 text-slate-400' },
+                { name: 'Pomona', color: 'bg-slate-800 text-slate-400' },
+                { name: 'Sysco', color: 'bg-slate-800 text-slate-400' },
+                { name: 'Brake', color: 'bg-slate-800 text-slate-400' },
               ].map((s) => (
-                <span
-                  key={s.name}
-                  className={`${s.bg} ${s.text} px-4 py-1.5 rounded-full text-sm sm:text-base font-bold tracking-tight opacity-80 hover:opacity-100 transition-opacity select-none`}
-                >
+                <span key={s.name} className={`${s.color} px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none border border-slate-700`}>
                   {s.name}
                 </span>
               ))}
@@ -491,59 +352,179 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
-
-      {/* ════════════════ Trust Badges ════════════════ */}
-      <section className="py-8 bg-white">
+      {/* ═══════════════════ 3. PROBLEM → SOLUTION ═══════════════════ */}
+      <section className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
-              {[
-                { icon: Shield, label: 'Données hébergées en France', color: 'text-blue-700' },
-                { icon: BadgeCheck, label: 'Conforme RGPD', color: 'text-emerald-600' },
-                { icon: Lock, label: 'Chiffrement SSL', color: 'text-indigo-600' },
-              ].map((badge) => (
-                <div key={badge.label} className="flex items-center gap-2 text-sm font-medium text-slate-600">
-                  <badge.icon className={`w-5 h-5 ${badge.color}`} />
-                  {badge.label}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+            {/* Problem */}
+            <FadeIn>
+              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 sm:p-10 h-full">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold mb-6">
+                  <XCircle className="w-3.5 h-3.5" /> Le probleme
                 </div>
-              ))}
-            </div>
-          </FadeIn>
+                <div className="space-y-6">
+                  {[
+                    'Vous calculez vos marges sur Excel ou de tete',
+                    'Vous ne savez pas quel plat est rentable',
+                    'Les prix fournisseurs changent sans que vous le sachiez',
+                  ].map((text, i) => (
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <XCircle className="w-4 h-4 text-red-400" />
+                      </div>
+                      <p className="text-slate-300 leading-relaxed">{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Solution */}
+            <FadeIn delay={150}>
+              <div className="bg-slate-900/50 border border-emerald-500/20 rounded-2xl p-8 sm:p-10 h-full">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> La solution RestauMargin
+                </div>
+                <div className="space-y-6">
+                  {[
+                    'Calcul automatique des marges en temps reel',
+                    'Menu Engineering : identifiez vos Stars et vos Poids morts',
+                    'Alertes prix fournisseurs + comparateur integre',
+                  ].map((text, i) => (
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 leading-relaxed">{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
-
-      {/* ════════════════ Features ════════════════ */}
-      <section id="features" className="py-20 sm:py-28">
+      {/* ═══════════════════ 4. FEATURES BENTO GRID ═══════════════════ */}
+      <section id="features" className="py-20 sm:py-28 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Fonctionnalités</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Fonctionnalites</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight">
                 Tout ce dont vous avez besoin pour{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">
-                  piloter vos marges
-                </span>
+                <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">piloter vos marges</span>
               </h2>
-              <p className="mt-4 text-lg text-slate-500">
-                Une suite d'outils puissants et simples pour optimiser la rentabilité de votre restaurant.
-              </p>
             </div>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f, i) => (
-              <FadeIn key={f.title} delay={i * 80}>
-                <div className="group relative bg-white rounded-2xl p-7 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-50 transition-all duration-300 h-full cursor-default">
-                  <div className="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-gradient-to-br group-hover:from-blue-600 group-hover:to-blue-800 flex items-center justify-center mb-5 transition-all duration-300 group-hover:rotate-[360deg] group-hover:scale-110" style={{ transitionDuration: '500ms' }}>
-                    <f.icon className="w-6 h-6 text-blue-700 group-hover:text-white transition-colors duration-300" />
+          {/* Bento grid: 2 large + 4 small */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {/* Large card 1 */}
+            <FadeIn delay={0} className="lg:col-span-2">
+              <div className="group relative bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-8 h-full hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl" />
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5 group-hover:bg-blue-500/20 transition">
+                    <ClipboardList className="w-7 h-7 text-blue-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-2">{f.title}</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
+                  <h3 className="text-xl font-bold mb-3">Fiches techniques intelligentes</h3>
+                  <p className="text-slate-400 leading-relaxed max-w-lg">
+                    Calculez le cout exact de chaque plat avec ingredients, quantites, etapes de preparation et couts actualises automatiquement. Marge brute, cout matiere, prix de vente — tout est calcule en temps reel.
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Small card 1 */}
+            <FadeIn delay={80}>
+              <div className="group bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-7 h-full hover:border-emerald-500/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition">
+                  <BarChart3 className="w-6 h-6 text-emerald-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Menu Engineering</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
+              </div>
+            </FadeIn>
+
+            {/* Small card 2 */}
+            <FadeIn delay={160}>
+              <div className="group bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-7 h-full hover:border-orange-500/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition">
+                  <Truck className="w-6 h-6 text-orange-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Gestion fournisseurs</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Comparateur prix, score /10, alertes et suivi tarifaire.</p>
+              </div>
+            </FadeIn>
+
+            {/* Small card 3 */}
+            <FadeIn delay={240}>
+              <div className="group bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-7 h-full hover:border-purple-500/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition">
+                  <Thermometer className="w-6 h-6 text-purple-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">HACCP & Tracabilite</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Temperatures, nettoyage, conformite reglementaire.</p>
+              </div>
+            </FadeIn>
+
+            {/* Large card 2 */}
+            <FadeIn delay={320} className="lg:col-span-2">
+              <div className="group relative bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-8 h-full hover:border-emerald-500/30 transition-all duration-300 overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl" />
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:bg-emerald-500/20 transition">
+                    <Scale className="w-7 h-7 text-emerald-400" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Kit Station Balance + Tablette</h3>
+                  <p className="text-slate-400 leading-relaxed max-w-lg">
+                    Pesez, calculez, maitrisez en temps reel. La premiere station de pesee connectee concue pour la restauration. Balance integree 5kg + tablette 11" + logiciel de gestion des marges.
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Small card 4 */}
+            <FadeIn delay={400}>
+              <div className="group bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 rounded-2xl p-7 h-full hover:border-cyan-500/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition">
+                  <Brain className="w-6 h-6 text-cyan-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Assistant IA</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Claude analyse vos donnees et vous conseille en continu.</p>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════ 5. HOW IT WORKS ═══════════════════ */}
+      <section id="demo" className="py-20 sm:py-28">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Comment ca marche</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold">3 etapes pour piloter vos marges</h2>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { num: '01', title: 'Choisissez votre abonnement', desc: 'Basic 9 euros, Pro 29 euros ou Business 79 euros. Activation instantanee.', icon: Users },
+              { num: '02', title: 'Activez votre compte', desc: 'Recevez votre code, creez votre espace en 2 minutes.', icon: Zap },
+              { num: '03', title: 'Pilotez vos marges', desc: 'Dashboard, recettes, fournisseurs, tout est pret.', icon: TrendingUp },
+            ].map((step, i) => (
+              <FadeIn key={i} delay={i * 120}>
+                <div className="relative text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg shadow-blue-600/25">
+                    {step.num}
+                  </div>
+                  <h3 className="text-lg font-bold mb-3">{step.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
+                  {i < 2 && (
+                    <ArrowRight className="hidden md:block absolute top-8 -right-4 w-8 h-8 text-slate-700" />
+                  )}
                 </div>
               </FadeIn>
             ))}
@@ -551,196 +532,225 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
-
-      {/* ════════════════ Kit Station Balance ════════════════ */}
-      <section className="py-20 sm:py-28 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+      {/* ═══════════════════ 6. KIT STATION ═══════════════════ */}
+      <section id="station" className="py-20 sm:py-28 bg-slate-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Image */}
-              <div className="relative">
-                <div className="rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-100 to-blue-50">
-                  <img
-                    src="/images/restaumargin-station-opt.webp"
-                    alt="Kit Station RestauMargin — Tablette + Balance connectée"
-                    className="w-full h-auto"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg font-bold text-lg">
-                  À partir de 450 € HT
-                </div>
-                <div className="absolute -top-3 -left-3 bg-emerald-500 text-white px-4 py-1.5 rounded-lg shadow-lg text-xs font-bold uppercase tracking-wide">
-                  Nouveau 2026
-                </div>
-              </div>
-              {/* Content */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left — Content */}
+            <FadeIn>
               <div>
-                <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-3">Nouveau</p>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight mb-6">
-                  Kit Station{' '}
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">RestauMargin</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
+                  <Package className="w-3.5 h-3.5" /> Produit physique
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight mb-6">
+                  Kit Station —{' '}
+                  <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                    Balance connectee + Tablette
+                  </span>
                 </h2>
-                <p className="text-lg text-slate-600 dark:text-slate-300 mb-8">
-                  Le support EST la balance. Glissez votre tablette dans le moule silicone, pesez vos ingrédients sur le plateau inox et maîtrisez vos marges en temps réel.
+                <p className="text-lg text-slate-400 mb-8">
+                  Le support EST la balance. Plateau inox alimentaire, bras solidaire, moule silicone pour glisser la tablette. Un seul produit, zero cable.
                 </p>
+
                 <div className="space-y-4 mb-8">
                   {[
-                    { title: 'Balance intégrée 5kg', desc: 'Le support est la balance — plateau inox 304L, précision 0.5g, BLE 5.0' },
-                    { title: 'Moule silicone tablette', desc: 'Glissez votre Samsung Tab A9+ dans le bras, écran tactile accessible' },
-                    { title: 'Bras solidaire', desc: 'Design monobloc, pas de pièce séparée, robuste pour la cuisine pro' },
-                    { title: 'App RestauMargin incluse', desc: 'Fiches techniques auto, calcul de marges, mercuriale fournisseurs' },
+                    'Pesee BLE 5kg, precision 0.5g',
+                    'Tablette 11" Samsung Galaxy Tab A9+',
+                    'Fiches techniques auto-remplies',
+                    'Marges en direct pendant la preparation',
+                    'IP54 resistant aux eclaboussures',
+                    '8h d\'autonomie batterie USB-C',
                   ].map((item, i) => (
-                    <div key={i} className="flex gap-3">
-                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mt-0.5">
-                        <svg className="w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-900 dark:text-white">{item.title}</p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
-                      </div>
+                    <div key={i} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
+                      <span className="text-sm text-slate-300">{item}</span>
                     </div>
                   ))}
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    to="/station-produit"
-                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg transition-all"
-                  >
-                    Découvrir le Kit Station
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                  <a
-                    href="#kit-contact"
-                    className="inline-flex items-center gap-2 border-2 border-blue-200 hover:border-blue-400 text-blue-700 font-semibold px-6 py-3 rounded-xl transition-all"
-                  >
-                    Demander un devis
-                  </a>
+
+                <button
+                  onClick={() => scrollTo('contact')}
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-emerald-500 text-white font-semibold hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/25 text-base"
+                >
+                  Commander le Kit — 1 200 euros HT <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <div className="flex flex-wrap gap-3 mt-6">
+                  {['Balance 5kg', 'BLE 5.0', 'Inox 304L'].map((badge) => (
+                    <span key={badge} className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-400 font-medium">
+                      {badge}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+            </FadeIn>
 
-      {/* ════════════════ How It Works ════════════════ */}
-      <section id="how-it-works" className="py-20 sm:py-28 bg-slate-900 relative overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute inset-0 -z-0">
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Comment ça marche</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
-                Démarrez en{' '}
-                <span className="bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
-                  4 étapes simples
-                </span>
-              </h2>
-              <p className="mt-4 text-lg text-slate-400">
-                Configurez votre espace en quelques minutes et commencez à optimiser vos marges.
-              </p>
-            </div>
-          </FadeIn>
-
-          {/* Timeline */}
-          <div className="relative">
-            {/* Connector line — desktop */}
-            <div className="hidden lg:block absolute top-20 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-blue-800 via-blue-600 to-blue-800" />
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {steps.map((step, i) => (
-                <FadeIn key={step.num} delay={i * 150}>
-                  <div className="relative text-center group">
-                    <div className="relative z-10 mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-xl shadow-blue-700/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-lg font-extrabold text-white">{step.num}</span>
+            {/* Right — Product image */}
+            <FadeIn delay={200}>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 rounded-3xl blur-2xl" />
+                <div className="relative bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm">
+                  <img
+                    src="/images/restaumargin-station-opt.webp"
+                    alt="RestauMargin Station — Kit Balance + Tablette"
+                    className="w-full h-auto rounded-2xl"
+                    loading="lazy"
+                  />
+                  <div className="grid grid-cols-3 gap-3 mt-6 text-center">
+                    <div className="p-3 bg-slate-800/50 rounded-xl">
+                      <Scale className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
+                      <div className="text-xs text-slate-500">Capacite</div>
+                      <div className="text-sm font-semibold">5 kg</div>
                     </div>
-                    <div className="mx-auto w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center mb-4">
-                      <step.icon className="w-5 h-5 text-blue-400" />
+                    <div className="p-3 bg-slate-800/50 rounded-xl">
+                      <Bluetooth className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                      <div className="text-xs text-slate-500">Connexion</div>
+                      <div className="text-sm font-semibold">BLE 5.0</div>
                     </div>
-                    <h3 className="text-base font-bold text-white mb-2">{step.title}</h3>
-                    <p className="text-sm text-slate-400 leading-relaxed max-w-xs mx-auto">{step.desc}</p>
+                    <div className="p-3 bg-slate-800/50 rounded-xl">
+                      <Tablet className="w-5 h-5 text-purple-400 mx-auto mb-1" />
+                      <div className="text-xs text-slate-500">Ecran</div>
+                      <div className="text-sm font-semibold">11" FHD</div>
+                    </div>
                   </div>
-                </FadeIn>
-              ))}
-            </div>
+                </div>
+              </div>
+            </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* ════════════════ Statistics ════════════════ */}
-      <section className="py-16 sm:py-20 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            <AnimatedStat value={239} suffix="+" label="Ingrédients référencés" icon={Utensils} />
-            <AnimatedStat value={60} suffix="+" label="Templates de recettes" icon={BookOpen} />
-            <AnimatedStat value={50} suffix="+" label="Fournisseurs français" icon={Truck} />
-            <AnimatedStat value={1} suffix="s" label="Calcul instantané" icon={Zap} />
-          </div>
-        </div>
-      </section>
-
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
-
-      {/* ════════════════ Testimonials ════════════════ */}
-      <section id="testimonials" className="py-20 sm:py-28 bg-slate-50">
+      {/* ═══════════════════ 7. PRICING ═══════════════════ */}
+      <section id="pricing" className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Témoignages</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
-                Ils nous font{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">
-                  confiance
-                </span>
+            <div className="text-center mb-16">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Tarifs</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold">
+                Un plan pour chaque{' '}
+                <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">restaurant</span>
               </h2>
-              <p className="mt-4 text-lg text-slate-500">
-                Découvrez comment RestauMargin aide les professionnels de la restauration au quotidien.
-              </p>
+              <p className="mt-4 text-slate-400">Sans engagement. Annulez quand vous voulez.</p>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {/* Basic */}
+            <FadeIn delay={0}>
+              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 h-full flex flex-col hover:border-slate-600 transition-colors">
+                <h3 className="text-lg font-bold mb-1">Basic</h3>
+                <div className="flex items-end gap-1 mb-4">
+                  <span className="text-4xl font-extrabold">9</span>
+                  <span className="text-slate-400 text-sm mb-1">euros/mois</span>
+                </div>
+                <p className="text-sm text-slate-400 mb-6">Pour demarrer et calculer ses marges.</p>
+                <div className="space-y-3 mb-8 flex-1">
+                  {['Calcul de marge illimite', 'Fiches techniques', 'Dashboard analytics', 'Support email'].map((f) => (
+                    <div key={f} className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
+                      <span className="text-sm text-slate-300">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <a
+                  href="https://buy.stripe.com/8x2fZagoWbF26EI3j987K03"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center px-6 py-3 rounded-xl bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors border border-slate-700"
+                >
+                  Choisir Basic
+                </a>
+              </div>
+            </FadeIn>
+
+            {/* Pro — Popular */}
+            <FadeIn delay={100}>
+              <div className="relative bg-slate-900/50 border-2 border-blue-500 rounded-2xl p-8 h-full flex flex-col shadow-lg shadow-blue-500/10">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-500 text-white text-xs font-bold uppercase tracking-wide">
+                  Populaire
+                </div>
+                <h3 className="text-lg font-bold mb-1 mt-2">Pro</h3>
+                <div className="flex items-end gap-1 mb-4">
+                  <span className="text-4xl font-extrabold">29</span>
+                  <span className="text-slate-400 text-sm mb-1">euros/mois</span>
+                </div>
+                <p className="text-sm text-slate-400 mb-6">Pour optimiser et developper son restaurant.</p>
+                <div className="space-y-3 mb-8 flex-1">
+                  {['Tout du plan Basic', 'Menu Engineering BCG', 'Gestion fournisseurs avancee', 'Export PDF / Excel', 'Support prioritaire'].map((f) => (
+                    <div key={f} className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
+                      <span className="text-sm text-slate-300">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <a
+                  href="https://buy.stripe.com/eVq4gs5Ki10o3sw1b187K01"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/25"
+                >
+                  Choisir Pro
+                </a>
+              </div>
+            </FadeIn>
+
+            {/* Business */}
+            <FadeIn delay={200}>
+              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 h-full flex flex-col hover:border-slate-600 transition-colors">
+                <h3 className="text-lg font-bold mb-1">Business</h3>
+                <div className="flex items-end gap-1 mb-4">
+                  <span className="text-4xl font-extrabold">79</span>
+                  <span className="text-slate-400 text-sm mb-1">euros/mois</span>
+                </div>
+                <p className="text-sm text-slate-400 mb-6">Pour les groupes multi-restaurants.</p>
+                <div className="space-y-3 mb-8 flex-1">
+                  {['Tout du plan Pro', 'Multi-restaurants', 'API & webhooks', 'Formation personnalisee', 'Account manager dedie'].map((f) => (
+                    <div key={f} className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span className="text-sm text-slate-300">{f}</span>
+                    </div>
+                  ))}
+                </div>
+                <a
+                  href="https://buy.stripe.com/bJe00c2y638w7IMdXN87K02"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center px-6 py-3 rounded-xl bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors border border-slate-700"
+                >
+                  Choisir Business
+                </a>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════ 8. TESTIMONIALS ═══════════════════ */}
+      <section className="py-20 sm:py-28 bg-slate-900/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center mb-16">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Temoignages</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold">
+                Ce que disent nos{' '}
+                <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">clients</span>
+              </h2>
             </div>
           </FadeIn>
 
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
-              <FadeIn key={t.name} delay={i * 120}>
-                <div className="bg-white rounded-2xl p-7 border border-slate-100 hover:shadow-xl hover:shadow-slate-100 transition-all duration-300 h-full flex flex-col">
-                  {/* Stars + Avis vérifié */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: Math.floor(t.rating) }).map((_, j) => (
-                        <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      ))}
-                      {t.rating % 1 !== 0 && (
-                        <StarHalf className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      )}
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-                      <BadgeCheck className="w-3 h-3" /> Avis vérifié
-                    </span>
+              <FadeIn key={i} delay={i * 100}>
+                <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-7 h-full flex flex-col">
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-700'}`} />
+                    ))}
                   </div>
-
-                  <div className="relative mb-5 flex-1">
-                    <Quote className="absolute -top-1 -left-1 w-8 h-8 text-blue-100" />
-                    <p className="text-sm text-slate-600 leading-relaxed relative z-10 pl-2">{t.quote}</p>
-                  </div>
-
-                  <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold text-sm">
-                      {t.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-slate-900">{t.name}</div>
-                      <div className="text-xs text-slate-500">{t.role} — {t.place}</div>
-                    </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-1 italic">"{t.quote}"</p>
+                  <div>
+                    <div className="font-semibold text-white text-sm">{t.name}</div>
+                    <div className="text-xs text-slate-500">{t.role} — {t.place}</div>
                   </div>
                 </div>
               </FadeIn>
@@ -749,285 +759,110 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
-
-      {/* ════════════════ Pricing ════════════════ */}
-      <section id="pricing" className="py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Tarifs</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
-                Des tarifs{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">
-                  simples et transparents
-                </span>
-              </h2>
-              <p className="mt-4 text-lg text-slate-500">
-                A partir de 9€/mois. Accédez à tous les outils de gestion de marge.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Free plan */}
-            <FadeIn delay={100}>
-              <div className="relative bg-white rounded-3xl border-2 border-blue-700 shadow-2xl shadow-blue-100/50 overflow-hidden h-full flex flex-col">
-                <div className="absolute top-0 right-0 bg-blue-700 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-                  Populaire
-                </div>
-                <div className="p-8 flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold text-slate-900">Gratuit</h3>
-                  <p className="text-sm text-slate-500 mt-1">Accès complet pendant la bêta</p>
-                  <div className="mt-6 flex items-baseline gap-1">
-                    <span className="text-5xl font-extrabold text-blue-700">0&euro;</span>
-                    <span className="text-slate-400 text-lg">/mois</span>
-                  </div>
-
-                  <div className="mt-8 space-y-3 flex-1">
-                    {pricingFeaturesFree.map((item) => (
-                      <div key={item} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-blue-700 flex-shrink-0" />
-                        <span className="text-sm text-slate-700">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <Link
-                    to="/login"
-                    className="mt-8 w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 hover:shadow-blue-700/40"
-                  >
-                    Commencer maintenant
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Pro plan */}
-            <FadeIn delay={200}>
-              <div className="relative bg-slate-50 rounded-3xl border-2 border-slate-200 overflow-hidden h-full flex flex-col opacity-80">
-                <div className="absolute top-0 right-0 bg-slate-400 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-                  Bientôt
-                </div>
-                <div className="p-8 flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold text-slate-900">Pro</h3>
-                  <p className="text-sm text-slate-500 mt-1">Pour les multi-restaurants</p>
-                  <div className="mt-6 flex items-baseline gap-1">
-                    <span className="text-5xl font-extrabold text-slate-400">--&euro;</span>
-                    <span className="text-slate-400 text-lg">/mois</span>
-                  </div>
-
-                  <div className="mt-8 space-y-3 flex-1">
-                    {pricingFeaturesPro.map((item) => (
-                      <div key={item} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-5 h-5 text-slate-400 flex-shrink-0" />
-                        <span className="text-sm text-slate-500">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-8">
-                    <p className="text-xs font-semibold text-slate-500 mb-2 text-center">Prévenez-moi du lancement</p>
-                    {proEmailSent ? (
-                      <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 font-medium py-3">
-                        <CheckCircle2 className="w-4 h-4" /> Vous serez notifié !
-                      </div>
-                    ) : (
-                      <form
-                        onSubmit={async (e) => {
-                          e.preventDefault();
-                          if (!proEmail) return;
-                          setProLoading(true);
-                          setProError('');
-                          try {
-                            const res = await fetch('/api/contact', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                name: 'Intéressé Pro',
-                                email: proEmail,
-                                source: 'pro-waitlist',
-                              }),
-                            });
-                            if (!res.ok) {
-                              const data = await res.json();
-                              throw new Error(data.error || 'Erreur');
-                            }
-                            setProEmailSent(true);
-                          } catch (err: unknown) {
-                            const message = err instanceof Error ? err.message : 'Erreur. Réessayez.';
-                            setProError(message);
-                          } finally {
-                            setProLoading(false);
-                          }
-                        }}
-                        className="flex flex-col gap-2"
-                      >
-                        <div className="flex gap-2">
-                          <input
-                            type="email"
-                            required
-                            value={proEmail}
-                            onChange={(e) => setProEmail(e.target.value)}
-                            placeholder="votre@email.com"
-                            className="flex-1 min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                          <button
-                            type="submit"
-                            disabled={proLoading}
-                            className="px-4 py-2.5 rounded-xl bg-slate-700 text-white text-sm font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
-                          >
-                            {proLoading ? '...' : <Mail className="w-4 h-4" />}
-                          </button>
-                        </div>
-                        {proError && (
-                          <p className="text-xs text-red-500">{proError}</p>
-                        )}
-                      </form>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════ CTA Banner ════════════════ */}
-      <section className="py-20 sm:py-24 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 relative overflow-hidden">
-        <div className="absolute inset-0 -z-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl" />
-        </div>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <FadeIn>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight">
-              Prêt à optimiser vos marges ?
-            </h2>
-            <p className="text-lg text-blue-200/90 mb-10 max-w-2xl mx-auto">
-              Rejoignez les restaurateurs qui utilisent RestauMargin pour maîtriser leurs coûts et augmenter leurs marges. Gratuit, sans engagement.
-            </p>
-            <Link
-              to="/login"
-              className="inline-flex items-center gap-2 px-10 py-4 rounded-xl bg-white text-blue-700 font-bold text-lg hover:bg-blue-50 transition-all shadow-2xl hover:-translate-y-0.5"
-            >
-              Commencer maintenant
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* ════════════════ Kit Contact Form ════════════════ */}
-      <section id="kit-form" className="py-20 sm:py-28 bg-slate-50 scroll-mt-24">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ═══════════════════ 9. FAQ ═══════════════════ */}
+      <section id="faq" className="py-20 sm:py-28">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-              <p className="text-sm font-semibold text-blue-700 uppercase tracking-widest mb-3">Contact</p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
-                Demander un devis pour le{' '}
-                <span className="bg-gradient-to-r from-blue-800 to-blue-500 bg-clip-text text-transparent">Kit Station</span>
-              </h2>
-              <p className="mt-4 text-lg text-slate-500">
-                Remplissez le formulaire et notre équipe vous recontacte sous 24h.
-              </p>
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">FAQ</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold">Questions frequentes</h2>
             </div>
-            {kitFormSent ? (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center">
-                <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
-                <p className="text-lg font-semibold text-emerald-800">Demande envoyée !</p>
-                <p className="text-sm text-emerald-600 mt-1">Nous vous recontactons très vite.</p>
+          </FadeIn>
+
+          <FadeIn delay={100}>
+            <div className="space-y-4">
+              {faqItems.map((item, i) => (
+                <FAQItem key={i} q={item.q} a={item.a} />
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ═══════════════════ 10. CONTACT FORM ═══════════════════ */}
+      <section id="contact" className="py-20 sm:py-28 bg-slate-900/30">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center mb-10">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-widest mb-3">Contact</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
+                Parlons de votre{' '}
+                <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">projet</span>
+              </h2>
+              <p className="text-slate-400">Notre equipe vous recontacte sous 24h.</p>
+            </div>
+
+            {contactSent ? (
+              <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-8 text-center">
+                <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
+                <p className="text-lg font-semibold text-emerald-400">Demande envoyee !</p>
+                <p className="text-sm text-slate-400 mt-1">Nous vous recontactons tres vite.</p>
               </div>
             ) : (
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  setKitLoading(true);
-                  setKitError('');
-                  try {
-                    const res = await fetch('/api/contact', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        name: kitForm.nom,
-                        email: kitForm.email,
-                        phone: kitForm.telephone,
-                        message: kitForm.message,
-                        source: 'kit-station',
-                      }),
-                    });
-                    if (!res.ok) {
-                      const data = await res.json();
-                      throw new Error(data.error || 'Erreur lors de l\'envoi');
-                    }
-                    setKitFormSent(true);
-                  } catch (err: unknown) {
-                    const message = err instanceof Error ? err.message : 'Erreur lors de l\'envoi. Veuillez réessayer.';
-                    setKitError(message);
-                  } finally {
-                    setKitLoading(false);
-                  }
-                }}
-                className="bg-white rounded-2xl border border-slate-100 shadow-xl p-8 space-y-5"
-              >
+              <form onSubmit={handleContactSubmit} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Nom</label>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Nom</label>
                     <input
                       type="text"
                       required
-                      value={kitForm.nom}
-                      onChange={(e) => setKitForm({ ...kitForm, nom: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={contactForm.nom}
+                      onChange={(e) => setContactForm({ ...contactForm, nom: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500"
                       placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                    <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
                     <input
                       type="email"
                       required
-                      value={kitForm.email}
-                      onChange={(e) => setKitForm({ ...kitForm, email: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500"
                       placeholder="votre@email.com"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Téléphone</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Telephone</label>
                   <input
                     type="tel"
-                    value={kitForm.telephone}
-                    onChange={(e) => setKitForm({ ...kitForm, telephone: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={contactForm.telephone}
+                    onChange={(e) => setContactForm({ ...contactForm, telephone: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500"
                     placeholder="06 12 34 56 78"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Message</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Message</label>
                   <textarea
-                    rows={3}
-                    value={kitForm.message}
-                    onChange={(e) => setKitForm({ ...kitForm, message: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                    placeholder="Décrivez votre besoin..."
+                    rows={4}
+                    value={contactForm.message}
+                    onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none placeholder-slate-500"
+                    placeholder="Decrivez votre besoin..."
                   />
                 </div>
-                {kitError && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700">
-                    {kitError}
+                {contactError && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-sm text-red-400">
+                    {contactError}
                   </div>
                 )}
                 <button
                   type="submit"
-                  disabled={kitLoading}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-700 text-white font-semibold text-base hover:bg-blue-800 transition-all shadow-lg shadow-blue-700/25 disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={contactLoading}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 text-white font-semibold text-base hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/25 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {kitLoading ? 'Envoi en cours...' : 'Demander un devis'}
-                  {!kitLoading && <ArrowRight className="w-5 h-5" />}
+                  {contactLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" /> Envoi en cours...
+                    </>
+                  ) : (
+                    <>
+                      Envoyer <Send className="w-5 h-5" />
+                    </>
+                  )}
                 </button>
               </form>
             )}
@@ -1035,66 +870,75 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ════════════════ Footer ════════════════ */}
-      <footer className="bg-slate-900 text-slate-400">
+      {/* ═══════════════════ 11. FOOTER ═══════════════════ */}
+      <footer className="border-t border-slate-800 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top */}
           <div className="py-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Brand */}
-            <div className="sm:col-span-2 lg:col-span-1">
+            <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-lg font-bold text-white">RestauMargin</span>
               </div>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-xs">
-                La solution complète de gestion des marges pour les professionnels de la restauration.
+              <p className="text-sm text-slate-500 leading-relaxed">
+                La plateforme de gestion des marges pour la restauration professionnelle.
               </p>
+              <div className="flex items-center gap-4 mt-4">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <Shield className="w-3.5 h-3.5 text-blue-400" /> Donnees EU
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <Lock className="w-3.5 h-3.5 text-emerald-400" /> SSL
+                </div>
+              </div>
             </div>
 
             {/* Produit */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Produit</h4>
-              <ul className="space-y-2.5">
-                <li><button onClick={() => scrollTo('features')} className="text-sm hover:text-white transition-colors">Fonctionnalités</button></li>
-                <li><button onClick={() => scrollTo('pricing')} className="text-sm hover:text-white transition-colors">Tarifs</button></li>
-                <li><button onClick={() => scrollTo('testimonials')} className="text-sm hover:text-white transition-colors">Témoignages</button></li>
+              <h4 className="font-semibold text-white text-sm mb-4">Produit</h4>
+              <ul className="space-y-2.5 text-sm text-slate-500">
+                <li><button onClick={() => scrollTo('features')} className="hover:text-white transition-colors">Fonctionnalites</button></li>
+                <li><Link to="/pricing" className="hover:text-white transition-colors">Tarifs</Link></li>
+                <li><Link to="/station-produit" className="hover:text-white transition-colors">Kit Station</Link></li>
+                <li><button onClick={() => scrollTo('faq')} className="hover:text-white transition-colors">FAQ</button></li>
               </ul>
             </div>
 
-            {/* Ressources */}
+            {/* Legal */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Ressources</h4>
-              <ul className="space-y-2.5">
-                <li><a href="#kit-form" className="text-sm hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#kit-form" className="text-sm hover:text-white transition-colors">Support</a></li>
+              <h4 className="font-semibold text-white text-sm mb-4">Legal</h4>
+              <ul className="space-y-2.5 text-sm text-slate-500">
+                <li><Link to="/mentions-legales" className="hover:text-white transition-colors">Mentions legales</Link></li>
+                <li><Link to="/cgu" className="hover:text-white transition-colors">CGU</Link></li>
+                <li><Link to="/politique-confidentialite" className="hover:text-white transition-colors">Politique de confidentialite</Link></li>
               </ul>
             </div>
 
-            {/* Légal */}
+            {/* Contact */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Légal</h4>
-              <ul className="space-y-2.5">
-                <li><Link to="/mentions-legales" className="text-sm text-slate-500 hover:text-white transition-colors">Mentions légales</Link></li>
-                <li><Link to="/cgu" className="text-sm text-slate-500 hover:text-white transition-colors">CGU</Link></li>
-                <li><Link to="/politique-confidentialite" className="text-sm text-slate-500 hover:text-white transition-colors">Politique de confidentialité</Link></li>
+              <h4 className="font-semibold text-white text-sm mb-4">Contact</h4>
+              <ul className="space-y-2.5 text-sm text-slate-500">
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-slate-600" />
+                  <a href="mailto:contact@restaumargin.fr" className="hover:text-white transition-colors">contact@restaumargin.fr</a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-slate-600" />
+                  <span>01 23 45 67 89</span>
+                </li>
               </ul>
             </div>
           </div>
 
           {/* Bottom */}
           <div className="border-t border-slate-800 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-slate-500">
-              &copy; {new Date().getFullYear()} RestauMargin. Tous droits réservés.
-            </p>
-            <div className="flex items-center gap-4">
-              {/* Social placeholders */}
-              {['Twitter', 'LinkedIn', 'Instagram'].map((social) => (
-                <span key={social} className="text-xs text-slate-600 hover:text-white transition-colors cursor-pointer">
-                  {social}
-                </span>
-              ))}
+            <p className="text-xs text-slate-600">RestauMargin &copy; 2026. Tous droits reserves.</p>
+            <div className="flex items-center gap-6 text-xs text-slate-600">
+              <Link to="/mentions-legales" className="hover:text-slate-400 transition-colors">Mentions legales</Link>
+              <Link to="/cgu" className="hover:text-slate-400 transition-colors">CGU</Link>
+              <Link to="/politique-confidentialite" className="hover:text-slate-400 transition-colors">Confidentialite</Link>
             </div>
           </div>
         </div>

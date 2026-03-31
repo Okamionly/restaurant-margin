@@ -1241,6 +1241,28 @@ app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: 
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur marquage lu' }); }
 });
 
+// ── Delete conversation ──
+app.delete('/api/messages/conversations/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    await prisma.message.deleteMany({ where: { conversationId: req.params.id } });
+    await prisma.conversation.delete({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
+});
+
+// ── Toggle star on conversation ──
+app.put('/api/messages/conversations/:id/star', authWithRestaurant, async (req: any, res) => {
+  try {
+    const conv = await prisma.conversation.findUnique({ where: { id: req.params.id } });
+    if (!conv) return res.status(404).json({ error: 'Conversation introuvable' });
+    const updated = await prisma.conversation.update({
+      where: { id: req.params.id },
+      data: { starred: !conv.starred },
+    });
+    res.json({ starred: updated.starred });
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur favoris' }); }
+});
+
 // ── Inbound Email Webhook (called by Resend — NO auth) ──
 app.post('/api/inbound/email', async (req: any, res) => {
   try {

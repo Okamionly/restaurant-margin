@@ -55,7 +55,7 @@ function mapApiConversation(apiConv: any): Conversation {
     isGroup: apiConv.isGroup || false,
     members: apiConv.participants || [],
     avatar: apiConv.avatar || apiConv.name.slice(0, 2).toUpperCase(),
-    starred: false,
+    starred: apiConv.starred || false,
     unread: apiConv.unreadCount || 0,
     messages: [],
     lastMessage: apiConv.lastMessage || '',
@@ -177,6 +177,28 @@ export default function Messagerie() {
     c.lastMessage?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.subject?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // ── Delete conversation ─────────────────────────────────────────
+  async function handleDelete(convId: string) {
+    if (!confirm('Supprimer cette conversation ?')) return;
+    try {
+      await fetch(`${API}/conversations/${convId}`, { method: 'DELETE', headers: getHeaders() });
+      setConversations((prev) => prev.filter((c) => c.id !== convId));
+      if (activeId === convId) { setActiveId(null); setMobileShowMail(false); }
+      showToast('Conversation supprimée', 'success');
+    } catch { showToast('Erreur suppression', 'error'); }
+  }
+
+  // ── Toggle star ────────────────────────────────────────────────
+  async function handleToggleStar(convId: string) {
+    try {
+      const res = await fetch(`${API}/conversations/${convId}/star`, { method: 'PUT', headers: getHeaders() });
+      const data = await res.json();
+      setConversations((prev) =>
+        prev.map((c) => c.id === convId ? { ...c, starred: data.starred } : c)
+      );
+    } catch { showToast('Erreur favoris', 'error'); }
+  }
 
   function selectConversation(id: string) {
     setActiveId(id);
@@ -405,10 +427,10 @@ export default function Messagerie() {
                     >
                       <Reply className="w-4 h-4" />
                     </button>
-                    <button className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-yellow-400 transition-colors" title="Favoris">
+                    <button onClick={() => handleToggleStar(activeConv.id)} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-yellow-400 transition-colors" title="Favoris">
                       {activeConv.starred ? <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" /> : <StarOff className="w-4 h-4" />}
                     </button>
-                    <button className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors" title="Supprimer">
+                    <button onClick={() => handleDelete(activeConv.id)} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors" title="Supprimer">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

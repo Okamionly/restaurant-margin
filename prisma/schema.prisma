@@ -471,6 +471,7 @@ model Conversation {
   unreadCount  Int        @default(0)
   isGroup      Boolean    @default(false)
   avatar       String     @default("")
+  starred      Boolean    @default(false)
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())

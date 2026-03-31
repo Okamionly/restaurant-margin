@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
-  ChevronUp, ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
-  Star, Clock, TrendingUp, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers,
+  ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
+  Star, Clock, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
@@ -166,8 +166,7 @@ export default function Suppliers() {
   const [filterRegion, setFilterRegion] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
 
-  // Expand / form / delete
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  // Form / delete
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
   const [form, setForm] = useState<SupplierFormData>(emptyForm);
@@ -492,7 +491,14 @@ export default function Suppliers() {
     return map;
   }, [ingredients]);
 
-  // Collapsible categories in detail modal
+  // Auto-select first supplier when list loads
+  useEffect(() => {
+    if (filtered.length > 0 && !detailSupplier) {
+      setDetailSupplier(filtered[0]);
+    }
+  }, [filtered]);
+
+  // Collapsible categories in detail panel
   const [collapsedCats, setCollapsedCats] = useState<Set<string>>(new Set());
 
   function toggleCatCollapse(cat: string) {
@@ -764,315 +770,258 @@ export default function Suppliers() {
             </div>
           </div>
 
-          {/* Supplier card grid */}
-          {filtered.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
-              <Truck className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-slate-400 dark:text-slate-500">{t('suppliers.noSupplierFound')}</p>
+          {/* Split layout: master/detail */}
+          <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: '70vh' }}>
+            {/* LEFT: Supplier list */}
+            <div className="w-full lg:w-80 xl:w-96 shrink-0 flex flex-col gap-2">
+              {/* Search bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t('suppliers.searchByName')}
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+              {/* Supplier slices */}
+              <div className="flex-1 overflow-y-auto space-y-1">
+                {filtered.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full text-slate-400 py-12">
+                    <Truck className="w-10 h-10 mb-2 opacity-30" />
+                    <p className="text-sm">{t('suppliers.noSupplierFound')}</p>
+                  </div>
+                ) : (
+                  filtered.map(supplier => (
+                    <div
+                      key={supplier.id}
+                      onClick={() => setDetailSupplier(supplier)}
+                      className={`cursor-pointer rounded-xl p-3 border transition-all ${
+                        detailSupplier?.id === supplier.id
+                          ? 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-sm'
+                          : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-sm text-slate-800 dark:text-white truncate">{supplier.name}</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium">
+                          {supplierCatalogMap[supplier.id]?.count ?? 0} produits
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        {supplier.city && <span>{supplier.city}</span>}
+                        {supplier.delivery && <span className="text-emerald-500">&#10003; Livraison</span>}
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {(supplier.categories || []).slice(0, 3).map(cat => (
+                          <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">{cat}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {filtered.map((supplier) => {
-                const ingCount = supplier._count?.ingredients ?? 0;
-                const isExpanded = expandedId === supplier.id;
 
+            {/* RIGHT: Detail panel */}
+            <div className="flex-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-y-auto">
+              {detailSupplier ? (() => {
+                const rating = getMockRating(detailSupplier.id);
+                const score = supplierScores[detailSupplier.id] ?? 0;
+                const scoreColor = score > 7 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : score >= 5 ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
                 return (
-                  <div
-                    key={supplier.id}
-                    className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col"
-                  >
-                    {/* Card header */}
-                    <div className="p-5 flex-1">
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={compareSupplierIds.has(supplier.id)}
-                            onChange={() => setCompareSupplierIds(prev => {
-                              const next = new Set(prev);
-                              next.has(supplier.id) ? next.delete(supplier.id) : next.add(supplier.id);
-                              return next;
-                            })}
-                            className="accent-blue-600 shrink-0 mt-0.5"
-                            title={t('suppliers.selectToCompare')}
-                          />
-                          <h3
-                            className="font-semibold text-slate-800 dark:text-slate-100 leading-tight cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                            onClick={() => setDetailSupplier(supplier)}
-                            title={t('suppliers.viewDetail')}
-                          >
-                            {supplier.name}
-                          </h3>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          {/* Score Fournisseur */}
-                          {(() => {
-                            const score = supplierScores[supplier.id] ?? 0;
-                            const color = score > 7 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : score >= 5 ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
-                            return (
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${color}`} title="Score Fournisseur">
-                                {score}/10
-                              </span>
-                            );
-                          })()}
-                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                            {supplierCatalogMap[supplier.id]?.count ?? ingCount} produits
-                          </span>
+                  <div className="p-6 space-y-5">
+                    {/* Header with name + actions */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-800 dark:text-white">{detailSupplier.name}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${scoreColor}`}>{score}/10</span>
+                          {detailSupplier.delivery && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 font-medium flex items-center gap-1">
+                              <Check className="w-3 h-3" /> Livraison
+                            </span>
+                          )}
                         </div>
                       </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => openEdit(detailSupplier)}
+                          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
+                          title={t('suppliers.edit')}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(detailSupplier)}
+                          className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500"
+                          title={t('suppliers.delete')}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleLink(detailSupplier)}
+                          disabled={linking === detailSupplier.id}
+                          className="p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 disabled:opacity-50"
+                          title={t('suppliers.linkIngredients')}
+                        >
+                          <Link2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
 
-                      {/* Supplier rating */}
-                      {(() => {
-                        const rating = getMockRating(supplier.id);
-                        return (
-                          <div className="flex items-center gap-3 mb-2 text-xs">
-                            <span className="flex items-center gap-0.5" title={t('suppliers.reliability')}>
-                              {[1,2,3,4,5].map(n => (
-                                <Star key={n} className={`w-3 h-3 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
-                              ))}
-                            </span>
-                            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400" title={t('suppliers.deliveryTime')}>
-                              <Clock className="w-3 h-3" />
-                              {rating.deliveryDays}
-                            </span>
-                            <span className="text-slate-500 dark:text-slate-400" title={t('suppliers.minimumOrder')}>
-                              Min: {rating.minOrderAmount}
-                            </span>
-                          </div>
-                        );
-                      })()}
-
-                      {/* Contact info */}
-                      {supplier.contactName && (
-                        <p className="text-sm text-slate-600 dark:text-slate-300 mb-1">
-                          <Building2 className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
-                          {supplier.contactName}
-                        </p>
-                      )}
-                      {supplier.phone && (
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-0.5">
-                          <Phone className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
-                          {supplier.phone}
-                        </p>
-                      )}
-                      {supplier.email && (
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-0.5 truncate">
-                          <Mail className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
-                          {supplier.email}
-                        </p>
-                      )}
-                      {(supplier.city || supplier.postalCode) && (
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
-                          <MapPin className="w-3.5 h-3.5 inline -mt-0.5 mr-1 text-slate-400" />
-                          {[supplier.city, supplier.postalCode].filter(Boolean).join(' ')}
-                        </p>
-                      )}
-
-                      {/* Categories */}
-                      {supplier.categories.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {supplier.categories.map((cat) => (
-                            <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
-                              {cat}
-                            </span>
+                    {/* Rating summary */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
+                        <div className="flex items-center justify-center gap-0.5 mb-1">
+                          {[1,2,3,4,5].map(n => (
+                            <Star key={n} className={`w-4 h-4 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
                           ))}
                         </div>
-                      )}
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.reliability')}</span>
+                      </div>
+                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
+                          <Clock className="w-4 h-4 text-blue-500" />
+                          {rating.deliveryDays}
+                        </div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
+                      </div>
+                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
+                        <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{rating.minOrderAmount}</div>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.minOrder')}</span>
+                      </div>
+                    </div>
 
-                      {/* Delivery + website */}
-                      <div className="flex flex-wrap items-center gap-3 text-xs mt-2">
-                        <span className={`flex items-center gap-1 ${supplier.delivery ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                          {supplier.delivery ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                          {t('suppliers.delivery')}
-                        </span>
-                        {supplier.website && (
+                    {/* Contact info */}
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      {detailSupplier.contactName && <div className="text-slate-600 dark:text-slate-300"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.contactName}</div>}
+                      {detailSupplier.phone && <div className="text-slate-600 dark:text-slate-300"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.phone}</div>}
+                      {detailSupplier.email && <div className="text-slate-600 dark:text-slate-300"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.email}</div>}
+                      {detailSupplier.city && <div className="text-slate-600 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
+                      {detailSupplier.website && (
+                        <div>
                           <a
-                            href={supplier.website.startsWith('http') ? supplier.website : `https://${supplier.website}`}
+                            href={detailSupplier.website.startsWith('http') ? detailSupplier.website : `https://${detailSupplier.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                            className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline"
                           >
-                            <ExternalLink className="w-3 h-3" />
+                            <ExternalLink className="w-3.5 h-3.5" />
                             {t('suppliers.website')}
                           </a>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Action buttons */}
-                    <div className="border-t dark:border-slate-700 px-5 py-3 flex items-center gap-2">
-                      <button
-                        onClick={() => openEdit(supplier)}
-                        className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
-                        title={t('suppliers.edit')}
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(supplier)}
-                        className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500"
-                        title={t('suppliers.delete')}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleLink(supplier)}
-                        disabled={linking === supplier.id}
-                        className="p-1.5 rounded hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 disabled:opacity-50"
-                        title={t('suppliers.linkIngredients')}
-                      >
-                        <Link2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setExpandedId(isExpanded ? null : supplier.id)}
-                        className="ml-auto p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
-                        title={t('suppliers.viewIngredients')}
-                      >
-                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </button>
-                    </div>
-
-                    {/* Expanded ingredients — interactive table */}
-                    {isExpanded && (
-                      <div className="border-t dark:border-slate-700 px-5 py-3 bg-slate-50 dark:bg-slate-900/30 rounded-b-lg space-y-3">
-                        {supplier.ingredients && supplier.ingredients.length > 0 ? (
-                          <>
-                            {/* Search + Compare bar */}
-                            <div className="flex items-center gap-2">
-                              <div className="relative flex-1">
-                                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                                <input
-                                  type="text" placeholder={t('suppliers.filterIngredients')} value={ingSearch}
-                                  onChange={e => setIngSearch(e.target.value)}
-                                  className="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                />
-                              </div>
-                              {compareIds.size > 0 && (
-                                <button
-                                  onClick={() => setShowCompare(true)}
-                                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-                                >
-                                  <BarChart3 className="w-3.5 h-3.5" /> {t('suppliers.comparePrices')} ({compareIds.size})
-                                </button>
-                              )}
-                              <span className="text-xs text-slate-400">{supplier.ingredients.length} {t('suppliers.products')}</span>
-                            </div>
-                            {/* Ingredient rows */}
-                            <div className="max-h-80 overflow-y-auto space-y-0.5">
-                              {supplier.ingredients
-                                .filter((ing: SupplierIngredient) => !ingSearch || ing.name.toLowerCase().includes(ingSearch.toLowerCase()))
-                                .map((ing: SupplierIngredient) => (
-                                <div key={ing.id} className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-white dark:hover:bg-slate-800 group text-sm">
-                                  <input
-                                    type="checkbox"
-                                    checked={compareIds.has(ing.id)}
-                                    onChange={() => setCompareIds(prev => {
-                                      const next = new Set(prev);
-                                      next.has(ing.id) ? next.delete(ing.id) : next.add(ing.id);
-                                      return next;
-                                    })}
-                                    className="accent-blue-600 shrink-0"
-                                  />
-                                  <span className="flex-1 text-slate-700 dark:text-slate-300 truncate">{ing.name}</span>
-                                  <span className="text-xs text-slate-400 w-20 shrink-0">{ing.category}</span>
-                                  {/* Editable price */}
-                                  {editingPrice?.id === ing.id ? (
-                                    <div className="flex items-center gap-1">
-                                      <input
-                                        type="number" step="0.01" min="0" autoFocus
-                                        value={editingPrice!.value}
-                                        onChange={e => setEditingPrice({ id: ing.id, value: e.target.value })}
-                                        onKeyDown={async e => {
-                                          if (e.key === 'Enter') {
-                                            await updateIngredient(ing.id, { pricePerUnit: parseFloat(editingPrice!.value) } as any);
-                                            setEditingPrice(null);
-                                            loadData();
-                                            showToast(t('suppliers.priceUpdated'), 'success');
-                                          } else if (e.key === 'Escape') setEditingPrice(null);
-                                        }}
-                                        className="w-20 px-2 py-0.5 text-xs border border-blue-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-slate-700"
-                                      />
-                                      <span className="text-xs text-slate-400">€/{ing.unit}</span>
-                                    </div>
-                                  ) : (
-                                    <span
-                                      className="text-xs font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:underline w-24 text-right shrink-0"
-                                      onClick={() => setEditingPrice({ id: ing.id, value: ing.pricePerUnit.toFixed(2) })}
-                                      title={t('suppliers.clickToEditPrice')}
-                                    >
-                                      {ing.pricePerUnit.toFixed(2)} €/{ing.unit}
-                                    </span>
-                                  )}
-                                  {/* Price alert badge */}
-                                  {priceAlerts[ing.id] && (
-                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
-                                      priceAlerts[ing.id].pctChange > 0
-                                        ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                                        : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
-                                    }`}>
-                                      {priceAlerts[ing.id].pctChange > 0 ? '↑' : '↓'} {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
-                                    </span>
-                                  )}
-                                  {/* Unlink button */}
-                                  <button
-                                    onClick={async () => {
-                                      await updateIngredient(ing.id, { supplierId: null, supplier: '' } as any);
-                                      loadData();
-                                      showToast(`${ing.name} ${t('suppliers.unlinked')}`, 'success');
-                                    }}
-                                    className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 text-red-400 hover:text-red-600 transition-all shrink-0"
-                                    title={t('suppliers.unlinkFromSupplier')}
-                                  >
-                                    <X className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Compare panel */}
-                            {showCompare && compareIds.size > 0 && (
-                              <div className="border border-blue-200 dark:border-blue-800 rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3">
-                                <div className="flex items-center justify-between mb-2">
-                                  <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">{t('suppliers.catalogPriceComparison')}</span>
-                                  <button onClick={() => { setShowCompare(false); setCompareIds(new Set()); }} className="text-blue-400 hover:text-blue-600"><X className="w-4 h-4" /></button>
-                                </div>
-                                <div className="text-xs space-y-1">
-                                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 font-medium text-slate-500 dark:text-slate-400 pb-1 border-b dark:border-blue-800">
-                                    <span className="col-span-2">{t('suppliers.product')}</span>
-                                    <span>{t('suppliers.myPrice')}</span>
-                                    <span>{t('suppliers.catMin')}</span>
-                                    <span>{t('suppliers.catAvg')}</span>
-                                    <span>{t('suppliers.gap')}</span>
-                                  </div>
-                                  {supplier.ingredients.filter((i: SupplierIngredient) => compareIds.has(i.id)).map((ing: SupplierIngredient) => {
-                                    const match = searchCatalog(ing.name, 1)[0];
-                                    const ecart = match ? Math.round(((ing.pricePerUnit - match.prixMoy) / match.prixMoy) * 100) : null;
-                                    return (
-                                      <div key={ing.id} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 py-1">
-                                        <span className="col-span-2 truncate text-slate-700 dark:text-slate-300">{ing.name}</span>
-                                        <span className="font-medium">{ing.pricePerUnit.toFixed(2)}€</span>
-                                        <span className="text-green-600">{match ? match.prixMin.toFixed(2) + '€' : '—'}</span>
-                                        <span>{match ? match.prixMoy.toFixed(2) + '€' : '—'}</span>
-                                        <span className={ecart !== null ? (ecart > 15 ? 'text-red-600 font-bold' : ecart < -10 ? 'text-green-600 font-bold' : 'text-orange-500') : 'text-slate-400'}>
-                                          {ecart !== null ? (ecart > 0 ? '+' : '') + ecart + '%' : '—'}
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <p className="text-sm text-slate-400 italic">{t('suppliers.noLinkedIngredient')}</p>
-                        )}
+                    {/* Categories */}
+                    {detailSupplier.categories.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {detailSupplier.categories.map((cat) => (
+                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                            {cat}
+                          </span>
+                        ))}
                       </div>
                     )}
+
+                    {/* Catalogue section: ingredients grouped by category */}
+                    {(() => {
+                      const catalog = supplierCatalogMap[detailSupplier.id];
+                      if (!catalog || catalog.count === 0) return (
+                        <div>
+                          <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+                            <Layers className="w-4 h-4 text-purple-500" />
+                            Catalogue (0 produits)
+                          </h4>
+                          <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
+                        </div>
+                      );
+                      const sortedCategories = Object.keys(catalog.byCategory).sort();
+                      return (
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                              <Layers className="w-4 h-4 text-purple-500" />
+                              Catalogue ({catalog.count} produits)
+                            </h4>
+                            <div className="text-right">
+                              <span className="text-xs text-slate-400">Cout total unitaire</span>
+                              <span className="ml-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                                {catalog.totalSpend.toFixed(2)} EUR
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            {sortedCategories.map(cat => {
+                              const catIngredients = catalog.byCategory[cat];
+                              const isCollapsed = collapsedCats.has(`${detailSupplier.id}-${cat}`);
+                              const catTotal = catIngredients.reduce((s, i) => s + i.pricePerUnit, 0);
+                              return (
+                                <div key={cat} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                                  <button
+                                    onClick={() => toggleCatCollapse(`${detailSupplier.id}-${cat}`)}
+                                    className="w-full flex items-center justify-between px-3 py-2.5 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
+                                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{cat}</span>
+                                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400">
+                                        {catIngredients.length}
+                                      </span>
+                                    </div>
+                                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                      {catTotal.toFixed(2)} EUR
+                                    </span>
+                                  </button>
+                                  {!isCollapsed && (
+                                    <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                                      {catIngredients
+                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                        .map(ing => {
+                                          const priceHistory = getMockPriceHistory(ing.pricePerUnit);
+                                          return (
+                                            <div key={ing.id} className="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                              <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">{ing.name}</span>
+                                              {priceHistory.length >= 2 && (
+                                                <MiniPriceChart data={priceHistory} width={60} height={20} />
+                                              )}
+                                              <span className="text-sm font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                                                {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                                              </span>
+                                              {priceAlerts[ing.id] && (
+                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
+                                                  priceAlerts[ing.id].pctChange > 0
+                                                    ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                                                    : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                                                }`}>
+                                                  {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
+                                                </span>
+                                              )}
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
-              })}
+              })() : (
+                <div className="flex flex-col items-center justify-center h-full text-slate-400 py-20">
+                  <Truck className="w-12 h-12 mb-3 opacity-30" />
+                  <p>{t('suppliers.noSupplierFound')}</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </>
       )}
 
@@ -1590,137 +1539,6 @@ export default function Suppliers() {
           )}
         </>
       )}
-
-      {/* ================================================================== */}
-      {/* Supplier Detail Modal                                              */}
-      {/* ================================================================== */}
-      <Modal isOpen={!!detailSupplier} onClose={() => setDetailSupplier(null)} title={detailSupplier?.name || t('suppliers.supplierDetail')}>
-        {detailSupplier && (() => {
-          const rating = getMockRating(detailSupplier.id);
-          const ings = detailSupplier.ingredients || [];
-          return (
-            <div className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
-              {/* Rating summary */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
-                  <div className="flex items-center justify-center gap-0.5 mb-1">
-                    {[1,2,3,4,5].map(n => (
-                      <Star key={n} className={`w-4 h-4 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
-                    ))}
-                  </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.reliability')}</span>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
-                    <Clock className="w-4 h-4 text-blue-500" />
-                    {rating.deliveryDays}
-                  </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{rating.minOrderAmount}</div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.minOrder')}</span>
-                </div>
-              </div>
-
-              {/* Contact info */}
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                {detailSupplier.contactName && <div className="text-slate-600 dark:text-slate-300"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.contactName}</div>}
-                {detailSupplier.phone && <div className="text-slate-600 dark:text-slate-300"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.phone}</div>}
-                {detailSupplier.email && <div className="text-slate-600 dark:text-slate-300"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.email}</div>}
-                {detailSupplier.city && <div className="text-slate-600 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
-              </div>
-
-              {/* ── Catalogue section: ingredients grouped by category ── */}
-              {(() => {
-                const catalog = supplierCatalogMap[detailSupplier.id];
-                if (!catalog || catalog.count === 0) return (
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-purple-500" />
-                      Catalogue (0 produits)
-                    </h4>
-                    <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
-                  </div>
-                );
-                const sortedCategories = Object.keys(catalog.byCategory).sort();
-                return (
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                        <Layers className="w-4 h-4 text-purple-500" />
-                        Catalogue ({catalog.count} produits)
-                      </h4>
-                      <div className="text-right">
-                        <span className="text-xs text-slate-400">Cout total unitaire</span>
-                        <span className="ml-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                          {catalog.totalSpend.toFixed(2)} EUR
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      {sortedCategories.map(cat => {
-                        const catIngredients = catalog.byCategory[cat];
-                        const isCollapsed = collapsedCats.has(`${detailSupplier.id}-${cat}`);
-                        const catTotal = catIngredients.reduce((s, i) => s + i.pricePerUnit, 0);
-                        return (
-                          <div key={cat} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                            <button
-                              onClick={() => toggleCatCollapse(`${detailSupplier.id}-${cat}`)}
-                              className="w-full flex items-center justify-between px-3 py-2.5 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left"
-                            >
-                              <div className="flex items-center gap-2">
-                                <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{cat}</span>
-                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400">
-                                  {catIngredients.length}
-                                </span>
-                              </div>
-                              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                                {catTotal.toFixed(2)} EUR
-                              </span>
-                            </button>
-                            {!isCollapsed && (
-                              <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                                {catIngredients
-                                  .sort((a, b) => a.name.localeCompare(b.name))
-                                  .map(ing => {
-                                    const priceHistory = getMockPriceHistory(ing.pricePerUnit);
-                                    return (
-                                      <div key={ing.id} className="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                        <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">{ing.name}</span>
-                                        {priceHistory.length >= 2 && (
-                                          <MiniPriceChart data={priceHistory} width={60} height={20} />
-                                        )}
-                                        <span className="text-sm font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap">
-                                          {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
-                                        </span>
-                                        {priceAlerts[ing.id] && (
-                                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
-                                            priceAlerts[ing.id].pctChange > 0
-                                              ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                                              : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
-                                          }`}>
-                                            {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
-                                          </span>
-                                        )}
-                                      </div>
-                                    );
-                                  })}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          );
-        })()}
-      </Modal>
 
       {/* ================================================================== */}
       {/* Add / Edit Modal                                                   */}

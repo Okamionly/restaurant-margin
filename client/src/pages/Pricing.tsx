@@ -10,7 +10,7 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     question: "Comment fonctionne l'abonnement ?",
-    answer: "Choisissez votre plan (Basic 9€, Pro 29€ ou Business 79€/mois), payez par carte bancaire via notre plateforme securisee Stripe, et recevez votre code d'activation instantanement.",
+    answer: "Choisissez votre plan (Pro 29€ ou Business 79€/mois), payez par carte bancaire via notre plateforme securisee Stripe, et recevez votre code d'activation instantanement.",
   },
   {
     question: "Comment fonctionne la facturation annuelle ?",
@@ -54,61 +54,48 @@ interface Plan {
 
 const plans: Plan[] = [
   {
-    name: 'Basic',
-    description: 'Pour demarrer avec les essentiels',
-    priceMonthly: 9,
-    icon: <ChefHat className="w-6 h-6 text-emerald-400" />,
-    features: [
-      { text: 'Dashboard & statistiques', included: true },
-      { text: 'Ingredients illimites', included: true },
-      { text: 'Recettes illimitees', included: true },
-      { text: 'Calcul de marge', included: true },
-      { text: '1 utilisateur', included: true },
-      { text: 'Menu Engineering', included: false },
-      { text: 'Gestion fournisseurs', included: false },
-      { text: 'Assistant IA', included: false },
-    ],
-    cta: "S'abonner — 9€/mois",
-    ctaLink: 'https://buy.stripe.com/8x2fZagoWbF26EI3j987K03',
-    external: true,
-  },
-  {
     name: 'Professionnel',
     description: 'Pour les restaurateurs ambitieux',
     priceMonthly: 29,
     popular: true,
     icon: <Sparkles className="w-6 h-6 text-blue-400" />,
     features: [
-      { text: 'Ingredients illimites', included: true },
+      { text: 'Dashboard & statistiques', included: true },
+      { text: 'Calcul de marge & fiches techniques', included: true },
       { text: 'Recettes illimitees', included: true },
       { text: 'Menu Engineering', included: true },
-      { text: 'Fiches techniques', included: true },
-      { text: 'Assistant IA', included: true },
       { text: 'Gestion fournisseurs', included: true },
       { text: 'HACCP & Tracabilite', included: true },
+      { text: 'Comptabilite & Devis', included: true },
+      { text: 'Assistant IA (20 questions/jour)', included: true },
       { text: '5 utilisateurs', included: true },
       { text: 'Support prioritaire', included: true },
+      { text: 'Kit Station Balance', included: false },
+      { text: 'Inventaire & Stock automatise', included: false },
+      { text: 'Multi-etablissements', included: false },
     ],
     cta: "S'abonner — 29€/mois",
     ctaLink: 'https://buy.stripe.com/eVq4gs5Ki10o3sw1b187K01',
     external: true,
   },
   {
-    name: 'Enterprise',
-    description: 'Pour les groupes et chaines',
+    name: 'Business',
+    description: 'Tout inclus pour les professionnels exigeants',
     priceMonthly: 79,
     icon: <Building2 className="w-6 h-6 text-emerald-400" />,
     features: [
-      { text: 'Tout Pro +', included: true },
+      { text: 'Tout du plan Pro', included: true },
       { text: 'Kit Station (Balance + Tablette)', included: true },
+      { text: 'Inventaire & Stock automatise', included: true },
       { text: 'Multi-etablissements', included: true },
       { text: 'Assistant IA illimite', included: true },
       { text: 'Auto-commandes fournisseurs', included: true },
       { text: 'Planning equipe', included: true },
+      { text: 'Scan factures IA (OCR)', included: true },
       { text: 'Utilisateurs illimites', included: true },
       { text: 'Support prioritaire 24/7', included: true },
     ],
-    cta: 'Commencer maintenant',
+    cta: "S'abonner — 79€/mois",
     ctaLink: 'https://buy.stripe.com/bJe00c2y638w7IMdXN87K02',
     external: true,
   },
@@ -194,7 +181,7 @@ export default function Pricing() {
           </span>
         </h1>
         <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
-          Choisissez le plan adapte a votre etablissement. A partir de 9€/mois.
+          Choisissez le plan adapte a votre etablissement. A partir de 29€/mois.
         </p>
 
         {/* Toggle mensuel / annuel */}
@@ -433,7 +420,7 @@ export default function Pricing() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
         >
-          S'abonner a partir de 9€/mois
+          S'abonner a partir de 29€/mois
           <ArrowRight className="w-5 h-5" />
         </a>
       </section>

@@ -133,7 +133,7 @@ app.post('/api/activation/generate', async (req: any, res) => {
   try {
     const { plan, secret } = req.body;
     if (secret !== process.env.ACTIVATION_SECRET) return res.status(401).json({ error: 'Non autorisé' });
-    if (!plan || !['basic', 'pro', 'business'].includes(plan)) return res.status(400).json({ error: 'Plan invalide' });
+    if (!plan || !['pro', 'business'].includes(plan)) return res.status(400).json({ error: 'Plan invalide (pro ou business)' });
     const code = generateActivationCode();
     const activation = await prisma.activationCode.create({ data: { code, plan } });
     res.status(201).json({ code: activation.code, plan: activation.plan });
@@ -169,7 +169,7 @@ app.post('/api/auth/register', async (req: any, res) => {
     const email = rawEmail.toLowerCase().trim();
 
     const userCount = await prisma.user.count();
-    let plan = 'basic';
+    let plan = 'pro';
 
     if (userCount > 0) {
       const authHeader = req.headers.authorization;
@@ -206,7 +206,7 @@ app.post('/api/auth/login', async (req, res) => {
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
-    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'basic' } });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'pro' } });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur connexion' }); }
 });
 

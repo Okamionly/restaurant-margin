@@ -117,7 +117,7 @@ const testimonials = [
 const faqItems = [
   {
     q: 'Comment fonctionne l\'abonnement ?',
-    a: 'Choisissez votre plan (Basic, Pro ou Business), payez par carte bancaire et recevez votre code d\'activation instantanement. L\'abonnement est mensuel, sans engagement. Vous pouvez annuler a tout moment depuis votre espace.',
+    a: 'Choisissez votre plan (Pro ou Business), payez par carte bancaire et recevez votre code d\'activation instantanement. L\'abonnement est mensuel, sans engagement. Vous pouvez annuler a tout moment depuis votre espace.',
   },
   {
     q: 'Comment recevoir mon code d\'activation ?',
@@ -523,7 +523,7 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { num: '01', title: 'Choisissez votre abonnement', desc: 'Basic 9 euros, Pro 29 euros ou Business 79 euros. Activation instantanee.', icon: Users },
+              { num: '01', title: 'Choisissez votre abonnement', desc: 'Pro 29 euros ou Business 79 euros. Activation instantanee.', icon: Users },
               { num: '02', title: 'Activez votre compte', desc: 'Recevez votre code, creez votre espace en 2 minutes.', icon: Zap },
               { num: '03', title: 'Pilotez vos marges', desc: 'Dashboard, recettes, fournisseurs, tout est pret.', icon: TrendingUp },
             ].map((step, i) => (
@@ -649,35 +649,7 @@ export default function Landing() {
             </div>
           </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {/* Basic */}
-            <FadeIn delay={0}>
-              <div className="bg-white border border-slate-200 rounded-2xl p-8 h-full flex flex-col hover:border-slate-300 transition-colors shadow-sm">
-                <h3 className="text-lg font-bold mb-1">Basic</h3>
-                <div className="flex items-end gap-1 mb-4">
-                  <span className="text-4xl font-extrabold">9</span>
-                  <span className="text-slate-500 text-sm mb-1">euros/mois</span>
-                </div>
-                <p className="text-sm text-slate-500 mb-6">Pour demarrer et calculer ses marges.</p>
-                <div className="space-y-3 mb-8 flex-1">
-                  {['Calcul de marge illimite', 'Fiches techniques', 'Dashboard analytics', 'Support email'].map((f) => (
-                    <div key={f} className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-                      <span className="text-sm text-slate-600">{f}</span>
-                    </div>
-                  ))}
-                </div>
-                <a
-                  href="https://buy.stripe.com/8x2fZagoWbF26EI3j987K03"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full text-center px-6 py-3 rounded-xl bg-slate-100 text-slate-900 font-semibold hover:bg-slate-200 transition-colors border border-slate-300"
-                >
-                  Choisir Basic
-                </a>
-              </div>
-            </FadeIn>
-
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
             {/* Pro — Popular */}
             <FadeIn delay={100}>
               <div className="relative bg-white border-2 border-blue-500 rounded-2xl p-8 h-full flex flex-col shadow-[0_0_40px_rgba(59,130,246,0.1)] hover:shadow-[0_0_60px_rgba(59,130,246,0.18)] transition-all duration-500">
@@ -691,7 +663,7 @@ export default function Landing() {
                 </div>
                 <p className="text-sm text-slate-500 mb-6">Pour optimiser et developper son restaurant.</p>
                 <div className="space-y-3 mb-8 flex-1">
-                  {['Tout du plan Basic', 'Menu Engineering BCG', 'Gestion fournisseurs avancee', 'Export PDF / Excel', 'Support prioritaire'].map((f) => (
+                  {['Dashboard & statistiques', 'Menu Engineering BCG', 'Gestion fournisseurs avancee', 'Export PDF / Excel', 'Support prioritaire'].map((f) => (
                     <div key={f} className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                       <span className="text-sm text-slate-600">{f}</span>

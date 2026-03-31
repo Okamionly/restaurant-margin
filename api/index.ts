@@ -16,7 +16,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'rM$9xK#2pL7vQ!dW4nZ8jF0tY6bA3hU5cE
 const TOKEN_EXPIRY = '7d';
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://restaumargin.vercel.app'],
+  origin: ['http://localhost:5173', 'https://www.restaumargin.fr', 'https://restaumargin.fr', 'https://restaumargin.vercel.app'],
   credentials: true,
 }));
 app.use(express.json());
@@ -264,7 +264,7 @@ app.post('/api/auth/resend-verification', authMiddleware, async (req: any, res) 
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const resend = new Resend(apiKey);
-      const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
+      const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
       await resend.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
         subject: 'RestauMargin — Vérifiez votre adresse email',
@@ -288,7 +288,7 @@ app.post('/api/auth/forgot-password', async (req: any, res) => {
     const apiKey = process.env.RESEND_API_KEY;
     if (apiKey) {
       const resend = new Resend(apiKey);
-      const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
+      const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
       await resend.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
         subject: 'RestauMargin — Réinitialisation de votre mot de passe',
@@ -1556,7 +1556,7 @@ app.post('/api/contact', async (req, res) => {
     const resendKey = process.env.RESEND_API_KEY;
     if (resendKey) {
       const resendClient = new Resend(resendKey);
-      const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
+      const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
 
       await resendClient.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>',

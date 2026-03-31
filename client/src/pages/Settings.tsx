@@ -443,7 +443,7 @@ export default function Settings() {
 
   const handleCopyCode = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText('restaumargin.vercel.app/pricing');
+      await navigator.clipboard.writeText('www.restaumargin.fr/pricing');
       setCopied(true);
       showToast('Code copié dans le presse-papier', 'success');
       setTimeout(() => setCopied(false), 2000);

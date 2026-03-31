@@ -748,17 +748,25 @@ export default function Devis() {
   async function handleSendEmail(doc: DocumentDevis) {
     setSendingEmailId(doc.id);
     try {
-      // Send email via /api/contact
-      const message = `Devis ${doc.numero} pour ${doc.client.nom || doc.client.raisonSociale}\n\nObjet: ${doc.client.raisonSociale || doc.client.nom}\nMontant HT: ${formatEuro(doc.totalHT)}\nMontant TTC: ${formatEuro(doc.totalTTC)}\n\nClient: ${doc.client.nom} - ${doc.client.email} - ${doc.client.telephone}`;
+      const clientEmail = doc.client.email;
+      if (!clientEmail) {
+        showToast('Email client manquant — ajoutez-le dans la fiche client', 'error');
+        setSendingEmailId(null);
+        return;
+      }
 
-      const contactRes = await fetch(`${API}/api/contact`, {
+      // Send devis/facture directly to client email
+      const contactRes = await fetch(`${API}/api/devis/send-email`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
-          name: 'RestauMargin — Devis',
-          email: 'contact@restaumargin.fr',
-          source: 'devis-envoi',
-          message,
+          clientName: doc.client.nom || doc.client.raisonSociale,
+          clientEmail,
+          documentNumber: doc.numero,
+          documentType: doc.type,
+          totalHT: doc.totalHT,
+          totalTTC: doc.totalTTC,
+          items: doc.lignes,
         }),
       });
       if (!contactRes.ok) throw new Error('Erreur envoi email');

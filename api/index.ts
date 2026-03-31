@@ -19,6 +19,62 @@ app.use(cors({
   origin: ['http://localhost:5173', 'https://www.restaumargin.fr', 'https://restaumargin.fr', 'https://restaumargin.vercel.app'],
   credentials: true,
 }));
+// ── Stripe Webhook (must be before express.json() for raw body) ──
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const event = JSON.parse(req.body.toString());
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      const customerEmail = session.customer_details?.email || session.customer_email;
+      const amountTotal = session.amount_total; // in cents
+
+      // Determine plan based on amount
+      let plan = 'pro';
+      if (amountTotal && amountTotal >= 7000) plan = 'business'; // 79€ = 7900 cents
+
+      // Generate activation code
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = 'RM-';
+      for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+
+      await prisma.activationCode.create({ data: { code, plan, stripePaymentId: session.id } });
+
+      // Send email with activation code via Resend
+      const resendKey = process.env.RESEND_API_KEY;
+      if (resendKey && customerEmail) {
+        const resend = new Resend(resendKey);
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: customerEmail,
+          subject: `RestauMargin — Votre code d'activation ${plan.toUpperCase()}`,
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+              <h1 style="color:#1e40af;">Bienvenue sur RestauMargin !</h1>
+              <p>Merci pour votre abonnement <strong>${plan === 'pro' ? 'Professionnel' : 'Business'}</strong>.</p>
+              <div style="background:#f0f9ff;border:2px solid #2563eb;border-radius:12px;padding:24px;text-align:center;margin:24px 0;">
+                <p style="color:#64748b;margin:0 0 8px;">Votre code d'activation :</p>
+                <p style="font-size:32px;font-weight:bold;color:#1e40af;letter-spacing:2px;margin:0;">${code}</p>
+              </div>
+              <p>Pour commencer :</p>
+              <ol>
+                <li>Rendez-vous sur <a href="https://www.restaumargin.fr/login" style="color:#2563eb;">www.restaumargin.fr</a></li>
+                <li>Cliquez sur "Créer un compte"</li>
+                <li>Entrez votre code d'activation : <strong>${code}</strong></li>
+              </ol>
+              <p style="color:#64748b;font-size:14px;margin-top:32px;">L'équipe RestauMargin<br>contact@restaumargin.fr</p>
+            </div>
+          `,
+        });
+        console.log(`[STRIPE WEBHOOK] Code ${code} (${plan}) envoyé à ${customerEmail}`);
+      }
+    }
+    res.json({ received: true });
+  } catch (e: any) {
+    console.error('[STRIPE WEBHOOK ERROR]', e.message);
+    res.status(400).json({ error: e.message });
+  }
+});
+
 app.use(express.json());
 
 // --- Auth Middleware ---
@@ -191,8 +247,14 @@ app.post('/api/auth/register', async (req: any, res) => {
     const passwordHash = await bcrypt.hash(password, 12);
     const role = userCount === 0 ? 'admin' : 'chef';
     const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan } });
+
+    // Auto-create a default restaurant for the new user
+    const restaurant = await prisma.restaurant.create({
+      data: { name: 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },
+    });
+
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
-    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan } });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan }, restaurantId: restaurant.id });
   } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }
 });
 

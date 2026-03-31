@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   CalendarDays, Users, Euro, TrendingUp, Plus, ChevronLeft, ChevronRight,
-  Edit, Trash2, Send, CheckCircle2, XCircle, Clock, Building2, Utensils,
+  Trash2, Send, CheckCircle2, XCircle, Clock, Building2, Utensils,
   Printer, PartyPopper, ArrowRight, Search, LayoutGrid, Calendar,
-  Phone, Mail, Briefcase, MapPin, Monitor, Music, Mic, Tv, Flower2, Camera,
-  FileText, DollarSign, Hash, AlertCircle
+  Phone, Mail, MapPin, Monitor, Music, Mic, Tv, Flower2, Camera,
+  FileText, DollarSign
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';

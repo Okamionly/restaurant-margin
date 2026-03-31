@@ -289,7 +289,7 @@ function AppLayout() {
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
         { to: '/integrations', icon: Plug, label: 'Integrations', badgeText: 'Bientôt', disabled: true },
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
-        { to: '/pricing', icon: CreditCard, label: 'Mon abonnement' },
+        { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
       ],
     },
   ];
@@ -566,7 +566,7 @@ function AppLayout() {
               <Route path="/devis" element={<DevisPage />} />
               <Route path="/restaurants" element={<Restaurants />} />
               <Route path="/pricing" element={<Pricing />} />
-              <Route path="/abonnement" element={<Navigate to="/pricing" replace />} />
+              <Route path="/abonnement" element={<Subscription />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/users" element={<UserManagement />} />
               <Route path="*" element={<NotFound />} />

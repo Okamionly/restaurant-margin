@@ -31,7 +31,6 @@ export default function Ingredients() {
   const [form, setForm] = useState(emptyForm);
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
-  const [importing, setImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Delete confirm
@@ -352,88 +351,6 @@ export default function Ingredients() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t('ingredients.inventoryError');
       showToast(message, 'error');
-    }
-  }
-
-  // CSV Export
-  function exportCSV() {
-    const headers = [t('ingredients.csvHeaderName'), t('ingredients.csvHeaderCategory'), t('ingredients.csvHeaderUnitPrice'), t('ingredients.csvHeaderUnit'), t('ingredients.csvHeaderSupplier'), t('ingredients.csvHeaderAllergens')];
-    const rows = filtered.map((ing) => [
-      ing.name,
-      ing.category,
-      ing.pricePerUnit.toFixed(2),
-      ing.unit,
-      ing.supplier || '',
-      (ing.allergens || []).join('; '),
-    ]);
-
-    const csvContent = [headers, ...rows]
-      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
-      .join('\n');
-
-    const BOM = '﻿';
-    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ingredients_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast(t('ingredients.csvExported').replace('{count}', String(filtered.length)), 'success');
-  }
-
-  // CSV Import
-  async function handleImportCSV(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setImporting(true);
-    try {
-      const text = await file.text();
-      const lines = text.split('\n').filter((l) => l.trim());
-      if (lines.length < 2) {
-        showToast(t('ingredients.csvEmpty'), 'error');
-        return;
-      }
-
-      // Skip header row
-      let imported = 0;
-      let errors = 0;
-
-      for (let i = 1; i < lines.length; i++) {
-        const cells = lines[i].match(/("([^"]*("")*)*"|[^,]*)(,|$)/g);
-        if (!cells || cells.length < 4) continue;
-
-        const clean = (s: string) => s.replace(/^[",]+|[",]+$/g, '').trim();
-        const name = clean(cells[0]);
-        const category = clean(cells[1]) || 'Autres';
-        const pricePerUnit = parseFloat(clean(cells[2]).replace(',', '.'));
-        const unit = clean(cells[3]) || 'kg';
-        const supplier = cells[4] ? clean(cells[4]) : null;
-        const allergens = cells[5] ? clean(cells[5]).split(';').map((a) => a.trim()).filter(Boolean) : [];
-
-        if (!name || isNaN(pricePerUnit) || pricePerUnit <= 0) {
-          errors++;
-          continue;
-        }
-
-        try {
-          // Try to match supplier name to existing supplier
-          const matchedSupplier = supplier ? suppliers.find((s) => s.name.toLowerCase() === supplier.toLowerCase()) : null;
-          await createIngredient({ name, category, pricePerUnit, unit, supplier, supplierId: matchedSupplier ? matchedSupplier.id : null, allergens });
-          imported++;
-        } catch {
-          errors++;
-        }
-      }
-
-      showToast(errors > 0 ? t('ingredients.csvImportedWithErrors').replace('{imported}', String(imported)).replace('{errors}', String(errors)) : t('ingredients.csvImported').replace('{imported}', String(imported)), imported > 0 ? 'success' : 'error');
-      loadIngredients();
-    } catch {
-      showToast(t('ingredients.csvReadError'), 'error');
-    } finally {
-      setImporting(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   }
 

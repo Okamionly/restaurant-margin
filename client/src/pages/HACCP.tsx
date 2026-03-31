@@ -67,13 +67,6 @@ const STATUS_BADGE: Record<string, string> = {
   en_attente: 'bg-amber-900/40 text-amber-300 border border-amber-700/50',
 };
 
-const CLEANING_ZONES = [
-  'Cuisine - Plan de travail', 'Cuisine - Sols', 'Cuisine - Hottes',
-  'Chambre froide positive', 'Chambre froide négative',
-  'Salle - Tables', 'Salle - Sols', 'Sanitaires',
-  'Zone de stockage', 'Zone de réception', 'Plonge', 'Poubelles / Local déchets',
-];
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function getTempColor(zone: string, temp: number): 'emerald' | 'amber' | 'red' | 'slate' {

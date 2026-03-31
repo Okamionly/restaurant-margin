@@ -18,7 +18,6 @@ import {
   ChevronUp,
   ChevronDown,
   Plus,
-  Check,
   Pencil,
 } from 'lucide-react';
 import { fetchRecipes, updateRecipe } from '../services/api';
@@ -28,7 +27,6 @@ import type { Recipe } from '../types';
 import { RECIPE_CATEGORIES, ALLERGENS } from '../types';
 
 // --- Category display config ---
-const CATEGORY_ORDER = ['Entree', 'Plat', 'Dessert', 'Suggestion', 'Accompagnement', 'Boisson'] as const;
 const CATEGORY_LABELS: Record<string, string> = {
   'Entree': 'Entrées',
   'Entrée': 'Entrées',
@@ -38,16 +36,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   'Accompagnement': 'Accompagnements',
   'Boisson': 'Boissons',
 };
-const CATEGORY_ICONS: Record<string, string> = {
-  'Entree': '',
-  'Entrée': '',
-  'Plat': '',
-  'Dessert': '',
-  'Suggestion': '',
-  'Accompagnement': '',
-  'Boisson': '',
-};
-
 function getCategoryLabel(cat: string) {
   return CATEGORY_LABELS[cat] || cat;
 }
@@ -148,7 +136,12 @@ export default function MenuBuilder() {
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (restaurantLoading || !selectedRestaurant) return;
+    if (restaurantLoading) return;
+    if (!selectedRestaurant) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     fetchRecipes()
       .then(setRecipes)
       .catch(() => {})

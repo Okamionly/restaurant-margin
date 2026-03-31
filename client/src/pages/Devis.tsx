@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   FileText, Search, Plus, Filter, Eye, Download, Send, ArrowRight,
-  Trash2, Edit2, CheckCircle, XCircle, Clock, Euro, Copy, Printer,
-  ChevronDown, ChevronUp, GripVertical, CreditCard, Building2,
-  Calendar, AlertTriangle, RotateCcw, Receipt, X as XIcon, Loader2
+  Trash2, Edit2, CheckCircle, XCircle, Clock, Euro, Copy,
+  CreditCard, Building2,
+  AlertTriangle, RotateCcw, Receipt, Loader2
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';

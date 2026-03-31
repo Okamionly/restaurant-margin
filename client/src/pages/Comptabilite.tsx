@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Calculator, TrendingUp, TrendingDown, Receipt, PieChart as PieChartIcon,
-  BarChart3, Download, FileText, Printer, Plus, Filter, Calendar,
+  BarChart3, Download, FileText, Printer, Plus,
   Target, Gauge, ArrowUpRight, ArrowDownRight, Euro, Search,
-  ChevronDown, ChevronUp, X, Trash2, Loader2
+  X, Trash2, Loader2
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, LineChart, Line,

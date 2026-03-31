@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, AlertTriangle } from 'lucide-react';
+import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb } from 'lucide-react';
 import { sendAIMessage } from '../services/api';
 
 interface Message {

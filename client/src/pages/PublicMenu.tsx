@@ -118,8 +118,8 @@ export default function PublicMenu() {
 
   function getAllergens(recipe: PublicRecipe): string[] {
     const set = new Set<string>();
-    recipe.ingredients.forEach((ri) => {
-      ri.ingredient.allergens.forEach((a) => set.add(a));
+    (recipe.ingredients || []).forEach((ri) => {
+      (ri.ingredient?.allergens || []).forEach((a: string) => set.add(a));
     });
     return Array.from(set);
   }

@@ -1029,7 +1029,13 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
     } catch {
       res.status(422).json({ error: "Impossible d'analyser la réponse", raw: text });
     }
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur scan facture' }); }
+  } catch (e: any) {
+    console.error(e);
+    if (e?.status === 400 && e?.message?.includes('credit balance')) {
+      return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
+    }
+    res.status(500).json({ error: 'Erreur scan facture' });
+  }
 });
 
 // ============ MENU SALES (MENU ENGINEERING) ============
@@ -1235,7 +1241,10 @@ app.post('/api/ai/chat', authWithRestaurant, async (req: any, res) => {
     res.json({ response: text, usage: response.usage });
   } catch (e: any) {
     console.error('AI error:', e.message);
-    res.status(500).json({ error: e.message || 'Erreur IA' });
+    if (e?.status === 400 && e?.message?.includes('credit balance')) {
+      return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
+    }
+    res.status(500).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
   }
 });
 
@@ -2162,7 +2171,13 @@ Génère 5 à 7 actualités personnalisées en JSON. Réponds UNIQUEMENT avec un
     generateRateLimit.set(rid, Date.now());
     const newsList = await prisma.newsItem.findMany({ where: { restaurantId: rid, dismissed: false }, orderBy: { createdAt: 'desc' } });
     res.json({ count: created.count, items: newsList });
-  } catch (e: any) { console.error(e); res.status(500).json({ error: e.message || 'Erreur génération IA' }); }
+  } catch (e: any) {
+    console.error(e);
+    if (e?.status === 400 && e?.message?.includes('credit balance')) {
+      return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
+    }
+    res.status(500).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
+  }
 });
 
 app.patch('/api/news/:id/dismiss', authWithRestaurant, async (req: any, res) => {

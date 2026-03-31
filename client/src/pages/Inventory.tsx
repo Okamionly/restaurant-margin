@@ -10,7 +10,7 @@ import {
   createWasteLog
 } from '../services/api';
 import type { InventoryItem, InventoryValue, Ingredient } from '../types';
-import { INGREDIENT_CATEGORIES } from '../types';
+
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';

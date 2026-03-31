@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChefHat, Calculator, ClipboardList, Sparkles, Truck, BarChart3,
+  ChefHat, ClipboardList, Truck, BarChart3,
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
   Package, Users, Menu, X as XIcon, Shield, Lock, Mail,
   Scale, Tablet, Bluetooth, ChevronDown, Phone, Send, Loader2,

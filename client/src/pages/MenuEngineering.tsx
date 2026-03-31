@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
-  Star, TrendingUp, Target, Zap, AlertCircle, BarChart3, Plus,
-  Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Printer, Upload, X,
-  Loader2, ShoppingBag, DollarSign, Percent, ChefHat, Eye,
-  Filter, RefreshCw, SlidersHorizontal, AlertTriangle, Lightbulb, Shield,
+  Target, BarChart3, Plus,
+  Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Printer, Upload,
+  Loader2, ShoppingBag, DollarSign, Percent, ChefHat,
+  RefreshCw, SlidersHorizontal, AlertTriangle, Lightbulb, Shield,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
@@ -176,7 +176,7 @@ function getAllergenColor(allergen: string): string {
 function getRecipeAllergens(recipe: Recipe): string[] {
   const set = new Set<string>();
   (recipe.ingredients || []).forEach(ri => {
-    (ri.ingredient.allergens || []).forEach(a => set.add(a));
+    (ri.ingredient?.allergens || []).forEach(a => set.add(a));
   });
   return Array.from(set).sort();
 }

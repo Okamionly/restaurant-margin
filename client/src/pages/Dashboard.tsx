@@ -1,17 +1,17 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   TrendingUp, TrendingDown, DollarSign, ChefHat, Eye, Briefcase,
-  PieChart as PieChartIcon, AlertTriangle, Plus, Download, Printer, ShieldAlert,
+  PieChart as PieChartIcon, AlertTriangle, Plus, Printer, ShieldAlert,
   Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight, ArrowUpRight, ArrowDownRight,
-  ChevronDown, ChevronRight, Package, ClipboardList, FileText, ShoppingCart,
-  Lightbulb, Sparkles, Star, Zap, ArrowUp, ArrowDown,
+  Package, ClipboardList, FileText, ShoppingCart,
+  Lightbulb, Sparkles, Star, Zap, ArrowDown,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend, Treemap, LineChart, Line, LabelList,
+  Tooltip, ResponsiveContainer, Legend, LineChart, Line,
 } from 'recharts';
-import { fetchRecipes, fetchIngredients, getActiveRestaurantId } from '../services/api';
+import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
@@ -202,33 +202,6 @@ function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
         </div>
       ))}
     </div>
-  );
-}
-
-// ── Treemap Custom Content ────────────────────────────────────────────────
-interface TreemapContentProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  name: string;
-  value: number;
-  totalFoodCost: number;
-}
-
-function TreemapContent({ x, y, width, height, name, value, totalFoodCost }: TreemapContentProps) {
-  if (width < 40 || height < 30) return null;
-  const pct = totalFoodCost > 0 ? ((value / totalFoodCost) * 100).toFixed(0) : '0';
-  return (
-    <g>
-      <rect x={x} y={y} width={width} height={height} rx={4} fill={FOOD_CATEGORY_COLORS[name] || '#64748b'} fillOpacity={0.85} stroke="#fff" strokeWidth={2} />
-      {width > 60 && height > 40 && (
-        <>
-          <text x={x + width / 2} y={y + height / 2 - 6} textAnchor="middle" className="text-[11px] font-medium" fill="#fff">{name}</text>
-          <text x={x + width / 2} y={y + height / 2 + 10} textAnchor="middle" className="text-[10px]" fill="rgba(255,255,255,0.8)">{pct}%</text>
-        </>
-      )}
-    </g>
   );
 }
 
@@ -536,7 +509,6 @@ export default function Dashboard() {
       const month = i + 1;
       const monthlyRevenue = dailyRevenue * 26;
       const monthlyCost = dailyCost * 26;
-      const fixedCosts = 2000; // Estimated fixed monthly costs
       const growthFactor = 1 + (i * 0.02); // 2% monthly growth
       return {
         name: `${t("dashboard.month")} ${month}`,
@@ -571,20 +543,6 @@ export default function Dashboard() {
       menuDuMarche, aiSuggestions, projectionData, categoryBreakdown,
     };
   }, [recipes, couverts, serviceMode, avgPricePerCouvert, t]);
-
-  // ── Export CSV helper ──────────────────────────────────────────────────
-  const handleExportCSV = useCallback(() => {
-    if (recipes.length === 0) return;
-    const header = `${t("dashboard.csvName")},${t("dashboard.csvCategory")},${t("dashboard.csvSellingPrice")},${t("dashboard.csvFoodCost")},${t("dashboard.csvLaborCost")},${t("dashboard.csvTotalCost")},${t("dashboard.csvMarginEuro")},${t("dashboard.csvMarginPercent")},${t("dashboard.csvCoefficient")}\n`;
-    const rows = recipes.map(r =>
-      `"${r.name}","${r.category}",${r.sellingPrice.toFixed(2)},${r.margin.costPerPortion.toFixed(2)},${(r.margin.laborCostPerPortion || 0).toFixed(2)},${(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)},${r.margin.marginAmount.toFixed(2)},${r.margin.marginPercent.toFixed(1)},${r.margin.coefficient.toFixed(2)}`
-    ).join('\n');
-    const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'recettes-marges.csv'; a.click();
-    URL.revokeObjectURL(url);
-  }, [recipes]);
 
   // ── Loading ────────────────────────────────────────────────────────────
   if (loading) {
@@ -835,7 +793,7 @@ export default function Dashboard() {
                 </span>
               ))}
             </div>
-            <Link to="/seasonal" className="inline-flex items-center gap-1 mt-3 text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
+            <Link to="/mercuriale" className="inline-flex items-center gap-1 mt-3 text-sm text-emerald-600 dark:text-emerald-400 hover:underline">
               Voir tous les produits de saison <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
-  ChevronUp, FileText, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
+  ChevronUp, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
   Star, Clock, TrendingUp, ArrowRightLeft, Zap, Scale, Award, AlertTriangle,
 } from 'lucide-react';
 import {
@@ -14,7 +14,6 @@ import type { Supplier, Ingredient } from '../types';
 type SupplierIngredient = Pick<Ingredient, 'id' | 'name' | 'unit' | 'pricePerUnit' | 'category'>;
 import { INGREDIENT_CATEGORIES } from '../types';
 import {
-  FRENCH_SUPPLIERS,
   FRENCH_REGIONS,
   SUPPLIER_CATEGORIES,
   searchSuppliers,

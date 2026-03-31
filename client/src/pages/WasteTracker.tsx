@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend
+  Tooltip, ResponsiveContainer
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';

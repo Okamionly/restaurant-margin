@@ -266,7 +266,7 @@ app.post('/api/auth/resend-verification', authMiddleware, async (req: any, res) 
       const resend = new Resend(apiKey);
       const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
       await resend.emails.send({
-        from: 'RestauMargin <onboarding@resend.dev>', to: user.email,
+        from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
         subject: 'RestauMargin — Vérifiez votre adresse email',
         html: `<h2>Vérification d'email</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/login?verify=${verificationToken}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Vérifier mon email</a></p><p>L'équipe RestauMargin</p>`,
       });
@@ -290,7 +290,7 @@ app.post('/api/auth/forgot-password', async (req: any, res) => {
       const resend = new Resend(apiKey);
       const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
       await resend.emails.send({
-        from: 'RestauMargin <onboarding@resend.dev>', to: user.email,
+        from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
         subject: 'RestauMargin — Réinitialisation de votre mot de passe',
         html: `<h2>Réinitialisation de mot de passe</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/reset-password?token=${token}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Réinitialiser mon mot de passe</a></p><p>Ce lien expire dans 1 heure.</p><p>L'équipe RestauMargin</p>`,
       });
@@ -1559,7 +1559,7 @@ app.post('/api/contact', async (req, res) => {
       const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
 
       await resendClient.emails.send({
-        from: 'RestauMargin <onboarding@resend.dev>',
+        from: 'RestauMargin <contact@restaumargin.fr>',
         to: 'mr.guessousyoussef@gmail.com',
         subject: `[RestauMargin] ${sourceLabel} — ${name}`,
         html: `

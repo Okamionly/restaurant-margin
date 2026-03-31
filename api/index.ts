@@ -1126,37 +1126,181 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur menu engineering' }); }
 });
 
-// ── Messages (in-memory — empty, no mock data) ──
-const conversations: any[] = [];
-const messagesStore: Record<string, any[]> = {};
+// ── Messages (Prisma DB) ──
 
-app.get('/api/messages/conversations', authWithRestaurant, (_req, res) => { res.json(conversations); });
-app.post('/api/messages/conversations', authWithRestaurant, (req: any, res) => {
-  const { id, name, participants, isGroup, avatar } = req.body;
-  const convId = id || `conv-${Date.now()}`;
-  const existing = conversations.find(c => c.id === convId);
-  if (existing) return res.json(existing);
-  const conv = { id: convId, name, participants: participants || [], isGroup: isGroup || false, avatar: avatar || '', lastMessage: '', unreadCount: 0 };
-  conversations.push(conv);
-  messagesStore[convId] = [];
-  res.status(201).json(conv);
+// Helper: find or create a conversation for an email address within a restaurant
+async function findOrCreateConversation(restaurantId: number, email: string, name?: string) {
+  // Try to find existing conversation where participants include this email
+  const existing = await prisma.conversation.findFirst({
+    where: { restaurantId, participants: { has: email } },
+  });
+  if (existing) return existing;
+  // Create new conversation
+  return prisma.conversation.create({
+    data: {
+      id: `conv-${Date.now()}`,
+      name: name || email,
+      participants: [email],
+      restaurantId,
+      lastMessage: '',
+      unreadCount: 0,
+      isGroup: false,
+      avatar: '',
+    },
+  });
+}
+
+app.get('/api/messages/conversations', authWithRestaurant, async (req: any, res) => {
+  try {
+    const convs = await prisma.conversation.findMany({
+      where: { restaurantId: req.restaurantId },
+      include: { messages: { orderBy: { createdAt: 'desc' }, take: 1 } },
+      orderBy: { updatedAt: 'desc' },
+    });
+    res.json(convs);
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur chargement conversations' }); }
 });
-app.get('/api/messages/conversations/:id', authWithRestaurant, (req, res) => {
-  const conv = conversations.find(c => c.id === req.params.id);
-  if (!conv) return res.status(404).json({ error: 'Conversation non trouvée' });
-  res.json({ ...conv, messages: messagesStore[conv.id] || [] });
+
+app.post('/api/messages/conversations', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { id, name, participants, isGroup, avatar } = req.body;
+    const convId = id || `conv-${Date.now()}`;
+    // Check if already exists
+    const existing = await prisma.conversation.findFirst({ where: { id: convId, restaurantId: req.restaurantId } });
+    if (existing) return res.json(existing);
+    const conv = await prisma.conversation.create({
+      data: {
+        id: convId,
+        name: name || '',
+        participants: participants || [],
+        isGroup: isGroup || false,
+        avatar: avatar || '',
+        lastMessage: '',
+        unreadCount: 0,
+        restaurantId: req.restaurantId,
+      },
+    });
+    res.status(201).json(conv);
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur création conversation' }); }
 });
-app.post('/api/messages/conversations/:id/messages', authWithRestaurant, (req: any, res) => {
-  const { content } = req.body;
-  const msg = { id: `m-${Date.now()}`, senderId: 'user', senderName: req.user?.email || 'Moi', content, timestamp: new Date().toISOString(), read: true };
-  if (!messagesStore[req.params.id]) messagesStore[req.params.id] = [];
-  messagesStore[req.params.id].push(msg);
-  res.status(201).json(msg);
+
+app.get('/api/messages/conversations/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const conv = await prisma.conversation.findFirst({
+      where: { id: req.params.id, restaurantId: req.restaurantId },
+      include: { messages: { orderBy: { createdAt: 'asc' } } },
+    });
+    if (!conv) return res.status(404).json({ error: 'Conversation non trouvée' });
+    res.json(conv);
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur chargement conversation' }); }
 });
-app.put('/api/messages/conversations/:id/read', authWithRestaurant, (req, res) => {
-  const conv = conversations.find(c => c.id === req.params.id);
-  if (conv) conv.unreadCount = 0;
-  res.json({ success: true });
+
+app.get('/api/messages/conversations/:id/messages', authWithRestaurant, async (req: any, res) => {
+  try {
+    const messages = await prisma.message.findMany({
+      where: { conversationId: req.params.id },
+      orderBy: { createdAt: 'asc' },
+    });
+    res.json(messages);
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur chargement messages' }); }
+});
+
+app.post('/api/messages/conversations/:id/messages', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { content, senderId, senderName } = req.body;
+    const msg = await prisma.message.create({
+      data: {
+        conversationId: req.params.id,
+        senderId: senderId || 'user',
+        senderName: senderName || req.user?.email || 'Moi',
+        content,
+        timestamp: new Date().toISOString(),
+        read: true,
+      },
+    });
+    // Update conversation lastMessage + updatedAt
+    await prisma.conversation.update({
+      where: { id: req.params.id },
+      data: { lastMessage: content, updatedAt: new Date() },
+    });
+    res.status(201).json(msg);
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur envoi message' }); }
+});
+
+app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: any, res) => {
+  try {
+    await prisma.conversation.update({
+      where: { id: req.params.id },
+      data: { unreadCount: 0 },
+    });
+    await prisma.message.updateMany({
+      where: { conversationId: req.params.id, read: false },
+      data: { read: true },
+    });
+    res.json({ success: true });
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur marquage lu' }); }
+});
+
+// ── Inbound Email Webhook (called by Resend — NO auth) ──
+app.post('/api/inbound/email', async (req: any, res) => {
+  try {
+    const { from, to, subject, text, html } = req.body;
+    if (!from) return res.status(400).json({ error: 'from requis' });
+
+    // Extract sender email (handle "Name <email>" format)
+    const senderEmail = (from.match(/<([^>]+)>/) || [null, from])[1].trim().toLowerCase();
+    const senderName = from.replace(/<[^>]+>/, '').trim() || senderEmail;
+
+    // Determine which restaurant this is for (default to 1 for now)
+    const restaurantId = 1;
+
+    // Find or create conversation for this sender
+    const conv = await findOrCreateConversation(restaurantId, senderEmail, senderName);
+
+    // Create message in the conversation
+    const messageContent = text || (html ? html.replace(/<[^>]+>/g, '') : subject || '(vide)');
+    await prisma.message.create({
+      data: {
+        conversationId: conv.id,
+        senderId: senderEmail,
+        senderName,
+        content: messageContent,
+        timestamp: new Date().toISOString(),
+        read: false,
+      },
+    });
+
+    // Update conversation
+    await prisma.conversation.update({
+      where: { id: conv.id },
+      data: {
+        lastMessage: messageContent.substring(0, 200),
+        unreadCount: { increment: 1 },
+        updatedAt: new Date(),
+      },
+    });
+
+    // Send notification to admin
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      try {
+        const resend = new Resend(resendKey);
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: 'contact@restaumargin.fr',
+          subject: `Nouveau message de ${senderName}`,
+          html: `<p><strong>${senderName}</strong> (${senderEmail}) a envoyé un message :</p><p>${messageContent.substring(0, 500)}</p><p><em>Sujet: ${subject || '(aucun)'}</em></p>`,
+        });
+      } catch (emailErr) {
+        console.error('[INBOUND NOTIFICATION ERROR]', emailErr);
+      }
+    }
+
+    res.json({ success: true, conversationId: conv.id });
+  } catch (e: any) {
+    console.error('[INBOUND EMAIL ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur traitement email entrant' });
+  }
 });
 
 // ── Email ──
@@ -1643,6 +1787,26 @@ app.post('/api/orders/send-email', authWithRestaurant, async (req: any, res) => 
       html: `<p>Commande envoyée à <strong>${supplierName}</strong> (${supplierEmail})</p><p>Total HT: ${(totalHT || 0).toFixed(2)} €</p>`,
     });
 
+    // Auto-create conversation + message in Messagerie
+    try {
+      const conv = await findOrCreateConversation(req.restaurantId, supplierEmail, supplierName);
+      const summary = `Commande envoyée — Total HT: ${(totalHT || 0).toFixed(2)} € (${(orderLines || []).length} articles)`;
+      await prisma.message.create({
+        data: {
+          conversationId: conv.id,
+          senderId: 'restaurant',
+          senderName: 'RestauMargin',
+          content: summary,
+          timestamp: new Date().toISOString(),
+          read: true,
+        },
+      });
+      await prisma.conversation.update({
+        where: { id: conv.id },
+        data: { lastMessage: summary, updatedAt: new Date() },
+      });
+    } catch (convErr) { console.error('[ORDER CONV ERROR]', convErr); }
+
     res.json({ success: true, sentTo: supplierEmail });
   } catch (e: any) {
     console.error('[ORDER EMAIL ERROR]', e.message);
@@ -1701,6 +1865,26 @@ app.post('/api/devis/send-email', authWithRestaurant, async (req: any, res) => {
       subject: `[Copie] ${typeLabel} ${documentNumber} envoyé à ${clientName}`,
       html: `<p>${typeLabel} ${documentNumber} envoyé à <strong>${clientName}</strong> (${clientEmail})</p><p>Total TTC: ${(totalTTC || 0).toFixed(2)} €</p>`,
     });
+
+    // Auto-create conversation + message in Messagerie
+    try {
+      const conv = await findOrCreateConversation(req.restaurantId, clientEmail, clientName);
+      const summary = `${typeLabel} ${documentNumber} envoyé — Total TTC: ${(totalTTC || 0).toFixed(2)} €`;
+      await prisma.message.create({
+        data: {
+          conversationId: conv.id,
+          senderId: 'restaurant',
+          senderName: 'RestauMargin',
+          content: summary,
+          timestamp: new Date().toISOString(),
+          read: true,
+        },
+      });
+      await prisma.conversation.update({
+        where: { id: conv.id },
+        data: { lastMessage: summary, updatedAt: new Date() },
+      });
+    } catch (convErr) { console.error('[DEVIS CONV ERROR]', convErr); }
 
     res.json({ success: true, sentTo: clientEmail });
   } catch (e: any) {

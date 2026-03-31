@@ -1595,6 +1595,61 @@ app.delete('/api/waste/:id', authWithRestaurant, async (req: any, res) => {
   } catch { res.status(500).json({ error: 'Erreur suppression perte' }); }
 });
 
+// ============ SEND ORDER EMAIL TO SUPPLIER ============
+app.post('/api/orders/send-email', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { supplierName, supplierEmail, orderLines, totalHT, notes } = req.body;
+    if (!supplierEmail) return res.status(400).json({ error: 'Email fournisseur requis' });
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configuré' });
+
+    const linesHtml = (orderLines || []).map((l: any) =>
+      `<tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;">${l.name}</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;">${l.quantity} ${l.unit}</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;text-align:right;">${(l.total || 0).toFixed(2)} €</td></tr>`
+    ).join('');
+
+    const resend = new Resend(resendKey);
+    await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to: supplierEmail,
+      replyTo: 'contact@restaumargin.fr',
+      subject: `Commande — RestauMargin pour ${supplierName}`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#1e40af;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
+            <h2 style="margin:0;">Bon de commande</h2>
+            <p style="margin:4px 0 0;opacity:0.8;">RestauMargin — ${new Date().toLocaleDateString('fr-FR')}</p>
+          </div>
+          <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
+            <p>Bonjour <strong>${supplierName}</strong>,</p>
+            <p>Veuillez trouver ci-dessous notre commande :</p>
+            <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+              <thead><tr style="background:#f8fafc;"><th style="padding:8px;text-align:left;">Article</th><th style="padding:8px;text-align:left;">Quantité</th><th style="padding:8px;text-align:right;">Total</th></tr></thead>
+              <tbody>${linesHtml}</tbody>
+              <tfoot><tr><td colspan="2" style="padding:12px 8px;font-weight:bold;">Total HT</td><td style="padding:12px 8px;text-align:right;font-weight:bold;font-size:18px;">${(totalHT || 0).toFixed(2)} €</td></tr></tfoot>
+            </table>
+            ${notes ? `<p style="color:#64748b;"><em>Notes : ${notes}</em></p>` : ''}
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+            <p style="color:#94a3b8;font-size:12px;">Envoyé depuis RestauMargin — www.restaumargin.fr</p>
+          </div>
+        </div>
+      `,
+    });
+
+    // Also send a copy to admin
+    await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to: 'contact@restaumargin.fr',
+      subject: `[Copie] Commande envoyée à ${supplierName}`,
+      html: `<p>Commande envoyée à <strong>${supplierName}</strong> (${supplierEmail})</p><p>Total HT: ${(totalHT || 0).toFixed(2)} €</p>`,
+    });
+
+    res.json({ success: true, sentTo: supplierEmail });
+  } catch (e: any) {
+    console.error('[ORDER EMAIL ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur envoi email commande' });
+  }
+});
+
 // ============ CONTACT (PUBLIC) — Resend (admin only) + log ============
 const contactRateLimit = new Map<string, number[]>();
 

@@ -583,32 +583,33 @@ export default function AutoOrders() {
     }
   }
 
-  // ── send email via /api/contact ───────────────────────────────────────────
+  // ── send order email to supplier via /api/orders/send-email ──────────────
 
   async function handleSendOrderEmail(order: Order) {
     setSendingEmail(order.id);
     try {
-      const linesText = order.lines
-        .map((l) => `- ${l.name} x ${l.quantity} ${l.unit} = ${fmtEuro(l.total)}`)
-        .join('\n');
-      const message = `Commande pour ${order.supplierName}\n\nArticles:\n${linesText}\n\nTotal HT: ${fmtEuro(order.totalHT)}`;
+      const supplier = suppliers.find((s) => s.id === order.supplierId);
+      const supplierEmail = supplier?.email || emailTo;
+      if (!supplierEmail) {
+        showToast('Email fournisseur manquant — ajoutez-le dans la fiche fournisseur', 'error');
+        setSendingEmail(null);
+        return;
+      }
 
-      const res = await fetch('/api/contact', {
+      const res = await fetch('/api/orders/send-email', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(localStorage.getItem('token') ? { Authorization: `Bearer ${localStorage.getItem('token')}` } : {}),
-        },
+        headers: autoOrdersAuthHeaders(),
         body: JSON.stringify({
-          name: 'RestauMargin — Commande',
-          email: 'contact@restaumargin.fr',
-          source: 'auto-order',
-          message,
+          supplierName: order.supplierName,
+          supplierEmail,
+          orderLines: order.lines.map((l) => ({ name: l.name, quantity: l.quantity, unit: l.unit, total: l.total })),
+          totalHT: order.totalHT,
+          notes: order.notes,
         }),
       });
       if (!res.ok) throw new Error('Erreur envoi');
       markSent(order.id);
-      showToast('Email envoyé', 'success');
+      showToast(`Commande envoyée à ${supplierEmail}`, 'success');
     } catch {
       showToast('Erreur lors de l\'envoi de l\'email', 'error');
     } finally {

@@ -597,7 +597,7 @@ export default function Planning() {
 
       {/* Employee drag panel */}
       <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-        <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">
+        <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">
           Glisser un employe sur un creneau pour l'assigner
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -608,10 +608,10 @@ export default function Planning() {
               onDragStart={() => handleDragStart(emp)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 cursor-grab active:cursor-grabbing hover:border-slate-600 transition select-none"
             >
-              <GripVertical className="w-3.5 h-3.5 text-slate-500" />
+              <GripVertical className="w-3.5 h-3.5 text-slate-400" />
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
               <span className="text-sm text-slate-200 font-medium">{emp.prenom} {(emp.nom || '').charAt(0)}.</span>
-              <span className="text-xs text-slate-500">{ROLE_LABELS[emp.role]}</span>
+              <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role]}</span>
             </div>
           ))}
         </div>
@@ -633,11 +633,11 @@ export default function Planning() {
                   <div key={i} className={`border-r border-slate-800 last:border-r-0 ${isToday ? 'bg-indigo-950/20' : ''}`}>
                     {/* Day header */}
                     <div className={`px-3 py-2.5 border-b border-slate-800 text-center ${isToday ? 'bg-indigo-900/30' : 'bg-slate-800/40'}`}>
-                      <div className="text-xs font-medium text-slate-500 uppercase">{JOURS[i]}</div>
+                      <div className="text-xs font-medium text-slate-400 uppercase">{JOURS[i]}</div>
                       <div className={`text-sm font-bold ${isToday ? 'text-indigo-400' : 'text-slate-200'}`}>
                         {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
                       </div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">{dayCost.toFixed(0)} EUR</div>
+                      <div className="text-[10px] text-slate-400 mt-0.5">{dayCost.toFixed(0)} EUR</div>
                     </div>
                     {/* Shift zones */}
                     {SHIFT_TYPES.map(st => {
@@ -687,7 +687,7 @@ export default function Planning() {
                     <div className="p-1.5">
                       <button
                         onClick={() => openAddShift(dayStr)}
-                        className="w-full py-1.5 border border-dashed border-slate-700 rounded-lg text-slate-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+                        className="w-full py-1.5 border border-dashed border-slate-700 rounded-lg text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -883,7 +883,7 @@ export default function Planning() {
                       </div>
                     </td>
                     {row.days.map((h, i) => (
-                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-slate-200 font-medium' : 'text-slate-600'}`}>
+                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-slate-200 font-medium' : 'text-slate-300'}`}>
                         {h > 0 ? `${h}h` : '-'}
                       </td>
                     ))}
@@ -1208,12 +1208,12 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                   );
                 })}
               {zoneShifts.length === 0 && (
-                <p className="text-center text-xs text-slate-500 py-2">Aucun creneau</p>
+                <p className="text-center text-xs text-slate-400 py-2">Aucun creneau</p>
               )}
             </div>
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-slate-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+              className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
             >
               <Plus className="w-3.5 h-3.5" /> Ajouter
             </button>
@@ -1274,7 +1274,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
             <div className={`flex items-center gap-2 mb-3`}>
               <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-blue-400' : 'bg-purple-400'}`} />
               <h4 className={`font-semibold ${st.color}`}>{st.label} ({st.start} - {st.end})</h4>
-              <span className="text-xs text-slate-500">{zoneShifts.length} creneau(x)</span>
+              <span className="text-xs text-slate-400">{zoneShifts.length} creneau(x)</span>
             </div>
             {zoneShifts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1314,13 +1314,13 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                   })}
               </div>
             ) : (
-              <p className="text-sm text-slate-500 py-3 text-center bg-slate-800/20 rounded-xl border border-dashed border-slate-700">
+              <p className="text-sm text-slate-400 py-3 text-center bg-slate-800/20 rounded-xl border border-dashed border-slate-700">
                 Aucun creneau
               </p>
             )}
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="mt-2 w-full py-2 border border-dashed border-slate-700 rounded-xl text-slate-500 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
+              className="mt-2 w-full py-2 border border-dashed border-slate-700 rounded-xl text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
             >
               <Plus className="w-4 h-4" /> Ajouter un creneau {st.label.toLowerCase()}
             </button>
@@ -1348,8 +1348,8 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                 <div className="flex items-center gap-3">
                   <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-slate-600'}`} />
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
-                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-500'}`}>{emp.prenom} {emp.nom}</span>
-                  <span className="text-xs text-slate-500">{ROLE_LABELS[emp.role]}</span>
+                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-400'}`}>{emp.prenom} {emp.nom}</span>
+                  <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role]}</span>
                 </div>
                 <div className="text-sm">
                   {isPresent ? (
@@ -1357,7 +1357,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                       {empShifts!.map(s => `${s.start}-${s.end}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
                     </span>
                   ) : (
-                    <span className="text-slate-600">Absent</span>
+                    <span className="text-slate-300">Absent</span>
                   )}
                 </div>
               </div>

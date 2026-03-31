@@ -140,7 +140,7 @@ export default function Actualites() {
           <p className="text-slate-400 text-sm">
             Veille marché & recommandations personnalisées générées par l'IA
             {latestMercurialeRef && (
-              <span className="ml-2 text-slate-500">
+              <span className="ml-2 text-slate-400">
                 — Mercuriale du {latestMercurialeRef}
               </span>
             )}
@@ -192,15 +192,15 @@ export default function Actualites() {
 
       {/* Content */}
       {loading ? (
-        <div className="flex items-center justify-center h-48 text-slate-500">
+        <div className="flex items-center justify-center h-48 text-slate-400">
           <RefreshCw className="w-6 h-6 animate-spin mr-2" />
           Chargement...
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 text-center bg-slate-900/50 border border-slate-800 rounded-2xl">
-          <Newspaper className="w-12 h-12 text-slate-600 mb-4" />
+          <Newspaper className="w-12 h-12 text-slate-300 mb-4" />
           <p className="text-slate-400 font-medium mb-2">Aucune actualité disponible</p>
-          <p className="text-slate-500 text-sm mb-4">
+          <p className="text-slate-400 text-sm mb-4">
             Cliquez sur "Actualiser avec l'IA" pour générer des recommandations personnalisées
           </p>
           <button
@@ -227,7 +227,7 @@ export default function Actualites() {
                 {/* Dismiss button */}
                 <button
                   onClick={() => handleDismiss(item.id)}
-                  className="absolute top-3 right-3 p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-700 text-slate-500 hover:text-white transition-all"
+                  className="absolute top-3 right-3 p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
                   title="Masquer"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -254,12 +254,12 @@ export default function Actualites() {
 
                 {/* Footer */}
                 <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-700/50">
-                  <Clock className="w-3 h-3 text-slate-600" />
-                  <span className="text-[11px] text-slate-600">
+                  <Clock className="w-3 h-3 text-slate-300" />
+                  <span className="text-[11px] text-slate-300">
                     {new Date(item.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
                     {item.mercurialeRef && ` · Mercuriale ${item.mercurialeRef}`}
                   </span>
-                  <span className="ml-auto flex items-center gap-1 text-[11px] text-slate-600">
+                  <span className="ml-auto flex items-center gap-1 text-[11px] text-slate-300">
                     <Sparkles className="w-3 h-3" />
                     Généré par IA
                   </span>
@@ -284,7 +284,7 @@ export default function Actualites() {
                 et la croise avec <strong className="text-slate-300">vos ingrédients et fiches techniques</strong> pour générer
                 des recommandations personnalisées : alertes de hausse, opportunités d'économies, et conseils pour protéger vos marges.
               </p>
-              <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-500">
+              <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-400">
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-red-400" /> Alertes prix : hausses &gt;5% impactant vos recettes</span>
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-emerald-400" /> Opportunités : produits en baisse ou alternatives économiques</span>
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-blue-400" /> Tendances : évolutions du marché à surveiller</span>

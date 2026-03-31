@@ -1244,7 +1244,9 @@ app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: 
 // ── Inbound Email Webhook (called by Resend — NO auth) ──
 app.post('/api/inbound/email', async (req: any, res) => {
   try {
-    const { from, to, subject, text, html } = req.body;
+    // Resend webhook wraps email data inside req.body.data
+    const payload = req.body.data || req.body;
+    const { from, to, subject, text, html } = payload;
     if (!from) return res.status(400).json({ error: 'from requis' });
 
     // Extract sender email (handle "Name <email>" format)

@@ -30,14 +30,34 @@ import { RECIPE_CATEGORIES, ALLERGENS } from '../types';
 const CATEGORY_LABELS: Record<string, string> = {
   'Entree': 'Entrées',
   'Entrée': 'Entrées',
+  'Entrées': 'Entrées',
   'Plat': 'Plats',
+  'Plats': 'Plats',
   'Dessert': 'Desserts',
+  'Desserts': 'Desserts',
   'Suggestion': 'Suggestions du Chef',
+  'Suggestions': 'Suggestions du Chef',
   'Accompagnement': 'Accompagnements',
+  'Accompagnements': 'Accompagnements',
   'Boisson': 'Boissons',
+  'Boissons': 'Boissons',
 };
 function getCategoryLabel(cat: string) {
   return CATEGORY_LABELS[cat] || cat;
+}
+
+// Map variant/plural category names to the canonical RECIPE_CATEGORIES value
+const CATEGORY_NORMALIZE: Record<string, string> = {
+  'Entree': 'Entrée',
+  'Entrées': 'Entrée',
+  'Plats': 'Plat',
+  'Desserts': 'Dessert',
+  'Suggestions': 'Suggestion',
+  'Accompagnements': 'Accompagnement',
+  'Boissons': 'Boisson',
+};
+function normalizeCategory(cat: string): string {
+  return CATEGORY_NORMALIZE[cat] || cat;
 }
 
 type SortKey = 'name' | 'price' | 'margin';
@@ -230,7 +250,7 @@ export default function MenuBuilder() {
   const moveRecipe = useCallback((category: string, recipeId: number, direction: 'up' | 'down') => {
     setCategoryOrder((prev) => {
       const currentRecipesInCat = recipes
-        .filter((r) => r.category === category && !excludedDishes.has(r.id))
+        .filter((r) => normalizeCategory(r.category) === category && !excludedDishes.has(r.id))
         .map((r) => r.id);
       const order = prev[category] || currentRecipesInCat;
       const idx = order.indexOf(recipeId);
@@ -267,9 +287,10 @@ export default function MenuBuilder() {
     const map = new Map<string, Recipe[]>();
     RECIPE_CATEGORIES.forEach((cat) => map.set(cat, []));
     activeRecipes.forEach((r) => {
-      const list = map.get(r.category) || [];
+      const canonical = normalizeCategory(r.category);
+      const list = map.get(canonical) || [];
       list.push(r);
-      map.set(r.category, list);
+      map.set(canonical, list);
     });
 
     const result: {
@@ -353,7 +374,7 @@ export default function MenuBuilder() {
 
   // --- Quick add: recipes not on the menu for a given category ---
   const getAvailableForCategory = useCallback((category: string) => {
-    return recipes.filter((r) => r.category === category && excludedDishes.has(r.id));
+    return recipes.filter((r) => normalizeCategory(r.category) === category && excludedDishes.has(r.id));
   }, [recipes, excludedDishes]);
 
   // --- Print ---

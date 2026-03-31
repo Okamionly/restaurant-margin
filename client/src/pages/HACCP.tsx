@@ -3,6 +3,10 @@ import {
   Thermometer, Plus, ShieldCheck, AlertTriangle, Clock,
   CheckCircle2, XCircle, Package, SprayCan, BarChart3, Search
 } from 'lucide-react';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Legend, ReferenceLine
+} from 'recharts';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -79,6 +83,13 @@ function getTempColor(zone: string, temp: number): 'emerald' | 'amber' | 'red' |
 const TEMP_TEXT: Record<string, string> = { emerald: 'text-emerald-400', amber: 'text-amber-400', red: 'text-red-400', slate: 'text-slate-400' };
 const TEMP_BADGE: Record<string, string> = { emerald: 'bg-emerald-900/40 text-emerald-300', amber: 'bg-amber-900/40 text-amber-300', red: 'bg-red-900/40 text-red-300', slate: 'bg-slate-800 text-slate-300' };
 const TEMP_STATUS: Record<string, string> = { emerald: 'OK', amber: 'Attention', red: 'Danger', slate: '-' };
+
+const ZONE_CHART_COLORS: Record<string, string> = {
+  frigo: '#2563eb',
+  congelateur: '#7c3aed',
+  plat_chaud: '#d97706',
+  reception: '#059669',
+};
 
 function getDluoBadge(days: number) {
   if (days <= 1) return 'bg-red-900/40 text-red-300 border border-red-700/50';
@@ -197,6 +208,79 @@ export default function HACCP() {
     const lotsKo = lots.filter(l => l.status === 'non_conforme').length;
     return { rate, total, activeAlerts, expired, cleanRate, cleanDone, cleanTotal: cleaning.length, lotsOk, lotsKo };
   }, [temperatures, dluoAlerts, cleaning, lots]);
+
+  // ─── Chart data: temperature trend (last 7 days) ────────────────────────
+
+  const { chartData, chartZones } = useMemo(() => {
+    // Build an array of the last 7 dates (DD/MM format)
+    const today = new Date();
+    const dateKeys: string[] = [];
+    const dateLabels: string[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      dateKeys.push(d.toISOString().split('T')[0]); // YYYY-MM-DD for matching
+      dateLabels.push(d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }));
+    }
+
+    // Collect unique zones present in data
+    const zonesSet = new Set<string>();
+    temperatures.forEach(t => zonesSet.add(t.zone));
+    const zones = Array.from(zonesSet);
+
+    // Group temperatures: for each date+zone, take the latest reading
+    const grouped: Record<string, Record<string, number>> = {};
+    dateKeys.forEach(dk => { grouped[dk] = {}; });
+
+    temperatures.forEach(t => {
+      const tDate = new Date(t.timestamp).toISOString().split('T')[0];
+      if (grouped[tDate]) {
+        const label = ZONE_LABELS[t.zone] || t.zone;
+        // Keep the latest reading per zone per day (first encountered = latest since sorted desc)
+        if (grouped[tDate][label] === undefined) {
+          grouped[tDate][label] = t.temperature;
+        }
+      }
+    });
+
+    const data = dateKeys.map((dk, i) => ({
+      date: dateLabels[i],
+      ...grouped[dk],
+    }));
+
+    return { chartData: data, chartZones: zones.map(z => ZONE_LABELS[z] || z) };
+  }, [temperatures]);
+
+  // Custom tooltip for the temperature chart
+  const TempChartTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-3 shadow-xl text-xs">
+        <div className="text-slate-400 mb-1.5 font-medium">{label}</div>
+        {payload.map((p: any) => {
+          const temp = p.value as number;
+          // Determine status based on zone
+          let status = 'OK';
+          if (p.dataKey === ZONE_LABELS['frigo'] && temp >= 4) status = temp <= 7 ? 'Attention' : 'Danger';
+          else if (p.dataKey === ZONE_LABELS['congelateur'] && temp > -18) status = temp <= -15 ? 'Attention' : 'Danger';
+          else if (p.dataKey === ZONE_LABELS['plat_chaud'] && temp < 63) status = temp >= 55 ? 'Attention' : 'Danger';
+          const statusColor = status === 'OK' ? 'text-emerald-400' : status === 'Attention' ? 'text-amber-400' : 'text-red-400';
+          return (
+            <div key={p.dataKey} className="flex items-center justify-between gap-4 py-0.5">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: p.color }} />
+                <span className="text-slate-300">{p.dataKey}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-white font-semibold">{temp}°C</span>
+                <span className={`font-medium ${statusColor}`}>{status}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   // ─── Handlers ────────────────────────────────────────────────────────────
 
@@ -366,6 +450,52 @@ export default function HACCP() {
               <div className="text-xs text-slate-500 mt-1">{stats.lotsOk} conformes, {stats.lotsKo} non-conforme{stats.lotsKo > 1 ? 's' : ''}</div>
               {stats.lotsKo > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />{stats.lotsKo} lot(s) à vérifier</div>}
             </div>
+          </div>
+
+          {/* Temperature trend chart */}
+          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-blue-400" />
+              Tendance des températures (7 derniers jours)
+            </h3>
+            {temperatures.length === 0 ? (
+              <div className="text-center py-12 text-slate-500 text-sm">Aucune donnée de température disponible</div>
+            ) : (
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+                    <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${v}°`} />
+                    <Tooltip content={<TempChartTooltip />} />
+                    <Legend
+                      wrapperStyle={{ fontSize: 12, color: '#94a3b8' }}
+                      formatter={(value: string) => <span className="text-slate-300">{value}</span>}
+                    />
+                    {/* Threshold reference lines */}
+                    <ReferenceLine y={0} stroke="#ef4444" strokeDasharray="6 4" strokeWidth={1} label={{ value: '0°C', position: 'right', fill: '#ef4444', fontSize: 10 }} />
+                    <ReferenceLine y={4} stroke="#ef4444" strokeDasharray="6 4" strokeWidth={1} label={{ value: '4°C froid', position: 'right', fill: '#ef4444', fontSize: 10 }} />
+                    <ReferenceLine y={63} stroke="#ef4444" strokeDasharray="6 4" strokeWidth={1} label={{ value: '63°C chaud', position: 'right', fill: '#ef4444', fontSize: 10 }} />
+                    {/* One line per zone */}
+                    {chartZones.map(zone => {
+                      const zoneKey = Object.entries(ZONE_LABELS).find(([, v]) => v === zone)?.[0] || '';
+                      return (
+                        <Line
+                          key={zone}
+                          type="monotone"
+                          dataKey={zone}
+                          stroke={ZONE_CHART_COLORS[zoneKey] || '#64748b'}
+                          strokeWidth={2}
+                          dot={{ r: 4, fill: ZONE_CHART_COLORS[zoneKey] || '#64748b' }}
+                          activeDot={{ r: 6 }}
+                          connectNulls
+                        />
+                      );
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
 
           {/* Recent temps */}

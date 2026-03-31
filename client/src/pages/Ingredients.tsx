@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck } from 'lucide-react';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
@@ -81,6 +81,38 @@ export default function Ingredients() {
     const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
     return searchCatalog(nameQuery, 10).filter(p => !existingNames.has(p.name.toLowerCase()));
   }, [nameQuery, ingredients]);
+
+  // KPI summary values
+  const summaryStats = useMemo(() => {
+    const total = ingredients.length;
+    const avgPrice = total > 0
+      ? ingredients.reduce((sum, i) => sum + i.pricePerUnit, 0) / total
+      : 0;
+    // Category with highest average price
+    const catPrices: Record<string, { sum: number; count: number }> = {};
+    ingredients.forEach((i) => {
+      if (!catPrices[i.category]) catPrices[i.category] = { sum: 0, count: 0 };
+      catPrices[i.category].sum += i.pricePerUnit;
+      catPrices[i.category].count += 1;
+    });
+    let expensiveCat = '—';
+    let maxAvg = 0;
+    Object.entries(catPrices).forEach(([cat, { sum, count }]) => {
+      const avg = sum / count;
+      if (avg > maxAvg) { maxAvg = avg; expensiveCat = cat; }
+    });
+    const uniqueSuppliers = new Set(ingredients.filter((i) => i.supplierId).map((i) => i.supplierId)).size;
+    return { total, avgPrice, expensiveCat, uniqueSuppliers };
+  }, [ingredients]);
+
+  // Category counts for pill filters
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    ingredients.forEach((i) => {
+      counts[i.category] = (counts[i.category] || 0) + 1;
+    });
+    return counts;
+  }, [ingredients]);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -379,28 +411,83 @@ export default function Ingredients() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            placeholder={t('ingredients.searchPlaceholder')}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="input pl-10 w-full"
-          />
+      {/* KPI Summary Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/30">
+            <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('ingredients.totalIngredients')}</p>
+            <p className="text-xl font-bold text-slate-800 dark:text-white">{summaryStats.total}</p>
+          </div>
         </div>
-        <select
-          value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
-          className="input w-full sm:w-48"
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/30">
+            <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('ingredients.avgPrice')}</p>
+            <p className="text-xl font-bold text-slate-800 dark:text-white">{summaryStats.avgPrice.toFixed(2)} &euro;</p>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/30">
+            <Tag className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('ingredients.expensiveCategory')}</p>
+            <p className="text-lg font-bold text-slate-800 dark:text-white truncate">{summaryStats.expensiveCat}</p>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/30">
+            <Truck className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+          </div>
+          <div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('ingredients.linkedSuppliers')}</p>
+            <p className="text-xl font-bold text-slate-800 dark:text-white">{summaryStats.uniqueSuppliers}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-3">
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input
+          type="text"
+          placeholder={t('ingredients.searchPlaceholder')}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="input pl-10 w-full"
+        />
+      </div>
+
+      {/* Category pill filters */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        <button
+          onClick={() => setFilterCategory('')}
+          className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+            !filterCategory
+              ? 'bg-blue-600 text-white'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+          }`}
         >
-          <option value="">{t('ingredients.allCategories')}</option>
-          {INGREDIENT_CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+          {t('ingredients.allCategories')} ({ingredients.length})
+        </button>
+        {INGREDIENT_CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              filterCategory === cat
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+            }`}
+          >
+            {cat} ({categoryCounts[cat] || 0})
+          </button>
+        ))}
       </div>
 
       {/* Table */}

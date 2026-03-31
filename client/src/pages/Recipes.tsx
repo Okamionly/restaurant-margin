@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert } from 'lucide-react';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { RECIPE_CATEGORIES } from '../types';
@@ -226,6 +226,12 @@ export default function Recipes() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
+  // View & filter state
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortColumn, setSortColumn] = useState<string>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
   const [form, setForm] = useState({
     name: '',
     category: 'Plat',
@@ -268,9 +274,63 @@ export default function Recipes() {
     }
   }
 
-  const filtered = recipes.filter((r) =>
-    r.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // ── KPI Summary ──────────────────────────────────────────────────────
+  const kpis = useMemo(() => {
+    if (recipes.length === 0) return { total: 0, avgMargin: 0, bestName: '-', bestMargin: 0, dangerCount: 0 };
+    const avgMargin = recipes.reduce((s, r) => s + r.margin.marginPercent, 0) / recipes.length;
+    const best = recipes.reduce((a, b) => a.margin.marginPercent >= b.margin.marginPercent ? a : b);
+    const dangerCount = recipes.filter((r) => r.margin.marginPercent < 60).length;
+    return { total: recipes.length, avgMargin, bestName: best.name, bestMargin: best.margin.marginPercent, dangerCount };
+  }, [recipes]);
+
+  // ── Category pills ──────────────────────────────────────────────────
+  const categoryPills = useMemo(() => {
+    const counts: Record<string, number> = {};
+    recipes.forEach((r) => { counts[r.category] = (counts[r.category] || 0) + 1; });
+    return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+  }, [recipes]);
+
+  const filtered = recipes.filter((r) => {
+    const matchesSearch = r.name.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || r.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // ── Table sort logic ────────────────────────────────────────────────
+  const sortedFiltered = useMemo(() => {
+    if (viewMode !== 'table') return filtered;
+    const sorted = [...filtered];
+    sorted.sort((a, b) => {
+      let va: string | number, vb: string | number;
+      switch (sortColumn) {
+        case 'name': va = a.name.toLowerCase(); vb = b.name.toLowerCase(); break;
+        case 'category': va = a.category; vb = b.category; break;
+        case 'sellingPrice': va = a.sellingPrice; vb = b.sellingPrice; break;
+        case 'cost': va = a.margin.costPerPortion; vb = b.margin.costPerPortion; break;
+        case 'margin': va = a.margin.marginPercent; vb = b.margin.marginPercent; break;
+        case 'coefficient': va = a.margin.coefficient; vb = b.margin.coefficient; break;
+        default: va = a.name; vb = b.name;
+      }
+      if (va < vb) return sortDirection === 'asc' ? -1 : 1;
+      if (va > vb) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [filtered, sortColumn, sortDirection, viewMode]);
+
+  function handleSort(col: string) {
+    if (sortColumn === col) {
+      setSortDirection((d) => d === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(col);
+      setSortDirection('asc');
+    }
+  }
+
+  function SortIcon({ col }: { col: string }) {
+    if (sortColumn !== col) return <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400" />;
+    return sortDirection === 'asc' ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />;
+  }
 
   // Filtered ingredients for the add-ingredient dropdown search
   const filteredIngredients = useMemo(() => {
@@ -505,18 +565,146 @@ export default function Recipes() {
         </button>
       </div>
 
-      <div className="relative mb-4 max-w-md">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input
-          type="text"
-          placeholder={t("recipes.searchPlaceholder")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="input pl-10 w-full"
-        />
+      {/* ── KPI Summary Cards ──────────────────────────────────────────── */}
+      {recipes.length > 0 && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("recipes.kpiTotal")}</div>
+            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{kpis.total}</div>
+          </div>
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("recipes.kpiAvgMargin")}</div>
+            <div className={`text-2xl font-bold ${kpis.avgMargin >= 70 ? 'text-green-600 dark:text-green-400' : kpis.avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{kpis.avgMargin.toFixed(1)}%</div>
+          </div>
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mb-1">
+              <Trophy className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
+            </div>
+            <div className="text-sm font-bold text-green-600 dark:text-green-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">{kpis.bestMargin.toFixed(1)}%</div>
+          </div>
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mb-1">
+              <ShieldAlert className="w-3 h-3" /> {t("recipes.kpiDanger")}
+            </div>
+            <div className={`text-2xl font-bold ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>{kpis.dangerCount}</div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Search bar + View toggle ───────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder={t("recipes.searchPlaceholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="input pl-10 w-full"
+          />
+        </div>
+        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            title={t("recipes.gridView")}
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('table')}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            title={t("recipes.tableView")}
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* Recipe Cards */}
+      {/* ── Category filter pills ──────────────────────────────────────── */}
+      {categoryPills.length > 1 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+          >
+            {t("recipes.allCategories")} ({recipes.length})
+          </button>
+          {categoryPills.map(([cat, count]) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            >
+              {cat} ({count})
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Table View ─────────────────────────────────────────────────── */}
+      {viewMode === 'table' ? (
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 dark:border-slate-700">
+                {[
+                  { key: 'name', label: t("recipes.colName") },
+                  { key: 'category', label: t("recipes.colCategory") },
+                  { key: 'sellingPrice', label: t("recipes.colSellingPrice") },
+                  { key: 'cost', label: t("recipes.colCost") },
+                  { key: 'margin', label: t("recipes.colMargin") },
+                  { key: 'coefficient', label: t("recipes.colCoefficient") },
+                ].map((col) => (
+                  <th
+                    key={col.key}
+                    onClick={() => handleSort(col.key)}
+                    className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none"
+                  >
+                    <span className="inline-flex items-center gap-1">
+                      {col.label}
+                      <SortIcon col={col.key} />
+                    </span>
+                  </th>
+                ))}
+                <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+              {sortedFiltered.length === 0 ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400 dark:text-slate-500">{recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}</td></tr>
+              ) : sortedFiltered.map((recipe) => (
+                <tr key={recipe.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{recipe.name}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{recipe.category}</td>
+                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">{recipe.sellingPrice.toFixed(2)}&euro;</td>
+                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
+                  <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
+                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">{recipe.margin.coefficient.toFixed(2)}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1 justify-end">
+                      <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.view")}>
+                        <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </Link>
+                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
+                        <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                      </button>
+                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title={t("recipes.cloneTooltip")}>
+                        <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </button>
+                      <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")}>
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+      /* ── Grid View (existing cards) ────────────────────────────────── */
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.length === 0 ? (
           <p className="text-slate-400 dark:text-slate-500 col-span-full text-center py-8">
@@ -588,6 +776,7 @@ export default function Recipes() {
           })
         )}
       </div>
+      )}
 
       {/* Recipe Form Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t("recipes.editRecipeTitle") : t("recipes.newRecipeTitle")}>

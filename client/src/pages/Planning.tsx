@@ -610,7 +610,7 @@ export default function Planning() {
             >
               <GripVertical className="w-3.5 h-3.5 text-slate-500" />
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
-              <span className="text-sm text-slate-200 font-medium">{emp.prenom} {emp.nom.charAt(0)}.</span>
+              <span className="text-sm text-slate-200 font-medium">{emp.prenom} {(emp.nom || '').charAt(0)}.</span>
               <span className="text-xs text-slate-500">{ROLE_LABELS[emp.role]}</span>
             </div>
           ))}
@@ -668,7 +668,7 @@ export default function Planning() {
                                     }}
                                     onClick={() => openEditShift(s)}
                                   >
-                                    <div className="font-semibold text-white truncate">{emp.prenom} {emp.nom.charAt(0)}.</div>
+                                    <div className="font-semibold text-white truncate">{emp.prenom} {(emp.nom || '').charAt(0)}.</div>
                                     <div className="text-[10px] font-mono text-slate-400">{s.start}-{s.end}</div>
                                     <button
                                       onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
@@ -879,7 +879,7 @@ export default function Planning() {
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.couleur }} />
-                        <span className="font-medium text-white">{row.emp.prenom} {row.emp.nom.charAt(0)}.</span>
+                        <span className="font-medium text-white">{row.emp.prenom} {(row.emp.nom || '').charAt(0)}.</span>
                       </div>
                     </td>
                     {row.days.map((h, i) => (
@@ -1292,7 +1292,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                       >
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.couleur }}>
-                            {emp.prenom.charAt(0)}{emp.nom.charAt(0)}
+                            {(emp.prenom || '').charAt(0)}{(emp.nom || '').charAt(0)}
                           </div>
                           <div>
                             <div className="font-semibold text-white">{emp.prenom} {emp.nom}</div>

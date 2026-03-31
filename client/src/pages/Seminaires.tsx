@@ -306,13 +306,29 @@ export default function Seminaires() {
       case 'solder': newStatus = 'Soldé'; break;
     }
     try {
+      // Send real email when sending devis
+      if (action === 'envoyer_devis' && (event as any).clientEmail) {
+        await fetch(`${API}/api/seminaires/send-email`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({
+            clientName: (event as any).clientName || event.title,
+            clientEmail: (event as any).clientEmail,
+            seminaireTitle: event.title,
+            date: event.date,
+            guests: (event as any).guests || (event as any).nbPersonnes || '',
+            totalTTC: (event as any).totalTTC || (event as any).prixTotal || 0,
+            menuDetails: (event as any).menuDetails || '',
+          }),
+        });
+      }
       await fetch(`${API}/api/seminaires/${event.id}`, {
         method: 'PUT',
         headers: authHeaders(),
         body: JSON.stringify({ status: STATUS_TO_BACKEND[newStatus] }),
       });
       setEvents(prev => prev.map(e => e.id === event.id ? { ...e, status: newStatus } : e));
-      showToast('Action effectuée', 'success');
+      showToast(action === 'envoyer_devis' ? 'Devis envoyé par email' : 'Action effectuée', 'success');
     } catch {
       showToast('Erreur mise à jour statut', 'error');
     }

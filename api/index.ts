@@ -1917,6 +1917,115 @@ app.post('/api/devis/send-email', authWithRestaurant, async (req: any, res) => {
   }
 });
 
+// ============ SEND CRM EMAIL TO CLIENT ============
+app.post('/api/crm/send-email', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { clientName, clientEmail, subject, message } = req.body;
+    if (!clientEmail) return res.status(400).json({ error: 'Email client requis' });
+    if (!message) return res.status(400).json({ error: 'Message requis' });
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configuré' });
+
+    const resend = new Resend(resendKey);
+    const emailSubject = subject || `Message de RestauMargin`;
+    await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to: clientEmail,
+      replyTo: 'contact@restaumargin.fr',
+      subject: emailSubject,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#1e40af;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
+            <h2 style="margin:0;">${emailSubject}</h2>
+          </div>
+          <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
+            <p>Bonjour <strong>${clientName || ''}</strong>,</p>
+            <div style="white-space:pre-wrap;">${message}</div>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+            <p style="color:#94a3b8;font-size:12px;">RestauMargin — www.restaumargin.fr</p>
+          </div>
+        </div>`,
+    });
+
+    // Auto-create conversation + message in Messagerie
+    try {
+      const conv = await findOrCreateConversation(req.restaurantId, clientEmail, clientName || clientEmail);
+      await prisma.message.create({
+        data: { conversationId: conv.id, senderId: 'restaurant', senderName: 'RestauMargin', content: message, timestamp: new Date().toISOString(), read: true },
+      });
+      await prisma.conversation.update({ where: { id: conv.id }, data: { lastMessage: message.substring(0, 200), updatedAt: new Date() } });
+    } catch (convErr) { console.error('[CRM CONV ERROR]', convErr); }
+
+    res.json({ success: true, sentTo: clientEmail });
+  } catch (e: any) {
+    console.error('[CRM EMAIL ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur envoi email CRM' });
+  }
+});
+
+// ============ SEND SEMINAIRE EMAIL TO CLIENT ============
+app.post('/api/seminaires/send-email', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { clientName, clientEmail, seminaireTitle, date, guests, totalTTC, menuDetails } = req.body;
+    if (!clientEmail) return res.status(400).json({ error: 'Email client requis' });
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configuré' });
+
+    const resend = new Resend(resendKey);
+    const emailSubject = `Devis séminaire — ${seminaireTitle || 'RestauMargin'}`;
+    await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to: clientEmail,
+      replyTo: 'contact@restaumargin.fr',
+      subject: emailSubject,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#7c3aed;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
+            <h2 style="margin:0;">Devis Séminaire</h2>
+            <p style="margin:4px 0 0;opacity:0.8;">${seminaireTitle || ''} — ${date || new Date().toLocaleDateString('fr-FR')}</p>
+          </div>
+          <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
+            <p>Bonjour <strong>${clientName || ''}</strong>,</p>
+            <p>Suite à votre demande, voici notre proposition pour votre séminaire :</p>
+            <div style="background:#f8fafc;padding:16px;border-radius:8px;margin:16px 0;">
+              <p style="margin:0;"><strong>Événement :</strong> ${seminaireTitle || ''}</p>
+              <p style="margin:4px 0;"><strong>Date :</strong> ${date || ''}</p>
+              <p style="margin:4px 0;"><strong>Nombre de convives :</strong> ${guests || ''}</p>
+              ${menuDetails ? `<p style="margin:4px 0;"><strong>Menu :</strong> ${menuDetails}</p>` : ''}
+              <p style="margin:8px 0 0;font-size:18px;"><strong>Total TTC :</strong> ${(totalTTC || 0).toFixed(2)} €</p>
+            </div>
+            <p>Pour toute question, répondez directement à cet email.</p>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+            <p style="color:#94a3b8;font-size:12px;">RestauMargin — www.restaumargin.fr</p>
+          </div>
+        </div>`,
+    });
+
+    // Copy to admin
+    await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to: 'contact@restaumargin.fr',
+      subject: `[Copie] Devis séminaire envoyé à ${clientName}`,
+      html: `<p>Devis séminaire <strong>${seminaireTitle}</strong> envoyé à ${clientName} (${clientEmail})</p><p>Total TTC: ${(totalTTC || 0).toFixed(2)} €</p>`,
+    });
+
+    // Auto-create conversation + message in Messagerie
+    try {
+      const conv = await findOrCreateConversation(req.restaurantId, clientEmail, clientName || clientEmail);
+      const summary = `Devis séminaire "${seminaireTitle}" envoyé — ${guests} convives — Total TTC: ${(totalTTC || 0).toFixed(2)} €`;
+      await prisma.message.create({
+        data: { conversationId: conv.id, senderId: 'restaurant', senderName: 'RestauMargin', content: summary, timestamp: new Date().toISOString(), read: true },
+      });
+      await prisma.conversation.update({ where: { id: conv.id }, data: { lastMessage: summary, updatedAt: new Date() } });
+    } catch (convErr) { console.error('[SEMINAIRE CONV ERROR]', convErr); }
+
+    res.json({ success: true, sentTo: clientEmail });
+  } catch (e: any) {
+    console.error('[SEMINAIRE EMAIL ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur envoi email séminaire' });
+  }
+});
+
 // ============ CONTACT (PUBLIC) — Resend (admin only) + log ============
 const contactRateLimit = new Map<string, number[]>();
 

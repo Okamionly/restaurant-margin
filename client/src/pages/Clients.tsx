@@ -297,15 +297,14 @@ export default function Clients() {
     }
     setSendingClientEmail(true);
     try {
-      const message = `Email pour ${selectedClient.prenom} ${selectedClient.nom} (${selectedClient.email})\n\nObjet: ${emailSubject}\n\n${emailMessage}`;
-      const res = await fetch(`${API}/api/contact`, {
+      const res = await fetch(`${API}/api/crm/send-email`, {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
-          name: 'RestauMargin — Message client',
-          email: 'contact@restaumargin.fr',
-          source: 'crm-email',
-          message,
+          clientName: `${selectedClient.prenom} ${selectedClient.nom}`,
+          clientEmail: selectedClient.email,
+          subject: emailSubject,
+          message: emailMessage,
         }),
       });
       if (!res.ok) throw new Error('Erreur envoi');

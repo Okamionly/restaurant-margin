@@ -172,12 +172,26 @@ export default function Mercuriale() {
 
   // --- Data Fetching ---
 
-  const fetchAlerts = useCallback(async () => {
+  const fetchAlerts = useCallback(async (ings: Ingredient[]) => {
     try {
       const res = await fetch(`${API}/api/price-history/alerts`, { headers: authHeaders() });
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setAlerts(data);
+      if (!Array.isArray(data)) { setAlerts([]); return; }
+      // Enrich alerts with ingredient name/unit from local ingredients list
+      const enriched: PriceAlert[] = data.map((a: any) => {
+        const ing = ings.find((i) => i.id === a.ingredientId);
+        return {
+          ingredientId: a.ingredientId,
+          ingredientName: a.ingredientName || ing?.name || 'Inconnu',
+          unit: a.unit || ing?.unit || '',
+          oldPrice: a.oldPrice ?? 0,
+          newPrice: a.newPrice ?? 0,
+          changePercent: a.changePercent ?? 0,
+          date: a.date || '',
+        };
+      });
+      setAlerts(enriched);
     } catch {
       // Silently handle - alerts are non-critical
     }
@@ -188,6 +202,7 @@ export default function Mercuriale() {
       const res = await fetch(`${API}/api/ingredients`, { headers: authHeaders() });
       if (!res.ok) throw new Error();
       const data = await res.json();
+      if (!Array.isArray(data)) { setIngredients([]); return []; }
       setIngredients(data);
       if (data.length > 0 && !selectedIngredientId) {
         setSelectedIngredientId(data[0].id);
@@ -205,7 +220,7 @@ export default function Mercuriale() {
       const res = await fetch(`${API}/api/price-history?ingredientId=${ingredientId}&days=${days}`, { headers: authHeaders() });
       if (!res.ok) throw new Error();
       const data = await res.json();
-      setPriceHistory(data);
+      setPriceHistory(Array.isArray(data) ? data : []);
     } catch {
       setPriceHistory([]);
     } finally {
@@ -249,10 +264,10 @@ export default function Mercuriale() {
       }
       rows.push({
         id: ing.id,
-        name: ing.name,
-        unit: ing.unit,
-        currentPrice: ing.pricePerUnit,
-        category: ing.category,
+        name: ing.name || '',
+        unit: ing.unit || '',
+        currentPrice: ing.pricePerUnit ?? 0,
+        category: ing.category || '',
         change7d,
         change30d,
         change90d,
@@ -266,7 +281,7 @@ export default function Mercuriale() {
     (async () => {
       setLoading(true);
       const ings = await fetchIngredients();
-      await fetchAlerts();
+      await fetchAlerts(ings);
       await buildTableRows(ings);
       setLoading(false);
     })();
@@ -303,7 +318,7 @@ export default function Mercuriale() {
 
       // Refresh
       const ings = await fetchIngredients();
-      await fetchAlerts();
+      await fetchAlerts(ings);
       await buildTableRows(ings);
       if (selectedIngredientId) {
         fetchPriceHistoryForChart(selectedIngredientId, chartDays);
@@ -330,7 +345,7 @@ export default function Mercuriale() {
     let rows = [...tableRows];
     if (search.trim()) {
       const q = search.toLowerCase();
-      rows = rows.filter((r) => r.name.toLowerCase().includes(q) || r.category.toLowerCase().includes(q));
+      rows = rows.filter((r) => (r.name || '').toLowerCase().includes(q) || (r.category || '').toLowerCase().includes(q));
     }
     rows.sort((a, b) => {
       let cmp = 0;
@@ -470,7 +485,7 @@ export default function Mercuriale() {
         {selectedIngredient && (
           <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
             <Euro className="w-3.5 h-3.5 inline mr-1" />
-            {selectedIngredient.name} — prix actuel : <span className="font-semibold text-gray-900 dark:text-white">{selectedIngredient.pricePerUnit.toFixed(2)} €/{selectedIngredient.unit}</span>
+            {selectedIngredient.name} — prix actuel : <span className="font-semibold text-gray-900 dark:text-white">{(selectedIngredient.pricePerUnit ?? 0).toFixed(2)} €/{selectedIngredient.unit}</span>
           </div>
         )}
         {chartLoading ? (
@@ -555,7 +570,7 @@ export default function Mercuriale() {
                       <div className="text-xs text-gray-400">{row.category}</div>
                     </td>
                     <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-white">
-                      {row.currentPrice.toFixed(2)} €<span className="text-gray-400 text-xs ml-1">/{row.unit}</span>
+                      {(row.currentPrice ?? 0).toFixed(2)} €<span className="text-gray-400 text-xs ml-1">/{row.unit}</span>
                     </td>
                     <td className="px-4 py-3 text-right">{formatChange(row.change7d)}</td>
                     <td className="px-4 py-3 text-right">{formatChange(row.change30d)}</td>

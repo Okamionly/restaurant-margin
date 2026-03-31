@@ -40,6 +40,10 @@ import {
   WifiOff,
   Eye,
   EyeOff,
+  Target,
+  TrendingUp,
+  Euro,
+  Calendar,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -114,6 +118,44 @@ const CUISINE_TYPES = [
   { value: 'fast-casual', label: 'Fast-casual' },
   { value: 'autre', label: 'Autre' },
 ];
+
+// ---------------------------------------------------------------------------
+// Financial goals types & defaults
+// ---------------------------------------------------------------------------
+
+interface FinancialGoals {
+  margeMatiere: number;       // % (50-90, default 70)
+  foodCost: number;           // % (10-50, default 30)
+  masseSalariale: number;     // % (20-50, default 35)
+  primeCost: number;          // % (50-80, default 65)
+  ticketMoyen: number;        // EUR (default 25)
+  couvertsJour: number;       // count (default 80)
+  servicesJour: number;       // 1 | 2 | 3 (default 2)
+  joursOuverture: number;     // 5 | 6 | 7 (default 6)
+}
+
+const DEFAULT_FINANCIAL_GOALS: FinancialGoals = {
+  margeMatiere: 70,
+  foodCost: 30,
+  masseSalariale: 35,
+  primeCost: 65,
+  ticketMoyen: 25,
+  couvertsJour: 80,
+  servicesJour: 2,
+  joursOuverture: 6,
+};
+
+function loadFinancialGoals(): FinancialGoals {
+  try {
+    const stored = localStorage.getItem('restaumargin_financial_goals');
+    if (stored) return { ...DEFAULT_FINANCIAL_GOALS, ...JSON.parse(stored) };
+  } catch {}
+  return DEFAULT_FINANCIAL_GOALS;
+}
+
+function saveFinancialGoals(goals: FinancialGoals) {
+  localStorage.setItem('restaumargin_financial_goals', JSON.stringify(goals));
+}
 
 // ---------------------------------------------------------------------------
 // Persistence helpers
@@ -296,6 +338,17 @@ export default function Settings() {
   const [showDeleteDataModal, setShowDeleteDataModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
+
+  // Financial goals
+  const [financialGoals, setFinancialGoals] = useState<FinancialGoals>(loadFinancialGoals);
+
+  function handleGoalChange<K extends keyof FinancialGoals>(key: K, value: FinancialGoals[K]) {
+    setFinancialGoals((prev) => {
+      const next = { ...prev, [key]: value };
+      saveFinancialGoals(next);
+      return next;
+    });
+  }
 
   // Hardware integration: future feature
   const [bluetoothConnected, setBluetoothConnected] = useState(false);
@@ -789,73 +842,251 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Margin & coefficient objectives */}
+            {/* Existing financial params (coefficient, TVA, labor) */}
             <div className="pt-4 border-t dark:border-slate-700">
               <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 mb-4">
                 <Calculator className="w-4 h-4" />
+                Parametres financiers de base
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="label">Objectif coefficient</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="1"
+                    className="input w-full"
+                    value={settings.coefficientObjective}
+                    onChange={(e) => handleChange('coefficientObjective', parseFloat(e.target.value) || 0)}
+                  />
+                  <p className="text-xs text-slate-400 mt-1">Recommande : x3.3</p>
+                </div>
+                <div>
+                  <label className="label">Taux de TVA (%)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="30"
+                    className="input w-full"
+                    value={settings.tvaRate}
+                    onChange={(e) => handleChange('tvaRate', parseFloat(e.target.value) || 0)}
+                  />
+                  <p className="text-xs text-slate-400 mt-1">Sur place : 10%</p>
+                </div>
+                <div>
+                  <label className="label">Cout main d'oeuvre (EUR/h)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    className="input w-full"
+                    value={settings.defaultLaborCost}
+                    onChange={(e) => handleChange('defaultLaborCost', parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* ---- Enhanced financial objectives ---- */}
+            <div className="pt-4 border-t dark:border-slate-700">
+              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 mb-4">
+                <Target className="w-4 h-4 text-emerald-500" />
                 Objectifs financiers
               </h4>
-              <div className="space-y-4">
+
+              {/* --- Percentage sliders --- */}
+              <div className="space-y-5">
+                {/* Objectif marge matiere */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="label mb-0">Objectif de marge</label>
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                      {settings.marginObjective}%
+                    <label className="label mb-0 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
+                      Objectif marge matiere
+                    </label>
+                    <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                      {financialGoals.margeMatiere}%
                     </span>
                   </div>
                   <input
                     type="range"
-                    min="0"
-                    max="100"
+                    min="50"
+                    max="90"
                     step="1"
-                    value={settings.marginObjective}
-                    onChange={(e) => handleChange('marginObjective', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    value={financialGoals.margeMatiere}
+                    onChange={(e) => handleGoalChange('margeMatiere', parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
-                    <span>0%</span>
                     <span>50%</span>
-                    <span>100%</span>
+                    <span>70%</span>
+                    <span>90%</span>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="label">Objectif coefficient</label>
+
+                {/* Objectif food cost */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="label mb-0 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
+                      Objectif food cost
+                    </label>
+                    <span className="text-sm font-bold text-orange-600 dark:text-orange-400">
+                      {financialGoals.foodCost}%
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="10"
+                    max="50"
+                    step="1"
+                    value={financialGoals.foodCost}
+                    onChange={(e) => handleGoalChange('foodCost', parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>10%</span>
+                    <span>30%</span>
+                    <span>50%</span>
+                  </div>
+                </div>
+
+                {/* Objectif masse salariale */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="label mb-0 flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-violet-500" />
+                      Objectif masse salariale
+                    </label>
+                    <span className="text-sm font-bold text-violet-600 dark:text-violet-400">
+                      {financialGoals.masseSalariale}%
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="20"
+                    max="50"
+                    step="1"
+                    value={financialGoals.masseSalariale}
+                    onChange={(e) => handleGoalChange('masseSalariale', parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-violet-500"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>20%</span>
+                    <span>35%</span>
+                    <span>50%</span>
+                  </div>
+                </div>
+
+                {/* Objectif prime cost */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="label mb-0 flex items-center gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-blue-500" />
+                      Objectif prime cost
+                    </label>
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                      {financialGoals.primeCost}%
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="50"
+                    max="80"
+                    step="1"
+                    value={financialGoals.primeCost}
+                    onChange={(e) => handleGoalChange('primeCost', parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                    <span>50%</span>
+                    <span>65%</span>
+                    <span>80%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* --- Number inputs & selects --- */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
+                <div>
+                  <label className="label flex items-center gap-1.5">
+                    <Euro className="w-3.5 h-3.5 text-amber-500" />
+                    Ticket moyen cible
+                  </label>
+                  <div className="relative">
                     <input
                       type="number"
-                      step="0.1"
                       min="1"
-                      className="input w-full"
-                      value={settings.coefficientObjective}
-                      onChange={(e) => handleChange('coefficientObjective', parseFloat(e.target.value) || 0)}
-                    />
-                    <p className="text-xs text-slate-400 mt-1">Recommande : x3.3</p>
-                  </div>
-                  <div>
-                    <label className="label">Taux de TVA (%)</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      min="0"
-                      max="30"
-                      className="input w-full"
-                      value={settings.tvaRate}
-                      onChange={(e) => handleChange('tvaRate', parseFloat(e.target.value) || 0)}
-                    />
-                    <p className="text-xs text-slate-400 mt-1">Sur place : 10%</p>
-                  </div>
-                  <div>
-                    <label className="label">Cout main d'oeuvre (EUR/h)</label>
-                    <input
-                      type="number"
                       step="0.5"
-                      min="0"
-                      className="input w-full"
-                      value={settings.defaultLaborCost}
-                      onChange={(e) => handleChange('defaultLaborCost', parseFloat(e.target.value) || 0)}
+                      className="input w-full pr-8"
+                      value={financialGoals.ticketMoyen}
+                      onChange={(e) => handleGoalChange('ticketMoyen', parseFloat(e.target.value) || 0)}
                     />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">EUR</span>
                   </div>
                 </div>
+                <div>
+                  <label className="label flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-cyan-500" />
+                    Nombre de couverts/jour
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    className="input w-full"
+                    value={financialGoals.couvertsJour}
+                    onChange={(e) => handleGoalChange('couvertsJour', parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div>
+                  <label className="label flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-pink-500" />
+                    Nombre de services/jour
+                  </label>
+                  <select
+                    className="input w-full"
+                    value={financialGoals.servicesJour}
+                    onChange={(e) => handleGoalChange('servicesJour', parseInt(e.target.value))}
+                  >
+                    <option value={1}>1 service</option>
+                    <option value={2}>2 services</option>
+                    <option value={3}>3 services</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                    Jours d'ouverture/semaine
+                  </label>
+                  <select
+                    className="input w-full"
+                    value={financialGoals.joursOuverture}
+                    onChange={(e) => handleGoalChange('joursOuverture', parseInt(e.target.value))}
+                  >
+                    <option value={5}>5 jours</option>
+                    <option value={6}>6 jours</option>
+                    <option value={7}>7 jours</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Summary card */}
+              <div className="mt-5 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                <h5 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+                  Estimation CA mensuel
+                </h5>
+                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(
+                    financialGoals.ticketMoyen *
+                    financialGoals.couvertsJour *
+                    financialGoals.joursOuverture *
+                    4.33
+                  )}
+                  <span className="text-sm font-normal text-slate-400 ml-1">/mois</span>
+                </div>
+                <p className="text-xs text-slate-400 mt-1">
+                  {financialGoals.ticketMoyen} EUR x {financialGoals.couvertsJour} couverts x {financialGoals.joursOuverture} j/sem x 4.33 sem
+                </p>
               </div>
             </div>
 

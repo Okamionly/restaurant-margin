@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
-  ChevronUp, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
-  Star, Clock, TrendingUp, ArrowRightLeft, Zap, Scale, Award, AlertTriangle,
+  ChevronUp, ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
+  Star, Clock, TrendingUp, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
@@ -475,6 +475,34 @@ export default function Suppliers() {
     return alerts;
   }, [ingredients]);
 
+  // ── Supplier catalogue: ingredients grouped by category ───────────────────
+
+  const supplierCatalogMap = useMemo(() => {
+    const map: Record<number, { byCategory: Record<string, Ingredient[]>; totalSpend: number; count: number }> = {};
+    ingredients.forEach(ing => {
+      if (!ing.supplierId) return;
+      if (!map[ing.supplierId]) map[ing.supplierId] = { byCategory: {}, totalSpend: 0, count: 0 };
+      const entry = map[ing.supplierId];
+      const cat = ing.category || 'Autres';
+      if (!entry.byCategory[cat]) entry.byCategory[cat] = [];
+      entry.byCategory[cat].push(ing);
+      entry.totalSpend += ing.pricePerUnit;
+      entry.count++;
+    });
+    return map;
+  }, [ingredients]);
+
+  // Collapsible categories in detail modal
+  const [collapsedCats, setCollapsedCats] = useState<Set<string>>(new Set());
+
+  function toggleCatCollapse(cat: string) {
+    setCollapsedCats(prev => {
+      const next = new Set(prev);
+      next.has(cat) ? next.delete(cat) : next.add(cat);
+      return next;
+    });
+  }
+
   // ── render ─────────────────────────────────────────────────────────────────
 
   if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">{t('suppliers.loading')}</div>;
@@ -788,7 +816,7 @@ export default function Suppliers() {
                             );
                           })()}
                           <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                            {ingCount} ing.
+                            {supplierCatalogMap[supplier.id]?.count ?? ingCount} produits
                           </span>
                         </div>
                       </div>
@@ -1603,48 +1631,92 @@ export default function Suppliers() {
                 {detailSupplier.city && <div className="text-slate-600 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
               </div>
 
-              {/* Linked ingredients with price history */}
-              <div>
-                <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
-                  <Package className="w-4 h-4 text-blue-500" />
-                  {t('suppliers.linkedIngredientsCount')} ({ings.length})
-                </h4>
-                {ings.length === 0 ? (
-                  <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
-                ) : (
-                  <div className="space-y-3">
-                    {ings.map((ing: SupplierIngredient) => {
-                      const priceHistory = getMockPriceHistory(ing.pricePerUnit);
-                      const trend = priceHistory[priceHistory.length - 1] - priceHistory[0];
-                      return (
-                        <div key={ing.id} className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3">
-                          <div className="flex items-center justify-between mb-1">
-                            <div>
-                              <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{ing.name}</span>
-                              <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400">{ing.category}</span>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{ing.pricePerUnit.toFixed(2)} €/{ing.unit}</span>
-                              <span className={`ml-2 text-xs font-medium ${trend > 0 ? 'text-red-500' : 'text-green-500'}`}>
-                                <TrendingUp className={`w-3 h-3 inline -mt-0.5 ${trend < 0 ? 'rotate-180' : ''}`} />
-                                {trend > 0 ? '+' : ''}{((trend / priceHistory[0]) * 100).toFixed(1)}%
-                              </span>
-                            </div>
-                          </div>
-                          {/* Mini price chart */}
-                          <div className="mt-1">
-                            <div className="flex items-center justify-between text-[10px] text-slate-400 mb-0.5">
-                              <span>{t('suppliers.history30d')}</span>
-                              <span>{priceHistory[priceHistory.length - 1].toFixed(2)} €</span>
-                            </div>
-                            <MiniPriceChart data={priceHistory} width={300} height={40} />
-                          </div>
-                        </div>
-                      );
-                    })}
+              {/* ── Catalogue section: ingredients grouped by category ── */}
+              {(() => {
+                const catalog = supplierCatalogMap[detailSupplier.id];
+                if (!catalog || catalog.count === 0) return (
+                  <div>
+                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-purple-500" />
+                      Catalogue (0 produits)
+                    </h4>
+                    <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
                   </div>
-                )}
-              </div>
+                );
+                const sortedCategories = Object.keys(catalog.byCategory).sort();
+                return (
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-purple-500" />
+                        Catalogue ({catalog.count} produits)
+                      </h4>
+                      <div className="text-right">
+                        <span className="text-xs text-slate-400">Cout total unitaire</span>
+                        <span className="ml-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                          {catalog.totalSpend.toFixed(2)} EUR
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      {sortedCategories.map(cat => {
+                        const catIngredients = catalog.byCategory[cat];
+                        const isCollapsed = collapsedCats.has(`${detailSupplier.id}-${cat}`);
+                        const catTotal = catIngredients.reduce((s, i) => s + i.pricePerUnit, 0);
+                        return (
+                          <div key={cat} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                            <button
+                              onClick={() => toggleCatCollapse(`${detailSupplier.id}-${cat}`)}
+                              className="w-full flex items-center justify-between px-3 py-2.5 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left"
+                            >
+                              <div className="flex items-center gap-2">
+                                <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
+                                <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{cat}</span>
+                                <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400">
+                                  {catIngredients.length}
+                                </span>
+                              </div>
+                              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                {catTotal.toFixed(2)} EUR
+                              </span>
+                            </button>
+                            {!isCollapsed && (
+                              <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                                {catIngredients
+                                  .sort((a, b) => a.name.localeCompare(b.name))
+                                  .map(ing => {
+                                    const priceHistory = getMockPriceHistory(ing.pricePerUnit);
+                                    return (
+                                      <div key={ing.id} className="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                        <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">{ing.name}</span>
+                                        {priceHistory.length >= 2 && (
+                                          <MiniPriceChart data={priceHistory} width={60} height={20} />
+                                        )}
+                                        <span className="text-sm font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                                          {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                                        </span>
+                                        {priceAlerts[ing.id] && (
+                                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
+                                            priceAlerts[ing.id].pctChange > 0
+                                              ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                                              : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                                          }`}>
+                                            {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           );
         })()}

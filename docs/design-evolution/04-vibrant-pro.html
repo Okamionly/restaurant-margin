@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RestauMargin - Vibrant Pro Concept</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    background: #0f1117;
+    color: #fff;
+  }
+
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: #13151d;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 24px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    top: -50px; left: -50px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-weight: 800; font-size: 18px;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+  }
+
+  .logo-text {
+    font-size: 19px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #c4b5fd, #67e8f9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.3px;
+  }
+
+  .nav-section {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.2);
+    padding: 20px 14px 8px;
+    font-weight: 700;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .nav-item.active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.1));
+    color: #fff;
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.2);
+  }
+
+  .nav-icon {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-item.active .nav-icon {
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  }
+
+  .nav-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(124, 58, 237, 0.15);
+    color: #a78bfa;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sidebar-avatar {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 13px;
+  }
+
+  .sidebar-user-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .sidebar-user-role { font-size: 11px; color: rgba(255, 255, 255, 0.3); }
+
+  /* Main Content */
+  .main {
+    flex: 1;
+    padding: 28px 36px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .header-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .header-actions {
+    display: flex; gap: 10px; align-items: center;
+  }
+
+  .btn-secondary {
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #fff;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-gradient {
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: none;
+    background: linear-gradient(135deg, #7c3aed, #2563eb, #06b6d4);
+    background-size: 200% 200%;
+    animation: gradientShift 5s ease infinite;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    letter-spacing: 0.2px;
+  }
+
+  .btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .kpi-card {
+    border-radius: 16px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .kpi-card:nth-child(1) {
+    background: linear-gradient(135deg, #1e1145 0%, #13151d 100%);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+  }
+  .kpi-card:nth-child(1):hover { box-shadow: 0 16px 40px rgba(124, 58, 237, 0.15); }
+  .kpi-card:nth-child(1)::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.2) 0%, transparent 70%);
+  }
+
+  .kpi-card:nth-child(2) {
+    background: linear-gradient(135deg, #042f2e 0%, #13151d 100%);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+  }
+  .kpi-card:nth-child(2):hover { box-shadow: 0 16px 40px rgba(6, 182, 212, 0.15); }
+  .kpi-card:nth-child(2)::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+  }
+
+  .kpi-card:nth-child(3) {
+    background: linear-gradient(135deg, #1c1917 0%, #13151d 100%);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+  .kpi-card:nth-child(3):hover { box-shadow: 0 16px 40px rgba(245, 158, 11, 0.12); }
+  .kpi-card:nth-child(3)::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+  }
+
+  .kpi-card:nth-child(4) {
+    background: linear-gradient(135deg, #1a1040 0%, #13151d 100%);
+    border: 1px solid rgba(236, 72, 153, 0.2);
+  }
+  .kpi-card:nth-child(4):hover { box-shadow: 0 16px 40px rgba(236, 72, 153, 0.12); }
+  .kpi-card:nth-child(4)::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%);
+  }
+
+  .kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .kpi-trend {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+
+  .kpi-trend.up {
+    background: rgba(16, 185, 129, 0.12);
+    color: #34d399;
+  }
+
+  .kpi-trend.down {
+    background: rgba(239, 68, 68, 0.12);
+    color: #fca5a5;
+  }
+
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .kpi-card:nth-child(1) .kpi-value { color: #c4b5fd; }
+  .kpi-card:nth-child(2) .kpi-value { color: #67e8f9; }
+  .kpi-card:nth-child(3) .kpi-value { color: #fcd34d; }
+  .kpi-card:nth-child(4) .kpi-value { color: #f9a8d4; }
+
+  .kpi-sparkline {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 30px;
+    margin-top: 12px;
+  }
+
+  .spark-bar {
+    flex: 1;
+    border-radius: 2px;
+    min-height: 4px;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+  }
+
+  .kpi-card:hover .spark-bar { opacity: 0.7; }
+
+  .kpi-card:nth-child(1) .spark-bar { background: #7c3aed; }
+  .kpi-card:nth-child(2) .spark-bar { background: #06b6d4; }
+  .kpi-card:nth-child(3) .spark-bar { background: #f59e0b; }
+  .kpi-card:nth-child(4) .spark-bar { background: #ec4899; }
+
+  /* Content Grid */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 5fr 3fr;
+    gap: 16px;
+  }
+
+  .card {
+    background: #13151d;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .card-tabs {
+    display: flex; gap: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 3px;
+  }
+
+  .card-tab {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .card-tab.active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(6, 182, 212, 0.15));
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+  }
+
+  /* Chart Area */
+  .chart-area {
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 20px;
+  }
+
+  .chart-grid-lines {
+    position: absolute;
+    inset: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .grid-line {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .chart-wave {
+    position: absolute;
+    bottom: 20px; left: 20px; right: 20px;
+    height: 200px;
+  }
+
+  .chart-wave svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-bars-row {
+    position: absolute;
+    bottom: 20px; left: 20px; right: 20px;
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 8px;
+  }
+
+  .chart-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chart-bar {
+    width: 100%;
+    max-width: 36px;
+    border-radius: 8px 8px 4px 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+    border-radius: inherit;
+  }
+
+  .chart-bar.v1 { background: linear-gradient(180deg, #7c3aed, #4c1d95); }
+  .chart-bar.v2 { background: linear-gradient(180deg, #2563eb, #1e40af); }
+  .chart-bar.v3 { background: linear-gradient(180deg, #06b6d4, #0e7490); }
+  .chart-bar.v4 { background: linear-gradient(180deg, #7c3aed, #2563eb); }
+  .chart-bar.v5 { background: linear-gradient(180deg, #8b5cf6, #6d28d9); }
+  .chart-bar.v6 { background: linear-gradient(180deg, #06b6d4, #0891b2); }
+
+  .chart-bar-label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* Activity */
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .activity-icon.purple {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.08));
+    color: #a78bfa;
+  }
+  .activity-icon.cyan {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.08));
+    color: #67e8f9;
+  }
+  .activity-icon.amber {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.08));
+    color: #fcd34d;
+  }
+  .activity-icon.pink {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.08));
+    color: #f9a8d4;
+  }
+  .activity-icon.blue {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.08));
+    color: #93c5fd;
+  }
+
+  .activity-content { flex: 1; }
+
+  .activity-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .activity-time {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.2);
+    margin-top: 2px;
+  }
+
+  .activity-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .activity-tag.new {
+    background: rgba(124, 58, 237, 0.12);
+    color: #a78bfa;
+  }
+  .activity-tag.optimized {
+    background: rgba(6, 182, 212, 0.12);
+    color: #67e8f9;
+  }
+  .activity-tag.alert {
+    background: rgba(245, 158, 11, 0.12);
+    color: #fcd34d;
+  }
+  .activity-tag.report {
+    background: rgba(236, 72, 153, 0.12);
+    color: #f9a8d4;
+  }
+  .activity-tag.update {
+    background: rgba(37, 99, 235, 0.12);
+    color: #93c5fd;
+  }
+
+  /* Concept Label */
+  .concept-label {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #7c3aed, #2563eb, #06b6d4);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">R</div>
+      <div class="logo-text">RestauMargin</div>
+    </div>
+
+    <div class="nav-section">Menu</div>
+    <div class="nav-item active">
+      <div class="nav-icon"></div>
+      Tableau de bord
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Recettes
+      <span class="nav-count">142</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Ingredients
+      <span class="nav-count">89</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Fournisseurs
+    </div>
+
+    <div class="nav-section">Analyses</div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Marges
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Rapports
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Alertes prix
+      <span class="nav-count">3</span>
+    </div>
+
+    <div class="nav-section">Systeme</div>
+    <div class="nav-item">
+      <div class="nav-icon"></div>
+      Parametres
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-avatar">YG</div>
+      <div>
+        <div class="sidebar-user-name">Youssef G.</div>
+        <div class="sidebar-user-role">Administrateur</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="header">
+      <div>
+        <h1>Tableau de bord</h1>
+        <div class="header-subtitle">Vue d'ensemble -- Mars 2026</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary">Exporter</button>
+        <button class="btn-gradient">+ Nouvelle recette</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-label">Chiffre d'affaires</div>
+          <div class="kpi-trend up">+12.5%</div>
+        </div>
+        <div class="kpi-value">47 280 EUR</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:40%;"></div>
+          <div class="spark-bar" style="height:55%;"></div>
+          <div class="spark-bar" style="height:45%;"></div>
+          <div class="spark-bar" style="height:70%;"></div>
+          <div class="spark-bar" style="height:60%;"></div>
+          <div class="spark-bar" style="height:80%;"></div>
+          <div class="spark-bar" style="height:75%;"></div>
+          <div class="spark-bar" style="height:90%;"></div>
+          <div class="spark-bar" style="height:85%;"></div>
+          <div class="spark-bar" style="height:100%;"></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-label">Marge brute</div>
+          <div class="kpi-trend up">+2.1 pts</div>
+        </div>
+        <div class="kpi-value">68.4%</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:60%;"></div>
+          <div class="spark-bar" style="height:55%;"></div>
+          <div class="spark-bar" style="height:65%;"></div>
+          <div class="spark-bar" style="height:70%;"></div>
+          <div class="spark-bar" style="height:68%;"></div>
+          <div class="spark-bar" style="height:75%;"></div>
+          <div class="spark-bar" style="height:80%;"></div>
+          <div class="spark-bar" style="height:78%;"></div>
+          <div class="spark-bar" style="height:85%;"></div>
+          <div class="spark-bar" style="height:92%;"></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-label">Cout matiere</div>
+          <div class="kpi-trend down">+0.8 pts</div>
+        </div>
+        <div class="kpi-value">31.6%</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:50%;"></div>
+          <div class="spark-bar" style="height:55%;"></div>
+          <div class="spark-bar" style="height:48%;"></div>
+          <div class="spark-bar" style="height:60%;"></div>
+          <div class="spark-bar" style="height:65%;"></div>
+          <div class="spark-bar" style="height:58%;"></div>
+          <div class="spark-bar" style="height:70%;"></div>
+          <div class="spark-bar" style="height:68%;"></div>
+          <div class="spark-bar" style="height:72%;"></div>
+          <div class="spark-bar" style="height:75%;"></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <div class="kpi-label">Nombre de recettes</div>
+          <div class="kpi-trend up">+8 ce mois</div>
+        </div>
+        <div class="kpi-value">142</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:30%;"></div>
+          <div class="spark-bar" style="height:35%;"></div>
+          <div class="spark-bar" style="height:40%;"></div>
+          <div class="spark-bar" style="height:42%;"></div>
+          <div class="spark-bar" style="height:50%;"></div>
+          <div class="spark-bar" style="height:55%;"></div>
+          <div class="spark-bar" style="height:60%;"></div>
+          <div class="spark-bar" style="height:70%;"></div>
+          <div class="spark-bar" style="height:80%;"></div>
+          <div class="spark-bar" style="height:100%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Evolution des marges</div>
+          <div class="card-tabs">
+            <div class="card-tab active">Semaine</div>
+            <div class="card-tab">Mois</div>
+            <div class="card-tab">Annee</div>
+          </div>
+        </div>
+        <div class="chart-area">
+          <div class="chart-grid-lines">
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+          </div>
+          <div class="chart-bars-row">
+            <div class="chart-bar-col">
+              <div class="chart-bar v1" style="height:110px;"></div>
+              <div class="chart-bar-label">Lun</div>
+            </div>
+            <div class="chart-bar-col">
+              <div class="chart-bar v2" style="height:145px;"></div>
+              <div class="chart-bar-label">Mar</div>
+            </div>
+            <div class="chart-bar-col">
+              <div class="chart-bar v3" style="height:98px;"></div>
+              <div class="chart-bar-label">Mer</div>
+            </div>
+            <div class="chart-bar-col">
+              <div class="chart-bar v4" style="height:168px;"></div>
+              <div class="chart-bar-label">Jeu</div>
+            </div>
+            <div class="chart-bar-col">
+              <div class="chart-bar v5" style="height:188px;"></div>
+              <div class="chart-bar-label">Ven</div>
+            </div>
+            <div class="chart-bar-col">
+              <div class="chart-bar v4" style="height:172px;"></div>
+              <div class="chart-bar-label">Sam</div>
+            </div>
+            <div class="chart-bar-col">
+              <div class="chart-bar v6" style="height:82px;"></div>
+              <div class="chart-bar-label">Dim</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Activite recente</div>
+        </div>
+
+        <div class="activity-item">
+          <div class="activity-icon purple">+</div>
+          <div class="activity-content">
+            <div class="activity-text">Nouvelle recette "Risotto Truffe"</div>
+            <div class="activity-time">Il y a 25 min</div>
+          </div>
+          <div class="activity-tag new">Nouveau</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon cyan">%</div>
+          <div class="activity-content">
+            <div class="activity-text">Marge "Menu Dejeuner" a 72%</div>
+            <div class="activity-time">Il y a 1h</div>
+          </div>
+          <div class="activity-tag optimized">Optimise</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon amber">!</div>
+          <div class="activity-content">
+            <div class="activity-text">Prix saumon +15% chez Metro</div>
+            <div class="activity-time">Il y a 2h</div>
+          </div>
+          <div class="activity-tag alert">Alerte</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon pink">R</div>
+          <div class="activity-content">
+            <div class="activity-text">Rapport hebdomadaire genere</div>
+            <div class="activity-time">Il y a 3h</div>
+          </div>
+          <div class="activity-tag report">Rapport</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon blue">U</div>
+          <div class="activity-content">
+            <div class="activity-text">5 fiches techniques a jour</div>
+            <div class="activity-time">Il y a 5h</div>
+          </div>
+          <div class="activity-tag update">MAJ</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="concept-label">Concept 4 / 4 -- Vibrant Pro</div>
+
+</body>
+</html>

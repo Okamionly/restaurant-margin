@@ -756,7 +756,7 @@ export default function Devis() {
         headers: authHeaders(),
         body: JSON.stringify({
           name: 'RestauMargin — Devis',
-          email: 'mr.guessousyoussef@gmail.com',
+          email: 'contact@restaumargin.fr',
           source: 'devis-envoi',
           message,
         }),

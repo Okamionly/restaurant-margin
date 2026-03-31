@@ -1560,7 +1560,7 @@ app.post('/api/contact', async (req, res) => {
 
       await resendClient.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>',
-        to: 'mr.guessousyoussef@gmail.com',
+        to: 'contact@restaumargin.fr',
         subject: `[RestauMargin] ${sourceLabel} — ${name}`,
         html: `
 <!DOCTYPE html>

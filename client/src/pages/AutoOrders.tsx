@@ -601,7 +601,7 @@ export default function AutoOrders() {
         },
         body: JSON.stringify({
           name: 'RestauMargin — Commande',
-          email: 'mr.guessousyoussef@gmail.com',
+          email: 'contact@restaumargin.fr',
           source: 'auto-order',
           message,
         }),

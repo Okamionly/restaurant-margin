@@ -102,7 +102,7 @@ export default function CGV() {
             </p>
             <p className="text-slate-300">
               Pour exercer ce droit, le Client doit notifier sa decision par email a{' '}
-              <span className="text-blue-400">mr.guessousyoussef@gmail.com</span> ou par courrier.
+              <span className="text-blue-400">contact@restaumargin.fr</span> ou par courrier.
               Le materiel devra etre retourne dans son emballage d'origine, en parfait etat, dans un
               delai de 14 jours suivant la notification.
             </p>
@@ -219,7 +219,7 @@ export default function CGV() {
             <h2 className="text-xl font-semibold text-blue-400">Article 12 — Contact</h2>
             <p className="text-slate-300">
               Pour toute question relative aux presentes CGV, vous pouvez nous contacter a :{' '}
-              <span className="text-blue-400">mr.guessousyoussef@gmail.com</span>
+              <span className="text-blue-400">contact@restaumargin.fr</span>
             </p>
           </section>
         </div>

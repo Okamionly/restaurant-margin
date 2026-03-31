@@ -27,7 +27,7 @@ export default function MentionsLegales() {
               <p><span className="text-slate-400">Nom :</span> Youssef Guessous</p>
               <p><span className="text-slate-400">Entreprise :</span> RestauMargin</p>
               <p><span className="text-slate-400">Statut :</span> Entrepreneur individuel</p>
-              <p><span className="text-slate-400">Email :</span> mr.guessousyoussef@gmail.com</p>
+              <p><span className="text-slate-400">Email :</span> contact@restaumargin.fr</p>
               <p><span className="text-slate-400">Site web :</span> https://restaumargin.com</p>
             </div>
           </section>
@@ -35,7 +35,7 @@ export default function MentionsLegales() {
           {/* Directeur de publication */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
             <h2 className="text-xl font-semibold text-blue-400">2. Directeur de la publication</h2>
-            <p className="text-slate-300">Youssef Guessous — mr.guessousyoussef@gmail.com</p>
+            <p className="text-slate-300">Youssef Guessous — contact@restaumargin.fr</p>
           </section>
 
           {/* Hebergeur */}

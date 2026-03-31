@@ -38,7 +38,7 @@ export default function PolitiqueConfidentialite() {
             <div className="text-slate-300 space-y-1">
               <p><span className="text-slate-400">Nom :</span> Youssef Guessous</p>
               <p><span className="text-slate-400">Entreprise :</span> RestauMargin</p>
-              <p><span className="text-slate-400">Email de contact :</span> mr.guessousyoussef@gmail.com</p>
+              <p><span className="text-slate-400">Email de contact :</span> contact@restaumargin.fr</p>
             </div>
           </section>
 
@@ -153,7 +153,7 @@ export default function PolitiqueConfidentialite() {
             </ul>
             <p className="text-slate-300 mt-3">
               Pour exercer ces droits, contactez-nous a :{' '}
-              <span className="text-blue-400">mr.guessousyoussef@gmail.com</span>
+              <span className="text-blue-400">contact@restaumargin.fr</span>
             </p>
             <p className="text-slate-300">
               Vous disposez egalement du droit de deposer une reclamation aupres de la CNIL
@@ -265,7 +265,7 @@ export default function PolitiqueConfidentialite() {
             <p className="text-slate-300">
               Pour toute question concernant cette politique de confidentialite ou vos donnees
               personnelles, contactez-nous a :{' '}
-              <span className="text-blue-400">mr.guessousyoussef@gmail.com</span>
+              <span className="text-blue-400">contact@restaumargin.fr</span>
             </p>
           </section>
         </div>

@@ -303,7 +303,7 @@ export default function Clients() {
         headers: authHeaders(),
         body: JSON.stringify({
           name: 'RestauMargin — Message client',
-          email: 'mr.guessousyoussef@gmail.com',
+          email: 'contact@restaumargin.fr',
           source: 'crm-email',
           message,
         }),

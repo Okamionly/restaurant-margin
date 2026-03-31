@@ -12,7 +12,8 @@ const API = '';
 
 function authHeaders() {
   const token = localStorage.getItem('token');
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+  const restaurantId = localStorage.getItem('activeRestaurantId');
+  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-Restaurant-Id': restaurantId || '1' };
 }
 
 type Ingredient = { id: number; name: string; unit: string; category: string; pricePerUnit: number };
@@ -568,7 +569,7 @@ export default function WeighStation() {
                       {ing.category}
                     </span>
                     <span className="text-[10px] text-slate-500">{ing.unit}</span>
-                    <span className="text-[10px] text-blue-400">{ing.pricePerUnit.toFixed(2)} €/{ing.unit}</span>
+                    <span className="text-[10px] text-blue-400">{(ing.pricePerUnit ?? 0).toFixed(2)} €/{ing.unit}</span>
                   </div>
                 </div>
                 {selected?.id === ing.id && (
@@ -601,7 +602,7 @@ export default function WeighStation() {
                     {selected.category}
                   </span>
                   <span className="text-xs text-blue-400 font-medium">
-                    {selected.pricePerUnit.toFixed(2)} €/{selected.unit}
+                    {(selected.pricePerUnit ?? 0).toFixed(2)} €/{selected.unit}
                   </span>
                 </div>
               </div>

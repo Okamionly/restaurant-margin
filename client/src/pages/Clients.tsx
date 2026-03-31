@@ -12,7 +12,8 @@ const API = '';
 
 function authHeaders() {
   const token = localStorage.getItem('token');
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+  const restaurantId = localStorage.getItem('activeRestaurantId');
+  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', 'X-Restaurant-Id': restaurantId || '1' };
 }
 
 // ── Types ──────────────────────────────────────────────────────────────

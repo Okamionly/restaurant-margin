@@ -1275,6 +1275,12 @@ app.post('/api/inbound/email', async (req: any, res) => {
     const senderEmail = (from.match(/<([^>]+)>/) || [null, from])[1].trim().toLowerCase();
     const senderName = from.replace(/<[^>]+>/, '').trim() || senderEmail;
 
+    // CRITICAL: Ignore emails from ourselves to prevent infinite loop
+    if (senderEmail === 'contact@restaumargin.fr' || senderEmail.includes('restaumargin.fr')) {
+      console.log('[INBOUND] Ignoring self-sent email from', senderEmail);
+      return res.json({ success: true, ignored: true });
+    }
+
     // Determine which restaurant this is for (default to 1 for now)
     const restaurantId = 1;
 
@@ -1304,21 +1310,9 @@ app.post('/api/inbound/email', async (req: any, res) => {
       },
     });
 
-    // Send notification to admin
-    const resendKey = process.env.RESEND_API_KEY;
-    if (resendKey) {
-      try {
-        const resend = new Resend(resendKey);
-        await resend.emails.send({
-          from: 'RestauMargin <contact@restaumargin.fr>',
-          to: 'contact@restaumargin.fr',
-          subject: `Nouveau message de ${senderName}`,
-          html: `<p><strong>${senderName}</strong> (${senderEmail}) a envoyé un message :</p><p>${messageContent.substring(0, 500)}</p><p><em>Sujet: ${subject || '(aucun)'}</em></p>`,
-        });
-      } catch (emailErr) {
-        console.error('[INBOUND NOTIFICATION ERROR]', emailErr);
-      }
-    }
+    // NOTE: No notification email sent to avoid infinite loop
+    // (sending to contact@restaumargin.fr triggers inbound webhook again)
+    console.log(`[INBOUND] New message from ${senderEmail} in conversation ${conv.id}`);
 
     res.json({ success: true, conversationId: conv.id });
   } catch (e: any) {

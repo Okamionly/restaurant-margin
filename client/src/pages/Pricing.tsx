@@ -75,7 +75,7 @@ const plans: Plan[] = [
       { text: 'Multi-etablissements', included: false },
     ],
     cta: "S'abonner — 29€/mois",
-    ctaLink: 'https://buy.stripe.com/eVq4gs5Ki10o3sw1b187K01',
+    ctaLink: 'https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04',
     external: true,
   },
   {
@@ -96,7 +96,7 @@ const plans: Plan[] = [
       { text: 'Support prioritaire 24/7', included: true },
     ],
     cta: "S'abonner — 79€/mois",
-    ctaLink: 'https://buy.stripe.com/bJe00c2y638w7IMdXN87K02',
+    ctaLink: 'https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05',
     external: true,
   },
 ];
@@ -415,7 +415,7 @@ export default function Pricing() {
           Rejoignez des centaines de restaurateurs qui utilisent RestauMargin pour augmenter leur rentabilite.
         </p>
         <a
-          href="https://buy.stripe.com/8x2fZagoWbF26EI3j987K03"
+          href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"

@@ -671,7 +671,7 @@ export default function Landing() {
                   ))}
                 </div>
                 <a
-                  href="https://buy.stripe.com/eVq4gs5Ki10o3sw1b187K01"
+                  href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/25"
@@ -699,7 +699,7 @@ export default function Landing() {
                   ))}
                 </div>
                 <a
-                  href="https://buy.stripe.com/bJe00c2y638w7IMdXN87K02"
+                  href="https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center px-6 py-3 rounded-xl bg-slate-100 text-slate-900 font-semibold hover:bg-slate-200 transition-colors border border-slate-300"

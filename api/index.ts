@@ -761,115 +761,28 @@ app.get('/api/rfqs', authWithRestaurant, async (_req: any, res) => {
   res.json([]);  // RFQ module disabled — no Prisma model yet
 });
 
-app.get('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
-  try {
-    const rfq = await prisma.rFQ.findUnique({ where: { id: parseInt(req.params.id) }, include: rfqInclude });
-    if (!rfq) return res.status(404).json({ error: 'Appel d\'offres non trouvé' });
-    res.json(rfq);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération' }); }
+app.get('/api/rfqs/:id', authWithRestaurant, async (_req: any, res) => {
+  res.status(503).json(RFQ_DISABLED_MSG);
 });
 
-app.post('/api/rfqs', authWithRestaurant, async (req, res) => {
-  try {
-    const { title, dueDate, notes, items, supplierIds } = req.body;
-    if (!title?.trim()) return res.status(400).json({ error: 'Le titre est requis' });
-    if (!items?.length) return res.status(400).json({ error: 'Au moins un produit requis' });
-    if (!supplierIds?.length) return res.status(400).json({ error: 'Au moins un fournisseur requis' });
-
-    const rfq = await prisma.rFQ.create({
-      data: {
-        title: title.trim(),
-        dueDate: dueDate ? new Date(dueDate) : null,
-        notes: notes || null,
-        items: {
-          create: items.map((item: { ingredientId: number; quantity: number }) => ({
-            ingredientId: item.ingredientId,
-            quantity: item.quantity,
-            quotes: {
-              create: supplierIds.map((sid: number) => ({ supplierId: sid })),
-            },
-          })),
-        },
-        suppliers: {
-          create: supplierIds.map((sid: number) => ({ supplierId: sid })),
-        },
-      },
-      include: rfqInclude,
-    });
-    res.status(201).json(rfq);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création appel d\'offres' }); }
+app.post('/api/rfqs', authWithRestaurant, async (_req: any, res) => {
+  res.status(503).json(RFQ_DISABLED_MSG);
 });
 
-app.put('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
-  try {
-    const id = parseInt(req.params.id);
-    const { title, status, dueDate, notes } = req.body;
-    const rfq = await prisma.rFQ.update({
-      where: { id },
-      data: {
-        title: title?.trim(),
-        status: status || undefined,
-        dueDate: dueDate !== undefined ? (dueDate ? new Date(dueDate) : null) : undefined,
-        notes: notes !== undefined ? (notes || null) : undefined,
-      },
-      include: rfqInclude,
-    });
-    res.json(rfq);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour' }); }
+app.put('/api/rfqs/:id', authWithRestaurant, async (_req: any, res) => {
+  res.status(503).json(RFQ_DISABLED_MSG);
 });
 
-app.delete('/api/rfqs/:id', authWithRestaurant, async (req: any, res) => {
-  try {
-    await prisma.rFQ.delete({ where: { id: parseInt(req.params.id) } });
-    res.status(204).send();
-  } catch (e: any) {
-    console.error('RFQ delete error:', e.message);
-    res.status(500).json({ error: 'Erreur suppression RFQ — le modèle n\'existe peut-être pas encore' });
-  }
+app.delete('/api/rfqs/:id', authWithRestaurant, async (_req: any, res) => {
+  res.status(503).json(RFQ_DISABLED_MSG);
 });
 
-// Update a quote (enter supplier price)
-app.put('/api/rfqs/:rfqId/quotes/:quoteId', authWithRestaurant, async (req, res) => {
-  try {
-    const quoteId = parseInt(req.params.quoteId);
-    const { unitPrice, notes } = req.body;
-    const quote = await prisma.rFQQuote.update({
-      where: { id: quoteId },
-      data: {
-        unitPrice: unitPrice !== undefined ? (unitPrice === '' || unitPrice === null ? null : parseFloat(unitPrice)) : undefined,
-        notes: notes !== undefined ? (notes || null) : undefined,
-      },
-      include: { supplier: true },
-    });
-    res.json(quote);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour devis' }); }
+app.put('/api/rfqs/:rfqId/quotes/:quoteId', authWithRestaurant, async (_req: any, res) => {
+  res.status(503).json(RFQ_DISABLED_MSG);
 });
 
-// Select best quote and optionally apply price to ingredient
-app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authWithRestaurant, async (req, res) => {
-  try {
-    const quoteId = parseInt(req.params.quoteId);
-    const { applyPrice } = req.body;
-
-    const quote = await prisma.rFQQuote.findUnique({ where: { id: quoteId }, include: { rfqItem: true, supplier: true } });
-    if (!quote) return res.status(404).json({ error: 'Devis non trouvé' });
-
-    // Unselect all quotes for same item, then select this one
-    await prisma.rFQQuote.updateMany({ where: { rfqItemId: quote.rfqItemId }, data: { selected: false } });
-    const updated = await prisma.rFQQuote.update({
-      where: { id: quoteId },
-      data: { selected: true },
-      include: { supplier: true },
-    });
-
-    if (applyPrice && quote.unitPrice !== null && quote.unitPrice !== undefined) {
-      await prisma.ingredient.update({
-        where: { id: quote.rfqItem.ingredientId },
-        data: { pricePerUnit: quote.unitPrice, supplierId: quote.supplierId, supplier: quote.supplier.name },
-      });
-    }
-    res.json(updated);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur sélection devis' }); }
+app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authWithRestaurant, async (_req: any, res) => {
+  res.status(503).json(RFQ_DISABLED_MSG);
 });
 
 // ============ PRICE HISTORY (MERCURIALE) ============

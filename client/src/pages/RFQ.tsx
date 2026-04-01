@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-import { useTranslation } from '../hooks/useTranslation';
   Plus, FileText, X, Euro, Clock, Send, CheckCircle, Trash2,
   ChevronDown, ChevronUp, TrendingDown, AlertCircle, Package,
   Users, BarChart3, Calendar, Tag

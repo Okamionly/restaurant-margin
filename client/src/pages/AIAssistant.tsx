@@ -49,7 +49,7 @@ function getActionLabel(type: string): string {
 
 async function getAIResponse(message: string): Promise<{ response: string; actions?: ActionResult[] }> {
   const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('restaurantId');
+  const restaurantId = localStorage.getItem('activeRestaurantId');
   const res = await fetch('/api/ai/chat', {
     method: 'POST',
     headers: {

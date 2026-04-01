@@ -52,7 +52,7 @@ function today(): string {
 
 function authHeaders(): Record<string, string> {
   const token = localStorage.getItem('token') || '';
-  const restaurantId = localStorage.getItem('restaurantId') || '';
+  const restaurantId = localStorage.getItem('activeRestaurantId') || '';
   return {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,

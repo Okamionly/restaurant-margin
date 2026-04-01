@@ -16,6 +16,7 @@
     "allergensColumn": "Alergenos",
     "supplierColumn": "Proveedor",
     "actionsColumn": "Acciones",
+    "notAssigned": "No asignado",
     "noIngredients": "Sin ingredientes. Agregue uno!",
     "noResults": "Sin resultados.",
     "ingredientCount": "{count} ingrediente(s)",

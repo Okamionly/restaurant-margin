@@ -148,8 +148,10 @@ export default function Ingredients() {
 
   const filtered = useMemo(() => {
     let result = ingredients.filter((i) => {
-      const matchSearch = i.name.toLowerCase().includes(search.toLowerCase()) ||
-        (i.supplier && i.supplier.toLowerCase().includes(search.toLowerCase()));
+      const q = search.toLowerCase();
+      const matchSearch = i.name.toLowerCase().includes(q) ||
+        (i.supplier && i.supplier.toLowerCase().includes(q)) ||
+        (i.supplierRef?.name && i.supplierRef.name.toLowerCase().includes(q));
       const matchCategory = !filterCategory || i.category === filterCategory;
       return matchSearch && matchCategory;
     });
@@ -185,19 +187,21 @@ export default function Ingredients() {
   }
 
   function openEdit(ing: Ingredient) {
+    const supplierName = ing.supplier || ing.supplierRef?.name || '';
+    const supplierIdVal = ing.supplierId || ing.supplierRef?.id || null;
     setForm({
       name: ing.name,
       unit: ing.unit,
       pricePerUnit: String(ing.pricePerUnit),
-      supplier: ing.supplier || '',
-      supplierId: ing.supplierId || null,
+      supplier: supplierName,
+      supplierId: supplierIdVal,
       category: ing.category,
       allergens: ing.allergens || [],
     });
     setEditingId(ing.id);
     setFormErrors({});
     setNameQuery(ing.name);
-    setSupplierQuery(ing.supplier || '');
+    setSupplierQuery(supplierName);
     setShowNewSupplierForm(false);
     setShowForm(true);
   }
@@ -534,7 +538,16 @@ export default function Ingredients() {
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-slate-400 dark:text-slate-400">{ing.supplier || '—'}</td>
+                  <td className="px-4 py-3">
+                    {ing.supplierRef?.name || ing.supplier ? (
+                      <span className="inline-flex items-center gap-1.5 text-slate-300 dark:text-slate-300">
+                        <Truck className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400 flex-shrink-0" />
+                        {ing.supplierRef?.name || ing.supplier}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400 dark:text-slate-500 italic text-xs">{t('ingredients.notAssigned')}</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')}>

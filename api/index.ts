@@ -426,7 +426,7 @@ app.delete('/api/restaurants/:id', authMiddleware, async (req: any, res) => {
 
 // ============ INGREDIENTS ============
 app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
-  try { res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { name: 'asc' } })); } catch { res.status(500).json({ error: 'Erreur' }); }
+  try { res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { name: 'asc' }, include: { supplierRef: { select: { id: true, name: true } } } })); } catch { res.status(500).json({ error: 'Erreur' }); }
 });
 
 app.get('/api/ingredients/usage', authWithRestaurant, async (req: any, res) => {

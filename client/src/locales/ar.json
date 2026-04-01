@@ -16,6 +16,7 @@
     "allergensColumn": "مسببات الحساسية",
     "supplierColumn": "المورد",
     "actionsColumn": "الإجراءات",
+    "notAssigned": "غير مخصص",
     "noIngredients": "لا توجد مكونات. أضف واحداً!",
     "noResults": "لا توجد نتائج.",
     "ingredientCount": "{count} مكون(ات)",

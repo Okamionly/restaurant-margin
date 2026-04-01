@@ -50,6 +50,7 @@ export interface Ingredient {
   pricePerUnit: number;
   supplier: string | null;
   supplierId: number | null;
+  supplierRef?: { id: number; name: string } | null;
   category: string;
   allergens: string[];
   createdAt: string;

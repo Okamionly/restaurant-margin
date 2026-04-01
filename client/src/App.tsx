@@ -350,7 +350,7 @@ function AppLayout() {
           } ${
             isActive
               ? 'bg-blue-600/20 text-blue-400 border-l-[3px] border-blue-500 pl-[9px]'
-              : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1 hover:shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]'
+              : 'text-slate-400 hover:bg-slate-700/70 hover:text-white hover:translate-x-1'
           }`
         }
       >

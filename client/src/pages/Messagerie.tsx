@@ -827,7 +827,7 @@ export default function Messagerie() {
                       {/* Message bubble */}
                       <div
                         className={`flex items-end gap-2 ${isMine ? 'flex-row-reverse' : 'flex-row'} ${
-                          isAnimated ? 'animate-[slideInUp_0.3s_ease-out]' : ''
+                          isAnimated ? 'animate-slideInUp' : ''
                         }`}
                       >
                         {/* Avatar (only for others) */}

@@ -370,13 +370,14 @@ export default function Dashboard() {
       .slice(0, 5);
 
     // Alerts: recipes below 60% margin
-    const alertRecipes = recipes.filter(r => r.margin.marginPercent < 60);
+    const alertRecipes = recipes.filter(r => r.margin?.marginPercent < 60);
 
     // Food cost by ingredient category
     const foodCostMap = new Map<string, number>();
     const ingredientCostMap = new Map<string, { name: string; cost: number; unit: string; category: string }>();
     recipes.forEach(r => {
       (r.ingredients || []).forEach(ri => {
+        if (!ri.ingredient) return;
         const cat = ri.ingredient.category || 'Autres';
         const cost = ri.ingredient.pricePerUnit * ri.quantity * (1 + ri.wastePercent / 100);
         foodCostMap.set(cat, (foodCostMap.get(cat) || 0) + cost);
@@ -409,6 +410,7 @@ export default function Dashboard() {
     const allergenMap = new Map<string, Set<number>>();
     recipes.forEach(r => {
       (r.ingredients || []).forEach(ri => {
+        if (!ri.ingredient) return;
         ri.ingredient.allergens?.forEach(a => {
           if (!allergenMap.has(a)) allergenMap.set(a, new Set());
           allergenMap.get(a)!.add(r.id);

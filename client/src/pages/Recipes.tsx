@@ -277,10 +277,10 @@ export default function Recipes() {
   // ── KPI Summary ──────────────────────────────────────────────────────
   const kpis = useMemo(() => {
     if (recipes.length === 0) return { total: 0, avgMargin: 0, bestName: '-', bestMargin: 0, dangerCount: 0 };
-    const avgMargin = recipes.reduce((s, r) => s + r.margin.marginPercent, 0) / recipes.length;
-    const best = recipes.reduce((a, b) => a.margin.marginPercent >= b.margin.marginPercent ? a : b);
-    const dangerCount = recipes.filter((r) => r.margin.marginPercent < 60).length;
-    return { total: recipes.length, avgMargin, bestName: best.name, bestMargin: best.margin.marginPercent, dangerCount };
+    const avgMargin = recipes.reduce((s, r) => s + (r.margin?.marginPercent || 0), 0) / recipes.length;
+    const best = recipes.reduce((a, b) => (a.margin?.marginPercent || 0) >= (b.margin?.marginPercent || 0) ? a : b);
+    const dangerCount = recipes.filter((r) => (r.margin?.marginPercent || 0) < 60).length;
+    return { total: recipes.length, avgMargin, bestName: best.name, bestMargin: best.margin?.marginPercent || 0, dangerCount };
   }, [recipes]);
 
   // ── Category pills ──────────────────────────────────────────────────

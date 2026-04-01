@@ -501,8 +501,8 @@ export default function AutoOrders() {
     const bySupplier = new Map<string, { supplierId: number | null; supplierName: string; items: InventoryItem[] }>();
 
     lowStockItems.forEach((item) => {
-      const supplierName = item.ingredient.supplier || 'Fournisseur inconnu';
-      const supplierId = item.ingredient.supplierId;
+      const supplierName = item.ingredient?.supplier || 'Fournisseur inconnu';
+      const supplierId = item.ingredient?.supplierId;
       const key = supplierName;
       if (!bySupplier.has(key)) {
         bySupplier.set(key, { supplierId, supplierName, items: [] });

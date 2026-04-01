@@ -185,10 +185,10 @@ export default function Inventory() {
     let result = [...items];
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter(item => item.ingredient.name.toLowerCase().includes(q));
+      result = result.filter(item => item.ingredient?.name?.toLowerCase().includes(q));
     }
     if (filterCategory) {
-      result = result.filter(item => item.ingredient.category === filterCategory);
+      result = result.filter(item => item.ingredient?.category === filterCategory);
     }
     if (filterLocation) {
       result = result.filter(item => {

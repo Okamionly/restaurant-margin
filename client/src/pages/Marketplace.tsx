@@ -99,7 +99,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 // ── Helper ────────────────────────────────────────────────────────────────────
 
 function getSupplier(id: string): Supplier {
-  return SUPPLIERS.find(s => s.id === id) as Supplier;
+  return SUPPLIERS.find(s => s.id === id) || { id: '', name: 'Inconnu', bio: false, local: false } as Supplier;
 }
 
 function getBestPrice(offers: SupplierOffer[]): number {

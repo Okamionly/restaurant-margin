@@ -333,7 +333,7 @@ export default function WasteTracker() {
     });
     const total = monthEntries.reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
     const target = total * 0.80; // target: 20% reduction
-    return { actual: total, target, percentage: Math.min(100, Math.max(0, ((total - target) / total) * 100)) };
+    return { actual: total, target, percentage: total > 0 ? Math.min(100, Math.max(0, ((total - target) / total) * 100)) : 0 };
   }, [entries]);
 
   // Zero waste score (inverted: lower waste = higher score)

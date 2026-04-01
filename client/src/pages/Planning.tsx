@@ -219,7 +219,7 @@ export default function Planning() {
     return weekShifts.reduce((sum, s) => {
       const emp = employees.find(e => e.id === s.employeeId);
       if (!emp) return sum;
-      return sum + shiftHours(s.start, s.end) * emp.tauxHoraire;
+      return sum + shiftHours(s.start, s.end) * (emp.tauxHoraire ?? 0);
     }, 0);
   }, [weekShifts, employees]);
 
@@ -250,7 +250,7 @@ export default function Planning() {
         .filter(s => s.date === dayStr)
         .reduce((sum, s) => {
           const emp = employees.find(e => e.id === s.employeeId);
-          return sum + (emp ? shiftHours(s.start, s.end) * emp.tauxHoraire : 0);
+          return sum + (emp ? shiftHours(s.start, s.end) * (emp.tauxHoraire ?? 0) : 0);
         }, 0);
     });
   }, [weekDayStrings, shifts, employees]);
@@ -513,7 +513,7 @@ export default function Planning() {
         return dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
       });
       const total = days.reduce((a, b) => a + b, 0);
-      return { emp, days, total, cost: total * emp.tauxHoraire };
+      return { emp, days, total, cost: total * (emp.tauxHoraire ?? 0) };
     });
   }, [employees, weekDayStrings, weekShifts]);
 
@@ -641,7 +641,7 @@ export default function Planning() {
                       <div className={`text-sm font-bold ${isToday ? 'text-indigo-400' : 'text-slate-200'}`}>
                         {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{dayCost.toFixed(0)} EUR</div>
+                      <div className="text-[10px] text-slate-400 mt-0.5">{(dayCost ?? 0).toFixed(0)} EUR</div>
                     </div>
                     {/* Shift zones */}
                     {SHIFT_TYPES.map(st => {
@@ -916,7 +916,7 @@ export default function Planning() {
                   </td>
                 ))}
                 <td className="px-3 py-2.5 text-center text-indigo-400">{totalRow.total}h</td>
-                <td className="px-4 py-2.5 text-right text-indigo-400">{totalRow.cost.toFixed(0)} EUR</td>
+                <td className="px-4 py-2.5 text-right text-indigo-400">{(totalRow.cost ?? 0).toFixed(0)} EUR</td>
                 <td />
               </tr>
               {/* Daily cost row */}
@@ -1241,7 +1241,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
   const totalHours = dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
   const totalCost = dayShifts.reduce((sum, s) => {
     const emp = employees.find(e => e.id === s.employeeId);
-    return sum + (emp ? shiftHours(s.start, s.end) * emp.tauxHoraire : 0);
+    return sum + (emp ? shiftHours(s.start, s.end) * (emp.tauxHoraire ?? 0) : 0);
   }, 0);
 
   // Group by employee for presence

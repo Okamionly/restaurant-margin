@@ -77,6 +77,7 @@ const PolitiqueConfidentialite = lazyRetry(() => import('./pages/PolitiqueConfid
 const CGU = lazyRetry(() => import('./pages/CGU'));
 const Pricing = lazyRetry(() => import('./pages/Pricing'));
 const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
+const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -624,6 +625,7 @@ function App() {
           <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
           <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
           <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
+          <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
           <Route
             path="/station"
             element={

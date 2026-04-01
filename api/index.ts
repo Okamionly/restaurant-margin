@@ -11,7 +11,8 @@ import Anthropic from '@anthropic-ai/sdk';
 const app = express();
 const prisma = new PrismaClient();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'rM$9xK#2pL7vQ!dW4nZ8jF0tY6bA3hU5cE1gI';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');
 
 const TOKEN_EXPIRY = '7d';
 
@@ -22,7 +23,23 @@ app.use(cors({
 // ── Stripe Webhook (must be before express.json() for raw body) ──
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
-    const event = JSON.parse(req.body.toString());
+    const sig = req.headers['stripe-signature'] as string | undefined;
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    let event: any;
+
+    if (endpointSecret && sig) {
+      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      } catch (err: any) {
+        console.error('[STRIPE WEBHOOK] Signature verification failed:', err.message);
+        return res.status(400).send('Webhook signature verification failed');
+      }
+    } else {
+      // Fallback: parse without verification (log warning)
+      console.warn('[STRIPE WEBHOOK] WARNING: No STRIPE_WEBHOOK_SECRET configured, skipping signature verification');
+      event = JSON.parse(req.body.toString());
+    }
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
       const customerEmail = session.customer_details?.email || session.customer_email;
@@ -249,19 +266,24 @@ app.post('/api/auth/register', async (req: any, res) => {
 
     const userCount = await prisma.user.count();
     let plan = 'pro';
+    let trialEndsAt: Date | null = null;
 
     if (userCount > 0) {
       const authHeader = req.headers.authorization;
       const hasAdminToken = authHeader && authHeader.startsWith('Bearer ');
       if (hasAdminToken) {
         try { const d = jwt.verify(authHeader.split(' ')[1], JWT_SECRET) as JwtPayload; if (d.role !== 'admin') return res.status(403).json({ error: 'Admin requis' }); } catch { return res.status(403).json({ error: 'Token invalide' }); }
-      } else {
-        if (!activationCode) return res.status(400).json({ error: "Code d'activation requis. Abonnez-vous sur la page Tarifs." });
+      } else if (activationCode) {
+        // Activation code provided → validate and activate plan
         const activation = await prisma.activationCode.findUnique({ where: { code: activationCode.trim().toUpperCase() } });
         if (!activation) return res.status(403).json({ error: "Code d'activation invalide" });
         if (activation.used) return res.status(403).json({ error: "Ce code a déjà été utilisé" });
         plan = activation.plan;
         await prisma.activationCode.update({ where: { code: activation.code }, data: { used: true, usedBy: email, usedAt: new Date() } });
+      } else {
+        // No activation code → free trial 14 days
+        plan = 'pro';
+        trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
       }
     }
 
@@ -269,7 +291,7 @@ app.post('/api/auth/register', async (req: any, res) => {
     if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
     const passwordHash = await bcrypt.hash(password, 12);
     const role = userCount === 0 ? 'admin' : 'chef';
-    const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan } });
+    const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan, ...(trialEndsAt ? { trialEndsAt } : {}) } });
 
     // Auto-create a default restaurant for the new user
     const restaurant = await prisma.restaurant.create({
@@ -1290,6 +1312,40 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' })
 const aiRateLimit = new Map<number, { count: number; resetAt: number }>();
 const aiRateLimitPerRestaurant = new Map<number, { count: number; resetAt: number }>();
 
+// ── AI Context Cache (TTL 1h per restaurant) ──
+const contextCache = new Map<number, { data: any; expires: number }>();
+const CACHE_TTL = 3600000; // 1 hour
+
+function getCachedContext(restaurantId: number): any | null {
+  const entry = contextCache.get(restaurantId);
+  if (entry && Date.now() < entry.expires) return entry.data;
+  contextCache.delete(restaurantId);
+  return null;
+}
+
+function setCachedContext(restaurantId: number, data: any): void {
+  contextCache.set(restaurantId, { data, expires: Date.now() + CACHE_TTL });
+}
+
+// ── AI Intent Classification ──
+type AiIntent = 'recipe' | 'ingredient' | 'order' | 'planning' | 'haccp' | 'analysis' | 'general';
+
+async function classifyIntent(userMessage: string): Promise<AiIntent> {
+  try {
+    const intentResponse = await anthropic.messages.create({
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 20,
+      messages: [{ role: 'user', content: userMessage }],
+      system: 'Classifie cette demande en UNE catégorie: recipe, ingredient, order, planning, haccp, analysis, general. Réponds UNIQUEMENT le mot.',
+    });
+    const raw = (intentResponse.content[0] as any).text?.trim().toLowerCase() || 'general';
+    const valid: AiIntent[] = ['recipe', 'ingredient', 'order', 'planning', 'haccp', 'analysis', 'general'];
+    return valid.includes(raw as AiIntent) ? (raw as AiIntent) : 'general';
+  } catch {
+    return 'general';
+  }
+}
+
 function checkAiRateLimit(restaurantId: number): boolean {
   const now = Date.now();
   const entry = aiRateLimitPerRestaurant.get(restaurantId);
@@ -1323,189 +1379,133 @@ app.post('/api/ai/chat', authWithRestaurant, async (req: any, res) => {
 
     const restaurantId = req.restaurantId;
 
-    // Build context from restaurant data
+    // ── Step 1: Classify intent with Haiku (fast, cheap) ──
+    const intent = await classifyIntent(message.trim());
+
+    // ── Step 2: Load context based on intent (lazy loading + cache) ──
     const today = new Date().toISOString().slice(0, 10);
-    const [recipes, ingredients, inventory, suppliers, employeeCount, recentOrders, recentSales, recentTemps, recentCleanings, employees] = await Promise.all([
-      prisma.recipe.findMany({ where: { restaurantId }, include: { ingredients: { include: { ingredient: true } } }, take: 50 }),
-      prisma.ingredient.findMany({ where: { restaurantId }, orderBy: { pricePerUnit: 'desc' }, take: 30 }),
-      prisma.inventoryItem.findMany({ where: { restaurantId }, include: { ingredient: true } }),
-      prisma.supplier.findMany({ where: { restaurantId }, take: 20 }),
-      prisma.employee.count({ where: { restaurantId, active: true } }),
-      prisma.marketplaceOrder.count({ where: { restaurantId } }),
-      prisma.menuSale.findMany({ where: { restaurantId }, orderBy: { date: 'desc' }, take: 100 }),
-      prisma.haccpTemperature.findMany({ where: { restaurantId, date: today }, orderBy: { createdAt: 'desc' }, take: 10 }),
-      prisma.haccpCleaning.findMany({ where: { restaurantId, date: today }, take: 20 }),
-      prisma.employee.findMany({ where: { restaurantId, active: true }, take: 30 }),
-    ]);
+    let cached = getCachedContext(restaurantId);
 
-    const recipesSummary = recipes.map(r => {
-      const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
-      const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
-      return `- ${r.name} (id:${r.id}, ${r.category}): vente ${r.sellingPrice}€, coût ${cost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
-    }).join('\n');
+    // Define which data each intent needs
+    const needsRecipes = ['recipe', 'analysis', 'general'].includes(intent);
+    const needsIngredients = ['recipe', 'ingredient', 'order', 'analysis', 'general'].includes(intent);
+    const needsInventory = ['ingredient', 'order'].includes(intent);
+    const needsSuppliers = ['order', 'ingredient'].includes(intent);
+    const needsEmployees = ['planning'].includes(intent);
+    const needsHaccp = ['haccp'].includes(intent);
+    const needsSales = ['analysis'].includes(intent);
 
-    const lowStock = inventory.filter((i: any) => i.currentStock < i.minStock);
-    const stockAlerts = lowStock.length > 0
-      ? lowStock.map((i: any) => `- ${i.ingredient.name} (id:${i.ingredientId}): ${i.currentStock}/${i.minStock} ${i.ingredient.unit}`).join('\n')
-      : 'Aucune alerte';
+    // Fetch only what's needed (or use cache)
+    const recipes = needsRecipes
+      ? (cached?.recipes || await prisma.recipe.findMany({ where: { restaurantId }, include: { ingredients: { include: { ingredient: true } } }, take: 50 }))
+      : [];
+    const ingredients = needsIngredients
+      ? (cached?.ingredients || await prisma.ingredient.findMany({ where: { restaurantId }, orderBy: { pricePerUnit: 'desc' }, take: 30 }))
+      : [];
+    const inventory = needsInventory
+      ? (cached?.inventory || await prisma.inventoryItem.findMany({ where: { restaurantId }, include: { ingredient: true } }))
+      : [];
+    const suppliers = needsSuppliers
+      ? (cached?.suppliers || await prisma.supplier.findMany({ where: { restaurantId }, take: 20 }))
+      : [];
+    const employees = needsEmployees
+      ? (cached?.employees || await prisma.employee.findMany({ where: { restaurantId, active: true }, take: 30 }))
+      : [];
+    const recentTemps = needsHaccp
+      ? await prisma.haccpTemperature.findMany({ where: { restaurantId, date: today }, orderBy: { createdAt: 'desc' }, take: 10 })
+      : [];
+    const recentSales = needsSales
+      ? (cached?.recentSales || await prisma.menuSale.findMany({ where: { restaurantId }, orderBy: { date: 'desc' }, take: 100 }))
+      : [];
 
-    const ingredientsList = ingredients.map((i: any) => `- ${i.name} (id:${i.id}, ${i.unit}, ${i.pricePerUnit}€/${i.unit}, catégorie: ${i.category})`).join('\n');
-    const suppliersList = suppliers.map((s: any) => `- ${s.name} (id:${s.id})`).join('\n');
-    const employeesList = employees.map((e: any) => `- ${e.name} (id:${e.id}, ${e.role}, ${e.hourlyRate}€/h)`).join('\n');
+    // Update cache with fetched data
+    if (!cached) cached = {};
+    if (needsRecipes && recipes.length) cached.recipes = recipes;
+    if (needsIngredients && ingredients.length) cached.ingredients = ingredients;
+    if (needsInventory && inventory.length) cached.inventory = inventory;
+    if (needsSuppliers && suppliers.length) cached.suppliers = suppliers;
+    if (needsEmployees && employees.length) cached.employees = employees;
+    if (needsSales && recentSales.length) cached.recentSales = recentSales;
+    setCachedContext(restaurantId, cached);
 
-    const todayTemps = recentTemps.length > 0
-      ? recentTemps.map((t: any) => `- ${t.zone}: ${t.temperature}°C (${t.status})`).join('\n')
-      : 'Aucun relevé aujourd\'hui';
+    // Build context string only with loaded data
+    const contextParts: string[] = [];
 
-    const context = `STATISTIQUES: ${recipes.length} recettes, ${ingredients.length} ingrédients, ${suppliers.length} fournisseurs, ${employeeCount} employés actifs, ${recentOrders} commandes, ${recentSales.length} ventes récentes.
+    if (recipes.length) {
+      const recipesSummary = recipes.map((r: any) => {
+        const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+        const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
+        return `- ${r.name} (id:${r.id}, ${r.category}): vente ${r.sellingPrice}€, coût ${cost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
+      }).join('\n');
+      contextParts.push(`RECETTES (${recipes.length}):\n${recipesSummary}`);
+    }
 
-RECETTES:\n${recipesSummary || 'Aucune'}
+    if (ingredients.length) {
+      const ingredientsList = ingredients.map((i: any) => `- ${i.name} (id:${i.id}, ${i.unit}, ${i.pricePerUnit}€/${i.unit}, catégorie: ${i.category})`).join('\n');
+      contextParts.push(`INGRÉDIENTS (${ingredients.length}):\n${ingredientsList}`);
+    }
 
-ALERTES STOCK:\n${stockAlerts}
+    if (inventory.length) {
+      const lowStock = inventory.filter((i: any) => i.currentStock < i.minStock);
+      const stockAlerts = lowStock.length > 0
+        ? lowStock.map((i: any) => `- ${i.ingredient.name} (id:${i.ingredientId}): ${i.currentStock}/${i.minStock} ${i.ingredient.unit}`).join('\n')
+        : 'Aucune alerte';
+      contextParts.push(`ALERTES STOCK:\n${stockAlerts}`);
+    }
 
-INGRÉDIENTS (${ingredients.length}):\n${ingredientsList || 'Aucun'}
+    if (suppliers.length) {
+      const suppliersList = suppliers.map((s: any) => `- ${s.name} (id:${s.id})`).join('\n');
+      contextParts.push(`FOURNISSEURS (${suppliers.length}):\n${suppliersList}`);
+    }
 
-FOURNISSEURS (${suppliers.length}):\n${suppliersList || 'Aucun'}
+    if (employees.length) {
+      const employeesList = employees.map((e: any) => `- ${e.name} (id:${e.id}, ${e.role}, ${e.hourlyRate}€/h)`).join('\n');
+      contextParts.push(`EMPLOYÉS (${employees.length}):\n${employeesList}`);
+    }
 
-EMPLOYÉS (${employeeCount}):\n${employeesList || 'Aucun'}
+    if (recentTemps.length) {
+      const todayTemps = recentTemps.map((t: any) => `- ${t.zone}: ${t.temperature}°C (${t.status})`).join('\n');
+      contextParts.push(`RELEVÉS HACCP AUJOURD'HUI:\n${todayTemps}`);
+    }
 
-RELEVÉS HACCP AUJOURD'HUI:\n${todayTemps}`;
+    const context = contextParts.length > 0 ? contextParts.join('\n\n') : 'Aucune donnée chargée pour cette demande.';
 
-    const actionSystemPrompt = `Tu es l'assistant IA RestauMargin, expert en gestion restaurant. Tu peux analyser les données ET AGIR sur le restaurant de l'utilisateur.
+    const actionSystemPrompt = `Tu es l'assistant IA RestauMargin, expert en gestion restaurant. Tu analyses les données et agis via des blocs \`\`\`action JSON.
 
-Quand l'utilisateur te demande de créer, modifier ou supprimer quelque chose, réponds avec un bloc d'action JSON entre des balises \`\`\`action et \`\`\`. Tu peux inclure du texte explicatif avant et après le bloc action.
+ACTIONS (format: {"type":"<type>","data":{...}} entre \`\`\`action et \`\`\`):
+- create_recipe(name, portions, category, sellingPrice, description?, ingredients[{name,quantity,unit,pricePerUnit,category}])
+- update_recipe(recipeId, name?, sellingPrice?, category?, addIngredients?[], removeIngredients?[], updateIngredients?[{name,quantity}])
+- analyze_recipe(recipeId) — calcul food cost détaillé
+- duplicate_recipe(recipeId, newName)
+- add_ingredient(name, unit, pricePerUnit, category, supplier?)
+- update_price(ingredientId|ingredientName, newPrice, reason?)
+- check_stock(ingredientNames[])
+- create_order(supplierName, items[{productName,quantity,unit,unitPrice}])
+- suggest_order(supplierName?) — basé sur stock bas
+- add_supplier(name, phone?, email?, address?, city?, categories?[], contactName?, delivery?, minOrder?, paymentTerms?)
+- compare_suppliers(ingredientName)
+- add_shift(employeeName, date, startTime, endTime, type, notes?)
+- weekly_planning(weekStart, shifts[{employeeName,date,startTime,endTime,type}])
+- margin_analysis() — marges par plat/catégorie
+- best_sellers(period: week|month|quarter)
+- cost_alert() — hausses >5% sur 30j
+- daily_report(date)
+- log_temperature(zone, temperature, recordedBy, notes?)
+- cleaning_checklist(date)
 
-ACTIONS DISPONIBLES :
-
-═══ 1. FICHES TECHNIQUES (recettes) ═══
-
-Créer une fiche technique :
-\`\`\`action
-{"type":"create_recipe","data":{"name":"Nom du plat","portions":4,"category":"Plats","sellingPrice":18.50,"description":"Description optionnelle","ingredients":[{"name":"Ingrédient 1","quantity":0.3,"unit":"kg","pricePerUnit":12.00,"category":"Viandes"},{"name":"Ingrédient 2","quantity":0.1,"unit":"kg","pricePerUnit":3.50,"category":"Légumes"}]}}
-\`\`\`
-
-Modifier une recette existante (ajouter/retirer ingrédients, changer quantités, prix de vente) :
-\`\`\`action
-{"type":"update_recipe","data":{"recipeId":1,"name":"Nouveau nom","sellingPrice":22.00,"category":"Plats","addIngredients":[{"name":"Parmesan","quantity":0.05,"unit":"kg","pricePerUnit":18.00,"category":"Produits laitiers"}],"removeIngredients":["Gruyère"],"updateIngredients":[{"name":"Tomates","quantity":0.4}]}}
-\`\`\`
-
-Analyser le food cost d'une recette :
-\`\`\`action
-{"type":"analyze_recipe","data":{"recipeId":1}}
-\`\`\`
-
-Dupliquer une recette pour créer une variante :
-\`\`\`action
-{"type":"duplicate_recipe","data":{"recipeId":1,"newName":"Variante du plat"}}
-\`\`\`
-
-═══ 2. INGRÉDIENTS ═══
-
-Ajouter un ingrédient :
-\`\`\`action
-{"type":"add_ingredient","data":{"name":"Tomates","unit":"kg","pricePerUnit":2.50,"category":"Légumes","supplier":"Metro"}}
-\`\`\`
-
-Mettre à jour le prix d'un ingrédient :
-\`\`\`action
-{"type":"update_price","data":{"ingredientId":1,"newPrice":3.20,"reason":"Hausse fournisseur"}}
-\`\`\`
-
-Vérifier le stock d'un ou plusieurs ingrédients :
-\`\`\`action
-{"type":"check_stock","data":{"ingredientNames":["Tomates","Poulet","Crème"]}}
-\`\`\`
-
-═══ 3. COMMANDES ═══
-
-Créer une commande fournisseur :
-\`\`\`action
-{"type":"create_order","data":{"supplierName":"Metro","items":[{"productName":"Tomates","quantity":10,"unit":"kg","unitPrice":2.50}]}}
-\`\`\`
-
-Suggérer une commande basée sur le stock bas :
-\`\`\`action
-{"type":"suggest_order","data":{"supplierName":"Metro"}}
-\`\`\`
-
-═══ 4. FOURNISSEURS ═══
-
-Ajouter un fournisseur :
-\`\`\`action
-{"type":"add_supplier","data":{"name":"Metro","phone":"01 23 45 67 89","email":"contact@metro.fr","address":"Zone Industrielle","city":"Paris","categories":["Viandes","Légumes"],"contactName":"Jean Dupont","delivery":true,"minOrder":"150€","paymentTerms":"30 jours"}}
-\`\`\`
-
-Comparer les prix entre fournisseurs pour un ingrédient :
-\`\`\`action
-{"type":"compare_suppliers","data":{"ingredientName":"Poulet"}}
-\`\`\`
-
-═══ 5. PLANNING ═══
-
-Ajouter un shift employé :
-\`\`\`action
-{"type":"add_shift","data":{"employeeName":"Jean Dupont","date":"2026-04-01","startTime":"09:00","endTime":"15:00","type":"Midi","notes":"Service traiteur"}}
-\`\`\`
-
-Générer un planning semaine :
-\`\`\`action
-{"type":"weekly_planning","data":{"weekStart":"2026-04-06","shifts":[{"employeeName":"Jean Dupont","date":"2026-04-06","startTime":"09:00","endTime":"15:00","type":"Midi"},{"employeeName":"Marie Martin","date":"2026-04-06","startTime":"17:00","endTime":"23:00","type":"Soir"}]}}
-\`\`\`
-
-═══ 6. ANALYSE ═══
-
-Analyser les marges par plat/catégorie :
-\`\`\`action
-{"type":"margin_analysis","data":{}}
-\`\`\`
-
-Top plats par vente et marge :
-\`\`\`action
-{"type":"best_sellers","data":{"period":"month"}}
-\`\`\`
-
-Alertes sur les coûts matière en hausse :
-\`\`\`action
-{"type":"cost_alert","data":{}}
-\`\`\`
-
-Rapport quotidien (CA, couverts, coût matière) :
-\`\`\`action
-{"type":"daily_report","data":{"date":"2026-04-01"}}
-\`\`\`
-
-═══ 7. HACCP ═══
-
-Enregistrer une prise de température :
-\`\`\`action
-{"type":"log_temperature","data":{"zone":"Frigo","temperature":3.5,"recordedBy":"Chef","notes":"RAS"}}
-\`\`\`
-
-Générer le checklist nettoyage du jour :
-\`\`\`action
-{"type":"cleaning_checklist","data":{"date":"2026-04-01"}}
-\`\`\`
-
-RÈGLES IMPORTANTES :
-- Utilise des prix réalistes pour la restauration française si l'utilisateur n'en donne pas
-- Les catégories valides pour les recettes : Entrées, Plats, Desserts, Boissons, Accompagnements
-- Les catégories valides pour les ingrédients : Viandes, Poissons, Légumes, Fruits, Produits laitiers, Épicerie sèche, Surgelés, Boissons, Condiments, Boulangerie
-- Les unités valides : kg, g, L, cl, unité, botte, pièce
-- Quand tu crées une recette, inclus TOUJOURS les ingrédients avec quantités et prix
-- Pour les modifications de recettes, utilise les IDs des recettes/ingrédients visibles dans les données
-- Tu peux proposer plusieurs actions dans une même réponse
-- En dehors des actions, réponds normalement en français avec des conseils utiles
-- Sois concis et actionnable (max 400 mots)
-- Pour le planning, les types de shift valides : Matin, Midi, Soir, Coupure
-- Pour HACCP, les zones valides : Frigo, Congélateur, Plats chauds, Réception
-- Pour les températures, détermine le status automatiquement selon les normes HACCP
+RÈGLES : Prix réalistes restauration FR. Catégories recettes: Entrées/Plats/Desserts/Boissons/Accompagnements. Catégories ingrédients: Viandes/Poissons/Légumes/Fruits/Produits laitiers/Épicerie sèche/Surgelés/Boissons/Condiments/Boulangerie. Unités: kg/g/L/cl/unité/botte/pièce. Shifts: Matin/Midi/Soir/Coupure. Zones HACCP: Frigo/Congélateur/Plats chauds/Réception. Toujours inclure ingrédients avec quantités/prix dans create_recipe. Utiliser les IDs visibles dans les données. Concis, max 400 mots, français.
 
 DONNÉES DU RESTAURANT :
 ${context}`;
 
+    // ── Step 3: Choose model + max_tokens based on intent & message length ──
+    const useAdvancedModel = intent === 'analysis' || message.trim().length > 200;
+    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-3-haiku-20240307';
+    const maxTokens = ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
+
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 2048,
+      model: aiModel,
+      max_tokens: maxTokens,
       system: actionSystemPrompt,
       messages: [{ role: 'user', content: message.trim() }],
     });

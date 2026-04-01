@@ -196,8 +196,8 @@ export default function Landing() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link to="/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors px-3 py-2">Connexion</Link>
-            <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-all shadow-lg">
-              Voir les tarifs <ArrowRight className="w-4 h-4" />
+            <Link to="/login?mode=register" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-all shadow-lg">
+              Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -214,7 +214,7 @@ export default function Landing() {
               <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-gray-500 hover:text-gray-900 py-2">FAQ</button>
               <hr className="border-gray-200" />
               <Link to="/login" className="block text-sm text-gray-500 hover:text-gray-900 py-2">Connexion</Link>
-              <Link to="/pricing" className="block w-full text-center px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold">Voir les tarifs</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold">Essai gratuit 14 jours</Link>
             </div>
           </div>
         )}
@@ -254,10 +254,10 @@ export default function Landing() {
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
-                  to="/pricing"
+                  to="/login?mode=register"
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base"
                 >
-                  Voir les tarifs <ArrowRight className="w-4 h-4" />
+                  Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
                 </Link>
                 <button
                   onClick={() => scrollTo('demo')}
@@ -267,7 +267,7 @@ export default function Landing() {
                 </button>
               </div>
               <p className="mt-3 text-sm text-gray-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                <Lock className="w-3.5 h-3.5" /> Paiement securise via Stripe
+                <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise
               </p>
             </div>
 

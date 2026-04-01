@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChefHat, Mail, Lock, User, KeyRound, Shield, ArrowLeft, TrendingUp, Brain } from 'lucide-react';
+import { ChefHat, Mail, Lock, User, ArrowLeft, TrendingUp, Brain, Shield, Clock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { checkFirstUser } from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
@@ -22,8 +22,6 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState('chef');
-  const [activationCode, setInvitationCode] = useState('');
   const [acceptCgu, setAcceptCgu] = useState(false);
 
   useEffect(() => {
@@ -68,12 +66,7 @@ export default function Login() {
     setLoading(true);
     try {
       if (isRegisterMode) {
-        await register({
-          email,
-          password,
-          name,
-          ...(isFirstUser ? {} : { activationCode, role }),
-        });
+        await register({ email, password, name });
       } else {
         await login({ email, password });
       }
@@ -301,41 +294,14 @@ export default function Login() {
                     )}
                   </div>
 
+                  {/* Free trial badge */}
                   {isRegisterMode && !isFirstUser && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-1">{t('login.role')}</label>
-                        <div className="relative">
-                          <Shield className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                          <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          >
-                            <option value="chef">{t('login.roleChef')}</option>
-                            <option value="admin">{t('login.roleAdmin')}</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-1">{t('login.activationCode')}</label>
-                        <div className="relative">
-                          <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                          <input
-                            type="text"
-                            required
-                            value={activationCode}
-                            onChange={(e) => setInvitationCode(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder={t('login.activationCode')}
-                          />
-                        </div>
-                        <p className="text-xs text-slate-400 mt-1">
-                          {t('login.activationHint')}
-                        </p>
-                      </div>
-                    </>
+                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-emerald-900/30 border border-emerald-800">
+                      <Clock className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      <p className="text-sm text-emerald-300">
+                        {t('login.freeTrialBadge')}
+                      </p>
+                    </div>
                   )}
 
                   {/* CGU checkbox - only in register mode */}

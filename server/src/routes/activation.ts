@@ -19,8 +19,8 @@ activationRouter.post('/generate', async (req: Request, res: Response) => {
   try {
     const { plan, stripePaymentId, secret } = req.body;
 
-    // Simple auth: require a secret key or Stripe webhook signature
-    if (secret !== process.env.ACTIVATION_SECRET && secret !== 'admin') {
+    // Auth: require the activation secret (no backdoor)
+    if (!process.env.ACTIVATION_SECRET || secret !== process.env.ACTIVATION_SECRET) {
       return res.status(401).json({ error: 'Non autorisé' });
     }
 
@@ -95,7 +95,7 @@ activationRouter.post('/use', async (req: Request, res: Response) => {
 activationRouter.get('/list', async (req: Request, res: Response) => {
   try {
     const { secret } = req.query;
-    if (secret !== process.env.ACTIVATION_SECRET && secret !== 'admin') {
+    if (!process.env.ACTIVATION_SECRET || secret !== process.env.ACTIVATION_SECRET) {
       return res.status(401).json({ error: 'Non autorisé' });
     }
 

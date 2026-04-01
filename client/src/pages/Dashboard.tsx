@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   TrendingUp, TrendingDown, DollarSign, ChefHat, Eye, Briefcase,
@@ -6,6 +6,7 @@ import {
   Trophy, Target, Calculator, Utensils, BarChart3, ArrowRight, ArrowUpRight, ArrowDownRight,
   Package, ClipboardList, FileText, ShoppingCart,
   Lightbulb, Sparkles, Star, Zap, ArrowDown,
+  Building2, ShoppingBasket, Mic, Check,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -241,6 +242,180 @@ function AlertTicker({ alerts }: { alerts: Recipe[] }) {
           100% { transform: translateX(-50%); }
         }
       `}</style>
+    </div>
+  );
+}
+
+// ── Onboarding Steps ──────────────────────────────────────────────────────
+const ONBOARDING_STEPS = [
+  { id: 'restaurant', label: 'Nommez votre restaurant', icon: Building2, link: '/settings' },
+  { id: 'ingredient', label: 'Ajoutez votre premier ingrédient', icon: ShoppingBasket, link: '/ingredients' },
+  { id: 'recipe', label: 'Créez une recette avec l\'IA', icon: Sparkles, link: '/assistant' },
+  { id: 'voice', label: 'Testez la commande vocale', icon: Mic, link: '/assistant' },
+  { id: 'mercuriale', label: 'Explorez la mercuriale', icon: TrendingUp, link: '/mercuriale' },
+] as const;
+
+const ONBOARDING_STORAGE_KEY = 'onboarding_completed_steps';
+
+function getCompletedSteps(): string[] {
+  try {
+    const raw = localStorage.getItem(ONBOARDING_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveCompletedSteps(steps: string[]) {
+  localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify(steps));
+}
+
+function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, navigate }: {
+  restaurantName: string; ingredientCount: number; recipeCount: number; navigate: (path: string) => void;
+}) {
+  const [completedSteps, setCompletedSteps] = useState<string[]>(getCompletedSteps);
+  const [dismissed, setDismissed] = useState(false);
+
+  // Auto-detect completion of verifiable steps
+  useEffect(() => {
+    const auto: string[] = [];
+    if (restaurantName && restaurantName !== 'Mon Restaurant') auto.push('restaurant');
+    if (ingredientCount > 0) auto.push('ingredient');
+    if (recipeCount > 0) auto.push('recipe');
+
+    const stored = getCompletedSteps();
+    const merged = Array.from(new Set([...stored, ...auto]));
+    if (merged.length !== stored.length || merged.some(s => !stored.includes(s))) {
+      saveCompletedSteps(merged);
+      setCompletedSteps(merged);
+    }
+  }, [restaurantName, ingredientCount, recipeCount]);
+
+  const markDone = useCallback((id: string) => {
+    setCompletedSteps(prev => {
+      if (prev.includes(id)) return prev;
+      const next = [...prev, id];
+      saveCompletedSteps(next);
+      return next;
+    });
+  }, []);
+
+  const progress = Math.round((completedSteps.length / ONBOARDING_STEPS.length) * 100);
+  const allDone = completedSteps.length === ONBOARDING_STEPS.length;
+
+  // Find first incomplete step
+  const currentStepId = ONBOARDING_STEPS.find(s => !completedSteps.includes(s.id))?.id;
+
+  if (dismissed && allDone) return null;
+
+  return (
+    <div className="relative rounded-2xl border border-teal-500/30 bg-white/5 dark:bg-slate-800/40 backdrop-blur-xl shadow-xl shadow-teal-900/5 p-6 overflow-hidden stagger-1">
+      {/* Glassmorphism decorative blobs */}
+      <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-teal-400/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
+
+      {/* Header */}
+      <div className="relative flex items-center justify-between mb-5">
+        <div>
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 font-satoshi">
+            {allDone ? 'Bravo ! Vous êtes prêt 🎉' : 'Premiers pas avec RestauMargin'}
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+            {allDone ? 'Toutes les étapes sont complétées.' : `${completedSteps.length}/${ONBOARDING_STEPS.length} étapes complétées`}
+          </p>
+        </div>
+        {allDone && (
+          <button
+            onClick={() => setDismissed(true)}
+            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+          >
+            Masquer
+          </button>
+        )}
+      </div>
+
+      {/* Progress bar */}
+      <div className="relative h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-6">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 transition-all duration-700 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+          {progress}%
+        </span>
+      </div>
+
+      {/* Steps */}
+      {!allDone && (
+        <div className="space-y-3">
+          {ONBOARDING_STEPS.map((step, i) => {
+            const done = completedSteps.includes(step.id);
+            const isCurrent = step.id === currentStepId;
+            const Icon = step.icon;
+
+            return (
+              <button
+                key={step.id}
+                onClick={() => {
+                  // For voice and mercuriale, mark done on click since they're localStorage flags
+                  if (step.id === 'voice' || step.id === 'mercuriale') markDone(step.id);
+                  navigate(step.link);
+                }}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 text-left group
+                  ${done
+                    ? 'bg-teal-50/50 dark:bg-teal-900/10 border border-teal-200/50 dark:border-teal-800/30'
+                    : isCurrent
+                      ? 'bg-white dark:bg-slate-700/50 border border-teal-400/50 dark:border-teal-500/30 shadow-md shadow-teal-500/10 hover:shadow-lg hover:shadow-teal-500/15'
+                      : 'bg-slate-50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/30 opacity-60 hover:opacity-80'
+                  }`}
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                {/* Circle indicator */}
+                <div className={`relative flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300
+                  ${done
+                    ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30'
+                    : isCurrent
+                      ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 ring-2 ring-teal-400/50'
+                      : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
+                  }`}>
+                  {done ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Icon className="w-4 h-4" />
+                  )}
+                  {isCurrent && !done && (
+                    <span className="absolute inset-0 rounded-full animate-ping bg-teal-400/30" />
+                  )}
+                </div>
+
+                {/* Label */}
+                <span className={`text-sm font-medium transition-colors
+                  ${done
+                    ? 'text-teal-700 dark:text-teal-300 line-through decoration-teal-400/40'
+                    : isCurrent
+                      ? 'text-slate-800 dark:text-slate-100'
+                      : 'text-slate-500 dark:text-slate-400'
+                  }`}>
+                  {step.label}
+                </span>
+
+                {/* Arrow for current */}
+                {isCurrent && !done && (
+                  <ArrowRight className="w-4 h-4 ml-auto text-teal-500 group-hover:translate-x-1 transition-transform" />
+                )}
+            </button>
+          );
+        })}
+      </div>
+    )}
+
+      {/* Celebration message when all done */}
+      {allDone && (
+        <div className="flex items-center gap-3 mt-2 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200/50 dark:border-teal-800/30">
+          <Trophy className="w-5 h-5 text-amber-500 flex-shrink-0" />
+          <p className="text-sm text-teal-700 dark:text-teal-300">
+            Votre restaurant est configuré. Explorez maintenant vos marges et optimisez votre carte !
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -555,14 +730,26 @@ export default function Dashboard() {
     );
   }
 
-  // ── Empty state ────────────────────────────────────────────────────────
+  // ── Empty state with onboarding ─────────────────────────────────────────
   if (!stats || stats.totalRecipes === 0) {
     return (
-      <div>
-        <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight mb-6"><span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span></h2>
-        <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
+      <div className="space-y-6">
+        <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight">
+          <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
+        </h2>
+
+        {/* Onboarding Checklist */}
+        <OnboardingChecklist
+          restaurantName={selectedRestaurant?.name || ''}
+          ingredientCount={ingredients.length}
+          recipeCount={recipes.length}
+          navigate={navigate}
+        />
+
+        {/* Original empty state card below */}
+        <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+          <ChefHat className="w-14 h-14 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+          <h3 className="text-lg font-semibold text-slate-300 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
           <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
           <div className="flex gap-4 justify-center">
             <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
@@ -620,6 +807,14 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
+
+      {/* ── Onboarding (shown until all steps complete) ──────────────── */}
+      <OnboardingChecklist
+        restaurantName={selectedRestaurant?.name || ''}
+        ingredientCount={ingredients.length}
+        recipeCount={recipes.length}
+        navigate={navigate}
+      />
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 stagger-2">

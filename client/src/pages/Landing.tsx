@@ -165,8 +165,6 @@ export default function Landing() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const [activeDesign, setActiveDesign] = useState(0);
-
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setContactLoading(true);
@@ -196,80 +194,11 @@ export default function Landing() {
     }
   };
 
-  const DESIGNS = [
-    {
-      id: 0, name: 'Obsidian Pro', font: "'Sora', sans-serif",
-      hero: 'bg-gradient-to-br from-gray-950 via-slate-900 to-black',
-      accent: 'text-blue-400', btn: 'bg-blue-600 hover:bg-blue-500',
-      nav: 'bg-black/80 backdrop-blur-xl border-b border-white/5',
-      badge: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-      tag: 'Inspiré Toast POS',
-    },
-    {
-      id: 1, name: 'Arctic Clean', font: "'DM Sans', sans-serif",
-      hero: 'bg-gradient-to-br from-slate-50 via-white to-blue-50',
-      accent: 'text-blue-600', btn: 'bg-blue-600 hover:bg-blue-700',
-      nav: 'bg-white/90 backdrop-blur-xl border-b border-slate-200',
-      badge: 'bg-blue-50 text-blue-700 border border-blue-200',
-      tag: 'Inspiré Lightspeed',
-      light: true,
-    },
-    {
-      id: 2, name: 'Midnight Neon', font: "'Manrope', sans-serif",
-      hero: 'bg-[#080C14]',
-      accent: 'text-cyan-400', btn: 'bg-cyan-500 hover:bg-cyan-400',
-      nav: 'bg-[#080C14]/95 backdrop-blur-xl border-b border-cyan-500/10',
-      badge: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
-      tag: 'Inspiré Linear',
-    },
-    {
-      id: 3, name: 'Ivory Minimal', font: "'Outfit', sans-serif",
-      hero: 'bg-gradient-to-b from-zinc-900 to-zinc-950',
-      accent: 'text-amber-400', btn: 'bg-amber-500 hover:bg-amber-400',
-      nav: 'bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-700',
-      badge: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-      tag: 'Inspiré Square',
-    },
-    {
-      id: 4, name: 'Pure Black', font: "'Plus Jakarta Sans', sans-serif",
-      hero: 'bg-black',
-      accent: 'text-white', btn: 'bg-white text-black hover:bg-gray-100',
-      nav: 'bg-black/95 backdrop-blur-xl border-b border-white/10',
-      badge: 'bg-white/5 text-white border border-white/10',
-      tag: 'Inspiré Vercel',
-    },
-    {
-      id: 5, name: 'Indigo Glass', font: "'Inter', sans-serif",
-      hero: 'bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950',
-      accent: 'text-violet-400', btn: 'bg-violet-600 hover:bg-violet-500',
-      nav: 'bg-indigo-950/80 backdrop-blur-xl border-b border-violet-500/10',
-      badge: 'bg-violet-500/10 text-violet-400 border border-violet-500/20',
-      tag: 'Inspiré Figma',
-    },
-    {
-      id: 6, name: 'Forest Pro', font: "'Sora', sans-serif",
-      hero: 'bg-gradient-to-br from-emerald-950 via-slate-900 to-gray-950',
-      accent: 'text-emerald-400', btn: 'bg-emerald-500 hover:bg-emerald-400',
-      nav: 'bg-slate-950/90 backdrop-blur-xl border-b border-emerald-500/10',
-      badge: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-      tag: 'Inspiré Stripe',
-    },
-    {
-      id: 7, name: 'Rose Elite', font: "'DM Sans', sans-serif",
-      hero: 'bg-gradient-to-br from-rose-950 via-slate-900 to-gray-950',
-      accent: 'text-rose-400', btn: 'bg-rose-500 hover:bg-rose-400',
-      nav: 'bg-slate-950/90 backdrop-blur-xl border-b border-rose-500/10',
-      badge: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
-      tag: 'Inspiré Notion',
-    },
-  ];
-  const d = DESIGNS[activeDesign];
-
   return (
-    <div style={{ fontFamily: d.font }} className={`min-h-screen ${d.hero} text-slate-900 overflow-x-hidden scroll-smooth`}>
+    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden scroll-smooth">
 
       {/* ═══════════════════ NAVBAR ═══════════════════ */}
-      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? d.nav + ' shadow-sm' : 'bg-transparent'}`}>
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-700/25">
@@ -329,7 +258,7 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
-              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 tracking-wide animate-pulse ${d.badge}`}>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.08)] animate-pulse">
                 <Zap className="w-3.5 h-3.5" />
                 PLATEFORME #1 DES RESTAURATEURS
               </div>
@@ -338,7 +267,7 @@ export default function Landing() {
                 <span className="text-slate-900">Maitrisez vos marges.</span>
                 <br />
                 <span className="text-slate-900">Augmentez vos </span>
-                <span className={`${d.accent} drop-shadow-[0_0_30px_rgba(59,130,246,0.2)]`}>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.2)]">
                   profits.
                 </span>
               </h1>
@@ -350,7 +279,7 @@ export default function Landing() {
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
                   to="/pricing"
-                  className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-semibold shadow-lg transition-all text-base ${d.btn}`}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:from-blue-500 hover:to-purple-500 transition-all text-base"
                 >
                   Voir les tarifs <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -1001,35 +930,6 @@ export default function Landing() {
           </div>
         </div>
       </footer>
-
-      {/* Design Switcher - Floating */}
-      <div className="fixed bottom-6 right-6 z-50 group">
-        <div className="flex flex-col items-end gap-2">
-          {/* Designs panel (visible on hover) */}
-          <div className="hidden group-hover:flex flex-col gap-1.5 bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-2xl p-3 shadow-2xl max-h-80 overflow-y-auto">
-            {DESIGNS.map((design, idx) => (
-              <button
-                key={design.id}
-                onClick={() => setActiveDesign(idx)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-all text-xs font-medium whitespace-nowrap ${
-                  activeDesign === idx
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-800'
-                }`}
-              >
-                <span className="w-3 h-3 rounded-full bg-current opacity-70 flex-shrink-0" />
-                <span>{design.name}</span>
-                <span className="text-[10px] opacity-60 ml-1">{design.tag}</span>
-              </button>
-            ))}
-          </div>
-          {/* Toggle button */}
-          <button className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-700 shadow-xl flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-500 transition-all">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-4" /></svg>
-          </button>
-        </div>
-      </div>
-
     </div>
   );
 }

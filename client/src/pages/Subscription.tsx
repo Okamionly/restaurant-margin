@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
-  Crown, Star, Zap, Check, X, ChevronDown, CreditCard,
-  Shield, Smartphone, Package, Rocket, Building2, Scale,
+  Crown, Zap, Check, X, ChevronDown,
+  Rocket, Building2,
   HelpCircle, ArrowRight, Sparkles,
 } from 'lucide-react';
 
@@ -92,9 +92,9 @@ const FAQ_ITEMS: FAQItem[] = [
       'Le scanner OCR vous permet de photographier vos factures fournisseurs. L\'intelligence artificielle extrait automatiquement les prix, quantités et références pour mettre à jour votre mercuriale et vos coûts ingrédients en temps réel.',
   },
   {
-    question: 'Le kit balance est-il compatible avec mon installation ?',
+    question: 'Puis-je utiliser une balance connectee ?',
     answer:
-      'Le kit Station Balance fonctionne avec une connexion Wi-Fi standard. La tablette Samsung Tab A9+ et la balance Bluetooth sont pré-configurées. Notre équipe assure l\'installation et la formation sur site.',
+      'Oui, RestauMargin propose une station de pesee logicielle compatible avec toute balance Bluetooth. Connectez votre propre balance et pesez vos ingredients directement depuis l\'application.',
   },
 ];
 
@@ -300,68 +300,6 @@ export default function Subscription() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* ── Kit Station Balance ────────────────────────────────────────── */}
-        <div className="mt-16">
-          <div className="relative rounded-2xl border-2 border-amber-300 dark:border-amber-600 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 overflow-hidden shadow-lg">
-            {/* Decorative */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-amber-200/30 to-transparent rounded-bl-full pointer-events-none" />
-
-            <div className="relative p-8 lg:p-10">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-                {/* Left content */}
-                <div className="flex-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-800/50 text-amber-700 dark:text-amber-300 text-xs font-bold mb-4">
-                    <Scale className="w-3.5 h-3.5" />
-                    MATÉRIEL PROFESSIONNEL
-                  </div>
-                  <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-                    Kit Station Balance
-                  </h3>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-lg">
-                    La solution tout-en-un pour peser, calculer et optimiser vos recettes
-                    directement en cuisine.
-                  </p>
-
-                  <div className="mt-6 flex items-baseline gap-2">
-                    <span className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">
-                      Bientôt disponible
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 font-medium">
-                    Plan Pro inclus — Prix et date à venir
-                  </p>
-
-                  <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      { icon: <Smartphone className="w-4 h-4" />, text: 'Tablette Samsung Tab A9+' },
-                      { icon: <Scale className="w-4 h-4" />, text: 'Balance connectée Bluetooth' },
-                      { icon: <Shield className="w-4 h-4" />, text: 'Boîtier inox professionnel' },
-                      { icon: <Star className="w-4 h-4" />, text: 'Installation et formation' },
-                    ].map((item, i) => (
-                      <li key={i} className="flex items-center gap-2.5">
-                        <span className="flex-shrink-0 p-1 rounded-lg bg-amber-100 dark:bg-amber-800/40 text-amber-600 dark:text-amber-400">
-                          {item.icon}
-                        </span>
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          {item.text}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Right CTA */}
-                <div className="flex-shrink-0">
-                  <button disabled className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500/50 to-orange-500/50 text-white/70 font-bold rounded-xl shadow-lg text-lg cursor-not-allowed">
-                    <CreditCard className="w-5 h-5" />
-                    Bientôt disponible
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* ── Feature Comparison Table ───────────────────────────────────── */}

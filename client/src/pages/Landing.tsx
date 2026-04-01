@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import {
   ChefHat, ClipboardList, Truck, BarChart3,
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
-  Package, Users, Menu, X as XIcon, Shield, Lock, Mail,
-  Scale, Tablet, Bluetooth, ChevronDown, Phone, Send, Loader2,
+  Users, Menu, X as XIcon, Shield, Lock, Mail,
+  Scale, ChevronDown, Phone, Send, Loader2,
   XCircle, Brain, Thermometer, Palette,
 } from 'lucide-react';
 
@@ -267,8 +267,8 @@ const faqItems = [
     a: 'Oui, vous pouvez upgrader ou downgrader votre plan a tout moment. Le changement prend effet au prochain cycle de facturation. Le prorata est calcule automatiquement.',
   },
   {
-    q: 'Le Kit Station est-il obligatoire ?',
-    a: 'Non. Le Kit Station est un accessoire optionnel pour les cuisines qui veulent la pesee connectee en temps reel. L\'application RestauMargin fonctionne parfaitement seule sur smartphone, tablette ou ordinateur.',
+    q: 'Puis-je utiliser une balance connectee ?',
+    a: 'Oui. RestauMargin propose une station de pesee logicielle compatible avec toute balance Bluetooth. Connectez votre propre balance et pesez vos ingredients directement depuis l\'application.',
   },
   {
     q: 'Mes donnees sont-elles securisees ?',
@@ -366,7 +366,6 @@ export default function Landing() {
 
           <div className="hidden md:flex items-center gap-8">
             <button onClick={() => scrollTo('features')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>Fonctionnalites</button>
-            <button onClick={() => scrollTo('station')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>Kit Station</button>
             <button onClick={() => scrollTo('pricing')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>Tarifs</button>
             <button onClick={() => scrollTo('faq')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>FAQ</button>
           </div>
@@ -387,7 +386,6 @@ export default function Landing() {
           <div className={`md:hidden ${d.light ? 'bg-white/95 border-t border-slate-200' : 'bg-black/95 border-t border-white/10'} backdrop-blur-xl shadow-lg`}>
             <div className="px-4 py-4 space-y-3">
               <button onClick={() => scrollTo('features')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>Fonctionnalites</button>
-              <button onClick={() => scrollTo('station')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>Kit Station</button>
               <button onClick={() => scrollTo('pricing')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>Tarifs</button>
               <button onClick={() => scrollTo('faq')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>FAQ</button>
               <hr className={d.light ? 'border-slate-200' : 'border-white/10'} />
@@ -646,9 +644,9 @@ export default function Landing() {
                   <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:bg-emerald-500/20 transition">
                     <Scale className="w-7 h-7 text-emerald-400" />
                   </div>
-                  <h3 className={`text-xl font-bold mb-3 ${d.tp}`}>Kit Station Balance + Tablette</h3>
+                  <h3 className={`text-xl font-bold mb-3 ${d.tp}`}>Station de pesee connectee</h3>
                   <p className={`${d.ts} leading-relaxed max-w-lg`}>
-                    Pesez, calculez, maitrisez en temps reel. La premiere station de pesee connectee concue pour la restauration. Balance integree 5kg + tablette 11" + logiciel de gestion des marges.
+                    Pesez, calculez, maitrisez en temps reel. Connectez votre balance Bluetooth et suivez vos marges en direct pendant la preparation.
                   </p>
                 </div>
               </div>
@@ -701,94 +699,56 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══════════════════ 6. KIT STATION ═══════════════════ */}
-      <section id="station" className={`py-20 sm:py-28 ${d.sectionAlt}`}>
+      {/* ═══════════════════ 6. INTEGRATIONS ═══════════════════ */}
+      <section id="integrations" className={`py-20 sm:py-28 ${d.sectionAlt}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left — Content */}
-            <FadeIn>
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
-                  <Package className="w-3.5 h-3.5" /> Produit physique
-                </div>
-                <h2 className={`text-3xl sm:text-4xl font-extrabold leading-tight mb-6 ${d.tp}`}>
-                  Kit Station —{' '}
-                  <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>
-                    Balance connectee + Tablette
-                  </span>
-                </h2>
-                <p className={`text-lg ${d.ts} mb-8`}>
-                  Le support EST la balance. Plateau inox alimentaire, bras solidaire, moule silicone pour glisser la tablette. Un seul produit, zero cable.
-                </p>
+          <FadeIn>
+            <div className="text-center mb-16">
+              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Compatibilite</p>
+              <h2 className={`text-3xl sm:text-4xl font-extrabold leading-tight ${d.tp}`}>
+                Compatible avec vos{' '}
+                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>
+                  logiciels de caisse
+                </span>
+              </h2>
+              <p className={`mt-4 text-lg ${d.ts} max-w-2xl mx-auto`}>
+                RestauMargin se connecte a vos outils existants pour centraliser toutes vos donnees de vente et simplifier votre gestion.
+              </p>
+            </div>
+          </FadeIn>
 
-                <div className="space-y-4 mb-8">
-                  {[
-                    'Pesee BLE 5kg, precision 0.5g',
-                    'Tablette 11" Samsung Galaxy Tab A9+',
-                    'Fiches techniques auto-remplies',
-                    'Marges en direct pendant la preparation',
-                    'IP54 resistant aux eclaboussures',
-                    '8h d\'autonomie batterie USB-C',
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
-                      <span className={`text-sm ${d.ts}`}>{item}</span>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              { name: 'Lightspeed', desc: 'Synchronisation des ventes et du catalogue produits' },
+              { name: 'Square', desc: 'Import automatique des transactions et articles' },
+              { name: 'SumUp', desc: 'Connexion directe avec votre terminal de paiement' },
+              { name: 'Zelty', desc: 'Integration native avec votre caisse Zelty' },
+              { name: 'Tiller', desc: 'Remontee des donnees de vente en temps reel' },
+              { name: 'L\'Addition', desc: 'Compatibilite complete avec votre ecosysteme' },
+            ].map((pos, i) => (
+              <FadeIn key={pos.name} delay={i * 80}>
+                <div className={`group ${d.cardBg} shadow-sm rounded-2xl p-6 h-full hover:border-blue-400/30 transition-all duration-300`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition">
+                      <Zap className="w-5 h-5 text-blue-400" />
                     </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => scrollTo('contact')}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-emerald-500 text-white font-semibold hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/25 text-base"
-                >
-                  Commander le Kit — 1 200 euros HT <ArrowRight className="w-4 h-4" />
-                </button>
-
-                <div className="flex flex-wrap gap-3 mt-6">
-                  {['Balance 5kg', 'BLE 5.0', 'Inox 304L'].map((badge) => (
-                    <span key={badge} className={`px-3 py-1.5 ${d.tag} rounded-full text-xs font-medium border`}>
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Right — Product image */}
-            <FadeIn delay={200}>
-              <div className="relative">
-                <div className={`absolute inset-0 bg-gradient-to-br ${d.light ? 'from-emerald-500/[0.07] to-blue-500/[0.07]' : 'from-emerald-500/[0.12] to-blue-500/[0.12]'} rounded-3xl blur-2xl`} />
-                <div className={`relative ${d.cardBg} rounded-3xl p-8 shadow-lg`}>
-                  <video
-                    src="/images/hero/station-demo.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-auto rounded-2xl"
-                    poster="/images/hero/hero-1.webp"
-                  />
-                  <div className="grid grid-cols-3 gap-3 mt-6 text-center">
-                    <div className={`p-3 ${d.light ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'} border rounded-xl`}>
-                      <Scale className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
-                      <div className={`text-xs ${d.ts}`}>Capacite</div>
-                      <div className={`text-sm font-semibold ${d.tp}`}>5 kg</div>
-                    </div>
-                    <div className={`p-3 ${d.light ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'} border rounded-xl`}>
-                      <Bluetooth className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                      <div className={`text-xs ${d.ts}`}>Connexion</div>
-                      <div className={`text-sm font-semibold ${d.tp}`}>BLE 5.0</div>
-                    </div>
-                    <div className={`p-3 ${d.light ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'} border rounded-xl`}>
-                      <Tablet className="w-5 h-5 text-purple-400 mx-auto mb-1" />
-                      <div className={`text-xs ${d.ts}`}>Ecran</div>
-                      <div className={`text-sm font-semibold ${d.tp}`}>11" FHD</div>
-                    </div>
+                    <h3 className={`text-lg font-bold ${d.tp}`}>{pos.name}</h3>
                   </div>
+                  <p className={`text-sm ${d.ts} leading-relaxed`}>{pos.desc}</p>
                 </div>
-              </div>
-            </FadeIn>
+              </FadeIn>
+            ))}
           </div>
+
+          <FadeIn delay={500}>
+            <p className={`text-center mt-10 text-sm ${d.ts}`}>
+              Vous utilisez un autre logiciel ?{' '}
+              <button onClick={() => scrollTo('contact')} className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-2 transition-colors">
+                Contactez-nous
+              </button>{' '}
+              pour verifier la compatibilite.
+            </p>
+          </FadeIn>
         </div>
       </section>
 
@@ -1046,7 +1006,7 @@ export default function Landing() {
               <ul className={`space-y-2.5 text-sm ${d.ts}`}>
                 <li><button onClick={() => scrollTo('features')} className={`${d.th} transition-colors`}>Fonctionnalites</button></li>
                 <li><Link to="/pricing" className={`${d.th} transition-colors`}>Tarifs</Link></li>
-                <li><Link to="/station-produit" className={`${d.th} transition-colors`}>Kit Station</Link></li>
+                <li><button onClick={() => scrollTo('integrations')} className={`${d.th} transition-colors`}>Integrations</button></li>
                 <li><button onClick={() => scrollTo('faq')} className={`${d.th} transition-colors`}>FAQ</button></li>
               </ul>
             </div>

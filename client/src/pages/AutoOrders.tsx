@@ -3,7 +3,7 @@ import {
   ShoppingCart, Truck, Package, Send, FileText, Check, Trash2,
   Plus, Loader2, Euro, ChevronDown, ChevronUp,
   Clock, X, Mail, Copy, CopyPlus, Filter, Edit3,
-  AlertTriangle, Zap, History,
+  AlertTriangle, Zap, History, RefreshCw, CheckCircle2, CircleDot,
 } from 'lucide-react';
 import { fetchIngredients, fetchSuppliers, fetchInventoryAlerts } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
@@ -106,10 +106,36 @@ function apiOrderToLocal(apiOrder: ApiOrder): Order {
   };
 }
 
-const STATUS_BADGE: Record<OrderStatus, { bg: string; label: string }> = {
-  brouillon: { bg: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300', label: 'Brouillon' },
-  'envoyé': { bg: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300', label: 'Envoyé' },
-  'reçu': { bg: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300', label: 'Reçu' },
+// ── Status config ─────────────────────────────────────────────────────────────
+
+const STATUS_CONFIG: Record<OrderStatus, {
+  badge: string;
+  dot: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  step: number;
+}> = {
+  brouillon: {
+    badge: 'bg-slate-700 text-slate-300 border border-slate-600',
+    dot: 'bg-slate-500',
+    label: 'Brouillon',
+    icon: Clock,
+    step: 0,
+  },
+  'envoyé': {
+    badge: 'bg-blue-500/20 text-blue-300 border border-blue-500/40',
+    dot: 'bg-blue-500',
+    label: 'Envoyé',
+    icon: Send,
+    step: 1,
+  },
+  'reçu': {
+    badge: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40',
+    dot: 'bg-emerald-500',
+    label: 'Livré',
+    icon: CheckCircle2,
+    step: 2,
+  },
 };
 
 function fmtEuro(n: number) {
@@ -129,12 +155,67 @@ function calcTotals(lines: OrderLine[]) {
   return { totalHT, tva, totalTTC: totalHT + tva };
 }
 
-// (mock data removed — starts empty, loaded from API)
-
-// ── empty form line ─────────────────────────────────────────────────────────
-
 function emptyLine(): OrderLine {
   return { id: nextLineId++, ingredientId: null, name: '', quantity: 1, unit: 'kg', pricePerUnit: 0, total: 0 };
+}
+
+// ── Timeline component ────────────────────────────────────────────────────────
+
+function OrderTimeline({ status, date }: { status: OrderStatus; date: string }) {
+  const steps: { key: OrderStatus; label: string; sublabel: string }[] = [
+    { key: 'brouillon', label: 'Brouillon', sublabel: 'Commande créée' },
+    { key: 'envoyé', label: 'Envoyé', sublabel: 'Envoyé au fournisseur' },
+    { key: 'reçu', label: 'Livré', sublabel: 'Marchandise reçue' },
+  ];
+  const currentStep = STATUS_CONFIG[status].step;
+
+  return (
+    <div className="mt-4 px-2">
+      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Suivi de livraison</p>
+      <div className="flex items-start gap-0">
+        {steps.map((step, idx) => {
+          const cfg = STATUS_CONFIG[step.key];
+          const done = idx <= currentStep;
+          const active = idx === currentStep;
+          const isLast = idx === steps.length - 1;
+          return (
+            <div key={step.key} className="flex-1 flex flex-col items-center relative">
+              {/* Connector line */}
+              {!isLast && (
+                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${done && idx < currentStep ? 'bg-blue-500' : 'bg-slate-700'}`} />
+              )}
+              {/* Circle */}
+              <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all ${
+                done
+                  ? active
+                    ? 'border-blue-500 bg-blue-500/20'
+                    : 'border-emerald-500 bg-emerald-500/20'
+                  : 'border-slate-700 bg-slate-800'
+              }`}>
+                {done && !active ? (
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                ) : active ? (
+                  <CircleDot className="w-3.5 h-3.5 text-blue-400" />
+                ) : (
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                )}
+              </div>
+              {/* Labels */}
+              <div className="mt-2 text-center">
+                <p className={`text-xs font-semibold ${active ? 'text-blue-400' : done ? 'text-emerald-400' : 'text-slate-600'}`}>
+                  {step.label}
+                </p>
+                <p className="text-[10px] text-slate-600 mt-0.5">{step.sublabel}</p>
+                {active && (
+                  <p className="text-[10px] text-slate-500 mt-0.5">{fmtDate(date)}</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 // ── component ────────────────────────────────────────────────────────────────
@@ -174,6 +255,7 @@ export default function AutoOrders() {
   const [showAutoReviewModal, setShowAutoReviewModal] = useState(false);
   const [autoGeneratedOrders, setAutoGeneratedOrders] = useState<Order[]>([]);
   const [sendingEmail, setSendingEmail] = useState<number | null>(null);
+  const [relancingId, setRelancingId] = useState<number | null>(null);
 
   // Tabs: commandes vs historique
   const [activeTab, setActiveTab] = useState<'commandes' | 'historique'>('commandes');
@@ -188,7 +270,6 @@ export default function AutoOrders() {
       setIngredients(ings);
       setSuppliers(supps);
 
-      // Fetch orders from backend
       try {
         const ordersRes = await fetch('/api/marketplace/orders', {
           headers: autoOrdersAuthHeaders(),
@@ -201,13 +282,12 @@ export default function AutoOrders() {
         // Orders fetch is non-fatal; start with empty list
       }
 
-      // Fetch inventory alerts for auto-reorder
       try {
         const alerts = await fetchInventoryAlerts();
         const low = alerts.filter((item) => item.currentStock < item.minStock);
         setLowStockItems(low);
       } catch {
-        // Inventory alerts are optional, don't block the page
+        // Inventory alerts are optional
       }
     } catch {
       showToast('Erreur lors du chargement des données', 'error');
@@ -329,7 +409,6 @@ export default function AutoOrders() {
     };
 
     if (editingOrderId && existing?.dbId) {
-      // Existing DB order: only update notes via PUT (status+notes only endpoint)
       try {
         await fetch(`/api/marketplace/orders/${existing.dbId}`, {
           method: 'PUT',
@@ -337,16 +416,14 @@ export default function AutoOrders() {
           body: JSON.stringify({ notes: formNotes }),
         });
       } catch {
-        // Non-fatal: local state still updated
+        // Non-fatal
       }
       setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
       showToast('Commande modifiée avec succès', 'success');
     } else if (editingOrderId) {
-      // Local-only draft (no dbId yet) — just update locally
       setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
       showToast('Commande modifiée avec succès', 'success');
     } else {
-      // New order: POST to backend
       try {
         const res = await fetch('/api/marketplace/orders', {
           method: 'POST',
@@ -367,7 +444,6 @@ export default function AutoOrders() {
           const fromApi = apiOrderToLocal(created);
           setOrders((prev) => [fromApi, ...prev]);
         } else {
-          // Fallback: add locally with temp id
           setOrders((prev) => [orderData, ...prev]);
         }
       } catch {
@@ -439,6 +515,62 @@ export default function AutoOrders() {
     showToast(`Commande dupliquée pour ${order.supplierName}`, 'success');
   }
 
+  // ── Relancer fournisseur ───────────────────────────────────────────────────
+
+  async function handleRelanceFournisseur(order: Order) {
+    setRelancingId(order.id);
+    try {
+      const supplier = suppliers.find((s) => s.id === order.supplierId);
+      const supplierEmail = supplier?.email || '';
+      if (!supplierEmail) {
+        showToast('Email fournisseur manquant — ajoutez-le dans la fiche fournisseur', 'error');
+        setRelancingId(null);
+        return;
+      }
+
+      const subject = `RELANCE — Commande RestauMargin - ${order.supplierName} - ${fmtDate(order.date)}`;
+      const body = [
+        `Bonjour,`,
+        ``,
+        `Nous revenons vers vous concernant la commande envoyée le ${fmtDate(order.date)}.`,
+        ``,
+        `À ce jour, nous n'avons pas encore reçu la marchandise ou de confirmation de livraison.`,
+        `Pourriez-vous nous tenir informés de l'état d'avancement de cette commande ?`,
+        ``,
+        `--- Rappel de la commande ---`,
+        ``,
+        ...order.lines.map((l) => `- ${l.name} : ${l.quantity} ${l.unit}`),
+        ``,
+        `Total HT : ${fmtEuro(order.totalHT)}`,
+        ``,
+        `Merci de votre retour rapide.`,
+        ``,
+        `Cordialement,`,
+        `RestauMargin`,
+      ].join('\n');
+
+      const res = await fetch('/api/orders/send-email', {
+        method: 'POST',
+        headers: autoOrdersAuthHeaders(),
+        body: JSON.stringify({
+          supplierName: order.supplierName,
+          supplierEmail,
+          subject,
+          orderLines: order.lines.map((l) => ({ name: l.name, quantity: l.quantity, unit: l.unit, total: l.total })),
+          totalHT: order.totalHT,
+          notes: `RELANCE — ${order.notes}`,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Erreur envoi relance');
+      showToast(`Relance envoyée à ${supplierEmail}`, 'success');
+    } catch {
+      showToast('Erreur lors de l\'envoi de la relance', 'error');
+    } finally {
+      setRelancingId(null);
+    }
+  }
+
   // ── email helpers ──────────────────────────────────────────────────────────
 
   function buildEmailBody(order: Order): string {
@@ -483,7 +615,6 @@ export default function AutoOrders() {
     setEmailOrder(order);
   }
 
-
   function handleCopyToClipboard() {
     if (!emailOrder) return;
     const text = `Objet : ${buildEmailSubject(emailOrder)}\n\n${buildEmailBody(emailOrder)}`;
@@ -497,7 +628,6 @@ export default function AutoOrders() {
   // ── auto-reorder ───────────────────────────────────────────────────────────
 
   function generateAutoOrders() {
-    // Group low-stock items by supplier
     const bySupplier = new Map<string, { supplierId: number | null; supplierName: string; items: InventoryItem[] }>();
 
     lowStockItems.forEach((item) => {
@@ -510,7 +640,6 @@ export default function AutoOrders() {
       bySupplier.get(key)!.items.push(item);
     });
 
-    // Create draft orders for each supplier
     const generatedOrders: Order[] = [];
     bySupplier.forEach(({ supplierId, supplierName, items }) => {
       const lines: OrderLine[] = items.map((item) => {
@@ -545,14 +674,12 @@ export default function AutoOrders() {
   }
 
   async function confirmAutoOrders() {
-    // Optimistically add all generated orders to local state
     setOrders((prev) => [...autoGeneratedOrders, ...prev]);
     setShowAutoReviewModal(false);
     setAutoGeneratedOrders([]);
     setLowStockItems([]);
     showToast(`${autoGeneratedOrders.length} commande(s) auto-générée(s) en brouillon`, 'success');
 
-    // POST each to backend, replacing local temp entries with DB-returned ones on success
     for (const order of autoGeneratedOrders) {
       try {
         const res = await fetch('/api/marketplace/orders', {
@@ -572,18 +699,15 @@ export default function AutoOrders() {
         if (res.ok) {
           const created: ApiOrder = await res.json();
           const fromApi = apiOrderToLocal(created);
-          // Replace the local temp order (matched by supplierName+date proximity) with the DB one
           setOrders((prev) =>
             prev.map((o) => (o.id === order.id ? fromApi : o)),
           );
         }
       } catch {
-        // Non-fatal: order already in local state
+        // Non-fatal
       }
     }
   }
-
-  // ── send order email to supplier via /api/orders/send-email ──────────────
 
   async function handleSendOrderEmail(order: Order) {
     setSendingEmail(order.id);
@@ -617,8 +741,6 @@ export default function AutoOrders() {
     }
   }
 
-  // ── history helpers ────────────────────────────────────────────────────────
-
   const historyOrders = useMemo(() => {
     return [...orders]
       .filter((o) => o.status === 'envoyé' || o.status === 'reçu')
@@ -630,8 +752,8 @@ export default function AutoOrders() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="ml-3 text-gray-600 dark:text-gray-400">Chargement...</span>
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <span className="ml-3 text-slate-400">Chargement...</span>
       </div>
     );
   }
@@ -641,17 +763,15 @@ export default function AutoOrders() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <ShoppingCart className="w-7 h-7 text-blue-600" />
+          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            <ShoppingCart className="w-7 h-7 text-blue-400" />
             Carnet de commandes
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Gérez vos commandes fournisseurs
-          </p>
+          <p className="text-slate-400 mt-1">Gérez vos commandes fournisseurs</p>
         </div>
         <button
           onClick={openNewOrderForm}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
         >
           <Plus className="w-4 h-4" />
           Nouvelle commande
@@ -661,48 +781,48 @@ export default function AutoOrders() {
       {/* ── Summary cards ───────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
-          icon={<FileText className="w-5 h-5 text-blue-500" />}
-          label="Commandes total"
+          icon={<FileText className="w-5 h-5 text-blue-400" />}
+          label="Total commandes"
           value={String(totalCount)}
-          bg="bg-blue-50 dark:bg-blue-900/20"
+          accent="border-blue-500/30 bg-blue-500/5"
         />
         <SummaryCard
-          icon={<Clock className="w-5 h-5 text-orange-500" />}
+          icon={<Clock className="w-5 h-5 text-slate-400" />}
           label="Brouillons"
           value={String(brouillonCount)}
-          bg="bg-orange-50 dark:bg-orange-900/20"
+          accent="border-slate-600/50 bg-slate-800/50"
         />
         <SummaryCard
-          icon={<Send className="w-5 h-5 text-indigo-500" />}
+          icon={<Send className="w-5 h-5 text-blue-400" />}
           label="Envoyées"
           value={String(envoyeCount)}
-          bg="bg-indigo-50 dark:bg-indigo-900/20"
+          accent="border-blue-500/30 bg-blue-500/5"
         />
         <SummaryCard
-          icon={<Euro className="w-5 h-5 text-green-500" />}
-          label="Valeur totale"
+          icon={<Euro className="w-5 h-5 text-emerald-400" />}
+          label="Valeur totale HT"
           value={fmtEuro(totalValue)}
-          bg="bg-green-50 dark:bg-green-900/20"
+          accent="border-emerald-500/30 bg-emerald-500/5"
         />
       </div>
 
-      {/* ── Low-stock alert banner ────────────────────────────────────────── */}
+      {/* ── Low-stock alert banner ─────────────────────────────────────────── */}
       {lowStockItems.length > 0 && (
-        <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-orange-500 shrink-0" />
+            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-orange-800 dark:text-orange-300">
+              <p className="text-sm font-semibold text-amber-300">
                 {lowStockItems.length} article{lowStockItems.length > 1 ? 's' : ''} nécessite{lowStockItems.length > 1 ? 'nt' : ''} un réapprovisionnement
               </p>
-              <p className="text-xs text-orange-600 dark:text-orange-400 mt-0.5">
+              <p className="text-xs text-amber-500 mt-0.5">
                 {lowStockItems.map((i) => i.ingredient.name).join(', ')}
               </p>
             </div>
           </div>
           <button
             onClick={generateAutoOrders}
-            className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-medium text-sm shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-medium text-sm transition shadow-sm"
           >
             <Zap className="w-4 h-4" />
             Générer les commandes automatiquement
@@ -711,154 +831,145 @@ export default function AutoOrders() {
       )}
 
       {/* ── Tab switcher ────────────────────────────────────────────────────── */}
-      <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 bg-slate-800/60 border border-slate-700/50 rounded-xl p-1 w-fit">
         <button
           onClick={() => setActiveTab('commandes')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition ${
             activeTab === 'commandes'
-              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              ? 'bg-slate-700 text-white shadow-sm'
+              : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           <Package className="w-4 h-4" />
           Commandes
-          <span className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-600 rounded text-xs">{orders.length}</span>
+          <span className="px-1.5 py-0.5 bg-slate-600 text-slate-300 rounded text-xs">{orders.length}</span>
         </button>
         <button
           onClick={() => setActiveTab('historique')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition ${
             activeTab === 'historique'
-              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              ? 'bg-slate-700 text-white shadow-sm'
+              : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           <History className="w-4 h-4" />
           Historique
-          <span className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-600 rounded text-xs">{historyOrders.length}</span>
+          <span className="px-1.5 py-0.5 bg-slate-600 text-slate-300 rounded text-xs">{historyOrders.length}</span>
         </button>
       </div>
 
       {/* ── Orders list ─────────────────────────────────────────────────────── */}
       {activeTab === 'commandes' && (
-      <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center gap-3">
-          <Package className="w-5 h-5 text-blue-500" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Commandes
-          </h2>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {filteredOrders.length} commande(s)
-          </span>
+        <section className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-800 flex flex-wrap items-center gap-3">
+            <Package className="w-5 h-5 text-blue-400" />
+            <h2 className="text-lg font-semibold text-white">Commandes</h2>
+            <span className="text-sm text-slate-500">{filteredOrders.length} commande(s)</span>
 
-          {/* Status filter */}
-          <div className="ml-auto flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
-            {(['tous', 'brouillon', 'envoyé', 'reçu'] as const).map((s) => (
-              <button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className={`px-2.5 py-1 text-xs font-medium rounded-full transition ${
-                  statusFilter === s
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-              >
-                {s === 'tous' ? 'Tous' : (STATUS_BADGE[s] || STATUS_BADGE['brouillon']).label}
-              </button>
-            ))}
+            {/* Status filter */}
+            <div className="ml-auto flex items-center gap-2">
+              <Filter className="w-4 h-4 text-slate-500" />
+              {(['tous', 'brouillon', 'envoyé', 'reçu'] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-full transition ${
+                    statusFilter === s
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
+                  }`}
+                >
+                  {s === 'tous' ? 'Tous' : STATUS_CONFIG[s].label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {filteredOrders.length === 0 ? (
-          <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-            <ShoppingCart className="w-10 h-10 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-            {orders.length === 0
-              ? 'Aucune commande pour le moment. Cliquez sur "Nouvelle commande" pour commencer.'
-              : 'Aucune commande pour ce filtre'}
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-100 dark:divide-gray-700">
-            {filteredOrders.map((order) => (
-              <OrderRow
-                key={order.id}
-                order={order}
-                expanded={expandedOrderId === order.id}
-                onToggle={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
-                onEdit={() => openEditOrderForm(order)}
-                onSend={() => openEmailModal(order)}
-                onReceive={() => markReceived(order.id)}
-                onDelete={() => setDeleteTarget(order.id)}
-                onDuplicate={() => duplicateOrder(order)}
-                onDirectSend={() => handleSendOrderEmail(order)}
-                isSending={sendingEmail === order.id}
-              />
-            ))}
-          </div>
-        )}
-      </section>
+          {filteredOrders.length === 0 ? (
+            <div className="p-8 text-center text-slate-500">
+              <ShoppingCart className="w-10 h-10 mx-auto mb-2 text-slate-700" />
+              {orders.length === 0
+                ? 'Aucune commande pour le moment. Cliquez sur "Nouvelle commande" pour commencer.'
+                : 'Aucune commande pour ce filtre'}
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-800">
+              {filteredOrders.map((order) => (
+                <OrderRow
+                  key={order.id}
+                  order={order}
+                  expanded={expandedOrderId === order.id}
+                  onToggle={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
+                  onEdit={() => openEditOrderForm(order)}
+                  onSend={() => openEmailModal(order)}
+                  onReceive={() => markReceived(order.id)}
+                  onDelete={() => setDeleteTarget(order.id)}
+                  onDuplicate={() => duplicateOrder(order)}
+                  onDirectSend={() => handleSendOrderEmail(order)}
+                  onRelance={() => handleRelanceFournisseur(order)}
+                  isSending={sendingEmail === order.id}
+                  isRelancing={relancingId === order.id}
+                />
+              ))}
+            </div>
+          )}
+        </section>
       )}
 
       {/* ── History tab ──────────────────────────────────────────────────────── */}
       {activeTab === 'historique' && (
-        <section className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
-            <History className="w-5 h-5 text-blue-500" />
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Historique des commandes
-            </h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              {historyOrders.length} commande(s) envoyée(s) ou reçue(s)
-            </span>
+        <section className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-3">
+            <History className="w-5 h-5 text-blue-400" />
+            <h2 className="text-lg font-semibold text-white">Historique des commandes</h2>
+            <span className="text-sm text-slate-500">{historyOrders.length} commande(s) envoyée(s) ou reçue(s)</span>
           </div>
 
           {historyOrders.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              <History className="w-10 h-10 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
+            <div className="p-8 text-center text-slate-500">
+              <History className="w-10 h-10 mx-auto mb-2 text-slate-700" />
               Aucune commande envoyée ou reçue pour le moment
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 dark:bg-gray-700/50">
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Date</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Fournisseur</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Articles</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Total HT</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Total TTC</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Statut</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 dark:text-gray-400">Notes</th>
+                  <tr className="bg-slate-800/60">
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Date</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Fournisseur</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Articles</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total HT</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total TTC</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Statut</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Notes</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                  {historyOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
-                      <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{fmtDate(order.date)}</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <Truck className="w-4 h-4 text-gray-400 shrink-0" />
-                          <span className="font-medium text-gray-900 dark:text-white">{order.supplierName}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4 text-center text-gray-600 dark:text-gray-400">
-                        {order.lines.length}
-                      </td>
-                      <td className="py-3 px-4 text-right font-medium text-gray-900 dark:text-white">
-                        {fmtEuro(order.totalHT)}
-                      </td>
-                      <td className="py-3 px-4 text-right text-gray-600 dark:text-gray-300">
-                        {fmtEuro(order.totalTTC)}
-                      </td>
-                      <td className="py-3 px-4 text-center">
-                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).bg}`}>
-                          {(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).label}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400 max-w-[200px] truncate">
-                        {order.notes || '—'}
-                      </td>
-                    </tr>
-                  ))}
+                <tbody className="divide-y divide-slate-800">
+                  {historyOrders.map((order) => {
+                    const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['brouillon'];
+                    const StatusIcon = cfg.icon;
+                    return (
+                      <tr key={order.id} className="hover:bg-slate-800/30 transition">
+                        <td className="py-3 px-4 text-slate-400">{fmtDate(order.date)}</td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Truck className="w-4 h-4 text-slate-500 shrink-0" />
+                            <span className="font-medium text-white">{order.supplierName}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-center text-slate-400">{order.lines.length}</td>
+                        <td className="py-3 px-4 text-right font-medium text-white">{fmtEuro(order.totalHT)}</td>
+                        <td className="py-3 px-4 text-right text-slate-300">{fmtEuro(order.totalTTC)}</td>
+                        <td className="py-3 px-4 text-center">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${cfg.badge}`}>
+                            <StatusIcon className="w-3 h-3" />
+                            {cfg.label}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-sm text-slate-500 max-w-[200px] truncate">{order.notes || '—'}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -866,7 +977,7 @@ export default function AutoOrders() {
         </section>
       )}
 
-      {/* ── Order form modal (create / edit) ─────────────────────────────────── */}
+      {/* ── Order form modal ─────────────────────────────────────────────────── */}
       <Modal
         isOpen={formOpen}
         onClose={() => setFormOpen(false)}
@@ -875,14 +986,12 @@ export default function AutoOrders() {
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           {/* Supplier */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Fournisseur
-            </label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Fournisseur</label>
             {suppliers.length > 0 ? (
               <select
                 value={formSupplierId ?? '__custom__'}
                 onChange={(e) => handleSupplierChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="__custom__">— Saisie libre —</option>
                 {suppliers.map((s) => (
@@ -895,25 +1004,23 @@ export default function AutoOrders() {
               value={formSupplierName}
               onChange={(e) => { setFormSupplierName(e.target.value); setFormSupplierId(null); }}
               placeholder="Nom du fournisseur"
-              className="mt-2 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="mt-2 w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Articles
-            </label>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Articles</label>
             <div className="space-y-2">
-              {formLines.map((line, idx) => (
-                <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-gray-50 dark:bg-gray-700/40 rounded-lg border border-gray-200 dark:border-gray-600">
+              {formLines.map((line) => (
+                <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-slate-800/60 rounded-lg border border-slate-700">
                   <div className="flex-1 min-w-[160px]">
-                    <label className="text-xs text-gray-500 dark:text-gray-400">Ingrédient</label>
+                    <label className="text-xs text-slate-500">Ingrédient</label>
                     {ingredients.length > 0 ? (
                       <select
                         value={line.ingredientId ?? ''}
                         onChange={(e) => handleIngredientSelect(line.id, e.target.value)}
-                        className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">— Sélectionner —</option>
                         {ingredients.map((i) => (
@@ -926,61 +1033,58 @@ export default function AutoOrders() {
                         value={line.name}
                         onChange={(e) => updateLine(line.id, 'name', e.target.value)}
                         placeholder="Nom"
-                        className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
                       />
                     )}
-                    {/* free-text fallback even if ingredients exist */}
                     {ingredients.length > 0 && (
                       <input
                         type="text"
                         value={line.name}
                         onChange={(e) => updateLine(line.id, 'name', e.target.value)}
                         placeholder="ou saisir manuellement"
-                        className="mt-1 w-full px-2 py-1 border border-gray-200 dark:border-gray-600 rounded-md text-xs bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:ring-1 focus:ring-blue-500"
+                        className="mt-1 w-full px-2 py-1 border border-slate-700/50 rounded-md text-xs bg-slate-800/60 text-slate-300 focus:ring-1 focus:ring-blue-500"
                       />
                     )}
                   </div>
                   <div className="w-20">
-                    <label className="text-xs text-gray-500 dark:text-gray-400">Qté</label>
+                    <label className="text-xs text-slate-500">Qté</label>
                     <input
                       type="number"
                       min={0}
                       step="any"
                       value={line.quantity}
                       onChange={(e) => updateLine(line.id, 'quantity', Math.max(0, Number(e.target.value)))}
-                      className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="w-20">
-                    <label className="text-xs text-gray-500 dark:text-gray-400">Unité</label>
+                    <label className="text-xs text-slate-500">Unité</label>
                     <input
                       type="text"
                       value={line.unit}
                       onChange={(e) => updateLine(line.id, 'unit', e.target.value)}
-                      className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="w-24">
-                    <label className="text-xs text-gray-500 dark:text-gray-400">Prix unit.</label>
+                    <label className="text-xs text-slate-500">Prix unit.</label>
                     <input
                       type="number"
                       min={0}
                       step="0.01"
                       value={line.pricePerUnit}
                       onChange={(e) => updateLine(line.id, 'pricePerUnit', Math.max(0, Number(e.target.value)))}
-                      className="w-full px-2 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="w-24 text-right">
-                    <label className="text-xs text-gray-500 dark:text-gray-400">Total</label>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white py-1.5">
-                      {fmtEuro(line.total)}
-                    </p>
+                    <label className="text-xs text-slate-500">Total</label>
+                    <p className="text-sm font-medium text-white py-1.5">{fmtEuro(line.total)}</p>
                   </div>
                   <button
                     onClick={() => removeLine(line.id)}
                     title="Supprimer la ligne"
-                    className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition"
+                    className="p-1.5 text-red-400 hover:bg-red-500/10 rounded-lg transition"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -989,7 +1093,7 @@ export default function AutoOrders() {
             </div>
             <button
               onClick={addLine}
-              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition"
+              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-blue-400 hover:bg-blue-500/10 rounded-lg transition"
             >
               <Plus className="w-4 h-4" /> Ajouter un article
             </button>
@@ -997,29 +1101,27 @@ export default function AutoOrders() {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Notes
-            </label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Notes</label>
             <textarea
               value={formNotes}
               onChange={(e) => setFormNotes(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
               placeholder="Notes pour cette commande..."
             />
           </div>
 
           {/* Totals */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-1 text-sm">
-            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+          <div className="border-t border-slate-700 pt-3 space-y-1 text-sm">
+            <div className="flex justify-between text-slate-400">
               <span>Total HT</span>
               <span className="font-medium">{fmtEuro(formTotals.totalHT)}</span>
             </div>
-            <div className="flex justify-between text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-slate-400">
               <span>TVA (20%)</span>
               <span className="font-medium">{fmtEuro(formTotals.tva)}</span>
             </div>
-            <div className="flex justify-between text-gray-900 dark:text-white font-semibold text-base pt-1 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between text-white font-semibold text-base pt-1 border-t border-slate-700">
               <span>Total TTC</span>
               <span>{fmtEuro(formTotals.totalTTC)}</span>
             </div>
@@ -1029,13 +1131,13 @@ export default function AutoOrders() {
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setFormOpen(false)}
-              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+              className="px-4 py-2 text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition"
             >
               Annuler
             </button>
             <button
               onClick={saveOrder}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
               {editingOrderId ? 'Enregistrer' : 'Créer en brouillon'}
@@ -1052,62 +1154,52 @@ export default function AutoOrders() {
       >
         {emailOrder && (
           <div className="space-y-4">
-            {/* Recipient */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Destinataire
-              </label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Destinataire</label>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-gray-400 shrink-0" />
+                <Mail className="w-4 h-4 text-slate-500 shrink-0" />
                 <input
                   type="email"
                   value={emailTo}
                   onChange={(e) => setEmailTo(e.target.value)}
                   placeholder="email@fournisseur.com"
-                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="flex-1 px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
 
-            {/* Subject */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Objet
-              </label>
-              <p className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-700/40 rounded-lg px-3 py-2">
+              <label className="block text-sm font-medium text-slate-300 mb-1">Objet</label>
+              <p className="text-sm text-slate-200 bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2">
                 {buildEmailSubject(emailOrder)}
               </p>
             </div>
 
-            {/* Body preview */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Corps du message
-              </label>
-              <pre className="text-xs text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/40 rounded-lg px-3 py-3 max-h-64 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed">
+              <label className="block text-sm font-medium text-slate-300 mb-1">Corps du message</label>
+              <pre className="text-xs text-slate-300 bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-3 max-h-64 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed">
                 {buildEmailBody(emailOrder)}
               </pre>
             </div>
 
-            {/* Actions */}
             <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
               <button
                 onClick={() => setEmailOrder(null)}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition text-sm"
+                className="px-4 py-2 text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition text-sm"
               >
                 Annuler
               </button>
               <button
                 onClick={handleCopyToClipboard}
-                className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition text-sm"
+                className="flex items-center justify-center gap-2 px-4 py-2 border border-slate-600 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 transition text-sm"
               >
-                {emailCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                {emailCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 {emailCopied ? 'Copié !' : 'Copier dans le presse-papier'}
               </button>
               <button
                 onClick={() => emailOrder && handleSendOrderEmail(emailOrder)}
                 disabled={!!sendingEmail}
-                className="flex items-center justify-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-sm shadow-sm disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium text-sm transition shadow-sm disabled:opacity-50"
               >
                 {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
                 {sendingEmail ? 'Envoi...' : 'Envoyer par email'}
@@ -1124,37 +1216,37 @@ export default function AutoOrders() {
         title="Commandes auto-générées — Vérification"
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-slate-400">
             {autoGeneratedOrders.length} commande(s) générée(s) à partir des articles en rupture de stock.
             Vérifiez les quantités avant de confirmer.
           </p>
           {autoGeneratedOrders.map((order) => (
-            <div key={order.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              <div className="bg-gray-50 dark:bg-gray-700/40 px-4 py-3 flex items-center justify-between">
+            <div key={order.id} className="border border-slate-700 rounded-xl overflow-hidden">
+              <div className="bg-slate-800/60 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-blue-500" />
-                  <span className="font-semibold text-gray-900 dark:text-white">{order.supplierName}</span>
+                  <Truck className="w-4 h-4 text-blue-400" />
+                  <span className="font-semibold text-white">{order.supplierName}</span>
                 </div>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{fmtEuro(order.totalHT)} HT</span>
+                <span className="text-sm font-medium text-slate-300">{fmtEuro(order.totalHT)} HT</span>
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-xs text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                  <tr className="text-xs text-slate-500 border-b border-slate-800">
                     <th className="text-left py-2 px-4">Article</th>
-                    <th className="text-center py-2 px-3">Qté suggérée</th>
+                    <th className="text-center py-2 px-3">Qté</th>
                     <th className="text-center py-2 px-3">Unité</th>
                     <th className="text-right py-2 px-4">Prix unit.</th>
                     <th className="text-right py-2 px-4">Total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
+                <tbody className="divide-y divide-slate-800">
                   {order.lines.map((line) => (
                     <tr key={line.id}>
-                      <td className="py-2 px-4 text-gray-800 dark:text-gray-200">{line.name}</td>
-                      <td className="py-2 px-3 text-center text-gray-600 dark:text-gray-400">{line.quantity}</td>
-                      <td className="py-2 px-3 text-center text-gray-600 dark:text-gray-400">{line.unit}</td>
-                      <td className="py-2 px-4 text-right text-gray-600 dark:text-gray-400">{fmtEuro(line.pricePerUnit)}</td>
-                      <td className="py-2 px-4 text-right font-medium text-gray-800 dark:text-gray-200">{fmtEuro(line.total)}</td>
+                      <td className="py-2 px-4 text-slate-200">{line.name}</td>
+                      <td className="py-2 px-3 text-center text-slate-400">{line.quantity}</td>
+                      <td className="py-2 px-3 text-center text-slate-400">{line.unit}</td>
+                      <td className="py-2 px-4 text-right text-slate-400">{fmtEuro(line.pricePerUnit)}</td>
+                      <td className="py-2 px-4 text-right font-medium text-white">{fmtEuro(line.total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1162,16 +1254,16 @@ export default function AutoOrders() {
             </div>
           ))}
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
             <button
               onClick={() => { setShowAutoReviewModal(false); setAutoGeneratedOrders([]); }}
-              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+              className="px-4 py-2 text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition"
             >
               Annuler
             </button>
             <button
               onClick={confirmAutoOrders}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
               Confirmer ({autoGeneratedOrders.length} commande{autoGeneratedOrders.length > 1 ? 's' : ''})
@@ -1194,14 +1286,14 @@ export default function AutoOrders() {
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 
-function SummaryCard({ icon, label, value, bg }: { icon: React.ReactNode; label: string; value: string; bg: string }) {
+function SummaryCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent: string }) {
   return (
-    <div className={`rounded-xl p-4 ${bg} border border-gray-200 dark:border-gray-700`}>
+    <div className={`rounded-2xl p-4 border bg-slate-900/50 ${accent}`}>
       <div className="flex items-center gap-3">
         {icon}
         <div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</p>
-          <p className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">{value}</p>
+          <p className="text-xs text-slate-500 uppercase tracking-wide">{label}</p>
+          <p className="text-xl font-bold text-white mt-0.5">{value}</p>
         </div>
       </div>
     </div>
@@ -1218,7 +1310,9 @@ function OrderRow({
   onDelete,
   onDuplicate,
   onDirectSend,
+  onRelance,
   isSending,
+  isRelancing,
 }: {
   order: Order;
   expanded: boolean;
@@ -1229,34 +1323,48 @@ function OrderRow({
   onDelete: () => void;
   onDuplicate: () => void;
   onDirectSend?: () => void;
+  onRelance?: () => void;
   isSending?: boolean;
+  isRelancing?: boolean;
 }) {
+  const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['brouillon'];
+  const StatusIcon = cfg.icon;
+
   return (
-    <div className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition">
+    <div className="hover:bg-slate-800/30 transition">
       {/* Main row */}
       <div className="flex flex-wrap items-center gap-3 px-6 py-4 cursor-pointer" onClick={onToggle}>
-        <div className="text-gray-400">
+        <div className="text-slate-500">
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
+
+        {/* Status dot */}
+        <div className={`w-2 h-2 rounded-full ${cfg.dot} flex-shrink-0`} />
+
         <div className="flex items-center gap-2 min-w-[140px]">
-          <Truck className="w-4 h-4 text-gray-400 shrink-0" />
-          <span className="font-medium text-gray-900 dark:text-white">{order.supplierName}</span>
+          <Truck className="w-4 h-4 text-slate-500 shrink-0" />
+          <span className="font-medium text-white">{order.supplierName}</span>
         </div>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+
+        <span className="text-sm text-slate-500">
           {order.lines.length} article{order.lines.length > 1 ? 's' : ''}
         </span>
-        <span className="font-medium text-gray-900 dark:text-white">{fmtEuro(order.totalHT)}</span>
-        <span className="text-sm text-gray-500 dark:text-gray-400">{fmtDate(order.date)}</span>
-        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).bg}`}>
-          {(STATUS_BADGE[order.status] || STATUS_BADGE['brouillon']).label}
+
+        <span className="font-semibold text-white">{fmtEuro(order.totalHT)}</span>
+        <span className="text-sm text-slate-500">{fmtDate(order.date)}</span>
+
+        {/* Status badge */}
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${cfg.badge}`}>
+          <StatusIcon className="w-3 h-3" />
+          {cfg.label}
         </span>
 
         {/* Actions */}
         <div className="ml-auto flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-          <button onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition">
+          <button onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-400 hover:bg-blue-500/10 rounded-lg transition">
             <Edit3 className="w-3.5 h-3.5" /> Modifier
           </button>
-          <button onClick={onSend} title="Envoyer par email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition">
+          <button onClick={onSend} title="Préparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-400 hover:bg-slate-700 rounded-lg transition">
             <Mail className="w-3.5 h-3.5" /> Email
           </button>
           {order.status === 'brouillon' && onDirectSend && (
@@ -1264,21 +1372,34 @@ function OrderRow({
               onClick={onDirectSend}
               disabled={isSending}
               title="Envoyer directement au fournisseur"
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition disabled:opacity-50"
+              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-400 hover:bg-blue-500/10 rounded-lg transition disabled:opacity-50"
             >
               {isSending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
               Envoyer
             </button>
           )}
           {order.status === 'envoyé' && (
-            <button onClick={onReceive} title="Marquer reçu" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition">
-              <Check className="w-3.5 h-3.5" /> Reçu
-            </button>
+            <>
+              <button onClick={onReceive} title="Marquer reçu" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition">
+                <Check className="w-3.5 h-3.5" /> Reçu
+              </button>
+              {onRelance && (
+                <button
+                  onClick={onRelance}
+                  disabled={isRelancing}
+                  title="Relancer le fournisseur"
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/10 rounded-lg transition disabled:opacity-50"
+                >
+                  {isRelancing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                  Relancer
+                </button>
+              )}
+            </>
           )}
-          <button onClick={onDuplicate} title="Dupliquer" className="p-1.5 text-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded-lg transition">
+          <button onClick={onDuplicate} title="Dupliquer" className="p-1.5 text-slate-400 hover:bg-slate-700 rounded-lg transition">
             <CopyPlus className="w-4 h-4" />
           </button>
-          <button onClick={onDelete} title="Supprimer" className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition">
+          <button onClick={onDelete} title="Supprimer" className="p-1.5 text-red-400 hover:bg-red-500/10 rounded-lg transition">
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
@@ -1286,46 +1407,56 @@ function OrderRow({
 
       {/* Expanded details */}
       {expanded && (
-        <div className="px-6 pb-4">
-          <div className="bg-gray-50 dark:bg-gray-700/20 rounded-lg p-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-gray-500 dark:text-gray-400 text-xs">
-                  <th className="pb-2 pr-4">Produit</th>
-                  <th className="pb-2 pr-4">Quantité</th>
-                  <th className="pb-2 pr-4">Unité</th>
-                  <th className="pb-2 pr-4">Prix unitaire</th>
-                  <th className="pb-2 text-right">Total</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-600">
-                {order.lines.map((line) => (
-                  <tr key={line.id}>
-                    <td className="py-1.5 pr-4 text-gray-800 dark:text-gray-200">{line.name}</td>
-                    <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-400">{line.quantity}</td>
-                    <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-400">{line.unit}</td>
-                    <td className="py-1.5 pr-4 text-gray-600 dark:text-gray-400">{fmtEuro(line.pricePerUnit)}</td>
-                    <td className="py-1.5 text-right font-medium text-gray-800 dark:text-gray-200">{fmtEuro(line.total)}</td>
+        <div className="px-6 pb-5">
+          <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4">
+            {/* Timeline */}
+            <OrderTimeline status={order.status} date={order.date} />
+
+            {/* Line items table */}
+            <div className="mt-5">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-slate-500 text-xs border-b border-slate-700">
+                    <th className="pb-2 pr-4">Produit</th>
+                    <th className="pb-2 pr-4">Quantité</th>
+                    <th className="pb-2 pr-4">Unité</th>
+                    <th className="pb-2 pr-4">Prix unitaire</th>
+                    <th className="pb-2 text-right">Total</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 space-y-1 text-sm">
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+                </thead>
+                <tbody className="divide-y divide-slate-800">
+                  {order.lines.map((line) => (
+                    <tr key={line.id}>
+                      <td className="py-2 pr-4 text-slate-200">{line.name}</td>
+                      <td className="py-2 pr-4 text-slate-400">{line.quantity}</td>
+                      <td className="py-2 pr-4 text-slate-400">{line.unit}</td>
+                      <td className="py-2 pr-4 text-slate-400">{fmtEuro(line.pricePerUnit)}</td>
+                      <td className="py-2 text-right font-medium text-white">{fmtEuro(line.total)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Totals */}
+            <div className="mt-3 pt-3 border-t border-slate-700 space-y-1 text-sm">
+              <div className="flex justify-between text-slate-400">
                 <span>Total HT</span>
                 <span className="font-medium">{fmtEuro(order.totalHT)}</span>
               </div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <div className="flex justify-between text-slate-400">
                 <span>TVA (20%)</span>
                 <span className="font-medium">{fmtEuro(order.tva)}</span>
               </div>
-              <div className="flex justify-between text-gray-900 dark:text-white font-semibold">
+              <div className="flex justify-between text-white font-semibold">
                 <span>Total TTC</span>
                 <span>{fmtEuro(order.totalTTC)}</span>
               </div>
             </div>
+
+            {/* Notes */}
             {order.notes && (
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400 italic">
+              <p className="mt-3 text-sm text-slate-500 italic border-t border-slate-700 pt-3">
                 Notes : {order.notes}
               </p>
             )}

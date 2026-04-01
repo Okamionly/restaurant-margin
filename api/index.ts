@@ -368,7 +368,7 @@ app.post('/api/auth/reset-password', async (req: any, res) => {
     if (newPassword.length < 6) return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 6 caractères' });
     const user = await prisma.user.findFirst({ where: { resetToken: token, resetTokenExpiry: { gt: new Date() } } });
     if (!user) return res.status(400).json({ error: 'Lien invalide ou expiré' });
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
     await prisma.user.update({ where: { id: user.id }, data: { passwordHash: hashedPassword, resetToken: null, resetTokenExpiry: null } });
     res.json({ message: 'Mot de passe réinitialisé avec succès' });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
@@ -752,17 +752,13 @@ app.delete('/api/inventory/:id', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
 });
 
-// ============ RFQ (APPELS D'OFFRES) ============
-const rfqInclude = {
-  items: { include: { ingredient: true, quotes: { include: { supplier: true } } } },
-  suppliers: { include: { supplier: true } },
-} as const;
+// ============ RFQ (APPELS D'OFFRES) — DISABLED: models not in Prisma schema ============
+// TODO: Add RFQ, RFQItem, RFQQuote models to schema.prisma before enabling
+const rfqInclude = {} as any;
+const RFQ_DISABLED_MSG = { error: 'Module appels d\'offres en cours de développement' };
 
-app.get('/api/rfqs', authWithRestaurant, async (req: any, res) => {
-  try {
-    const rfqs = await prisma.rFQ.findMany({ where: { restaurantId: req.restaurantId }, include: rfqInclude, orderBy: { createdAt: 'desc' } });
-    res.json(rfqs);
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération appels d\'offres' }); }
+app.get('/api/rfqs', authWithRestaurant, async (_req: any, res) => {
+  res.json([]);  // RFQ module disabled — no Prisma model yet
 });
 
 app.get('/api/rfqs/:id', authWithRestaurant, async (req, res) => {
@@ -1338,15 +1334,17 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
 app.get('/api/email/sent', authWithRestaurant, (_req, res) => { res.json(sentEmails); });
 
 // ── Public menu ──
-app.get('/api/public/menu', async (_req, res) => {
+app.get('/api/public/menu', async (req, res) => {
   try {
+    const restaurantId = parseInt(req.query.restaurantId as string) || 1;
     const recipes = await prisma.recipe.findMany({
+      where: { restaurantId },
       include: { ingredients: { include: { ingredient: true } } },
     });
     res.json(recipes.map(r => ({
       id: r.id, name: r.name, category: r.category,
       sellingPrice: r.sellingPrice, description: r.description,
-      allergens: [...new Set(r.ingredients.flatMap(ri => ri.ingredient.allergens || []))],
+      allergens: [...new Set(r.ingredients.flatMap(ri => ri.ingredient?.allergens || []))],
     })));
   } catch { res.status(500).json({ error: 'Erreur' }); }
 });

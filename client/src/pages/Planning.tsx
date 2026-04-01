@@ -1145,6 +1145,7 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
   onDragOver: (e: DragEvent<HTMLDivElement>) => void;
   onDrop: (dayStr: string, shiftType: ShiftType) => void;
 }) {
+  const { t } = useTranslation();
   const dayStr = formatDate(day);
   const dayShifts = shifts.filter(s => s.date === dayStr);
 

@@ -10,21 +10,23 @@ import Modal from '../components/Modal';
 
 interface Employee {
   id: number;
-  nom: string;
-  prenom: string;
-  role: EmployeeRole;
-  tauxHoraire: number;
-  heuresContrat: number;
-  couleur: string;
+  name: string;
+  role: string;
+  hourlyRate: number;
+  color: string;
+  email?: string;
+  phone?: string;
+  active?: boolean;
 }
 
 interface Shift {
   id: number;
   employeeId: number;
   date: string; // YYYY-MM-DD
-  start: string; // HH:mm
-  end: string; // HH:mm
-  poste: 'cuisine' | 'salle' | 'plonge';
+  startTime: string; // HH:mm
+  endTime: string; // HH:mm
+  type: string;
+  notes?: string;
 }
 
 type EmployeeRole = 'Chef' | 'Commis' | 'Serveur' | 'Serveuse' | 'Plongeur' | 'Plongeuse' | 'Patissier' | 'Patissiere';
@@ -137,11 +139,11 @@ export default function Planning() {
   const [editShift, setEditShift] = useState<Shift | null>(null);
 
   // Employee form
-  const emptyEmpForm = { nom: '', prenom: '', role: 'Commis' as EmployeeRole, tauxHoraire: '', heuresContrat: '', couleur: EMPLOYEE_COLORS[0] };
+  const emptyEmpForm = { name: '', role: 'Commis' as string, hourlyRate: '', color: EMPLOYEE_COLORS[0] };
   const [empForm, setEmpForm] = useState(emptyEmpForm);
 
   // Shift form
-  const emptyShiftForm = { employeeId: '', date: '', start: '', end: '', poste: 'cuisine' as Shift['poste'] };
+  const emptyShiftForm = { employeeId: '', date: '', startTime: '', endTime: '', type: 'cuisine' };
   const [shiftForm, setShiftForm] = useState(emptyShiftForm);
 
   // Weekly revenue for ratio (0 when no data)
@@ -212,14 +214,14 @@ export default function Planning() {
   }, [shifts, weekDayStrings]);
 
   const totalHoursWeek = useMemo(() => {
-    return weekShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
+    return weekShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
   }, [weekShifts]);
 
   const laborCost = useMemo(() => {
     return weekShifts.reduce((sum, s) => {
       const emp = employees.find(e => e.id === s.employeeId);
       if (!emp) return sum;
-      return sum + shiftHours(s.start, s.end) * (emp.tauxHoraire ?? 0);
+      return sum + shiftHours(s.startTime, s.endTime) * (emp.hourlyRate ?? 0);
     }, 0);
   }, [weekShifts, employees]);
 
@@ -231,7 +233,7 @@ export default function Planning() {
     for (const emp of employees) {
       const hours = weekShifts
         .filter(s => s.employeeId === emp.id)
-        .reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
+        .reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
       map.set(emp.id, hours);
     }
     return map;
@@ -250,7 +252,7 @@ export default function Planning() {
         .filter(s => s.date === dayStr)
         .reduce((sum, s) => {
           const emp = employees.find(e => e.id === s.employeeId);
-          return sum + (emp ? shiftHours(s.start, s.end) * (emp.tauxHoraire ?? 0) : 0);
+          return sum + (emp ? shiftHours(s.startTime, s.endTime) * (emp.hourlyRate ?? 0) : 0);
         }, 0);
     });
   }, [weekDayStrings, shifts, employees]);
@@ -259,37 +261,33 @@ export default function Planning() {
 
   function openAddEmployee() {
     setEditEmployee(null);
-    const usedColors = new Set(employees.map(e => e.couleur));
+    const usedColors = new Set(employees.map(e => e.color));
     const nextColor = EMPLOYEE_COLORS.find(c => !usedColors.has(c)) || EMPLOYEE_COLORS[employees.length % EMPLOYEE_COLORS.length];
-    setEmpForm({ ...emptyEmpForm, couleur: nextColor });
+    setEmpForm({ ...emptyEmpForm, color: nextColor });
     setShowEmployeeModal(true);
   }
 
   function openEditEmployee(emp: Employee) {
     setEditEmployee(emp);
     setEmpForm({
-      nom: emp.nom || '',
-      prenom: emp.prenom || '',
+      name: emp.name || '',
       role: emp.role || 'Commis',
-      tauxHoraire: String(emp.tauxHoraire ?? ''),
-      heuresContrat: String(emp.heuresContrat ?? ''),
-      couleur: emp.couleur || EMPLOYEE_COLORS[0],
+      hourlyRate: String(emp.hourlyRate ?? 12),
+      color: emp.color || EMPLOYEE_COLORS[0],
     });
     setShowEmployeeModal(true);
   }
 
   async function saveEmployee() {
-    if (!empForm.nom.trim() || !empForm.prenom.trim() || !empForm.tauxHoraire || !empForm.heuresContrat) {
+    if (!empForm.name.trim() || !empForm.hourlyRate) {
       showToast('Veuillez remplir tous les champs', 'error');
       return;
     }
     const empData = {
-      nom: empForm.nom,
-      prenom: empForm.prenom,
+      name: empForm.name.trim(),
       role: empForm.role,
-      tauxHoraire: parseFloat(empForm.tauxHoraire),
-      heuresContrat: parseFloat(empForm.heuresContrat),
-      couleur: empForm.couleur,
+      hourlyRate: parseFloat(empForm.hourlyRate),
+      color: empForm.color,
     };
     if (editEmployee) {
       // Optimistic update
@@ -363,19 +361,19 @@ export default function Planning() {
     setShiftForm({
       employeeId: String(s.employeeId ?? ''),
       date: s.date || '',
-      start: s.start || '',
-      end: s.end || '',
-      poste: s.poste || 'cuisine',
+      startTime: s.startTime || '',
+      endTime: s.endTime || '',
+      poste: s.type || 'cuisine',
     });
     setShowShiftModal(true);
   }
 
   async function saveShift() {
-    if (!shiftForm.employeeId || !shiftForm.date || !shiftForm.start || !shiftForm.end) {
+    if (!shiftForm.employeeId || !shiftForm.date || !shiftForm.startTime || !shiftForm.endTime) {
       showToast('Veuillez remplir tous les champs', 'error');
       return;
     }
-    if (shiftForm.start >= shiftForm.end) {
+    if (shiftForm.startTime >= shiftForm.endTime) {
       showToast("L'heure de fin doit etre apres l'heure de debut", 'error');
       return;
     }
@@ -383,7 +381,7 @@ export default function Planning() {
     const overlap = shifts.some(s => {
       if (editShift && s.id === editShift.id) return false;
       if (s.employeeId !== empId || s.date !== shiftForm.date) return false;
-      return s.start < shiftForm.end && s.end > shiftForm.start;
+      return s.start < shiftForm.endTime && s.end > shiftForm.startTime;
     });
     if (overlap) {
       showToast('Chevauchement detecte pour cet employe ce jour', 'error');
@@ -393,9 +391,9 @@ export default function Planning() {
     const shiftData = {
       employeeId: empId,
       date: shiftForm.date,
-      start: shiftForm.start,
-      end: shiftForm.end,
-      poste: shiftForm.poste,
+      startTime: shiftForm.startTime,
+      endTime: shiftForm.endTime,
+      type: shiftForm.type,
     };
 
     if (editShift) {
@@ -500,7 +498,7 @@ export default function Planning() {
     } catch {
       setShifts(prev => [...prev, newShift]);
     }
-    showToast(`${dragEmployee.prenom || 'Employe'} assigne`, 'success');
+    showToast(`${dragEmployee.name || 'Employe'} assigne`, 'success');
     setDragEmployee(null);
   }, [dragEmployee, shifts, nextId, showToast]);
 
@@ -510,10 +508,10 @@ export default function Planning() {
     return employees.map(emp => {
       const days = weekDayStrings.map(dayStr => {
         const dayShifts = weekShifts.filter(s => s.employeeId === emp.id && s.date === dayStr);
-        return dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
+        return dayShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
       });
       const total = days.reduce((a, b) => a + b, 0);
-      return { emp, days, total, cost: total * (emp.tauxHoraire ?? 0) };
+      return { emp, days, total, cost: total * (emp.hourlyRate ?? 0) };
     });
   }, [employees, weekDayStrings, weekShifts]);
 
@@ -613,8 +611,8 @@ export default function Planning() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 cursor-grab active:cursor-grabbing hover:border-slate-600 transition select-none"
             >
               <GripVertical className="w-3.5 h-3.5 text-slate-400" />
-              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
-              <span className="text-sm text-slate-200 font-medium">{emp.prenom || ''} {(emp.nom || '').charAt(0)}.</span>
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+              <span className="text-sm text-slate-200 font-medium">{emp.name || ''}</span>
               <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
             </div>
           ))}
@@ -645,7 +643,7 @@ export default function Planning() {
                     </div>
                     {/* Shift zones */}
                     {SHIFT_TYPES.map(st => {
-                      const zoneShifts = dayShifts.filter(s => getShiftType(s.start) === st.key);
+                      const zoneShifts = dayShifts.filter(s => getShiftType(s.startTime) === st.key);
                       return (
                         <div
                           key={st.key}
@@ -667,13 +665,13 @@ export default function Planning() {
                                     key={s.id}
                                     className="rounded-md p-1.5 text-xs cursor-pointer hover:brightness-110 transition group relative border"
                                     style={{
-                                      backgroundColor: (emp.couleur || '#6366f1') + '20',
-                                      borderColor: (emp.couleur || '#6366f1') + '40',
+                                      backgroundColor: (emp.color || '#6366f1') + '20',
+                                      borderColor: (emp.color || '#6366f1') + '40',
                                     }}
                                     onClick={() => openEditShift(s)}
                                   >
-                                    <div className="font-semibold text-white truncate">{emp.prenom || ''} {(emp.nom || '').charAt(0)}.</div>
-                                    <div className="text-[10px] font-mono text-slate-400">{s.start}-{s.end}</div>
+                                    <div className="font-semibold text-white truncate">{emp.name || ''}</div>
+                                    <div className="text-[10px] font-mono text-slate-400">{s.startTime}-{s.endTime}</div>
                                     <button
                                       onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
                                       className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-slate-900/80 hover:bg-red-900/60 transition"
@@ -805,17 +803,17 @@ export default function Planning() {
                   <tr key={emp.id} className="hover:bg-slate-800/30 transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
-                        <span className="font-medium text-white">{emp.prenom || ''} {emp.nom || ''}</span>
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                        <span className="font-medium text-white">{emp.name || ''}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: (emp.couleur || '#6366f1') + '20', color: emp.couleur || '#6366f1' }}>
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: (emp.color || '#6366f1') + '20', color: emp.color || '#6366f1' }}>
                         {ROLE_LABELS[emp.role] || emp.role || ''}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-slate-300">{(emp.tauxHoraire ?? 0).toFixed(2)} EUR/h</td>
-                    <td className="px-4 py-3 text-right text-slate-300">{emp.heuresContrat ?? 0}h</td>
+                    <td className="px-4 py-3 text-right text-slate-300">{(emp.hourlyRate ?? 0).toFixed(2)} EUR/h</td>
+                    <td className="px-4 py-3 text-right text-slate-300">{emp.hourlyRate ?? 0}h</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
                         {hours.toFixed(0)}h
@@ -882,8 +880,8 @@ export default function Planning() {
                   <tr key={row.emp.id} className="hover:bg-slate-800/30 transition">
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.couleur || '#6366f1' }} />
-                        <span className="font-medium text-white">{row.emp.prenom || ''} {(row.emp.nom || '').charAt(0)}.</span>
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.color || '#6366f1' }} />
+                        <span className="font-medium text-white">{row.emp.name || ''}</span>
                       </div>
                     </td>
                     {row.days.map((h, i) => (
@@ -943,33 +941,21 @@ export default function Planning() {
         title={editEmployee ? 'Modifier employe' : 'Ajouter un employe'}
       >
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Prenom</label>
-              <input
-                type="text"
-                value={empForm.prenom}
-                onChange={e => setEmpForm(f => ({ ...f, prenom: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-                placeholder="Ex: Marie"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Nom</label>
-              <input
-                type="text"
-                value={empForm.nom}
-                onChange={e => setEmpForm(f => ({ ...f, nom: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-                placeholder="Ex: Dupont"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1">Nom complet</label>
+            <input
+              type="text"
+              value={empForm.name}
+              onChange={e => setEmpForm(f => ({ ...f, name: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              placeholder="Ex: Marie Dupont"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-1">Role</label>
             <select
               value={empForm.role}
-              onChange={e => setEmpForm(f => ({ ...f, role: e.target.value as EmployeeRole }))}
+              onChange={e => setEmpForm(f => ({ ...f, role: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {ROLES.map(r => (
@@ -984,21 +970,10 @@ export default function Planning() {
                 type="number"
                 step="0.01"
                 min="0"
-                value={empForm.tauxHoraire}
-                onChange={e => setEmpForm(f => ({ ...f, tauxHoraire: e.target.value }))}
+                value={empForm.hourlyRate}
+                onChange={e => setEmpForm(f => ({ ...f, hourlyRate: e.target.value }))}
                 className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: 14.00"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Heures contrat/sem</label>
-              <input
-                type="number"
-                min="0"
-                value={empForm.heuresContrat}
-                onChange={e => setEmpForm(f => ({ ...f, heuresContrat: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-                placeholder="Ex: 35"
               />
             </div>
           </div>
@@ -1009,8 +984,8 @@ export default function Planning() {
                 <button
                   key={c}
                   type="button"
-                  onClick={() => setEmpForm(f => ({ ...f, couleur: c }))}
-                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.couleur === c ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                  onClick={() => setEmpForm(f => ({ ...f, color: c }))}
+                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.color === c ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   style={{ backgroundColor: c }}
                 />
               ))}
@@ -1043,7 +1018,7 @@ export default function Planning() {
             >
               <option value="">-- Selectionner --</option>
               {employees.map(emp => (
-                <option key={emp.id} value={emp.id}>{emp.prenom || ''} {emp.nom || ''} ({ROLE_LABELS[emp.role] || emp.role || ''})</option>
+                <option key={emp.id} value={emp.id}>{emp.name || ''} ({ROLE_LABELS[emp.role] || emp.role || ''})</option>
               ))}
             </select>
           </div>
@@ -1055,9 +1030,9 @@ export default function Planning() {
                 <button
                   key={st.key}
                   type="button"
-                  onClick={() => setShiftForm(f => ({ ...f, start: st.start, end: st.end }))}
+                  onClick={() => setShiftForm(f => ({ ...f, startTime: st.start, endTime: st.end }))}
                   className={`flex-1 py-2 rounded-lg text-xs font-medium border transition ${
-                    shiftForm.start === st.start && shiftForm.end === st.end
+                    shiftForm.startTime === st.start && shiftForm.endTime === st.end
                       ? st.bg + ' text-white'
                       : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
                   }`}
@@ -1081,8 +1056,8 @@ export default function Planning() {
               <label className="block text-sm font-medium text-slate-300 mb-1">Heure debut</label>
               <input
                 type="time"
-                value={shiftForm.start}
-                onChange={e => setShiftForm(f => ({ ...f, start: e.target.value }))}
+                value={shiftForm.startTime}
+                onChange={e => setShiftForm(f => ({ ...f, startTime: e.target.value }))}
                 className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
@@ -1090,8 +1065,8 @@ export default function Planning() {
               <label className="block text-sm font-medium text-slate-300 mb-1">Heure fin</label>
               <input
                 type="time"
-                value={shiftForm.end}
-                onChange={e => setShiftForm(f => ({ ...f, end: e.target.value }))}
+                value={shiftForm.endTime}
+                onChange={e => setShiftForm(f => ({ ...f, endTime: e.target.value }))}
                 className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
@@ -1099,8 +1074,8 @@ export default function Planning() {
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-1">Poste</label>
             <select
-              value={shiftForm.poste}
-              onChange={e => setShiftForm(f => ({ ...f, poste: e.target.value as Shift['poste'] }))}
+              value={shiftForm.type}
+              onChange={e => setShiftForm(f => ({ ...f, type: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {POSTES.map(p => (
@@ -1174,7 +1149,7 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
   return (
     <div className="p-3 space-y-3">
       {SHIFT_TYPES.map(st => {
-        const zoneShifts = dayShifts.filter(s => getShiftType(s.start) === st.key);
+        const zoneShifts = dayShifts.filter(s => getShiftType(s.startTime) === st.key);
         return (
           <div
             key={st.key}
@@ -1198,10 +1173,10 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                       onClick={() => onEditShift(s)}
                     >
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
-                        <span className="font-semibold text-white text-sm">{emp.prenom || ''} {emp.nom || ''}</span>
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                        <span className="font-semibold text-white text-sm">{emp.name || ''}</span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.start} a {s.end}</div>
+                      <div className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.startTime} a {s.endTime}</div>
                       <button
                         onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
                         className="absolute top-2 right-2 p-1 rounded bg-slate-800 hover:bg-red-900/40 transition"
@@ -1238,10 +1213,10 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
 }) {
   const dayStr = formatDate(day);
   const dayShifts = shifts.filter(s => s.date === dayStr);
-  const totalHours = dayShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0);
+  const totalHours = dayShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
   const totalCost = dayShifts.reduce((sum, s) => {
     const emp = employees.find(e => e.id === s.employeeId);
-    return sum + (emp ? shiftHours(s.start, s.end) * (emp.tauxHoraire ?? 0) : 0);
+    return sum + (emp ? shiftHours(s.startTime, s.endTime) * (emp.hourlyRate ?? 0) : 0);
   }, 0);
 
   // Group by employee for presence
@@ -1272,7 +1247,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
 
       {/* Shift type sections */}
       {SHIFT_TYPES.map(st => {
-        const zoneShifts = dayShifts.filter(s => getShiftType(s.start) === st.key);
+        const zoneShifts = dayShifts.filter(s => getShiftType(s.startTime) === st.key);
         return (
           <div key={st.key}>
             <div className={`flex items-center gap-2 mb-3`}>
@@ -1287,7 +1262,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                   .map(s => {
                     const emp = employees.find(e => e.id === s.employeeId);
                     if (!emp) return null;
-                    const hours = shiftHours(s.start, s.end);
+                    const hours = shiftHours(s.startTime, s.endTime);
                     return (
                       <div
                         key={s.id}
@@ -1295,17 +1270,17 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                         onClick={() => onEditShift(s)}
                       >
                         <div className="flex items-center gap-3 mb-2">
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.couleur || '#6366f1' }}>
-                            {(emp.prenom || '').charAt(0)}{(emp.nom || '').charAt(0)}
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.color || '#6366f1' }}>
+                            {(emp.name || '').charAt(0)}
                           </div>
                           <div>
-                            <div className="font-semibold text-white">{emp.prenom || ''} {emp.nom || ''}</div>
+                            <div className="font-semibold text-white">{emp.name || ''}</div>
                             <div className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</div>
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-mono text-slate-300">{s.start} - {s.end}</span>
-                          <span className="text-slate-400">{hours}h -- {(hours * (emp.tauxHoraire ?? 0)).toFixed(0)} EUR</span>
+                          <span className="font-mono text-slate-300">{s.startTime} - {s.endTime}</span>
+                          <span className="text-slate-400">{hours}h -- {(hours * (emp.hourlyRate ?? 0)).toFixed(0)} EUR</span>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
@@ -1341,7 +1316,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
           {employees.map(emp => {
             const empShifts = presenceMap.get(emp.id);
             const isPresent = !!empShifts && empShifts.length > 0;
-            const empHours = empShifts ? empShifts.reduce((sum, s) => sum + shiftHours(s.start, s.end), 0) : 0;
+            const empHours = empShifts ? empShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0) : 0;
             return (
               <div
                 key={emp.id}
@@ -1351,14 +1326,14 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-slate-600'}`} />
-                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
-                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-400'}`}>{emp.prenom || ''} {emp.nom || ''}</span>
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-400'}`}>{emp.name || ''}</span>
                   <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                 </div>
                 <div className="text-sm">
                   {isPresent ? (
                     <span className="text-slate-300">
-                      {empShifts!.map(s => `${s.start}-${s.end}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
+                      {empShifts!.map(s => `${s.startTime}-${s.endTime}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
                     </span>
                   ) : (
                     <span className="text-slate-300">Absent</span>

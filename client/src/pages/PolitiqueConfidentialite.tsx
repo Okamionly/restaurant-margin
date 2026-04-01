@@ -22,7 +22,7 @@ export default function PolitiqueConfidentialite() {
         <div className="space-y-10">
           {/* Introduction */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">1. Introduction</h2>
+            <h2 className="text-xl font-semibold text-teal-400">1. Introduction</h2>
             <p className="text-slate-300">
               RestauMargin, edite par Youssef Guessous, s'engage a proteger la vie privee des
               utilisateurs de sa plateforme. La presente politique de confidentialite decrit les donnees
@@ -34,7 +34,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Responsable du traitement */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">2. Responsable du traitement</h2>
+            <h2 className="text-xl font-semibold text-teal-400">2. Responsable du traitement</h2>
             <div className="text-slate-300 space-y-1">
               <p><span className="text-slate-400">Nom :</span> Youssef Guessous</p>
               <p><span className="text-slate-400">Entreprise :</span> RestauMargin</p>
@@ -44,7 +44,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Donnees collectees */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">3. Donnees collectees</h2>
+            <h2 className="text-xl font-semibold text-teal-400">3. Donnees collectees</h2>
             <p className="text-slate-300">Nous collectons les categories de donnees suivantes :</p>
 
             <div className="space-y-4 mt-4">
@@ -82,7 +82,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Finalites */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">4. Finalites du traitement</h2>
+            <h2 className="text-xl font-semibold text-teal-400">4. Finalites du traitement</h2>
             <p className="text-slate-300">Vos donnees sont traitees pour les finalites suivantes :</p>
             <ul className="list-disc list-inside text-slate-300 space-y-2 ml-2">
               <li>Creation et gestion de votre compte utilisateur</li>
@@ -101,7 +101,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Duree de conservation */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">5. Duree de conservation</h2>
+            <h2 className="text-xl font-semibold text-teal-400">5. Duree de conservation</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-sm mt-2">
                 <thead>
@@ -138,7 +138,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Droits des utilisateurs */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">6. Vos droits</h2>
+            <h2 className="text-xl font-semibold text-teal-400">6. Vos droits</h2>
             <p className="text-slate-300">
               Conformement au RGPD, vous disposez des droits suivants :
             </p>
@@ -153,7 +153,7 @@ export default function PolitiqueConfidentialite() {
             </ul>
             <p className="text-slate-300 mt-3">
               Pour exercer ces droits, contactez-nous a :{' '}
-              <span className="text-blue-400">contact@restaumargin.fr</span>
+              <span className="text-teal-400">contact@restaumargin.fr</span>
             </p>
             <p className="text-slate-300">
               Vous disposez egalement du droit de deposer une reclamation aupres de la CNIL
@@ -163,7 +163,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Cookies */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">7. Cookies</h2>
+            <h2 className="text-xl font-semibold text-teal-400">7. Cookies</h2>
             <p className="text-slate-300">
               Notre site utilise des cookies pour assurer son bon fonctionnement et ameliorer votre
               experience.
@@ -193,7 +193,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Sous-traitants */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">8. Sous-traitants et transferts de donnees</h2>
+            <h2 className="text-xl font-semibold text-teal-400">8. Sous-traitants et transferts de donnees</h2>
             <p className="text-slate-300">
               Nous faisons appel aux sous-traitants suivants pour le fonctionnement de notre service :
             </p>
@@ -234,7 +234,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Securite */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">9. Securite des donnees</h2>
+            <h2 className="text-xl font-semibold text-teal-400">9. Securite des donnees</h2>
             <p className="text-slate-300">
               Nous mettons en oeuvre des mesures techniques et organisationnelles appropriees pour
               proteger vos donnees personnelles contre tout acces non autorise, perte, alteration ou
@@ -251,7 +251,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Modifications */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">10. Modification de la politique</h2>
+            <h2 className="text-xl font-semibold text-teal-400">10. Modification de la politique</h2>
             <p className="text-slate-300">
               Nous nous reservons le droit de modifier cette politique de confidentialite a tout moment.
               En cas de modification substantielle, nous vous en informerons par email ou par notification
@@ -261,19 +261,19 @@ export default function PolitiqueConfidentialite() {
 
           {/* Contact */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">11. Contact</h2>
+            <h2 className="text-xl font-semibold text-teal-400">11. Contact</h2>
             <p className="text-slate-300">
               Pour toute question concernant cette politique de confidentialite ou vos donnees
               personnelles, contactez-nous a :{' '}
-              <span className="text-blue-400">contact@restaumargin.fr</span>
+              <span className="text-teal-400">contact@restaumargin.fr</span>
             </p>
           </section>
         </div>
 
         {/* Footer links */}
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-wrap gap-6 text-sm text-slate-400">
-          <a href="/mentions-legales" className="hover:text-blue-400 transition-colors">Mentions legales</a>
-          <a href="/cgv" className="hover:text-blue-400 transition-colors">Conditions generales de vente</a>
+          <a href="/mentions-legales" className="hover:text-teal-400 transition-colors">Mentions legales</a>
+          <a href="/cgv" className="hover:text-teal-400 transition-colors">Conditions generales de vente</a>
         </div>
       </div>
     </div>

@@ -54,7 +54,7 @@ const EMPLOYEE_COLORS = [
 
 const SHIFT_TYPES: { key: ShiftType; label: string; start: string; end: string; color: string; bg: string }[] = [
   { key: 'matin', label: 'Matin', start: '06:00', end: '14:00', color: 'text-amber-400', bg: 'bg-amber-500/20 border-amber-500/30' },
-  { key: 'midi', label: 'Midi', start: '11:00', end: '15:00', color: 'text-blue-400', bg: 'bg-blue-500/20 border-blue-500/30' },
+  { key: 'midi', label: 'Midi', start: '11:00', end: '15:00', color: 'text-teal-400', bg: 'bg-teal-500/20 border-teal-500/30' },
   { key: 'soir', label: 'Soir', start: '17:00', end: '23:00', color: 'text-purple-400', bg: 'bg-purple-500/20 border-purple-500/30' },
 ];
 
@@ -555,7 +555,7 @@ export default function Planning() {
         <StatCard icon={<Clock className="w-5 h-5 text-amber-400" />} label={t('planning.hoursPerWeek')} value={`${totalHoursWeek.toFixed(0)}h`} />
         <StatCard icon={<Euro className="w-5 h-5 text-emerald-400" />} label={t('planning.laborCost')} value={`${laborCost.toFixed(0)} EUR`} />
         <StatCard
-          icon={<CalendarDays className="w-5 h-5 text-blue-400" />}
+          icon={<CalendarDays className="w-5 h-5 text-teal-400" />}
           label={t('planning.laborRatio')}
           value={`${laborRatio.toFixed(1)}%`}
           alert={laborRatio > 30}
@@ -1255,7 +1255,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
         return (
           <div key={st.key}>
             <div className={`flex items-center gap-2 mb-3`}>
-              <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-blue-400' : 'bg-purple-400'}`} />
+              <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-teal-400' : 'bg-purple-400'}`} />
               <h4 className={`font-semibold ${st.color}`}>{st.label} ({st.start} - {st.end})</h4>
               <span className="text-xs text-slate-400">{zoneShifts.length} creneau(x)</span>
             </div>

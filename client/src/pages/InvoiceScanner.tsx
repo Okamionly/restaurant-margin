@@ -345,7 +345,7 @@ export default function InvoiceScanner() {
     (e: React.DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      dropRef.current?.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+      dropRef.current?.classList.remove('border-teal-500', 'bg-teal-50', 'dark:bg-teal-900/20');
       if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
     },
     [handleFiles]
@@ -353,12 +353,12 @@ export default function InvoiceScanner() {
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    dropRef.current?.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+    dropRef.current?.classList.add('border-teal-500', 'bg-teal-50', 'dark:bg-teal-900/20');
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    dropRef.current?.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20');
+    dropRef.current?.classList.remove('border-teal-500', 'bg-teal-50', 'dark:bg-teal-900/20');
   }, []);
 
   /* Save current pending file with metadata */
@@ -566,7 +566,7 @@ export default function InvoiceScanner() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <FolderOpen className="w-7 h-7 text-blue-600" />
+          <FolderOpen className="w-7 h-7 text-teal-600" />
           Dossier Factures
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
@@ -604,7 +604,7 @@ export default function InvoiceScanner() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: t('invoiceScanner.totalInvoices'), value: totalCount, icon: FileText, color: 'text-blue-600' },
+          { label: t('invoiceScanner.totalInvoices'), value: totalCount, icon: FileText, color: 'text-teal-600' },
           { label: t('invoiceScanner.thisMonth'), value: thisMonth, icon: Calendar, color: 'text-green-600' },
           {
             label: t('invoiceScanner.totalVolume'),
@@ -636,7 +636,7 @@ export default function InvoiceScanner() {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center
-                   hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer"
+                   hover:border-teal-400 dark:hover:border-teal-500 transition-colors cursor-pointer"
         onClick={() => fileInputRef.current?.click()}
       >
         <Upload className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 mb-3" />
@@ -644,7 +644,7 @@ export default function InvoiceScanner() {
         <p className="text-gray-400 dark:text-gray-500 text-sm my-2">{t('invoiceScanner.or')}</p>
         <button
           type="button"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+          className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-medium"
           onClick={(e) => {
             e.stopPropagation();
             fileInputRef.current?.click();
@@ -679,7 +679,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                         focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             />
           </div>
 
@@ -708,7 +708,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setFilterFournisseur(e.target.value)}
               className="pl-8 pr-8 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 appearance-none"
+                         focus:ring-2 focus:ring-teal-500 appearance-none"
             >
               <option value="">{t('invoiceScanner.allSuppliers')}</option>
               {allFournisseurs.map((f) => (
@@ -727,7 +727,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
               className="pl-8 pr-8 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 appearance-none"
+                         focus:ring-2 focus:ring-teal-500 appearance-none"
             >
               <option value="date">{t('invoiceScanner.sortDate')}</option>
               <option value="nom">{t('invoiceScanner.sortName')}</option>
@@ -792,7 +792,7 @@ export default function InvoiceScanner() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <Image className="w-14 h-14 text-blue-500" />
+                  <Image className="w-14 h-14 text-teal-500" />
                 )}
               </div>
               <div className="p-3">
@@ -881,7 +881,7 @@ export default function InvoiceScanner() {
                       {inv.type === 'pdf' ? (
                         <FileText className="w-5 h-5 text-red-500 flex-shrink-0" />
                       ) : (
-                        <Image className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                        <Image className="w-5 h-5 text-teal-500 flex-shrink-0" />
                       )}
                       <span className="text-gray-900 dark:text-white truncate max-w-[200px]">
                         {inv.name}
@@ -900,7 +900,7 @@ export default function InvoiceScanner() {
                       className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                         inv.type === 'pdf'
                           ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                          : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                          : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400'
                       }`}
                     >
                       {inv.type === 'pdf' ? 'PDF' : 'Image'}
@@ -910,8 +910,8 @@ export default function InvoiceScanner() {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => handlePreview(inv)}
-                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50
-                                   dark:hover:bg-blue-900/20 rounded-md"
+                        className="p-1.5 text-gray-500 hover:text-teal-600 hover:bg-teal-50
+                                   dark:hover:bg-teal-900/20 rounded-md"
                         title={t('invoiceScanner.preview')}
                       >
                         <Eye className="w-4 h-4" />
@@ -949,7 +949,7 @@ export default function InvoiceScanner() {
           {/* OCR text input */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-1">
-              <ScanLine className="w-5 h-5 text-blue-600" />
+              <ScanLine className="w-5 h-5 text-teal-600" />
               Scanner OCR
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -965,13 +965,13 @@ export default function InvoiceScanner() {
               placeholder={`Exemple :\nTomates grappe  5  kg  2.50  12.50\nSaumon frais  3  kg  15.00  45.00\nHuile olive  2  L  8.99  17.98`}
               className="w-full px-4 py-3 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono
-                         focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                         focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-y"
             />
             <div className="flex items-center gap-3 mt-4">
               <button
                 onClick={handleParseOcr}
                 disabled={!ocrText.trim()}
-                className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium
+                className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-medium
                            disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <ScanLine className="w-4 h-4" />
@@ -1006,8 +1006,8 @@ export default function InvoiceScanner() {
                   </button>
                   <button
                     onClick={handleAddToInvoice}
-                    className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-lg
-                               hover:bg-blue-700 flex items-center gap-1"
+                    className="px-3 py-1.5 text-xs font-medium bg-teal-600 text-white rounded-lg
+                               hover:bg-teal-700 flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Ajouter a la facture
@@ -1049,7 +1049,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'name', e.target.value)}
                             className="w-full px-2 py-1 text-sm rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-blue-500"
+                                       focus:ring-1 focus:ring-teal-500"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1060,7 +1060,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'qty', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-blue-500"
+                                       focus:ring-1 focus:ring-teal-500"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1070,7 +1070,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'unit', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-blue-500"
+                                       focus:ring-1 focus:ring-teal-500"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1081,7 +1081,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'prixUnitaire', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-blue-500"
+                                       focus:ring-1 focus:ring-teal-500"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1092,7 +1092,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'total', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-blue-500"
+                                       focus:ring-1 focus:ring-teal-500"
                           />
                         </td>
                         <td className="px-2 py-2">
@@ -1261,7 +1261,7 @@ export default function InvoiceScanner() {
               {pendingFiles[currentPendingIndex].type === 'application/pdf' ? (
                 <FileText className="w-5 h-5 text-red-500" />
               ) : (
-                <Image className="w-5 h-5 text-blue-500" />
+                <Image className="w-5 h-5 text-teal-500" />
               )}
               <span className="text-gray-700 dark:text-gray-200 truncate">
                 {pendingFiles[currentPendingIndex].name}
@@ -1271,7 +1271,7 @@ export default function InvoiceScanner() {
 
           {/* AI scan status banner */}
           {scanLoading && (
-            <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-700 dark:text-blue-300">
+            <div className="flex items-center gap-2 p-3 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg text-sm text-teal-700 dark:text-teal-300">
               <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
               {t('invoiceScanner.aiScanning')}
             </div>
@@ -1301,7 +1301,7 @@ export default function InvoiceScanner() {
               placeholder={t('invoiceScanner.supplierPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500"
+                         focus:ring-2 focus:ring-teal-500"
             />
             <datalist id="fournisseurs-list">
               {allFournisseurs.map((f) => (
@@ -1327,7 +1327,7 @@ export default function InvoiceScanner() {
               placeholder={t('invoiceScanner.invoiceNumberPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500"
+                         focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
@@ -1347,7 +1347,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setMetaForm((f) => ({ ...f, dateFacture: e.target.value }))}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500"
+                         focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
@@ -1370,7 +1370,7 @@ export default function InvoiceScanner() {
                 placeholder="0.00"
                 className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:ring-2 focus:ring-blue-500"
+                           focus:ring-2 focus:ring-teal-500"
               />
             </div>
             <div>
@@ -1390,7 +1390,7 @@ export default function InvoiceScanner() {
                 placeholder="0.00"
                 className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:ring-2 focus:ring-blue-500"
+                           focus:ring-2 focus:ring-teal-500"
               />
             </div>
           </div>
@@ -1407,7 +1407,7 @@ export default function InvoiceScanner() {
               placeholder={t('invoiceScanner.notesPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 resize-none"
+                         focus:ring-2 focus:ring-teal-500 resize-none"
             />
           </div>
 
@@ -1428,7 +1428,7 @@ export default function InvoiceScanner() {
             <button
               onClick={saveCurrentFile}
               disabled={savingInvoice || scanLoading}
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium
+              className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium
                          flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {savingInvoice ? (

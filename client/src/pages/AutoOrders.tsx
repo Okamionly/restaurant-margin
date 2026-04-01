@@ -124,8 +124,8 @@ const STATUS_CONFIG: Record<OrderStatus, {
     step: 0,
   },
   'envoyé': {
-    badge: 'bg-blue-500/20 text-blue-300 border border-blue-500/40',
-    dot: 'bg-blue-500',
+    badge: 'bg-teal-500/20 text-teal-300 border border-teal-500/40',
+    dot: 'bg-teal-500',
     label: 'Envoyé',
     icon: Send,
     step: 1,
@@ -183,27 +183,27 @@ function OrderTimeline({ status, date }: { status: OrderStatus; date: string }) 
             <div key={step.key} className="flex-1 flex flex-col items-center relative">
               {/* Connector line */}
               {!isLast && (
-                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${done && idx < currentStep ? 'bg-blue-500' : 'bg-slate-700'}`} />
+                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${done && idx < currentStep ? 'bg-teal-500' : 'bg-slate-700'}`} />
               )}
               {/* Circle */}
               <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all ${
                 done
                   ? active
-                    ? 'border-blue-500 bg-blue-500/20'
+                    ? 'border-teal-500 bg-teal-500/20'
                     : 'border-emerald-500 bg-emerald-500/20'
                   : 'border-slate-700 bg-slate-800'
               }`}>
                 {done && !active ? (
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
                 ) : active ? (
-                  <CircleDot className="w-3.5 h-3.5 text-blue-400" />
+                  <CircleDot className="w-3.5 h-3.5 text-teal-400" />
                 ) : (
                   <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
                 )}
               </div>
               {/* Labels */}
               <div className="mt-2 text-center">
-                <p className={`text-xs font-semibold ${active ? 'text-blue-400' : done ? 'text-emerald-400' : 'text-slate-600'}`}>
+                <p className={`text-xs font-semibold ${active ? 'text-teal-400' : done ? 'text-emerald-400' : 'text-slate-600'}`}>
                   {step.label}
                 </p>
                 <p className="text-[10px] text-slate-600 mt-0.5">{step.sublabel}</p>
@@ -754,7 +754,7 @@ export default function AutoOrders() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
         <span className="ml-3 text-slate-400">{t('common.loading')}</span>
       </div>
     );
@@ -766,14 +766,14 @@ export default function AutoOrders() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <ShoppingCart className="w-7 h-7 text-blue-400" />
+            <ShoppingCart className="w-7 h-7 text-teal-400" />
             {t('autoOrders.title')}
           </h1>
           <p className="text-slate-400 mt-1">{t('autoOrders.subtitle')}</p>
         </div>
         <button
           onClick={openNewOrderForm}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium transition shadow-sm"
         >
           <Plus className="w-4 h-4" />
           {t('autoOrders.newOrder')}
@@ -783,10 +783,10 @@ export default function AutoOrders() {
       {/* ── Summary cards ───────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
-          icon={<FileText className="w-5 h-5 text-blue-400" />}
+          icon={<FileText className="w-5 h-5 text-teal-400" />}
           label={t('autoOrders.totalOrders')}
           value={String(totalCount)}
-          accent="border-blue-500/30 bg-blue-500/5"
+          accent="border-teal-500/30 bg-teal-500/5"
         />
         <SummaryCard
           icon={<Clock className="w-5 h-5 text-slate-400" />}
@@ -795,10 +795,10 @@ export default function AutoOrders() {
           accent="border-slate-600/50 bg-slate-800/50"
         />
         <SummaryCard
-          icon={<Send className="w-5 h-5 text-blue-400" />}
+          icon={<Send className="w-5 h-5 text-teal-400" />}
           label={t('autoOrders.sent')}
           value={String(envoyeCount)}
-          accent="border-blue-500/30 bg-blue-500/5"
+          accent="border-teal-500/30 bg-teal-500/5"
         />
         <SummaryCard
           icon={<Euro className="w-5 h-5 text-emerald-400" />}
@@ -864,7 +864,7 @@ export default function AutoOrders() {
       {activeTab === 'commandes' && (
         <section className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex flex-wrap items-center gap-3">
-            <Package className="w-5 h-5 text-blue-400" />
+            <Package className="w-5 h-5 text-teal-400" />
             <h2 className="text-lg font-semibold text-white">{t('autoOrders.ordersTab')}</h2>
             <span className="text-sm text-slate-500">{filteredOrders.length} {t('autoOrders.ordersCount')}</span>
 
@@ -877,7 +877,7 @@ export default function AutoOrders() {
                   onClick={() => setStatusFilter(s)}
                   className={`px-2.5 py-1 text-xs font-medium rounded-full transition ${
                     statusFilter === s
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-teal-600 text-white'
                       : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
                   }`}
                 >
@@ -922,7 +922,7 @@ export default function AutoOrders() {
       {activeTab === 'historique' && (
         <section className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-3">
-            <History className="w-5 h-5 text-blue-400" />
+            <History className="w-5 h-5 text-teal-400" />
             <h2 className="text-lg font-semibold text-white">{t('autoOrders.orderHistory')}</h2>
             <span className="text-sm text-slate-500">{historyOrders.length} {t('autoOrders.sentOrReceived')}</span>
           </div>
@@ -993,7 +993,7 @@ export default function AutoOrders() {
               <select
                 value={formSupplierId ?? '__custom__'}
                 onChange={(e) => handleSupplierChange(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
               >
                 <option value="__custom__">— Saisie libre —</option>
                 {suppliers.map((s) => (
@@ -1006,7 +1006,7 @@ export default function AutoOrders() {
               value={formSupplierName}
               onChange={(e) => { setFormSupplierName(e.target.value); setFormSupplierId(null); }}
               placeholder={t('autoOrders.supplierNamePlaceholder')}
-              className="mt-2 w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="mt-2 w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             />
           </div>
 
@@ -1022,7 +1022,7 @@ export default function AutoOrders() {
                       <select
                         value={line.ingredientId ?? ''}
                         onChange={(e) => handleIngredientSelect(line.id, e.target.value)}
-                        className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-teal-500"
                       >
                         <option value="">— Sélectionner —</option>
                         {ingredients.map((i) => (
@@ -1035,7 +1035,7 @@ export default function AutoOrders() {
                         value={line.name}
                         onChange={(e) => updateLine(line.id, 'name', e.target.value)}
                         placeholder="Nom"
-                        className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-teal-500"
                       />
                     )}
                     {ingredients.length > 0 && (
@@ -1044,7 +1044,7 @@ export default function AutoOrders() {
                         value={line.name}
                         onChange={(e) => updateLine(line.id, 'name', e.target.value)}
                         placeholder="ou saisir manuellement"
-                        className="mt-1 w-full px-2 py-1 border border-slate-700/50 rounded-md text-xs bg-slate-800/60 text-slate-300 focus:ring-1 focus:ring-blue-500"
+                        className="mt-1 w-full px-2 py-1 border border-slate-700/50 rounded-md text-xs bg-slate-800/60 text-slate-300 focus:ring-1 focus:ring-teal-500"
                       />
                     )}
                   </div>
@@ -1056,7 +1056,7 @@ export default function AutoOrders() {
                       step="any"
                       value={line.quantity}
                       onChange={(e) => updateLine(line.id, 'quantity', Math.max(0, Number(e.target.value)))}
-                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                   <div className="w-20">
@@ -1065,7 +1065,7 @@ export default function AutoOrders() {
                       type="text"
                       value={line.unit}
                       onChange={(e) => updateLine(line.id, 'unit', e.target.value)}
-                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                   <div className="w-24">
@@ -1076,7 +1076,7 @@ export default function AutoOrders() {
                       step="0.01"
                       value={line.pricePerUnit}
                       onChange={(e) => updateLine(line.id, 'pricePerUnit', Math.max(0, Number(e.target.value)))}
-                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-2 py-1.5 border border-slate-700 rounded-md text-sm bg-slate-800 text-white focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                   <div className="w-24 text-right">
@@ -1095,7 +1095,7 @@ export default function AutoOrders() {
             </div>
             <button
               onClick={addLine}
-              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-blue-400 hover:bg-blue-500/10 rounded-lg transition"
+              className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-teal-400 hover:bg-teal-500/10 rounded-lg transition"
             >
               <Plus className="w-4 h-4" /> {t('autoOrders.addItem')}
             </button>
@@ -1108,7 +1108,7 @@ export default function AutoOrders() {
               value={formNotes}
               onChange={(e) => setFormNotes(e.target.value)}
               rows={2}
-              className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
               placeholder={t('autoOrders.notesPlaceholder')}
             />
           </div>
@@ -1139,7 +1139,7 @@ export default function AutoOrders() {
             </button>
             <button
               onClick={saveOrder}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
               {editingOrderId ? t('common.save') : t('autoOrders.createDraft')}
@@ -1165,7 +1165,7 @@ export default function AutoOrders() {
                   value={emailTo}
                   onChange={(e) => setEmailTo(e.target.value)}
                   placeholder="email@fournisseur.com"
-                  className="flex-1 px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="flex-1 px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                 />
               </div>
             </div>
@@ -1226,7 +1226,7 @@ export default function AutoOrders() {
             <div key={order.id} className="border border-slate-700 rounded-xl overflow-hidden">
               <div className="bg-slate-800/60 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-blue-400" />
+                  <Truck className="w-4 h-4 text-teal-400" />
                   <span className="font-semibold text-white">{order.supplierName}</span>
                 </div>
                 <span className="text-sm font-medium text-slate-300">{fmtEuro(order.totalHT)} HT</span>
@@ -1265,7 +1265,7 @@ export default function AutoOrders() {
             </button>
             <button
               onClick={confirmAutoOrders}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
+              className="flex items-center gap-2 px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
               Confirmer ({autoGeneratedOrders.length} commande{autoGeneratedOrders.length > 1 ? 's' : ''})
@@ -1363,7 +1363,7 @@ function OrderRow({
 
         {/* Actions */}
         <div className="ml-auto flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-          <button onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-400 hover:bg-blue-500/10 rounded-lg transition">
+          <button onClick={onEdit} title="Modifier" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-teal-400 hover:bg-teal-500/10 rounded-lg transition">
             <Edit3 className="w-3.5 h-3.5" /> Modifier
           </button>
           <button onClick={onSend} title="Préparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-400 hover:bg-slate-700 rounded-lg transition">
@@ -1374,7 +1374,7 @@ function OrderRow({
               onClick={onDirectSend}
               disabled={isSending}
               title="Envoyer directement au fournisseur"
-              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-400 hover:bg-blue-500/10 rounded-lg transition disabled:opacity-50"
+              className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-teal-400 hover:bg-teal-500/10 rounded-lg transition disabled:opacity-50"
             >
               {isSending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
               Envoyer

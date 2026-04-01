@@ -18,6 +18,7 @@ import { ALLERGENS } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { getCurrentSeason, getCurrentSeasonLabel, getSeasonalProducts, getSeasonIcon } from '../data/seasons';
+import { trackEvent } from '../utils/analytics';
 
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
@@ -442,6 +443,10 @@ export default function Dashboard() {
     { key: 'costs', label: t("dashboard.tabCosts"), desc: t("dashboard.tabCostsDesc"), icon: TAB_ICONS.costs },
     { key: 'profitability', label: t("dashboard.tabProfitability"), desc: t("dashboard.tabProfitabilityDesc"), icon: TAB_ICONS.profitability },
   ];
+
+  useEffect(() => {
+    trackEvent('page_view', { page: 'dashboard' });
+  }, []);
 
   useEffect(() => {
     if (restaurantLoading || !selectedRestaurant) return;

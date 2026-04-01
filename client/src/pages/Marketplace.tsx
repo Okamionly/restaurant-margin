@@ -88,7 +88,7 @@ const PRODUCTS: Product[] = [];
 
 const CATEGORY_COLORS: Record<string, string> = {
   Viandes: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  Poissons: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  Poissons: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
   'Fruits & Legumes': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   Epicerie: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   Boissons: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
@@ -364,7 +364,7 @@ export default function Marketplace() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <Store className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <Store className="w-7 h-7 text-teal-600 dark:text-teal-400" />
             {t('marketplace.title')}
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
@@ -379,14 +379,14 @@ export default function Marketplace() {
             <History className="w-5 h-5" />
             {t('marketplace.orders')}
             {orders.length > 0 && (
-              <span className="w-5 h-5 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              <span className="w-5 h-5 bg-teal-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {orders.length}
               </span>
             )}
           </button>
           <button
             onClick={() => setCartOpen(!cartOpen)}
-            className="relative inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-colors"
+            className="relative inline-flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-medium text-sm transition-colors"
           >
             <ShoppingCart className="w-5 h-5" />
             {t('marketplace.myCart')}
@@ -407,7 +407,7 @@ export default function Marketplace() {
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder={t('marketplace.searchPlaceholder')}
-          className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+          className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
         />
       </div>
 
@@ -417,7 +417,7 @@ export default function Marketplace() {
           onClick={() => setSelectedCategory(null)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
             !selectedCategory
-              ? 'bg-blue-600 text-white'
+              ? 'bg-teal-600 text-white'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
@@ -429,7 +429,7 @@ export default function Marketplace() {
             onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               selectedCategory === cat
-                ? 'bg-blue-600 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
@@ -445,7 +445,7 @@ export default function Marketplace() {
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value as SortOption)}
-            className="text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="price_asc">{t('marketplace.priceAsc')}</option>
             <option value="price_desc">{t('marketplace.priceDesc')}</option>
@@ -480,9 +480,9 @@ export default function Marketplace() {
                 type="checkbox"
                 checked={showLocalOnly}
                 onChange={e => setShowLocalOnly(e.target.checked)}
-                className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
+                className="rounded border-slate-300 dark:border-slate-600 text-teal-600 focus:ring-teal-500"
               />
-              <MapPin className="w-4 h-4 text-blue-500" />
+              <MapPin className="w-4 h-4 text-teal-500" />
               Local
             </label>
           </>
@@ -502,13 +502,13 @@ export default function Marketplace() {
           {premiumSuppliers.map(supplier => (
             <div
               key={supplier.id}
-              className="relative bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/20 border border-blue-200 dark:border-blue-800/40 rounded-xl p-5 flex gap-4"
+              className="relative bg-gradient-to-br from-teal-50 to-indigo-50 dark:from-teal-950/30 dark:to-indigo-950/20 border border-teal-200 dark:border-teal-800/40 rounded-xl p-5 flex gap-4"
             >
               <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
                 <Award className="w-3 h-3" />
                 Premium
               </span>
-              <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-lg font-bold text-blue-600 dark:text-blue-400">
+              <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-lg font-bold text-teal-600 dark:text-teal-400">
                 {supplier.logo}
               </div>
               <div className="flex-1 min-w-0">
@@ -533,13 +533,13 @@ export default function Marketplace() {
                     </span>
                   )}
                   {supplier.local && (
-                    <span className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
+                    <span className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400">
                       <MapPin className="w-3.5 h-3.5" /> Local
                     </span>
                   )}
                   <button
                     onClick={() => showToast(`Contact ${supplier.name}: ${supplier.phone}`, 'info')}
-                    className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                    className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-600 hover:bg-teal-700 text-white transition-colors"
                   >
                     <Phone className="w-3.5 h-3.5" />
                     {t('marketplace.contact')}
@@ -656,7 +656,7 @@ export default function Marketplace() {
                                 disabled={!offer.inStock}
                                 className={`p-2 rounded-lg transition-colors ${
                                   offer.inStock
-                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                    ? 'bg-teal-600 hover:bg-teal-700 text-white'
                                     : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'
                                 }`}
                                 title={t('marketplace.addToCart')}
@@ -681,7 +681,7 @@ export default function Marketplace() {
             <div className="sticky top-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <ShoppingBag className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   {t('marketplace.cart')} ({cart.length})
                 </h3>
                 <button onClick={() => setCartOpen(false)} className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
@@ -747,12 +747,12 @@ export default function Marketplace() {
                   <div className="border-t border-slate-200 dark:border-slate-700 p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-slate-900 dark:text-white">{t('common.total')}</span>
-                      <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{cartTotal.toFixed(2)} EUR</span>
+                      <span className="text-lg font-bold text-teal-600 dark:text-teal-400">{cartTotal.toFixed(2)} EUR</span>
                     </div>
                     <button
                       onClick={submitOrder}
                       disabled={submitting}
-                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg text-sm font-semibold transition-colors"
+                      className="w-full py-2.5 bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-lg text-sm font-semibold transition-colors"
                     >
                       {submitting ? t('marketplace.sending') : t('marketplace.placeOrder')}
                     </button>
@@ -777,7 +777,7 @@ export default function Marketplace() {
           <div className="relative w-full max-h-[80vh] bg-white dark:bg-slate-800 rounded-t-2xl border-t border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col animate-slide-up">
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
               <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <ShoppingBag className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 Panier ({cart.length})
               </h3>
               <button onClick={() => setCartOpen(false)} className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
@@ -843,11 +843,11 @@ export default function Marketplace() {
                 <div className="border-t border-slate-200 dark:border-slate-700 p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-semibold text-slate-900 dark:text-white">{t('common.total')}</span>
-                    <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{cartTotal.toFixed(2)} EUR</span>
+                    <span className="text-lg font-bold text-teal-600 dark:text-teal-400">{cartTotal.toFixed(2)} EUR</span>
                   </div>
                   <button
                     onClick={submitOrder}
-                    className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors"
+                    className="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-semibold transition-colors"
                   >
                     {t('marketplace.placeOrder')}
                   </button>
@@ -869,7 +869,7 @@ export default function Marketplace() {
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
             <h2 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <History className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <History className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               {t('marketplace.orderHistory')}
             </h2>
             <button onClick={() => setShowOrders(false)} className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
@@ -895,7 +895,7 @@ export default function Marketplace() {
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                         order.status === 'draft' ? 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-300' :
-                        order.status === 'sent' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                        order.status === 'sent' ? 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' :
                         order.status === 'confirmed' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                         'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                       }`}>
@@ -905,7 +905,7 @@ export default function Marketplace() {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                      <span className="text-sm font-bold text-teal-600 dark:text-teal-400">
                         {order.totalHT.toFixed(2)} EUR
                       </span>
                       <span className="text-[10px] text-slate-400">
@@ -929,7 +929,7 @@ export default function Marketplace() {
                     {order.status === 'draft' && (
                       <button
                         onClick={() => updateOrderStatus(order.id, 'sent')}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-600 hover:bg-teal-700 text-white transition-colors"
                       >
                         <Send className="w-3 h-3" /> {t('common.send')}
                       </button>

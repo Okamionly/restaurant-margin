@@ -22,7 +22,7 @@ export default function CGV() {
         <div className="space-y-10">
           {/* Article 1 - Objet */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 1 — Objet</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 1 — Objet</h2>
             <p className="text-slate-300">
               Les presentes Conditions Generales de Vente (CGV) regissent les relations contractuelles
               entre RestauMargin, edite par Youssef Guessous (ci-apres "le Prestataire"), et tout
@@ -36,7 +36,7 @@ export default function CGV() {
 
           {/* Article 2 - Services */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 2 — Services proposes</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 2 — Services proposes</h2>
             <p className="text-slate-300">RestauMargin propose :</p>
             <ul className="list-disc list-inside text-slate-300 space-y-2 ml-2">
               <li>
@@ -55,7 +55,7 @@ export default function CGV() {
 
           {/* Article 3 - Prix */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 3 — Prix et modalites de paiement</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 3 — Prix et modalites de paiement</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
                 <p className="text-sm text-slate-400 mb-1">Abonnement SaaS</p>
@@ -76,7 +76,7 @@ export default function CGV() {
 
           {/* Article 4 - Abonnement */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 4 — Duree et resiliation de l'abonnement</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 4 — Duree et resiliation de l'abonnement</h2>
             <p className="text-slate-300">
               L'abonnement est souscrit pour une duree indeterminee, avec facturation mensuelle.
             </p>
@@ -93,7 +93,7 @@ export default function CGV() {
 
           {/* Article 5 - Retractation */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 5 — Droit de retractation</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 5 — Droit de retractation</h2>
             <p className="text-slate-300">
               Conformement aux articles L.221-18 et suivants du Code de la consommation, le Client
               dispose d'un delai de <span className="font-semibold text-white">14 jours</span> a compter
@@ -102,7 +102,7 @@ export default function CGV() {
             </p>
             <p className="text-slate-300">
               Pour exercer ce droit, le Client doit notifier sa decision par email a{' '}
-              <span className="text-blue-400">contact@restaumargin.fr</span> ou par courrier.
+              <span className="text-teal-400">contact@restaumargin.fr</span> ou par courrier.
               Le materiel devra etre retourne dans son emballage d'origine, en parfait etat, dans un
               delai de 14 jours suivant la notification.
             </p>
@@ -119,7 +119,7 @@ export default function CGV() {
 
           {/* Article 6 - Garantie hardware */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 6 — Garantie du kit hardware</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 6 — Garantie du kit hardware</h2>
             <p className="text-slate-300">
               Le kit hardware beneficie d'une <span className="font-semibold text-white">garantie legale
               de conformite de 2 ans</span> a compter de la date de livraison, conformement aux articles
@@ -137,7 +137,7 @@ export default function CGV() {
 
           {/* Article 7 - Responsabilites */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 7 — Responsabilites</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 7 — Responsabilites</h2>
             <h3 className="text-lg font-medium text-white">Obligations du Prestataire</h3>
             <ul className="list-disc list-inside text-slate-300 space-y-1 ml-2">
               <li>Fournir un acces continu et securise a la plateforme (obligation de moyens)</li>
@@ -163,7 +163,7 @@ export default function CGV() {
 
           {/* Article 8 - Propriete intellectuelle */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 8 — Propriete intellectuelle</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 8 — Propriete intellectuelle</h2>
             <p className="text-slate-300">
               Le Prestataire reste titulaire de l'ensemble des droits de propriete intellectuelle sur la
               plateforme RestauMargin, son code source, son architecture, ses algorithmes, sa charte
@@ -181,11 +181,11 @@ export default function CGV() {
 
           {/* Article 9 - Donnees personnelles */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 9 — Protection des donnees personnelles</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 9 — Protection des donnees personnelles</h2>
             <p className="text-slate-300">
               Le traitement des donnees personnelles est effectue conformement au RGPD. Pour plus de
               details, consultez notre{' '}
-              <a href="/politique-confidentialite" className="text-blue-400 hover:text-blue-300 underline">
+              <a href="/politique-confidentialite" className="text-teal-400 hover:text-teal-300 underline">
                 Politique de confidentialite
               </a>.
             </p>
@@ -193,7 +193,7 @@ export default function CGV() {
 
           {/* Article 10 - Force majeure */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 10 — Force majeure</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 10 — Force majeure</h2>
             <p className="text-slate-300">
               Aucune des parties ne pourra etre tenue responsable de l'inexecution de ses obligations en
               cas de force majeure telle que definie par l'article 1218 du Code civil (catastrophes
@@ -203,7 +203,7 @@ export default function CGV() {
 
           {/* Article 11 - Droit applicable */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 11 — Droit applicable et litiges</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 11 — Droit applicable et litiges</h2>
             <p className="text-slate-300">
               Les presentes CGV sont soumises au droit francais. En cas de litige, les parties
               s'engagent a rechercher une solution amiable prealablement a toute action judiciaire.
@@ -216,18 +216,18 @@ export default function CGV() {
 
           {/* Article 12 - Contact */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">Article 12 — Contact</h2>
+            <h2 className="text-xl font-semibold text-teal-400">Article 12 — Contact</h2>
             <p className="text-slate-300">
               Pour toute question relative aux presentes CGV, vous pouvez nous contacter a :{' '}
-              <span className="text-blue-400">contact@restaumargin.fr</span>
+              <span className="text-teal-400">contact@restaumargin.fr</span>
             </p>
           </section>
         </div>
 
         {/* Footer links */}
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-wrap gap-6 text-sm text-slate-400">
-          <a href="/mentions-legales" className="hover:text-blue-400 transition-colors">Mentions legales</a>
-          <a href="/politique-confidentialite" className="hover:text-blue-400 transition-colors">Politique de confidentialite</a>
+          <a href="/mentions-legales" className="hover:text-teal-400 transition-colors">Mentions legales</a>
+          <a href="/politique-confidentialite" className="hover:text-teal-400 transition-colors">Politique de confidentialite</a>
         </div>
       </div>
     </div>

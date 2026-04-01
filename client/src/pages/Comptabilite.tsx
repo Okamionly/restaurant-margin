@@ -537,7 +537,7 @@ export default function Comptabilite() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Calculator className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <Calculator className="w-7 h-7 text-teal-600 dark:text-teal-400" />
             Comptabilité
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
@@ -563,7 +563,7 @@ export default function Comptabilite() {
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   period === p
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-teal-600 text-white'
                     : 'bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                 }`}
               >
@@ -614,7 +614,7 @@ export default function Comptabilite() {
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wide">Coût matière</span>
-            <PieChartIcon className="w-4 h-4 text-blue-500" />
+            <PieChartIcon className="w-4 h-4 text-teal-500" />
           </div>
           <div className={`text-xl font-bold ${periodTotals.ratioMatiere <= 30 ? 'text-emerald-600 dark:text-emerald-400' : periodTotals.ratioMatiere <= 35 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtPct(periodTotals.ratioMatiere)}
@@ -638,7 +638,7 @@ export default function Comptabilite() {
       {/* ─── TVA Section ───────────────────────────────────────────────── */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-          <Euro className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <Euro className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           Ventilation TVA
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
@@ -665,14 +665,14 @@ export default function Comptabilite() {
                     </td>
                     <td className="py-2.5 px-3 text-slate-300 dark:text-slate-300">{row.label}</td>
                     <td className="py-2.5 px-3 text-right text-slate-900 dark:text-white">{fmt(row.baseHT)}</td>
-                    <td className="py-2.5 px-3 text-right font-medium text-blue-600 dark:text-blue-400">{fmt(row.montantTVA)}</td>
+                    <td className="py-2.5 px-3 text-right font-medium text-teal-600 dark:text-teal-400">{fmt(row.montantTVA)}</td>
                     <td className="py-2.5 px-3 text-right text-slate-900 dark:text-white">{fmt(row.totalTTC)}</td>
                   </tr>
                 ))}
                 <tr className="font-semibold bg-slate-50 dark:bg-slate-700/30">
                   <td className="py-2.5 px-3 text-slate-900 dark:text-white" colSpan={2}>Total</td>
                   <td className="py-2.5 px-3 text-right text-slate-900 dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.baseHT, 0))}</td>
-                  <td className="py-2.5 px-3 text-right text-blue-600 dark:text-blue-400">{fmt(tvaData.reduce((s, r) => s + r.montantTVA, 0))}</td>
+                  <td className="py-2.5 px-3 text-right text-teal-600 dark:text-teal-400">{fmt(tvaData.reduce((s, r) => s + r.montantTVA, 0))}</td>
                   <td className="py-2.5 px-3 text-right text-slate-900 dark:text-white">{fmt(tvaData.reduce((s, r) => s + r.totalTTC, 0))}</td>
                 </tr>
               </tbody>
@@ -705,7 +705,7 @@ export default function Comptabilite() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
+                  ? 'border-teal-600 text-teal-600 dark:text-teal-400 dark:border-teal-400'
                   : 'border-transparent text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
               }`}
             >
@@ -798,11 +798,11 @@ export default function Comptabilite() {
                     <td className="py-2 px-3 text-slate-300 dark:text-slate-300">{s.client || '—'}</td>
                     <td className="py-2 px-3 text-slate-300 dark:text-slate-300">{s.description}</td>
                     <td className="py-2 px-3 text-right text-slate-900 dark:text-white">{fmt(s.montantHT)}</td>
-                    <td className="py-2 px-3 text-right text-blue-600 dark:text-blue-400">{fmt(s.tva)}</td>
+                    <td className="py-2 px-3 text-right text-teal-600 dark:text-teal-400">{fmt(s.tva)}</td>
                     <td className="py-2 px-3 text-right font-medium text-slate-900 dark:text-white">{fmt(s.ttc)}</td>
                     <td className="py-2 px-3">
                       <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        s.paiement === 'CB' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' :
+                        s.paiement === 'CB' ? 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300' :
                         s.paiement === 'Espèces' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' :
                         s.paiement === 'Chèque' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' :
                         s.paiement === 'Virement' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300' :
@@ -825,7 +825,7 @@ export default function Comptabilite() {
             <span className="font-medium text-slate-900 dark:text-white">
               Total HT : {fmt(journalTotals.ht)}
             </span>
-            <span className="font-medium text-blue-600 dark:text-blue-400">
+            <span className="font-medium text-teal-600 dark:text-teal-400">
               Total TVA : {fmt(journalTotals.tva)}
             </span>
             <span className="font-bold text-slate-900 dark:text-white">
@@ -843,7 +843,7 @@ export default function Comptabilite() {
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Charges & dépenses</h2>
             <button
               onClick={() => setShowExpenseModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-colors"
             >
               <Plus className="w-4 h-4" />
               Ajouter une dépense
@@ -895,7 +895,7 @@ export default function Comptabilite() {
                         </span>
                       </td>
                       <td className="py-2 px-3 text-right text-slate-900 dark:text-white">{fmt(e.montantHT)}</td>
-                      <td className="py-2 px-3 text-right text-blue-600 dark:text-blue-400">{fmt(e.tva)}</td>
+                      <td className="py-2 px-3 text-right text-teal-600 dark:text-teal-400">{fmt(e.tva)}</td>
                       <td className="py-2 px-3 text-right font-medium text-slate-900 dark:text-white">{fmt(e.ttc)}</td>
                       <td className="py-2 px-3 text-slate-400 dark:text-slate-400 truncate max-w-[200px]">{e.description}</td>
                       <td className="py-2 px-3">
@@ -986,8 +986,8 @@ export default function Comptabilite() {
           {/* FEC */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-white">Fichier des Écritures Comptables</h3>
@@ -999,7 +999,7 @@ export default function Comptabilite() {
             </p>
             <button
               onClick={handleExportFEC}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors w-full justify-center"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-colors w-full justify-center"
             >
               <Download className="w-4 h-4" />
               Télécharger le FEC
@@ -1169,7 +1169,7 @@ export default function Comptabilite() {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400 dark:text-slate-400">TVA ({newExpense.tva}%) :</span>
-                <span className="text-blue-600 dark:text-blue-400">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * parseFloat(newExpense.tva) / 100))}</span>
+                <span className="text-teal-600 dark:text-teal-400">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * parseFloat(newExpense.tva) / 100))}</span>
               </div>
               <div className="flex justify-between font-semibold border-t border-slate-200 dark:border-slate-600 pt-1 mt-1">
                 <span className="text-slate-900 dark:text-white">Total TTC :</span>
@@ -1187,7 +1187,7 @@ export default function Comptabilite() {
             </button>
             <button
               onClick={handleAddExpense}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+              className="flex-1 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition-colors"
             >
               Ajouter
             </button>

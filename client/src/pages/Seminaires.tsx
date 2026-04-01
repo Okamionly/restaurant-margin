@@ -111,7 +111,7 @@ const STATUS_COLUMNS: EventStatus[] = ['Demande', 'Devis envoyé', 'Confirmé', 
 const STATUS_COLORS: Record<EventStatus, { bg: string; text: string; border: string; dot: string }> = {
   'Demande':       { bg: 'bg-slate-100 dark:bg-slate-700/50', text: 'text-slate-400 dark:text-slate-300', border: 'border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
   'Devis envoyé':  { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700', dot: 'bg-amber-400' },
-  'Confirmé':      { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700', dot: 'bg-blue-400' },
+  'Confirmé':      { bg: 'bg-teal-100 dark:bg-teal-900/40', text: 'text-teal-700 dark:text-teal-300', border: 'border-teal-300 dark:border-teal-700', dot: 'bg-teal-400' },
   'En cours':      { bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-300 dark:border-emerald-700', dot: 'bg-emerald-400' },
   'Soldé':         { bg: 'bg-purple-100 dark:bg-purple-900/40', text: 'text-purple-700 dark:text-purple-300', border: 'border-purple-300 dark:border-purple-700', dot: 'bg-purple-400' },
 };
@@ -395,7 +395,7 @@ export default function Seminaires() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <PartyPopper className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <PartyPopper className="w-7 h-7 text-teal-600 dark:text-teal-400" />
             Séminaires & Groupes
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
@@ -424,7 +424,7 @@ export default function Seminaires() {
           </div>
           <button
             onClick={() => { setForm(emptyForm); setShowNewModal(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-semibold transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" /> Nouvel événement
           </button>
@@ -435,8 +435,8 @@ export default function Seminaires() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-              <CalendarDays className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+              <CalendarDays className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
               <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">Événements ce mois</p>
@@ -493,7 +493,7 @@ export default function Seminaires() {
           placeholder="Rechercher un événement..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
       </div>
 
@@ -522,7 +522,7 @@ export default function Seminaires() {
                     <div
                       key={ev.id}
                       onClick={() => { setSelectedEvent(ev); setShowDetailModal(true); }}
-                      className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 cursor-pointer hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all group"
+                      className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 cursor-pointer hover:shadow-md hover:border-teal-300 dark:hover:border-teal-600 transition-all group"
                     >
                       {/* Type badge */}
                       <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full mb-2 ${TYPE_COLORS[ev.type] || TYPE_COLORS['Autre']}`}>
@@ -613,10 +613,10 @@ export default function Seminaires() {
                 <div
                   key={day}
                   className={`min-h-[100px] border-b border-r border-slate-100 dark:border-slate-700/50 p-1.5 ${
-                    isToday ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
+                    isToday ? 'bg-teal-50/50 dark:bg-teal-900/10' : ''
                   }`}
                 >
-                  <span className={`text-xs font-medium ${isToday ? 'bg-blue-600 text-white px-1.5 py-0.5 rounded-full' : 'text-slate-300 dark:text-slate-400'}`}>
+                  <span className={`text-xs font-medium ${isToday ? 'bg-teal-600 text-white px-1.5 py-0.5 rounded-full' : 'text-slate-300 dark:text-slate-400'}`}>
                     {day}
                   </span>
                   <div className="mt-1 space-y-1">
@@ -655,7 +655,7 @@ export default function Seminaires() {
                   value={form.clientNom}
                   onChange={e => setForm(f => ({ ...f, clientNom: e.target.value }))}
                   placeholder="Nom du client"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -664,7 +664,7 @@ export default function Seminaires() {
                   value={form.clientEntreprise}
                   onChange={e => setForm(f => ({ ...f, clientEntreprise: e.target.value }))}
                   placeholder="Nom de l'entreprise"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -674,7 +674,7 @@ export default function Seminaires() {
                   value={form.clientEmail}
                   onChange={e => setForm(f => ({ ...f, clientEmail: e.target.value }))}
                   placeholder="email@exemple.com"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -683,7 +683,7 @@ export default function Seminaires() {
                   value={form.clientTelephone}
                   onChange={e => setForm(f => ({ ...f, clientTelephone: e.target.value }))}
                   placeholder="06 12 34 56 78"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
@@ -700,7 +700,7 @@ export default function Seminaires() {
                 <select
                   value={form.type}
                   onChange={e => setForm(f => ({ ...f, type: e.target.value as EventType }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   {EVENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
@@ -711,7 +711,7 @@ export default function Seminaires() {
                   type="date"
                   value={form.date}
                   onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -720,7 +720,7 @@ export default function Seminaires() {
                   type="time"
                   value={form.heureDebut}
                   onChange={e => setForm(f => ({ ...f, heureDebut: e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -729,7 +729,7 @@ export default function Seminaires() {
                   type="time"
                   value={form.heureFin}
                   onChange={e => setForm(f => ({ ...f, heureFin: e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -738,7 +738,7 @@ export default function Seminaires() {
                   type="number"
                   value={form.nbConvivesMin}
                   onChange={e => setForm(f => ({ ...f, nbConvivesMin: +e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -747,7 +747,7 @@ export default function Seminaires() {
                   type="number"
                   value={form.nbConvivesMax}
                   onChange={e => setForm(f => ({ ...f, nbConvivesMax: +e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div className="sm:col-span-2">
@@ -755,7 +755,7 @@ export default function Seminaires() {
                 <select
                   value={form.salle}
                   onChange={e => setForm(f => ({ ...f, salle: e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   {SALLES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -775,7 +775,7 @@ export default function Seminaires() {
                   value={form.menuEntree}
                   onChange={e => setForm(f => ({ ...f, menuEntree: e.target.value }))}
                   placeholder="Ex: Salade César"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -784,7 +784,7 @@ export default function Seminaires() {
                   value={form.menuPlat}
                   onChange={e => setForm(f => ({ ...f, menuPlat: e.target.value }))}
                   placeholder="Ex: Filet de boeuf"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -793,7 +793,7 @@ export default function Seminaires() {
                   value={form.menuDessert}
                   onChange={e => setForm(f => ({ ...f, menuDessert: e.target.value }))}
                   placeholder="Ex: Fondant chocolat"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
@@ -810,7 +810,7 @@ export default function Seminaires() {
                   key={eq.id}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
                     form.equipements.includes(eq.id)
-                      ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300'
+                      ? 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-600 text-teal-700 dark:text-teal-300'
                       : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
                   }`}
                 >
@@ -839,7 +839,7 @@ export default function Seminaires() {
                   type="number"
                   value={form.prixParPersonne}
                   onChange={e => setForm(f => ({ ...f, prixParPersonne: +e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
               <div>
@@ -857,7 +857,7 @@ export default function Seminaires() {
                     max={100}
                     value={form.arrhesPercent}
                     onChange={e => setForm(f => ({ ...f, arrhesPercent: +e.target.value }))}
-                    className="w-20 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-20 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                   <span className="text-sm text-slate-400 dark:text-slate-400">%</span>
                   <span className="text-sm font-medium text-slate-400 dark:text-slate-300">
@@ -876,7 +876,7 @@ export default function Seminaires() {
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={3}
               placeholder="Informations complémentaires, allergies, demandes spéciales..."
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
             />
           </div>
 
@@ -890,7 +890,7 @@ export default function Seminaires() {
             </button>
             <button
               onClick={handleCreate}
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors"
+              className="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-semibold transition-colors"
             >
               Créer l'événement
             </button>
@@ -946,7 +946,7 @@ export default function Seminaires() {
                 {/* Event details */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="text-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
-                    <CalendarDays className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+                    <CalendarDays className="w-5 h-5 text-teal-500 mx-auto mb-1" />
                     <p className="text-xs text-slate-400 dark:text-slate-400">Date</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-white">{formatDate(ev.date)}</p>
                   </div>
@@ -1046,7 +1046,7 @@ export default function Seminaires() {
                     {ev.timeline.map((entry, i) => (
                       <div key={i} className="flex gap-3">
                         <div className="flex flex-col items-center">
-                          <div className="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-teal-500 mt-1.5 flex-shrink-0" />
                           {i < ev.timeline.length - 1 && <div className="w-px flex-1 bg-slate-200 dark:bg-slate-700 my-1" />}
                         </div>
                         <div className="pb-3">
@@ -1071,7 +1071,7 @@ export default function Seminaires() {
                   {(ev.status === 'Devis envoyé' || ev.status === 'Demande') && (
                     <button
                       onClick={() => handleStatusAction(ev, 'confirmer')}
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-semibold transition-colors"
                     >
                       <CheckCircle2 className="w-4 h-4" /> Confirmer
                     </button>

@@ -93,7 +93,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <div>
             <p className="text-sm text-slate-500 dark:text-slate-400">Ingrédient</p>
             <p className="font-semibold text-slate-800 dark:text-slate-100">{ingredientName}</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-0.5">
+            <p className="text-xs text-teal-600 dark:text-teal-400 font-medium mt-0.5">
               Prix unitaire : {pricePerUnit.toFixed(2)} €/{unit}
             </p>
           </div>
@@ -124,8 +124,8 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
                 status === 'connected'
                   ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-700'
                   : status === 'connecting'
-                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 border border-teal-300 dark:border-teal-700'
+                  : 'bg-teal-600 text-white hover:bg-teal-700'
               }`}
             >
               {status === 'connected' ? (
@@ -140,7 +140,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
 
           {/* Status dot */}
           <div className={`w-2.5 h-2.5 rounded-full ${
-            isConnected ? 'bg-green-500' : status === 'connecting' ? 'bg-blue-500 animate-pulse' : 'bg-slate-400'
+            isConnected ? 'bg-green-500' : status === 'connecting' ? 'bg-teal-500 animate-pulse' : 'bg-slate-400'
           }`} />
         </div>
 
@@ -168,7 +168,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <div className="relative z-10 flex items-baseline gap-2">
             <span className={`text-6xl sm:text-5xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
-              netWeight > 0 ? 'text-blue-300' :
+              netWeight > 0 ? 'text-teal-300' :
               'text-slate-600'
             }`}>
               {displayWeight(netWeight)}
@@ -209,7 +209,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
                 onClick={() => setDisplayUnit(u)}
                 className={`px-4 py-1.5 rounded-md text-sm font-bold transition-colors ${
                   displayUnit === u
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-teal-600 text-white'
                     : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                 }`}
               >
@@ -250,8 +250,8 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
 
         {/* Stock calculation preview */}
         {weightInUnit > 0 && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-4 py-3 text-sm">
-            <p className="text-blue-700 dark:text-blue-300 font-medium break-words leading-relaxed">
+          <div className="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg px-4 py-3 text-sm">
+            <p className="text-teal-700 dark:text-teal-300 font-medium break-words leading-relaxed">
               Stock actuel : {currentStock} {unit}
               <span className="max-sm:block"> + Pesée : {weightInUnit} {unit}</span>
               <span className="max-sm:block"> = <strong>Nouveau stock : {newStockAdd.toFixed(2)} {unit}</strong></span>
@@ -272,7 +272,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <button
             onClick={handleAddStock}
             disabled={weightInUnit <= 0}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-teal-600 hover:bg-teal-700 disabled:opacity-30 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors"
           >
             <Plus className="w-4 h-4" />
             Ajouter au stock

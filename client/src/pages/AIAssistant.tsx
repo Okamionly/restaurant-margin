@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
+import { trackEvent } from '../utils/analytics';
 
 interface ActionResult {
   type: string;
@@ -199,6 +200,7 @@ export default function AIAssistant() {
     recognitionRef.current = recognition;
     recognition.start();
     setIsListening(true);
+    trackEvent('voice_command');
   }
 
   async function handleSend(text?: string) {
@@ -215,6 +217,7 @@ export default function AIAssistant() {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
+    trackEvent('ai_chat_sent');
 
     try {
       const { response, actions } = await getAIResponse(messageText);

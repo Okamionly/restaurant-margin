@@ -22,7 +22,7 @@ export default function CGU() {
         <div className="space-y-10">
           {/* 1. Objet */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">1. Objet</h2>
+            <h2 className="text-xl font-semibold text-teal-400">1. Objet</h2>
             <p className="text-slate-300">
               Les presentes Conditions Generales d'Utilisation (ci-apres « CGU ») ont pour objet de definir
               les modalites et conditions d'utilisation de la plateforme RestauMargin, accessible a l'adresse
@@ -37,7 +37,7 @@ export default function CGU() {
 
           {/* 2. Inscription et compte */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">2. Inscription et compte</h2>
+            <h2 className="text-xl font-semibold text-teal-400">2. Inscription et compte</h2>
             <p className="text-slate-300">
               L'acces aux fonctionnalites de RestauMargin necessite la creation d'un compte utilisateur.
               L'utilisateur s'engage a fournir des informations exactes et a jour lors de son inscription.
@@ -55,7 +55,7 @@ export default function CGU() {
 
           {/* 3. Services */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">3. Services</h2>
+            <h2 className="text-xl font-semibold text-teal-400">3. Services</h2>
             <p className="text-slate-300">
               RestauMargin propose les fonctionnalites suivantes, selon le plan d'abonnement souscrit :
             </p>
@@ -74,7 +74,7 @@ export default function CGU() {
 
           {/* 4. Obligations de l'utilisateur */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">4. Obligations de l'utilisateur</h2>
+            <h2 className="text-xl font-semibold text-teal-400">4. Obligations de l'utilisateur</h2>
             <p className="text-slate-300">L'utilisateur s'engage a :</p>
             <ul className="list-disc list-inside text-slate-300 space-y-1 ml-2">
               <li>Utiliser la plateforme de maniere conforme a sa destination et aux presentes CGU</li>
@@ -88,7 +88,7 @@ export default function CGU() {
 
           {/* 5. Propriete intellectuelle */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">5. Propriete intellectuelle</h2>
+            <h2 className="text-xl font-semibold text-teal-400">5. Propriete intellectuelle</h2>
             <p className="text-slate-300">
               RestauMargin detient l'ensemble des droits de propriete intellectuelle relatifs a la plateforme,
               incluant le code source, le design, les textes, les logos et les fonctionnalites.
@@ -105,7 +105,7 @@ export default function CGU() {
 
           {/* 6. Donnees personnelles */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">6. Donnees personnelles</h2>
+            <h2 className="text-xl font-semibold text-teal-400">6. Donnees personnelles</h2>
             <p className="text-slate-300">
               RestauMargin collecte et traite des donnees personnelles dans le cadre de l'utilisation de la
               plateforme, conformement au Reglement General sur la Protection des Donnees (RGPD).
@@ -113,7 +113,7 @@ export default function CGU() {
             <p className="text-slate-300">
               Pour en savoir plus sur la collecte, le traitement et la protection de vos donnees personnelles,
               veuillez consulter notre{' '}
-              <a href="/politique-confidentialite" className="text-blue-400 hover:text-blue-300 underline">
+              <a href="/politique-confidentialite" className="text-teal-400 hover:text-teal-300 underline">
                 Politique de confidentialite
               </a>.
             </p>
@@ -121,7 +121,7 @@ export default function CGU() {
 
           {/* 7. Responsabilite */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">7. Responsabilite</h2>
+            <h2 className="text-xl font-semibold text-teal-400">7. Responsabilite</h2>
             <p className="text-slate-300">
               RestauMargin s'efforce d'assurer la disponibilite et le bon fonctionnement de la plateforme.
               Toutefois, le service est fourni « en l'etat », sans garantie d'aucune sorte.
@@ -139,7 +139,7 @@ export default function CGU() {
 
           {/* 8. Resiliation */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">8. Resiliation</h2>
+            <h2 className="text-xl font-semibold text-teal-400">8. Resiliation</h2>
             <p className="text-slate-300">
               L'utilisateur peut a tout moment supprimer son compte depuis les parametres de son profil.
               La suppression entraine l'effacement definitif de toutes ses donnees apres un delai de 30 jours.
@@ -153,7 +153,7 @@ export default function CGU() {
 
           {/* 9. Modification des CGU */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">9. Modification des CGU</h2>
+            <h2 className="text-xl font-semibold text-teal-400">9. Modification des CGU</h2>
             <p className="text-slate-300">
               RestauMargin se reserve le droit de modifier les presentes CGU a tout moment. Les utilisateurs
               seront informes de toute modification substantielle par email et/ou par une notification sur
@@ -167,7 +167,7 @@ export default function CGU() {
 
           {/* 10. Droit applicable */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">10. Droit applicable</h2>
+            <h2 className="text-xl font-semibold text-teal-400">10. Droit applicable</h2>
             <p className="text-slate-300">
               Les presentes CGU sont soumises au droit francais. En cas de litige relatif a l'interpretation
               ou a l'execution des presentes, les parties s'engagent a rechercher une solution amiable.
@@ -179,13 +179,13 @@ export default function CGU() {
 
           {/* 11. Contact */}
           <section className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 space-y-3">
-            <h2 className="text-xl font-semibold text-blue-400">11. Contact</h2>
+            <h2 className="text-xl font-semibold text-teal-400">11. Contact</h2>
             <p className="text-slate-300">
               Pour toute question relative aux presentes CGU, vous pouvez nous contacter a l'adresse suivante :
             </p>
             <p className="text-slate-300">
               <span className="text-slate-400">Email :</span>{' '}
-              <a href="mailto:contact@restaumargin.com" className="text-blue-400 hover:text-blue-300 underline">
+              <a href="mailto:contact@restaumargin.com" className="text-teal-400 hover:text-teal-300 underline">
                 contact@restaumargin.com
               </a>
             </p>
@@ -194,9 +194,9 @@ export default function CGU() {
 
         {/* Footer links */}
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-wrap gap-6 text-sm text-slate-400">
-          <a href="/mentions-legales" className="hover:text-blue-400 transition-colors">Mentions legales</a>
-          <a href="/cgv" className="hover:text-blue-400 transition-colors">Conditions generales de vente</a>
-          <a href="/politique-confidentialite" className="hover:text-blue-400 transition-colors">Politique de confidentialite</a>
+          <a href="/mentions-legales" className="hover:text-teal-400 transition-colors">Mentions legales</a>
+          <a href="/cgv" className="hover:text-teal-400 transition-colors">Conditions generales de vente</a>
+          <a href="/politique-confidentialite" className="hover:text-teal-400 transition-colors">Politique de confidentialite</a>
         </div>
       </div>
     </div>

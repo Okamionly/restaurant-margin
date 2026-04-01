@@ -122,7 +122,7 @@ function getCategoryIcon(category?: string, isGroup?: boolean) {
 function getCategoryColor(category?: string, isGroup?: boolean) {
   if (isGroup) return 'bg-purple-500';
   if (category === 'equipe') return 'bg-emerald-500';
-  return 'bg-blue-500';
+  return 'bg-teal-500';
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -421,10 +421,10 @@ export default function Messagerie() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <MessageSquare className="w-6 h-6 text-blue-400" />
+          <MessageSquare className="w-6 h-6 text-teal-400" />
           <h1 className="text-2xl font-bold">{t('messagerie.title')}</h1>
           {totalUnread > 0 && (
-            <span className="px-2.5 py-0.5 text-xs font-bold bg-blue-600 text-white rounded-full animate-pulse">
+            <span className="px-2.5 py-0.5 text-xs font-bold bg-teal-600 text-white rounded-full animate-pulse">
               {totalUnread}
             </span>
           )}
@@ -444,7 +444,7 @@ export default function Messagerie() {
           </button>
           <button
             onClick={() => setShowCompose(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
           >
             <Plus className="w-4 h-4" />
             {t('messagerie.newMessage')}
@@ -467,7 +467,7 @@ export default function Messagerie() {
                 placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-800 text-sm border border-slate-700 focus:ring-2 focus:ring-blue-500 text-slate-200 placeholder:text-slate-400"
+                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-800 text-sm border border-slate-700 focus:ring-2 focus:ring-teal-500 text-slate-200 placeholder:text-slate-400"
               />
             </div>
           </div>
@@ -485,13 +485,13 @@ export default function Messagerie() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-t-lg whitespace-nowrap transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-slate-800 text-white border-b-2 border-blue-500'
+                    ? 'bg-slate-800 text-white border-b-2 border-teal-500'
                     : 'text-slate-400 hover:text-slate-300'
                 }`}
               >
                 {tab.label}
                 {tab.key === 'all' && totalUnread > 0 && (
-                  <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-blue-600 text-white rounded-full">
+                  <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded-full">
                     {totalUnread}
                   </span>
                 )}
@@ -503,7 +503,7 @@ export default function Messagerie() {
           <div className="flex-1 overflow-y-auto">
             {loading && (
               <div className="flex items-center justify-center p-8">
-                <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                <Loader2 className="w-6 h-6 animate-spin text-teal-500" />
               </div>
             )}
             {!loading && filtered.length === 0 && (
@@ -518,7 +518,7 @@ export default function Messagerie() {
                 onClick={() => selectConversation(conv.id)}
                 className={`w-full text-left px-3 py-3 border-b border-slate-800/50 transition-all duration-150 ${
                   activeId === conv.id
-                    ? 'bg-blue-600/10 border-l-2 border-l-blue-500'
+                    ? 'bg-teal-600/10 border-l-2 border-l-teal-500'
                     : conv.unread > 0
                     ? 'bg-slate-800/40 hover:bg-slate-800/70'
                     : 'hover:bg-slate-800/30'
@@ -534,7 +534,7 @@ export default function Messagerie() {
                     <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-slate-900 ${conv.online ? 'bg-emerald-400' : 'bg-slate-600'}`} />
                     {/* Unread badge */}
                     {conv.unread > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-blue-600 text-white rounded-full shadow-lg">
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-teal-600 text-white rounded-full shadow-lg">
                         {conv.unread}
                       </span>
                     )}
@@ -686,7 +686,7 @@ export default function Messagerie() {
                           <div
                             className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap break-words transition-all duration-300 ${
                               isMine
-                                ? 'bg-blue-600 text-white rounded-br-md shadow-lg shadow-blue-900/20'
+                                ? 'bg-teal-600 text-white rounded-br-md shadow-lg shadow-teal-900/20'
                                 : 'bg-slate-800 text-slate-200 rounded-bl-md'
                             } ${isAnimated ? 'scale-95 opacity-80' : 'scale-100 opacity-100'}`}
                           >
@@ -724,7 +724,7 @@ export default function Messagerie() {
                       onKeyDown={handleKeyDown}
                       placeholder={`${t('messagerie.messageTo')} ${activeConv.name}...`}
                       rows={1}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm text-slate-200 placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-32 overflow-y-auto transition-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm text-slate-200 placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none max-h-32 overflow-y-auto transition-all"
                       style={{ minHeight: '42px' }}
                       onInput={(e) => {
                         const t = e.currentTarget;
@@ -736,7 +736,7 @@ export default function Messagerie() {
                   <button
                     onClick={handleSend}
                     disabled={!inputText.trim() || sending}
-                    className="p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex-shrink-0 mb-0.5 hover:scale-105 active:scale-95"
+                    className="p-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex-shrink-0 mb-0.5 hover:scale-105 active:scale-95"
                     title={t('messagerie.sendEnter')}
                   >
                     {sending
@@ -759,7 +759,7 @@ export default function Messagerie() {
               </div>
               <button
                 onClick={() => setShowCompose(true)}
-                className="mt-2 flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg hover:bg-blue-600/30 transition-colors text-sm"
+                className="mt-2 flex items-center gap-2 px-4 py-2 bg-teal-600/20 text-teal-400 border border-teal-500/30 rounded-lg hover:bg-teal-600/30 transition-colors text-sm"
               >
                 <Reply className="w-4 h-4" />
                 {t('messagerie.startConversation')}
@@ -782,7 +782,7 @@ export default function Messagerie() {
             {/* Modal header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-400" />
+                <Mail className="w-4 h-4 text-teal-400" />
                 <h2 className="text-sm font-semibold text-slate-200">{t('messagerie.newMessage')}</h2>
               </div>
               <button onClick={() => setShowCompose(false)} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400">
@@ -834,7 +834,7 @@ export default function Messagerie() {
               <button
                 onClick={handleComposeSend}
                 disabled={!composeTo.trim() || !composeBody.trim() || sending}
-                className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-5 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
                 {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 {t('common.send')}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2, RotateCcw, ArrowRight, ChefHat } from 'lucide-react';
+import { trackEvent } from '../utils/analytics';
 
 /* ─────────────── Types ─────────────── */
 
@@ -26,6 +27,7 @@ export default function FoodCostCalculator() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([createIngredient(), createIngredient(), createIngredient()]);
   const [portions, setPortions] = useState<number>(10);
   const [prixVente, setPrixVente] = useState<number>(0);
+  const [tracked, setTracked] = useState(false);
 
   useEffect(() => {
     document.title = 'Calculateur de Food Cost Restaurant Gratuit | RestauMargin';
@@ -42,6 +44,13 @@ export default function FoodCostCalculator() {
   const margeBrute = prixVente - coutParPortion;
   const margePct = prixVente > 0 ? (margeBrute / prixVente) * 100 : 0;
   const coefMultiplicateur = coutParPortion > 0 ? prixVente / coutParPortion : 0;
+
+  useEffect(() => {
+    if (!tracked && coutTotal > 0 && prixVente > 0) {
+      trackEvent('calculator_used');
+      setTracked(true);
+    }
+  }, [coutTotal, prixVente, tracked]);
 
   /* ── Jauge couleur ── */
   const jaugeColor = foodCostPct <= 30 ? '#10b981' : foodCostPct <= 35 ? '#f59e0b' : '#ef4444';

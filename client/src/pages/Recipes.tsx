@@ -11,6 +11,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';
+import { trackEvent } from '../utils/analytics';
 
 function MarginBadge({ percent }: { percent: number }) {
   const color = percent >= 70 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : percent >= 60 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
@@ -713,6 +714,7 @@ export default function Recipes() {
         await updateRecipe(editingId, data);
       } else {
         await createRecipe(data);
+        trackEvent('recipe_created');
       }
       setSaveSuccess(true);
       setTimeout(() => {

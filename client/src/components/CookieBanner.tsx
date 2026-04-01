@@ -37,7 +37,7 @@ export default function CookieBanner() {
                 analytiques pour ameliorer votre experience. Consultez notre{' '}
                 <a
                   href="/politique-confidentialite"
-                  className="text-blue-400 hover:text-blue-300 underline"
+                  className="text-teal-400 hover:text-teal-300 underline"
                 >
                   politique de confidentialite
                 </a>{' '}
@@ -56,7 +56,7 @@ export default function CookieBanner() {
             </button>
             <button
               onClick={handleAccept}
-              className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+              className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition-colors"
             >
               Accepter
             </button>

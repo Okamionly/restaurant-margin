@@ -497,6 +497,18 @@ model Message {
   @@map("messages")
 }
 
+model Referral {
+  id           Int       @id @default(autoincrement())
+  referrerId   Int?
+  refereeId    Int?
+  referralCode String    @unique
+  status       String    @default("pending")
+  rewardApplied Boolean  @default(false)
+  createdAt    DateTime  @default(now())
+
+  @@map("referrals")
+}
+
 model NewsItem {
   id            Int         @id @default(autoincrement())
   restaurantId  Int?

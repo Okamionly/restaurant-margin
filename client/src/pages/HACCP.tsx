@@ -398,7 +398,7 @@ export default function HACCP() {
       <div className="flex gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800 overflow-x-auto">
         {tabs.map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}>
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-teal-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}>
             {tab.icon}{tab.label}
           </button>
         ))}
@@ -412,7 +412,7 @@ export default function HACCP() {
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-slate-400 text-sm">{t('haccp.tempCompliance')}</span>
-                <Thermometer className="w-5 h-5 text-blue-400" />
+                <Thermometer className="w-5 h-5 text-teal-400" />
               </div>
               <div className={`text-3xl font-bold ${stats.rate >= 90 ? 'text-emerald-400' : stats.rate >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{stats.rate}%</div>
               <div className="text-xs text-slate-400 mt-1">{stats.total} {t('haccp.readings')}</div>
@@ -457,7 +457,7 @@ export default function HACCP() {
           {/* Temperature trend chart */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
             <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-blue-400" />
+              <BarChart3 className="w-5 h-5 text-teal-400" />
               {t('haccp.tempTrend')}
             </h3>
             {temperatures.length === 0 ? (
@@ -502,7 +502,7 @@ export default function HACCP() {
 
           {/* Recent temps */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
-            <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-blue-400" />{t('haccp.latestReadings')}</h3>
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-teal-400" />{t('haccp.latestReadings')}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
@@ -537,7 +537,7 @@ export default function HACCP() {
           </div>
 
           <div className="flex justify-end">
-            <button onClick={() => setShowTempForm(!showTempForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors">
+            <button onClick={() => setShowTempForm(!showTempForm)} className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-medium transition-colors">
               <Plus className="w-4 h-4" />{t('haccp.newReading')}
             </button>
           </div>
@@ -595,7 +595,7 @@ export default function HACCP() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder={t('haccp.searchLots')} className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-slate-500" />
             </div>
-            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />{t('haccp.newLot')}</button>
+            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />{t('haccp.newLot')}</button>
           </div>
 
           {showLotForm && (
@@ -624,7 +624,7 @@ export default function HACCP() {
                 </tr></thead>
                 <tbody>{filteredLots.map(l => (
                   <tr key={l.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                    <td className="py-3 px-4 text-blue-400 font-mono text-xs font-semibold">{l.lotNumber}</td>
+                    <td className="py-3 px-4 text-teal-400 font-mono text-xs font-semibold">{l.lotNumber}</td>
                     <td className="py-3 px-4 text-white font-medium">{l.product}</td>
                     <td className="py-3 px-4 text-slate-400">{l.supplier}</td>
                     <td className="py-3 px-4 text-slate-400">{new Date(l.receptionDate).toLocaleDateString('fr-FR')}</td>

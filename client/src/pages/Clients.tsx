@@ -94,7 +94,7 @@ const REGIMES = ['Végétarien', 'Vegan', 'Halal', 'Casher', 'Sans gluten'];
 
 const TAG_COLORS: Record<ClientTag, { bg: string; text: string; border: string }> = {
   VIP: { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700' },
-  Régulier: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700' },
+  Régulier: { bg: 'bg-teal-100 dark:bg-teal-900/40', text: 'text-teal-700 dark:text-teal-300', border: 'border-teal-300 dark:border-teal-700' },
   Nouveau: { bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', border: 'border-green-300 dark:border-green-700' },
 };
 
@@ -149,7 +149,7 @@ function getInitials(nom: string, prenom: string) {
 }
 
 const interactionIcons: Record<string, { icon: string; color: string }> = {
-  devis: { icon: '📋', color: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300' },
+  devis: { icon: '📋', color: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300' },
   evenement: { icon: '🎉', color: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' },
   facture: { icon: '📄', color: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' },
   email: { icon: '✉️', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
@@ -376,7 +376,7 @@ export default function Clients() {
       ? 'from-amber-500 to-amber-700'
       : c.type === 'Entreprise'
         ? 'from-indigo-500 to-indigo-700'
-        : 'from-blue-500 to-blue-700';
+        : 'from-teal-500 to-teal-700';
     return (
       <div className={`${size} rounded-full bg-gradient-to-br ${colors} flex items-center justify-center text-white font-bold flex-shrink-0`}>
         {getInitials(c.nom, c.prenom)}
@@ -388,7 +388,7 @@ export default function Clients() {
 
   function ClientCard({ c }: { c: Client }) {
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer group"
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 hover:shadow-lg hover:border-teal-300 dark:hover:border-teal-600 transition-all cursor-pointer group"
         onClick={() => openDetail(c)}>
         <div className="flex items-start gap-4">
           {renderAvatar(c, 'w-12 h-12 text-base')}
@@ -429,7 +429,7 @@ export default function Clients() {
 
         <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors">
             <Mail className="w-3.5 h-3.5" /> {t('clients.email')}
           </button>
           <a href={`tel:${c.telephone}`} onClick={(e) => e.stopPropagation()}
@@ -455,7 +455,7 @@ export default function Clients() {
           <div key={i} className="flex items-center gap-3">
             <div className="w-28 text-xs text-slate-300 dark:text-slate-400 truncate text-right">{d.label}</div>
             <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-full h-5 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+              <div className="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
                 style={{ width: `${(d.value / max) * 100}%` }}>
                 {d.value > 0 && <span className="text-[10px] text-white font-medium">{fmt(d.value)}</span>}
               </div>
@@ -501,7 +501,7 @@ export default function Clients() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <Users className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+            <Users className="w-7 h-7 text-teal-600 dark:text-teal-400" />
             {t('clients.title')}
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
@@ -518,7 +518,7 @@ export default function Clients() {
             <Upload className="w-4 h-4" /> {t('clients.importCSV')}
           </button>
           <button onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors shadow-sm">
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors shadow-sm">
             <Plus className="w-4 h-4" /> {t('clients.newClient')}
           </button>
         </div>
@@ -532,7 +532,7 @@ export default function Clients() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input type="text" placeholder={t('clients.searchPlaceholder')}
               value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent" />
           </div>
 
           {/* Type filter */}
@@ -570,11 +570,11 @@ export default function Clients() {
           {/* View toggle */}
           <div className="flex items-center bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
             <button onClick={() => setViewMode('cards')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-slate-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
+              className={`p-2 rounded-md transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-slate-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button onClick={() => setViewMode('table')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
+              className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
               <List className="w-4 h-4" />
             </button>
           </div>
@@ -635,7 +635,7 @@ export default function Clients() {
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
                       <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-                        className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" title="Envoyer un email">
+                        className="p-1.5 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/30 text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors" title="Envoyer un email">
                         <Mail className="w-4 h-4" />
                       </button>
                       <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
@@ -682,7 +682,7 @@ export default function Clients() {
                 </div>
                 <div className="flex items-center gap-3 mt-3">
                   <button onClick={() => openEmailModal(selectedClient)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-teal-600 text-white hover:bg-teal-700 transition-colors">
                     <Mail className="w-3.5 h-3.5" /> Email
                   </button>
                   <a href={`tel:${selectedClient.telephone}`}
@@ -713,7 +713,7 @@ export default function Clients() {
                 <button key={tab.id} onClick={() => setDetailTab(tab.id)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     detailTab === tab.id
-                      ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
+                      ? 'border-teal-600 text-teal-600 dark:text-teal-400 dark:border-teal-400'
                       : 'border-transparent text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                   }`}>
                   {tab.label}
@@ -839,7 +839,7 @@ export default function Clients() {
                   selectedClient.documents.map(d => (
                     <div key={d.id} className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-lg p-3">
                       <div className="flex items-center gap-3">
-                        <FileText className={`w-5 h-5 ${d.type === 'facture' ? 'text-green-500' : 'text-blue-500'}`} />
+                        <FileText className={`w-5 h-5 ${d.type === 'facture' ? 'text-green-500' : 'text-teal-500'}`} />
                         <div>
                           <div className="text-sm font-medium text-slate-900 dark:text-white">{d.numero}</div>
                           <div className="text-xs text-slate-400 dark:text-slate-500">{d.type === 'facture' ? 'Facture' : 'Devis'} &middot; {fmtDate(d.date)}</div>
@@ -849,7 +849,7 @@ export default function Clients() {
                         <div className="text-sm font-semibold text-slate-900 dark:text-white">{fmt(d.montant)}</div>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                           d.statut === 'Payée' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' :
-                          d.statut === 'Accepté' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300' :
+                          d.statut === 'Accepté' ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300' :
                           d.statut === 'Refusé' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' :
                           'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
                         }`}>{d.statut}</span>
@@ -865,7 +865,7 @@ export default function Clients() {
               <div className="space-y-4">
                 <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-5 h-5 text-blue-500" />
+                    <Shield className="w-5 h-5 text-teal-500" />
                     <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300">{t('clients.dataProtection')}</h4>
                   </div>
                   <div className="space-y-2 text-sm">
@@ -879,7 +879,7 @@ export default function Clients() {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <button onClick={() => exportClientData(selectedClient)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-sm font-medium transition-colors">
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/50 text-sm font-medium transition-colors">
                     <Download className="w-4 h-4" /> {t('clients.exportData')}
                   </button>
                   <button onClick={() => handleRGPDForget(selectedClient)}
@@ -1044,7 +1044,7 @@ export default function Clients() {
                 {t('clients.cancel')}
               </button>
               <button onClick={handleSave}
-                className="px-6 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors">
+                className="px-6 py-2 rounded-lg text-sm font-medium bg-teal-600 hover:bg-teal-700 text-white transition-colors">
                 {editingClient ? t('clients.save') : t('clients.add')}
               </button>
             </div>
@@ -1064,7 +1064,7 @@ export default function Clients() {
                 {EMAIL_TEMPLATES.map(t => (
                   <button key={t.id}
                     onClick={() => applyTemplate(t)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === t.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-400 hover:border-blue-300 dark:hover:border-blue-600'}`}>
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === t.id ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300' : 'border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-400 hover:border-teal-300 dark:hover:border-teal-600'}`}>
                     {t.label}
                   </button>
                 ))}
@@ -1078,7 +1078,7 @@ export default function Clients() {
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
                 placeholder={t('clients.subjectPlaceholder')}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
               />
             </div>
             {/* Message body */}
@@ -1089,7 +1089,7 @@ export default function Clients() {
                 onChange={(e) => setEmailMessage(e.target.value)}
                 placeholder={t('clients.messagePlaceholder')}
                 rows={6}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-vertical"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none resize-vertical"
               />
             </div>
             {/* Send button */}
@@ -1103,7 +1103,7 @@ export default function Clients() {
               <button
                 onClick={handleSendClientEmail}
                 disabled={sendingClientEmail || !emailSubject.trim() || !emailMessage.trim()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-teal-600 hover:bg-teal-500 text-white transition-colors disabled:opacity-50"
               >
                 {sendingClientEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 {t('clients.send')}
@@ -1123,7 +1123,7 @@ export default function Clients() {
               <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('clients.totalClients')}</div>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{fmt(stats.totalCA)}</div>
+              <div className="text-2xl font-bold text-teal-600 dark:text-teal-400">{fmt(stats.totalCA)}</div>
               <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('clients.caTotal')}</div>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
@@ -1139,7 +1139,7 @@ export default function Clients() {
           {/* Top 10 by CA */}
           <div>
             <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-blue-500" /> {t('clients.top10ByCA')}
+              <BarChart3 className="w-4 h-4 text-teal-500" /> {t('clients.top10ByCA')}
             </h4>
             <BarChartSimple data={stats.top10.map(c => ({ label: `${c.prenom} ${c.nom}`, value: c.caTotal }))} />
           </div>

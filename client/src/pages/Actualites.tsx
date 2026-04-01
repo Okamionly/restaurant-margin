@@ -42,9 +42,9 @@ const TYPE_CONFIG = {
   trend: {
     label: 'Tendance',
     icon: TrendingUp,
-    bg: 'bg-blue-500/10 border-blue-500/30',
-    badge: 'bg-blue-500/20 text-blue-400',
-    icon_color: 'text-blue-400',
+    bg: 'bg-teal-500/10 border-teal-500/30',
+    badge: 'bg-teal-500/20 text-teal-400',
+    icon_color: 'text-teal-400',
   },
   tip: {
     label: 'Conseil',
@@ -160,7 +160,7 @@ export default function Actualites() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Newspaper className="w-6 h-6 text-blue-400" />
+            <Newspaper className="w-6 h-6 text-teal-400" />
             <h1 className="text-2xl font-bold text-white">Actualités</h1>
             {highCount > 0 && (
               <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white animate-pulse">
@@ -180,7 +180,7 @@ export default function Actualites() {
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl font-medium transition-colors text-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white rounded-xl font-medium transition-colors text-sm"
         >
           <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
           {generating ? 'Analyse en cours...' : 'Actualiser'}
@@ -201,14 +201,14 @@ export default function Actualites() {
             onClick={() => setActiveFilter(f.key)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               activeFilter === f.key
-                ? 'bg-blue-600 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
             }`}
           >
             {f.label}
             {f.count > 0 && (
               <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                activeFilter === f.key ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-300'
+                activeFilter === f.key ? 'bg-teal-500 text-white' : 'bg-slate-700 text-slate-300'
               }`}>
                 {f.count}
               </span>
@@ -219,15 +219,15 @@ export default function Actualites() {
 
       {/* Mercuriale Summary Widget */}
       {mercurialeSummary && (
-        <div className="bg-slate-900/60 border border-blue-500/20 rounded-2xl p-5">
+        <div className="bg-slate-900/60 border border-teal-500/20 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <CalendarDays className="w-5 h-5 text-blue-400" />
+              <CalendarDays className="w-5 h-5 text-teal-400" />
               <h2 className="text-white font-bold">Mercuriale de la semaine</h2>
             </div>
             <button
               onClick={() => navigate('/mercuriale')}
-              className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors font-medium"
+              className="flex items-center gap-1 text-xs text-teal-400 hover:text-teal-300 transition-colors font-medium"
             >
               Voir la mercuriale compl&egrave;te
               <ArrowRight className="w-3.5 h-3.5" />
@@ -282,7 +282,7 @@ export default function Actualites() {
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Actualiser maintenant
@@ -349,8 +349,8 @@ export default function Actualites() {
       {news.length > 0 && (
         <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-5">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-blue-600/20 rounded-lg flex-shrink-0">
-              <Newspaper className="w-4 h-4 text-blue-400" />
+            <div className="p-2 bg-teal-600/20 rounded-lg flex-shrink-0">
+              <Newspaper className="w-4 h-4 text-teal-400" />
             </div>
             <div>
               <h4 className="text-white text-sm font-semibold mb-1">Comment fonctionne cette section ?</h4>
@@ -362,7 +362,7 @@ export default function Actualites() {
               <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-400">
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-red-400" /> Alertes prix : hausses &gt;5% impactant vos recettes</span>
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-emerald-400" /> Opportunités : produits en baisse ou alternatives économiques</span>
-                <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-blue-400" /> Tendances : évolutions du marché à surveiller</span>
+                <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-teal-400" /> Tendances : évolutions du marché à surveiller</span>
               </div>
             </div>
           </div>

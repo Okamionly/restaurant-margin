@@ -94,11 +94,11 @@ const QUADRANT_CONFIG = {
   puzzle: {
     label: 'Énigmes',
     emoji: '🧩',
-    color: 'blue',
-    bg: 'bg-blue-50 dark:bg-blue-950/30',
-    border: 'border-blue-200 dark:border-blue-800',
-    text: 'text-blue-700 dark:text-blue-300',
-    badge: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+    color: 'teal',
+    bg: 'bg-teal-50 dark:bg-teal-950/30',
+    border: 'border-teal-200 dark:border-teal-800',
+    text: 'text-teal-700 dark:text-teal-300',
+    badge: 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
     dot: '#3b82f6',
     action: 'DÉVELOPPER',
     desc: 'Haute marge + peu populaire',
@@ -149,8 +149,8 @@ function fmtEur(n: number) {
 // ── Allergen helpers ──────────────────────────────────────────────────────────
 const ALLERGEN_COLORS: Record<string, string> = {
   gluten: 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300',
-  lactose: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-  lait: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+  lactose: 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
+  lait: 'bg-teal-100 text-teal-800 dark:bg-teal-900/50 dark:text-teal-300',
   noix: 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
   'fruits à coque': 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300',
   arachide: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
@@ -360,7 +360,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
           stroke="currentColor" className="text-slate-400 dark:text-slate-500" strokeWidth={1.5} strokeDasharray="6,4" />
 
         {/* Quadrant labels */}
-        <text x={padding.left + 8} y={padding.top + 18} className="fill-blue-400 dark:fill-blue-500" fontSize={11} fontWeight={600}>
+        <text x={padding.left + 8} y={padding.top + 18} className="fill-teal-400 dark:fill-teal-500" fontSize={11} fontWeight={600}>
           {QUADRANT_CONFIG.puzzle.emoji} {QUADRANT_CONFIG.puzzle.label}
         </text>
         <text x={padding.left + plotW - 8} y={padding.top + 18} className="fill-emerald-500 dark:fill-emerald-400" fontSize={11} fontWeight={600} textAnchor="end">
@@ -759,8 +759,8 @@ export default function MenuEngineering() {
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />;
     return sortDir === 'asc'
-      ? <ArrowUp className="w-3.5 h-3.5 text-blue-500" />
-      : <ArrowDown className="w-3.5 h-3.5 text-blue-500" />;
+      ? <ArrowUp className="w-3.5 h-3.5 text-teal-500" />
+      : <ArrowDown className="w-3.5 h-3.5 text-teal-500" />;
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -881,7 +881,7 @@ export default function MenuEngineering() {
                 label={t('menuEngineering.avgMargin')}
                 value={`${fmt(data.avgMargin, 1)}%`}
                 sub={t('menuEngineering.allRecipes')}
-                color="blue"
+                color="teal"
               />
               <SummaryCard
                 icon={<ChefHat className="w-5 h-5" />}
@@ -934,7 +934,7 @@ export default function MenuEngineering() {
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-400">
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Vedettes</span>
-                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Énigmes</span>
+                  <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-teal-500" /> Énigmes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Valeurs sûres</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-red-500" /> Poids morts</span>
                 </div>
@@ -1114,7 +1114,7 @@ export default function MenuEngineering() {
                   {recommendations.map((tip, idx) => {
                     const borderColors = {
                       success: 'border-l-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20',
-                      info: 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-950/20',
+                      info: 'border-l-teal-500 bg-teal-50/50 dark:bg-teal-950/20',
                       warning: 'border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20',
                       danger: 'border-l-red-500 bg-red-50/50 dark:bg-red-950/20',
                     };
@@ -1137,7 +1137,7 @@ export default function MenuEngineering() {
             {/* ── Score Legend ────────────────────────────────────────────────── */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-lg">
+                <div className="p-2.5 bg-gradient-to-br from-teal-500 to-indigo-600 rounded-xl text-white shadow-lg">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
@@ -1350,7 +1350,7 @@ export default function MenuEngineering() {
       {/* ── Modal: Bulk import ──────────────────────────────────────────────── */}
       <Modal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} title={t('menuEngineering.csvImportTitle')}>
         <div className="space-y-4">
-          <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl text-sm text-blue-700 dark:text-blue-300">
+          <div className="p-3 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 rounded-xl text-sm text-teal-700 dark:text-teal-300">
             <p className="font-medium mb-1">Format attendu (séparateur: virgule, point-virgule ou tabulation)</p>
             <code className="text-xs block mt-1 font-mono">
               nom_recette, quantité, date (YYYY-MM-DD)<br />
@@ -1415,10 +1415,10 @@ function SummaryCard({ icon, label, value, sub, color }: {
       icon: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400',
       border: 'border-t-emerald-500',
     },
-    blue: {
-      bg: 'from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800',
-      icon: 'bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400',
-      border: 'border-t-blue-500',
+    teal: {
+      bg: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-slate-800',
+      icon: 'bg-teal-100 text-teal-600 dark:bg-teal-900/50 dark:text-teal-400',
+      border: 'border-t-teal-500',
     },
     amber: {
       bg: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',

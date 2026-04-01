@@ -44,6 +44,9 @@ import {
   TrendingUp,
   Euro,
   Calendar,
+  Gift,
+  Link,
+  UserPlus,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -311,6 +314,7 @@ export default function Settings() {
     app: false,
     connexions: false,
     security: false,
+    referral: false,
     data: false,
     danger: false,
   });
@@ -341,6 +345,14 @@ export default function Settings() {
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
+  // Referral / Parrainage
+  const [referralCode, setReferralCode] = useState('');
+  const [referralLink, setReferralLink] = useState('');
+  const [referrals, setReferrals] = useState<any[]>([]);
+  const [referralStats, setReferralStats] = useState({ total: 0, active: 0, freeMonths: 0 });
+  const [referralCopied, setReferralCopied] = useState(false);
+  const [referralLoading, setReferralLoading] = useState(false);
+
   // Financial goals
   const [financialGoals, setFinancialGoals] = useState<FinancialGoals>(loadFinancialGoals);
 
@@ -368,6 +380,7 @@ export default function Settings() {
 
   useEffect(() => {
     loadStats();
+    loadReferrals();
   }, []);
 
   useEffect(() => {
@@ -423,6 +436,21 @@ export default function Settings() {
         users: Array.isArray(users) ? users.length : 0,
       });
     } catch {}
+  }
+
+  async function loadReferrals() {
+    setReferralLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/referrals/my`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setReferralCode(data.referralCode || '');
+        setReferralLink(data.referralLink || '');
+        setReferrals(data.referrals || []);
+        setReferralStats(data.stats || { total: 0, active: 0, freeMonths: 0 });
+      }
+    } catch {}
+    setReferralLoading(false);
   }
 
   // ------ Handlers ------
@@ -1486,7 +1514,111 @@ export default function Settings() {
         </Section>
 
         {/* ================================================================
-            7. DATA MANAGEMENT
+            7. PARRAINAGE
+           ================================================================ */}
+        <Section
+          id="referral"
+          icon={<Gift className="w-5 h-5" />}
+          iconColor="text-amber-500"
+          title="Parrainage"
+          badge={referralStats.active > 0 ? (
+            <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full font-medium">
+              {referralStats.active} actif{referralStats.active > 1 ? 's' : ''}
+            </span>
+          ) : undefined}
+          open={openSections.referral}
+          onToggle={() => toggleSection('referral')}
+        >
+          <div className="space-y-5">
+            {/* Referral code + copy */}
+            <div>
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Votre code de parrainage</label>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2.5 font-mono text-lg tracking-wider text-slate-800 dark:text-slate-100">
+                  {referralLoading ? '...' : referralCode}
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(referralLink);
+                    setReferralCopied(true);
+                    showToast('Lien de parrainage copié !', 'success');
+                    setTimeout(() => setReferralCopied(false), 2000);
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium transition-colors"
+                >
+                  {referralCopied ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Copié
+                    </>
+                  ) : (
+                    <>
+                      <Link className="w-4 h-4" />
+                      Copier le lien
+                    </>
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-slate-400 mt-2">
+                Partagez ce lien : <span className="font-mono text-slate-500 dark:text-slate-400">{referralLink}</span>
+              </p>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+                <UserPlus className="w-5 h-5 mx-auto mb-1 text-amber-500" />
+                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{referralStats.total}</div>
+                <div className="text-xs text-slate-400">Parrainages total</div>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+                <Check className="w-5 h-5 mx-auto mb-1 text-green-500" />
+                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{referralStats.active}</div>
+                <div className="text-xs text-slate-400">Actifs</div>
+              </div>
+              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+                <Gift className="w-5 h-5 mx-auto mb-1 text-purple-500" />
+                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{referralStats.freeMonths}</div>
+                <div className="text-xs text-slate-400">Mois gratuits gagnes</div>
+              </div>
+            </div>
+
+            {/* Referral list */}
+            {referrals.length > 0 ? (
+              <div>
+                <h4 className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Vos filleuls</h4>
+                <div className="space-y-2">
+                  {referrals.map((r: any) => (
+                    <div key={r.id} className="flex items-center justify-between bg-slate-50 dark:bg-slate-700 rounded-lg px-4 py-2.5">
+                      <div>
+                        <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{r.referee_name || r.referee_email}</p>
+                        <p className="text-xs text-slate-400">{new Date(r.created_at).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                        r.status === 'active'
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                          : r.status === 'pending'
+                          ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
+                          : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300'
+                      }`}>
+                        {r.status === 'active' ? 'Actif' : r.status === 'pending' ? 'En attente' : r.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-6 text-slate-400">
+                <UserPlus className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                <p className="text-sm">Aucun filleul pour le moment</p>
+                <p className="text-xs mt-1">Partagez votre lien pour commencer !</p>
+              </div>
+            )}
+          </div>
+        </Section>
+
+        {/* ================================================================
+            8. DATA MANAGEMENT
            ================================================================ */}
         <Section
           id="data"
@@ -1520,7 +1652,7 @@ export default function Settings() {
         </Section>
 
         {/* ================================================================
-            8. DANGER ZONE
+            9. DANGER ZONE
            ================================================================ */}
         <Section
           id="danger"

@@ -110,7 +110,7 @@ const STATUS_KEYS: Record<DocStatus, string> = {
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
   brouillon: { label: 'Brouillon', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-300 dark:text-slate-300', icon: Edit2 },
-  envoye: { label: 'Envoyé', bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', icon: Send },
+  envoye: { label: 'Envoyé', bg: 'bg-teal-100 dark:bg-teal-900/40', text: 'text-teal-700 dark:text-teal-300', icon: Send },
   accepte: { label: 'Accepté', bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', icon: CheckCircle },
   refuse: { label: 'Refusé', bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', icon: XCircle },
   paye: { label: 'Payé', bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', icon: CreditCard },
@@ -292,9 +292,9 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
   return (
     <div className="bg-white text-slate-900 p-8 rounded-lg shadow-inner border border-slate-200 text-sm leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
       {/* Header bar */}
-      <div className="flex items-start justify-between mb-6 pb-4 border-b-4 border-blue-600">
+      <div className="flex items-start justify-between mb-6 pb-4 border-b-4 border-teal-600">
         <div>
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
+          <div className="w-16 h-16 bg-gradient-to-br from-teal-600 to-teal-800 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
           <div className="font-bold text-base">{entreprise.nom}</div>
           <div className="text-xs text-slate-400 space-y-0.5 mt-1">
             <div>{entreprise.adresse}</div>
@@ -304,7 +304,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-blue-700">{typeLabel}</div>
+          <div className="text-2xl font-bold text-teal-700">{typeLabel}</div>
           <div className="text-lg font-semibold mt-1">{doc.numero}</div>
           <div className="text-xs text-slate-400 mt-2">
             <div>Date : {formatDate(doc.dateCreation)}</div>
@@ -330,7 +330,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       {/* Lines table */}
       <table className="w-full mb-6 text-xs">
         <thead>
-          <tr className="bg-blue-600 text-white">
+          <tr className="bg-teal-600 text-white">
             <th className="text-left py-2 px-3 rounded-tl-lg">Description</th>
             <th className="text-center py-2 px-2">Qté</th>
             <th className="text-center py-2 px-2">Unité</th>
@@ -366,7 +366,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
               <span>{formatEuro(amount)}</span>
             </div>
           ))}
-          <div className="flex justify-between py-2 border-t-2 border-blue-600 font-bold text-base text-blue-700">
+          <div className="flex justify-between py-2 border-t-2 border-teal-600 font-bold text-base text-teal-700">
             <span>Total TTC</span>
             <span>{formatEuro(doc.totalTTC)}</span>
           </div>
@@ -424,7 +424,7 @@ function LigneRow({
           value={ligne.description}
           onChange={e => onUpdate(ligne.id, 'description', e.target.value)}
           placeholder="Description..."
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
         />
       </div>
       <div className="col-span-3 sm:col-span-1">
@@ -433,14 +433,14 @@ function LigneRow({
           value={ligne.quantite}
           min={1}
           onChange={e => onUpdate(ligne.id, 'quantite', Number(e.target.value))}
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-center"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-center"
         />
       </div>
       <div className="col-span-3 sm:col-span-2">
         <select
           value={ligne.unite}
           onChange={e => onUpdate(ligne.id, 'unite', e.target.value)}
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
         >
           {UNITES.map(u => <option key={u} value={u}>{u}</option>)}
         </select>
@@ -453,7 +453,7 @@ function LigneRow({
             min={0}
             step={0.01}
             onChange={e => onUpdate(ligne.id, 'prixUnitaireHT', Number(e.target.value))}
-            className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-right pr-7"
+            className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-right pr-7"
           />
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400">€</span>
         </div>
@@ -462,7 +462,7 @@ function LigneRow({
         <select
           value={ligne.tauxTVA}
           onChange={e => onUpdate(ligne.id, 'tauxTVA', Number(e.target.value) as TVARate)}
-          className="w-full px-1 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-center"
+          className="w-full px-1 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-center"
         >
           <option value={5.5}>5,5%</option>
           <option value={10}>10%</option>
@@ -505,7 +505,7 @@ function PaymentModal({ isOpen, onClose, onConfirm, t }: {
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
           />
         </div>
         <div>
@@ -513,7 +513,7 @@ function PaymentModal({ isOpen, onClose, onConfirm, t }: {
           <select
             value={mode}
             onChange={e => setMode(e.target.value as PaymentMode)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
           >
             <option value="virement">{t('devis.bankTransfer')}</option>
             <option value="cb">{t('devis.creditCard')}</option>
@@ -903,8 +903,8 @@ export default function Devis() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-xl">
-              <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-2 bg-teal-100 dark:bg-teal-900/40 rounded-xl">
+              <FileText className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
             {t('devis.title')}
           </h1>
@@ -914,7 +914,7 @@ export default function Devis() {
         </div>
         <button
           onClick={() => handleOpenCreate(activeTab === 'avoirs' ? 'avoir' : activeTab === 'factures' ? 'facture' : 'devis')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
           {activeTab === 'avoirs' ? t('devis.newCreditNote') : activeTab === 'factures' ? t('devis.newInvoice') : t('devis.newQuote')}
@@ -924,7 +924,7 @@ export default function Devis() {
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
           <span className="ml-3 text-slate-400 dark:text-slate-400">{t('devis.loadingDocuments')}</span>
         </div>
       )}
@@ -933,7 +933,7 @@ export default function Devis() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-900/20' },
           { label: t('devis.invoicedRevenue'), value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
           { label: t('devis.unpaid'), value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
           { label: t('devis.conversionRate'), value: `${stats.tauxConversion}%`, icon: Receipt, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
@@ -961,14 +961,14 @@ export default function Devis() {
               onClick={() => { setActiveTab(tab.id); setStatusFilter('all'); }}
               className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold transition-colors relative ${
                 activeTab === tab.id
-                  ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10'
+                  ? 'text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 dark:border-teal-400 bg-teal-50/50 dark:bg-teal-900/10'
                   : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
               }`}
             >
               {tab.label}
               <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                 activeTab === tab.id
-                  ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
+                  ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400'
                   : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400'
               }`}>
                 {tab.count}
@@ -987,14 +987,14 @@ export default function Devis() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder={t('devis.searchPlaceholder')}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                 showFilters
-                  ? 'border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                  ? 'border-teal-300 dark:border-teal-600 text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20'
                   : 'border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
               }`}
             >
@@ -1012,7 +1012,7 @@ export default function Devis() {
                   onClick={() => setStatusFilter(s as DocStatus | 'all')}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     statusFilter === s
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-teal-600 text-white'
                       : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
@@ -1080,7 +1080,7 @@ export default function Devis() {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
                           <Eye className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
@@ -1092,7 +1092,7 @@ export default function Devis() {
                           <Copy className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50">
+                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors disabled:opacity-50">
                             {sendingEmailId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                           </button>
                         )}
@@ -1160,12 +1160,12 @@ export default function Devis() {
       >
         <div className="space-y-6">
           {/* Entreprise info (auto-filled, read-only summary) */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+          <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-4 border border-teal-200 dark:border-teal-800">
             <div className="flex items-center gap-2 mb-2">
-              <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">{t('devis.sender')}</span>
+              <Building2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <span className="text-sm font-semibold text-teal-700 dark:text-teal-300">{t('devis.sender')}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs text-blue-600 dark:text-blue-300">
+            <div className="grid grid-cols-2 gap-2 text-xs text-teal-600 dark:text-teal-300">
               <div><span className="font-medium">{ENTREPRISE.nom}</span></div>
               <div>SIRET : {ENTREPRISE.siret}</div>
               <div>{ENTREPRISE.adresse}, {ENTREPRISE.codePostal} {ENTREPRISE.ville}</div>
@@ -1197,7 +1197,7 @@ export default function Devis() {
                     value={(client as any)[field.key]}
                     onChange={e => setClient(prev => ({ ...prev, [field.key]: e.target.value }))}
                     placeholder={field.placeholder}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
                   />
                 </div>
               ))}
@@ -1233,7 +1233,7 @@ export default function Devis() {
             </div>
             <button
               onClick={addLigne}
-              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors text-sm font-medium w-full justify-center"
+              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400 hover:border-teal-400 hover:text-teal-500 dark:hover:border-teal-500 dark:hover:text-teal-400 transition-colors text-sm font-medium w-full justify-center"
             >
               <Plus className="w-4 h-4" />
               {t('devis.addLine')}
@@ -1255,7 +1255,7 @@ export default function Devis() {
               ))}
               <div className="flex justify-between text-base font-bold pt-2 border-t border-slate-200 dark:border-slate-600">
                 <span className="text-slate-400 dark:text-slate-200">Total TTC</span>
-                <span className="text-blue-600 dark:text-blue-400">{formatEuro(formTotals.totalTTC)}</span>
+                <span className="text-teal-600 dark:text-teal-400">{formatEuro(formTotals.totalTTC)}</span>
               </div>
             </div>
           </div>
@@ -1270,7 +1270,7 @@ export default function Devis() {
                   value={dureeValidite}
                   min={1}
                   onChange={e => setDureeValidite(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
                 />
               </div>
             )}
@@ -1279,7 +1279,7 @@ export default function Devis() {
               <select
                 value={conditionsPaiement}
                 onChange={e => setConditionsPaiement(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
               >
                 {CONDITIONS_PAIEMENT.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -1294,7 +1294,7 @@ export default function Devis() {
               onChange={e => setNotes(e.target.value)}
               rows={3}
               placeholder={t('devis.notesPlaceholder')}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none resize-none"
             />
           </div>
 
@@ -1317,7 +1317,7 @@ export default function Devis() {
             <button
               onClick={handleSaveDocument}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-teal-600 hover:bg-teal-500 text-white transition-colors disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingDoc ? t('devis.update') : t('devis.save')}
@@ -1340,7 +1340,7 @@ export default function Devis() {
               {previewDoc.statut === 'brouillon' && (
                 <button
                   onClick={() => { handleSendEmail(previewDoc); setShowPreviewModal(false); }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-teal-600 hover:bg-teal-500 text-white transition-colors"
                 >
                   <Send className="w-4 h-4" />
                   {t('devis.sendByEmail')}

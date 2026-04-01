@@ -435,7 +435,7 @@ export default function WasteTracker() {
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   period === p
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-teal-600 text-white'
                     : 'bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                 }`}
               >
@@ -550,7 +550,7 @@ export default function WasteTracker() {
         {/* Pie chart: by reason */}
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <PieChartIcon className="w-5 h-5 text-blue-500" />
+            <PieChartIcon className="w-5 h-5 text-teal-500" />
             <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('wasteTracker.lossesByCause')}</h2>
           </div>
           {pieData.length > 0 ? (
@@ -679,7 +679,7 @@ export default function WasteTracker() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t('wasteTracker.search')}
-              className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-500 w-full sm:w-64 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-500 w-full sm:w-64 focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -756,7 +756,7 @@ export default function WasteTracker() {
             <select
               value={form.ingredientId}
               onChange={e => setForm(f => ({ ...f, ingredientId: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500"
             >
               <option value="">{t('wasteTracker.selectIngredient')}</option>
               {ingredients.map(ing => (
@@ -776,7 +776,7 @@ export default function WasteTracker() {
                 value={form.quantity}
                 onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))}
                 placeholder="0.00"
-                className="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500"
               />
               {form.ingredientId && (
                 <span className="text-sm text-slate-400 font-medium">
@@ -796,7 +796,7 @@ export default function WasteTracker() {
                   onClick={() => setForm(f => ({ ...f, reason: key }))}
                   className={`px-3 py-2.5 rounded-lg text-sm font-medium border-2 transition-colors ${
                     form.reason === key
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                      ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
                       : 'border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-500'
                   }`}
                 >
@@ -814,7 +814,7 @@ export default function WasteTracker() {
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={2}
               placeholder={t('wasteTracker.additionalDetails')}
-              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 resize-none"
             />
           </div>
 

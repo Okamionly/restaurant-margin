@@ -1,0 +1,171 @@
+import { Router } from 'express';
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { Resend } from 'resend';
+import { prisma, JWT_SECRET, TOKEN_EXPIRY, authMiddleware, JwtPayload } from '../middleware';
+
+const router = Router();
+
+// ============ AUTH: First user check ============
+router.get('/first-user', async (_req, res) => {
+  try {
+    const count = await prisma.user.count();
+    res.json({ isFirstUser: count === 0 });
+  } catch (e: any) { console.error('DB Error:', e.message); res.status(500).json({ error: 'Erreur serveur', detail: e.message }); }
+});
+
+// ── Register with activation code ──
+router.post('/register', async (req: any, res) => {
+  try {
+    const { email: rawEmail, password, name, activationCode } = req.body;
+    if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
+    if (password.length < 6) return res.status(400).json({ error: 'Min. 6 caractères' });
+    const email = rawEmail.toLowerCase().trim();
+
+    const userCount = await prisma.user.count();
+    let plan = 'pro';
+    let trialEndsAt: Date | null = null;
+
+    if (userCount > 0) {
+      const authHeader = req.headers.authorization;
+      const hasAdminToken = authHeader && authHeader.startsWith('Bearer ');
+      if (hasAdminToken) {
+        try { const d = jwt.verify(authHeader.split(' ')[1], JWT_SECRET!) as JwtPayload; if (d.role !== 'admin') return res.status(403).json({ error: 'Admin requis' }); } catch { return res.status(403).json({ error: 'Token invalide' }); }
+      } else if (activationCode) {
+        const activation = await prisma.activationCode.findUnique({ where: { code: activationCode.trim().toUpperCase() } });
+        if (!activation) return res.status(403).json({ error: "Code d'activation invalide" });
+        if (activation.used) return res.status(403).json({ error: "Ce code a déjà été utilisé" });
+        plan = activation.plan;
+        await prisma.activationCode.update({ where: { code: activation.code }, data: { used: true, usedBy: email, usedAt: new Date() } });
+      } else {
+        plan = 'pro';
+        trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+      }
+    }
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) return res.status(409).json({ error: 'Email déjà utilisé' });
+    const passwordHash = await bcrypt.hash(password, 12);
+    const role = userCount === 0 ? 'admin' : 'chef';
+    const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan, ...(trialEndsAt ? { trialEndsAt } : {}) } });
+
+    const restaurant = await prisma.restaurant.create({
+      data: { name: 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },
+    });
+
+    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan }, restaurantId: restaurant.id });
+  } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }
+});
+
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
+    if (!user) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
+    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'pro' } });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur connexion' }); }
+});
+
+router.get('/me', authMiddleware, async (req: any, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { id: true, email: true, name: true, role: true, createdAt: true } });
+    if (!user) return res.status(404).json({ error: 'Non trouvé' });
+    res.json(user);
+  } catch { res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+router.get('/users', authMiddleware, async (req: any, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
+    const users = await prisma.user.findMany({ select: { id: true, email: true, name: true, role: true, createdAt: true }, orderBy: { createdAt: 'asc' } });
+    res.json(users);
+  } catch { res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+router.delete('/users/:id', authMiddleware, async (req: any, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
+    const targetId = parseInt(req.params.id);
+    if (targetId === req.user.userId) return res.status(400).json({ error: 'Impossible de supprimer votre propre compte' });
+    await prisma.user.delete({ where: { id: targetId } });
+    res.status(204).send();
+  } catch { res.status(500).json({ error: 'Erreur suppression' }); }
+});
+
+// ============ AUTH: VERIFY EMAIL, RESEND, FORGOT/RESET PASSWORD ============
+router.get('/verify-email', async (req: any, res) => {
+  try {
+    const token = req.query.token as string;
+    if (!token) return res.status(400).json({ error: 'Token manquant' });
+    const user = await prisma.user.findFirst({ where: { verificationToken: token } });
+    if (!user) return res.status(400).json({ error: 'Token invalide' });
+    await prisma.user.update({ where: { id: user.id }, data: { emailVerified: true, verificationToken: null } });
+    res.json({ success: true, message: 'Email vérifié avec succès' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+router.post('/resend-verification', authMiddleware, async (req: any, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    if (user.emailVerified) return res.json({ message: 'Email déjà vérifié' });
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    await prisma.user.update({ where: { id: user.id }, data: { verificationToken } });
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const resend = new Resend(apiKey);
+      const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
+      await resend.emails.send({
+        from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
+        subject: 'RestauMargin — Vérifiez votre adresse email',
+        html: `<h2>Vérification d'email</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/login?verify=${verificationToken}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Vérifier mon email</a></p><p>L'équipe RestauMargin</p>`,
+      });
+    }
+    res.json({ message: 'Email de vérification envoyé' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+router.post('/forgot-password', async (req: any, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email requis' });
+    const genericMsg = 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.';
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+    if (!user) return res.json({ message: genericMsg });
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiry = new Date(Date.now() + 3600000);
+    await prisma.user.update({ where: { id: user.id }, data: { resetToken: token, resetTokenExpiry: expiry } });
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const resend = new Resend(apiKey);
+      const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
+      await resend.emails.send({
+        from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
+        subject: 'RestauMargin — Réinitialisation de votre mot de passe',
+        html: `<h2>Réinitialisation de mot de passe</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/reset-password?token=${token}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Réinitialiser mon mot de passe</a></p><p>Ce lien expire dans 1 heure.</p><p>L'équipe RestauMargin</p>`,
+      });
+    }
+    res.json({ message: genericMsg });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+router.post('/reset-password', async (req: any, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) return res.status(400).json({ error: 'Token et nouveau mot de passe requis' });
+    if (newPassword.length < 6) return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 6 caractères' });
+    const user = await prisma.user.findFirst({ where: { resetToken: token, resetTokenExpiry: { gt: new Date() } } });
+    if (!user) return res.status(400).json({ error: 'Lien invalide ou expiré' });
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({ where: { id: user.id }, data: { passwordHash: hashedPassword, resetToken: null, resetTokenExpiry: null } });
+    res.json({ message: 'Mot de passe réinitialisé avec succès' });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
+});
+
+export default router;

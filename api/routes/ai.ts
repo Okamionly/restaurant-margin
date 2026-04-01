@@ -30,7 +30,7 @@ type AiIntent = 'recipe' | 'ingredient' | 'order' | 'planning' | 'haccp' | 'anal
 async function classifyIntent(userMessage: string): Promise<AiIntent> {
   try {
     const intentResponse = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 20,
       messages: [{ role: 'user', content: userMessage }],
       system: 'Classifie cette demande en UNE catégorie: recipe, ingredient, order, planning, haccp, analysis, general. Réponds UNIQUEMENT le mot.',
@@ -194,7 +194,7 @@ ${context}`;
 
     // ── Step 3: Choose model + max_tokens based on intent & message length ──
     const useAdvancedModel = intent === 'analysis' || message.trim().length > 200;
-    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-3-haiku-20240307';
+    const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
     const maxTokens = ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
     const response = await anthropic.messages.create({
@@ -849,7 +849,7 @@ router.post('/forecast', authWithRestaurant, async (req: any, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
       system: `Tu es un expert en prévision de ventes pour la restauration. Analyse les données historiques et prédis les ventes futures. Réponds UNIQUEMENT en JSON valide, sans texte avant ou après. Format: { "predictions": [{ "date": "YYYY-MM-DD", "covers": number, "revenue": number }] }`,
       messages: [{
@@ -887,7 +887,7 @@ router.post('/menu-analysis', authWithRestaurant, async (req: any, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
       system: `Tu es un expert en menu engineering pour la restauration. Classe les plats selon la matrice BCG adaptée à la restauration:
 - Stars (haute popularité, haute marge) : les plats à promouvoir
@@ -931,7 +931,7 @@ router.post('/order-recommendation', authWithRestaurant, async (req: any, res) =
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
       system: `Tu es un expert en gestion des commandes fournisseurs pour la restauration. Calcule les quantités optimales à commander en tenant compte du stock actuel, des prévisions de ventes et des prix fournisseurs. Minimise le gaspillage et les ruptures.
 
@@ -971,7 +971,7 @@ router.post('/invoice-check', authWithRestaurant, async (req: any, res) => {
     }
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
       system: `Tu es un expert en contrôle des factures fournisseurs pour la restauration. Compare la facture avec les prix historiques et signale toute anomalie de prix (hausses anormales, erreurs potentielles, surfacturations).
 

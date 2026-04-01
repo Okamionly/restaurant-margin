@@ -82,18 +82,22 @@ function addDays(d: Date, n: number): Date {
 }
 
 function formatDate(d: Date): string {
+  if (!d || isNaN(d.getTime())) return '';
   return d.toISOString().slice(0, 10);
 }
 
 function shiftHours(start: string, end: string): number {
+  if (!start || !end) return 0;
   const [sh, sm] = start.split(':').map(Number);
   const [eh, em] = end.split(':').map(Number);
+  if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) return 0;
   return Math.max(0, (eh * 60 + em - sh * 60 - sm) / 60);
 }
 
 function getShiftType(start: string): ShiftType {
-  const h = parseInt(start.split(':')[0]);
-  if (h < 11) return 'matin';
+  if (!start) return 'matin';
+  const h = parseInt((start || '').split(':')[0]);
+  if (isNaN(h) || h < 11) return 'matin';
   if (h < 17) return 'midi';
   return 'soir';
 }
@@ -185,13 +189,13 @@ export default function Planning() {
 
   const weekLabel = useMemo(() => {
     const end = addDays(weekStart, 6);
-    const moisStart = weekStart.toLocaleDateString('fr-FR', { month: 'long' });
-    const moisEnd = end.toLocaleDateString('fr-FR', { month: 'long' });
+    const moisStart = weekStart.toLocaleDateString('fr-FR', { month: 'long' }) || '';
+    const moisEnd = end.toLocaleDateString('fr-FR', { month: 'long' }) || '';
     const year = weekStart.getFullYear();
     if (moisStart === moisEnd) {
-      return `${weekStart.getDate()} - ${end.getDate()} ${moisStart.charAt(0).toUpperCase() + moisStart.slice(1)} ${year}`;
+      return `${weekStart.getDate()} - ${end.getDate()} ${moisStart ? moisStart.charAt(0).toUpperCase() + moisStart.slice(1) : ''} ${year}`;
     }
-    return `${weekStart.getDate()} ${moisStart.charAt(0).toUpperCase() + moisStart.slice(1)} - ${end.getDate()} ${moisEnd.charAt(0).toUpperCase() + moisEnd.slice(1)} ${year}`;
+    return `${weekStart.getDate()} ${moisStart ? moisStart.charAt(0).toUpperCase() + moisStart.slice(1) : ''} - ${end.getDate()} ${moisEnd ? moisEnd.charAt(0).toUpperCase() + moisEnd.slice(1) : ''} ${year}`;
   }, [weekStart]);
 
   function goThisWeek() { setWeekStart(getMonday(new Date())); }
@@ -264,12 +268,12 @@ export default function Planning() {
   function openEditEmployee(emp: Employee) {
     setEditEmployee(emp);
     setEmpForm({
-      nom: emp.nom,
-      prenom: emp.prenom,
-      role: emp.role,
-      tauxHoraire: String(emp.tauxHoraire),
-      heuresContrat: String(emp.heuresContrat),
-      couleur: emp.couleur,
+      nom: emp.nom || '',
+      prenom: emp.prenom || '',
+      role: emp.role || 'Commis',
+      tauxHoraire: String(emp.tauxHoraire ?? ''),
+      heuresContrat: String(emp.heuresContrat ?? ''),
+      couleur: emp.couleur || EMPLOYEE_COLORS[0],
     });
     setShowEmployeeModal(true);
   }
@@ -357,11 +361,11 @@ export default function Planning() {
   function openEditShift(s: Shift) {
     setEditShift(s);
     setShiftForm({
-      employeeId: String(s.employeeId),
-      date: s.date,
-      start: s.start,
-      end: s.end,
-      poste: s.poste,
+      employeeId: String(s.employeeId ?? ''),
+      date: s.date || '',
+      start: s.start || '',
+      end: s.end || '',
+      poste: s.poste || 'cuisine',
     });
     setShowShiftModal(true);
   }
@@ -496,7 +500,7 @@ export default function Planning() {
     } catch {
       setShifts(prev => [...prev, newShift]);
     }
-    showToast(`${dragEmployee.prenom} assigne`, 'success');
+    showToast(`${dragEmployee.prenom || 'Employe'} assigne`, 'success');
     setDragEmployee(null);
   }, [dragEmployee, shifts, nextId, showToast]);
 
@@ -609,9 +613,9 @@ export default function Planning() {
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 cursor-grab active:cursor-grabbing hover:border-slate-600 transition select-none"
             >
               <GripVertical className="w-3.5 h-3.5 text-slate-400" />
-              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
-              <span className="text-sm text-slate-200 font-medium">{emp.prenom} {(emp.nom || '').charAt(0)}.</span>
-              <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role]}</span>
+              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
+              <span className="text-sm text-slate-200 font-medium">{emp.prenom || ''} {(emp.nom || '').charAt(0)}.</span>
+              <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
             </div>
           ))}
         </div>
@@ -663,12 +667,12 @@ export default function Planning() {
                                     key={s.id}
                                     className="rounded-md p-1.5 text-xs cursor-pointer hover:brightness-110 transition group relative border"
                                     style={{
-                                      backgroundColor: emp.couleur + '20',
-                                      borderColor: emp.couleur + '40',
+                                      backgroundColor: (emp.couleur || '#6366f1') + '20',
+                                      borderColor: (emp.couleur || '#6366f1') + '40',
                                     }}
                                     onClick={() => openEditShift(s)}
                                   >
-                                    <div className="font-semibold text-white truncate">{emp.prenom} {(emp.nom || '').charAt(0)}.</div>
+                                    <div className="font-semibold text-white truncate">{emp.prenom || ''} {(emp.nom || '').charAt(0)}.</div>
                                     <div className="text-[10px] font-mono text-slate-400">{s.start}-{s.end}</div>
                                     <button
                                       onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
@@ -801,17 +805,17 @@ export default function Planning() {
                   <tr key={emp.id} className="hover:bg-slate-800/30 transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
-                        <span className="font-medium text-white">{emp.prenom} {emp.nom}</span>
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
+                        <span className="font-medium text-white">{emp.prenom || ''} {emp.nom || ''}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: emp.couleur + '20', color: emp.couleur }}>
-                        {ROLE_LABELS[emp.role]}
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: (emp.couleur || '#6366f1') + '20', color: emp.couleur || '#6366f1' }}>
+                        {ROLE_LABELS[emp.role] || emp.role || ''}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-slate-300">{emp.tauxHoraire.toFixed(2)} EUR/h</td>
-                    <td className="px-4 py-3 text-right text-slate-300">{emp.heuresContrat}h</td>
+                    <td className="px-4 py-3 text-right text-slate-300">{(emp.tauxHoraire ?? 0).toFixed(2)} EUR/h</td>
+                    <td className="px-4 py-3 text-right text-slate-300">{emp.heuresContrat ?? 0}h</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
                         {hours.toFixed(0)}h
@@ -878,8 +882,8 @@ export default function Planning() {
                   <tr key={row.emp.id} className="hover:bg-slate-800/30 transition">
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.couleur }} />
-                        <span className="font-medium text-white">{row.emp.prenom} {(row.emp.nom || '').charAt(0)}.</span>
+                        <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.couleur || '#6366f1' }} />
+                        <span className="font-medium text-white">{row.emp.prenom || ''} {(row.emp.nom || '').charAt(0)}.</span>
                       </div>
                     </td>
                     {row.days.map((h, i) => (
@@ -1039,7 +1043,7 @@ export default function Planning() {
             >
               <option value="">-- Selectionner --</option>
               {employees.map(emp => (
-                <option key={emp.id} value={emp.id}>{emp.prenom} {emp.nom} ({ROLE_LABELS[emp.role]})</option>
+                <option key={emp.id} value={emp.id}>{emp.prenom || ''} {emp.nom || ''} ({ROLE_LABELS[emp.role] || emp.role || ''})</option>
               ))}
             </select>
           </div>
@@ -1194,10 +1198,10 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                       onClick={() => onEditShift(s)}
                     >
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
-                        <span className="font-semibold text-white text-sm">{emp.prenom} {emp.nom}</span>
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
+                        <span className="font-semibold text-white text-sm">{emp.prenom || ''} {emp.nom || ''}</span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[emp.role]} -- {s.start} a {s.end}</div>
+                      <div className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.start} a {s.end}</div>
                       <button
                         onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
                         className="absolute top-2 right-2 p-1 rounded bg-slate-800 hover:bg-red-900/40 transition"
@@ -1291,17 +1295,17 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                         onClick={() => onEditShift(s)}
                       >
                         <div className="flex items-center gap-3 mb-2">
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.couleur }}>
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.couleur || '#6366f1' }}>
                             {(emp.prenom || '').charAt(0)}{(emp.nom || '').charAt(0)}
                           </div>
                           <div>
-                            <div className="font-semibold text-white">{emp.prenom} {emp.nom}</div>
-                            <div className="text-xs text-slate-400">{ROLE_LABELS[emp.role]}</div>
+                            <div className="font-semibold text-white">{emp.prenom || ''} {emp.nom || ''}</div>
+                            <div className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</div>
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="font-mono text-slate-300">{s.start} - {s.end}</span>
-                          <span className="text-slate-400">{hours}h -- {(hours * emp.tauxHoraire).toFixed(0)} EUR</span>
+                          <span className="text-slate-400">{hours}h -- {(hours * (emp.tauxHoraire ?? 0)).toFixed(0)} EUR</span>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
@@ -1347,9 +1351,9 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-slate-600'}`} />
-                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur }} />
-                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-400'}`}>{emp.prenom} {emp.nom}</span>
-                  <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role]}</span>
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.couleur || '#6366f1' }} />
+                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-400'}`}>{emp.prenom || ''} {emp.nom || ''}</span>
+                  <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                 </div>
                 <div className="text-sm">
                   {isPresent ? (

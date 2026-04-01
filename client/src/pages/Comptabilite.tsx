@@ -498,7 +498,7 @@ export default function Comptabilite() {
     return (
       <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{label}</span>
+          <span className="text-sm font-medium text-slate-300 dark:text-slate-400">{label}</span>
           <Target className="w-4 h-4 text-slate-400" />
         </div>
         <div className={`text-2xl font-bold ${color}`}>
@@ -507,7 +507,7 @@ export default function Comptabilite() {
         <div className="mt-2 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div className={`h-full rounded-full transition-all ${bgColor}`} style={{ width: `${pct}%` }} />
         </div>
-        <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+        <div className="mt-1 text-xs text-slate-400 dark:text-slate-400">
           Objectif : {unit === '€' ? fmt(target) : fmtPct(target)}
         </div>
       </div>
@@ -538,7 +538,7 @@ export default function Comptabilite() {
             <Calculator className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             Comptabilité
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Suivi financier, TVA, ratios et exports comptables
           </p>
         </div>
@@ -562,7 +562,7 @@ export default function Comptabilite() {
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   period === p
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                    : 'bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                 }`}
               >
                 {p === 'mois' ? 'Mois' : p === 'trimestre' ? 'Trimestre' : 'Année'}
@@ -577,7 +577,7 @@ export default function Comptabilite() {
         {/* CA */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">CA du mois</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wide">CA du mois</span>
             <ArrowUpRight className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="text-xl font-bold text-slate-900 dark:text-white">{fmt(periodTotals.ca)}</div>
@@ -587,23 +587,23 @@ export default function Comptabilite() {
         {/* Charges */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Charges</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wide">Charges</span>
             <ArrowDownRight className="w-4 h-4 text-red-500" />
           </div>
           <div className="text-xl font-bold text-slate-900 dark:text-white">{fmt(periodTotals.charges)}</div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{fmtPct(periodTotals.charges / periodTotals.ca * 100)} du CA</div>
+          <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">{fmtPct(periodTotals.charges / periodTotals.ca * 100)} du CA</div>
         </div>
 
         {/* Résultat net */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Résultat net</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wide">Résultat net</span>
             {periodTotals.resultat >= 0 ? <TrendingUp className="w-4 h-4 text-emerald-500" /> : <TrendingDown className="w-4 h-4 text-red-500" />}
           </div>
           <div className={`text-xl font-bold ${periodTotals.resultat >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmt(periodTotals.resultat)}
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">
             Marge : {fmtPct(periodTotals.ca > 0 ? (periodTotals.resultat / periodTotals.ca) * 100 : 0)}
           </div>
         </div>
@@ -611,25 +611,25 @@ export default function Comptabilite() {
         {/* Ratio matière */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Coût matière</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wide">Coût matière</span>
             <PieChartIcon className="w-4 h-4 text-blue-500" />
           </div>
           <div className={`text-xl font-bold ${periodTotals.ratioMatiere <= 30 ? 'text-emerald-600 dark:text-emerald-400' : periodTotals.ratioMatiere <= 35 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtPct(periodTotals.ratioMatiere)}
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Objectif : &lt;30%</div>
+          <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">Objectif : &lt;30%</div>
         </div>
 
         {/* Ratio personnel */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">Masse salariale</span>
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wide">Masse salariale</span>
             <BarChart3 className="w-4 h-4 text-violet-500" />
           </div>
           <div className={`text-xl font-bold ${periodTotals.ratioPersonnel <= 35 ? 'text-emerald-600 dark:text-emerald-400' : periodTotals.ratioPersonnel <= 40 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmtPct(periodTotals.ratioPersonnel)}
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Objectif : &lt;35%</div>
+          <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">Objectif : &lt;35%</div>
         </div>
       </div>
 
@@ -645,11 +645,11 @@ export default function Comptabilite() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-700">
-                  <th className="text-left py-2 px-3 font-medium text-slate-500 dark:text-slate-400">Taux TVA</th>
-                  <th className="text-left py-2 px-3 font-medium text-slate-500 dark:text-slate-400">Applicable à</th>
-                  <th className="text-right py-2 px-3 font-medium text-slate-500 dark:text-slate-400">Base HT</th>
-                  <th className="text-right py-2 px-3 font-medium text-slate-500 dark:text-slate-400">Montant TVA</th>
-                  <th className="text-right py-2 px-3 font-medium text-slate-500 dark:text-slate-400">Total TTC</th>
+                  <th className="text-left py-2 px-3 font-medium text-slate-400 dark:text-slate-400">Taux TVA</th>
+                  <th className="text-left py-2 px-3 font-medium text-slate-400 dark:text-slate-400">Applicable à</th>
+                  <th className="text-right py-2 px-3 font-medium text-slate-400 dark:text-slate-400">Base HT</th>
+                  <th className="text-right py-2 px-3 font-medium text-slate-400 dark:text-slate-400">Montant TVA</th>
+                  <th className="text-right py-2 px-3 font-medium text-slate-400 dark:text-slate-400">Total TTC</th>
                 </tr>
               </thead>
               <tbody>
@@ -661,7 +661,7 @@ export default function Comptabilite() {
                         {row.taux}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-slate-600 dark:text-slate-300">{row.label}</td>
+                    <td className="py-2.5 px-3 text-slate-300 dark:text-slate-300">{row.label}</td>
                     <td className="py-2.5 px-3 text-right text-slate-900 dark:text-white">{fmt(row.baseHT)}</td>
                     <td className="py-2.5 px-3 text-right font-medium text-blue-600 dark:text-blue-400">{fmt(row.montantTVA)}</td>
                     <td className="py-2.5 px-3 text-right text-slate-900 dark:text-white">{fmt(row.totalTTC)}</td>
@@ -704,7 +704,7 @@ export default function Comptabilite() {
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  : 'border-transparent text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -720,7 +720,7 @@ export default function Comptabilite() {
           {/* Filters */}
           <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex flex-wrap gap-3 items-end">
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Du</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Du</label>
               <input
                 type="date"
                 value={journalDateFrom}
@@ -729,7 +729,7 @@ export default function Comptabilite() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Au</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Au</label>
               <input
                 type="date"
                 value={journalDateTo}
@@ -738,7 +738,7 @@ export default function Comptabilite() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Paiement</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Paiement</label>
               <select
                 value={journalPaiement}
                 onChange={(e) => setJournalPaiement(e.target.value)}
@@ -751,7 +751,7 @@ export default function Comptabilite() {
               </select>
             </div>
             <div className="flex-1 min-w-[200px]">
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Recherche</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Recherche</label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
@@ -766,7 +766,7 @@ export default function Comptabilite() {
             {(journalDateFrom || journalDateTo || journalPaiement || journalSearch) && (
               <button
                 onClick={() => { setJournalDateFrom(''); setJournalDateTo(''); setJournalPaiement(''); setJournalSearch(''); }}
-                className="px-3 py-1.5 text-sm text-slate-500 hover:text-red-500 transition-colors"
+                className="px-3 py-1.5 text-sm text-slate-400 hover:text-red-500 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -778,23 +778,23 @@ export default function Comptabilite() {
             <table className="w-full text-sm">
               <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700/50">
                 <tr>
-                  <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Date</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">N° facture</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Client</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Description</th>
-                  <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">HT</th>
-                  <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">TVA</th>
-                  <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">TTC</th>
-                  <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Paiement</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Date</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">N° facture</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Client</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Description</th>
+                  <th className="text-right py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">HT</th>
+                  <th className="text-right py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">TVA</th>
+                  <th className="text-right py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">TTC</th>
+                  <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Paiement</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredSales.slice(0, 100).map((s) => (
                   <tr key={s.id} className="border-t border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30">
                     <td className="py-2 px-3 text-slate-900 dark:text-white whitespace-nowrap">{fmtDate(s.date)}</td>
-                    <td className="py-2 px-3 font-mono text-xs text-slate-600 dark:text-slate-300">{s.invoiceNum}</td>
-                    <td className="py-2 px-3 text-slate-600 dark:text-slate-300">{s.client || '—'}</td>
-                    <td className="py-2 px-3 text-slate-600 dark:text-slate-300">{s.description}</td>
+                    <td className="py-2 px-3 font-mono text-xs text-slate-300 dark:text-slate-300">{s.invoiceNum}</td>
+                    <td className="py-2 px-3 text-slate-300 dark:text-slate-300">{s.client || '—'}</td>
+                    <td className="py-2 px-3 text-slate-300 dark:text-slate-300">{s.description}</td>
                     <td className="py-2 px-3 text-right text-slate-900 dark:text-white">{fmt(s.montantHT)}</td>
                     <td className="py-2 px-3 text-right text-blue-600 dark:text-blue-400">{fmt(s.tva)}</td>
                     <td className="py-2 px-3 text-right font-medium text-slate-900 dark:text-white">{fmt(s.ttc)}</td>
@@ -817,7 +817,7 @@ export default function Comptabilite() {
 
           {/* Running total */}
           <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30 flex flex-wrap gap-6 text-sm">
-            <span className="text-slate-500 dark:text-slate-400">
+            <span className="text-slate-400 dark:text-slate-400">
               {filteredSales.length} écritures
             </span>
             <span className="font-medium text-slate-900 dark:text-white">
@@ -850,7 +850,7 @@ export default function Comptabilite() {
 
           {/* Bar chart */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">Répartition des charges</h3>
+            <h3 className="text-sm font-medium text-slate-400 dark:text-slate-300 mb-4">Répartition des charges</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={chargesByCategory} layout="vertical" margin={{ left: 120, right: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -872,13 +872,13 @@ export default function Comptabilite() {
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700/50">
                   <tr>
-                    <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Date</th>
-                    <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Fournisseur</th>
-                    <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Catégorie</th>
-                    <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Montant HT</th>
-                    <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">TVA</th>
-                    <th className="text-right py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">TTC</th>
-                    <th className="text-left py-2.5 px-3 font-medium text-slate-500 dark:text-slate-400">Description</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Date</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Fournisseur</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Catégorie</th>
+                    <th className="text-right py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Montant HT</th>
+                    <th className="text-right py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">TVA</th>
+                    <th className="text-right py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">TTC</th>
+                    <th className="text-left py-2.5 px-3 font-medium text-slate-400 dark:text-slate-400">Description</th>
                     <th className="py-2.5 px-3 w-10"></th>
                   </tr>
                 </thead>
@@ -886,16 +886,16 @@ export default function Comptabilite() {
                   {expenses.slice(0, 80).map((e) => (
                     <tr key={e.id} className="border-t border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30">
                       <td className="py-2 px-3 text-slate-900 dark:text-white whitespace-nowrap">{fmtDate(e.date)}</td>
-                      <td className="py-2 px-3 text-slate-700 dark:text-slate-300">{e.fournisseur}</td>
+                      <td className="py-2 px-3 text-slate-400 dark:text-slate-300">{e.fournisseur}</td>
                       <td className="py-2 px-3">
-                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-300">
                           {e.categorie}
                         </span>
                       </td>
                       <td className="py-2 px-3 text-right text-slate-900 dark:text-white">{fmt(e.montantHT)}</td>
                       <td className="py-2 px-3 text-right text-blue-600 dark:text-blue-400">{fmt(e.tva)}</td>
                       <td className="py-2 px-3 text-right font-medium text-slate-900 dark:text-white">{fmt(e.ttc)}</td>
-                      <td className="py-2 px-3 text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{e.description}</td>
+                      <td className="py-2 px-3 text-slate-400 dark:text-slate-400 truncate max-w-[200px]">{e.description}</td>
                       <td className="py-2 px-3">
                         <button
                           onClick={() => handleDeleteExpense(e.id)}
@@ -929,7 +929,7 @@ export default function Comptabilite() {
 
           {/* Comparison vs objectives */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">Comparaison vs objectifs</h3>
+            <h3 className="text-sm font-medium text-slate-400 dark:text-slate-300 mb-4">Comparaison vs objectifs</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { label: 'Coût matière', actual: currentRatios.coutMatiere, target: 30 },
@@ -942,7 +942,7 @@ export default function Comptabilite() {
                   <div key={item.label} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30">
                     <div>
                       <div className="text-sm font-medium text-slate-900 dark:text-white">{item.label}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Objectif : {fmtPct(item.target)}</div>
+                      <div className="text-xs text-slate-400 dark:text-slate-400">Objectif : {fmtPct(item.target)}</div>
                     </div>
                     <div className="text-right">
                       <div className={`text-lg font-bold ${isGood ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -960,7 +960,7 @@ export default function Comptabilite() {
 
           {/* Line chart: evolution over 12 months */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-4">Évolution sur 12 mois</h3>
+            <h3 className="text-sm font-medium text-slate-400 dark:text-slate-300 mb-4">Évolution sur 12 mois</h3>
             <ResponsiveContainer width="100%" height={350}>
               <LineChart data={ratiosEvolution} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -989,10 +989,10 @@ export default function Comptabilite() {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-white">Fichier des Écritures Comptables</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Format FEC obligatoire (article A47 A-1 du LPF)</p>
+                <p className="text-xs text-slate-400 dark:text-slate-400">Format FEC obligatoire (article A47 A-1 du LPF)</p>
               </div>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+            <p className="text-sm text-slate-300 dark:text-slate-300 mb-4">
               Export au format réglementaire pour le contrôle fiscal. Contient toutes les écritures de l'exercice.
             </p>
             <button
@@ -1012,10 +1012,10 @@ export default function Comptabilite() {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-white">Export CSV logiciel comptable</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Compatible Pennylane, Sage, Cegid</p>
+                <p className="text-xs text-slate-400 dark:text-slate-400">Compatible Pennylane, Sage, Cegid</p>
               </div>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+            <p className="text-sm text-slate-300 dark:text-slate-300 mb-4">
               Exportez vos données dans un format compatible avec votre logiciel comptable.
             </p>
             <div className="flex gap-2">
@@ -1042,10 +1042,10 @@ export default function Comptabilite() {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-white">Rapport PDF mensuel</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Synthèse complète du mois</p>
+                <p className="text-xs text-slate-400 dark:text-slate-400">Synthèse complète du mois</p>
               </div>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+            <p className="text-sm text-slate-300 dark:text-slate-300 mb-4">
               Rapport synthétique avec CA, charges, TVA et ratios clés. Idéal pour votre expert-comptable.
             </p>
             <button
@@ -1061,14 +1061,14 @@ export default function Comptabilite() {
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                <Printer className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                <Printer className="w-5 h-5 text-slate-300 dark:text-slate-400" />
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900 dark:text-white">Imprimer</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Impression de la page courante</p>
+                <p className="text-xs text-slate-400 dark:text-slate-400">Impression de la page courante</p>
               </div>
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+            <p className="text-sm text-slate-300 dark:text-slate-300 mb-4">
               Imprimez les données actuellement affichées pour vos classeurs comptables.
             </p>
             <button
@@ -1087,7 +1087,7 @@ export default function Comptabilite() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Date</label>
               <input
                 type="date"
                 value={newExpense.date}
@@ -1096,7 +1096,7 @@ export default function Comptabilite() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Catégorie</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Catégorie</label>
               <select
                 value={newExpense.categorie}
                 onChange={(e) => setNewExpense({ ...newExpense, categorie: e.target.value })}
@@ -1110,7 +1110,7 @@ export default function Comptabilite() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Fournisseur *</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Fournisseur *</label>
             <input
               type="text"
               value={newExpense.fournisseur}
@@ -1122,7 +1122,7 @@ export default function Comptabilite() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Montant HT *</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Montant HT *</label>
               <input
                 type="number"
                 step="0.01"
@@ -1133,7 +1133,7 @@ export default function Comptabilite() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Taux TVA (%)</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Taux TVA (%)</label>
               <select
                 value={newExpense.tva}
                 onChange={(e) => setNewExpense({ ...newExpense, tva: e.target.value })}
@@ -1148,7 +1148,7 @@ export default function Comptabilite() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Description</label>
             <input
               type="text"
               value={newExpense.description}
@@ -1162,11 +1162,11 @@ export default function Comptabilite() {
           {newExpense.montantHT && (
             <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-700/30 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Montant HT :</span>
+                <span className="text-slate-400 dark:text-slate-400">Montant HT :</span>
                 <span className="text-slate-900 dark:text-white">{fmt(parseFloat(newExpense.montantHT) || 0)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">TVA ({newExpense.tva}%) :</span>
+                <span className="text-slate-400 dark:text-slate-400">TVA ({newExpense.tva}%) :</span>
                 <span className="text-blue-600 dark:text-blue-400">{fmt(Math.round((parseFloat(newExpense.montantHT) || 0) * parseFloat(newExpense.tva) / 100))}</span>
               </div>
               <div className="flex justify-between font-semibold border-t border-slate-200 dark:border-slate-600 pt-1 mt-1">
@@ -1179,7 +1179,7 @@ export default function Comptabilite() {
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => setShowExpenseModal(false)}
-              className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm font-medium text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               Annuler
             </button>

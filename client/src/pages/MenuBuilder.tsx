@@ -384,7 +384,7 @@ export default function MenuBuilder() {
 
   if (loading)
     return (
-      <div className="text-center py-12 text-slate-500 dark:text-slate-400">Chargement...</div>
+      <div className="text-center py-12 text-slate-400 dark:text-slate-400">Chargement...</div>
     );
 
   return (
@@ -399,7 +399,7 @@ export default function MenuBuilder() {
           </h2>
           <div className="flex flex-wrap items-center gap-2">
             {/* Print options */}
-            <label className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
+            <label className="inline-flex items-center gap-1.5 text-sm text-slate-300 dark:text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
                 checked={printWithPrices}
@@ -419,7 +419,7 @@ export default function MenuBuilder() {
             {/* Stats toggle */}
             <button
               onClick={() => setShowStats((v) => !v)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <BarChart3 className="w-4 h-4" />
               {showStats ? 'Masquer stats' : 'Afficher stats'}
@@ -432,7 +432,7 @@ export default function MenuBuilder() {
           {/* Sort */}
           <div className="flex items-center gap-2 text-sm">
             <ArrowUpDown className="w-4 h-4 text-slate-400" />
-            <span className="text-slate-500 dark:text-slate-400">Tri :</span>
+            <span className="text-slate-400 dark:text-slate-400">Tri :</span>
             {(['name', 'price', 'margin'] as SortKey[]).map((key) => (
               <button
                 key={key}
@@ -440,7 +440,7 @@ export default function MenuBuilder() {
                 className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                   sortBy === key
                     ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
-                    : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                    : 'text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
                 {key === 'name' ? 'Nom' : key === 'price' ? 'Prix' : 'Marge'}
@@ -453,7 +453,7 @@ export default function MenuBuilder() {
           {/* Show/hide prices */}
           <button
             onClick={() => setShowPrices((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-300 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
           >
             {showPrices ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
             Prix
@@ -462,7 +462,7 @@ export default function MenuBuilder() {
           {/* Show/hide margins */}
           <button
             onClick={() => setShowMargins((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-300 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
           >
             {showMargins ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
             Marges
@@ -477,7 +477,7 @@ export default function MenuBuilder() {
               className={`inline-flex items-center gap-1.5 text-sm px-2 py-1 rounded transition-colors ${
                 excludedAllergens.size > 0
                   ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
+                  : 'text-slate-300 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -486,7 +486,7 @@ export default function MenuBuilder() {
             {allergenFilterOpen && (
               <div className="absolute z-50 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-3 w-64">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
                     Exclure les allergenes
                   </span>
                   <button onClick={() => setAllergenFilterOpen(false)}>
@@ -505,7 +505,7 @@ export default function MenuBuilder() {
                         onChange={() => toggleAllergen(a)}
                         className="rounded border-slate-300 text-red-600 focus:ring-red-500"
                       />
-                      <span className="text-slate-700 dark:text-slate-300">{a}</span>
+                      <span className="text-slate-400 dark:text-slate-300">{a}</span>
                     </label>
                   ))}
                 </div>
@@ -529,7 +529,7 @@ export default function MenuBuilder() {
             className={`inline-flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-medium transition-colors ${
               menuDuJourMode
                 ? 'bg-amber-500 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
             <Star className="w-4 h-4" />
@@ -596,7 +596,7 @@ export default function MenuBuilder() {
               {menuDuJourPrice && (
                 <div className="text-2xl font-serif font-bold text-amber-800 mt-2">{menuDuJourPrice} &euro;</div>
               )}
-              <div className="text-sm text-slate-500 mt-1">{menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''}</div>
+              <div className="text-sm text-slate-400 mt-1">{menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''}</div>
             </>
           ) : (
             <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">La Carte</div>
@@ -607,7 +607,7 @@ export default function MenuBuilder() {
         {displayGroups.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-lg shadow print:shadow-none">
             <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">
+            <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">
               Aucun plat sur la carte
             </h3>
             <p className="text-slate-400 dark:text-slate-500">
@@ -636,7 +636,7 @@ export default function MenuBuilder() {
                   <div className="flex items-center gap-2">
                     {editingMenuPrice ? (
                       <div className="flex items-center gap-1">
-                        <span className="text-sm text-slate-500">Prix menu :</span>
+                        <span className="text-sm text-slate-400">Prix menu :</span>
                         <input
                           type="number"
                           step="0.50"
@@ -651,7 +651,7 @@ export default function MenuBuilder() {
                           className="w-20 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100"
                           placeholder="0.00"
                         />
-                        <span className="text-sm text-slate-500">&euro;</span>
+                        <span className="text-sm text-slate-400">&euro;</span>
                       </div>
                     ) : (
                       <button
@@ -703,7 +703,7 @@ export default function MenuBuilder() {
                     {quickAddCategory === group.category && (
                       <div className="absolute z-40 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 w-72 max-h-60 overflow-y-auto">
                         <div className="flex items-center justify-between mb-2 px-2">
-                          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
                             Plats retires - {getCategoryLabel(group.category)}
                           </span>
                           <button onClick={() => setQuickAddCategory(null)}>
@@ -730,7 +730,7 @@ export default function MenuBuilder() {
                                   toggleExcluded(r.id);
                                   setQuickAddCategory(null);
                                 }}
-                                className="w-full flex items-center justify-between px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-700 rounded transition-colors"
+                                className="w-full flex items-center justify-between px-3 py-2 text-sm text-slate-400 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-700 rounded transition-colors"
                               >
                                 <span>{r.name}</span>
                                 <span className="text-xs text-slate-400">{r.sellingPrice.toFixed(2)} &euro;</span>
@@ -868,7 +868,7 @@ export default function MenuBuilder() {
                             </div>
                             {/* Description */}
                             {recipe.description && (
-                              <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5 print:text-slate-600 italic">
+                              <p className="text-sm text-slate-400 dark:text-slate-400 mt-0.5 print:text-slate-300 italic">
                                 {recipe.description}
                               </p>
                             )}
@@ -879,7 +879,7 @@ export default function MenuBuilder() {
                                   {allergens.map((a) => (
                                     <span
                                       key={a}
-                                      className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"
+                                      className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400"
                                     >
                                       {a}
                                     </span>
@@ -899,7 +899,7 @@ export default function MenuBuilder() {
                             </div>
                             {/* Print: allergen line */}
                             {allergens.length > 0 && (
-                              <p className="hidden print:block text-[9px] text-slate-500 mt-0.5">
+                              <p className="hidden print:block text-[9px] text-slate-400 mt-0.5">
                                 Allergenes : {allergens.join(', ')}
                               </p>
                             )}
@@ -926,7 +926,7 @@ export default function MenuBuilder() {
 
             {/* Menu footer */}
             <div className="text-center py-4 px-6 border-t border-amber-100 dark:border-slate-700 print:border-slate-300">
-              <p className="text-xs text-slate-400 dark:text-slate-500 print:text-slate-600">
+              <p className="text-xs text-slate-400 dark:text-slate-500 print:text-slate-300">
                 Prix TTC &mdash; Tous nos plats sont faits maison. N&apos;hesitez pas a signaler vos allergies a notre equipe.
               </p>
               <MenuOrnament />
@@ -938,7 +938,7 @@ export default function MenuBuilder() {
       {/* ========== PLATS RETIRES SECTION (screen only) ========== */}
       {excludedRecipesList.length > 0 && (
         <div className="print:hidden mt-8">
-          <h3 className="text-lg font-semibold text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-slate-400 dark:text-slate-400 mb-3 flex items-center gap-2">
             <EyeOff className="w-5 h-5" />
             Plats retires ({excludedRecipesList.length})
           </h3>
@@ -957,7 +957,7 @@ export default function MenuBuilder() {
                 </button>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-600 dark:text-slate-400 line-through">
+                    <span className="font-medium text-slate-300 dark:text-slate-400 line-through">
                       {recipe.name}
                     </span>
                     <span className="text-xs text-slate-400 dark:text-slate-500">
@@ -995,17 +995,17 @@ export default function MenuBuilder() {
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <span className="text-slate-400 dark:text-slate-500">Plats</span>
-                  <div className="font-semibold text-slate-700 dark:text-slate-200">{g.recipes.length}</div>
+                  <div className="font-semibold text-slate-400 dark:text-slate-200">{g.recipes.length}</div>
                 </div>
                 <div>
                   <span className="text-slate-400 dark:text-slate-500">Prix moyen</span>
-                  <div className="font-semibold text-slate-700 dark:text-slate-200">
+                  <div className="font-semibold text-slate-400 dark:text-slate-200">
                     {g.avgPrice.toFixed(2)} &euro;
                   </div>
                 </div>
                 <div>
                   <span className="text-slate-400 dark:text-slate-500">Min - Max</span>
-                  <div className="font-semibold text-slate-700 dark:text-slate-200">
+                  <div className="font-semibold text-slate-400 dark:text-slate-200">
                     {g.minPrice.toFixed(0)} - {g.maxPrice.toFixed(0)} &euro;
                   </div>
                 </div>
@@ -1098,7 +1098,7 @@ function StatCard({
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
+        <span className="text-xs text-slate-400 dark:text-slate-400">{label}</span>
         <div className={`p-2 rounded-lg ${iconBg}`}>{icon}</div>
       </div>
       <div className={`text-xl font-bold ${valueColor || 'text-slate-800 dark:text-slate-100'}`}>

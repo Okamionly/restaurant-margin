@@ -357,7 +357,7 @@ export default function DevCorp() {
       <div className="h-12 bg-slate-900 border-b border-slate-800 flex items-center px-4 gap-3 shrink-0">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-bold">DC</div>
         <span className="font-semibold text-sm hidden sm:inline">RestauMargin Dev Corp</span>
-        <span className="text-slate-500 text-xs hidden md:inline">Bureau virtuel</span>
+        <span className="text-slate-400 text-xs hidden md:inline">Bureau virtuel</span>
 
         <div className="ml-auto flex items-center gap-3 text-xs">
           {/* Alerts */}
@@ -377,7 +377,7 @@ export default function DevCorp() {
           <span className="font-mono text-blue-400">{formatTime(time)}</span>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-500">Sprint:</span>
+            <span className="text-slate-400">Sprint:</span>
             <div className="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all duration-500"
                 style={{ width: `${globalProgress}%` }} />
@@ -637,7 +637,7 @@ export default function DevCorp() {
                   <div className="text-sm font-bold">{selected.name}</div>
                   <div className="text-[10px] text-slate-400">{selected.role} — {selected.description}</div>
                 </div>
-                <button onClick={() => setSelectedAgent(null)} className="text-slate-500 hover:text-white text-xs">X</button>
+                <button onClick={() => setSelectedAgent(null)} className="text-slate-400 hover:text-white text-xs">X</button>
               </div>
 
               {/* Status + mood + energy */}
@@ -655,33 +655,33 @@ export default function DevCorp() {
 
               {/* Current task */}
               <div className="bg-slate-800/50 rounded-lg p-2 mb-2">
-                <div className="text-[10px] text-slate-500 mb-1">Tache en cours</div>
+                <div className="text-[10px] text-slate-400 mb-1">Tache en cours</div>
                 <div className="text-xs font-semibold" style={{ color: selected.color }}>{selected.currentTask}</div>
                 <div className="w-full h-1.5 bg-slate-700 rounded-full mt-1.5 overflow-hidden">
                   <div className="h-full rounded-full transition-all duration-500" style={{ width: `${selected.progress}%`, backgroundColor: selected.color }} />
                 </div>
-                <div className="text-[9px] text-slate-500 mt-0.5 text-right">{Math.floor(selected.progress)}%</div>
+                <div className="text-[9px] text-slate-400 mt-0.5 text-right">{Math.floor(selected.progress)}%</div>
               </div>
 
               {/* All tasks */}
               <div className="mb-2">
-                <div className="text-[10px] text-slate-500 mb-1">Taches du sprint</div>
+                <div className="text-[10px] text-slate-400 mb-1">Taches du sprint</div>
                 {selected.tasks.map((t, i) => (
                   <div key={i} className="flex items-center gap-1.5 text-[10px] py-0.5">
                     <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] ${
                       i < selected.taskIndex ? 'bg-emerald-500/20 text-emerald-400' :
-                      i === selected.taskIndex ? 'text-white' : 'bg-slate-800 text-slate-600'
+                      i === selected.taskIndex ? 'text-white' : 'bg-slate-800 text-slate-300'
                     }`} style={i === selected.taskIndex ? { backgroundColor: selected.color + '30', color: selected.color } : {}}>
                       {i < selected.taskIndex ? 'V' : i === selected.taskIndex ? '>' : '-'}
                     </span>
-                    <span className={i < selected.taskIndex ? 'text-slate-500 line-through' : i === selected.taskIndex ? 'text-white font-medium' : 'text-slate-400'}>{t}</span>
+                    <span className={i < selected.taskIndex ? 'text-slate-400 line-through' : i === selected.taskIndex ? 'text-white font-medium' : 'text-slate-400'}>{t}</span>
                   </div>
                 ))}
               </div>
 
               {/* History */}
               <div className="mb-2">
-                <div className="text-[10px] text-slate-500 mb-1">Historique</div>
+                <div className="text-[10px] text-slate-400 mb-1">Historique</div>
                 {selected.history.slice(-4).map((h, i) => (
                   <div key={i} className="text-[10px] text-slate-400 py-0.5 flex items-center gap-1">
                     <span className="w-1 h-1 rounded-full bg-slate-600" />
@@ -712,7 +712,7 @@ export default function DevCorp() {
                     </div>
                     <div className="min-w-0">
                       <div className="text-[8px] font-medium truncate">{a.name}</div>
-                      <div className="text-[7px] text-slate-500">{Math.floor(a.progress)}%</div>
+                      <div className="text-[7px] text-slate-400">{Math.floor(a.progress)}%</div>
                     </div>
                   </button>
                 ))}
@@ -723,7 +723,7 @@ export default function DevCorp() {
           {/* Chat header */}
           <div className="px-3 py-2 border-b border-slate-800 flex items-center justify-between">
             <span className="text-xs font-semibold">Chat d'equipe</span>
-            <span className="text-[9px] text-slate-500">{chat.length} messages</span>
+            <span className="text-[9px] text-slate-400">{chat.length} messages</span>
           </div>
 
           {/* Chat messages */}
@@ -731,7 +731,7 @@ export default function DevCorp() {
             {chat.map((msg, i) => (
               <div key={i} className={`flex flex-col ${msg.isUser ? 'items-end' : 'items-start'}`}>
                 <div className="flex items-center gap-1 mb-0.5">
-                  <span className="text-[8px] text-slate-600">{msg.time}</span>
+                  <span className="text-[8px] text-slate-300">{msg.time}</span>
                   <span className="text-[10px] font-medium" style={{ color: msg.isUser ? '#60a5fa' : msg.color }}>{msg.from}</span>
                 </div>
                 <div className={`px-3 py-1.5 rounded-xl text-[11px] max-w-[230px] leading-relaxed ${

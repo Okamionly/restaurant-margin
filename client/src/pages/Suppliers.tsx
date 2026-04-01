@@ -511,7 +511,7 @@ export default function Suppliers() {
 
   // ── render ─────────────────────────────────────────────────────────────────
 
-  if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">{t('suppliers.loading')}</div>;
+  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t('suppliers.loading')}</div>;
 
   return (
     <div>
@@ -523,7 +523,7 @@ export default function Suppliers() {
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'mes-fournisseurs'
                 ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
             }`}
           >
             <Truck className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -534,7 +534,7 @@ export default function Suppliers() {
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'annuaire'
                 ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
             }`}
           >
             <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -545,7 +545,7 @@ export default function Suppliers() {
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'comparateur'
                 ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
             }`}
           >
             <Scale className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -570,7 +570,7 @@ export default function Suppliers() {
             <div className="flex items-center gap-2">
               {/* Quick-add dropdown */}
               <div className="relative">
-                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                   <Zap className="w-4 h-4 text-amber-500" />
                   {t('suppliers.quickAdd')}
                   <ChevronDown className="w-3 h-3" />
@@ -589,7 +589,7 @@ export default function Suppliers() {
                           setModalOpen(true);
                           setShowQuickAdd(false);
                         }}
-                        className="w-full text-left px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                        className="w-full text-left px-3 py-2 text-sm text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
                       >
                         <Building2 className="w-4 h-4 text-slate-400" />
                         {tpl.name}
@@ -610,28 +610,28 @@ export default function Suppliers() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.totalSuppliers')}</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.totalSuppliers')}</span>
                 <div className="p-2 rounded-lg bg-blue-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalSuppliers}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.linkedIngredients')}</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.linkedIngredients')}</span>
                 <div className="p-2 rounded-lg bg-green-600"><Package className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalLinked}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.withDelivery')}</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.withDelivery')}</span>
                 <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withDelivery}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">{t('suppliers.withoutSupplier')}</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.withoutSupplier')}</span>
                 <div className="p-2 rounded-lg bg-amber-500"><Package className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withoutSupplier}</div>
@@ -685,11 +685,11 @@ export default function Suppliers() {
                   <table className="w-full text-sm">
                     <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700 z-10">
                       <tr>
-                        <th className="text-left px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{t('suppliers.ingredient')}</th>
+                        <th className="text-left px-3 py-2 text-xs text-slate-400 dark:text-slate-400 font-medium">{t('suppliers.ingredient')}</th>
                         {comparedSuppliers.map(s => (
-                          <th key={s.id} className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{s.name}</th>
+                          <th key={s.id} className="text-right px-3 py-2 text-xs text-slate-400 dark:text-slate-400 font-medium">{s.name}</th>
                         ))}
-                        <th className="text-right px-3 py-2 text-xs text-slate-500 dark:text-slate-400 font-medium">{t('suppliers.gapPercent')}</th>
+                        <th className="text-right px-3 py-2 text-xs text-slate-400 dark:text-slate-400 font-medium">{t('suppliers.gapPercent')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y dark:divide-slate-700">
@@ -701,12 +701,12 @@ export default function Suppliers() {
                         const diff = minPrice && maxPrice && maxPrice > 0 ? Math.round(((maxPrice - minPrice) / minPrice) * 100) : null;
                         return (
                           <tr key={name} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                            <td className="px-3 py-2 text-slate-700 dark:text-slate-300 font-medium">{name}</td>
+                            <td className="px-3 py-2 text-slate-400 dark:text-slate-300 font-medium">{name}</td>
                             {comparedSuppliers.map(s => {
                               const entry = ingredientMap[name][s.name];
                               const isBest = entry && minPrice !== null && entry.price === minPrice && validPrices.length > 1;
                               return (
-                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-slate-600 dark:text-slate-400'}`}>
+                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-slate-300 dark:text-slate-400'}`}>
                                   {entry ? `${entry.price.toFixed(2)} €/${entry.unit}` : <span className="text-slate-300 dark:text-slate-600">--</span>}
                                 </td>
                               );
@@ -726,7 +726,7 @@ export default function Suppliers() {
 
           {/* Search / filter bar */}
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
-            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-300 dark:text-slate-300">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
@@ -809,13 +809,13 @@ export default function Suppliers() {
                           {supplierCatalogMap[supplier.id]?.count ?? 0} produits
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 dark:text-slate-400">
                         {supplier.city && <span>{supplier.city}</span>}
                         {supplier.delivery && <span className="text-emerald-500">&#10003; Livraison</span>}
                       </div>
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {(supplier.categories || []).slice(0, 3).map(cat => (
-                          <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">{cat}</span>
+                          <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300">{cat}</span>
                         ))}
                       </div>
                     </div>
@@ -848,7 +848,7 @@ export default function Suppliers() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => openEdit(detailSupplier)}
-                          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400"
+                          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-400"
                           title={t('suppliers.edit')}
                         >
                           <Edit2 className="w-4 h-4" />
@@ -879,27 +879,27 @@ export default function Suppliers() {
                             <Star key={n} className={`w-4 h-4 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
                           ))}
                         </div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.reliability')}</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.reliability')}</span>
                       </div>
                       <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
                         <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
                           <Clock className="w-4 h-4 text-blue-500" />
                           {rating.deliveryDays}
                         </div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
                       </div>
                       <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
                         <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{rating.minOrderAmount}</div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{t('suppliers.minOrder')}</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.minOrder')}</span>
                       </div>
                     </div>
 
                     {/* Contact info */}
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      {detailSupplier.contactName && <div className="text-slate-600 dark:text-slate-300"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.contactName}</div>}
-                      {detailSupplier.phone && <div className="text-slate-600 dark:text-slate-300"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.phone}</div>}
-                      {detailSupplier.email && <div className="text-slate-600 dark:text-slate-300"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.email}</div>}
-                      {detailSupplier.city && <div className="text-slate-600 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
+                      {detailSupplier.contactName && <div className="text-slate-300 dark:text-slate-300"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.contactName}</div>}
+                      {detailSupplier.phone && <div className="text-slate-300 dark:text-slate-300"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.phone}</div>}
+                      {detailSupplier.email && <div className="text-slate-300 dark:text-slate-300"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.email}</div>}
+                      {detailSupplier.city && <div className="text-slate-300 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
                       {detailSupplier.website && (
                         <div>
                           <a
@@ -919,7 +919,7 @@ export default function Suppliers() {
                     {detailSupplier.categories.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {detailSupplier.categories.map((cat) => (
-                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 font-medium">
                             {cat}
                           </span>
                         ))}
@@ -931,7 +931,7 @@ export default function Suppliers() {
                       const catalog = supplierCatalogMap[detailSupplier.id];
                       if (!catalog || catalog.count === 0) return (
                         <div>
-                          <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+                          <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
                             <Layers className="w-4 h-4 text-purple-500" />
                             Catalogue (0 produits)
                           </h4>
@@ -942,7 +942,7 @@ export default function Suppliers() {
                       return (
                         <div>
                           <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-200 flex items-center gap-2">
                               <Layers className="w-4 h-4 text-purple-500" />
                               Catalogue ({catalog.count} produits)
                             </h4>
@@ -967,12 +967,12 @@ export default function Suppliers() {
                                   >
                                     <div className="flex items-center gap-2">
                                       <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
-                                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{cat}</span>
-                                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400">
+                                      <span className="text-sm font-medium text-slate-400 dark:text-slate-200">{cat}</span>
+                                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-400 dark:text-slate-400">
                                         {catIngredients.length}
                                       </span>
                                     </div>
-                                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                    <span className="text-xs font-medium text-slate-400 dark:text-slate-400">
                                       {catTotal.toFixed(2)} EUR
                                     </span>
                                   </button>
@@ -984,7 +984,7 @@ export default function Suppliers() {
                                           const priceHistory = getMockPriceHistory(ing.pricePerUnit);
                                           return (
                                             <div key={ing.id} className="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                              <span className="flex-1 text-sm text-slate-700 dark:text-slate-300 truncate">{ing.name}</span>
+                                              <span className="flex-1 text-sm text-slate-400 dark:text-slate-300 truncate">{ing.name}</span>
                                               {priceHistory.length >= 2 && (
                                                 <MiniPriceChart data={priceHistory} width={60} height={20} />
                                               )}
@@ -1032,7 +1032,7 @@ export default function Suppliers() {
         <>
           {/* Stats bar */}
           <div className="flex flex-wrap gap-3 mb-4 text-sm">
-            <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+            <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300 font-medium">
               {annuaireStats.total} {t('suppliers.suppliersFound')}
             </span>
             <span className="px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-medium">
@@ -1050,7 +1050,7 @@ export default function Suppliers() {
 
           {/* Filters */}
           <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
-            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-300 dark:text-slate-300">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
@@ -1112,8 +1112,8 @@ export default function Suppliers() {
                   onChange={(e) => setDeliveryOnly(e.target.checked)}
                   className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
                 />
-                <Truck className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                <span className="text-sm text-slate-600 dark:text-slate-300">{t('suppliers.deliveryOnly')}</span>
+                <Truck className="w-4 h-4 text-slate-400 dark:text-slate-400" />
+                <span className="text-sm text-slate-300 dark:text-slate-300">{t('suppliers.deliveryOnly')}</span>
               </label>
             </div>
           </div>
@@ -1141,12 +1141,12 @@ export default function Suppliers() {
                         {({grossiste: t('suppliers.typeWholesaler'), specialiste: t('suppliers.typeSpecialist'), local: t('suppliers.typeLocal'), national: t('suppliers.typeNational')} as Record<string, string>)[supplier.type]}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-3 line-clamp-2">
+                    <p className="text-sm text-slate-400 dark:text-slate-400 mb-3 line-clamp-2">
                       {supplier.description}
                     </p>
                     <div className="flex flex-wrap gap-1 mb-3">
                       {supplier.categories.map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 font-medium">
                           {cat}
                         </span>
                       ))}
@@ -1170,7 +1170,7 @@ export default function Suppliers() {
                         Livraison
                       </span>
                       {supplier.minOrder && (
-                        <span className="text-slate-500 dark:text-slate-400">Min: {supplier.minOrder}</span>
+                        <span className="text-slate-400 dark:text-slate-400">Min: {supplier.minOrder}</span>
                       )}
                       {supplier.website && (
                         <a
@@ -1263,7 +1263,7 @@ export default function Suppliers() {
                   <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-500 dark:text-slate-400">
+                        <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-400 dark:text-slate-400">
                           <th className="px-3 py-2 w-8">
                             <input type="checkbox"
                               checked={page.length > 0 && page.every((_, i) => catalogSelected.has(catalogPage * pageSize + i))}
@@ -1299,8 +1299,8 @@ export default function Suppliers() {
                                   className="accent-blue-600"
                                 />
                               </td>
-                              <td className="px-3 py-2 text-slate-700 dark:text-slate-300">{p.name}</td>
-                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">{p.category}</span></td>
+                              <td className="px-3 py-2 text-slate-400 dark:text-slate-300">{p.name}</td>
+                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400">{p.category}</span></td>
                               <td className="px-3 py-2 font-medium text-blue-600 dark:text-blue-400">{p.prixMoy.toFixed(2)} €</td>
                               <td className="px-3 py-2 text-slate-400">{p.unit}</td>
                               <td className="px-3 py-2">
@@ -1333,7 +1333,7 @@ export default function Suppliers() {
                       <span className="text-xs text-slate-400">{filtered.length} {t('suppliers.results')}</span>
                       <div className="flex gap-1">
                         <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">←</button>
-                        <span className="px-3 py-1 text-xs text-slate-500">{catalogPage + 1}{" / "}{totalPages}</span>
+                        <span className="px-3 py-1 text-xs text-slate-400">{catalogPage + 1}{" / "}{totalPages}</span>
                         <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">→</button>
                       </div>
                     </div>
@@ -1370,21 +1370,21 @@ export default function Suppliers() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Produits comparables</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">Produits comparables</span>
                 <div className="p-2 rounded-lg bg-blue-600"><Scale className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{comparatorData.length}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Fournisseurs actifs</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">Fournisseurs actifs</span>
                 <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{suppliers.length}</div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Economie potentielle</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">Economie potentielle</span>
                 <div className="p-2 rounded-lg bg-emerald-600"><Euro className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{totalPotentialSavings.toFixed(2)} EUR</div>
@@ -1392,7 +1392,7 @@ export default function Suppliers() {
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-500 dark:text-slate-400">Alertes prix</span>
+                <span className="text-sm text-slate-400 dark:text-slate-400">Alertes prix</span>
                 <div className="p-2 rounded-lg bg-red-500"><AlertTriangle className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
@@ -1413,7 +1413,7 @@ export default function Suppliers() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-500 dark:text-slate-400">
+                    <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-400 dark:text-slate-400">
                       <th className="px-4 py-3 font-medium">Ingredient</th>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <th key={s.id} className="px-4 py-3 font-medium text-center whitespace-nowrap">
@@ -1438,7 +1438,7 @@ export default function Suppliers() {
                       return (
                         <tr key={item.key} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
                           <td className="px-4 py-3">
-                            <div className="font-medium text-slate-700 dark:text-slate-200">{item.displayName}</div>
+                            <div className="font-medium text-slate-400 dark:text-slate-200">{item.displayName}</div>
                             <div className="text-xs text-slate-400">{item.entries.length} fournisseurs</div>
                           </td>
                           {allSuppliers.map(s => {
@@ -1449,7 +1449,7 @@ export default function Suppliers() {
                             const isCheapest = entry.pricePerUnit === item.cheapestPrice;
                             return (
                               <td key={s.id} className={`px-4 py-3 text-center ${isCheapest ? 'bg-green-50 dark:bg-green-900/20' : ''}`}>
-                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-slate-600 dark:text-slate-400'}`}>
+                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-slate-300 dark:text-slate-400'}`}>
                                   {entry.pricePerUnit.toFixed(2)} EUR/{entry.unit}
                                 </span>
                                 {isCheapest && item.entries.length > 1 && (
@@ -1478,7 +1478,7 @@ export default function Suppliers() {
                   </tbody>
                   <tfoot>
                     <tr className="bg-slate-50 dark:bg-slate-700/50 font-semibold">
-                      <td className="px-4 py-3 text-slate-700 dark:text-slate-200">Total</td>
+                      <td className="px-4 py-3 text-slate-400 dark:text-slate-200">Total</td>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <td key={s.id} className="px-4 py-3" />
                       ))}
@@ -1517,7 +1517,7 @@ export default function Suppliers() {
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <span className="font-medium text-sm text-slate-700 dark:text-slate-200">{ing.name}</span>
+                            <span className="font-medium text-sm text-slate-400 dark:text-slate-200">{ing.name}</span>
                             {supplier && <span className="text-xs text-slate-400 ml-2">({supplier.name})</span>}
                           </div>
                           <span className={`text-sm font-bold px-2 py-0.5 rounded-full ${
@@ -1551,7 +1551,7 @@ export default function Suppliers() {
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           {/* Nom */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">
               {t('suppliers.supplierName')} <span className="text-red-500">*</span>
             </label>
             <input
@@ -1565,7 +1565,7 @@ export default function Suppliers() {
 
           {/* Contact name */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.contactName')}</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.contactName')}</label>
             <input
               type="text"
               value={form.contactName}
@@ -1577,7 +1577,7 @@ export default function Suppliers() {
           {/* Phone + Email */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.phone')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.phone')}</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -1586,7 +1586,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.email')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.email')}</label>
               <input
                 type="email"
                 value={form.email}
@@ -1598,7 +1598,7 @@ export default function Suppliers() {
 
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.address')}</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.address')}</label>
             <input
               type="text"
               value={form.address}
@@ -1610,7 +1610,7 @@ export default function Suppliers() {
           {/* Postal code + City */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.postalCode')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.postalCode')}</label>
               <input
                 type="text"
                 value={form.postalCode}
@@ -1619,7 +1619,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.city')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.city')}</label>
               <input
                 type="text"
                 value={form.city}
@@ -1632,7 +1632,7 @@ export default function Suppliers() {
           {/* Region + Country */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.region')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.region')}</label>
               <select
                 value={form.region}
                 onChange={(e) => setField('region', e.target.value)}
@@ -1645,7 +1645,7 @@ export default function Suppliers() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.country')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.country')}</label>
               <input
                 type="text"
                 value={form.country}
@@ -1658,7 +1658,7 @@ export default function Suppliers() {
           {/* SIRET + Website */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.siret')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.siret')}</label>
               <input
                 type="text"
                 value={form.siret}
@@ -1668,7 +1668,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.websiteLabel')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.websiteLabel')}</label>
               <input
                 type="url"
                 value={form.website}
@@ -1681,7 +1681,7 @@ export default function Suppliers() {
 
           {/* Categories multi-select */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t('suppliers.categories')}</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-2">{t('suppliers.categories')}</label>
             <div className="flex flex-wrap gap-2">
               {INGREDIENT_CATEGORIES.map((cat) => (
                 <label
@@ -1689,7 +1689,7 @@ export default function Suppliers() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm cursor-pointer select-none border transition-colors ${
                     form.categories.includes(cat)
                       ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
-                      : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'
+                      : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'
                   }`}
                 >
                   <input
@@ -1717,14 +1717,14 @@ export default function Suppliers() {
                   ? <ToggleRight className="w-8 h-8 text-green-500" />
                   : <ToggleLeft className="w-8 h-8 text-slate-400" />}
               </button>
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t('suppliers.deliveryAvailable')}</span>
+              <span className="text-sm font-medium text-slate-400 dark:text-slate-300">{t('suppliers.deliveryAvailable')}</span>
             </label>
           </div>
 
           {/* Min order + Payment terms */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.minimumOrder')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.minimumOrder')}</label>
               <input
                 type="text"
                 value={form.minOrder}
@@ -1734,7 +1734,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.paymentTerms')}</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.paymentTerms')}</label>
               <input
                 type="text"
                 value={form.paymentTerms}
@@ -1747,7 +1747,7 @@ export default function Suppliers() {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('suppliers.notes')}</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.notes')}</label>
             <textarea
               value={form.notes}
               onChange={(e) => setField('notes', e.target.value)}
@@ -1762,7 +1762,7 @@ export default function Suppliers() {
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-slate-700">
           <button
             onClick={() => setModalOpen(false)}
-            className="px-4 py-2 rounded-lg font-medium border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="px-4 py-2 rounded-lg font-medium border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
           >
             {t('suppliers.cancel')}
           </button>

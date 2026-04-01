@@ -99,7 +99,7 @@ const ENTREPRISE: EntrepriseInfo = {
 };
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
-  brouillon: { label: 'Brouillon', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-600 dark:text-slate-300', icon: Edit2 },
+  brouillon: { label: 'Brouillon', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-300 dark:text-slate-300', icon: Edit2 },
   envoye: { label: 'Envoyé', bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', icon: Send },
   accepte: { label: 'Accepté', bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', icon: CheckCircle },
   refuse: { label: 'Refusé', bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', icon: XCircle },
@@ -285,7 +285,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
         <div>
           <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
           <div className="font-bold text-base">{entreprise.nom}</div>
-          <div className="text-xs text-slate-500 space-y-0.5 mt-1">
+          <div className="text-xs text-slate-400 space-y-0.5 mt-1">
             <div>{entreprise.adresse}</div>
             <div>{entreprise.codePostal} {entreprise.ville}</div>
             <div>Tél : {entreprise.telephone}</div>
@@ -295,7 +295,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
         <div className="text-right">
           <div className="text-2xl font-bold text-blue-700">{typeLabel}</div>
           <div className="text-lg font-semibold mt-1">{doc.numero}</div>
-          <div className="text-xs text-slate-500 mt-2">
+          <div className="text-xs text-slate-400 mt-2">
             <div>Date : {formatDate(doc.dateCreation)}</div>
             {doc.type === 'devis' && <div>Valide jusqu'au : {formatDate(doc.dateValidite)}</div>}
             {doc.refDevis && <div>Réf. devis : {doc.refDevis}</div>}
@@ -308,7 +308,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       <div className="bg-slate-50 rounded-lg p-4 mb-6">
         <div className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-semibold">Destinataire</div>
         <div className="font-bold">{doc.client.raisonSociale || doc.client.nom}</div>
-        <div className="text-xs text-slate-600 space-y-0.5">
+        <div className="text-xs text-slate-300 space-y-0.5">
           {doc.client.nom !== doc.client.raisonSociale && <div>{doc.client.nom}</div>}
           <div>{doc.client.adresse}</div>
           <div>{doc.client.codePostal} {doc.client.ville}</div>
@@ -350,7 +350,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
             <span className="font-semibold">{formatEuro(doc.totalHT)}</span>
           </div>
           {Object.entries(doc.tvaVentilee).map(([rate, amount]) => (
-            <div key={rate} className="flex justify-between py-1 text-slate-500">
+            <div key={rate} className="flex justify-between py-1 text-slate-400">
               <span>TVA {rate}</span>
               <span>{formatEuro(amount)}</span>
             </div>
@@ -363,12 +363,12 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       </div>
 
       {/* Conditions */}
-      <div className="border-t border-slate-200 pt-4 space-y-2 text-xs text-slate-500">
-        <div><span className="font-semibold text-slate-700">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
+      <div className="border-t border-slate-200 pt-4 space-y-2 text-xs text-slate-400">
+        <div><span className="font-semibold text-slate-400">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
         {doc.type === 'devis' && (
-          <div><span className="font-semibold text-slate-700">Durée de validité :</span> {doc.dureeValidite} jours</div>
+          <div><span className="font-semibold text-slate-400">Durée de validité :</span> {doc.dureeValidite} jours</div>
         )}
-        {doc.notes && <div><span className="font-semibold text-slate-700">Notes :</span> {doc.notes}</div>}
+        {doc.notes && <div><span className="font-semibold text-slate-400">Notes :</span> {doc.notes}</div>}
       </div>
 
       {/* Mentions légales */}
@@ -384,7 +384,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       {/* Signature zone for devis */}
       {doc.type === 'devis' && (
         <div className="mt-6 pt-4 border-t border-dashed border-slate-300">
-          <div className="text-xs text-slate-500 italic">
+          <div className="text-xs text-slate-400 italic">
             Bon pour accord - Date et signature du client :
           </div>
           <div className="h-16 mt-2 border border-dashed border-slate-300 rounded-lg" />
@@ -458,7 +458,7 @@ function LigneRow({
           <option value={20}>20%</option>
         </select>
       </div>
-      <div className="col-span-9 sm:col-span-1 text-right text-sm font-semibold text-slate-700 dark:text-slate-200">
+      <div className="col-span-9 sm:col-span-1 text-right text-sm font-semibold text-slate-400 dark:text-slate-200">
         {formatEuro(totalHT)}
       </div>
       <div className="col-span-3 sm:col-span-1 text-right">
@@ -488,7 +488,7 @@ function PaymentModal({ isOpen, onClose, onConfirm }: {
     <Modal isOpen={isOpen} onClose={onClose} title="Enregistrer le paiement">
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date de paiement</label>
+          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Date de paiement</label>
           <input
             type="date"
             value={date}
@@ -497,7 +497,7 @@ function PaymentModal({ isOpen, onClose, onConfirm }: {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Mode de paiement</label>
+          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Mode de paiement</label>
           <select
             value={mode}
             onChange={e => setMode(e.target.value as PaymentMode)}
@@ -510,7 +510,7 @@ function PaymentModal({ isOpen, onClose, onConfirm }: {
           </select>
         </div>
         <div className="flex justify-end gap-3 pt-2">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
             Annuler
           </button>
           <button
@@ -895,7 +895,7 @@ export default function Devis() {
             </div>
             Devis & Factures
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Gérez vos devis, factures et avoirs en toute conformité
           </p>
         </div>
@@ -912,7 +912,7 @@ export default function Devis() {
       {loading && (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-          <span className="ml-3 text-slate-500 dark:text-slate-400">Chargement des documents...</span>
+          <span className="ml-3 text-slate-400 dark:text-slate-400">Chargement des documents...</span>
         </div>
       )}
 
@@ -928,7 +928,7 @@ export default function Devis() {
           <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50`}>
             <div className="flex items-center gap-2 mb-2">
               <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{stat.label}</span>
+              <span className="text-xs font-medium text-slate-400 dark:text-slate-400">{stat.label}</span>
             </div>
             <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
           </div>
@@ -949,14 +949,14 @@ export default function Devis() {
               className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold transition-colors relative ${
                 activeTab === tab.id
                   ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/10'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                  : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
               }`}
             >
               {tab.label}
               <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                 activeTab === tab.id
                   ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400'
               }`}>
                 {tab.count}
               </span>
@@ -982,7 +982,7 @@ export default function Devis() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                 showFilters
                   ? 'border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  : 'border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -992,7 +992,7 @@ export default function Devis() {
 
           {showFilters && (
             <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
-              <span className="text-xs text-slate-500 dark:text-slate-400 self-center mr-1">Statut :</span>
+              <span className="text-xs text-slate-400 dark:text-slate-400 self-center mr-1">Statut :</span>
               {['all', 'brouillon', 'envoye', 'accepte', 'refuse', 'paye', 'en_retard'].map(s => (
                 <button
                   key={s}
@@ -1000,7 +1000,7 @@ export default function Devis() {
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     statusFilter === s
                       ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
                   {s === 'all' ? 'Tous' : (STATUS_CONFIG[s as DocStatus] || STATUS_CONFIG['brouillon']).label}
@@ -1015,20 +1015,20 @@ export default function Devis() {
           {filteredDocs.length === 0 ? (
             <div className="text-center py-16">
               <FileText className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-500 dark:text-slate-400 font-medium">Aucun document trouvé</p>
+              <p className="text-slate-400 dark:text-slate-400 font-medium">Aucun document trouvé</p>
               <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Créez votre premier document</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-700/50">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Numéro</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Client</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">Date</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Montant HT</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">Montant TTC</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Statut</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Numéro</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Client</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">Date</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Montant HT</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">Montant TTC</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Statut</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -1050,7 +1050,7 @@ export default function Devis() {
                       <div className="font-medium text-slate-800 dark:text-slate-200">{doc.client.raisonSociale || doc.client.nom}</div>
                       <div className="text-xs text-slate-400 dark:text-slate-500">{doc.client.nom}</div>
                     </td>
-                    <td className="py-3 px-4 text-slate-600 dark:text-slate-400 hidden md:table-cell">
+                    <td className="py-3 px-4 text-slate-300 dark:text-slate-400 hidden md:table-cell">
                       {formatDate(doc.dateCreation)}
                       {doc.datePaiement && (
                         <div className="text-xs text-emerald-500">Payé le {formatDate(doc.datePaiement)}</div>
@@ -1059,7 +1059,7 @@ export default function Devis() {
                     <td className="py-3 px-4 text-right font-semibold text-slate-900 dark:text-white">
                       {formatEuro(doc.totalHT)}
                     </td>
-                    <td className="py-3 px-4 text-right text-slate-600 dark:text-slate-300 hidden sm:table-cell">
+                    <td className="py-3 px-4 text-right text-slate-300 dark:text-slate-300 hidden sm:table-cell">
                       {formatEuro(doc.totalTTC)}
                     </td>
                     <td className="py-3 px-4 text-center">
@@ -1162,7 +1162,7 @@ export default function Devis() {
 
           {/* Client section */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
               <Building2 className="w-4 h-4" />
               Informations client
             </h4>
@@ -1178,7 +1178,7 @@ export default function Devis() {
                 { key: 'siret', label: 'SIRET (B2B)', placeholder: '123 456 789 00012' },
               ].map(field => (
                 <div key={field.key}>
-                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{field.label}</label>
+                  <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{field.label}</label>
                   <input
                     type="text"
                     value={(client as any)[field.key]}
@@ -1193,7 +1193,7 @@ export default function Devis() {
 
           {/* Lignes de devis */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Lignes du document
             </h4>
@@ -1220,7 +1220,7 @@ export default function Devis() {
             </div>
             <button
               onClick={addLigne}
-              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors text-sm font-medium w-full justify-center"
+              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors text-sm font-medium w-full justify-center"
             >
               <Plus className="w-4 h-4" />
               Ajouter une ligne
@@ -1231,17 +1231,17 @@ export default function Devis() {
           <div className="flex justify-end">
             <div className="w-72 space-y-2 bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-500 dark:text-slate-400">Total HT</span>
+                <span className="text-slate-400 dark:text-slate-400">Total HT</span>
                 <span className="font-semibold text-slate-900 dark:text-white">{formatEuro(formTotals.totalHT)}</span>
               </div>
               {Object.entries(formTotals.tvaVentilee).map(([rate, amount]) => (
                 <div key={rate} className="flex justify-between text-sm">
                   <span className="text-slate-400">TVA {rate}</span>
-                  <span className="text-slate-600 dark:text-slate-300">{formatEuro(amount)}</span>
+                  <span className="text-slate-300 dark:text-slate-300">{formatEuro(amount)}</span>
                 </div>
               ))}
               <div className="flex justify-between text-base font-bold pt-2 border-t border-slate-200 dark:border-slate-600">
-                <span className="text-slate-700 dark:text-slate-200">Total TTC</span>
+                <span className="text-slate-400 dark:text-slate-200">Total TTC</span>
                 <span className="text-blue-600 dark:text-blue-400">{formatEuro(formTotals.totalTTC)}</span>
               </div>
             </div>
@@ -1251,7 +1251,7 @@ export default function Devis() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {createType === 'devis' && (
               <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Durée de validité (jours)</label>
+                <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Durée de validité (jours)</label>
                 <input
                   type="number"
                   value={dureeValidite}
@@ -1262,7 +1262,7 @@ export default function Devis() {
               </div>
             )}
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Conditions de paiement</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Conditions de paiement</label>
               <select
                 value={conditionsPaiement}
                 onChange={e => setConditionsPaiement(e.target.value)}
@@ -1275,7 +1275,7 @@ export default function Devis() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Notes</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Notes</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
@@ -1287,7 +1287,7 @@ export default function Devis() {
 
           {/* Mentions légales (read-only) */}
           <div className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4">
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">Mentions légales obligatoires (incluses automatiquement)</div>
+            <div className="text-xs font-semibold text-slate-400 dark:text-slate-400 mb-2">Mentions légales obligatoires (incluses automatiquement)</div>
             <div className="text-xs text-slate-400 dark:text-slate-500 whitespace-pre-line">
               {createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE}
             </div>
@@ -1297,7 +1297,7 @@ export default function Devis() {
           <div className="flex justify-end gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
             <button
               onClick={() => { setShowCreateModal(false); resetForm(); }}
-              className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               Annuler
             </button>
@@ -1335,7 +1335,7 @@ export default function Devis() {
               )}
               <button
                 onClick={() => handleDownloadPDF(previewDoc)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Télécharger PDF

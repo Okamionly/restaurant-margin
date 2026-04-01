@@ -38,7 +38,7 @@ type SupplierPromo = {
 
 const STATUS_LABELS: Record<string, string> = { draft: 'Brouillon', sent: 'Envoyé', closed: 'Clôturé' };
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300',
+  draft: 'bg-slate-100 text-slate-400 dark:bg-slate-700 dark:text-slate-300',
   sent: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   closed: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
 };
@@ -99,7 +99,7 @@ function PromoCard({ promo, onOrder, isSelected, onToggleSelect }: {
           className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-medium transition-all ${
             isSelected
               ? 'bg-blue-600 text-white shadow-sm'
-              : 'bg-white/60 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700'
+              : 'bg-white/60 dark:bg-slate-800/60 text-slate-400 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-700'
           }`}
           title="Sélectionner pour comparaison"
         >
@@ -135,7 +135,7 @@ function PromoCard({ promo, onOrder, isSelected, onToggleSelect }: {
       {/* Product info with better hierarchy */}
       <div className="flex-1 min-h-0 space-y-1.5">
         <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm leading-snug">{promo.product}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">{promo.description}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-400 line-clamp-2 leading-relaxed">{promo.description}</p>
       </div>
 
       {/* Price / Discount - enhanced */}
@@ -246,7 +246,7 @@ function PriceComparisonModal({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700">
-              <th className="text-left py-3 px-3 text-slate-500 dark:text-slate-400 font-medium text-xs uppercase tracking-wider w-36">
+              <th className="text-left py-3 px-3 text-slate-400 dark:text-slate-400 font-medium text-xs uppercase tracking-wider w-36">
                 Critère
               </th>
               {selectedPromos.map(p => (
@@ -270,7 +270,7 @@ function PriceComparisonModal({
           <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
             {criteria.map(c => (
               <tr key={c.key} className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
-                <td className="py-3 px-3 font-medium text-slate-600 dark:text-slate-300 text-xs uppercase tracking-wide">
+                <td className="py-3 px-3 font-medium text-slate-300 dark:text-slate-300 text-xs uppercase tracking-wide">
                   {c.label}
                 </td>
                 {selectedPromos.map(p => {
@@ -292,10 +292,10 @@ function PriceComparisonModal({
                       </div>
                     );
                   } else if (c.key === 'description') {
-                    content = <span className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">{p.description}</span>;
+                    content = <span className="text-slate-400 dark:text-slate-400 text-xs leading-relaxed">{p.description}</span>;
                   } else if (c.key === 'expiryDate') {
                     content = (
-                      <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                      <span className="inline-flex items-center gap-1 text-slate-300 dark:text-slate-300">
                         <Clock className="w-3 h-3 text-slate-400" /> {p.expiryDate}
                       </span>
                     );
@@ -320,7 +320,7 @@ function PriceComparisonModal({
       <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
         <button
           onClick={onClose}
-          className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+          className="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
         >
           Fermer
         </button>
@@ -339,7 +339,7 @@ function RFQHistorySection() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">
-            <History className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            <History className="w-4 h-4 text-slate-400 dark:text-slate-400" />
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Historique des appels d'offres</h3>
@@ -359,7 +359,7 @@ function RFQHistorySection() {
 
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
         {/* Table header */}
-        <div className="grid grid-cols-12 gap-2 px-4 py-2.5 bg-slate-50 dark:bg-slate-700/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+        <div className="grid grid-cols-12 gap-2 px-4 py-2.5 bg-slate-50 dark:bg-slate-700/50 text-[11px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
           <div className="col-span-4 lg:col-span-3">Titre</div>
           <div className="col-span-2 hidden lg:block">Date</div>
           <div className="col-span-2 text-center">Statut</div>
@@ -381,7 +381,7 @@ function RFQHistorySection() {
                   {new Date(entry.closedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                 </p>
               </div>
-              <div className="col-span-2 hidden lg:block text-xs text-slate-500 dark:text-slate-400">
+              <div className="col-span-2 hidden lg:block text-xs text-slate-400 dark:text-slate-400">
                 {new Date(entry.createdAt).toLocaleDateString('fr-FR')} &rarr; {new Date(entry.closedAt).toLocaleDateString('fr-FR')}
               </div>
               <div className="col-span-2 text-center">
@@ -396,7 +396,7 @@ function RFQHistorySection() {
                 )}
               </div>
               <div className="col-span-2 text-center hidden sm:block">
-                <span className="text-xs text-slate-600 dark:text-slate-300">{entry.supplierCount}{" fourn. / "}{entry.itemCount}{" prod."}</span>
+                <span className="text-xs text-slate-300 dark:text-slate-300">{entry.supplierCount}{" fourn. / "}{entry.itemCount}{" prod."}</span>
               </div>
               <div className="col-span-2 text-center">
                 {entry.bestSaving !== '-' ? (
@@ -408,7 +408,7 @@ function RFQHistorySection() {
                 )}
               </div>
               <div className="col-span-2 lg:col-span-1 text-center hidden sm:block">
-                <span className="text-xs text-slate-600 dark:text-slate-300 font-medium">{entry.selectedSupplier}</span>
+                <span className="text-xs text-slate-300 dark:text-slate-300 font-medium">{entry.selectedSupplier}</span>
               </div>
             </div>
           ))}
@@ -678,7 +678,7 @@ export default function RFQPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Appels d'offres</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-0.5">
             Comparez les prix, profitez des promotions et optimisez vos achats
           </p>
         </div>
@@ -737,7 +737,7 @@ export default function RFQPage() {
                     </span>
                     <div className="min-w-0">
                       <p className="font-semibold text-slate-800 dark:text-slate-100 truncate">{rfq.title}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-slate-400 dark:text-slate-400">
                         {rfq.suppliers.map(s => s.supplier.name).join(', ')} &bull; {totalItems} produit{totalItems > 1 ? 's' : ''}
                         {rfq.dueDate && ` · Échéance ${new Date(rfq.dueDate).toLocaleDateString('fr-FR')}`}
                       </p>
@@ -788,7 +788,7 @@ export default function RFQPage() {
                 {isExpanded && (
                   <div className="border-t border-slate-100 dark:border-slate-700 px-5 py-4 space-y-4">
                     {rfq.notes && (
-                      <p className="text-sm text-slate-600 dark:text-slate-400 italic">{rfq.notes}</p>
+                      <p className="text-sm text-slate-300 dark:text-slate-400 italic">{rfq.notes}</p>
                     )}
                     {rfq.items.map(item => {
                       const best = getBestQuote(item);
@@ -798,7 +798,7 @@ export default function RFQPage() {
                           <div className="bg-slate-50 dark:bg-slate-700/50 px-4 py-2 flex items-center justify-between">
                             <div>
                               <span className="font-medium text-slate-800 dark:text-slate-100">{item.ingredient.name}</span>
-                              <span className="text-slate-500 dark:text-slate-400 text-sm ml-2">
+                              <span className="text-slate-400 dark:text-slate-400 text-sm ml-2">
                                 {item.quantity} {item.ingredient.unit}
                               </span>
                             </div>
@@ -815,7 +815,7 @@ export default function RFQPage() {
                                   className={`flex items-center gap-3 px-4 py-2.5 ${isBest && !quote.selected ? 'bg-amber-50 dark:bg-amber-900/10' : ''} ${quote.selected ? 'bg-green-50 dark:bg-green-900/10' : ''}`}
                                 >
                                   <div className="w-36 shrink-0">
-                                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{quote.supplier.name}</p>
+                                    <p className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate">{quote.supplier.name}</p>
                                     {isBest && !quote.selected && <span className="text-[10px] text-amber-600 font-medium">Meilleur prix</span>}
                                     {quote.selected && <span className="text-[10px] text-green-600 font-medium flex items-center gap-0.5"><CheckCircle className="w-3 h-3" /> Sélectionné</span>}
                                   </div>
@@ -849,7 +849,7 @@ export default function RFQPage() {
                                       onClick={() => setEditingQuote({ quoteId: quote.id, value: quote.unitPrice?.toString() ?? '', notes: quote.notes ?? '' })}
                                     >
                                       {quote.unitPrice !== null ? (
-                                        <span className={`text-sm font-semibold ${isBest ? 'text-amber-700 dark:text-amber-400' : 'text-slate-700 dark:text-slate-300'}`}>
+                                        <span className={`text-sm font-semibold ${isBest ? 'text-amber-700 dark:text-amber-400' : 'text-slate-400 dark:text-slate-300'}`}>
                                           {quote.unitPrice.toFixed(2)} € / {item.ingredient.unit}
                                         </span>
                                       ) : (
@@ -866,7 +866,7 @@ export default function RFQPage() {
                                           <button
                                             onClick={() => handleSelectQuote(rfq.id, quote.id, false)}
                                             title="Sélectionner ce fournisseur"
-                                            className="px-2 py-1 rounded text-xs border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
+                                            className="px-2 py-1 rounded text-xs border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-300 dark:text-slate-400"
                                           >
                                             Choisir
                                           </button>
@@ -909,7 +909,7 @@ export default function RFQPage() {
       <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Nouvel appel d'offres">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Titre *</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Titre *</label>
             <input
               type="text" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
               placeholder="Ex: Commande légumes semaine 14"
@@ -917,7 +917,7 @@ export default function RFQPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date limite de réponse</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Date limite de réponse</label>
             <input
               type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-700 dark:text-slate-100"
@@ -927,7 +927,7 @@ export default function RFQPage() {
           {/* Products */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Produits *</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300">Produits *</label>
               <button onClick={addIngredientRow} className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700">
                 <Plus className="w-3.5 h-3.5" /> Ajouter
               </button>
@@ -970,7 +970,7 @@ export default function RFQPage() {
 
           {/* Suppliers */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Fournisseurs *</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-2">Fournisseurs *</label>
             {suppliers.length === 0 ? (
               <div className="flex items-center gap-2 text-amber-600 text-sm">
                 <AlertCircle className="w-4 h-4" />
@@ -986,7 +986,7 @@ export default function RFQPage() {
                       onChange={() => toggleSupplier(s.id)}
                       className="accent-blue-600"
                     />
-                    <span className="text-sm text-slate-700 dark:text-slate-300 truncate">{s.name}</span>
+                    <span className="text-sm text-slate-400 dark:text-slate-300 truncate">{s.name}</span>
                   </label>
                 ))}
               </div>
@@ -994,7 +994,7 @@ export default function RFQPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Notes</label>
             <textarea
               value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={2} placeholder="Instructions pour les fournisseurs..."
@@ -1003,7 +1003,7 @@ export default function RFQPage() {
           </div>
 
           <div className="flex gap-2 pt-2">
-            <button onClick={() => setShowCreate(false)} className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium">
+            <button onClick={() => setShowCreate(false)} className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium">
               Annuler
             </button>
             <button onClick={handleCreate} className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">

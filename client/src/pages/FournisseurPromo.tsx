@@ -270,7 +270,7 @@ export default function FournisseurPromo() {
                 <div>
                   {product.promo && product.promoPrice ? (
                     <div>
-                      <span className="text-xs text-slate-500 line-through">{(product.pricePerUnit ?? 0).toFixed(2)} €</span>
+                      <span className="text-xs text-slate-400 line-through">{(product.pricePerUnit ?? 0).toFixed(2)} €</span>
                       <p className="text-lg font-bold text-emerald-400">{(product.promoPrice ?? 0).toFixed(2)} €<span className="text-xs text-slate-400 font-normal">/{product.unit}</span></p>
                     </div>
                   ) : (
@@ -299,7 +299,7 @@ export default function FournisseurPromo() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-slate-500">
+        <div className="text-center py-12 text-slate-400">
           <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
           <p>Aucun produit trouvé</p>
         </div>

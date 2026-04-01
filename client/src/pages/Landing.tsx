@@ -65,7 +65,7 @@ function StatCounter({ value, suffix = '', label }: { value: number; suffix?: st
       <div className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-blue-600 to-blue-400 bg-clip-text text-transparent tracking-tight">
         {count}{suffix}
       </div>
-      <div className="text-sm text-slate-500 mt-1 font-medium">{label}</div>
+      <div className="text-sm text-slate-400 mt-1 font-medium">{label}</div>
     </div>
   );
 }
@@ -82,7 +82,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
         <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
-        <p className="px-6 text-sm text-slate-600 leading-relaxed">{a}</p>
+        <p className="px-6 text-sm text-slate-300 leading-relaxed">{a}</p>
       </div>
     </div>
   );
@@ -208,20 +208,20 @@ export default function Landing() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('features')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Fonctionnalites</button>
-            <button onClick={() => scrollTo('station')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Kit Station</button>
-            <button onClick={() => scrollTo('pricing')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Tarifs</button>
-            <button onClick={() => scrollTo('faq')} className="text-sm text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">FAQ</button>
+            <button onClick={() => scrollTo('features')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">Fonctionnalites</button>
+            <button onClick={() => scrollTo('station')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">Kit Station</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">Tarifs</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">FAQ</button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="text-sm text-slate-500 hover:text-slate-900 transition-colors px-3 py-2">Connexion</Link>
+            <Link to="/login" className="text-sm text-slate-400 hover:text-slate-900 transition-colors px-3 py-2">Connexion</Link>
             <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-blue-600/40 hover:shadow-blue-500/60">
               Voir les tarifs <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-slate-500 hover:text-slate-900">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-slate-400 hover:text-slate-900">
             {mobileMenuOpen ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -229,12 +229,12 @@ export default function Landing() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200 shadow-lg">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-slate-600 hover:text-slate-900 py-2">Fonctionnalites</button>
-              <button onClick={() => scrollTo('station')} className="block w-full text-left text-sm text-slate-600 hover:text-slate-900 py-2">Kit Station</button>
-              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-slate-600 hover:text-slate-900 py-2">Tarifs</button>
-              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-slate-600 hover:text-slate-900 py-2">FAQ</button>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">Fonctionnalites</button>
+              <button onClick={() => scrollTo('station')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">Kit Station</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">Tarifs</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">FAQ</button>
               <hr className="border-slate-200" />
-              <Link to="/login" className="block text-sm text-slate-600 hover:text-slate-900 py-2">Connexion</Link>
+              <Link to="/login" className="block text-sm text-slate-300 hover:text-slate-900 py-2">Connexion</Link>
               <Link to="/pricing" className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold">Voir les tarifs</Link>
             </div>
           </div>
@@ -272,7 +272,7 @@ export default function Landing() {
                 </span>
               </h1>
 
-              <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+              <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
                 La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
               </p>
 
@@ -290,7 +290,7 @@ export default function Landing() {
                   Voir la demo <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-              <p className="mt-3 text-sm text-slate-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+              <p className="mt-3 text-sm text-slate-400 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
                 <Lock className="w-3.5 h-3.5" /> Paiement securise via Stripe
               </p>
             </div>
@@ -332,7 +332,7 @@ export default function Landing() {
                 <StatCounter value={50} suffix="k" label="Pesees par mois" />
                 <div className="text-center px-6">
                   <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">4.8/5</div>
-                  <div className="text-sm text-slate-500 mt-1 font-medium">Satisfaction clients</div>
+                  <div className="text-sm text-slate-400 mt-1 font-medium">Satisfaction clients</div>
                 </div>
               </div>
             </div>
@@ -344,16 +344,16 @@ export default function Landing() {
       <section className="py-10 border-y border-slate-200 bg-gray-50" style={{ borderImage: 'linear-gradient(to right, transparent, rgba(59,130,246,0.15), rgba(168,85,247,0.15), transparent) 1' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <p className="text-center text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">
+            <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
               Ils nous font confiance
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               {[
-                { name: 'METRO', color: 'bg-slate-100 text-slate-500' },
-                { name: 'Transgourmet', color: 'bg-slate-100 text-slate-500' },
-                { name: 'Pomona', color: 'bg-slate-100 text-slate-500' },
-                { name: 'Sysco', color: 'bg-slate-100 text-slate-500' },
-                { name: 'Brake', color: 'bg-slate-100 text-slate-500' },
+                { name: 'METRO', color: 'bg-slate-100 text-slate-400' },
+                { name: 'Transgourmet', color: 'bg-slate-100 text-slate-400' },
+                { name: 'Pomona', color: 'bg-slate-100 text-slate-400' },
+                { name: 'Sysco', color: 'bg-slate-100 text-slate-400' },
+                { name: 'Brake', color: 'bg-slate-100 text-slate-400' },
               ].map((s) => (
                 <span key={s.name} className={`${s.color} px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none border border-slate-200`}>
                   {s.name}
@@ -384,7 +384,7 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
                         <XCircle className="w-4 h-4 text-red-400" />
                       </div>
-                      <p className="text-slate-600 leading-relaxed">{text}</p>
+                      <p className="text-slate-300 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -407,7 +407,7 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       </div>
-                      <p className="text-slate-600 leading-relaxed">{text}</p>
+                      <p className="text-slate-300 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -441,7 +441,7 @@ export default function Landing() {
                     <ClipboardList className="w-7 h-7 text-blue-400" />
                   </div>
                   <h3 className="text-xl font-bold mb-3">Fiches techniques intelligentes</h3>
-                  <p className="text-slate-600 leading-relaxed max-w-lg">
+                  <p className="text-slate-300 leading-relaxed max-w-lg">
                     Calculez le cout exact de chaque plat avec ingredients, quantites, etapes de preparation et couts actualises automatiquement. Marge brute, cout matiere, prix de vente — tout est calcule en temps reel.
                   </p>
                 </div>
@@ -455,7 +455,7 @@ export default function Landing() {
                   <BarChart3 className="w-6 h-6 text-emerald-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Menu Engineering</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
               </div>
             </FadeIn>
 
@@ -466,7 +466,7 @@ export default function Landing() {
                   <Truck className="w-6 h-6 text-orange-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Gestion fournisseurs</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">Comparateur prix, score /10, alertes et suivi tarifaire.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Comparateur prix, score /10, alertes et suivi tarifaire.</p>
               </div>
             </FadeIn>
 
@@ -477,7 +477,7 @@ export default function Landing() {
                   <Thermometer className="w-6 h-6 text-purple-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">HACCP & Tracabilite</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">Temperatures, nettoyage, conformite reglementaire.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Temperatures, nettoyage, conformite reglementaire.</p>
               </div>
             </FadeIn>
 
@@ -490,7 +490,7 @@ export default function Landing() {
                     <Scale className="w-7 h-7 text-emerald-400" />
                   </div>
                   <h3 className="text-xl font-bold mb-3">Kit Station Balance + Tablette</h3>
-                  <p className="text-slate-600 leading-relaxed max-w-lg">
+                  <p className="text-slate-300 leading-relaxed max-w-lg">
                     Pesez, calculez, maitrisez en temps reel. La premiere station de pesee connectee concue pour la restauration. Balance integree 5kg + tablette 11" + logiciel de gestion des marges.
                   </p>
                 </div>
@@ -504,7 +504,7 @@ export default function Landing() {
                   <Brain className="w-6 h-6 text-cyan-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Assistant IA</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">Claude analyse vos donnees et vous conseille en continu.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Claude analyse vos donnees et vous conseille en continu.</p>
               </div>
             </FadeIn>
           </div>
@@ -533,7 +533,7 @@ export default function Landing() {
                     {step.num}
                   </div>
                   <h3 className="text-lg font-bold mb-3">{step.title}</h3>
-                  <p className="text-sm text-slate-600 leading-relaxed">{step.desc}</p>
+                  <p className="text-sm text-slate-300 leading-relaxed">{step.desc}</p>
                   {i < 2 && (
                     <ArrowRight className="hidden md:block absolute top-8 -right-4 w-8 h-8 text-slate-300" />
                   )}
@@ -560,7 +560,7 @@ export default function Landing() {
                     Balance connectee + Tablette
                   </span>
                 </h2>
-                <p className="text-lg text-slate-600 mb-8">
+                <p className="text-lg text-slate-300 mb-8">
                   Le support EST la balance. Plateau inox alimentaire, bras solidaire, moule silicone pour glisser la tablette. Un seul produit, zero cable.
                 </p>
 
@@ -575,7 +575,7 @@ export default function Landing() {
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
-                      <span className="text-sm text-slate-600">{item}</span>
+                      <span className="text-sm text-slate-300">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -589,7 +589,7 @@ export default function Landing() {
 
                 <div className="flex flex-wrap gap-3 mt-6">
                   {['Balance 5kg', 'BLE 5.0', 'Inox 304L'].map((badge) => (
-                    <span key={badge} className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-500 font-medium">
+                    <span key={badge} className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-400 font-medium">
                       {badge}
                     </span>
                   ))}
@@ -614,17 +614,17 @@ export default function Landing() {
                   <div className="grid grid-cols-3 gap-3 mt-6 text-center">
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                       <Scale className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
-                      <div className="text-xs text-slate-500">Capacite</div>
+                      <div className="text-xs text-slate-400">Capacite</div>
                       <div className="text-sm font-semibold">5 kg</div>
                     </div>
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                       <Bluetooth className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                      <div className="text-xs text-slate-500">Connexion</div>
+                      <div className="text-xs text-slate-400">Connexion</div>
                       <div className="text-sm font-semibold">BLE 5.0</div>
                     </div>
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                       <Tablet className="w-5 h-5 text-purple-400 mx-auto mb-1" />
-                      <div className="text-xs text-slate-500">Ecran</div>
+                      <div className="text-xs text-slate-400">Ecran</div>
                       <div className="text-sm font-semibold">11" FHD</div>
                     </div>
                   </div>
@@ -645,7 +645,7 @@ export default function Landing() {
                 Un plan pour chaque{' '}
                 <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">restaurant</span>
               </h2>
-              <p className="mt-4 text-slate-500">Sans engagement. Annulez quand vous voulez.</p>
+              <p className="mt-4 text-slate-400">Sans engagement. Annulez quand vous voulez.</p>
             </div>
           </FadeIn>
 
@@ -659,14 +659,14 @@ export default function Landing() {
                 <h3 className="text-lg font-bold mb-1 mt-2">Pro</h3>
                 <div className="flex items-end gap-1 mb-4">
                   <span className="text-4xl font-extrabold">29</span>
-                  <span className="text-slate-500 text-sm mb-1">euros/mois</span>
+                  <span className="text-slate-400 text-sm mb-1">euros/mois</span>
                 </div>
-                <p className="text-sm text-slate-500 mb-6">Pour optimiser et developper son restaurant.</p>
+                <p className="text-sm text-slate-400 mb-6">Pour optimiser et developper son restaurant.</p>
                 <div className="space-y-3 mb-8 flex-1">
                   {['Dashboard & statistiques', 'Menu Engineering BCG', 'Gestion fournisseurs avancee', 'Export PDF / Excel', 'Support prioritaire'].map((f) => (
                     <div key={f} className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-                      <span className="text-sm text-slate-600">{f}</span>
+                      <span className="text-sm text-slate-300">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -687,14 +687,14 @@ export default function Landing() {
                 <h3 className="text-lg font-bold mb-1">Business</h3>
                 <div className="flex items-end gap-1 mb-4">
                   <span className="text-4xl font-extrabold">79</span>
-                  <span className="text-slate-500 text-sm mb-1">euros/mois</span>
+                  <span className="text-slate-400 text-sm mb-1">euros/mois</span>
                 </div>
-                <p className="text-sm text-slate-500 mb-6">Pour les groupes multi-restaurants.</p>
+                <p className="text-sm text-slate-400 mb-6">Pour les groupes multi-restaurants.</p>
                 <div className="space-y-3 mb-8 flex-1">
                   {['Tout du plan Pro', 'Multi-restaurants', 'API & webhooks', 'Formation personnalisee', 'Account manager dedie'].map((f) => (
                     <div key={f} className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span className="text-sm text-slate-600">{f}</span>
+                      <span className="text-sm text-slate-300">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -734,10 +734,10 @@ export default function Landing() {
                       <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
                     ))}
                   </div>
-                  <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-1 italic">"{t.quote}"</p>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-1 italic">"{t.quote}"</p>
                   <div>
                     <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
-                    <div className="text-xs text-slate-500">{t.role} — {t.place}</div>
+                    <div className="text-xs text-slate-400">{t.role} — {t.place}</div>
                   </div>
                 </div>
               </FadeIn>
@@ -776,20 +776,20 @@ export default function Landing() {
                 Parlons de votre{' '}
                 <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">projet</span>
               </h2>
-              <p className="text-slate-500">Notre equipe vous recontacte sous 24h.</p>
+              <p className="text-slate-400">Notre equipe vous recontacte sous 24h.</p>
             </div>
 
             {contactSent ? (
               <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-8 text-center">
                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
                 <p className="text-lg font-semibold text-emerald-400">Demande envoyee !</p>
-                <p className="text-sm text-slate-500 mt-1">Nous vous recontactons tres vite.</p>
+                <p className="text-sm text-slate-400 mt-1">Nous vous recontactons tres vite.</p>
               </div>
             ) : (
               <form onSubmit={handleContactSubmit} className="bg-white border border-slate-200 rounded-2xl p-8 space-y-5 shadow-sm">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Nom</label>
+                    <label className="block text-sm font-medium text-slate-400 mb-1.5">Nom</label>
                     <input
                       type="text"
                       required
@@ -800,7 +800,7 @@ export default function Landing() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                    <label className="block text-sm font-medium text-slate-400 mb-1.5">Email</label>
                     <input
                       type="email"
                       required
@@ -812,7 +812,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Telephone</label>
+                  <label className="block text-sm font-medium text-slate-400 mb-1.5">Telephone</label>
                   <input
                     type="tel"
                     value={contactForm.telephone}
@@ -822,7 +822,7 @@ export default function Landing() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Message</label>
+                  <label className="block text-sm font-medium text-slate-400 mb-1.5">Message</label>
                   <textarea
                     rows={4}
                     value={contactForm.message}
@@ -869,14 +869,14 @@ export default function Landing() {
                 </div>
                 <span className="text-lg font-bold text-slate-900">RestauMargin</span>
               </div>
-              <p className="text-sm text-slate-500 leading-relaxed">
+              <p className="text-sm text-slate-400 leading-relaxed">
                 La plateforme de gestion des marges pour la restauration professionnelle.
               </p>
               <div className="flex items-center gap-4 mt-4">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <div className="flex items-center gap-1.5 text-xs text-slate-400">
                   <Shield className="w-3.5 h-3.5 text-blue-400" /> Donnees EU
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <div className="flex items-center gap-1.5 text-xs text-slate-400">
                   <Lock className="w-3.5 h-3.5 text-emerald-400" /> SSL
                 </div>
               </div>
@@ -885,7 +885,7 @@ export default function Landing() {
             {/* Produit */}
             <div>
               <h4 className="font-semibold text-slate-900 text-sm mb-4">Produit</h4>
-              <ul className="space-y-2.5 text-sm text-slate-500">
+              <ul className="space-y-2.5 text-sm text-slate-400">
                 <li><button onClick={() => scrollTo('features')} className="hover:text-slate-900 transition-colors">Fonctionnalites</button></li>
                 <li><Link to="/pricing" className="hover:text-slate-900 transition-colors">Tarifs</Link></li>
                 <li><Link to="/station-produit" className="hover:text-slate-900 transition-colors">Kit Station</Link></li>
@@ -896,7 +896,7 @@ export default function Landing() {
             {/* Legal */}
             <div>
               <h4 className="font-semibold text-slate-900 text-sm mb-4">Legal</h4>
-              <ul className="space-y-2.5 text-sm text-slate-500">
+              <ul className="space-y-2.5 text-sm text-slate-400">
                 <li><Link to="/mentions-legales" className="hover:text-slate-900 transition-colors">Mentions legales</Link></li>
                 <li><Link to="/cgu" className="hover:text-slate-900 transition-colors">CGU</Link></li>
                 <li><Link to="/politique-confidentialite" className="hover:text-slate-900 transition-colors">Politique de confidentialite</Link></li>
@@ -906,13 +906,13 @@ export default function Landing() {
             {/* Contact */}
             <div>
               <h4 className="font-semibold text-slate-900 text-sm mb-4">Contact</h4>
-              <ul className="space-y-2.5 text-sm text-slate-500">
+              <ul className="space-y-2.5 text-sm text-slate-400">
                 <li className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-slate-600" />
+                  <Mail className="w-4 h-4 text-slate-300" />
                   <a href="mailto:contact@restaumargin.fr" className="hover:text-slate-900 transition-colors">contact@restaumargin.fr</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-slate-600" />
+                  <Phone className="w-4 h-4 text-slate-300" />
                   <span>01 23 45 67 89</span>
                 </li>
               </ul>
@@ -921,8 +921,8 @@ export default function Landing() {
 
           {/* Bottom */}
           <div className="border-t border-slate-200 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-600">RestauMargin &copy; 2026. Tous droits reserves.</p>
-            <div className="flex items-center gap-6 text-xs text-slate-600">
+            <p className="text-xs text-slate-300">RestauMargin &copy; 2026. Tous droits reserves.</p>
+            <div className="flex items-center gap-6 text-xs text-slate-300">
               <Link to="/mentions-legales" className="hover:text-slate-800 transition-colors">Mentions legales</Link>
               <Link to="/cgu" className="hover:text-slate-800 transition-colors">CGU</Link>
               <Link to="/politique-confidentialite" className="hover:text-slate-800 transition-colors">Confidentialite</Link>

@@ -112,7 +112,7 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
   return (
     <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-md transition-shadow`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 truncate">{title}</span>
+        <span className="text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-400 truncate">{title}</span>
         <div className={`p-2 rounded-lg ${color}`}>
           <Icon className="w-4 h-4 text-white" />
         </div>
@@ -144,7 +144,7 @@ function RankBar({ rank, name, value, maxValue, color, unit = '%', link }: {
       <span className="text-xs font-bold text-slate-400 dark:text-slate-500 w-5 text-right">{rank}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate pr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <span className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate pr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {name}
           </span>
           <span className="text-sm font-bold tabular-nums whitespace-nowrap" style={{ color }}>
@@ -189,7 +189,7 @@ function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
       {payload.map((p: TooltipPayloadEntry, i: number) => (
         <div key={i} className="flex items-center gap-2 mt-0.5">
           <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color || p.fill }} />
-          <span className="text-slate-500 dark:text-slate-400">{p.name}:</span>
+          <span className="text-slate-400 dark:text-slate-400">{p.name}:</span>
           <span className="font-semibold ml-auto" style={{ color: p.color || p.fill }}>
             {typeof p.value === 'number'
               ? (p.dataKey === 'margin' || p.dataKey === 'avgMargin' || p.dataKey === 'marginPercent'
@@ -562,7 +562,7 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">{t("dashboard.title")}</h2>
         <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
           <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
+          <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
           <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
           <div className="flex gap-4 justify-center">
             <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
@@ -581,7 +581,7 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t("dashboard.title")}</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             {stats.totalRecipes} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
           </p>
         </div>
@@ -594,25 +594,25 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => navigate('/ingredients?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
             <Package className="w-4 h-4" /> {t("dashboard.addIngredient")}
           </button>
           <Link
             to="/recipes"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
             <ClipboardList className="w-4 h-4" /> {t("dashboard.viewRecipes")}
           </Link>
           <Link
             to="/inventory"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
           >
             <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
           </Link>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm no-print"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm no-print"
           >
             <Printer className="w-4 h-4" /> {t("dashboard.print")}
           </button>
@@ -673,7 +673,7 @@ export default function Dashboard() {
             <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.dailySuggestion")}</h3>
             <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{t("dashboard.marketMenu")}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t("dashboard.recommendedDishes")}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-400 mb-3">{t("dashboard.recommendedDishes")}</p>
           <div className="space-y-3">
             {stats.menuDuMarche.map((dish, i) => (
               <Link
@@ -730,7 +730,7 @@ export default function Dashboard() {
                   <div className={`flex-shrink-0 ${suggestion.type === 'opportunity' ? 'text-green-600' : suggestion.type === 'warning' ? 'text-orange-600' : 'text-blue-600'}`}>
                     {iconMap[suggestion.icon as keyof typeof iconMap] || <Lightbulb className="w-4 h-4" />}
                   </div>
-                  <p className="text-sm text-slate-700 dark:text-slate-300 flex-1">{suggestion.text}</p>
+                  <p className="text-sm text-slate-400 dark:text-slate-300 flex-1">{suggestion.text}</p>
                   <Link
                     to={suggestion.action}
                     className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${btnColorMap[suggestion.type]}`}
@@ -763,10 +763,10 @@ export default function Dashboard() {
                 <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
               </div>
               <div>
-                <div className={`text-sm font-semibold ${isActive ? 'text-slate-800 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                <div className={`text-sm font-semibold ${isActive ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-400'}`}>
                   {tab.label}
                 </div>
-                <div className={`text-xs ${isActive ? 'text-slate-500 dark:text-slate-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                <div className={`text-xs ${isActive ? 'text-slate-400 dark:text-slate-400' : 'text-slate-400 dark:text-slate-500'}`}>
                   {tab.desc}
                 </div>
               </div>
@@ -885,10 +885,10 @@ export default function Dashboard() {
                   <div key={cat.name} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{cat.name}</span>
+                      <span className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate">{cat.name}</span>
                     </div>
                     <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{cat.count}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">
                       {t("dashboard.margin")} :{' '}
                       <span className={
                         cat.avgMargin >= 70 ? 'text-green-600 font-semibold'
@@ -949,7 +949,7 @@ export default function Dashboard() {
                   {stats.categoryData.map((cat, i) => (
                     <div key={cat.name} className="flex items-center gap-2 text-sm">
                       <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="text-slate-700 dark:text-slate-300 flex-1 truncate">{cat.name}</span>
+                      <span className="text-slate-400 dark:text-slate-300 flex-1 truncate">{cat.name}</span>
                       <span className="font-semibold text-slate-800 dark:text-slate-100 tabular-nums">{cat.count}</span>
                     </div>
                   ))}
@@ -994,13 +994,13 @@ export default function Dashboard() {
                 <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
                   <button
                     onClick={() => setMarginSort('margin')}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'margin' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'margin' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-400 dark:text-slate-400 hover:text-slate-700'}`}
                   >
                     <ArrowDown className="w-3 h-3" /> {t("dashboard.margin")}
                   </button>
                   <button
                     onClick={() => setMarginSort('name')}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'name' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'name' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-400 dark:text-slate-400 hover:text-slate-700'}`}
                   >
                     <ArrowDown className="w-3 h-3" /> {t("dashboard.name")}
                   </button>
@@ -1024,7 +1024,7 @@ export default function Dashboard() {
                     return (
                       <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
                         <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.fullName}</p>
-                        <p className="text-slate-500 dark:text-slate-400">{d?.category}</p>
+                        <p className="text-slate-400 dark:text-slate-400">{d?.category}</p>
                         <p className="font-bold mt-1" style={{ color: d?.fill }}>{d?.margin?.toFixed(1)}%</p>
                       </div>
                     );
@@ -1147,7 +1147,7 @@ export default function Dashboard() {
                         return (
                           <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
                             <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} € ({pct}%)</p>
+                            <p className="text-slate-300 dark:text-slate-300">{d?.value?.toFixed(2)} € ({pct}%)</p>
                           </div>
                         );
                       }}
@@ -1179,8 +1179,8 @@ export default function Dashboard() {
                         return (
                           <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
                             <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
-                            <p className="text-slate-500 dark:text-slate-400">{pct}% {t("dashboard.ofTotalCost")}</p>
+                            <p className="text-slate-300 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
+                            <p className="text-slate-400 dark:text-slate-400">{pct}% {t("dashboard.ofTotalCost")}</p>
                           </div>
                         );
                       }}
@@ -1206,7 +1206,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="text-left text-slate-400 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                       <th className="pb-2 font-medium">#</th>
                       <th className="pb-2 font-medium">{t("dashboard.ingredient")}</th>
                       <th className="pb-2 font-medium">{t("dashboard.category")}</th>
@@ -1219,14 +1219,14 @@ export default function Dashboard() {
                       <tr key={ing.name} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                         <td className="py-2.5 text-slate-400 font-bold">{i + 1}</td>
                         <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">{ing.name}</td>
-                        <td className="py-2.5 text-slate-500 dark:text-slate-400">
+                        <td className="py-2.5 text-slate-400 dark:text-slate-400">
                           <span className="inline-flex items-center gap-1">
                             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: FOOD_CATEGORY_COLORS[ing.category] || '#64748b' }} />
                             {ing.category}
                           </span>
                         </td>
-                        <td className="py-2.5 text-right font-mono font-semibold text-slate-700 dark:text-slate-300">{ing.cost.toFixed(2)} €</td>
-                        <td className="py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">
+                        <td className="py-2.5 text-right font-mono font-semibold text-slate-400 dark:text-slate-300">{ing.cost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-400">
                           {stats.totalFoodCostAll > 0 ? ((ing.cost / stats.totalFoodCostAll) * 100).toFixed(1) : '0'}%
                         </td>
                       </tr>
@@ -1247,7 +1247,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="text-left text-slate-400 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                       <th className="pb-2 font-medium">{t("dashboard.category")}</th>
                       <th className="pb-2 text-right font-medium">{t("dashboard.totalCost")}</th>
                       <th className="pb-2 text-right font-medium">{t("dashboard.percentOfTotal")}</th>
@@ -1263,9 +1263,9 @@ export default function Dashboard() {
                             {cat.name}
                           </span>
                         </td>
-                        <td className="py-2.5 text-right font-mono font-semibold text-slate-700 dark:text-slate-300">{cat.totalCost.toFixed(2)} €</td>
-                        <td className="py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">{cat.pctOfTotal.toFixed(1)}%</td>
-                        <td className="py-2.5 text-slate-500 dark:text-slate-400">{cat.topIngredient}</td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-slate-400 dark:text-slate-300">{cat.totalCost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-400">{cat.pctOfTotal.toFixed(1)}%</td>
+                        <td className="py-2.5 text-slate-400 dark:text-slate-400">{cat.topIngredient}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1369,7 +1369,7 @@ export default function Dashboard() {
                         {payload.map((p, i: number) => (
                           <div key={i} className="flex items-center gap-2 mt-0.5">
                             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-                            <span className="text-slate-500 dark:text-slate-400">{p.name}:</span>
+                            <span className="text-slate-400 dark:text-slate-400">{p.name}:</span>
                             <span className="font-semibold ml-auto" style={{ color: p.color }}>{p.value?.toLocaleString('fr-FR')} €</span>
                           </div>
                         ))}
@@ -1411,23 +1411,23 @@ export default function Dashboard() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.avgCostRatio")}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.avgCostRatio")}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                       <AnimatedNumber value={stats.avgCostRatio * 100} decimals={1} suffix="%" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.profitPerCover")}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.profitPerCover")}</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                       <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
                     </p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.coversPerDay")}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.coversPerDay")}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("dashboard.avgFoodCost")}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.avgFoodCost")}</p>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
                       <AnimatedNumber value={stats.avgFoodCost} decimals={2} suffix=" €" />
                     </p>
@@ -1476,7 +1476,7 @@ export default function Dashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                  <tr className="text-left text-slate-400 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                     <th className="pb-2 font-medium">#</th>
                     <th className="pb-2 font-medium">{t("dashboard.recipe")}</th>
                     <th className="pb-2 font-medium">{t("dashboard.category")}</th>
@@ -1492,13 +1492,13 @@ export default function Dashboard() {
                     <tr key={r.id} className="hover:bg-red-50/50 dark:hover:bg-red-900/10">
                       <td className="py-2.5 text-red-500 font-bold">{i + 1}</td>
                       <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">{r.name}</td>
-                      <td className="py-2.5 text-slate-500 dark:text-slate-400">{r.category}</td>
-                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
-                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
+                      <td className="py-2.5 text-slate-400 dark:text-slate-400">{r.category}</td>
+                      <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
+                      <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
                       <td className={`py-2.5 text-right font-mono font-bold ${r.margin.marginPercent < 50 ? 'text-red-600' : 'text-amber-600'}`}>
                         {r.margin.marginPercent.toFixed(1)}%
                       </td>
-                      <td className="py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
+                      <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
                       <td className="py-2.5 text-center">
                         <Link to={`/recipes/${r.id}`} className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium">
                           {t("dashboard.edit")} <ArrowRight className="w-3 h-3" />
@@ -1519,7 +1519,7 @@ export default function Dashboard() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
+                <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-300 dark:text-slate-300">
                   <tr>
                     <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.dish")}</th>
                     <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.cat")}</th>
@@ -1543,14 +1543,14 @@ export default function Dashboard() {
                           {r.margin.marginPercent < 50 && <AlertTriangle className="w-3.5 h-3.5 text-red-500 inline mr-1 -mt-0.5" />}
                           {r.name}
                         </td>
-                        <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{r.category}</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.costPerPortion.toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-500 dark:text-slate-400">{(r.margin.laborCostPerPortion || 0).toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-slate-400 dark:text-slate-400">{r.category}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.costPerPortion.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-400">{(r.margin.laborCostPerPortion || 0).toFixed(2)} €</td>
                         <td className="px-4 py-2.5 text-right font-mono font-medium text-slate-800 dark:text-slate-200">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.marginAmount.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.marginAmount.toFixed(2)} €</td>
                         <td className={`px-4 py-2.5 text-right font-mono font-semibold ${mc}`}>{r.margin.marginPercent.toFixed(1)}%</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-700 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
                         <td className="px-4 py-2.5 text-center">
                           <Link to={`/recipes/${r.id}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
                             <Eye className="w-4 h-4 inline" />

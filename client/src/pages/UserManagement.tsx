@@ -102,13 +102,13 @@ export default function UserManagement() {
     return (
       <div className="text-center py-16">
         <Shield className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-        <h3 className="text-xl font-semibold text-slate-600 dark:text-slate-300 mb-2">Accès réservé</h3>
+        <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">Accès réservé</h3>
         <p className="text-slate-400">Seuls les administrateurs peuvent gérer les utilisateurs.</p>
       </div>
     );
   }
 
-  if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">Chargement...</div>;
+  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">Chargement...</div>;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -125,7 +125,7 @@ export default function UserManagement() {
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-700 text-slate-300 dark:text-slate-300">
               <tr>
                 <th className="px-5 py-3 text-left font-medium">Nom</th>
                 <th className="px-5 py-3 text-left font-medium">Email</th>
@@ -138,7 +138,7 @@ export default function UserManagement() {
               {users.map((u) => (
                 <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                   <td className="px-5 py-3 font-medium text-slate-800 dark:text-slate-200">{u.name}</td>
-                  <td className="px-5 py-3 text-slate-600 dark:text-slate-400">{u.email}</td>
+                  <td className="px-5 py-3 text-slate-300 dark:text-slate-400">{u.email}</td>
                   <td className="px-5 py-3 text-center">
                     {u.role === 'admin' ? (
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
@@ -150,7 +150,7 @@ export default function UserManagement() {
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-slate-500 dark:text-slate-400">
+                  <td className="px-5 py-3 text-slate-400 dark:text-slate-400">
                     {new Date(u.createdAt).toLocaleDateString('fr-FR')}
                   </td>
                   <td className="px-5 py-3 text-center">

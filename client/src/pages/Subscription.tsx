@@ -165,7 +165,7 @@ export default function Subscription() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600">
-                <Crown className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+                <Crown className="w-6 h-6 text-slate-300 dark:text-slate-300" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">

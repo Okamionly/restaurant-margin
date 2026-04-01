@@ -122,14 +122,14 @@ function FAQSection() {
                 <span className="text-slate-900 font-medium">{faq.question}</span>
               </div>
               {openIndex === index ? (
-                <ChevronUp className="w-5 h-5 text-slate-500 flex-shrink-0" />
+                <ChevronUp className="w-5 h-5 text-slate-400 flex-shrink-0" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-slate-500 flex-shrink-0" />
+                <ChevronDown className="w-5 h-5 text-slate-400 flex-shrink-0" />
               )}
             </button>
             {openIndex === index && (
               <div className="px-6 pb-5 pt-0">
-                <p className="text-slate-600 leading-relaxed pl-8">{faq.answer}</p>
+                <p className="text-slate-300 leading-relaxed pl-8">{faq.answer}</p>
               </div>
             )}
           </div>
@@ -180,13 +180,13 @@ export default function Pricing() {
             marge maximale
           </span>
         </h1>
-        <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
+        <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-10">
           Choisissez le plan adapte a votre etablissement. A partir de 29€/mois.
         </p>
 
         {/* Toggle mensuel / annuel */}
         <div className="flex items-center justify-center gap-4 mb-16">
-          <span className={`text-sm font-medium ${!annual ? 'text-slate-900' : 'text-slate-500'}`}>
+          <span className={`text-sm font-medium ${!annual ? 'text-slate-900' : 'text-slate-400'}`}>
             Mensuel
           </span>
           <button
@@ -201,7 +201,7 @@ export default function Pricing() {
               }`}
             />
           </button>
-          <span className={`text-sm font-medium ${annual ? 'text-slate-900' : 'text-slate-500'}`}>
+          <span className={`text-sm font-medium ${annual ? 'text-slate-900' : 'text-slate-400'}`}>
             Annuel
           </span>
           {annual && (
@@ -237,14 +237,14 @@ export default function Pricing() {
                 {plan.icon}
                 <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
               </div>
-              <p className="text-slate-600 text-sm mb-6">{plan.description}</p>
+              <p className="text-slate-300 text-sm mb-6">{plan.description}</p>
 
               {/* Price */}
               <div className="mb-8">
                 {plan.priceMonthly !== null && plan.priceMonthly > 0 ? (
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-extrabold text-slate-900">{getPrice(plan)}</span>
-                    <span className="text-slate-500 text-sm">/mois</span>
+                    <span className="text-slate-400 text-sm">/mois</span>
                   </div>
                 ) : plan.priceMonthly === 0 ? (
                   <span className="text-4xl font-extrabold text-slate-900">Gratuit</span>
@@ -265,9 +265,9 @@ export default function Pricing() {
                     {feature.included ? (
                       <Check className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                     ) : (
-                      <X className="w-5 h-5 text-slate-600 flex-shrink-0 mt-0.5" />
+                      <X className="w-5 h-5 text-slate-300 flex-shrink-0 mt-0.5" />
                     )}
-                    <span className={feature.included ? 'text-slate-700' : 'text-slate-400'}>
+                    <span className={feature.included ? 'text-slate-400' : 'text-slate-400'}>
                       {feature.text}
                     </span>
                   </li>
@@ -318,7 +318,7 @@ export default function Pricing() {
                       value={devisForm.name}
                       onChange={(e) => setDevisForm({ ...devisForm, name: e.target.value })}
                       placeholder="Votre nom"
-                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                     <input
                       type="email"
@@ -326,14 +326,14 @@ export default function Pricing() {
                       value={devisForm.email}
                       onChange={(e) => setDevisForm({ ...devisForm, email: e.target.value })}
                       placeholder="votre@email.com"
-                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                     <input
                       type="tel"
                       value={devisForm.phone}
                       onChange={(e) => setDevisForm({ ...devisForm, phone: e.target.value })}
                       placeholder="Téléphone (optionnel)"
-                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                     <textarea
                       rows={2}
@@ -411,7 +411,7 @@ export default function Pricing() {
         <h2 className="text-2xl font-bold text-slate-900 mb-3">
           Pret a optimiser vos marges ?
         </h2>
-        <p className="text-slate-600 mb-8 max-w-lg mx-auto">
+        <p className="text-slate-300 mb-8 max-w-lg mx-auto">
           Rejoignez des centaines de restaurateurs qui utilisent RestauMargin pour augmenter leur rentabilite.
         </p>
         <a

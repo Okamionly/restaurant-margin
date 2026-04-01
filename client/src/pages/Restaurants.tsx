@@ -96,7 +96,7 @@ export default function Restaurants() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Mes Restaurants</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Gérez vos établissements et basculez entre eux
           </p>
         </div>
@@ -136,11 +136,11 @@ export default function Restaurants() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className={`p-2.5 rounded-lg ${isSelected ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-slate-100 dark:bg-slate-700'}`}>
-                      <Building2 className={`w-5 h-5 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`} />
+                      <Building2 className={`w-5 h-5 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-400'}`} />
                     </div>
                     <div>
                       <h3 className="font-semibold text-slate-800 dark:text-slate-100">{r.name}</h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300">
                         {r.cuisineType || '—'}
                       </span>
                     </div>
@@ -165,15 +165,15 @@ export default function Restaurants() {
 
                 {/* Info rows */}
                 <div className="space-y-1.5 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400">
                     <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                     {r.address || '—'}
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400">
                     <Phone className="w-3.5 h-3.5 flex-shrink-0" />
                     {r.phone || '—'}
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400">
                     <Users className="w-3.5 h-3.5 flex-shrink-0" />
                     {r.coversPerDay} couverts/jour
                   </div>
@@ -213,7 +213,7 @@ export default function Restaurants() {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingId ? 'Modifier le restaurant' : 'Ajouter un restaurant'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nom du restaurant *</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Nom du restaurant *</label>
             <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -227,7 +227,7 @@ export default function Restaurants() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Adresse</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Adresse</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -242,7 +242,7 @@ export default function Restaurants() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Type de cuisine</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Type de cuisine</label>
               <div className="relative">
                 <ChefHat className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
@@ -255,7 +255,7 @@ export default function Restaurants() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Téléphone</label>
+              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Téléphone</label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
@@ -270,7 +270,7 @@ export default function Restaurants() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Couverts par jour</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Couverts par jour</label>
             <div className="relative">
               <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -288,7 +288,7 @@ export default function Restaurants() {
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+              className="px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
             >
               Annuler
             </button>

@@ -366,7 +366,7 @@ export default function Marketplace() {
             <Store className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             Marketplace Fournisseurs
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Comparez les prix et commandez directement aupres de vos fournisseurs
           </p>
         </div>
@@ -417,7 +417,7 @@ export default function Marketplace() {
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
             !selectedCategory
               ? 'bg-blue-600 text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           Tous
@@ -429,7 +429,7 @@ export default function Marketplace() {
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               selectedCategory === cat
                 ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
             {cat}
@@ -464,7 +464,7 @@ export default function Marketplace() {
 
         {showFilters && (
           <>
-            <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-slate-300 dark:text-slate-400 cursor-pointer">
               <input
                 type="checkbox"
                 checked={showBioOnly}
@@ -474,7 +474,7 @@ export default function Marketplace() {
               <Leaf className="w-4 h-4 text-green-500" />
               Bio
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-slate-300 dark:text-slate-400 cursor-pointer">
               <input
                 type="checkbox"
                 checked={showLocalOnly}
@@ -494,7 +494,7 @@ export default function Marketplace() {
 
       {/* Featured / Sponsored suppliers */}
       <div>
-        <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-3">
           Fournisseurs Partenaires
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -514,15 +514,15 @@ export default function Marketplace() {
                 <h3 className="font-semibold text-slate-900 dark:text-white">{supplier.name}</h3>
                 <div className="flex items-center gap-2 mt-1">
                   {renderStars(supplier.rating)}
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-slate-400 dark:text-slate-400">
                     ({supplier.reviewCount} avis)
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 line-clamp-2">
+                <p className="text-xs text-slate-400 dark:text-slate-400 mt-1.5 line-clamp-2">
                   {supplier.description}
                 </p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                  <span className="inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400">
                     <Truck className="w-3.5 h-3.5" />
                     J+{supplier.deliveryDays}
                   </span>
@@ -557,7 +557,7 @@ export default function Marketplace() {
           {filteredProducts.length === 0 ? (
             <div className="text-center py-16">
               <Package className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-500 dark:text-slate-400 font-medium">Aucun produit trouve</p>
+              <p className="text-slate-400 dark:text-slate-400 font-medium">Aucun produit trouve</p>
               <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Essayez de modifier vos filtres</p>
             </div>
           ) : (
@@ -579,11 +579,11 @@ export default function Marketplace() {
                             <h3 className="font-semibold text-slate-900 dark:text-white text-sm">
                               {product.name}
                             </h3>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${CATEGORY_COLORS[product.category] || 'bg-slate-100 text-slate-600'}`}>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${CATEGORY_COLORS[product.category] || 'bg-slate-100 text-slate-300'}`}>
                               {product.category}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">
                             {product.description}
                           </p>
                         </div>
@@ -613,12 +613,12 @@ export default function Marketplace() {
                             }`}
                           >
                             {/* Supplier info */}
-                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-xs font-bold text-slate-300 dark:text-slate-300">
                               {supplier.logo}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
+                                <span className="text-xs font-medium text-slate-400 dark:text-slate-300 truncate">
                                   {supplier.name}
                                 </span>
                                 {isBest && (
@@ -700,10 +700,10 @@ export default function Marketplace() {
                       return (
                         <div key={supplierId} className="p-3">
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="w-6 h-6 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                            <div className="w-6 h-6 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-300 dark:text-slate-300">
                               {supplier.logo}
                             </div>
-                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{supplier.name}</span>
+                            <span className="text-xs font-semibold text-slate-400 dark:text-slate-300">{supplier.name}</span>
                             <span className="ml-auto text-xs font-bold text-slate-900 dark:text-white">{total.toFixed(2)} EUR</span>
                           </div>
                           {items.map(item => {
@@ -711,7 +711,7 @@ export default function Marketplace() {
                             return (
                               <div key={`${item.productId}-${item.supplierId}`} className="flex items-center gap-2 py-1.5">
                                 <div className="flex-1 min-w-0">
-                                  <div className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">{product.name}</div>
+                                  <div className="text-xs font-medium text-slate-400 dark:text-slate-300 truncate">{product.name}</div>
                                   <div className="text-[10px] text-slate-400">{item.price.toFixed(2)} EUR / {item.unit}</div>
                                 </div>
                                 <div className="flex items-center gap-1">
@@ -721,7 +721,7 @@ export default function Marketplace() {
                                   >
                                     <Minus className="w-3.5 h-3.5" />
                                   </button>
-                                  <span className="text-xs font-medium w-6 text-center text-slate-700 dark:text-slate-300">{item.quantity}</span>
+                                  <span className="text-xs font-medium w-6 text-center text-slate-400 dark:text-slate-300">{item.quantity}</span>
                                   <button
                                     onClick={() => updateCartQuantity(item.productId, item.supplierId, 1)}
                                     className="p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400"
@@ -757,7 +757,7 @@ export default function Marketplace() {
                     </button>
                     <button
                       onClick={clearCart}
-                      className="w-full py-2 text-sm text-slate-500 hover:text-red-500 transition-colors"
+                      className="w-full py-2 text-sm text-slate-400 hover:text-red-500 transition-colors"
                     >
                       Vider le panier
                     </button>
@@ -796,10 +796,10 @@ export default function Marketplace() {
                     return (
                       <div key={supplierId} className="p-3">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-6 h-6 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                          <div className="w-6 h-6 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-300 dark:text-slate-300">
                             {supplier.logo}
                           </div>
-                          <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{supplier.name}</span>
+                          <span className="text-xs font-semibold text-slate-400 dark:text-slate-300">{supplier.name}</span>
                           <span className="ml-auto text-xs font-bold text-slate-900 dark:text-white">{total.toFixed(2)} EUR</span>
                         </div>
                         {items.map(item => {
@@ -807,7 +807,7 @@ export default function Marketplace() {
                           return (
                             <div key={`${item.productId}-${item.supplierId}`} className="flex items-center gap-2 py-1.5">
                               <div className="flex-1 min-w-0">
-                                <div className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">{product.name}</div>
+                                <div className="text-xs font-medium text-slate-400 dark:text-slate-300 truncate">{product.name}</div>
                                 <div className="text-[10px] text-slate-400">{item.price.toFixed(2)} EUR / {item.unit}</div>
                               </div>
                               <div className="flex items-center gap-1">
@@ -817,7 +817,7 @@ export default function Marketplace() {
                                 >
                                   <Minus className="w-3.5 h-3.5" />
                                 </button>
-                                <span className="text-xs font-medium w-6 text-center text-slate-700 dark:text-slate-300">{item.quantity}</span>
+                                <span className="text-xs font-medium w-6 text-center text-slate-400 dark:text-slate-300">{item.quantity}</span>
                                 <button
                                   onClick={() => updateCartQuantity(item.productId, item.supplierId, 1)}
                                   className="p-0.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400"
@@ -852,7 +852,7 @@ export default function Marketplace() {
                   </button>
                   <button
                     onClick={clearCart}
-                    className="w-full py-2 text-sm text-slate-500 hover:text-red-500 transition-colors"
+                    className="w-full py-2 text-sm text-slate-400 hover:text-red-500 transition-colors"
                   >
                     Vider le panier
                   </button>
@@ -893,7 +893,7 @@ export default function Marketplace() {
                         {order.supplierName}
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        order.status === 'draft' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' :
+                        order.status === 'draft' ? 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-300' :
                         order.status === 'sent' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
                         order.status === 'confirmed' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                         'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
@@ -914,7 +914,7 @@ export default function Marketplace() {
                   </div>
 
                   {/* Order items */}
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  <div className="text-xs text-slate-400 dark:text-slate-400 mb-2">
                     {order.items.map((item, idx) => (
                       <span key={item.id}>
                         {item.quantity}x {item.productName}

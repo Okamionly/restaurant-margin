@@ -198,7 +198,7 @@ export default function QRMenu() {
             <QrCode className="w-7 h-7 text-blue-600" />
             Menu Digital QR Code
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Générez un QR code pour que vos clients consultent votre carte en ligne
           </p>
         </div>
@@ -259,7 +259,7 @@ export default function QRMenu() {
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     language === lang.code
                       ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 ring-1 ring-blue-200 dark:ring-blue-800'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                      : 'text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                   }`}
                 >
                   <span className="text-lg">{lang.flag}</span>
@@ -298,7 +298,7 @@ export default function QRMenu() {
           {/* URL preview */}
           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg px-4 py-3 border border-slate-200 dark:border-slate-700">
             <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">URL du menu public</p>
-            <p className="text-xs text-slate-600 dark:text-slate-300 font-mono break-all">{menuUrl}</p>
+            <p className="text-xs text-slate-300 dark:text-slate-300 font-mono break-all">{menuUrl}</p>
           </div>
         </div>
 
@@ -311,7 +311,7 @@ export default function QRMenu() {
             <h3 className="text-lg font-bold text-slate-900 mb-1">
               {selectedRestaurant?.name || 'Votre Restaurant'}
             </h3>
-            <p className="text-sm text-slate-500 mb-6">Scannez pour decouvrir notre carte</p>
+            <p className="text-sm text-slate-400 mb-6">Scannez pour decouvrir notre carte</p>
             <QRCodeSVG text={menuUrl} size={240} />
             <p className="text-[10px] text-slate-400 mt-4 max-w-[240px] text-center break-all">{menuUrl}</p>
           </div>
@@ -319,7 +319,7 @@ export default function QRMenu() {
 
         {/* Right: Phone preview */}
         <div className="lg:col-span-1 flex flex-col items-center">
-          <div className="flex items-center gap-2 mb-3 text-sm text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-2 mb-3 text-sm text-slate-400 dark:text-slate-400">
             <Smartphone className="w-4 h-4" />
             Apercu mobile
           </div>
@@ -360,7 +360,7 @@ function ToggleOption({
       onClick={() => onChange(!enabled)}
       className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group"
     >
-      <span className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-300">
+      <span className="flex items-center gap-2.5 text-sm text-slate-400 dark:text-slate-300">
         <span className={enabled ? 'text-blue-500' : 'text-slate-400'}>{enabled ? icon : iconOff}</span>
         {label}
       </span>

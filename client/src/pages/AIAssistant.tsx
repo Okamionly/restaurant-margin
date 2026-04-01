@@ -166,7 +166,7 @@ export default function AIAssistant() {
                 {formatContent(msg.content)}
                 <div
                   className={`text-[10px] mt-2 ${
-                    msg.role === 'user' ? 'text-blue-200' : 'text-slate-500'
+                    msg.role === 'user' ? 'text-blue-200' : 'text-slate-400'
                   }`}
                 >
                   {msg.timestamp.toLocaleTimeString('fr-FR', {
@@ -190,7 +190,7 @@ export default function AIAssistant() {
                     <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:150ms]" />
                     <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:300ms]" />
                   </div>
-                  <span className="text-xs text-slate-500">Analyse de vos donnees...</span>
+                  <span className="text-xs text-slate-400">Analyse de vos donnees...</span>
                 </div>
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function AIAssistant() {
           <div className="px-4 pb-2">
             <div className="flex items-center gap-2 mb-2">
               <Lightbulb className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-xs text-slate-500 font-medium">Suggestions</span>
+              <span className="text-xs text-slate-400 font-medium">Suggestions</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {QUICK_QUESTIONS.map((q) => (
@@ -240,7 +240,7 @@ export default function AIAssistant() {
                 }}
               />
               <div className="absolute right-2 bottom-1.5 flex items-center gap-1">
-                <MessageSquare className="w-3.5 h-3.5 text-slate-600" />
+                <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
               </div>
             </div>
             <button
@@ -251,7 +251,7 @@ export default function AIAssistant() {
               <Send className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-[10px] text-slate-600 mt-2 text-center">
+          <p className="text-[10px] text-slate-300 mt-2 text-center">
             Propulse par Claude AI — Analyse vos donnees restaurant en temps reel
           </p>
         </div>

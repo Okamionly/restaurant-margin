@@ -98,7 +98,7 @@ const TAG_COLORS: Record<ClientTag, { bg: string; text: string; border: string }
 };
 
 const TYPE_COLORS: Record<ClientType, { bg: string; text: string }> = {
-  Particulier: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-700 dark:text-slate-300' },
+  Particulier: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-400 dark:text-slate-300' },
   Entreprise: { bg: 'bg-indigo-100 dark:bg-indigo-900/40', text: 'text-indigo-700 dark:text-indigo-300' },
   Association: { bg: 'bg-rose-100 dark:bg-rose-900/40', text: 'text-rose-700 dark:text-rose-300' },
 };
@@ -396,7 +396,7 @@ export default function Clients() {
               <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).text}`}>{c.type}</span>
             </div>
             {c.entreprise && (
-              <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              <div className="flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-400 mt-0.5">
                 <Building2 className="w-3.5 h-3.5" />
                 <span className="truncate">{c.entreprise}</span>
               </div>
@@ -420,7 +420,7 @@ export default function Clients() {
             <div className="text-xs text-slate-400 dark:text-slate-500">Commandes</div>
           </div>
           <div className="text-center">
-            <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{fmtDate(c.derniereVisite)}</div>
+            <div className="text-sm font-medium text-slate-400 dark:text-slate-300">{fmtDate(c.derniereVisite)}</div>
             <div className="text-xs text-slate-400 dark:text-slate-500">Dernière visite</div>
           </div>
         </div>
@@ -435,7 +435,7 @@ export default function Clients() {
             <Phone className="w-3.5 h-3.5" /> Appeler
           </a>
           <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors">
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-700 text-slate-300 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors">
             <FileText className="w-3.5 h-3.5" /> Devis
           </button>
         </div>
@@ -451,7 +451,7 @@ export default function Clients() {
       <div className="space-y-2">
         {data.map((d, i) => (
           <div key={i} className="flex items-center gap-3">
-            <div className="w-28 text-xs text-slate-600 dark:text-slate-400 truncate text-right">{d.label}</div>
+            <div className="w-28 text-xs text-slate-300 dark:text-slate-400 truncate text-right">{d.label}</div>
             <div className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-full h-5 overflow-hidden">
               <div className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 flex items-center justify-end pr-2"
                 style={{ width: `${(d.value / max) * 100}%` }}>
@@ -483,7 +483,7 @@ export default function Clients() {
           {data.map((d, i) => (
             <div key={i} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-              <span className="text-sm text-slate-600 dark:text-slate-400">{d.label}: <strong>{d.value}</strong></span>
+              <span className="text-sm text-slate-300 dark:text-slate-400">{d.label}: <strong>{d.value}</strong></span>
             </div>
           ))}
         </div>
@@ -502,17 +502,17 @@ export default function Clients() {
             <Users className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             Clients CRM
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             {clients.length} clients &middot; CA total : {fmt(stats.totalCA)}
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button onClick={() => setShowStats(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
             <BarChart3 className="w-4 h-4" /> Statistiques
           </button>
           <button onClick={handleCSVImport}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
             <Upload className="w-4 h-4" /> Import CSV
           </button>
           <button onClick={openAdd}
@@ -535,7 +535,7 @@ export default function Clients() {
 
           {/* Type filter */}
           <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
-            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-300">
+            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-400 dark:text-slate-300">
             <option value="">Tous les types</option>
             <option value="Particulier">Particulier</option>
             <option value="Entreprise">Entreprise</option>
@@ -544,7 +544,7 @@ export default function Clients() {
 
           {/* Tag filter */}
           <select value={filterTag} onChange={e => setFilterTag(e.target.value as ClientTag | '')}
-            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-300">
+            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-400 dark:text-slate-300">
             <option value="">Tous les tags</option>
             <option value="VIP">VIP</option>
             <option value="Régulier">Régulier</option>
@@ -554,14 +554,14 @@ export default function Clients() {
           {/* Sort */}
           <div className="flex items-center gap-1">
             <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
-              className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-700 dark:text-slate-300">
+              className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-400 dark:text-slate-300">
               <option value="nom">Trier par nom</option>
               <option value="caTotal">Trier par CA</option>
               <option value="derniereVisite">Trier par visite</option>
             </select>
             <button onClick={() => setSortAsc(!sortAsc)}
               className="p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              {sortAsc ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+              {sortAsc ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
             </button>
           </div>
 
@@ -581,7 +581,7 @@ export default function Clients() {
 
       {/* Results count */}
       {filtered.length !== clients.length && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-slate-400 dark:text-slate-400">
           {filtered.length} résultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
         </p>
       )}
@@ -599,13 +599,13 @@ export default function Clients() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Client</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Type</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Tags</th>
-                <th className="text-right px-4 py-3 font-medium text-slate-500 dark:text-slate-400">CA total</th>
-                <th className="text-center px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Commandes</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Dernière visite</th>
-                <th className="text-center px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Client</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Type</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Tags</th>
+                <th className="text-right px-4 py-3 font-medium text-slate-400 dark:text-slate-400">CA total</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Commandes</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Dernière visite</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -628,8 +628,8 @@ export default function Clients() {
                     <div className="flex gap-1 flex-wrap">{renderTags(c.tags)}</div>
                   </td>
                   <td className="px-4 py-3 text-right font-medium text-slate-900 dark:text-white">{fmt(c.caTotal)}</td>
-                  <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{c.nbCommandes}</td>
-                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{fmtDate(c.derniereVisite)}</td>
+                  <td className="px-4 py-3 text-center text-slate-300 dark:text-slate-400">{c.nbCommandes}</td>
+                  <td className="px-4 py-3 text-slate-300 dark:text-slate-400">{fmtDate(c.derniereVisite)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
                       <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
@@ -670,11 +670,11 @@ export default function Clients() {
                   {renderTags(selectedClient.tags)}
                 </div>
                 {selectedClient.entreprise && (
-                  <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 mt-1">
+                  <div className="flex items-center gap-1.5 text-sm text-slate-400 dark:text-slate-400 mt-1">
                     <Building2 className="w-4 h-4" /> {selectedClient.entreprise}
                   </div>
                 )}
-                <div className="flex items-center gap-4 mt-2 text-sm text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-4 mt-2 text-sm text-slate-400 dark:text-slate-400">
                   <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {selectedClient.email}</span>
                   <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {selectedClient.telephone}</span>
                 </div>
@@ -688,7 +688,7 @@ export default function Clients() {
                     <Phone className="w-3.5 h-3.5" /> Appeler
                   </a>
                   <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
                     <Edit2 className="w-3.5 h-3.5" /> Modifier
                   </button>
                 </div>
@@ -712,7 +712,7 @@ export default function Clients() {
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     detailTab === tab.id
                       ? 'border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400'
-                      : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                      : 'border-transparent text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                   }`}>
                   {tab.label}
                 </button>
@@ -737,7 +737,7 @@ export default function Clients() {
                 {selectedClient.notes && (
                   <div className="col-span-full">
                     <label className="text-xs font-medium text-slate-400 dark:text-slate-500">Notes</label>
-                    <p className="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 rounded-lg p-3 mt-1">{selectedClient.notes}</p>
+                    <p className="text-sm text-slate-400 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 rounded-lg p-3 mt-1">{selectedClient.notes}</p>
                   </div>
                 )}
               </div>
@@ -747,7 +747,7 @@ export default function Clients() {
             {detailTab === 'preferences' && (
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-500" /> Allergènes
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -766,7 +766,7 @@ export default function Clients() {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-green-500" /> Régime alimentaire
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -786,7 +786,7 @@ export default function Clients() {
                 </div>
                 {selectedClient.platsFavoris.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
                       <Star className="w-4 h-4 text-amber-500" /> Plats favoris
                     </h4>
                     <div className="flex flex-wrap gap-2">
@@ -818,7 +818,7 @@ export default function Clients() {
                             </span>
                             <span className="text-xs text-slate-400 dark:text-slate-500">{fmtDate(h.date)}</span>
                           </div>
-                          <p className="text-sm text-slate-700 dark:text-slate-300 mt-1">{h.description}</p>
+                          <p className="text-sm text-slate-400 dark:text-slate-300 mt-1">{h.description}</p>
                           {h.montant && <p className="text-sm font-semibold text-slate-900 dark:text-white mt-1">{fmt(h.montant)}</p>}
                         </div>
                       </div>
@@ -864,13 +864,13 @@ export default function Clients() {
                 <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-5 h-5 text-blue-500" />
-                    <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Protection des données</h4>
+                    <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300">Protection des données</h4>
                   </div>
                   <div className="space-y-2 text-sm">
-                    <p className="text-slate-600 dark:text-slate-400">
+                    <p className="text-slate-300 dark:text-slate-400">
                       Date de consentement RGPD : <strong className="text-slate-900 dark:text-white">{fmtDate(selectedClient.consentementRGPD)}</strong>
                     </p>
-                    <p className="text-slate-600 dark:text-slate-400">
+                    <p className="text-slate-300 dark:text-slate-400">
                       Données collectées : nom, coordonnées, préférences alimentaires, historique commercial
                     </p>
                   </div>
@@ -906,44 +906,44 @@ export default function Clients() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Prénom</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Prénom</label>
               <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Nom *</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Nom *</label>
               <input type="text" value={form.nom}
                 onChange={e => { setForm({ ...form, nom: e.target.value }); checkDuplicate(e.target.value, form.email); }}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Email *</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Email *</label>
               <input type="email" value={form.email}
                 onChange={e => { setForm({ ...form, email: e.target.value }); checkDuplicate(form.nom, e.target.value); }}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Téléphone</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Téléphone</label>
               <input type="tel" value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Entreprise</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Entreprise</label>
               <input type="text" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">SIRET</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">SIRET</label>
               <input type="text" value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div className="col-span-full">
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Adresse</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Adresse</label>
               <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Type</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Type</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as ClientType })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white">
                 <option value="Particulier">Particulier</option>
@@ -952,7 +952,7 @@ export default function Clients() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Tags</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Tags</label>
               <div className="flex gap-2 flex-wrap">
                 {(['VIP', 'Régulier', 'Nouveau'] as ClientTag[]).map(tag => (
                   <button key={tag} type="button"
@@ -976,13 +976,13 @@ export default function Clients() {
 
           {/* Allergènes */}
           <div>
-            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Allergènes (14 allergènes UE)</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">Allergènes (14 allergènes UE)</label>
             <div className="flex flex-wrap gap-2">
               {EU_ALLERGENES.map(a => (
                 <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
                   form.allergenes.includes(a.id)
                     ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
-                    : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}>
                   <input type="checkbox" className="sr-only"
                     checked={form.allergenes.includes(a.id)}
@@ -1000,13 +1000,13 @@ export default function Clients() {
 
           {/* Régime */}
           <div>
-            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Régime alimentaire</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">Régime alimentaire</label>
             <div className="flex flex-wrap gap-2">
               {REGIMES.map(r => (
                 <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
                   form.regime.includes(r)
                     ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
-                    : 'bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    : 'bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}>
                   <input type="checkbox" className="sr-only"
                     checked={form.regime.includes(r)}
@@ -1024,7 +1024,7 @@ export default function Clients() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Notes</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Notes</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
               rows={3}
               className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white resize-none" />
@@ -1033,12 +1033,12 @@ export default function Clients() {
           {/* Actions */}
           <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
             <button onClick={handleCSVImport}
-              className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
+              className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
               <Upload className="w-4 h-4" /> Import CSV
             </button>
             <div className="flex gap-3">
               <button onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                 Annuler
               </button>
               <button onClick={handleSave}
@@ -1057,12 +1057,12 @@ export default function Clients() {
           <div className="space-y-4">
             {/* Template shortcuts */}
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Modèles rapides</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">Modèles rapides</label>
               <div className="flex flex-wrap gap-2">
                 {EMAIL_TEMPLATES.map(t => (
                   <button key={t.id}
                     onClick={() => applyTemplate(t)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === t.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-blue-300 dark:hover:border-blue-600'}`}>
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === t.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-400 hover:border-blue-300 dark:hover:border-blue-600'}`}>
                     {t.label}
                   </button>
                 ))}
@@ -1070,7 +1070,7 @@ export default function Clients() {
             </div>
             {/* Subject */}
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Objet</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Objet</label>
               <input
                 type="text"
                 value={emailSubject}
@@ -1081,7 +1081,7 @@ export default function Clients() {
             </div>
             {/* Message body */}
             <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Message</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Message</label>
               <textarea
                 value={emailMessage}
                 onChange={(e) => setEmailMessage(e.target.value)}
@@ -1094,7 +1094,7 @@ export default function Clients() {
             <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Annuler
               </button>
@@ -1136,7 +1136,7 @@ export default function Clients() {
 
           {/* Top 10 by CA */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-blue-500" /> Top 10 clients par CA
             </h4>
             <BarChartSimple data={stats.top10.map(c => ({ label: `${c.prenom} ${c.nom}`, value: c.caTotal }))} />
@@ -1145,7 +1145,7 @@ export default function Clients() {
           {/* Type distribution */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+              <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
                 <PieChart className="w-4 h-4 text-purple-500" /> Répartition par type
               </h4>
               <PieChartSimple data={[
@@ -1155,7 +1155,7 @@ export default function Clients() {
               ]} />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+              <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-green-500" /> Répartition par tag
               </h4>
               <PieChartSimple data={[

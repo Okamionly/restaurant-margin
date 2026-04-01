@@ -98,6 +98,8 @@ export default function WeighStation() {
   const [showNewIngredient, setShowNewIngredient] = useState(false);
   const [newIngForm, setNewIngForm] = useState({ name: '', category: 'Légumes', unit: 'kg', pricePerUnit: '' });
   const [creatingIngredient, setCreatingIngredient] = useState(false);
+  const [ingredientStock, setIngredientStock] = useState<{ stock: number; unit: string; itemId: number } | null>(null);
+  const [loadingStock, setLoadingStock] = useState(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -109,6 +111,24 @@ export default function WeighStation() {
       .then(setIngredients)
       .catch(() => {});
   }, []);
+
+  // Fetch stock when ingredient is selected
+  useEffect(() => {
+    if (!selected) { setIngredientStock(null); return; }
+    setLoadingStock(true);
+    fetch(`${API}/api/inventory`, { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : [])
+      .then((items: any[]) => {
+        const item = items.find((i: any) => i.ingredientId === selected.id);
+        if (item) {
+          setIngredientStock({ stock: item.currentStock, unit: item.unit || selected.unit, itemId: item.id });
+        } else {
+          setIngredientStock(null);
+        }
+      })
+      .catch(() => setIngredientStock(null))
+      .finally(() => setLoadingStock(false));
+  }, [selected]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -204,34 +224,18 @@ export default function WeighStation() {
         const invItems = await invRes.json();
         const item = invItems.find((i: any) => i.ingredientId === selected.id);
         if (item) {
-          // Update existing inventory item
-          const newStock = item.currentStock + netConverted;
+          // Deduct weighed quantity from inventory
+          const newStock = Math.max(0, item.currentStock - netConverted);
           await fetch(`${API}/api/inventory/${item.id}`, {
             method: 'PUT',
             headers: authHeaders(),
             body: JSON.stringify({ currentStock: newStock }),
           });
-          const valueStr = selected.pricePerUnit > 0 ? ` (${(netConverted * selected.pricePerUnit).toFixed(2)} €)` : '';
-          showToast(`Ajouté à l'inventaire : ${netConverted} ${selected.unit} de ${selected.name}${valueStr}`, 'success');
+          setIngredientStock({ stock: newStock, unit: item.unit || selected.unit, itemId: item.id });
+          showToast(`Stock mis à jour : -${netConverted} ${selected.unit} de ${selected.name} (reste ${newStock.toFixed(2)} ${selected.unit})`, 'success');
         } else {
-          // Create new inventory entry via POST
-          const createRes = await fetch(`${API}/api/inventory`, {
-            method: 'POST',
-            headers: authHeaders(),
-            body: JSON.stringify({
-              ingredientId: selected.id,
-              currentStock: netConverted,
-              minStock: 0,
-              unit: selected.unit,
-            }),
-          });
-          if (createRes.ok) {
-            const newValueStr = selected.pricePerUnit > 0 ? ` (${(netConverted * selected.pricePerUnit).toFixed(2)} €)` : '';
-            showToast(`Ajouté à l'inventaire : ${netConverted} ${selected.unit} de ${selected.name}${newValueStr}`, 'success');
-          } else {
-            showToast('Erreur lors de la création dans l\'inventaire', 'error');
-            entryStatus = 'error';
-          }
+          // No inventory entry — just record the weighing
+          showToast(`Pesée enregistrée (pas de stock pour ${selected.name})`, 'info');
         }
       }
       const entry: HistoryEntry = {
@@ -396,7 +400,7 @@ export default function WeighStation() {
                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-300 ${
                   active ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40' :
                   done ? 'bg-slate-700/40 text-emerald-400' :
-                  'bg-slate-800/30 text-slate-600'
+                  'bg-slate-800/30 text-slate-300'
                 }`}>
                   <Icon className="w-4 h-4" />
                   <span className="text-xs font-medium hidden sm:inline">{step.label}</span>
@@ -537,7 +541,7 @@ export default function WeighStation() {
           {/* Ingredient search */}
           <div className="p-3 border-b border-slate-800/60" ref={dropdownRef}>
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               <input
                 ref={searchRef}
                 type="text"
@@ -568,7 +572,7 @@ export default function WeighStation() {
                     <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>
                       {ing.category}
                     </span>
-                    <span className="text-[10px] text-slate-500">{ing.unit}</span>
+                    <span className="text-[10px] text-slate-400">{ing.unit}</span>
                     <span className="text-[10px] text-blue-400">{(ing.pricePerUnit ?? 0).toFixed(2)} €/{ing.unit}</span>
                   </div>
                 </div>
@@ -578,7 +582,7 @@ export default function WeighStation() {
               </button>
             ))}
             {filteredIngredients.length === 0 && search && (
-              <p className="text-center text-slate-600 text-sm py-8">Aucun resultat</p>
+              <p className="text-center text-slate-300 text-sm py-8">Aucun resultat</p>
             )}
           </div>
         </div>
@@ -591,11 +595,11 @@ export default function WeighStation() {
             {quickMode ? (
               <div>
                 <p className="text-amber-400 text-sm uppercase tracking-widest font-medium">Pesee rapide</p>
-                <p className="text-slate-500 text-xs mt-1">Pesez sans selectionner d'ingredient</p>
+                <p className="text-slate-400 text-xs mt-1">Pesez sans selectionner d'ingredient</p>
               </div>
             ) : selected ? (
               <div>
-                <p className="text-slate-500 text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>
+                <p className="text-slate-400 text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>
                 <p className="text-2xl font-bold text-white mt-0.5">{selected.name}</p>
                 <div className="flex items-center justify-center gap-3 mt-1">
                   <span className={`inline-block text-[10px] px-2 py-0.5 rounded border ${getCategoryColor(selected.category)}`}>
@@ -605,10 +609,26 @@ export default function WeighStation() {
                     {(selected.pricePerUnit ?? 0).toFixed(2)} €/{selected.unit}
                   </span>
                 </div>
+                {/* Current stock level */}
+                <div className="mt-1.5">
+                  {loadingStock ? (
+                    <span className="text-[11px] text-slate-500">Chargement stock...</span>
+                  ) : ingredientStock ? (
+                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                      ingredientStock.stock <= 0 ? 'bg-red-900/40 text-red-400' :
+                      ingredientStock.stock < 2 ? 'bg-amber-900/40 text-amber-400' :
+                      'bg-emerald-900/30 text-emerald-400'
+                    }`}>
+                      Stock : {ingredientStock.stock.toFixed(2)} {ingredientStock.unit}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-slate-600">Pas de stock enregistré</span>
+                  )}
+                </div>
               </div>
             ) : (
               <div>
-                <p className="text-slate-600 text-sm sm:text-base px-2 text-center">Selectionnez un ingredient ou utilisez la pesee rapide</p>
+                <p className="text-slate-300 text-sm sm:text-base px-2 text-center">Selectionnez un ingredient ou utilisez la pesee rapide</p>
               </div>
             )}
           </div>
@@ -643,14 +663,14 @@ export default function WeighStation() {
                 className={`font-black tabular-nums tracking-tight transition-all duration-300 ${
                   netWeight > 0 && isStable ? 'text-emerald-400' :
                   netWeight > 0 ? 'text-blue-300' :
-                  'text-slate-600'
+                  'text-slate-300'
                 }`}
                 style={{ fontSize: 'clamp(3.5rem, 10vw, 6rem)', lineHeight: 1 }}
               >
                 {netWeight <= 0 ? '0' : weightForDisplay}
               </span>
               <span className={`text-2xl font-bold transition-colors duration-300 ${
-                netWeight > 0 ? 'text-slate-400' : 'text-slate-700'
+                netWeight > 0 ? 'text-slate-400' : 'text-slate-400'
               }`}>
                 {unitForDisplay}
               </span>
@@ -762,7 +782,7 @@ export default function WeighStation() {
           {/* History header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800/60">
             <div className="flex items-center gap-2">
-              <ClipboardList className="w-4 h-4 text-slate-500" />
+              <ClipboardList className="w-4 h-4 text-slate-400" />
               <p className="text-sm font-semibold text-slate-300">Historique</p>
               {history.length > 0 && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-700 text-slate-400">{history.length}</span>
@@ -782,7 +802,7 @@ export default function WeighStation() {
           {/* History table/list */}
           <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
             {history.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-12 text-slate-700">
+              <div className="flex flex-col items-center justify-center py-12 text-slate-400">
                 <Scale className="w-8 h-8 mb-2" />
                 <p className="text-sm">Aucune pesee</p>
               </div>
@@ -812,7 +832,7 @@ export default function WeighStation() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-1.5">
-                  <p className="text-slate-600 text-[10px]">
+                  <p className="text-slate-300 text-[10px]">
                     {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </p>
                   <span className={`text-[9px] px-1.5 py-0.5 rounded ${
@@ -828,7 +848,7 @@ export default function WeighStation() {
           {/* Daily stats footer */}
           <div className="px-4 py-3 border-t border-slate-800/60 bg-slate-900/60">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-500">Aujourd'hui</span>
+              <span className="text-slate-400">Aujourd'hui</span>
               <div className="flex items-center gap-4">
                 <span className="text-emerald-400 font-medium">{todayStats.totalWeighs} pesée{todayStats.totalWeighs !== 1 ? 's' : ''}</span>
                 <span className="text-blue-400 font-medium">{todayStats.totalKg} kg total</span>

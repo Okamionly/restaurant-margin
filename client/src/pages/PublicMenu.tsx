@@ -131,7 +131,7 @@ export default function PublicMenu() {
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          <p className="text-slate-500 dark:text-slate-400 text-sm">Chargement du menu...</p>
+          <p className="text-slate-400 dark:text-slate-400 text-sm">Chargement du menu...</p>
         </div>
       </div>
     );
@@ -142,7 +142,7 @@ export default function PublicMenu() {
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-          <p className="text-slate-600 dark:text-slate-400">{error}</p>
+          <p className="text-slate-300 dark:text-slate-400">{error}</p>
         </div>
       </div>
     );
@@ -161,14 +161,14 @@ export default function PublicMenu() {
               <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
                 Notre Carte
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-400 dark:text-slate-400">
                 {lang === 'en' ? 'Our Menu' : lang === 'es' ? 'Nuestra Carta' : 'Decouvrez nos plats'}
               </p>
             </div>
           </div>
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-300 dark:text-slate-300 transition-colors"
             aria-label="Toggle theme"
           >
             {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -210,7 +210,7 @@ export default function PublicMenu() {
                           {recipe.name}
                         </h3>
                         {!hideDesc && recipe.description && (
-                          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1 leading-relaxed">
                             {recipe.description}
                           </p>
                         )}
@@ -228,7 +228,7 @@ export default function PublicMenu() {
                             <div className="flex flex-wrap gap-1">
                               {allergens.map((a) => {
                                 const normalized = a.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                                const info = ALLERGEN_ICONS[normalized] || { icon: <AlertTriangle className="w-3 h-3" />, color: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
+                                const info = ALLERGEN_ICONS[normalized] || { icon: <AlertTriangle className="w-3 h-3" />, color: 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-300' };
                                 return (
                                   <span
                                     key={a}
@@ -265,7 +265,7 @@ export default function PublicMenu() {
         {recipes.length === 0 && (
           <div className="text-center py-16">
             <ChefHat className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-500 dark:text-slate-400 text-lg">
+            <p className="text-slate-400 dark:text-slate-400 text-lg">
               {lang === 'en' ? 'The menu is being prepared...' : lang === 'es' ? 'El menu se esta preparando...' : 'Le menu est en cours de preparation...'}
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function PublicMenu() {
         <div className="max-w-2xl mx-auto px-4 py-6 text-center">
           <div className="flex items-center justify-center gap-2 text-xs text-slate-400 dark:text-slate-500">
             <ChefHat className="w-3.5 h-3.5" />
-            <span>Propulse par <span className="font-semibold text-slate-500 dark:text-slate-400">RestauMargin</span></span>
+            <span>Propulse par <span className="font-semibold text-slate-400 dark:text-slate-400">RestauMargin</span></span>
           </div>
         </div>
       </footer>

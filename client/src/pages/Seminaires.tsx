@@ -107,7 +107,7 @@ interface SeminaireEvent {
 const STATUS_COLUMNS: EventStatus[] = ['Demande', 'Devis envoyé', 'Confirmé', 'En cours', 'Soldé'];
 
 const STATUS_COLORS: Record<EventStatus, { bg: string; text: string; border: string; dot: string }> = {
-  'Demande':       { bg: 'bg-slate-100 dark:bg-slate-700/50', text: 'text-slate-700 dark:text-slate-300', border: 'border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
+  'Demande':       { bg: 'bg-slate-100 dark:bg-slate-700/50', text: 'text-slate-400 dark:text-slate-300', border: 'border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
   'Devis envoyé':  { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700', dot: 'bg-amber-400' },
   'Confirmé':      { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700', dot: 'bg-blue-400' },
   'En cours':      { bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-300 dark:border-emerald-700', dot: 'bg-emerald-400' },
@@ -119,7 +119,7 @@ const TYPE_COLORS: Record<EventType, string> = {
   'Mariage':      'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
   'Anniversaire': 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
   'Corporate':    'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
-  'Autre':        'bg-slate-100 text-slate-700 dark:bg-slate-700/40 dark:text-slate-300',
+  'Autre':        'bg-slate-100 text-slate-400 dark:bg-slate-700/40 dark:text-slate-300',
 };
 
 const EVENT_TYPES: EventType[] = ['Séminaire', 'Mariage', 'Anniversaire', 'Corporate', 'Autre'];
@@ -395,7 +395,7 @@ export default function Seminaires() {
             <PartyPopper className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             Séminaires & Groupes
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Gérez vos événements, devis et réservations de groupe
           </p>
         </div>
@@ -405,7 +405,7 @@ export default function Seminaires() {
             <button
               onClick={() => setViewMode('kanban')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                viewMode === 'kanban' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'
+                viewMode === 'kanban' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 dark:text-slate-400'
               }`}
             >
               <LayoutGrid className="w-4 h-4" /> Kanban
@@ -413,7 +413,7 @@ export default function Seminaires() {
             <button
               onClick={() => setViewMode('calendar')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                viewMode === 'calendar' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'
+                viewMode === 'calendar' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-400 dark:text-slate-400'
               }`}
             >
               <Calendar className="w-4 h-4" /> Calendrier
@@ -436,7 +436,7 @@ export default function Seminaires() {
               <CalendarDays className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Événements ce mois</p>
+              <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">Événements ce mois</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{thisMonthEvents.length}</p>
             </div>
           </div>
@@ -447,7 +447,7 @@ export default function Seminaires() {
               <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">CA prévisionnel</p>
+              <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">CA prévisionnel</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{formatEuro(caPrevi)}</p>
             </div>
           </div>
@@ -458,7 +458,7 @@ export default function Seminaires() {
               <TrendingUp className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Taux de conversion</p>
+              <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">Taux de conversion</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{tauxConversion}%</p>
             </div>
           </div>
@@ -469,7 +469,7 @@ export default function Seminaires() {
               <Clock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Prochain événement</p>
+              <p className="text-xs text-slate-400 dark:text-slate-400 font-medium">Prochain événement</p>
               {prochainEvent ? (
                 <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
                   {formatDateShort(prochainEvent.date)} — {prochainEvent.clientNom.split(' ')[0]}
@@ -490,7 +490,7 @@ export default function Seminaires() {
           placeholder="Rechercher un événement..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
@@ -528,12 +528,12 @@ export default function Seminaires() {
                       {/* Client */}
                       <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{ev.clientNom}</h4>
                       {ev.clientEntreprise && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                        <p className="text-xs text-slate-400 dark:text-slate-400 flex items-center gap-1 mt-0.5">
                           <Building2 className="w-3 h-3" /> {ev.clientEntreprise}
                         </p>
                       )}
                       {/* Info row */}
-                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-400 dark:text-slate-400">
                         <span className="flex items-center gap-1">
                           <CalendarDays className="w-3 h-3" /> {formatDateShort(ev.date)}
                         </span>
@@ -581,17 +581,17 @@ export default function Seminaires() {
           {/* Month nav */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
             <button onClick={prevMonth} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <ChevronLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <ChevronLeft className="w-5 h-5 text-slate-300 dark:text-slate-300" />
             </button>
             <h2 className="text-lg font-bold text-slate-900 dark:text-white capitalize">{monthLabel}</h2>
             <button onClick={nextMonth} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-              <ChevronRight className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+              <ChevronRight className="w-5 h-5 text-slate-300 dark:text-slate-300" />
             </button>
           </div>
           {/* Days header */}
           <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-700">
             {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
-              <div key={d} className="text-center text-xs font-semibold text-slate-500 dark:text-slate-400 py-2">{d}</div>
+              <div key={d} className="text-center text-xs font-semibold text-slate-400 dark:text-slate-400 py-2">{d}</div>
             ))}
           </div>
           {/* Calendar grid */}
@@ -613,7 +613,7 @@ export default function Seminaires() {
                     isToday ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
                   }`}
                 >
-                  <span className={`text-xs font-medium ${isToday ? 'bg-blue-600 text-white px-1.5 py-0.5 rounded-full' : 'text-slate-600 dark:text-slate-400'}`}>
+                  <span className={`text-xs font-medium ${isToday ? 'bg-blue-600 text-white px-1.5 py-0.5 rounded-full' : 'text-slate-300 dark:text-slate-400'}`}>
                     {day}
                   </span>
                   <div className="mt-1 space-y-1">
@@ -642,12 +642,12 @@ export default function Seminaires() {
         <div className="space-y-6">
           {/* Client info */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
               <Users className="w-4 h-4" /> Informations client
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Nom *</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Nom *</label>
                 <input
                   value={form.clientNom}
                   onChange={e => setForm(f => ({ ...f, clientNom: e.target.value }))}
@@ -656,7 +656,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Entreprise</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Entreprise</label>
                 <input
                   value={form.clientEntreprise}
                   onChange={e => setForm(f => ({ ...f, clientEntreprise: e.target.value }))}
@@ -665,7 +665,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Email</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Email</label>
                 <input
                   type="email"
                   value={form.clientEmail}
@@ -675,7 +675,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Téléphone</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Téléphone</label>
                 <input
                   value={form.clientTelephone}
                   onChange={e => setForm(f => ({ ...f, clientTelephone: e.target.value }))}
@@ -688,12 +688,12 @@ export default function Seminaires() {
 
           {/* Event details */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
               <CalendarDays className="w-4 h-4" /> Détails de l'événement
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Type *</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Type *</label>
                 <select
                   value={form.type}
                   onChange={e => setForm(f => ({ ...f, type: e.target.value as EventType }))}
@@ -703,7 +703,7 @@ export default function Seminaires() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Date *</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Date *</label>
                 <input
                   type="date"
                   value={form.date}
@@ -712,7 +712,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Heure début</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Heure début</label>
                 <input
                   type="time"
                   value={form.heureDebut}
@@ -721,7 +721,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Heure fin</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Heure fin</label>
                 <input
                   type="time"
                   value={form.heureFin}
@@ -730,7 +730,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Nb convives (min)</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Nb convives (min)</label>
                 <input
                   type="number"
                   value={form.nbConvivesMin}
@@ -739,7 +739,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Nb convives (max)</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Nb convives (max)</label>
                 <input
                   type="number"
                   value={form.nbConvivesMax}
@@ -748,7 +748,7 @@ export default function Seminaires() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Salle / Espace</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Salle / Espace</label>
                 <select
                   value={form.salle}
                   onChange={e => setForm(f => ({ ...f, salle: e.target.value }))}
@@ -762,12 +762,12 @@ export default function Seminaires() {
 
           {/* Menu */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
               <Utensils className="w-4 h-4" /> Menu
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Entrée</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Entrée</label>
                 <input
                   value={form.menuEntree}
                   onChange={e => setForm(f => ({ ...f, menuEntree: e.target.value }))}
@@ -776,7 +776,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Plat</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Plat</label>
                 <input
                   value={form.menuPlat}
                   onChange={e => setForm(f => ({ ...f, menuPlat: e.target.value }))}
@@ -785,7 +785,7 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Dessert</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Dessert</label>
                 <input
                   value={form.menuDessert}
                   onChange={e => setForm(f => ({ ...f, menuDessert: e.target.value }))}
@@ -798,7 +798,7 @@ export default function Seminaires() {
 
           {/* Équipements */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
               <Monitor className="w-4 h-4" /> Équipements
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -808,7 +808,7 @@ export default function Seminaires() {
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
                     form.equipements.includes(eq.id)
                       ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300'
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
+                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-300 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
                   }`}
                 >
                   <input
@@ -826,12 +826,12 @@ export default function Seminaires() {
 
           {/* Budget */}
           <div>
-            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
               <Euro className="w-4 h-4" /> Budget
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Prix / personne (€)</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Prix / personne (€)</label>
                 <input
                   type="number"
                   value={form.prixParPersonne}
@@ -840,13 +840,13 @@ export default function Seminaires() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Total estimé</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Total estimé</label>
                 <div className="px-3 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-bold text-slate-900 dark:text-white">
                   {formatEuro(form.prixParPersonne * form.nbConvivesMax)}
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Arrhes ({form.arrhesPercent}%)</label>
+                <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Arrhes ({form.arrhesPercent}%)</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
@@ -856,8 +856,8 @@ export default function Seminaires() {
                     onChange={e => setForm(f => ({ ...f, arrhesPercent: +e.target.value }))}
                     className="w-20 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-slate-500 dark:text-slate-400">%</span>
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-sm text-slate-400 dark:text-slate-400">%</span>
+                  <span className="text-sm font-medium text-slate-400 dark:text-slate-300">
                     = {formatEuro(Math.round(form.prixParPersonne * form.nbConvivesMax * form.arrhesPercent / 100))}
                   </span>
                 </div>
@@ -867,13 +867,13 @@ export default function Seminaires() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Notes internes</label>
+            <label className="block text-xs font-medium text-slate-300 dark:text-slate-400 mb-1">Notes internes</label>
             <textarea
               value={form.notes}
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={3}
               placeholder="Informations complémentaires, allergies, demandes spéciales..."
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
           </div>
 
@@ -881,7 +881,7 @@ export default function Seminaires() {
           <div className="flex justify-end gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
             <button
               onClick={() => setShowNewModal(false)}
-              className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              className="px-4 py-2 text-sm font-medium text-slate-300 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
               Annuler
             </button>
@@ -921,20 +921,20 @@ export default function Seminaires() {
 
                 {/* Client info */}
                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 space-y-2">
-                  <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200">Client</h4>
+                  <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200">Client</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 text-slate-300 dark:text-slate-300">
                       <Users className="w-4 h-4 text-slate-400" /> {ev.clientNom}
                     </div>
                     {ev.clientEntreprise && (
-                      <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                      <div className="flex items-center gap-2 text-slate-300 dark:text-slate-300">
                         <Building2 className="w-4 h-4 text-slate-400" /> {ev.clientEntreprise}
                       </div>
                     )}
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 text-slate-300 dark:text-slate-300">
                       <Mail className="w-4 h-4 text-slate-400" /> {ev.clientEmail}
                     </div>
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                    <div className="flex items-center gap-2 text-slate-300 dark:text-slate-300">
                       <Phone className="w-4 h-4 text-slate-400" /> {ev.clientTelephone}
                     </div>
                   </div>
@@ -944,47 +944,47 @@ export default function Seminaires() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <div className="text-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
                     <CalendarDays className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Date</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400">Date</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-white">{formatDate(ev.date)}</p>
                   </div>
                   <div className="text-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
                     <Clock className="w-5 h-5 text-amber-500 mx-auto mb-1" />
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Horaire</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400">Horaire</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-white">{ev.heureDebut} - {ev.heureFin}</p>
                   </div>
                   <div className="text-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
                     <Users className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Convives</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400">Convives</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-white">{ev.nbConvivesMin} - {ev.nbConvivesMax}</p>
                   </div>
                   <div className="text-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
                     <MapPin className="w-5 h-5 text-purple-500 mx-auto mb-1" />
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Salle</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-400">Salle</p>
                     <p className="text-sm font-bold text-slate-900 dark:text-white">{ev.salle}</p>
                   </div>
                 </div>
 
                 {/* Menu */}
                 <div>
-                  <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-2 flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-2 flex items-center gap-2">
                     <Utensils className="w-4 h-4" /> Menu
                   </h4>
                   <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-0.5">Entrée</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-400 font-medium mb-0.5">Entrée</p>
                         <p className="text-slate-900 dark:text-white">{ev.menu.entree || '—'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-0.5">Plat</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-400 font-medium mb-0.5">Plat</p>
                         <p className="text-slate-900 dark:text-white">{ev.menu.plat || '—'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mb-0.5">Dessert</p>
+                        <p className="text-xs text-slate-400 dark:text-slate-400 font-medium mb-0.5">Dessert</p>
                         <p className="text-slate-900 dark:text-white">{ev.menu.dessert || '—'}</p>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                    <p className="text-xs text-slate-400 dark:text-slate-400 mt-2">
                       {formatEuro(ev.prixParPersonne)} / personne
                     </p>
                   </div>
@@ -993,13 +993,13 @@ export default function Seminaires() {
                 {/* Équipements */}
                 {ev.equipements.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">Équipements</h4>
+                    <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-2">Équipements</h4>
                     <div className="flex flex-wrap gap-2">
                       {ev.equipements.map(eqId => {
                         const eq = EQUIPEMENTS.find(x => x.id === eqId);
                         if (!eq) return null;
                         return (
-                          <span key={eqId} className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
+                          <span key={eqId} className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700/50 text-slate-300 dark:text-slate-300">
                             <eq.icon className="w-3.5 h-3.5" /> {eq.label}
                           </span>
                         );
@@ -1027,10 +1027,10 @@ export default function Seminaires() {
                 {/* Notes */}
                 {ev.notes && (
                   <div>
-                    <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-2 flex items-center gap-2">
+                    <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-2 flex items-center gap-2">
                       <FileText className="w-4 h-4" /> Notes internes
                     </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                    <p className="text-sm text-slate-300 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
                       {ev.notes}
                     </p>
                   </div>
@@ -1038,7 +1038,7 @@ export default function Seminaires() {
 
                 {/* Timeline */}
                 <div>
-                  <h4 className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Historique</h4>
+                  <h4 className="text-sm font-bold text-slate-400 dark:text-slate-200 mb-3">Historique</h4>
                   <div className="space-y-0">
                     {ev.timeline.map((entry, i) => (
                       <div key={i} className="flex gap-3">
@@ -1048,7 +1048,7 @@ export default function Seminaires() {
                         </div>
                         <div className="pb-3">
                           <p className="text-xs text-slate-400 dark:text-slate-500">{formatDate(entry.date)}</p>
-                          <p className="text-sm text-slate-700 dark:text-slate-200">{entry.action}</p>
+                          <p className="text-sm text-slate-400 dark:text-slate-200">{entry.action}</p>
                         </div>
                       </div>
                     ))}
@@ -1095,7 +1095,7 @@ export default function Seminaires() {
                       showToast('Impression du BEO en cours...', 'info');
                       setTimeout(() => window.print(), 300);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-semibold transition-colors ml-auto"
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 dark:text-slate-200 rounded-lg text-sm font-semibold transition-colors ml-auto"
                   >
                     <Printer className="w-4 h-4" /> BEO
                   </button>

@@ -107,7 +107,7 @@ export default function RecipeDetail() {
     return portions / recipe.nbPortions;
   }, [recipe, portions]);
 
-  if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">Chargement...</div>;
+  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">Chargement...</div>;
   if (!recipe) return <div className="text-center py-12 text-red-500">Recette non trouvée</div>;
 
   const m = recipe.margin;
@@ -184,8 +184,8 @@ export default function RecipeDetail() {
         {/* Price Simulator */}
         <div className="px-5 py-3">
           <div className="flex items-center gap-3 mb-2">
-            <SlidersHorizontal className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Simulateur de prix</span>
+            <SlidersHorizontal className="w-4 h-4 text-slate-400 dark:text-slate-400" />
+            <span className="text-sm font-semibold text-slate-400 dark:text-slate-300">Simulateur de prix</span>
             <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 ml-auto">{(simPrice ?? 0).toFixed(2)} &euro;</span>
           </div>
           <input
@@ -244,8 +244,8 @@ export default function RecipeDetail() {
           <div className="flex items-baseline justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">{recipe.name}</h1>
-              <div className="flex items-center gap-3 mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                <span className="font-medium text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-slate-600 px-2 py-0.5 rounded">{recipe.category}</span>
+              <div className="flex items-center gap-3 mt-0.5 text-xs text-slate-400 dark:text-slate-400">
+                <span className="font-medium text-slate-400 dark:text-slate-300 bg-slate-200 dark:bg-slate-600 px-2 py-0.5 rounded">{recipe.category}</span>
                 <span>{portions ?? recipe.nbPortions} portion{(portions ?? recipe.nbPortions) > 1 ? 's' : ''}</span>
                 {totalTime > 0 && (
                   <span className="flex items-center gap-1">
@@ -261,7 +261,7 @@ export default function RecipeDetail() {
             </div>
           </div>
           {recipe.description && (
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 italic leading-snug">{recipe.description}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-400 mt-1.5 italic leading-snug">{recipe.description}</p>
           )}
         </div>
 
@@ -269,11 +269,11 @@ export default function RecipeDetail() {
         <div className="flex fiche-body">
           {/* ──── LEFT COLUMN (60%) ──── */}
           <div className="fiche-left flex-[3] border-r border-slate-200 dark:border-slate-700 p-4">
-            <h2 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Composition</h2>
+            <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2">Composition</h2>
 
             <table className="w-full text-[11px] border-collapse">
               <thead>
-                <tr className="border-b-2 border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400">
+                <tr className="border-b-2 border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400">
                   <th className="text-left pb-1.5 font-semibold pl-1">Ingrédient</th>
                   <th className="text-center pb-1.5 font-semibold w-16">Qté</th>
                   <th className="text-center pb-1.5 font-semibold w-12">Unité</th>
@@ -299,12 +299,12 @@ export default function RecipeDetail() {
                           <span className="ml-1 text-amber-500 text-[9px] font-bold align-super" title={ri.ingredient.allergens.join(', ')}>*</span>
                         )}
                       </td>
-                      <td className="py-1 text-center font-mono text-slate-700 dark:text-slate-300">
+                      <td className="py-1 text-center font-mono text-slate-400 dark:text-slate-300">
                         {portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity}
                       </td>
-                      <td className="py-1 text-center text-slate-500 dark:text-slate-400">{ri.ingredient.unit}</td>
+                      <td className="py-1 text-center text-slate-400 dark:text-slate-400">{ri.ingredient.unit}</td>
                       <td className="py-1 text-center font-mono text-slate-400">{waste > 0 ? `${waste}%` : '—'}</td>
-                      <td className="py-1 text-right font-mono text-slate-600 dark:text-slate-400">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
+                      <td className="py-1 text-right font-mono text-slate-300 dark:text-slate-400">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
                       <td className="py-1 text-right font-mono font-bold text-slate-800 dark:text-slate-200 pr-1">{lineTotal.toFixed(2)}</td>
                     </tr>
                   );
@@ -324,7 +324,7 @@ export default function RecipeDetail() {
 
             {/* Key metrics box */}
             <div>
-              <h2 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Indicateurs clés</h2>
+              <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2">Indicateurs clés</h2>
               <div className="border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden text-[11px]">
                 <MetricRow label="Prix de vente" value={`${recipe.sellingPrice.toFixed(2)} €`} />
                 <MetricRow label="Coût matière / portion" value={`${m.costPerPortion.toFixed(2)} €`} sub={`(${foodCostPct.toFixed(1)}%)`} />
@@ -340,7 +340,7 @@ export default function RecipeDetail() {
 
             {/* Donut chart */}
             <div>
-              <h2 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Répartition du prix</h2>
+              <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Répartition du prix</h2>
               <div className="flex items-center gap-2">
                 <div className="w-24 h-24 flex-shrink-0 no-print">
                   <ResponsiveContainer width="100%" height="100%">
@@ -398,7 +398,7 @@ export default function RecipeDetail() {
                   {donutData.map((d, i) => (
                     <div key={i} className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-sm inline-block flex-shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
-                      <span className="text-slate-600 dark:text-slate-400 flex-1">{d.name}</span>
+                      <span className="text-slate-300 dark:text-slate-400 flex-1">{d.name}</span>
                       <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{d.value.toFixed(2)} &euro;</span>
                     </div>
                   ))}
@@ -409,7 +409,7 @@ export default function RecipeDetail() {
             {/* Allergens */}
             {allAllergens.length > 0 && (
               <div>
-                <h2 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3 text-amber-500" />
                   Allergènes
                 </h2>
@@ -429,7 +429,7 @@ export default function RecipeDetail() {
             {/* Timing */}
             {totalTime > 0 && (
               <div>
-                <h2 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Temps de production</h2>
+                <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1.5">Temps de production</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-center text-[10px]">
                   {recipe.prepTimeMinutes > 0 && (
                     <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded px-2 py-1.5">
@@ -636,7 +636,7 @@ function MetricRow({
 }) {
   return (
     <div className={`metric-row flex items-center justify-between px-3 py-1.5 ${!last ? 'border-b border-slate-200 dark:border-slate-700' : ''} ${bold ? 'bg-slate-50 dark:bg-slate-700/50' : ''}`}>
-      <span className={`text-slate-600 dark:text-slate-400 ${bold ? 'font-semibold text-slate-700 dark:text-slate-300' : ''}`}>{label}</span>
+      <span className={`text-slate-300 dark:text-slate-400 ${bold ? 'font-semibold text-slate-400 dark:text-slate-300' : ''}`}>{label}</span>
       <div className="text-right">
         <span className={`font-mono font-bold ${valueClass || 'text-slate-800 dark:text-slate-200'}`}>{value}</span>
         {sub && <span className="text-slate-400 dark:text-slate-500 ml-1 text-[9px]">{sub}</span>}
@@ -658,7 +658,7 @@ function SimCard({ label, value, highlight, warn }: { label: string; value: stri
       : 'text-slate-800 dark:text-slate-100';
   return (
     <div className={`rounded-lg border-2 p-2.5 text-center transition-colors ${border}`}>
-      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{label}</div>
+      <div className="text-[10px] text-slate-400 dark:text-slate-400 font-medium">{label}</div>
       <div className={`text-lg font-bold mt-0.5 ${textColor}`}>{value}</div>
     </div>
   );

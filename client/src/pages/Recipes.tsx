@@ -554,7 +554,7 @@ export default function Recipes() {
     return { estimatedCost, costPerPortion, margin, foundCount };
   }
 
-  if (loading) return <div className="text-center py-12 text-slate-500 dark:text-slate-400">{t("recipes.loading")}</div>;
+  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t("recipes.loading")}</div>;
 
   return (
     <div>
@@ -569,22 +569,22 @@ export default function Recipes() {
       {recipes.length > 0 && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("recipes.kpiTotal")}</div>
+            <div className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("recipes.kpiTotal")}</div>
             <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{kpis.total}</div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t("recipes.kpiAvgMargin")}</div>
+            <div className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("recipes.kpiAvgMargin")}</div>
             <div className={`text-2xl font-bold ${kpis.avgMargin >= 70 ? 'text-green-600 dark:text-green-400' : kpis.avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{kpis.avgMargin.toFixed(1)}%</div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mb-1">
+            <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400 mb-1">
               <Trophy className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
             </div>
             <div className="text-sm font-bold text-green-600 dark:text-green-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400">{kpis.bestMargin.toFixed(1)}%</div>
+            <div className="text-xs text-slate-400 dark:text-slate-400">{kpis.bestMargin.toFixed(1)}%</div>
           </div>
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 mb-1">
+            <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400 mb-1">
               <ShieldAlert className="w-3 h-3" /> {t("recipes.kpiDanger")}
             </div>
             <div className={`text-2xl font-bold ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>{kpis.dangerCount}</div>
@@ -607,14 +607,14 @@ export default function Recipes() {
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
             title={t("recipes.gridView")}
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
             title={t("recipes.tableView")}
           >
             <List className="w-4 h-4" />
@@ -627,7 +627,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
           >
             {t("recipes.allCategories")} ({recipes.length})
           </button>
@@ -635,7 +635,7 @@ export default function Recipes() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
             >
               {cat} ({count})
             </button>
@@ -660,7 +660,7 @@ export default function Recipes() {
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none"
+                    className="px-4 py-3 text-left text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -668,7 +668,7 @@ export default function Recipes() {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -677,18 +677,18 @@ export default function Recipes() {
               ) : sortedFiltered.map((recipe) => (
                 <tr key={recipe.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                   <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{recipe.name}</td>
-                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">{recipe.category}</td>
-                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">{recipe.sellingPrice.toFixed(2)}&euro;</td>
-                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
+                  <td className="px-4 py-3 text-slate-300 dark:text-slate-400">{recipe.category}</td>
+                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.sellingPrice.toFixed(2)}&euro;</td>
+                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
-                  <td className="px-4 py-3 font-mono text-slate-700 dark:text-slate-300">{recipe.margin.coefficient.toFixed(2)}</td>
+                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.margin.coefficient.toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 justify-end">
                       <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.view")}>
                         <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       </Link>
                       <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
-                        <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                        <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                       </button>
                       <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title={t("recipes.cloneTooltip")}>
                         <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -723,7 +723,7 @@ export default function Recipes() {
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100 leading-tight">{recipe.name}</h3>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">{recipe.category}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-400">{recipe.category}</span>
                   </div>
                   <MarginBadge percent={recipe.margin.marginPercent} />
                 </div>
@@ -731,15 +731,15 @@ export default function Recipes() {
                 {/* Key stats row */}
                 <div className="grid grid-cols-3 gap-2 text-center mb-3">
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">{t("recipes.sale")}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-slate-400">{t("recipes.sale")}</div>
                     <div className="text-sm font-bold text-slate-800 dark:text-slate-200">{recipe.sellingPrice.toFixed(2)}&euro;</div>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">{t("recipes.cost")}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-slate-400">{t("recipes.cost")}</div>
                     <div className="text-sm font-bold text-slate-800 dark:text-slate-200">{recipe.margin.costPerPortion.toFixed(2)}&euro;</div>
                   </div>
                   <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">{t("recipes.margin")}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-slate-400">{t("recipes.margin")}</div>
                     <div className={`text-sm font-bold ${recipe.margin.marginPercent >= 70 ? 'text-green-600 dark:text-green-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                       {recipe.margin.marginPercent.toFixed(1)}%
                     </div>
@@ -761,7 +761,7 @@ export default function Recipes() {
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
                   <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
-                    <Pencil className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                    <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                   </button>
                   <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title={t("recipes.cloneTooltip")}>
                     <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -813,17 +813,17 @@ export default function Recipes() {
                             <span className="font-medium text-slate-800 dark:text-slate-200">{tpl.name}</span>
                             <span className="ml-2 text-xs text-slate-400">{tpl.category}</span>
                           </div>
-                          <span className="text-sm font-mono text-slate-500">{tpl.suggestedSellingPrice} &euro;</span>
+                          <span className="text-sm font-mono text-slate-400">{tpl.suggestedSellingPrice} &euro;</span>
                         </div>
                         <div className="text-xs text-slate-400 mt-0.5">{tpl.description}</div>
                         {/* Preview card with cost/margin estimates */}
                         <div className="flex items-center gap-3 mt-1.5 text-xs">
-                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300">
                             {tpl.suggestedIngredients.length} {t("recipes.ingredients")}
                           </span>
                           {preview.foundCount > 0 && (
                             <>
-                              <span className="text-slate-500">
+                              <span className="text-slate-400">
                                 {t("recipes.estimatedCost")} : {preview.costPerPortion.toFixed(2)}&euro;
                               </span>
                               <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600' : preview.margin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
@@ -935,28 +935,28 @@ export default function Recipes() {
               <span className="text-sm font-semibold text-blue-800 dark:text-blue-300">{t("recipes.livePreview")}</span>
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-slate-300 dark:text-slate-300">
                 <span>{t("recipes.materialCost")}</span>
                 <strong className="font-mono">{liveCost.toFixed(2)} &euro;</strong>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-slate-300 dark:text-slate-300">
                 <span>{t("recipes.costPerPortion")}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} &euro;</strong>
               </div>
               {liveLaborPerPortion > 0 && (
-                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between text-slate-300 dark:text-slate-300">
                   <span>{t("recipes.laborPerPortion")}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} &euro;</strong>
                 </div>
               )}
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-slate-300 dark:text-slate-300">
                 <span>{t("recipes.totalPerPortion")}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
               </div>
             </div>
             {liveSellingPrice > 0 && (
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-blue-200 dark:border-slate-600">
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{t("recipes.estimatedMarginLabel")}</span>
+                <span className="text-sm font-semibold text-slate-400 dark:text-slate-200">{t("recipes.estimatedMarginLabel")}</span>
                 <span className={`text-lg font-bold ${liveMargin >= 70 ? 'text-green-600' : liveMargin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                   {liveMargin.toFixed(1)}%
                 </span>
@@ -1025,7 +1025,7 @@ export default function Recipes() {
                           setFormIngredients(updated);
                         }}
                       />
-                      <span className="text-xs text-slate-500 dark:text-slate-400 w-8">{ing?.unit}</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-400 w-8">{ing?.unit}</span>
                       <input
                         type="number"
                         step="1"
@@ -1042,7 +1042,7 @@ export default function Recipes() {
                         title={t("recipes.wasteTooltip")}
                       />
                       <span className="text-xs text-slate-400 w-4">%</span>
-                      <span className={`text-sm font-mono w-20 text-right ${lineTotal > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400'}`}>{lineTotal.toFixed(2)} &euro;</span>
+                      <span className={`text-sm font-mono w-20 text-right ${lineTotal > 0 ? 'text-slate-400 dark:text-slate-300' : 'text-slate-400'}`}>{lineTotal.toFixed(2)} &euro;</span>
                       <button type="button" onClick={() => removeIngredientLine(idx)} className="p-1 text-red-400 hover:text-red-600">
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -1052,7 +1052,7 @@ export default function Recipes() {
 
                 {/* Running total of food cost */}
                 <div className="flex items-center justify-end gap-2 pt-2 border-t dark:border-slate-700">
-                  <span className="text-sm text-slate-500 dark:text-slate-400">{t("recipes.materialTotal")}</span>
+                  <span className="text-sm text-slate-400 dark:text-slate-400">{t("recipes.materialTotal")}</span>
                   <span className="text-sm font-bold font-mono text-slate-800 dark:text-slate-200">{liveCost.toFixed(2)} &euro;</span>
                 </div>
               </div>

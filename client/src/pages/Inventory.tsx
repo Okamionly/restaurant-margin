@@ -500,12 +500,12 @@ export default function Inventory() {
                 {criticalCount > 0 && (
                   <span className="text-red-700 dark:text-red-400">{criticalCount} article{criticalCount > 1 ? 's' : ''} en rupture</span>
                 )}
-                {criticalCount > 0 && lowCount > 0 && <span className="text-slate-500 dark:text-slate-400">, </span>}
+                {criticalCount > 0 && lowCount > 0 && <span className="text-slate-400 dark:text-slate-400">, </span>}
                 {lowCount > 0 && (
                   <span className="text-amber-700 dark:text-amber-400">{lowCount} article{lowCount > 1 ? 's' : ''} en stock bas</span>
                 )}
               </span>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Cliquez pour filtrer les alertes</p>
+              <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Cliquez pour filtrer les alertes</p>
             </div>
           </div>
           <button
@@ -525,7 +525,7 @@ export default function Inventory() {
             <Package className="w-7 h-7 text-blue-600" />
             Inventaire
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
             Gestion des stocks d'ingrédients
           </p>
         </div>
@@ -539,10 +539,10 @@ export default function Inventory() {
               Inventaire complet
             </button>
           )}
-          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors no-print">
+          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors no-print">
             <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
@@ -551,13 +551,13 @@ export default function Inventory() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-1">
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
             <Package className="w-4 h-4" /> Articles en stock
           </div>
           <div className="text-2xl font-bold">{items.length}</div>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-1">
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
             <TrendingUp className="w-4 h-4" /> Valeur totale estimée
           </div>
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
@@ -565,7 +565,7 @@ export default function Inventory() {
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-1">
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
             <AlertTriangle className="w-4 h-4" /> Alertes stock bas
           </div>
           <div className={`text-2xl font-bold ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
@@ -573,7 +573,7 @@ export default function Inventory() {
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm mb-1">
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
             <RefreshCw className="w-4 h-4" /> Dernière mise à jour
           </div>
           <div className="text-lg font-semibold">
@@ -594,7 +594,7 @@ export default function Inventory() {
               <div key={item.id} className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-lg px-3 py-2 border dark:border-slate-700">
                 <div>
                   <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'} {item.ingredient.name}</span>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                  <div className="text-xs text-slate-400 dark:text-slate-400">
                     {item.currentStock}{" / "}{item.minStock} {item.unit}
                   </div>
                 </div>
@@ -622,7 +622,7 @@ export default function Inventory() {
                   <span>{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                   <div>
                     <div className="text-sm font-medium">{cat.category}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
+                    <div className="text-xs text-slate-400 dark:text-slate-400">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
                   </div>
                   <div className="w-16 h-2 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-500 rounded-full" style={{ width: `${pct}%` }} />
@@ -738,7 +738,7 @@ export default function Inventory() {
                             )}
                             {/* Location tag */}
                             {meta.location && (
-                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
+                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-300'}`}>
                                 <MapPin className="w-2.5 h-2.5" /> {meta.location}
                               </span>
                             )}
@@ -788,9 +788,9 @@ export default function Inventory() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{item.unit}</td>
-                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{item.minStock}</td>
-                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 hidden md:table-cell">{item.maxStock ?? '---'}</td>
+                    <td className="px-4 py-3 text-slate-400 dark:text-slate-400">{item.unit}</td>
+                    <td className="px-4 py-3 text-slate-400 dark:text-slate-400">{item.minStock}</td>
+                    <td className="px-4 py-3 text-slate-400 dark:text-slate-400 hidden md:table-cell">{item.maxStock ?? '---'}</td>
                     <td className="px-4 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} €</td>
                     <td className="px-4 py-3">
                       {status === 'ok' && (
@@ -820,7 +820,7 @@ export default function Inventory() {
                         <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors" title="Réapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 transition-colors" title="Modifier">
+                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition-colors" title="Modifier">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget(item.id)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Supprimer">

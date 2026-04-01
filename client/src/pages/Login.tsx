@@ -152,7 +152,7 @@ export default function Login() {
 
           {/* Social proof */}
           <div className="mt-12 pt-8 border-t border-slate-700/50">
-            <p className="text-slate-500 text-sm">Utilise par des restaurateurs en France</p>
+            <p className="text-slate-400 text-sm">Utilise par des restaurateurs en France</p>
           </div>
         </div>
       </div>
@@ -329,7 +329,7 @@ export default function Login() {
                             placeholder="Code d'activation"
                           />
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-slate-400 mt-1">
                           Abonnez-vous sur la page Tarifs pour recevoir votre code
                         </p>
                       </div>
@@ -386,7 +386,7 @@ export default function Login() {
           </div>
 
           {/* Footer links */}
-          <div className="mt-6 text-center text-sm text-slate-500">
+          <div className="mt-6 text-center text-sm text-slate-400">
             <a href="/cgu" className="hover:text-slate-400">CGU</a>
             <span className="mx-2">&middot;</span>
             <a href="/politique-confidentialite" className="hover:text-slate-400">Confidentialite</a>

@@ -11,6 +11,7 @@ import { isInSeason } from '../data/seasons';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
+import IngredientAvatar from '../components/IngredientAvatar';
 
 const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[] };
 
@@ -394,7 +395,7 @@ export default function Ingredients() {
     return (
       <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-slate-900 dark:hover:text-slate-200">
         {label}
-        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-blue-600' : 'text-slate-400'}`} />
+        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-teal-600' : 'text-slate-400'}`} />
       </button>
     );
   }
@@ -418,8 +419,8 @@ export default function Ingredients() {
       {/* KPI Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/30">
-            <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="p-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/30">
+            <Package className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
             <p className="text-xs text-slate-400 dark:text-slate-400">{t('ingredients.totalIngredients')}</p>
@@ -473,7 +474,7 @@ export default function Ingredients() {
           onClick={() => setFilterCategory('')}
           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
             !filterCategory
-              ? 'bg-blue-600 text-white'
+              ? 'bg-teal-600 text-white'
               : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
@@ -485,7 +486,7 @@ export default function Ingredients() {
             onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               filterCategory === cat
-                ? 'bg-blue-600 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
@@ -519,13 +520,18 @@ export default function Ingredients() {
               filtered.map((ing) => (
                 <tr key={ing.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
                   <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
-                    {ing.name}
-                    {isInSeason(ing.name) && (
-                      <span className="ml-1 text-xs text-emerald-500" title="Produit de saison">🌿</span>
-                    )}
+                    <div className="flex items-center gap-2.5">
+                      <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
+                      <span>
+                        {ing.name}
+                        {isInSeason(ing.name) && (
+                          <span className="ml-1 text-xs text-emerald-500" title="Produit de saison">🌿</span>
+                        )}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">{ing.category}</span>
+                    <span className="px-2 py-1 rounded-full text-xs bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300">{ing.category}</span>
                   </td>
                   <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{ing.pricePerUnit.toFixed(2)} &euro;</td>
                   <td className="px-4 py-3 text-slate-300 dark:text-slate-400">{ing.unit}</td>
@@ -600,7 +606,7 @@ export default function Ingredients() {
                         key={ing.id}
                         type="button"
                         onClick={() => selectNameSuggestion(ing)}
-                        className="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-slate-800 dark:text-slate-200">{ing.name}</span>
@@ -613,7 +619,7 @@ export default function Ingredients() {
                 )}
                 {catalogSuggestions.length > 0 && (
                   <>
-                    <div className="px-3 py-1.5 text-xs text-blue-500 border-b dark:border-slate-600 bg-blue-50 dark:bg-blue-900/20 flex items-center gap-1.5">
+                    <div className="px-3 py-1.5 text-xs text-teal-500 border-b dark:border-slate-600 bg-teal-50 dark:bg-teal-900/20 flex items-center gap-1.5">
                       <BookOpen className="w-3 h-3" /> {t('ingredients.catalogTitle')}
                     </div>
                     {catalogSuggestions.map((product, idx) => (
@@ -621,11 +627,11 @@ export default function Ingredients() {
                         key={`cat-${idx}`}
                         type="button"
                         onClick={() => selectCatalogProduct(product)}
-                        className="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-slate-800 dark:text-slate-200">{product.name}</span>
-                          <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{product.prixMoy.toFixed(2)}&euro;/{product.unit}</span>
+                          <span className="text-xs font-semibold text-teal-600 dark:text-teal-400">{product.prixMoy.toFixed(2)}&euro;/{product.unit}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs text-slate-400">{product.category}</span>
@@ -662,7 +668,7 @@ export default function Ingredients() {
               />
               {formErrors.pricePerUnit && <p className="text-xs text-red-500 mt-1">{t('ingredients.priceRequired')}</p>}
               {editingId && lastPrice !== null && (
-                <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">
+                <p className="text-xs text-teal-500 dark:text-teal-400 mt-1">
                   {t('ingredients.lastPrice').replace('{price}', lastPrice.toFixed(2))}
                 </p>
               )}
@@ -699,7 +705,7 @@ export default function Ingredients() {
               <button
                 type="button"
                 onClick={() => setShowNewSupplierForm(!showNewSupplierForm)}
-                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium"
               >
                 {showNewSupplierForm ? t('ingredients.cancelCreateSupplier') : t('ingredients.createSupplier')}
               </button>
@@ -756,7 +762,7 @@ export default function Ingredients() {
                           key={s.id}
                           type="button"
                           onClick={() => selectSupplier(s)}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors ${form.supplierId === s.id ? 'bg-blue-50 dark:bg-slate-600 font-medium text-blue-700 dark:text-blue-300' : 'text-slate-400 dark:text-slate-300'}`}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors ${form.supplierId === s.id ? 'bg-teal-50 dark:bg-slate-600 font-medium text-teal-700 dark:text-teal-300' : 'text-slate-400 dark:text-slate-300'}`}
                         >
                           {s.name}
                         </button>
@@ -777,7 +783,7 @@ export default function Ingredients() {
                     type="checkbox"
                     checked={form.allergens.includes(allergen)}
                     onChange={() => toggleAllergen(allergen)}
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-slate-300 text-teal-600 focus:ring-teal-500"
                   />
                   {allergen}
                 </label>

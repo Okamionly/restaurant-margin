@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert } from 'lucide-react';
-import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe } from '../services/api';
+import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
+import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
-import { RECIPE_CATEGORIES } from '../types';
+import { RECIPE_CATEGORIES, INGREDIENT_CATEGORIES, UNITS } from '../types';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
@@ -19,7 +20,7 @@ function MarginBadge({ percent }: { percent: number }) {
 // ── Category gradient colors for recipe photo placeholders ───────────────
 const CATEGORY_GRADIENTS: Record<string, string> = {
   'Entrée': 'from-emerald-400 to-green-600',
-  'Plat': 'from-blue-400 to-indigo-600',
+  'Plat': 'from-teal-400 to-indigo-600',
   'Dessert': 'from-pink-400 to-rose-600',
   'Accompagnement': 'from-amber-400 to-orange-600',
   'Boisson': 'from-cyan-400 to-teal-600',
@@ -198,6 +199,106 @@ function getRecipeAllergens(recipe: Recipe): string[] {
   return Array.from(set).sort();
 }
 
+/** Combobox for ingredient selection — allows free text or selecting from DB */
+function IngredientCombobox({
+  ingredients,
+  selectedId,
+  newName,
+  onSelect,
+  onNewName,
+}: {
+  ingredients: Ingredient[];
+  selectedId: number | null;
+  newName: string;
+  onSelect: (id: number) => void;
+  onNewName: (name: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Derive display value
+  const displayValue = selectedId
+    ? ingredients.find((i) => i.id === selectedId)?.name || ''
+    : newName;
+
+  // Filter suggestions based on typed text
+  const filtered = inputValue.trim()
+    ? ingredients.filter((i) => i.name.toLowerCase().includes(inputValue.toLowerCase()))
+    : ingredients;
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={wrapperRef} className="relative flex-1 min-w-[180px]">
+      <input
+        type="text"
+        className="input w-full text-sm"
+        placeholder="Tapez un nom ou choisissez..."
+        value={open ? inputValue : displayValue}
+        onFocus={() => {
+          setInputValue(displayValue);
+          setOpen(true);
+        }}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          setOpen(true);
+          // If typing, treat it as a new ingredient unless it exactly matches
+          onNewName(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') setOpen(false);
+        }}
+      />
+      {open && (
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg">
+          {filtered.length > 0 ? (
+            filtered.slice(0, 30).map((i) => (
+              <button
+                key={i.id}
+                type="button"
+                className="w-full text-left px-3 py-1.5 text-sm hover:bg-teal-50 dark:hover:bg-slate-700 flex justify-between items-center"
+                onClick={() => {
+                  onSelect(i.id);
+                  setInputValue(i.name);
+                  setOpen(false);
+                }}
+              >
+                <span className="text-slate-800 dark:text-slate-200">{i.name}</span>
+                <span className="text-xs text-slate-400">{i.pricePerUnit.toFixed(2)}&euro;/{i.unit}</span>
+              </button>
+            ))
+          ) : null}
+          {inputValue.trim() && !ingredients.some((i) => i.name.toLowerCase() === inputValue.toLowerCase()) && (
+            <button
+              type="button"
+              className="w-full text-left px-3 py-2 text-sm bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50 font-medium border-t border-slate-200 dark:border-slate-700"
+              onClick={() => {
+                onNewName(inputValue.trim());
+                setOpen(false);
+              }}
+            >
+              + Creer &laquo; {inputValue.trim()} &raquo;
+            </button>
+          )}
+          {!inputValue.trim() && filtered.length === 0 && (
+            <div className="px-3 py-2 text-sm text-slate-400">Tapez un nom d&apos;ingredient</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Category-based photo placeholder */
 function RecipePhotoPlaceholder({ category }: { category: string }) {
   const gradient = CATEGORY_GRADIENTS[category] || 'from-slate-400 to-slate-600';
@@ -242,11 +343,26 @@ export default function Recipes() {
     cookTimeMinutes: '',
     laborCostPerHour: '',
   });
-  const [formIngredients, setFormIngredients] = useState<{ ingredientId: number; quantity: string; wastePercent: string }[]>([]);
+  const [formIngredients, setFormIngredients] = useState<{
+    ingredientId: number | null;
+    quantity: string;
+    wastePercent: string;
+    // For new (free-text) ingredients:
+    newName: string;
+    newUnit: string;
+    newPrice: string;
+    newCategory: string;
+  }[]>([]);
 
-  // Suggestion system
+  // Suggestion system (template-based)
   const [suggestions, setSuggestions] = useState<RecipeTemplate[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // AI Mercuriale suggestion system
+  const [aiSuggestions, setAiSuggestions] = useState<MercurialeSuggestedIngredient[]>([]);
+  const [aiSuggestionsLoading, setAiSuggestionsLoading] = useState(false);
+  const [showAiSuggestions, setShowAiSuggestions] = useState(false);
+  const [aiSuggestionsChecked, setAiSuggestionsChecked] = useState<boolean[]>([]);
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
@@ -366,6 +482,10 @@ export default function Recipes() {
         ingredientId: ri.ingredientId,
         quantity: String(ri.quantity),
         wastePercent: ri.wastePercent ? String(ri.wastePercent) : '0',
+        newName: '',
+        newUnit: '',
+        newPrice: '',
+        newCategory: '',
       }))
     );
     setEditingId(recipe.id);
@@ -413,9 +533,13 @@ export default function Recipes() {
           ingredientId: found.id,
           quantity: String(ti.quantity),
           wastePercent: String(ti.wastePercent),
+          newName: '',
+          newUnit: '',
+          newPrice: '',
+          newCategory: '',
         };
       })
-      .filter(Boolean) as { ingredientId: number; quantity: string; wastePercent: string }[];
+      .filter(Boolean) as typeof formIngredients;
 
     setFormIngredients(mapped);
     setTemplateApplyInfo({
@@ -427,11 +551,63 @@ export default function Recipes() {
     setSuggestions([]);
   }
 
+  // AI Mercuriale: suggest ingredients for recipe
+  async function handleAiSuggest() {
+    if (!form.name.trim() || form.name.trim().length < 2) return;
+    setAiSuggestionsLoading(true);
+    setShowAiSuggestions(false);
+    try {
+      const data = await suggestMercurialeIngredients(form.name.trim());
+      if (data.ingredients && data.ingredients.length > 0) {
+        setAiSuggestions(data.ingredients);
+        setAiSuggestionsChecked(data.ingredients.map(() => true));
+        setShowAiSuggestions(true);
+      } else {
+        showToast('Aucune suggestion trouvee pour cette recette', 'error');
+      }
+    } catch {
+      showToast('Erreur lors de la suggestion IA', 'error');
+    } finally {
+      setAiSuggestionsLoading(false);
+    }
+  }
+
+  // Add selected AI suggestions to the recipe form
+  function applyAiSuggestions() {
+    const selected = aiSuggestions.filter((_, i) => aiSuggestionsChecked[i]);
+    const newLines = selected.map((s) => {
+      // Try to match to an existing ingredient in DB
+      const existing = ingredients.find(
+        (i) => i.name.toLowerCase().includes(s.name.toLowerCase()) || s.name.toLowerCase().includes(i.name.toLowerCase())
+      );
+      return {
+        ingredientId: existing?.id ?? null,
+        quantity: String(s.quantity),
+        wastePercent: '0',
+        newName: existing ? '' : s.name,
+        newUnit: existing ? '' : s.unit,
+        newPrice: existing ? '' : (s.marketPrice != null ? String(s.marketPrice.toFixed(2)) : ''),
+        newCategory: existing ? '' : 'Autres',
+      };
+    });
+    setFormIngredients([...formIngredients, ...newLines]);
+    setShowAiSuggestions(false);
+    setAiSuggestions([]);
+    showToast(`${selected.length} ingredient(s) ajoute(s)`, 'success');
+  }
+
   function addIngredientLine() {
-    if (ingredients.length === 0) return;
-    // Pick the first ingredient from filtered list, or default to first overall
+    // Always allow adding — user can type a new ingredient name if DB is empty
     const defaultIng = filteredIngredients.length > 0 ? filteredIngredients[0] : ingredients[0];
-    setFormIngredients([...formIngredients, { ingredientId: defaultIng.id, quantity: '', wastePercent: '0' }]);
+    setFormIngredients([...formIngredients, {
+      ingredientId: defaultIng?.id ?? null,
+      quantity: '',
+      wastePercent: '0',
+      newName: '',
+      newUnit: 'kg',
+      newPrice: '',
+      newCategory: 'Autres',
+    }]);
   }
 
   function removeIngredientLine(index: number) {
@@ -440,11 +616,16 @@ export default function Recipes() {
 
   // Real-time cost calculation
   const liveCost = formIngredients.reduce((total, fi) => {
-    const ing = ingredients.find((i) => i.id === fi.ingredientId);
     const qty = parseFloat(fi.quantity) || 0;
     const waste = parseFloat(fi.wastePercent) || 0;
     const effectiveQty = qty * (1 + waste / 100);
-    return total + (ing ? ing.pricePerUnit * effectiveQty : 0);
+    if (fi.ingredientId) {
+      const ing = ingredients.find((i) => i.id === fi.ingredientId);
+      return total + (ing ? ing.pricePerUnit * effectiveQty : 0);
+    }
+    // New ingredient: use the price typed by user
+    const newPrice = parseFloat(fi.newPrice) || 0;
+    return total + newPrice * effectiveQty;
   }, 0);
 
   const livePortions = parseInt(form.nbPortions) || 1;
@@ -474,25 +655,60 @@ export default function Recipes() {
     e.preventDefault();
     setSaving(true);
 
-    const data = {
-      name: form.name,
-      category: form.category,
-      sellingPrice: parseFloat(form.sellingPrice),
-      nbPortions: parseInt(form.nbPortions) || 1,
-      description: form.description || undefined,
-      prepTimeMinutes: form.prepTimeMinutes ? parseFloat(form.prepTimeMinutes) : undefined,
-      cookTimeMinutes: form.cookTimeMinutes ? parseFloat(form.cookTimeMinutes) : undefined,
-      laborCostPerHour: form.laborCostPerHour ? parseFloat(form.laborCostPerHour) : undefined,
-      ingredients: formIngredients
-        .filter((fi) => parseFloat(fi.quantity) > 0)
-        .map((fi) => ({
-          ingredientId: fi.ingredientId,
-          quantity: parseFloat(fi.quantity),
-          wastePercent: parseFloat(fi.wastePercent) || 0,
-        })),
-    };
-
     try {
+      // First, create any new ingredients that were typed as free text
+      const resolvedIngredients: { ingredientId: number; quantity: number; wastePercent: number }[] = [];
+
+      for (const fi of formIngredients) {
+        if (parseFloat(fi.quantity) <= 0) continue;
+
+        let ingredientId = fi.ingredientId;
+
+        if (!ingredientId && fi.newName.trim()) {
+          // Check if ingredient already exists by name (case-insensitive)
+          const existingByName = ingredients.find(
+            (i) => i.name.toLowerCase() === fi.newName.trim().toLowerCase()
+          );
+          if (existingByName) {
+            ingredientId = existingByName.id;
+          } else {
+            // Create the new ingredient
+            const newIng = await createIngredient({
+              name: fi.newName.trim(),
+              unit: fi.newUnit || 'kg',
+              pricePerUnit: parseFloat(fi.newPrice) || 0,
+              category: fi.newCategory || 'Autres',
+              supplier: null,
+              supplierId: null,
+              allergens: [],
+            });
+            ingredientId = newIng.id;
+            // Add to local state so it shows up immediately
+            setIngredients((prev) => [...prev, newIng]);
+          }
+        }
+
+        if (ingredientId) {
+          resolvedIngredients.push({
+            ingredientId,
+            quantity: parseFloat(fi.quantity),
+            wastePercent: parseFloat(fi.wastePercent) || 0,
+          });
+        }
+      }
+
+      const data = {
+        name: form.name,
+        category: form.category,
+        sellingPrice: parseFloat(form.sellingPrice),
+        nbPortions: parseInt(form.nbPortions) || 1,
+        description: form.description || undefined,
+        prepTimeMinutes: form.prepTimeMinutes ? parseFloat(form.prepTimeMinutes) : undefined,
+        cookTimeMinutes: form.cookTimeMinutes ? parseFloat(form.cookTimeMinutes) : undefined,
+        laborCostPerHour: form.laborCostPerHour ? parseFloat(form.laborCostPerHour) : undefined,
+        ingredients: resolvedIngredients,
+      };
+
       if (editingId) {
         await updateRecipe(editingId, data);
       } else {
@@ -607,14 +823,14 @@ export default function Recipes() {
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
             title={t("recipes.gridView")}
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
             title={t("recipes.tableView")}
           >
             <List className="w-4 h-4" />
@@ -627,7 +843,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
           >
             {t("recipes.allCategories")} ({recipes.length})
           </button>
@@ -635,7 +851,7 @@ export default function Recipes() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
             >
               {cat} ({count})
             </button>
@@ -685,13 +901,13 @@ export default function Recipes() {
                   <td className="px-4 py-3">
                     <div className="flex gap-1 justify-end">
                       <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.view")}>
-                        <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                       </Link>
                       <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
                         <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                       </button>
-                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title={t("recipes.cloneTooltip")}>
-                        <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")}>
+                        <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                       </button>
                       <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")}>
                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -763,8 +979,8 @@ export default function Recipes() {
                   <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
                     <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                   </button>
-                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30" title={t("recipes.cloneTooltip")}>
-                    <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")}>
+                    <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   </button>
                   <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")}>
                     <Trash2 className="w-4 h-4 text-red-500" />
@@ -783,7 +999,24 @@ export default function Recipes() {
         <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} className={`space-y-4 transition-colors duration-500 ${saveSuccess ? 'bg-green-50 dark:bg-green-900/20 rounded-lg p-2 -m-2' : ''}`}>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 relative">
-              <label className="label">{t("recipes.dishName")}</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="label mb-0">{t("recipes.dishName")}</label>
+                {!editingId && (
+                  <button
+                    type="button"
+                    onClick={handleAiSuggest}
+                    disabled={aiSuggestionsLoading || form.name.trim().length < 2}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                  >
+                    {aiSuggestionsLoading ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-3.5 h-3.5" />
+                    )}
+                    Suggerer les ingredients
+                  </button>
+                )}
+              </div>
               <input
                 required
                 className="input w-full"
@@ -796,7 +1029,7 @@ export default function Recipes() {
               {/* Enhanced Suggestions dropdown with preview cards */}
               {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 rounded-lg shadow-xl border dark:border-slate-600 max-h-80 overflow-y-auto">
-                  <div className="px-3 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 border-b dark:border-slate-600 flex items-center gap-1">
+                  <div className="px-3 py-2 text-xs font-medium text-teal-600 dark:text-teal-400 border-b dark:border-slate-600 flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> {t("recipes.recipeSuggestions")}
                   </div>
                   {suggestions.slice(0, 8).map((tpl, idx) => {
@@ -806,7 +1039,7 @@ export default function Recipes() {
                         key={idx}
                         type="button"
                         onClick={() => applyTemplate(tpl)}
-                        className="w-full text-left px-3 py-3 hover:bg-blue-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                        className="w-full text-left px-3 py-3 hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
                       >
                         <div className="flex items-center justify-between">
                           <div>
@@ -851,6 +1084,90 @@ export default function Recipes() {
               )}
             </div>
 
+            {/* AI Mercuriale Suggestions Panel */}
+            {showAiSuggestions && aiSuggestions.length > 0 && (
+              <div className="col-span-2">
+                <div className="bg-slate-800 border border-teal-700/50 rounded-lg overflow-hidden">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 bg-teal-900/40 border-b border-teal-700/50">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-teal-400" />
+                      <span className="text-sm font-semibold text-teal-300">
+                        Ingredients suggeres par l'IA
+                      </span>
+                      <span className="text-xs text-teal-500 bg-teal-900/60 px-2 py-0.5 rounded-full">
+                        {aiSuggestionsChecked.filter(Boolean).length}/{aiSuggestions.length} selectionnes
+                      </span>
+                    </div>
+                    <button type="button" onClick={() => setShowAiSuggestions(false)} className="p-1 text-slate-400 hover:text-white">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {/* List */}
+                  <div className="max-h-64 overflow-y-auto divide-y divide-slate-700/50">
+                    {aiSuggestions.map((s, idx) => (
+                      <label key={idx} className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-700/50 transition-colors cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={aiSuggestionsChecked[idx]}
+                          onChange={() => {
+                            const updated = [...aiSuggestionsChecked];
+                            updated[idx] = !updated[idx];
+                            setAiSuggestionsChecked(updated);
+                          }}
+                          className="w-4 h-4 rounded border-slate-600 text-teal-500 focus:ring-teal-500"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-white font-medium">{s.name}</span>
+                            <span className="text-xs text-slate-400">{s.quantity} {s.unit}</span>
+                          </div>
+                          {s.priceMin != null && s.priceMax != null ? (
+                            <span className="text-xs text-teal-400">
+                              {'📊'} Marche : {s.priceMin.toFixed(2)}-{s.priceMax.toFixed(2)}&euro;/{s.unit}
+                              {s.supplier && ` (${s.supplier})`}
+                              {s.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {s.trendDetail}</span>}
+                              {s.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {s.trendDetail}</span>}
+                              {s.trend === 'stable' && <span className="text-slate-400 ml-1">{'→'} {s.trendDetail}</span>}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-slate-500">Prix marche non disponible</span>
+                          )}
+                        </div>
+                        {s.marketPrice != null && (
+                          <span className="text-sm text-teal-400 font-semibold flex-shrink-0">
+                            {s.marketPrice.toFixed(2)}&euro;
+                          </span>
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                  {/* Footer actions */}
+                  <div className="flex items-center justify-between px-4 py-3 bg-slate-900/50 border-t border-slate-700/50">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const allChecked = aiSuggestionsChecked.every(Boolean);
+                        setAiSuggestionsChecked(aiSuggestions.map(() => !allChecked));
+                      }}
+                      className="text-xs text-teal-400 hover:text-teal-300"
+                    >
+                      {aiSuggestionsChecked.every(Boolean) ? 'Tout decocher' : 'Tout cocher'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={applyAiSuggestions}
+                      disabled={!aiSuggestionsChecked.some(Boolean)}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Ajouter ({aiSuggestionsChecked.filter(Boolean).length})
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Template apply info banner */}
             {templateApplyInfo && (
               <div className="col-span-2">
@@ -871,7 +1188,7 @@ export default function Recipes() {
                             <span className="text-amber-600 dark:text-amber-400 text-xs">{name}</span>
                             <Link
                               to="/ingredients"
-                              className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                              className="text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium"
                               onClick={() => setShowForm(false)}
                             >
                               {t("recipes.addMissing")}
@@ -929,10 +1246,10 @@ export default function Recipes() {
           </div>
 
           {/* Live cost/margin preview - always visible */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-700/50 dark:to-slate-700/30 rounded-lg p-4 border border-blue-100 dark:border-slate-600">
+          <div className="bg-gradient-to-r from-teal-50 to-indigo-50 dark:from-slate-700/50 dark:to-slate-700/30 rounded-lg p-4 border border-teal-100 dark:border-slate-600">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-semibold text-blue-800 dark:text-blue-300">{t("recipes.livePreview")}</span>
+              <TrendingUp className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <span className="text-sm font-semibold text-teal-800 dark:text-teal-300">{t("recipes.livePreview")}</span>
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
               <div className="flex justify-between text-slate-300 dark:text-slate-300">
@@ -955,7 +1272,7 @@ export default function Recipes() {
               </div>
             </div>
             {liveSellingPrice > 0 && (
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-blue-200 dark:border-slate-600">
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-teal-200 dark:border-slate-600">
                 <span className="text-sm font-semibold text-slate-400 dark:text-slate-200">{t("recipes.estimatedMarginLabel")}</span>
                 <span className={`text-lg font-bold ${liveMargin >= 70 ? 'text-green-600' : liveMargin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                   {liveMargin.toFixed(1)}%
@@ -968,84 +1285,135 @@ export default function Recipes() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="label mb-0">{t("recipes.ingredientsLabel")}</label>
-              <button type="button" onClick={addIngredientLine} className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
+              <button type="button" onClick={addIngredientLine} className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium">
                 {t("recipes.addIngredient")}
               </button>
             </div>
 
-            {/* Ingredient search/filter */}
-            {formIngredients.length > 0 && ingredients.length > 10 && (
-              <div className="relative mb-2">
-                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder={t("recipes.filterIngredients")}
-                  value={ingredientSearch}
-                  onChange={(e) => setIngredientSearch(e.target.value)}
-                  className="input pl-8 w-full text-sm py-1.5"
-                />
-              </div>
-            )}
-
             {formIngredients.length === 0 ? (
               <p className="text-sm text-slate-400 dark:text-slate-500 py-2">{t("recipes.noIngredients")}</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {formIngredients.map((fi, idx) => {
-                  const ing = ingredients.find((i) => i.id === fi.ingredientId);
+                  const ing = fi.ingredientId ? ingredients.find((i) => i.id === fi.ingredientId) : null;
+                  const isNewIngredient = !fi.ingredientId;
+                  const unitPrice = isNewIngredient ? (parseFloat(fi.newPrice) || 0) : (ing?.pricePerUnit || 0);
+                  const unitLabel = isNewIngredient ? fi.newUnit : (ing?.unit || '');
                   const qty = parseFloat(fi.quantity) || 0;
                   const waste = parseFloat(fi.wastePercent) || 0;
                   const effectiveQty = qty * (1 + waste / 100);
-                  const lineTotal = ing ? ing.pricePerUnit * effectiveQty : 0;
+                  const lineTotal = unitPrice * effectiveQty;
                   return (
-                    <div key={idx} className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                      <select
-                        className="input flex-1 min-w-[140px]"
-                        value={fi.ingredientId}
-                        onChange={(e) => {
-                          const updated = [...formIngredients];
-                          updated[idx].ingredientId = parseInt(e.target.value);
-                          setFormIngredients(updated);
-                        }}
-                      >
-                        {(ingredientSearch ? filteredIngredients : ingredients).map((i) => (
-                          <option key={i.id} value={i.id}>{i.name} ({i.pricePerUnit.toFixed(2)}&euro;/{i.unit})</option>
-                        ))}
-                      </select>
-                      <input
-                        type="number"
-                        step="0.001"
-                        min="0"
-                        placeholder={t("recipes.qtyPlaceholder")}
-                        className="input w-20"
-                        value={fi.quantity}
-                        onChange={(e) => {
-                          const updated = [...formIngredients];
-                          updated[idx].quantity = e.target.value;
-                          setFormIngredients(updated);
-                        }}
-                      />
-                      <span className="text-xs text-slate-400 dark:text-slate-400 w-8">{ing?.unit}</span>
-                      <input
-                        type="number"
-                        step="1"
-                        min="0"
-                        max="100"
-                        placeholder={t("recipes.wastePlaceholder")}
-                        className="input w-20"
-                        value={fi.wastePercent}
-                        onChange={(e) => {
-                          const updated = [...formIngredients];
-                          updated[idx].wastePercent = e.target.value;
-                          setFormIngredients(updated);
-                        }}
-                        title={t("recipes.wasteTooltip")}
-                      />
-                      <span className="text-xs text-slate-400 w-4">%</span>
-                      <span className={`text-sm font-mono w-20 text-right ${lineTotal > 0 ? 'text-slate-400 dark:text-slate-300' : 'text-slate-400'}`}>{lineTotal.toFixed(2)} &euro;</span>
-                      <button type="button" onClick={() => removeIngredientLine(idx)} className="p-1 text-red-400 hover:text-red-600">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <div key={idx} className="border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-2">
+                      {/* Row 1: Ingredient name combobox */}
+                      <div className="flex items-center gap-2">
+                        <IngredientCombobox
+                          ingredients={ingredientSearch ? filteredIngredients : ingredients}
+                          selectedId={fi.ingredientId}
+                          newName={fi.newName}
+                          onSelect={(id) => {
+                            const updated = [...formIngredients];
+                            updated[idx] = { ...updated[idx], ingredientId: id, newName: '', newUnit: '', newPrice: '', newCategory: '' };
+                            setFormIngredients(updated);
+                          }}
+                          onNewName={(name) => {
+                            const updated = [...formIngredients];
+                            updated[idx] = { ...updated[idx], ingredientId: null, newName: name };
+                            setFormIngredients(updated);
+                          }}
+                        />
+                        <button type="button" onClick={() => removeIngredientLine(idx)} className="p-1 text-red-400 hover:text-red-600 flex-shrink-0">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Row 2: New ingredient details (only shown when typing a new name) */}
+                      {isNewIngredient && fi.newName.trim() && (
+                        <div className="grid grid-cols-3 gap-2 pl-1">
+                          <div>
+                            <label className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Prix unitaire</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              placeholder="0.00"
+                              className="input w-full text-sm"
+                              value={fi.newPrice}
+                              onChange={(e) => {
+                                const updated = [...formIngredients];
+                                updated[idx].newPrice = e.target.value;
+                                setFormIngredients(updated);
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Unite</label>
+                            <select
+                              className="input w-full text-sm"
+                              value={fi.newUnit}
+                              onChange={(e) => {
+                                const updated = [...formIngredients];
+                                updated[idx].newUnit = e.target.value;
+                                setFormIngredients(updated);
+                              }}
+                            >
+                              {UNITS.map((u) => <option key={u} value={u}>{u}</option>)}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Categorie</label>
+                            <select
+                              className="input w-full text-sm"
+                              value={fi.newCategory}
+                              onChange={(e) => {
+                                const updated = [...formIngredients];
+                                updated[idx].newCategory = e.target.value;
+                                setFormIngredients(updated);
+                              }}
+                            >
+                              {INGREDIENT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Row 3: Quantity, waste %, line total */}
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          step="0.001"
+                          min="0"
+                          placeholder={t("recipes.qtyPlaceholder")}
+                          className="input w-24"
+                          value={fi.quantity}
+                          onChange={(e) => {
+                            const updated = [...formIngredients];
+                            updated[idx].quantity = e.target.value;
+                            setFormIngredients(updated);
+                          }}
+                        />
+                        <span className="text-xs text-slate-400 dark:text-slate-400 w-10">{unitLabel}</span>
+                        <input
+                          type="number"
+                          step="1"
+                          min="0"
+                          max="100"
+                          placeholder={t("recipes.wastePlaceholder")}
+                          className="input w-20"
+                          value={fi.wastePercent}
+                          onChange={(e) => {
+                            const updated = [...formIngredients];
+                            updated[idx].wastePercent = e.target.value;
+                            setFormIngredients(updated);
+                          }}
+                          title={t("recipes.wasteTooltip")}
+                        />
+                        <span className="text-xs text-slate-400 w-4">%</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
+                          {unitPrice > 0 && <>{unitPrice.toFixed(2)}&euro;/{unitLabel}</>}
+                        </span>
+                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400'}`}>{lineTotal.toFixed(2)} &euro;</span>
+                      </div>
                     </div>
                   );
                 })}

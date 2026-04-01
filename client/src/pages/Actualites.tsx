@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X, Clock, ChevronRight } from 'lucide-react';
+import { Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X, Clock, ChevronRight, ArrowRight, CalendarDays } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 
 interface NewsItem {
   id: number;
@@ -59,12 +60,40 @@ const PRIORITY_CONFIG = {
   low: { label: 'Info', class: 'bg-slate-700 text-slate-400' },
 };
 
+interface MercurialeSummary {
+  title: string;
+  week_date: string;
+  topHausses: { ingredient_name: string; trend_detail: string | null }[];
+  topBaisses: { ingredient_name: string; trend_detail: string | null }[];
+}
+
 export default function Actualites() {
+  const navigate = useNavigate();
   const { showToast: addToast } = useToast();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [mercurialeSummary, setMercurialeSummary] = useState<MercurialeSummary | null>(null);
+
+  useEffect(() => {
+    fetch('/api/mercuriale/latest')
+      .then(r => r.json())
+      .then(data => {
+        if (data.publication && data.prices?.length) {
+          const prices = data.prices as { ingredient_name: string; trend: string; trend_detail: string | null }[];
+          const hausses = prices.filter((p: any) => p.trend === 'hausse').slice(0, 3);
+          const baisses = prices.filter((p: any) => p.trend === 'baisse').slice(0, 3);
+          setMercurialeSummary({
+            title: data.publication.title,
+            week_date: data.publication.week_date,
+            topHausses: hausses.map((h: any) => ({ ingredient_name: h.ingredient_name, trend_detail: h.trend_detail })),
+            topBaisses: baisses.map((b: any) => ({ ingredient_name: b.ingredient_name, trend_detail: b.trend_detail })),
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchNews = useCallback(async () => {
     try {
@@ -185,6 +214,55 @@ export default function Actualites() {
           </button>
         ))}
       </div>
+
+      {/* Mercuriale Summary Widget */}
+      {mercurialeSummary && (
+        <div className="bg-slate-900/60 border border-blue-500/20 rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="w-5 h-5 text-blue-400" />
+              <h2 className="text-white font-bold">Mercuriale de la semaine</h2>
+            </div>
+            <button
+              onClick={() => navigate('/mercuriale')}
+              className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors font-medium"
+            >
+              Voir la mercuriale compl&egrave;te
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Top hausses */}
+            {mercurialeSummary.topHausses.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-red-400 mb-1">
+                  <TrendingUp className="w-3.5 h-3.5" /> Top hausses
+                </div>
+                {mercurialeSummary.topHausses.map((h, i) => (
+                  <div key={i} className="flex items-center justify-between bg-red-500/5 border border-red-500/10 rounded-lg px-3 py-2">
+                    <span className="text-sm text-white">{h.ingredient_name}</span>
+                    <span className="text-xs font-semibold text-red-400">{h.trend_detail || 'Hausse'}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {/* Top baisses */}
+            {mercurialeSummary.topBaisses.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 mb-1">
+                  <TrendingDown className="w-3.5 h-3.5" /> Top baisses
+                </div>
+                {mercurialeSummary.topBaisses.map((b, i) => (
+                  <div key={i} className="flex items-center justify-between bg-emerald-500/5 border border-emerald-500/10 rounded-lg px-3 py-2">
+                    <span className="text-sm text-white">{b.ingredient_name}</span>
+                    <span className="text-xs font-semibold text-emerald-400">{b.trend_detail || 'Baisse'}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       {loading ? (

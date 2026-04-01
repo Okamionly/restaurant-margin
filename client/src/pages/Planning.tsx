@@ -4,6 +4,7 @@ import {
   Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -120,6 +121,7 @@ function getAuthHeaders(): Record<string, string> {
 // ── Component ──────────────────────────────────────────────────────────
 
 export default function Planning() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
@@ -280,7 +282,7 @@ export default function Planning() {
 
   async function saveEmployee() {
     if (!empForm.name.trim() || !empForm.hourlyRate) {
-      showToast('Veuillez remplir tous les champs', 'error');
+      showToast(t('planning.fillAllFields'), 'error');
       return;
     }
     const empData = {
@@ -303,7 +305,7 @@ export default function Planning() {
       } catch {
         // Already updated locally
       }
-      showToast('Employe modifie', 'success');
+      showToast(t('planning.employeeUpdated'), 'success');
     } else {
       const localId = nextId;
       setNextId(n => n + 1);
@@ -323,7 +325,7 @@ export default function Planning() {
       } catch {
         setEmployees(prev => [...prev, newEmp]);
       }
-      showToast('Employe ajoute', 'success');
+      showToast(t('planning.employeeAdded'), 'success');
     }
     setShowEmployeeModal(false);
   }
@@ -339,7 +341,7 @@ export default function Planning() {
     } catch {
       // Already removed locally
     }
-    showToast('Employe supprime', 'success');
+    showToast(t('planning.employeeDeleted'), 'success');
   }
 
   // ── Shift CRUD ────────────────────────────────────────────────────
@@ -370,11 +372,11 @@ export default function Planning() {
 
   async function saveShift() {
     if (!shiftForm.employeeId || !shiftForm.date || !shiftForm.startTime || !shiftForm.endTime) {
-      showToast('Veuillez remplir tous les champs', 'error');
+      showToast(t('planning.fillAllFields'), 'error');
       return;
     }
     if (shiftForm.startTime >= shiftForm.endTime) {
-      showToast("L'heure de fin doit etre apres l'heure de debut", 'error');
+      showToast(t('planning.endAfterStart'), 'error');
       return;
     }
     const empId = parseInt(shiftForm.employeeId);
@@ -384,7 +386,7 @@ export default function Planning() {
       return s.startTime < shiftForm.endTime && s.endTime > shiftForm.startTime;
     });
     if (overlap) {
-      showToast('Chevauchement detecte pour cet employe ce jour', 'error');
+      showToast(t('planning.overlapDetected'), 'error');
       return;
     }
 
@@ -409,7 +411,7 @@ export default function Planning() {
       } catch {
         // Already updated locally
       }
-      showToast('Creneau modifie', 'success');
+      showToast(t('planning.shiftUpdated'), 'success');
     } else {
       const localId = nextId;
       setNextId(n => n + 1);
@@ -429,7 +431,7 @@ export default function Planning() {
       } catch {
         setShifts(prev => [...prev, newShift]);
       }
-      showToast('Creneau ajoute', 'success');
+      showToast(t('planning.shiftAdded'), 'success');
     }
     setShowShiftModal(false);
   }
@@ -444,7 +446,7 @@ export default function Planning() {
     } catch {
       // Already removed locally
     }
-    showToast('Creneau supprime', 'success');
+    showToast(t('planning.shiftDeleted'), 'success');
   }
 
   // ── Drag & drop ──────────────────────────────────────────────────
@@ -466,7 +468,7 @@ export default function Planning() {
       return s.startTime < st.end && s.endTime > st.start;
     });
     if (overlap) {
-      showToast('Chevauchement detecte', 'error');
+      showToast(t('planning.overlapDetected'), 'error');
       setDragEmployee(null);
       return;
     }
@@ -498,7 +500,7 @@ export default function Planning() {
     } catch {
       setShifts(prev => [...prev, newShift]);
     }
-    showToast(`${dragEmployee.name || 'Employe'} assigne`, 'success');
+    showToast(`${dragEmployee.name || t('planning.employee')} ${t('planning.assigned')}`, 'success');
     setDragEmployee(null);
   }, [dragEmployee, shifts, nextId, showToast]);
 
@@ -531,39 +533,39 @@ export default function Planning() {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <CalendarDays className="w-7 h-7 text-indigo-500" />
-            Planning du personnel
+            {t('planning.title')}
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Gestion des horaires et planification hebdomadaire
+            {t('planning.subtitle')}
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-medium">
-            <UserPlus className="w-4 h-4" /> Employe
+            <UserPlus className="w-4 h-4" /> {t('planning.employee')}
           </button>
           <button onClick={() => openAddShift()} className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-400 transition text-sm font-medium">
-            <Plus className="w-4 h-4" /> Creneau
+            <Plus className="w-4 h-4" /> {t('planning.shift')}
           </button>
         </div>
       </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <StatCard icon={<Users className="w-5 h-5 text-indigo-400" />} label="Employes" value={String(employees.length)} />
-        <StatCard icon={<Clock className="w-5 h-5 text-amber-400" />} label="Heures/semaine" value={`${totalHoursWeek.toFixed(0)}h`} />
-        <StatCard icon={<Euro className="w-5 h-5 text-emerald-400" />} label="Cout MO" value={`${laborCost.toFixed(0)} EUR`} />
+        <StatCard icon={<Users className="w-5 h-5 text-indigo-400" />} label={t('planning.employees')} value={String(employees.length)} />
+        <StatCard icon={<Clock className="w-5 h-5 text-amber-400" />} label={t('planning.hoursPerWeek')} value={`${totalHoursWeek.toFixed(0)}h`} />
+        <StatCard icon={<Euro className="w-5 h-5 text-emerald-400" />} label={t('planning.laborCost')} value={`${laborCost.toFixed(0)} EUR`} />
         <StatCard
           icon={<CalendarDays className="w-5 h-5 text-blue-400" />}
-          label="Ratio MO/CA"
+          label={t('planning.laborRatio')}
           value={`${laborRatio.toFixed(1)}%`}
           alert={laborRatio > 30}
         />
         <StatCard
           icon={<AlertTriangle className="w-5 h-5 text-rose-400" />}
-          label="Alertes heures"
+          label={t('planning.hoursAlerts')}
           value={`${alertCount}`}
           alert={alertCount > 0}
-          subtitle={alertCount > 0 ? `${alertCount} employe(s) >35h` : 'OK'}
+          subtitle={alertCount > 0 ? `${alertCount} ${t('planning.employeesOver35h')}` : 'OK'}
         />
       </div>
 
@@ -574,7 +576,7 @@ export default function Planning() {
             <ChevronLeft className="w-5 h-5 text-slate-300" />
           </button>
           <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-900/40 text-indigo-300 hover:bg-indigo-800/50 transition border border-indigo-700/30">
-            Aujourd'hui
+            {t('planning.today')}
           </button>
           <h2 className="text-lg font-semibold text-white px-2">{weekLabel}</h2>
           <button onClick={goNext} className="p-2 rounded-lg hover:bg-slate-800 transition">
@@ -586,13 +588,13 @@ export default function Planning() {
             onClick={() => setView('semaine')}
             className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'semaine' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
           >
-            Semaine
+            {t('planning.week')}
           </button>
           <button
             onClick={() => setView('jour')}
             className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'jour' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
           >
-            Jour
+            {t('planning.day')}
           </button>
         </div>
       </div>
@@ -600,7 +602,7 @@ export default function Planning() {
       {/* Employee drag panel */}
       <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
         <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">
-          Glisser un employe sur un creneau pour l'assigner
+          {t('planning.dragToAssign')}
         </h3>
         <div className="flex flex-wrap gap-2">
           {employees.map(emp => (
@@ -775,23 +777,23 @@ export default function Planning() {
       <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
           <h3 className="font-semibold text-white flex items-center gap-2">
-            <Users className="w-4 h-4 text-indigo-400" /> Equipe ({employees.length})
+            <Users className="w-4 h-4 text-indigo-400" /> {t('planning.team')} ({employees.length})
           </h3>
           <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-400 hover:underline flex items-center gap-1">
-            <UserPlus className="w-3.5 h-3.5" /> Ajouter
+            <UserPlus className="w-3.5 h-3.5" /> {t('common.add')}
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">Employe</th>
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">Role</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Taux</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Contrat</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Heures/sem</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Statut</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Actions</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">{t('planning.employee')}</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">{t('planning.role')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.rate')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.contract')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.hoursPerWeek')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{t('planning.status')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{t('planning.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -826,7 +828,7 @@ export default function Planning() {
                         </span>
                       ) : isOver35 ? (
                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                          Heures sup
+                          {t('planning.overtime')}
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
@@ -856,20 +858,20 @@ export default function Planning() {
       <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-800">
           <h3 className="font-semibold text-white flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-400" /> Recapitulatif hebdomadaire
+            <Clock className="w-4 h-4 text-amber-400" /> {t('planning.weeklySummary')}
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">Employe</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">{t('planning.employee')}</th>
                 {JOURS.map(j => (
                   <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{j}</th>
                 ))}
                 <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Total</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">Cout</th>
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Alerte</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.cost')}</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{t('planning.alert')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -919,7 +921,7 @@ export default function Planning() {
               </tr>
               {/* Daily cost row */}
               <tr className="bg-slate-800/40">
-                <td className="px-4 py-2.5 text-slate-400 text-xs">Cout/jour</td>
+                <td className="px-4 py-2.5 text-slate-400 text-xs">{t('planning.costPerDay')}</td>
                 {dailyCosts.map((c, i) => (
                   <td key={i} className="px-3 py-2.5 text-center text-xs text-slate-400">
                     {c > 0 ? `${c.toFixed(0)}` : '-'}
@@ -938,11 +940,11 @@ export default function Planning() {
       <Modal
         isOpen={showEmployeeModal}
         onClose={() => setShowEmployeeModal(false)}
-        title={editEmployee ? 'Modifier employe' : 'Ajouter un employe'}
+        title={editEmployee ? t('planning.editEmployee') : t('planning.addEmployee')}
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Nom complet</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.fullName')}</label>
             <input
               type="text"
               value={empForm.name}
@@ -952,7 +954,7 @@ export default function Planning() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Role</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.role')}</label>
             <select
               value={empForm.role}
               onChange={e => setEmpForm(f => ({ ...f, role: e.target.value }))}
@@ -965,7 +967,7 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Taux horaire (EUR/h)</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.hourlyRate')}</label>
               <input
                 type="number"
                 step="0.01"
@@ -978,7 +980,7 @@ export default function Planning() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Couleur</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.color')}</label>
             <div className="flex gap-2 flex-wrap">
               {EMPLOYEE_COLORS.map(c => (
                 <button
@@ -993,10 +995,10 @@ export default function Planning() {
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 rounded-lg transition">
-              Annuler
+              {t('common.cancel')}
             </button>
             <button onClick={saveEmployee} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
-              {editEmployee ? 'Modifier' : 'Ajouter'}
+              {editEmployee ? t('common.edit') : t('common.add')}
             </button>
           </div>
         </div>
@@ -1006,17 +1008,17 @@ export default function Planning() {
       <Modal
         isOpen={showShiftModal}
         onClose={() => setShowShiftModal(false)}
-        title={editShift ? 'Modifier creneau' : 'Ajouter un creneau'}
+        title={editShift ? t('planning.editShift') : t('planning.addShift')}
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Employe</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.employee')}</label>
             <select
               value={shiftForm.employeeId}
               onChange={e => setShiftForm(f => ({ ...f, employeeId: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
-              <option value="">-- Selectionner --</option>
+              <option value="">-- {t('common.select')} --</option>
               {employees.map(emp => (
                 <option key={emp.id} value={emp.id}>{emp.name || ''} ({ROLE_LABELS[emp.role] || emp.role || ''})</option>
               ))}
@@ -1024,7 +1026,7 @@ export default function Planning() {
           </div>
           {/* Quick shift type buttons */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Type de service</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.serviceType')}</label>
             <div className="flex gap-2">
               {SHIFT_TYPES.map(st => (
                 <button
@@ -1043,7 +1045,7 @@ export default function Planning() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Date</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.date')}</label>
             <input
               type="date"
               value={shiftForm.date}
@@ -1053,7 +1055,7 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Heure debut</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.startTime')}</label>
               <input
                 type="time"
                 value={shiftForm.startTime}
@@ -1062,7 +1064,7 @@ export default function Planning() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Heure fin</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.endTime')}</label>
               <input
                 type="time"
                 value={shiftForm.endTime}
@@ -1072,7 +1074,7 @@ export default function Planning() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Poste</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.position')}</label>
             <select
               value={shiftForm.type}
               onChange={e => setShiftForm(f => ({ ...f, type: e.target.value }))}
@@ -1085,18 +1087,18 @@ export default function Planning() {
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 rounded-lg transition">
-              Annuler
+              {t('common.cancel')}
             </button>
             {editShift && (
               <button
                 onClick={() => { deleteShift(editShift.id); setShowShiftModal(false); }}
                 className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded-xl hover:bg-red-700 transition"
               >
-                Supprimer
+                {t('common.delete')}
               </button>
             )}
             <button onClick={saveShift} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
-              {editShift ? 'Modifier' : 'Ajouter'}
+              {editShift ? t('common.edit') : t('common.add')}
             </button>
           </div>
         </div>
@@ -1187,14 +1189,14 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                   );
                 })}
               {zoneShifts.length === 0 && (
-                <p className="text-center text-xs text-slate-400 py-2">Aucun creneau</p>
+                <p className="text-center text-xs text-slate-400 py-2">{t('planning.noShift')}</p>
               )}
             </div>
             <button
               onClick={() => onAddShift(dayStr, st.key)}
               className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
             >
-              <Plus className="w-3.5 h-3.5" /> Ajouter
+              <Plus className="w-3.5 h-3.5" /> {t('common.add')}
             </button>
           </div>
         );
@@ -1211,6 +1213,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
   onDeleteShift: (id: number) => void;
   onAddShift: (dayStr: string, shiftType?: ShiftType) => void;
 }) {
+  const { t } = useTranslation();
   const dayStr = formatDate(day);
   const dayShifts = shifts.filter(s => s.date === dayStr);
   const totalHours = dayShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
@@ -1232,15 +1235,15 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
       {/* Day stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
-          <div className="text-xs text-slate-400">Employes presents</div>
+          <div className="text-xs text-slate-400">{t('planning.presentEmployees')}</div>
           <div className="text-2xl font-bold text-white">{presenceMap.size}</div>
         </div>
         <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
-          <div className="text-xs text-slate-400">Heures totales</div>
+          <div className="text-xs text-slate-400">{t('planning.totalHours')}</div>
           <div className="text-2xl font-bold text-white">{totalHours.toFixed(0)}h</div>
         </div>
         <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
-          <div className="text-xs text-slate-400">Cout du jour</div>
+          <div className="text-xs text-slate-400">{t('planning.dayCost')}</div>
           <div className="text-2xl font-bold text-emerald-400">{totalCost.toFixed(0)} EUR</div>
         </div>
       </div>
@@ -1294,7 +1297,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
               </div>
             ) : (
               <p className="text-sm text-slate-400 py-3 text-center bg-slate-800/20 rounded-xl border border-dashed border-slate-700">
-                Aucun creneau
+                {t('planning.noShift')}
               </p>
             )}
             <button
@@ -1310,7 +1313,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
       {/* Presence summary */}
       <div>
         <h4 className="font-semibold text-white flex items-center gap-2 mb-3">
-          <Eye className="w-4 h-4 text-indigo-400" /> Presences du jour
+          <Eye className="w-4 h-4 text-indigo-400" /> {t('planning.dayPresence')}
         </h4>
         <div className="space-y-2">
           {employees.map(emp => {
@@ -1336,7 +1339,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                       {empShifts!.map(s => `${s.startTime}-${s.endTime}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
                     </span>
                   ) : (
-                    <span className="text-slate-300">Absent</span>
+                    <span className="text-slate-300">{t('planning.absent')}</span>
                   )}
                 </div>
               </div>

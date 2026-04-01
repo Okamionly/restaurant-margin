@@ -51,8 +51,8 @@ const PLANS: Plan[] = [
       'Support prioritaire',
     ],
     cta: 'S\'abonner au Pro',
-    gradient: 'from-blue-500/10 to-indigo-600/10',
-    borderColor: 'border-blue-300 dark:border-blue-600',
+    gradient: 'from-teal-500/10 to-indigo-600/10',
+    borderColor: 'border-teal-300 dark:border-teal-600',
   },
   {
     id: 'business',
@@ -169,7 +169,7 @@ export default function Subscription() {
                 </div>
               </div>
             </div>
-            <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5">
+            <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5">
               <Zap className="w-4 h-4" />
               Passer au Pro
             </button>
@@ -184,7 +184,7 @@ export default function Subscription() {
               </div>
               <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-teal-500 to-indigo-500 rounded-full transition-all duration-500"
                   style={{ width: `${(recipesUsed / recipesMax) * 100}%` }}
                 />
               </div>
@@ -224,7 +224,7 @@ export default function Subscription() {
               key={plan.id}
               className={`relative rounded-2xl border-2 bg-white dark:bg-gray-800 overflow-hidden transition-all duration-300 hover:shadow-xl ${
                 plan.highlighted
-                  ? 'border-blue-500 dark:border-blue-400 shadow-xl shadow-blue-500/10 md:-translate-y-2 md:scale-105 z-10'
+                  ? 'border-teal-500 dark:border-teal-400 shadow-xl shadow-teal-500/10 md:-translate-y-2 md:scale-105 z-10'
                   : plan.borderColor + ' shadow-sm hover:-translate-y-1'
               }`}
             >
@@ -233,7 +233,7 @@ export default function Subscription() {
                 <div
                   className={`absolute top-0 right-0 px-3 py-1 text-xs font-bold rounded-bl-xl ${
                     plan.highlighted
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'
+                      ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                   }`}
                 >
@@ -247,7 +247,7 @@ export default function Subscription() {
                 <div
                   className={`inline-flex p-2.5 rounded-xl ${
                     plan.highlighted
-                      ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                      ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                   }`}
                 >
@@ -275,7 +275,7 @@ export default function Subscription() {
                       <Check
                         className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
                           plan.highlighted
-                            ? 'text-blue-500 dark:text-blue-400'
+                            ? 'text-teal-500 dark:text-teal-400'
                             : 'text-emerald-500 dark:text-emerald-400'
                         }`}
                       />
@@ -288,7 +288,7 @@ export default function Subscription() {
                 <button
                   className={`mt-8 w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${
                     plan.highlighted
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5'
+                      ? 'bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5'
                       : 'bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 hover:-translate-y-0.5'
                   }`}
                 >
@@ -315,7 +315,7 @@ export default function Subscription() {
                   <th className="text-left py-4 px-6 text-sm font-semibold text-gray-500 dark:text-gray-400 w-1/3">
                     Fonctionnalité
                   </th>
-                  <th className="text-center py-4 px-4 text-sm font-semibold text-blue-600 dark:text-blue-400">
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-teal-600 dark:text-teal-400">
                     <div className="flex flex-col items-center gap-1">
                       <Rocket className="w-4 h-4" />
                       Pro
@@ -349,7 +349,7 @@ export default function Subscription() {
                             <Check
                               className={`w-5 h-5 mx-auto ${
                                 plan === 'pro'
-                                  ? 'text-blue-500 dark:text-blue-400'
+                                  ? 'text-teal-500 dark:text-teal-400'
                                   : 'text-emerald-500 dark:text-emerald-400'
                               }`}
                             />
@@ -360,7 +360,7 @@ export default function Subscription() {
                           <span
                             className={`text-sm font-medium ${
                               plan === 'pro'
-                                ? 'text-blue-600 dark:text-blue-400'
+                                ? 'text-teal-600 dark:text-teal-400'
                                 : 'text-gray-600 dark:text-gray-400'
                             }`}
                           >
@@ -379,7 +379,7 @@ export default function Subscription() {
         {/* ── FAQ Section ────────────────────────────────────────────────── */}
         <div className="mt-20 max-w-3xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-xs font-bold mb-3">
               <HelpCircle className="w-3.5 h-3.5" />
               FAQ
             </div>
@@ -423,15 +423,15 @@ export default function Subscription() {
 
         {/* ── Bottom CTA ─────────────────────────────────────────────────── */}
         <div className="mt-20 text-center">
-          <div className="inline-flex flex-col items-center p-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-100 dark:border-blue-800">
-            <Sparkles className="w-8 h-8 text-blue-500 dark:text-blue-400 mb-3" />
+          <div className="inline-flex flex-col items-center p-8 rounded-2xl bg-gradient-to-br from-teal-50 to-indigo-50 dark:from-teal-900/20 dark:to-indigo-900/20 border border-teal-100 dark:border-teal-800">
+            <Sparkles className="w-8 h-8 text-teal-500 dark:text-teal-400 mb-3" />
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
               Des questions sur nos offres ?
             </h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md">
               Notre équipe est disponible pour vous aider à choisir le plan adapté à vos besoins.
             </p>
-            <button className="mt-5 inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5">
+            <button className="mt-5 inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5">
               Nous contacter
               <ArrowRight className="w-4 h-4" />
             </button>

@@ -7,6 +7,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Legend, ReferenceLine
 } from 'recharts';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -118,6 +119,7 @@ function getAuthHeaders(): Record<string, string> {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function HACCP() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
   const [temperatures, setTemperatures] = useState<TemperatureRecord[]>([]);
   const [lots, setLots] = useState<LotRecord[]>([]);
@@ -374,11 +376,11 @@ export default function HACCP() {
   }, [lots, searchLots]);
 
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-    { key: 'dashboard', label: 'Dashboard', icon: <BarChart3 className="w-4 h-4" /> },
-    { key: 'temperatures', label: 'Températures', icon: <Thermometer className="w-4 h-4" /> },
-    { key: 'lots', label: 'Traçabilité', icon: <Package className="w-4 h-4" /> },
-    { key: 'alertes', label: 'Alertes DLUO', icon: <AlertTriangle className="w-4 h-4" /> },
-    { key: 'nettoyage', label: 'Nettoyage', icon: <SprayCan className="w-4 h-4" /> },
+    { key: 'dashboard', label: t('haccp.tabDashboard'), icon: <BarChart3 className="w-4 h-4" /> },
+    { key: 'temperatures', label: t('haccp.tabTemperatures'), icon: <Thermometer className="w-4 h-4" /> },
+    { key: 'lots', label: t('haccp.tabTraceability'), icon: <Package className="w-4 h-4" /> },
+    { key: 'alertes', label: t('haccp.tabAlerts'), icon: <AlertTriangle className="w-4 h-4" /> },
+    { key: 'nettoyage', label: t('haccp.tabCleaning'), icon: <SprayCan className="w-4 h-4" /> },
   ];
 
   return (
@@ -387,9 +389,9 @@ export default function HACCP() {
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-3">
           <ShieldCheck className="w-7 h-7 text-emerald-400" />
-          HACCP & Traçabilité
+          {t('haccp.title')}
         </h1>
-        <p className="text-slate-400 mt-1">Sécurité alimentaire, températures, lots et nettoyage</p>
+        <p className="text-slate-400 mt-1">{t('haccp.subtitle')}</p>
       </div>
 
       {/* Tabs */}
@@ -409,11 +411,11 @@ export default function HACCP() {
             {/* Conformité */}
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 text-sm">Conformité températures</span>
+                <span className="text-slate-400 text-sm">{t('haccp.tempCompliance')}</span>
                 <Thermometer className="w-5 h-5 text-blue-400" />
               </div>
               <div className={`text-3xl font-bold ${stats.rate >= 90 ? 'text-emerald-400' : stats.rate >= 70 ? 'text-amber-400' : 'text-red-400'}`}>{stats.rate}%</div>
-              <div className="text-xs text-slate-400 mt-1">{stats.total} relevés</div>
+              <div className="text-xs text-slate-400 mt-1">{stats.total} {t('haccp.readings')}</div>
               <div className="mt-3 h-2 bg-slate-800 rounded-full overflow-hidden">
                 <div className={`h-full rounded-full ${stats.rate >= 90 ? 'bg-emerald-500' : stats.rate >= 70 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${stats.rate}%` }} />
               </div>
@@ -421,17 +423,17 @@ export default function HACCP() {
             {/* Alertes */}
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 text-sm">Alertes DLUO</span>
+                <span className="text-slate-400 text-sm">{t('haccp.dluoAlerts')}</span>
                 <AlertTriangle className="w-5 h-5 text-amber-400" />
               </div>
               <div className="text-3xl font-bold text-amber-400">{stats.activeAlerts}</div>
-              <div className="text-xs text-slate-400 mt-1">dont {stats.expired} expiré{stats.expired > 1 ? 's' : ''}</div>
-              {stats.expired > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />Action requise</div>}
+              <div className="text-xs text-slate-400 mt-1">{t('haccp.including')} {stats.expired} {t('haccp.expired')}</div>
+              {stats.expired > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />{t('haccp.actionRequired')}</div>}
             </div>
             {/* Nettoyage */}
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 text-sm">Nettoyage du jour</span>
+                <span className="text-slate-400 text-sm">{t('haccp.todayCleaning')}</span>
                 <SprayCan className="w-5 h-5 text-violet-400" />
               </div>
               <div className={`text-3xl font-bold ${stats.cleanRate === 100 ? 'text-emerald-400' : stats.cleanRate >= 50 ? 'text-amber-400' : 'text-red-400'}`}>{stats.cleanRate}%</div>
@@ -443,12 +445,12 @@ export default function HACCP() {
             {/* Lots */}
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-400 text-sm">Lots reçus</span>
+                <span className="text-slate-400 text-sm">{t('haccp.receivedLots')}</span>
                 <Package className="w-5 h-5 text-cyan-400" />
               </div>
               <div className="text-3xl font-bold text-white">{lots.length}</div>
-              <div className="text-xs text-slate-400 mt-1">{stats.lotsOk} conformes, {stats.lotsKo} non-conforme{stats.lotsKo > 1 ? 's' : ''}</div>
-              {stats.lotsKo > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />{stats.lotsKo} lot(s) à vérifier</div>}
+              <div className="text-xs text-slate-400 mt-1">{stats.lotsOk} {t('haccp.compliant')}, {stats.lotsKo} {t('haccp.nonCompliant')}</div>
+              {stats.lotsKo > 0 && <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded-lg"><XCircle className="w-3.5 h-3.5" />{stats.lotsKo} {t('haccp.lotsToCheck')}</div>}
             </div>
           </div>
 
@@ -456,10 +458,10 @@ export default function HACCP() {
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
             <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-blue-400" />
-              Tendance des températures (7 derniers jours)
+              {t('haccp.tempTrend')}
             </h3>
             {temperatures.length === 0 ? (
-              <div className="text-center py-12 text-slate-400 text-sm">Aucune donnée de température disponible</div>
+              <div className="text-center py-12 text-slate-400 text-sm">{t('haccp.noTempData')}</div>
             ) : (
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
@@ -500,11 +502,11 @@ export default function HACCP() {
 
           {/* Recent temps */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
-            <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-blue-400" />Derniers relevés</h3>
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-2"><Thermometer className="w-5 h-5 text-blue-400" />{t('haccp.latestReadings')}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
-                  <th className="text-left py-3 px-3">Zone</th><th className="text-left py-3 px-3">Temp.</th><th className="text-left py-3 px-3">Heure</th><th className="text-left py-3 px-3">Agent</th>
+                  <th className="text-left py-3 px-3">{t('haccp.zone')}</th><th className="text-left py-3 px-3">{t('haccp.temp')}</th><th className="text-left py-3 px-3">{t('haccp.time')}</th><th className="text-left py-3 px-3">{t('haccp.agent')}</th>
                 </tr></thead>
                 <tbody>{temperatures.slice(0, 6).map(t => {
                   const c = getTempColor(t.zone, t.temperature);
@@ -526,38 +528,38 @@ export default function HACCP() {
         <div className="space-y-4">
           {/* Legend */}
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-            <h3 className="text-sm font-semibold text-white mb-3">Zones de danger réglementaires</h3>
+            <h3 className="text-sm font-semibold text-white mb-3">{t('haccp.dangerZones')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 mt-0.5 flex-shrink-0" /><div><div className="text-emerald-400 font-medium">Conforme</div><div className="text-slate-400">Frigo &lt;4°C | Congél. &le;-18°C | Chaud &ge;63°C</div></div></div>
-              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-amber-500 mt-0.5 flex-shrink-0" /><div><div className="text-amber-400 font-medium">Attention</div><div className="text-slate-400">Frigo 4-7°C | Congél. -18 à -15°C | Chaud 55-63°C</div></div></div>
-              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-red-500 mt-0.5 flex-shrink-0" /><div><div className="text-red-400 font-medium">Danger</div><div className="text-slate-400">Frigo &gt;7°C | Congél. &gt;-15°C | Chaud &lt;55°C</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500 mt-0.5 flex-shrink-0" /><div><div className="text-emerald-400 font-medium">{t('haccp.compliantStatus')}</div><div className="text-slate-400">{t('haccp.compliantRanges')}</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-amber-500 mt-0.5 flex-shrink-0" /><div><div className="text-amber-400 font-medium">{t('haccp.warningStatus')}</div><div className="text-slate-400">{t('haccp.warningRanges')}</div></div></div>
+              <div className="flex items-start gap-2"><div className="w-3 h-3 rounded-full bg-red-500 mt-0.5 flex-shrink-0" /><div><div className="text-red-400 font-medium">{t('haccp.dangerStatus')}</div><div className="text-slate-400">{t('haccp.dangerRanges')}</div></div></div>
             </div>
           </div>
 
           <div className="flex justify-end">
             <button onClick={() => setShowTempForm(!showTempForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors">
-              <Plus className="w-4 h-4" />Nouveau relevé
+              <Plus className="w-4 h-4" />{t('haccp.newReading')}
             </button>
           </div>
 
           {showTempForm && (
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-4">
-              <h3 className="text-white font-semibold">Enregistrer un relevé</h3>
+              <h3 className="text-white font-semibold">{t('haccp.recordReading')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div><label className="block text-xs text-slate-400 mb-1">Zone</label>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.zone')}</label>
                   <select value={tempForm.zone} onChange={e => setTempForm(f => ({ ...f, zone: e.target.value as TemperatureRecord['zone'] }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
                     {Object.entries(ZONE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select></div>
-                <div><label className="block text-xs text-slate-400 mb-1">Température (°C)</label>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.temperatureLabel')}</label>
                   <input type="number" step="0.1" value={tempForm.temperature} onChange={e => setTempForm(f => ({ ...f, temperature: e.target.value }))} placeholder="Ex: 3.5" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">Agent</label>
-                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder="Votre nom" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">Notes</label>
-                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder="Optionnel" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.agent')}</label>
+                  <input type="text" value={tempForm.agent} onChange={e => setTempForm(f => ({ ...f, agent: e.target.value }))} placeholder={t('haccp.yourName')} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.notes')}</label>
+                  <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder={t('haccp.optional')} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
               </div>
               <div className="flex gap-3">
-                <button onClick={addTemp} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
-                <button onClick={() => setShowTempForm(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={addTemp} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">{t('haccp.save')}</button>
+                <button onClick={() => setShowTempForm(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
               </div>
             </div>
           )}
@@ -566,7 +568,7 @@ export default function HACCP() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-800/50">
-                  <th className="text-left py-3 px-4">Zone</th><th className="text-left py-3 px-4">Temp.</th><th className="text-left py-3 px-4">Statut</th><th className="text-left py-3 px-4">Date & Heure</th><th className="text-left py-3 px-4">Agent</th><th className="text-left py-3 px-4">Notes</th>
+                  <th className="text-left py-3 px-4">{t('haccp.zone')}</th><th className="text-left py-3 px-4">{t('haccp.temp')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th><th className="text-left py-3 px-4">{t('haccp.dateTime')}</th><th className="text-left py-3 px-4">{t('haccp.agent')}</th><th className="text-left py-3 px-4">{t('haccp.notes')}</th>
                 </tr></thead>
                 <tbody>{temperatures.map(t => {
                   const c = getTempColor(t.zone, t.temperature);
@@ -591,25 +593,25 @@ export default function HACCP() {
           <div className="flex flex-col sm:flex-row gap-3 justify-between">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder="Rechercher un lot, produit, fournisseur..." className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-slate-500" />
+              <input type="text" value={searchLots} onChange={e => setSearchLots(e.target.value)} placeholder={t('haccp.searchLots')} className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-3 py-2.5 text-sm text-white placeholder:text-slate-500" />
             </div>
-            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />Nouveau lot</button>
+            <button onClick={() => setShowLotForm(!showLotForm)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors"><Plus className="w-4 h-4" />{t('haccp.newLot')}</button>
           </div>
 
           {showLotForm && (
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-4">
-              <h3 className="text-white font-semibold">Enregistrer un lot</h3>
+              <h3 className="text-white font-semibold">{t('haccp.recordLot')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div><label className="block text-xs text-slate-400 mb-1">N° de lot</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">Produit</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder="Nom du produit" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">Fournisseur</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder="Fournisseur" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">DLC</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">DDM (optionnel)</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" /></div>
-                <div><label className="block text-xs text-slate-400 mb-1">Statut</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"><option value="en_attente">En attente</option><option value="conforme">Conforme</option><option value="non_conforme">Non conforme</option></select></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.lotNumber')}</label><input type="text" value={lotForm.lotNumber} onChange={e => setLotForm(f => ({ ...f, lotNumber: e.target.value }))} placeholder="LOT-XXXX" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.product')}</label><input type="text" value={lotForm.product} onChange={e => setLotForm(f => ({ ...f, product: e.target.value }))} placeholder={t('haccp.productName')} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.supplier')}</label><input type="text" value={lotForm.supplier} onChange={e => setLotForm(f => ({ ...f, supplier: e.target.value }))} placeholder={t('haccp.supplier')} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-slate-500" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.dlc')}</label><input type="date" value={lotForm.dlc} onChange={e => setLotForm(f => ({ ...f, dlc: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.ddm')}</label><input type="date" value={lotForm.ddm} onChange={e => setLotForm(f => ({ ...f, ddm: e.target.value }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" /></div>
+                <div><label className="block text-xs text-slate-400 mb-1">{t('haccp.status')}</label><select value={lotForm.status} onChange={e => setLotForm(f => ({ ...f, status: e.target.value as LotRecord['status'] }))} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"><option value="en_attente">{t('haccp.pending')}</option><option value="conforme">{t('haccp.compliantStatus')}</option><option value="non_conforme">{t('haccp.nonCompliantStatus')}</option></select></div>
               </div>
               <div className="flex gap-3">
-                <button onClick={addLot} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
-                <button onClick={() => setShowLotForm(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-colors">Annuler</button>
+                <button onClick={addLot} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">{t('haccp.save')}</button>
+                <button onClick={() => setShowLotForm(false)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
               </div>
             </div>
           )}
@@ -618,7 +620,7 @@ export default function HACCP() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-800/50">
-                  <th className="text-left py-3 px-4">N° Lot</th><th className="text-left py-3 px-4">Produit</th><th className="text-left py-3 px-4">Fournisseur</th><th className="text-left py-3 px-4">Réception</th><th className="text-left py-3 px-4">DLC</th><th className="text-left py-3 px-4">DDM</th><th className="text-left py-3 px-4">Statut</th>
+                  <th className="text-left py-3 px-4">{t('haccp.lotNumber')}</th><th className="text-left py-3 px-4">{t('haccp.product')}</th><th className="text-left py-3 px-4">{t('haccp.supplier')}</th><th className="text-left py-3 px-4">{t('haccp.reception')}</th><th className="text-left py-3 px-4">{t('haccp.dlc')}</th><th className="text-left py-3 px-4">{t('haccp.ddm')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th>
                 </tr></thead>
                 <tbody>{filteredLots.map(l => (
                   <tr key={l.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
@@ -633,7 +635,7 @@ export default function HACCP() {
                 ))}</tbody>
               </table>
             </div>
-            {filteredLots.length === 0 && <div className="text-center py-8 text-slate-400">Aucun lot trouvé</div>}
+            {filteredLots.length === 0 && <div className="text-center py-8 text-slate-400">{t('haccp.noLotsFound')}</div>}
           </div>
         </div>
       )}
@@ -642,11 +644,11 @@ export default function HACCP() {
       {activeTab === 'alertes' && (
         <div className="space-y-4">
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-            <h3 className="text-sm font-semibold text-white mb-3">Légende</h3>
+            <h3 className="text-sm font-semibold text-white mb-3">{t('haccp.legend')}</h3>
             <div className="flex flex-wrap gap-4 text-xs">
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500" /><span className="text-slate-400">Expiré ou J-1</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-slate-400">J-2 à J-3</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-slate-400">J-4+</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500" /><span className="text-slate-400">{t('haccp.expiredOrD1')}</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-slate-400">{t('haccp.d2ToD3')}</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-slate-400">{t('haccp.d4Plus')}</span></div>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -657,13 +659,13 @@ export default function HACCP() {
                   <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${getDluoBadge(a.daysRemaining)}`}>{getDluoLabel(a.daysRemaining)}</span>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-slate-400">DLC</span><span className="text-slate-300">{new Date(a.dlc).toLocaleDateString('fr-FR')}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-400">Quantité</span><span className="text-slate-300">{a.quantity}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">{t('haccp.dlc')}</span><span className="text-slate-300">{new Date(a.dlc).toLocaleDateString('fr-FR')}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">{t('haccp.quantity')}</span><span className="text-slate-300">{a.quantity}</span></div>
                 </div>
                 {a.daysRemaining <= 1 && (
                   <div className="mt-3 flex items-center gap-2 text-xs text-red-400 bg-red-900/20 px-3 py-2 rounded-lg">
                     <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
-                    {a.daysRemaining <= 0 ? 'Produit expiré — retirer immédiatement' : 'À consommer ou retirer aujourd\'hui'}
+                    {a.daysRemaining <= 0 ? t('haccp.expiredRemoveNow') : t('haccp.consumeOrRemoveToday')}
                   </div>
                 )}
               </div>
@@ -676,14 +678,14 @@ export default function HACCP() {
       {activeTab === 'nettoyage' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-white font-semibold flex items-center gap-2"><SprayCan className="w-5 h-5 text-violet-400" />Registre de nettoyage — {new Date().toLocaleDateString('fr-FR')}</h3>
+            <h3 className="text-white font-semibold flex items-center gap-2"><SprayCan className="w-5 h-5 text-violet-400" />{t('haccp.cleaningRegistry')} — {new Date().toLocaleDateString('fr-FR')}</h3>
             <div className="text-sm text-slate-400">{cleaning.filter(c => c.verified).length}/{cleaning.length} zones</div>
           </div>
           <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-800/50">
-                  <th className="text-left py-3 px-4 w-8">Fait</th><th className="text-left py-3 px-4">Zone</th><th className="text-left py-3 px-4">Heure</th><th className="text-left py-3 px-4">Agent</th><th className="text-left py-3 px-4">Statut</th>
+                  <th className="text-left py-3 px-4 w-8">{t('haccp.done')}</th><th className="text-left py-3 px-4">{t('haccp.zone')}</th><th className="text-left py-3 px-4">{t('haccp.time')}</th><th className="text-left py-3 px-4">{t('haccp.agent')}</th><th className="text-left py-3 px-4">{t('haccp.status')}</th>
                 </tr></thead>
                 <tbody>{cleaning.map(c => (
                   <tr key={c.id} className="border-t border-slate-800/50 hover:bg-slate-800/30 transition-colors">
@@ -697,8 +699,8 @@ export default function HACCP() {
                     <td className="py-3 px-4 text-slate-400">{c.agent || '-'}</td>
                     <td className="py-3 px-4">
                       {c.verified
-                        ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-emerald-900/40 text-emerald-300"><CheckCircle2 className="w-3 h-3" />Nettoyé</span>
-                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400"><Clock className="w-3 h-3" />En attente</span>}
+                        ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-emerald-900/40 text-emerald-300"><CheckCircle2 className="w-3 h-3" />{t('haccp.cleaned')}</span>
+                        : <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400"><Clock className="w-3 h-3" />{t('haccp.pending')}</span>}
                     </td>
                   </tr>
                 ))}</tbody>

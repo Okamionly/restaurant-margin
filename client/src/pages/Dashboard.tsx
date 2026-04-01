@@ -45,7 +45,7 @@ const ALLERGEN_COLORS: Record<string, string> = {
   Gluten: 'bg-yellow-200 text-yellow-900 dark:bg-yellow-800/50 dark:text-yellow-200',
   'Crustacés': 'bg-orange-200 text-orange-900 dark:bg-orange-800/50 dark:text-orange-200',
   Oeufs: 'bg-amber-200 text-amber-900 dark:bg-amber-800/50 dark:text-amber-200',
-  Poissons: 'bg-blue-200 text-blue-900 dark:bg-blue-800/50 dark:text-blue-200',
+  Poissons: 'bg-teal-200 text-teal-900 dark:bg-teal-800/50 dark:text-teal-200',
   Arachides: 'bg-red-200 text-red-900 dark:bg-red-800/50 dark:text-red-200',
   Soja: 'bg-green-200 text-green-900 dark:bg-green-800/50 dark:text-green-200',
   Lait: 'bg-sky-200 text-sky-900 dark:bg-sky-800/50 dark:text-sky-200',
@@ -69,7 +69,7 @@ const TAB_ICONS: Record<TabKey, any> = {
 
 // ── Stat card color configs ────────────────────────────────────────────────
 const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
-  blue:   { gradient: 'from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800',   border: 'border-t-blue-500' },
+  teal:   { gradient: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-slate-800',   border: 'border-t-teal-500' },
   green:  { gradient: 'from-green-50 to-white dark:from-green-950/30 dark:to-slate-800',  border: 'border-t-green-500' },
   amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',  border: 'border-t-amber-500' },
   purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800', border: 'border-t-purple-500' },
@@ -108,7 +108,7 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
   title: string; value?: string; numericValue?: number; subtitle?: string; icon: React.ComponentType<{ className?: string }>; color: string;
   colorKey: string; decimals?: number; suffix?: string; prefix?: string; trend?: 'up' | 'down' | null;
 }) {
-  const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.blue;
+  const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.teal;
   return (
     <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-md transition-shadow`}>
       <div className="flex items-center justify-between mb-2">
@@ -144,7 +144,7 @@ function RankBar({ rank, name, value, maxValue, color, unit = '%', link }: {
       <span className="text-xs font-bold text-slate-400 dark:text-slate-500 w-5 text-right">{rank}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate pr-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          <span className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate pr-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
             {name}
           </span>
           <span className="text-sm font-bold tabular-nums whitespace-nowrap" style={{ color }}>
@@ -550,7 +550,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent" />
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-teal-600 border-t-transparent" />
       </div>
     );
   }
@@ -588,7 +588,7 @@ export default function Dashboard() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate('/recipes?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" /> {t("dashboard.newRecipe")}
           </button>
@@ -621,7 +621,7 @@ export default function Dashboard() {
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-blue-600" colorKey="blue" />
+        <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-teal-600" colorKey="teal" />
         <StatCard
           title={t("dashboard.avgMargin")}
           numericValue={stats.avgMargin}
@@ -693,7 +693,7 @@ export default function Dashboard() {
               </Link>
             ))}
           </div>
-          <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium mt-3">
+          <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium mt-3">
             {t("dashboard.viewAllSuggestions")} <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -709,12 +709,12 @@ export default function Dashboard() {
               const colorMap = {
                 opportunity: 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10',
                 warning: 'border-l-orange-500 bg-orange-50/50 dark:bg-orange-900/10',
-                info: 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10',
+                info: 'border-l-teal-500 bg-teal-50/50 dark:bg-teal-900/10',
               };
               const btnColorMap = {
                 opportunity: 'bg-green-600 hover:bg-green-700 text-white',
                 warning: 'bg-orange-600 hover:bg-orange-700 text-white',
-                info: 'bg-blue-600 hover:bg-blue-700 text-white',
+                info: 'bg-teal-600 hover:bg-teal-700 text-white',
               };
               const iconMap = {
                 'trending-up': <TrendingUp className="w-4 h-4" />,
@@ -727,7 +727,7 @@ export default function Dashboard() {
                   key={suggestion.id}
                   className={`flex items-center gap-3 p-3 rounded-lg border-l-4 ${colorMap[suggestion.type]}`}
                 >
-                  <div className={`flex-shrink-0 ${suggestion.type === 'opportunity' ? 'text-green-600' : suggestion.type === 'warning' ? 'text-orange-600' : 'text-blue-600'}`}>
+                  <div className={`flex-shrink-0 ${suggestion.type === 'opportunity' ? 'text-green-600' : suggestion.type === 'warning' ? 'text-orange-600' : 'text-teal-600'}`}>
                     {iconMap[suggestion.icon as keyof typeof iconMap] || <Lightbulb className="w-4 h-4" />}
                   </div>
                   <p className="text-sm text-slate-400 dark:text-slate-300 flex-1">{suggestion.text}</p>
@@ -755,12 +755,12 @@ export default function Dashboard() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px]
                 ${isActive
-                  ? 'bg-white dark:bg-slate-800 border-l-4 border-l-blue-600 border border-slate-200 dark:border-slate-700 shadow-md'
+                  ? 'bg-white dark:bg-slate-800 border-l-4 border-l-teal-600 border border-slate-200 dark:border-slate-700 shadow-md'
                   : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm opacity-75 hover:opacity-100'
                 }`}
             >
-              <div className={`p-2 rounded-lg ${isActive ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-slate-100 dark:bg-slate-700'}`}>
-                <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`} />
+              <div className={`p-2 rounded-lg ${isActive ? 'bg-teal-100 dark:bg-teal-900/30' : 'bg-slate-100 dark:bg-slate-700'}`}>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400 dark:text-slate-500'}`} />
               </div>
               <div>
                 <div className={`text-sm font-semibold ${isActive ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-400'}`}>
@@ -804,7 +804,7 @@ export default function Dashboard() {
             {/* LEFT SIDE */}
             <div className="space-y-6">
               {/* Revenue Estimation */}
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
+              <div className="bg-gradient-to-br from-teal-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
                     <Calculator className="w-5 h-5" />
@@ -817,7 +817,7 @@ export default function Dashboard() {
                           key={key}
                           onClick={() => setServiceMode(key as 'all' | 'lunch' | 'dinner')}
                           className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-                            serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
+                            serviceMode === key ? 'bg-white/25 text-white' : 'text-teal-200 hover:text-white'
                           }`}
                         >
                           {label}
@@ -825,7 +825,7 @@ export default function Dashboard() {
                       ))}
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-blue-100">{t("dashboard.covers")} :</label>
+                      <label className="text-xs text-teal-100">{t("dashboard.covers")} :</label>
                       <input
                         type="number"
                         min={1}
@@ -836,7 +836,7 @@ export default function Dashboard() {
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-blue-100">{t("dashboard.avgTicket")} :</label>
+                      <label className="text-xs text-teal-100">{t("dashboard.avgTicket")} :</label>
                       <input
                         type="number"
                         min={1}
@@ -845,31 +845,31 @@ export default function Dashboard() {
                         onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
                         className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
                       />
-                      <span className="text-xs text-blue-200">€</span>
+                      <span className="text-xs text-teal-200">€</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerDay")}</p>
+                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerDay")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
+                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
+                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-blue-200 mb-1">{t("dashboard.profitPerDay")}</p>
+                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.profitPerDay")}</p>
                     <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-blue-200">
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-teal-200">
                   <span>{stats.dailyCouverts} {t("dashboard.coversPerDay")} ({serviceMode === 'all' ? t("dashboard.twoServices") : serviceMode === 'lunch' ? t("dashboard.lunch") : t("dashboard.dinner")})</span>
                   <span>{t("dashboard.costRatio")} : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
                   <span>{t("dashboard.profitPerCover")} : {stats.profitPerCouvert.toFixed(2)} €</span>
@@ -908,7 +908,7 @@ export default function Dashboard() {
               {/* Donut chart for category distribution */}
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <Utensils className="w-5 h-5 text-blue-600" />
+                  <Utensils className="w-5 h-5 text-teal-600" />
                   <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.distribution")}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
@@ -1095,7 +1095,7 @@ export default function Dashboard() {
             {/* Food Cost Pie Chart with labels inside segments */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <PieChartIcon className="w-5 h-5 text-blue-600" />
+                <PieChartIcon className="w-5 h-5 text-teal-600" />
                 <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.foodCostDistribution")}</h3>
                 <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
                   Total : {stats.totalFoodCostAll.toFixed(2)} €
@@ -1282,7 +1282,7 @@ export default function Dashboard() {
       {activeTab === 'profitability' && (
         <div className="space-y-6">
           {/* Revenue projection with service selector */}
-          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
+          <div className="bg-gradient-to-br from-teal-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <Calculator className="w-5 h-5" />
@@ -1295,7 +1295,7 @@ export default function Dashboard() {
                       key={key}
                       onClick={() => setServiceMode(key as 'all' | 'lunch' | 'dinner')}
                       className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                        serviceMode === key ? 'bg-white/25 text-white' : 'text-blue-200 hover:text-white'
+                        serviceMode === key ? 'bg-white/25 text-white' : 'text-teal-200 hover:text-white'
                       }`}
                     >
                       {label}
@@ -1303,7 +1303,7 @@ export default function Dashboard() {
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-blue-100">{t("dashboard.covers")} :</label>
+                  <label className="text-xs text-teal-100">{t("dashboard.covers")} :</label>
                   <input
                     type="number"
                     min={1}
@@ -1314,7 +1314,7 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-blue-100">{t("dashboard.avgTicket")} :</label>
+                  <label className="text-xs text-teal-100">{t("dashboard.avgTicket")} :</label>
                   <input
                     type="number"
                     min={1}
@@ -1323,26 +1323,26 @@ export default function Dashboard() {
                     onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
                     className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
                   />
-                  <span className="text-xs text-blue-200">€</span>
+                  <span className="text-xs text-teal-200">€</span>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerDay")}</p>
+                <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerDay")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
+                <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
+                <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
               </div>
               <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-blue-200 mb-1">{t("dashboard.profitPerDay")}</p>
+                <p className="text-xs text-teal-200 mb-1">{t("dashboard.profitPerDay")}</p>
                 <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
               </div>
             </div>
@@ -1385,9 +1385,9 @@ export default function Dashboard() {
             </ResponsiveContainer>
             {/* Break-even indicator */}
             <div className="mt-4 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg px-3 py-2">
-                <Target className="w-4 h-4 text-blue-600" />
-                <span className="text-sm text-blue-800 dark:text-blue-300 font-medium">
+              <div className="flex items-center gap-2 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800/50 rounded-lg px-3 py-2">
+                <Target className="w-4 h-4 text-teal-600" />
+                <span className="text-sm text-teal-800 dark:text-teal-300 font-medium">
                   {t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite > 0 ? `${stats.seuilRentabilite} ${t("dashboard.coversPerDay")}` : t("dashboard.profitableFromFirst")}
                 </span>
               </div>
@@ -1405,7 +1405,7 @@ export default function Dashboard() {
             {/* Break-even analysis */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
               <div className="flex items-center gap-2 mb-4">
-                <Target className="w-5 h-5 text-blue-600" />
+                <Target className="w-5 h-5 text-teal-600" />
                 <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.profitabilityAnalysis")}</h3>
               </div>
               <div className="space-y-4">
@@ -1500,7 +1500,7 @@ export default function Dashboard() {
                       </td>
                       <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
                       <td className="py-2.5 text-center">
-                        <Link to={`/recipes/${r.id}`} className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                        <Link to={`/recipes/${r.id}`} className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium">
                           {t("dashboard.edit")} <ArrowRight className="w-3 h-3" />
                         </Link>
                       </td>
@@ -1552,7 +1552,7 @@ export default function Dashboard() {
                         <td className={`px-4 py-2.5 text-right font-mono font-semibold ${mc}`}>{r.margin.marginPercent.toFixed(1)}%</td>
                         <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
                         <td className="px-4 py-2.5 text-center">
-                          <Link to={`/recipes/${r.id}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                          <Link to={`/recipes/${r.id}`} className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300">
                             <Eye className="w-4 h-4 inline" />
                           </Link>
                         </td>

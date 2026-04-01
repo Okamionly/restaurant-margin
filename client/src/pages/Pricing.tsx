@@ -58,7 +58,7 @@ const plans: Plan[] = [
     description: 'Pour les restaurateurs ambitieux',
     priceMonthly: 29,
     popular: true,
-    icon: <Sparkles className="w-6 h-6 text-blue-400" />,
+    icon: <Sparkles className="w-6 h-6 text-teal-400" />,
     features: [
       { text: 'Dashboard & statistiques', included: true },
       { text: 'Calcul de marge & fiches techniques', included: true },
@@ -118,7 +118,7 @@ function FAQSection() {
               className="w-full flex items-center justify-between px-6 py-5 text-left"
             >
               <div className="flex items-center gap-3">
-                <HelpCircle className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                <HelpCircle className="w-5 h-5 text-teal-400 flex-shrink-0" />
                 <span className="text-slate-900 font-medium">{faq.question}</span>
               </div>
               {openIndex === index ? (
@@ -160,12 +160,12 @@ export default function Pricing() {
       <header className="border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <ChefHat className="w-8 h-8 text-blue-500" />
+            <ChefHat className="w-8 h-8 text-teal-500" />
             <span className="text-lg font-bold text-slate-900">RestauMargin</span>
           </Link>
           <Link
             to="/login"
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors"
+            className="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition-colors"
           >
             Se connecter
           </Link>
@@ -176,7 +176,7 @@ export default function Pricing() {
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-slate-900">
           Tarifs simples,{' '}
-          <span className="bg-gradient-to-r from-blue-500 to-emerald-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">
             marge maximale
           </span>
         </h1>
@@ -192,7 +192,7 @@ export default function Pricing() {
           <button
             onClick={() => setAnnual(!annual)}
             className={`relative w-14 h-7 rounded-full transition-colors ${
-              annual ? 'bg-blue-600' : 'bg-slate-300'
+              annual ? 'bg-teal-600' : 'bg-slate-300'
             }`}
           >
             <div
@@ -220,13 +220,13 @@ export default function Pricing() {
               key={plan.name}
               className={`relative flex flex-col bg-white rounded-2xl border p-8 transition-transform hover:-translate-y-1 shadow-sm ${
                 plan.popular
-                  ? 'border-blue-500 shadow-[0_0_40px_-10px_rgba(59,130,246,0.2)]'
+                  ? 'border-teal-500 shadow-[0_0_40px_-10px_rgba(59,130,246,0.2)]'
                   : 'border-slate-200'
               }`}
             >
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-full uppercase tracking-wide">
+                  <span className="px-4 py-1.5 bg-teal-600 text-white text-xs font-bold rounded-full uppercase tracking-wide">
                     Populaire
                   </span>
                 </div>
@@ -378,7 +378,7 @@ export default function Pricing() {
                   rel="noopener noreferrer"
                   className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-semibold transition-colors ${
                     plan.popular
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      ? 'bg-teal-600 hover:bg-teal-700 text-white'
                       : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                   }`}
                 >
@@ -418,7 +418,7 @@ export default function Pricing() {
           href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 px-8 py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
         >
           S'abonner a partir de 29€/mois
           <ArrowRight className="w-5 h-5" />

@@ -6,6 +6,7 @@ import {
   AlertTriangle, RotateCcw, Receipt, Loader2
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 
 const API = '';
@@ -96,6 +97,15 @@ const ENTREPRISE: EntrepriseInfo = {
   email: 'contact@restaumargin.fr',
   rcs: 'RCS Paris B 912 345 678',
   capitalSocial: '50 000',
+};
+
+const STATUS_KEYS: Record<DocStatus, string> = {
+  brouillon: 'devis.statusDraft',
+  envoye: 'devis.statusSent',
+  accepte: 'devis.statusAccepted',
+  refuse: 'devis.statusRefused',
+  paye: 'devis.statusPaid',
+  en_retard: 'devis.statusOverdue',
 };
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
@@ -262,13 +272,14 @@ function documentToApiPayload(doc: {
 
 // ── Components ─────────────────────────────────────────────────────────
 
-function StatusBadge({ statut }: { statut: DocStatus }) {
+function StatusBadge({ statut, t }: { statut: DocStatus; t: (key: string) => string }) {
   const cfg = STATUS_CONFIG[statut] || STATUS_CONFIG['brouillon'];
   const Icon = cfg.icon;
+  const key = STATUS_KEYS[statut] || STATUS_KEYS['brouillon'];
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.bg} ${cfg.text}`}>
       <Icon className="w-3.5 h-3.5" />
-      {cfg.label}
+      {t(key)}
     </span>
   );
 }
@@ -477,18 +488,19 @@ function LigneRow({
 
 // ── Payment Modal ──────────────────────────────────────────────────────
 
-function PaymentModal({ isOpen, onClose, onConfirm }: {
+function PaymentModal({ isOpen, onClose, onConfirm, t }: {
   isOpen: boolean; onClose: () => void;
   onConfirm: (date: string, mode: PaymentMode) => void;
+  t: (key: string) => string;
 }) {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [mode, setMode] = useState<PaymentMode>('virement');
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Enregistrer le paiement">
+    <Modal isOpen={isOpen} onClose={onClose} title={t('devis.registerPayment')}>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Date de paiement</label>
+          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('devis.paymentDate')}</label>
           <input
             type="date"
             value={date}
@@ -497,27 +509,27 @@ function PaymentModal({ isOpen, onClose, onConfirm }: {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Mode de paiement</label>
+          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('devis.paymentMode')}</label>
           <select
             value={mode}
             onChange={e => setMode(e.target.value as PaymentMode)}
             className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
-            <option value="virement">Virement bancaire</option>
-            <option value="cb">Carte bancaire</option>
-            <option value="especes">Espèces</option>
-            <option value="cheque">Chèque</option>
+            <option value="virement">{t('devis.bankTransfer')}</option>
+            <option value="cb">{t('devis.creditCard')}</option>
+            <option value="especes">{t('devis.cash')}</option>
+            <option value="cheque">{t('devis.check')}</option>
           </select>
         </div>
         <div className="flex justify-end gap-3 pt-2">
           <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-            Annuler
+            {t('common.cancel')}
           </button>
           <button
             onClick={() => onConfirm(date, mode)}
             className="px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
           >
-            Confirmer le paiement
+            {t('devis.confirmPayment')}
           </button>
         </div>
       </div>
@@ -531,6 +543,7 @@ function PaymentModal({ isOpen, onClose, onConfirm }: {
 
 export default function Devis() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   // ── State ────────────────────────────────────────────────────────────
   const [documents, setDocuments] = useState<DocumentDevis[]>([]);
@@ -568,7 +581,7 @@ export default function Devis() {
       setDocuments(json.map(apiDevisToDocument));
     } catch {
       setDocuments([]);
-      showToast('Erreur de chargement des devis', 'error');
+      showToast(t('devis.loadError'), 'error');
     } finally {
       setLoading(false);
     }
@@ -640,11 +653,11 @@ export default function Devis() {
 
   async function handleSaveDocument() {
     if (!client.nom && !client.raisonSociale) {
-      showToast('Veuillez renseigner le nom du client', 'error');
+      showToast(t('devis.errorClientName'), 'error');
       return;
     }
     if (lignes.some(l => !l.description || l.prixUnitaireHT === 0)) {
-      showToast('Veuillez compléter toutes les lignes', 'error');
+      showToast(t('devis.errorCompleteLines'), 'error');
       return;
     }
 
@@ -660,7 +673,7 @@ export default function Devis() {
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error('Erreur mise à jour');
-        showToast('Document mis à jour avec succès', 'success');
+        showToast(t('devis.documentUpdated'), 'success');
       } else {
         // POST create
         const res = await fetch(`${API}/api/devis`, {
@@ -669,7 +682,7 @@ export default function Devis() {
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error('Erreur création');
-        showToast(`${createType === 'devis' ? 'Devis' : createType === 'facture' ? 'Facture' : 'Avoir'} créé avec succès`, 'success');
+        showToast(t('devis.documentCreated'), 'success');
       }
 
       // Refresh list from API
@@ -677,7 +690,7 @@ export default function Devis() {
       setShowCreateModal(false);
       resetForm();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Erreur sauvegarde';
+      const message = err instanceof Error ? err.message : t('devis.saveError');
       showToast(message, 'error');
 
       // Fallback: save locally if API fails
@@ -733,7 +746,7 @@ export default function Devis() {
         headers: authHeaders(),
       });
       if (res.ok || res.status === 204) {
-        showToast('Document supprimé', 'info');
+        showToast(t('devis.documentDeleted'), 'info');
         await fetchDevis();
       } else {
         throw new Error('Erreur suppression');
@@ -741,7 +754,7 @@ export default function Devis() {
     } catch {
       // Fallback: remove locally
       setDocuments(prev => prev.filter(d => d.id !== id));
-      showToast('Document supprimé', 'info');
+      showToast(t('devis.documentDeleted'), 'info');
     }
   }
 
@@ -750,7 +763,7 @@ export default function Devis() {
     try {
       const clientEmail = doc.client.email;
       if (!clientEmail) {
-        showToast('Email client manquant — ajoutez-le dans la fiche client', 'error');
+        showToast(t('devis.errorClientEmail'), 'error');
         setSendingEmailId(null);
         return;
       }
@@ -781,16 +794,16 @@ export default function Devis() {
       } catch { /* continue with local update */ }
 
       setDocuments(prev => prev.map(d => d.id === doc.id ? { ...d, statut: 'envoye' as DocStatus } : d));
-      showToast(`${doc.numero} envoyé par email`, 'success');
+      showToast(t('devis.sentByEmail'), 'success');
     } catch {
-      showToast('Erreur lors de l\'envoi de l\'email', 'error');
+      showToast(t('devis.errorSendEmail'), 'error');
     } finally {
       setSendingEmailId(null);
     }
   }
 
   function handleDownloadPDF(doc: DocumentDevis) {
-    showToast(`Téléchargement de ${doc.numero}.pdf`, 'info');
+    showToast(t('devis.downloading'), 'info');
   }
 
   function handleConvertToFacture(devis: DocumentDevis) {
@@ -811,7 +824,7 @@ export default function Devis() {
       const updated = prev.map(d => d.id === devis.id ? { ...d, statut: 'accepte' as DocStatus } : d);
       return [facture, ...updated];
     });
-    showToast(`Facture ${facture.numero} créée à partir du devis ${devis.numero}`, 'success');
+    showToast(t('devis.invoiceCreatedFromQuote'), 'success');
     setActiveTab('factures');
   }
 
@@ -834,7 +847,7 @@ export default function Devis() {
     } : d));
     setShowPaymentModal(false);
     setPaymentDocId(null);
-    showToast('Facture marquée comme payée', 'success');
+    showToast(t('devis.invoiceMarkedPaid'), 'success');
   }
 
   function handleDuplicate(doc: DocumentDevis) {
@@ -849,7 +862,7 @@ export default function Devis() {
       ...totals,
     };
     setDocuments(prev => [dup, ...prev]);
-    showToast(`${doc.numero} dupliqué`, 'success');
+    showToast(t('devis.duplicated'), 'success');
   }
 
   function updateLigne(id: string, field: keyof LigneDevis, value: any) {
@@ -893,10 +906,10 @@ export default function Devis() {
             <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-xl">
               <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
-            Devis & Factures
+            {t('devis.title')}
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
-            Gérez vos devis, factures et avoirs en toute conformité
+            {t('devis.subtitle')}
           </p>
         </div>
         <button
@@ -904,7 +917,7 @@ export default function Devis() {
           className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
-          {activeTab === 'avoirs' ? 'Nouvel avoir' : activeTab === 'factures' ? 'Nouvelle facture' : 'Nouveau devis'}
+          {activeTab === 'avoirs' ? t('devis.newCreditNote') : activeTab === 'factures' ? t('devis.newInvoice') : t('devis.newQuote')}
         </button>
       </div>
 
@@ -912,7 +925,7 @@ export default function Devis() {
       {loading && (
         <div className="flex items-center justify-center py-20">
           <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-          <span className="ml-3 text-slate-400 dark:text-slate-400">Chargement des documents...</span>
+          <span className="ml-3 text-slate-400 dark:text-slate-400">{t('devis.loadingDocuments')}</span>
         </div>
       )}
 
@@ -920,10 +933,10 @@ export default function Devis() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Devis en attente', value: formatEuro(stats.enAttente), icon: Clock, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-          { label: 'CA facturé', value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-          { label: 'Impayés', value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
-          { label: 'Taux de conversion', value: `${stats.tauxConversion}%`, icon: Receipt, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+          { label: t('devis.invoicedRevenue'), value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+          { label: t('devis.unpaid'), value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+          { label: t('devis.conversionRate'), value: `${stats.tauxConversion}%`, icon: Receipt, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
         ].map(stat => (
           <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50`}>
             <div className="flex items-center gap-2 mb-2">
@@ -939,9 +952,9 @@ export default function Devis() {
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="flex border-b border-slate-200 dark:border-slate-700">
           {([
-            { id: 'devis' as TabId, label: 'Devis', count: tabCounts.devis },
-            { id: 'factures' as TabId, label: 'Factures', count: tabCounts.factures },
-            { id: 'avoirs' as TabId, label: 'Avoirs', count: tabCounts.avoirs },
+            { id: 'devis' as TabId, label: t('devis.tabQuotes'), count: tabCounts.devis },
+            { id: 'factures' as TabId, label: t('devis.tabInvoices'), count: tabCounts.factures },
+            { id: 'avoirs' as TabId, label: t('devis.tabCreditNotes'), count: tabCounts.avoirs },
           ]).map(tab => (
             <button
               key={tab.id}
@@ -973,7 +986,7 @@ export default function Devis() {
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Rechercher par numéro, client..."
+                placeholder={t('devis.searchPlaceholder')}
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
@@ -986,13 +999,13 @@ export default function Devis() {
               }`}
             >
               <Filter className="w-4 h-4" />
-              Filtres
+              {t('devis.filters')}
             </button>
           </div>
 
           {showFilters && (
             <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
-              <span className="text-xs text-slate-400 dark:text-slate-400 self-center mr-1">Statut :</span>
+              <span className="text-xs text-slate-400 dark:text-slate-400 self-center mr-1">{t('devis.status')} :</span>
               {['all', 'brouillon', 'envoye', 'accepte', 'refuse', 'paye', 'en_retard'].map(s => (
                 <button
                   key={s}
@@ -1003,7 +1016,7 @@ export default function Devis() {
                       : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
-                  {s === 'all' ? 'Tous' : (STATUS_CONFIG[s as DocStatus] || STATUS_CONFIG['brouillon']).label}
+                  {s === 'all' ? t('common.all') : t(STATUS_KEYS[s as DocStatus] || STATUS_KEYS['brouillon'])}
                 </button>
               ))}
             </div>
@@ -1015,20 +1028,20 @@ export default function Devis() {
           {filteredDocs.length === 0 ? (
             <div className="text-center py-16">
               <FileText className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-400 dark:text-slate-400 font-medium">Aucun document trouvé</p>
-              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Créez votre premier document</p>
+              <p className="text-slate-400 dark:text-slate-400 font-medium">{t('devis.noDocuments')}</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">{t('devis.createFirstDocument')}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-700/50">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Numéro</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Client</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">Date</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Montant HT</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">Montant TTC</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Statut</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colNumber')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colClient')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">{t('devis.colDate')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colAmountHT')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">{t('devis.colAmountTTC')}</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.status')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colActions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -1063,66 +1076,66 @@ export default function Devis() {
                       {formatEuro(doc.totalTTC)}
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <StatusBadge statut={doc.statut} />
+                      <StatusBadge statut={doc.statut} t={t} />
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handlePreview(doc)} title="Aperçu" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
                           <Eye className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleEdit(doc)} title="Modifier" className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
+                          <button onClick={() => handleEdit(doc)} title={t('devis.edit')} className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
-                        <button onClick={() => handleDuplicate(doc)} title="Dupliquer" className="p-1.5 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        <button onClick={() => handleDuplicate(doc)} title={t('devis.duplicate')} className="p-1.5 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
                           <Copy className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title="Envoyer par email" className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50">
+                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50">
                             {sendingEmailId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                           </button>
                         )}
                         {doc.type === 'devis' && doc.statut === 'accepte' && (
                           <button
                             onClick={() => handleConvertToFacture(doc)}
-                            title="Convertir en facture"
+                            title={t('devis.convertToInvoice')}
                             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
                           >
                             <ArrowRight className="w-3.5 h-3.5" />
-                            Facture
+                            {t('devis.tabInvoices')}
                           </button>
                         )}
                         {doc.type === 'devis' && doc.statut === 'envoye' && (
-                          <button onClick={() => handleConvertToFacture(doc)} title="Convertir en facture" className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                          <button onClick={() => handleConvertToFacture(doc)} title={t('devis.convertToInvoice')} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
                             <ArrowRight className="w-4 h-4" />
                           </button>
                         )}
                         {doc.type === 'devis' && doc.statut === 'accepte' && (
                           <button
                             onClick={() => { setPaymentDocId(doc.id); setShowPaymentModal(true); }}
-                            title="Marquer comme payé"
+                            title={t('devis.markAsPaid')}
                             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                           >
                             <CreditCard className="w-3.5 h-3.5" />
-                            Payé
+                            {t('devis.statusPaid')}
                           </button>
                         )}
                         {doc.type === 'facture' && doc.statut !== 'paye' && (
                           <button
                             onClick={() => { setPaymentDocId(doc.id); setShowPaymentModal(true); }}
-                            title="Marquer payé" className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                            title={t('devis.markAsPaid')} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                           >
                             <CreditCard className="w-4 h-4" />
                           </button>
                         )}
                         {doc.type === 'facture' && (
-                          <button onClick={() => handleCreateAvoir(doc)} title="Créer un avoir" className="p-1.5 rounded-lg text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                          <button onClick={() => handleCreateAvoir(doc)} title={t('devis.createCreditNote')} className="p-1.5 rounded-lg text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                             <RotateCcw className="w-4 h-4" />
                           </button>
                         )}
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleDelete(doc.id)} title="Supprimer" className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                          <button onClick={() => handleDelete(doc.id)} title={t('devis.delete')} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         )}
@@ -1142,7 +1155,7 @@ export default function Devis() {
       <Modal
         isOpen={showCreateModal}
         onClose={() => { setShowCreateModal(false); resetForm(); }}
-        title={editingDoc ? `Modifier ${editingDoc.numero}` : `Nouveau ${createType === 'devis' ? 'devis' : createType === 'facture' ? 'facture' : 'avoir'}`}
+        title={editingDoc ? `${t('devis.edit')} ${editingDoc.numero}` : (createType === 'devis' ? t('devis.newQuote') : createType === 'facture' ? t('devis.newInvoice') : t('devis.newCreditNote'))}
         className="max-w-5xl"
       >
         <div className="space-y-6">
@@ -1150,7 +1163,7 @@ export default function Devis() {
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">Émetteur</span>
+              <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">{t('devis.sender')}</span>
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs text-blue-600 dark:text-blue-300">
               <div><span className="font-medium">{ENTREPRISE.nom}</span></div>
@@ -1164,7 +1177,7 @@ export default function Devis() {
           <div>
             <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
               <Building2 className="w-4 h-4" />
-              Informations client
+              {t('devis.clientInfo')}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
@@ -1195,7 +1208,7 @@ export default function Devis() {
           <div>
             <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
               <FileText className="w-4 h-4" />
-              Lignes du document
+              {t('devis.documentLines')}
             </h4>
             <div className="hidden sm:grid grid-cols-12 gap-2 px-2 mb-1">
               <div className="col-span-4 text-xs text-slate-400 font-medium">Description</div>
@@ -1223,7 +1236,7 @@ export default function Devis() {
               className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors text-sm font-medium w-full justify-center"
             >
               <Plus className="w-4 h-4" />
-              Ajouter une ligne
+              {t('devis.addLine')}
             </button>
           </div>
 
@@ -1251,7 +1264,7 @@ export default function Devis() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {createType === 'devis' && (
               <div>
-                <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Durée de validité (jours)</label>
+                <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('devis.validityDuration')}</label>
                 <input
                   type="number"
                   value={dureeValidite}
@@ -1262,7 +1275,7 @@ export default function Devis() {
               </div>
             )}
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Conditions de paiement</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('devis.paymentTerms')}</label>
               <select
                 value={conditionsPaiement}
                 onChange={e => setConditionsPaiement(e.target.value)}
@@ -1275,19 +1288,19 @@ export default function Devis() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Notes</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('devis.notes')}</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={3}
-              placeholder="Notes additionnelles, informations complémentaires..."
+              placeholder={t('devis.notesPlaceholder')}
               className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none"
             />
           </div>
 
           {/* Mentions légales (read-only) */}
           <div className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4">
-            <div className="text-xs font-semibold text-slate-400 dark:text-slate-400 mb-2">Mentions légales obligatoires (incluses automatiquement)</div>
+            <div className="text-xs font-semibold text-slate-400 dark:text-slate-400 mb-2">{t('devis.legalNotices')}</div>
             <div className="text-xs text-slate-400 dark:text-slate-500 whitespace-pre-line">
               {createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE}
             </div>
@@ -1299,7 +1312,7 @@ export default function Devis() {
               onClick={() => { setShowCreateModal(false); resetForm(); }}
               className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
-              Annuler
+              {t('common.cancel')}
             </button>
             <button
               onClick={handleSaveDocument}
@@ -1307,7 +1320,7 @@ export default function Devis() {
               className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              {editingDoc ? 'Mettre à jour' : 'Enregistrer'}
+              {editingDoc ? t('devis.update') : t('devis.save')}
             </button>
           </div>
         </div>
@@ -1330,7 +1343,7 @@ export default function Devis() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white transition-colors"
                 >
                   <Send className="w-4 h-4" />
-                  Envoyer par email
+                  {t('devis.sendByEmail')}
                 </button>
               )}
               <button
@@ -1338,7 +1351,7 @@ export default function Devis() {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
               >
                 <Download className="w-4 h-4" />
-                Télécharger PDF
+                {t('devis.downloadPDF')}
               </button>
               {previewDoc.type === 'devis' && (previewDoc.statut === 'accepte' || previewDoc.statut === 'envoye') && (
                 <button
@@ -1346,7 +1359,7 @@ export default function Devis() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
                 >
                   <ArrowRight className="w-4 h-4" />
-                  Convertir en facture
+                  {t('devis.convertToInvoice')}
                 </button>
               )}
               {((previewDoc.type === 'facture' && previewDoc.statut !== 'paye') ||
@@ -1360,7 +1373,7 @@ export default function Devis() {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
                 >
                   <CreditCard className="w-4 h-4" />
-                  Marquer comme payé
+                  {t('devis.markAsPaid')}
                 </button>
               )}
             </div>
@@ -1373,6 +1386,7 @@ export default function Devis() {
         isOpen={showPaymentModal}
         onClose={() => { setShowPaymentModal(false); setPaymentDocId(null); }}
         onConfirm={(date, mode) => paymentDocId && handleMarkPaid(paymentDocId, date, mode)}
+        t={t}
       />
     </div>
   );

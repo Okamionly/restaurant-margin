@@ -434,3 +434,38 @@ export async function createWasteLog(data: {
   });
   return handleResponse<unknown>(res);
 }
+
+// --- Mercuriale ---
+
+export interface MercurialeSearchResult {
+  name: string;
+  priceMin: number | null;
+  priceMax: number | null;
+  unit: string;
+  supplier: string | null;
+  trend: string | null;
+  trendDetail: string | null;
+  category: string | null;
+}
+
+export interface MercurialeSuggestedIngredient {
+  name: string;
+  quantity: number;
+  unit: string;
+  marketPrice: number | null;
+  priceMin: number | null;
+  priceMax: number | null;
+  supplier: string | null;
+  trend: string | null;
+  trendDetail: string | null;
+}
+
+export async function searchMercuriale(q: string): Promise<MercurialeSearchResult[]> {
+  const res = await fetch(`${API_BASE}/mercuriale/search?q=${encodeURIComponent(q)}`, { headers: authHeaders() });
+  return handleResponse<MercurialeSearchResult[]>(res);
+}
+
+export async function suggestMercurialeIngredients(recipeName: string): Promise<{ ingredients: MercurialeSuggestedIngredient[] }> {
+  const res = await fetch(`${API_BASE}/mercuriale/suggest?q=${encodeURIComponent(recipeName)}`, { headers: authHeaders() });
+  return handleResponse<{ ingredients: MercurialeSuggestedIngredient[] }>(res);
+}

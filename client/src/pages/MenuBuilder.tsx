@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { fetchRecipes, updateRecipe } from '../services/api';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import type { Recipe } from '../types';
 import { RECIPE_CATEGORIES, ALLERGENS } from '../types';
@@ -120,6 +121,7 @@ export default function MenuBuilder() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   // UI toggles
@@ -239,9 +241,9 @@ export default function MenuBuilder() {
         })),
       });
       setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? updated : r)));
-      showToast('Sauvegardé', 'success');
+      showToast(t('menuBuilder.saved'), 'success');
     } catch {
-      showToast('Erreur lors de la sauvegarde', 'error');
+      showToast(t('menuBuilder.saveError'), 'error');
     }
     setEditingPriceId(null);
   }, [editingPriceValue, showToast]);
@@ -384,7 +386,7 @@ export default function MenuBuilder() {
 
   if (loading)
     return (
-      <div className="text-center py-12 text-slate-400 dark:text-slate-400">Chargement...</div>
+      <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t('common.loading')}</div>
     );
 
   return (
@@ -432,7 +434,7 @@ export default function MenuBuilder() {
           {/* Sort */}
           <div className="flex items-center gap-2 text-sm">
             <ArrowUpDown className="w-4 h-4 text-slate-400" />
-            <span className="text-slate-400 dark:text-slate-400">Tri :</span>
+            <span className="text-slate-400 dark:text-slate-400">{t('menuBuilder.sort')} :</span>
             {(['name', 'price', 'margin'] as SortKey[]).map((key) => (
               <button
                 key={key}
@@ -481,13 +483,13 @@ export default function MenuBuilder() {
               }`}
             >
               <Filter className="w-4 h-4" />
-              Allergenes{excludedAllergens.size > 0 && ` (${excludedAllergens.size})`}
+              {t('menuBuilder.allergens')}{excludedAllergens.size > 0 && ` (${excludedAllergens.size})`}
             </button>
             {allergenFilterOpen && (
               <div className="absolute z-50 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-3 w-64">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
-                    Exclure les allergenes
+                    {t('menuBuilder.excludeAllergens')}
                   </span>
                   <button onClick={() => setAllergenFilterOpen(false)}>
                     <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
@@ -547,13 +549,13 @@ export default function MenuBuilder() {
       {showStats && (
         <div className="print:hidden grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <StatCard
-            label="Total plats actifs"
+            label={t('menuBuilder.totalActiveDishes')}
             value={String(totalItems)}
             icon={<ChefHat className="w-5 h-5 text-white" />}
-            iconBg="bg-blue-600"
+            iconBg="bg-teal-600"
           />
           <StatCard
-            label="Marge moy."
+            label={t('menuBuilder.avgMargin')}
             value={`${globalAvgMargin.toFixed(1)}%`}
             valueColor={
               globalAvgMargin >= 70
@@ -566,13 +568,13 @@ export default function MenuBuilder() {
             iconBg="bg-green-600"
           />
           <StatCard
-            label="Prix moyen"
+            label={t('menuBuilder.avgPrice')}
             value={`${globalAvgPrice.toFixed(2)} €`}
             icon={<DollarSign className="w-5 h-5 text-white" />}
             iconBg="bg-purple-600"
           />
           <StatCard
-            label="Fourchette prix"
+            label={t('menuBuilder.priceRange')}
             value={`${globalMinPrice.toFixed(0)} - ${globalMaxPrice.toFixed(0)} €`}
             icon={<ArrowUpDown className="w-5 h-5 text-white" />}
             iconBg="bg-cyan-600"
@@ -592,14 +594,14 @@ export default function MenuBuilder() {
         <div className="hidden print:block text-center mb-6">
           {menuDuJourMode ? (
             <>
-              <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">Menu du Jour</div>
+              <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">{t('menuBuilder.menuOfTheDay')}</div>
               {menuDuJourPrice && (
                 <div className="text-2xl font-serif font-bold text-amber-800 mt-2">{menuDuJourPrice} &euro;</div>
               )}
               <div className="text-sm text-slate-400 mt-1">{menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''}</div>
             </>
           ) : (
-            <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">La Carte</div>
+            <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">{t('menuBuilder.theMenu')}</div>
           )}
           <MenuOrnament />
         </div>
@@ -611,7 +613,7 @@ export default function MenuBuilder() {
               Aucun plat sur la carte
             </h3>
             <p className="text-slate-400 dark:text-slate-500">
-              Créez des recettes pour construire votre carte.
+              {t('menuBuilder.createRecipesToBuild')}
             </p>
           </div>
         ) : (
@@ -630,13 +632,13 @@ export default function MenuBuilder() {
                 <div className="flex flex-col items-center gap-2 mt-2">
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-sm rounded-full font-medium">
                     <Star className="w-3.5 h-3.5" />
-                    {menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''} selectionne{menuDuJourCount > 1 ? 's' : ''}
+                    {menuDuJourCount} {t('menuBuilder.dishesSelected')}
                   </span>
                   {/* Prix menu du jour */}
                   <div className="flex items-center gap-2">
                     {editingMenuPrice ? (
                       <div className="flex items-center gap-1">
-                        <span className="text-sm text-slate-400">Prix menu :</span>
+                        <span className="text-sm text-slate-400">{t('menuBuilder.menuPrice')} :</span>
                         <input
                           type="number"
                           step="0.50"
@@ -659,7 +661,7 @@ export default function MenuBuilder() {
                         className="inline-flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
                       >
                         <Pencil className="w-3 h-3" />
-                        {menuDuJourPrice ? `Prix menu : ${menuDuJourPrice} €` : 'Definir le prix du menu'}
+                        {menuDuJourPrice ? `${t('menuBuilder.menuPrice')} : ${menuDuJourPrice} €` : t('menuBuilder.setMenuPrice')}
                       </button>
                     )}
                   </div>
@@ -704,7 +706,7 @@ export default function MenuBuilder() {
                       <div className="absolute z-40 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 w-72 max-h-60 overflow-y-auto">
                         <div className="flex items-center justify-between mb-2 px-2">
                           <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
-                            Plats retires - {getCategoryLabel(group.category)}
+                            {t('menuBuilder.removedDishes')} - {getCategoryLabel(group.category)}
                           </span>
                           <button onClick={() => setQuickAddCategory(null)}>
                             <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
@@ -712,7 +714,7 @@ export default function MenuBuilder() {
                         </div>
                         {getAvailableForCategory(group.category).length === 0 ? (
                           <div className="px-2 py-3 text-center">
-                            <p className="text-xs text-slate-400 mb-2">Aucun plat retire dans cette categorie</p>
+                            <p className="text-xs text-slate-400 mb-2">{t('menuBuilder.noDishRemovedInCategory')}</p>
                             <Link
                               to="/recipes"
                               className="text-xs text-amber-600 hover:text-amber-700 font-medium"
@@ -776,7 +778,7 @@ export default function MenuBuilder() {
                             {/* Toggle on/off */}
                             <button
                               onClick={() => toggleExcluded(recipe.id)}
-                              title="Retirer de la carte"
+                              title={t('menuBuilder.removeFromMenu')}
                               className="text-green-500 hover:text-red-400 transition-colors"
                             >
                               <ToggleRight className="w-5 h-5" />
@@ -785,7 +787,7 @@ export default function MenuBuilder() {
                             {!menuDuJourMode && (
                               <button
                                 onClick={() => toggleMenuDuJour(recipe.id)}
-                                title={isDuJour ? 'Retirer du menu du jour' : 'Ajouter au menu du jour'}
+                                title={isDuJour ? t('menuBuilder.removeFromDailyMenu') : t('menuBuilder.addToDailyMenu')}
                                 className={`transition-colors ${
                                   isDuJour
                                     ? 'text-amber-500'
@@ -801,7 +803,7 @@ export default function MenuBuilder() {
                                 onClick={() => moveRecipe(group.category, recipe.id, 'up')}
                                 disabled={ri === 0}
                                 className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                title="Monter"
+                                title={t('menuBuilder.moveUp')}
                               >
                                 <ChevronUp className="w-3.5 h-3.5" />
                               </button>
@@ -809,7 +811,7 @@ export default function MenuBuilder() {
                                 onClick={() => moveRecipe(group.category, recipe.id, 'down')}
                                 disabled={ri === group.recipes.length - 1}
                                 className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                title="Descendre"
+                                title={t('menuBuilder.moveDown')}
                               >
                                 <ChevronDown className="w-3.5 h-3.5" />
                               </button>
@@ -857,7 +859,7 @@ export default function MenuBuilder() {
                                     <button
                                       onClick={() => startEditPrice(recipe)}
                                       className="print:hidden font-serif font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer group/price relative"
-                                      title="Cliquer pour modifier le prix"
+                                      title={t('menuBuilder.clickToEditPrice')}
                                     >
                                       {recipe.sellingPrice.toFixed(2)} &euro;
                                       <Pencil className="w-3 h-3 absolute -right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/price:opacity-100 text-amber-500 transition-opacity" />
@@ -900,7 +902,7 @@ export default function MenuBuilder() {
                             {/* Print: allergen line */}
                             {allergens.length > 0 && (
                               <p className="hidden print:block text-[9px] text-slate-400 mt-0.5">
-                                Allergenes : {allergens.join(', ')}
+                                {t('menuBuilder.allergens')} : {allergens.join(', ')}
                               </p>
                             )}
                           </div>
@@ -909,7 +911,7 @@ export default function MenuBuilder() {
                           <Link
                             to={`/recipes/${recipe.id}`}
                             className="print:hidden shrink-0 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-amber-100 dark:hover:bg-amber-900/30 text-amber-600 dark:text-amber-400 transition-all"
-                            title="Voir fiche technique"
+                            title={t('menuBuilder.viewRecipe')}
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
@@ -927,7 +929,7 @@ export default function MenuBuilder() {
             {/* Menu footer */}
             <div className="text-center py-4 px-6 border-t border-amber-100 dark:border-slate-700 print:border-slate-300">
               <p className="text-xs text-slate-400 dark:text-slate-500 print:text-slate-300">
-                Prix TTC &mdash; Tous nos plats sont faits maison. N&apos;hesitez pas a signaler vos allergies a notre equipe.
+                {t('menuBuilder.menuFooter')}
               </p>
               <MenuOrnament />
             </div>
@@ -950,7 +952,7 @@ export default function MenuBuilder() {
               >
                 <button
                   onClick={() => toggleExcluded(recipe.id)}
-                  title="Remettre sur la carte"
+                  title={t('menuBuilder.addBackToMenu')}
                   className="text-slate-400 hover:text-green-500 transition-colors"
                 >
                   <ToggleLeft className="w-5 h-5" />
@@ -971,7 +973,7 @@ export default function MenuBuilder() {
                 <Link
                   to={`/recipes/${recipe.id}`}
                   className="shrink-0 p-1 rounded text-slate-400 hover:text-amber-600 transition-colors"
-                  title="Voir fiche technique"
+                  title={t('menuBuilder.viewRecipe')}
                 >
                   <Eye className="w-4 h-4" />
                 </Link>
@@ -994,23 +996,23 @@ export default function MenuBuilder() {
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-slate-400 dark:text-slate-500">Plats</span>
+                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.dishes')}</span>
                   <div className="font-semibold text-slate-400 dark:text-slate-200">{g.recipes.length}</div>
                 </div>
                 <div>
-                  <span className="text-slate-400 dark:text-slate-500">Prix moyen</span>
+                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.avgPrice')}</span>
                   <div className="font-semibold text-slate-400 dark:text-slate-200">
                     {g.avgPrice.toFixed(2)} &euro;
                   </div>
                 </div>
                 <div>
-                  <span className="text-slate-400 dark:text-slate-500">Min - Max</span>
+                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.minMax')}</span>
                   <div className="font-semibold text-slate-400 dark:text-slate-200">
                     {g.minPrice.toFixed(0)} - {g.maxPrice.toFixed(0)} &euro;
                   </div>
                 </div>
                 <div>
-                  <span className="text-slate-400 dark:text-slate-500">Marge moy.</span>
+                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.avgMargin')}</span>
                   <div
                     className={`font-semibold ${
                       g.avgMargin >= 70

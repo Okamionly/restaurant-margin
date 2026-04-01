@@ -1,167 +1,163 @@
-import { useState, useMemo } from 'react';
-import { TrendingUp, TrendingDown, Minus, History, Search, Euro, Filter, CalendarDays } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, Minus, Search, CalendarDays, AlertTriangle, Lightbulb, ArrowRight, RefreshCw, ExternalLink } from 'lucide-react';
 
 // --- Types ---
-
-interface MercurialeItem {
+interface MercurialePublication {
   id: number;
-  name: string;
-  category: string;
-  unit: string;
-  currentPrice: number;
-  previousPrice: number;
-  variation: number;
-  trend: 'up' | 'down' | 'stable';
-  supplier: string;
+  title: string;
+  week_date: string;
+  sources: string;
+  published: boolean;
 }
 
-type Category = 'Tous' | 'Fruits & Légumes' | 'Viandes' | 'Poissons' | 'Épicerie' | 'Produits laitiers';
+interface MercurialePrice {
+  id: number;
+  category: string;
+  ingredient_name: string;
+  supplier: string;
+  price_min: number;
+  price_max: number;
+  unit: string;
+  trend: string;
+  trend_detail: string | null;
+}
 
-// --- Demo Data ---
+interface MercurialeAlert {
+  id: number;
+  type: string;
+  ingredient_name: string;
+  variation: string;
+  action_text: string;
+  saving: string | null;
+}
 
-const LAST_UPDATE = '2026-03-31';
+interface MercurialeAlternative {
+  id: number;
+  product: string;
+  alternative: string;
+  saving_per_kg: string;
+}
 
-const DEMO_DATA: MercurialeItem[] = [
-  { id: 1, name: 'Tomates grappe', category: 'Fruits & Légumes', unit: 'kg', currentPrice: 2.85, previousPrice: 2.60, variation: 9.6, trend: 'up', supplier: 'Rungis Direct' },
-  { id: 2, name: 'Oignons jaunes', category: 'Fruits & Légumes', unit: 'kg', currentPrice: 1.20, previousPrice: 1.25, variation: -4.0, trend: 'down', supplier: 'Pomona' },
-  { id: 3, name: 'Carottes', category: 'Fruits & Légumes', unit: 'kg', currentPrice: 1.45, previousPrice: 1.40, variation: 3.6, trend: 'up', supplier: 'Pomona' },
-  { id: 4, name: 'Pommes de terre', category: 'Fruits & Légumes', unit: 'kg', currentPrice: 0.95, previousPrice: 0.98, variation: -3.1, trend: 'down', supplier: 'Transgourmet' },
-  { id: 5, name: 'Citrons', category: 'Fruits & Légumes', unit: 'kg', currentPrice: 2.30, previousPrice: 2.28, variation: 0.9, trend: 'stable', supplier: 'Rungis Direct' },
-  { id: 6, name: 'Filet de poulet', category: 'Viandes', unit: 'kg', currentPrice: 8.90, previousPrice: 8.50, variation: 4.7, trend: 'up', supplier: 'Davigel' },
-  { id: 7, name: 'Entrecôte de boeuf', category: 'Viandes', unit: 'kg', currentPrice: 28.50, previousPrice: 27.80, variation: 2.5, trend: 'up', supplier: 'Bigard' },
-  { id: 8, name: 'Échine de porc', category: 'Viandes', unit: 'kg', currentPrice: 6.70, previousPrice: 6.90, variation: -2.9, trend: 'down', supplier: 'Bigard' },
-  { id: 9, name: 'Agneau (gigot)', category: 'Viandes', unit: 'kg', currentPrice: 16.80, previousPrice: 16.50, variation: 1.8, trend: 'stable', supplier: 'Davigel' },
-  { id: 10, name: 'Saumon frais', category: 'Poissons', unit: 'kg', currentPrice: 18.50, previousPrice: 17.20, variation: 7.6, trend: 'up', supplier: 'Reynaud' },
-  { id: 11, name: 'Crevettes (16/20)', category: 'Poissons', unit: 'kg', currentPrice: 14.90, previousPrice: 15.30, variation: -2.6, trend: 'down', supplier: 'Reynaud' },
-  { id: 12, name: 'Cabillaud', category: 'Poissons', unit: 'kg', currentPrice: 15.60, previousPrice: 15.40, variation: 1.3, trend: 'stable', supplier: 'Reynaud' },
-  { id: 13, name: 'Beurre doux', category: 'Produits laitiers', unit: 'kg', currentPrice: 7.80, previousPrice: 7.20, variation: 8.3, trend: 'up', supplier: 'Transgourmet' },
-  { id: 14, name: 'Crème liquide 35%', category: 'Produits laitiers', unit: 'L', currentPrice: 3.40, previousPrice: 3.30, variation: 3.0, trend: 'up', supplier: 'Transgourmet' },
-  { id: 15, name: 'Parmesan AOP', category: 'Produits laitiers', unit: 'kg', currentPrice: 22.00, previousPrice: 21.50, variation: 2.3, trend: 'up', supplier: 'Pomona' },
-  { id: 16, name: 'Mozzarella', category: 'Produits laitiers', unit: 'kg', currentPrice: 6.50, previousPrice: 6.60, variation: -1.5, trend: 'stable', supplier: 'Pomona' },
-  { id: 17, name: 'Farine T55', category: 'Épicerie', unit: 'kg', currentPrice: 0.85, previousPrice: 0.82, variation: 3.7, trend: 'up', supplier: 'Transgourmet' },
-  { id: 18, name: 'Huile d\'olive extra vierge', category: 'Épicerie', unit: 'L', currentPrice: 9.50, previousPrice: 8.80, variation: 8.0, trend: 'up', supplier: 'Metro' },
-  { id: 19, name: 'Riz basmati', category: 'Épicerie', unit: 'kg', currentPrice: 2.10, previousPrice: 2.15, variation: -2.3, trend: 'down', supplier: 'Metro' },
-  { id: 20, name: 'Pâtes penne', category: 'Épicerie', unit: 'kg', currentPrice: 1.60, previousPrice: 1.55, variation: 3.2, trend: 'up', supplier: 'Transgourmet' },
-  { id: 21, name: 'Concentré de tomate', category: 'Épicerie', unit: 'kg', currentPrice: 3.20, previousPrice: 3.10, variation: 3.2, trend: 'up', supplier: 'Metro' },
-  { id: 22, name: 'Sel fin', category: 'Épicerie', unit: 'kg', currentPrice: 0.45, previousPrice: 0.45, variation: 0, trend: 'stable', supplier: 'Transgourmet' },
-];
+interface MercurialeData {
+  publication: MercurialePublication | null;
+  prices: MercurialePrice[];
+  alerts: MercurialeAlert[];
+  alternatives: MercurialeAlternative[];
+}
 
-const CATEGORIES: Category[] = ['Tous', 'Fruits & Légumes', 'Viandes', 'Poissons', 'Épicerie', 'Produits laitiers'];
+const CATEGORY_CONFIG: Record<string, { emoji: string; color: string; bg: string }> = {
+  'Viandes': { emoji: '\uD83E\uDD69', color: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/30' },
+  'Poissons': { emoji: '\uD83D\uDC1F', color: 'text-cyan-400', bg: 'bg-cyan-500/10 border-cyan-500/30' },
+  'Légumes': { emoji: '\uD83E\uDD66', color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/30' },
+  'Produits laitiers': { emoji: '\uD83E\uDDC8', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/30' },
+  'Épicerie': { emoji: '\uD83E\uDDC2', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/30' },
+};
 
-type SortKey = 'name' | 'currentPrice' | 'variation';
-type SortDir = 'asc' | 'desc';
-
-// --- Helpers ---
-
-function TrendBadge({ trend, variation }: { trend: 'up' | 'down' | 'stable'; variation: number }) {
-  if (trend === 'up') {
+function TrendBadge({ trend, detail }: { trend: string; detail: string | null }) {
+  if (trend === 'hausse') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">
         <TrendingUp className="w-3 h-3" />
-        +{variation.toFixed(1)}%
+        {detail || 'Hausse'}
       </span>
     );
   }
-  if (trend === 'down') {
+  if (trend === 'baisse') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400">
         <TrendingDown className="w-3 h-3" />
-        {variation.toFixed(1)}%
+        {detail || 'Baisse'}
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">
       <Minus className="w-3 h-3" />
-      {variation === 0 ? '0.0' : (variation > 0 ? '+' : '') + variation.toFixed(1)}%
+      Stable
     </span>
   );
 }
-
-function CategoryBadge({ category }: { category: string }) {
-  const colors: Record<string, string> = {
-    'Fruits & Légumes': 'bg-green-500/20 text-green-400',
-    'Viandes': 'bg-rose-500/20 text-rose-400',
-    'Poissons': 'bg-cyan-500/20 text-cyan-400',
-    'Épicerie': 'bg-amber-500/20 text-amber-400',
-    'Produits laitiers': 'bg-blue-500/20 text-blue-400',
-  };
-  return (
-    <span className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-medium ${colors[category] || 'bg-slate-500/20 text-slate-400'}`}>
-      {category}
-    </span>
-  );
-}
-
-// --- Main Component ---
 
 export default function Mercuriale() {
+  const [data, setData] = useState<MercurialeData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<Category>('Tous');
-  const [sortKey, setSortKey] = useState<SortKey>('name');
-  const [sortDir, setSortDir] = useState<SortDir>('asc');
+  const [error, setError] = useState('');
 
-  // --- Stats ---
-
-  const stats = useMemo(() => {
-    const ups = DEMO_DATA.filter((d) => d.trend === 'up').length;
-    const downs = DEMO_DATA.filter((d) => d.trend === 'down').length;
-    const stables = DEMO_DATA.filter((d) => d.trend === 'stable').length;
-    const avgVariation = DEMO_DATA.reduce((sum, d) => sum + d.variation, 0) / DEMO_DATA.length;
-    return { ups, downs, stables, avgVariation, total: DEMO_DATA.length };
+  useEffect(() => {
+    fetchMercuriale();
   }, []);
 
-  // --- Sorting / Filtering ---
+  async function fetchMercuriale() {
+    try {
+      setLoading(true);
+      setError('');
+      const res = await fetch('/api/mercuriale/latest');
+      if (!res.ok) throw new Error('Erreur chargement');
+      const json = await res.json();
+      setData(json);
+    } catch {
+      setError('Impossible de charger la mercuriale');
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+  // Group prices by category
+  const pricesByCategory = (data?.prices || []).reduce<Record<string, MercurialePrice[]>>((acc, p) => {
+    if (!acc[p.category]) acc[p.category] = [];
+    acc[p.category].push(p);
+    return acc;
+  }, {});
+
+  // Filter by search
+  const filteredCategories = Object.entries(pricesByCategory).reduce<Record<string, MercurialePrice[]>>((acc, [cat, prices]) => {
+    if (!search.trim()) {
+      acc[cat] = prices;
     } else {
-      setSortKey(key);
-      setSortDir(key === 'name' ? 'asc' : 'desc');
-    }
-  };
-
-  const filteredRows = useMemo(() => {
-    let rows = [...DEMO_DATA];
-
-    // Category filter
-    if (selectedCategory !== 'Tous') {
-      rows = rows.filter((r) => r.category === selectedCategory);
-    }
-
-    // Search filter
-    if (search.trim()) {
       const q = search.toLowerCase();
-      rows = rows.filter(
-        (r) =>
-          r.name.toLowerCase().includes(q) ||
-          r.category.toLowerCase().includes(q) ||
-          r.supplier.toLowerCase().includes(q)
+      const filtered = prices.filter(p =>
+        p.ingredient_name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        (p.supplier && p.supplier.toLowerCase().includes(q))
       );
+      if (filtered.length) acc[cat] = filtered;
     }
+    return acc;
+  }, {});
 
-    // Sort
-    rows.sort((a, b) => {
-      let cmp = 0;
-      if (sortKey === 'name') {
-        cmp = a.name.localeCompare(b.name, 'fr');
-      } else if (sortKey === 'currentPrice') {
-        cmp = a.currentPrice - b.currentPrice;
-      } else {
-        cmp = a.variation - b.variation;
-      }
-      return sortDir === 'asc' ? cmp : -cmp;
-    });
+  const alertItems = (data?.alerts || []).filter(a => a.type === 'alert');
+  const opportunityItems = (data?.alerts || []).filter(a => a.type === 'opportunity');
 
-    return rows;
-  }, [search, selectedCategory, sortKey, sortDir]);
+  // Stats
+  const totalProducts = data?.prices?.length || 0;
+  const hausses = data?.prices?.filter(p => p.trend === 'hausse').length || 0;
+  const baisses = data?.prices?.filter(p => p.trend === 'baisse').length || 0;
+  const stables = data?.prices?.filter(p => p.trend === 'stable').length || 0;
 
-  const SortIcon = ({ col }: { col: SortKey }) => (
-    <span className={`ml-1 inline-block ${sortKey === col ? 'text-blue-400' : 'text-slate-600'}`}>
-      {sortKey === col && sortDir === 'desc' ? '\u25BC' : '\u25B2'}
-    </span>
-  );
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-center h-64 text-slate-400">
+        <RefreshCw className="w-6 h-6 animate-spin mr-2" />
+        Chargement de la mercuriale...
+      </div>
+    );
+  }
+
+  if (error || !data?.publication) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex flex-col items-center justify-center h-64 text-center bg-slate-900/50 border border-slate-800 rounded-2xl">
+          <CalendarDays className="w-12 h-12 text-slate-600 mb-4" />
+          <p className="text-slate-400 font-medium mb-2">{error || 'Aucune mercuriale disponible'}</p>
+          <p className="text-slate-500 text-sm">Les prix du march&eacute; seront publi&eacute;s prochainement par l'&eacute;quipe RestauMargin.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const pub = data.publication;
+  const weekDate = new Date(pub.week_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
@@ -169,16 +165,17 @@ export default function Mercuriale() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-600/20 rounded-xl">
-            <History className="w-6 h-6 text-blue-400" />
+            <CalendarDays className="w-6 h-6 text-blue-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Mercuriale</h1>
-            <p className="text-sm text-slate-400">Suivi des prix du march&eacute; en temps r&eacute;el</p>
+            <h1 className="text-2xl font-bold text-white">{pub.title}</h1>
+            <p className="text-sm text-slate-400">
+              Semaine du {weekDate}
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-sm text-slate-400">
-          <CalendarDays className="w-4 h-4" />
-          Derni&egrave;re mise &agrave; jour : {new Date(LAST_UPDATE).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+        <div className="text-xs text-slate-500 max-w-md text-right">
+          Sources : {pub.sources}
         </div>
       </div>
 
@@ -186,145 +183,190 @@ export default function Mercuriale() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
           <div className="text-sm text-slate-400 mb-1">Produits suivis</div>
-          <div className="text-2xl font-bold text-white">{stats.total}</div>
+          <div className="text-2xl font-bold text-white">{totalProducts}</div>
         </div>
         <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
           <div className="text-sm text-slate-400 mb-1 flex items-center gap-1">
             <TrendingUp className="w-3.5 h-3.5 text-red-400" /> En hausse
           </div>
-          <div className="text-2xl font-bold text-red-400">{stats.ups}</div>
+          <div className="text-2xl font-bold text-red-400">{hausses}</div>
         </div>
         <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
           <div className="text-sm text-slate-400 mb-1 flex items-center gap-1">
             <TrendingDown className="w-3.5 h-3.5 text-emerald-400" /> En baisse
           </div>
-          <div className="text-2xl font-bold text-emerald-400">{stats.downs}</div>
+          <div className="text-2xl font-bold text-emerald-400">{baisses}</div>
         </div>
         <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-          <div className="text-sm text-slate-400 mb-1">Variation moyenne</div>
-          <div className={`text-2xl font-bold ${stats.avgVariation > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
-            {stats.avgVariation > 0 ? '+' : ''}{stats.avgVariation.toFixed(1)}%
+          <div className="text-sm text-slate-400 mb-1 flex items-center gap-1">
+            <Minus className="w-3.5 h-3.5 text-slate-400" /> Stables
           </div>
+          <div className="text-2xl font-bold text-slate-300">{stables}</div>
         </div>
       </div>
 
-      {/* Filters Bar */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-        <div className="flex flex-col md:flex-row md:items-center gap-3">
-          {/* Search */}
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher un ingr&eacute;dient..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Rechercher un produit..."
+          className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
 
-          {/* Category filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-500" />
-            <div className="flex flex-wrap gap-1.5">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    selectedCategory === cat
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-300'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+      {/* Alerts Section */}
+      {alertItems.length > 0 && (
+        <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-5 space-y-3">
+          <h2 className="flex items-center gap-2 text-lg font-bold text-red-400">
+            <AlertTriangle className="w-5 h-5" />
+            Alertes Hausses
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {alertItems.map((a) => (
+              <div key={a.id} className="bg-slate-900/60 border border-red-500/20 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-white">{a.ingredient_name}</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-400">
+                    {a.variation}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-400 flex items-start gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-red-400 mt-0.5 flex-shrink-0" />
+                  {a.action_text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Opportunities Section */}
+      {opportunityItems.length > 0 && (
+        <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
+          <h2 className="flex items-center gap-2 text-lg font-bold text-emerald-400">
+            <Lightbulb className="w-5 h-5" />
+            Opportunit&eacute;s
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {opportunityItems.map((a) => (
+              <div key={a.id} className="bg-slate-900/60 border border-emerald-500/20 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-white">{a.ingredient_name}</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">
+                    {a.variation}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-400 flex items-start gap-1.5">
+                  <ArrowRight className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  {a.action_text}
+                </p>
+                {a.saving && (
+                  <div className="mt-2 text-xs text-emerald-400 font-medium">
+                    Potentiel : {a.saving}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Price Tables by Category */}
+      {Object.entries(filteredCategories).map(([category, prices]) => {
+        const config = CATEGORY_CONFIG[category] || { emoji: '\uD83D\uDCE6', color: 'text-slate-400', bg: 'bg-slate-500/10 border-slate-500/30' };
+        return (
+          <div key={category} className={`border rounded-2xl overflow-hidden ${config.bg}`}>
+            <div className="px-5 py-3 border-b border-slate-800/50">
+              <h2 className={`text-lg font-bold ${config.color} flex items-center gap-2`}>
+                <span className="text-xl">{config.emoji}</span>
+                {category}
+                <span className="text-xs font-normal text-slate-500 ml-2">({prices.length} produit{prices.length > 1 ? 's' : ''})</span>
+              </h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left border-b border-slate-800/50 bg-slate-900/40">
+                    <th className="px-5 py-2.5 font-semibold text-slate-300">Produit</th>
+                    <th className="px-5 py-2.5 font-semibold text-slate-300 text-right">Prix min</th>
+                    <th className="px-5 py-2.5 font-semibold text-slate-300 text-right">Prix max</th>
+                    <th className="px-5 py-2.5 font-semibold text-slate-300">Unit&eacute;</th>
+                    <th className="px-5 py-2.5 font-semibold text-slate-300 text-center">Tendance</th>
+                    <th className="px-5 py-2.5 font-semibold text-slate-300 hidden md:table-cell">Fournisseurs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {prices.map((p) => (
+                    <tr key={p.id} className="border-b border-slate-800/30 hover:bg-slate-800/20 transition-colors">
+                      <td className="px-5 py-3 font-medium text-white">{p.ingredient_name}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-white">
+                        {Number(p.price_min).toFixed(2)}&euro;
+                      </td>
+                      <td className="px-5 py-3 text-right font-semibold text-white">
+                        {Number(p.price_max).toFixed(2)}&euro;
+                      </td>
+                      <td className="px-5 py-3 text-slate-400">/{p.unit}</td>
+                      <td className="px-5 py-3 text-center">
+                        <TrendBadge trend={p.trend} detail={p.trend_detail} />
+                      </td>
+                      <td className="px-5 py-3 text-slate-500 text-xs hidden md:table-cell">{p.supplier}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      </div>
+        );
+      })}
 
-      {/* Price Table */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left border-b border-slate-800 bg-slate-900/80">
-                <th
-                  className="px-4 py-3 font-semibold text-slate-300 cursor-pointer hover:text-blue-400 select-none"
-                  onClick={() => handleSort('name')}
-                >
-                  Ingr&eacute;dient <SortIcon col="name" />
-                </th>
-                <th className="px-4 py-3 font-semibold text-slate-300">
-                  Cat&eacute;gorie
-                </th>
-                <th
-                  className="px-4 py-3 font-semibold text-slate-300 text-right cursor-pointer hover:text-blue-400 select-none"
-                  onClick={() => handleSort('currentPrice')}
-                >
-                  Prix actuel <SortIcon col="currentPrice" />
-                </th>
-                <th className="px-4 py-3 font-semibold text-slate-300 text-right">
-                  Prix pr&eacute;c&eacute;dent
-                </th>
-                <th
-                  className="px-4 py-3 font-semibold text-slate-300 text-center cursor-pointer hover:text-blue-400 select-none"
-                  onClick={() => handleSort('variation')}
-                >
-                  Variation <SortIcon col="variation" />
-                </th>
-                <th className="px-4 py-3 font-semibold text-slate-300">
-                  Fournisseur
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRows.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
-                    Aucun ingr&eacute;dient trouv&eacute;
-                  </td>
+      {/* Alternatives Section */}
+      {(data.alternatives?.length || 0) > 0 && (
+        <div className="bg-slate-900/50 border border-blue-500/20 rounded-2xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-slate-800/50">
+            <h2 className="text-lg font-bold text-blue-400 flex items-center gap-2">
+              <ExternalLink className="w-5 h-5" />
+              Alternatives &eacute;conomiques
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left border-b border-slate-800/50 bg-slate-900/40">
+                  <th className="px-5 py-2.5 font-semibold text-slate-300">Produit co&ucirc;teux</th>
+                  <th className="px-5 py-2.5 font-semibold text-slate-300 text-center">
+                    <ArrowRight className="w-4 h-4 inline" />
+                  </th>
+                  <th className="px-5 py-2.5 font-semibold text-slate-300">Alternative</th>
+                  <th className="px-5 py-2.5 font-semibold text-emerald-400 text-right">&Eacute;conomie</th>
                 </tr>
-              ) : (
-                filteredRows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors"
-                  >
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-white">{row.name}</span>
+              </thead>
+              <tbody>
+                {data.alternatives.map((alt) => (
+                  <tr key={alt.id} className="border-b border-slate-800/30 hover:bg-slate-800/20 transition-colors">
+                    <td className="px-5 py-3 text-white font-medium">{alt.product}</td>
+                    <td className="px-5 py-3 text-center text-slate-500">
+                      <ArrowRight className="w-4 h-4 inline" />
                     </td>
-                    <td className="px-4 py-3">
-                      <CategoryBadge category={row.category} />
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <span className="font-semibold text-white">{row.currentPrice.toFixed(2)}</span>
-                      <span className="text-slate-500 ml-1">&euro;/{row.unit}</span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-slate-400">
-                      {row.previousPrice.toFixed(2)} &euro;/{row.unit}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <TrendBadge trend={row.trend} variation={row.variation} />
-                    </td>
-                    <td className="px-4 py-3 text-slate-400 text-sm">
-                      {row.supplier}
+                    <td className="px-5 py-3 text-emerald-400 font-medium">{alt.alternative}</td>
+                    <td className="px-5 py-3 text-right">
+                      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">
+                        {alt.saving_per_kg}
+                      </span>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="px-4 py-3 text-xs text-slate-500 border-t border-slate-800 flex items-center justify-between">
-          <span>{filteredRows.length} ingr&eacute;dient{filteredRows.length > 1 ? 's' : ''} affich&eacute;{filteredRows.length > 1 ? 's' : ''}</span>
-          <span className="flex items-center gap-1">
-            <Euro className="w-3 h-3" />
-            Prix HT &mdash; Source : fournisseurs grossistes
-          </span>
-        </div>
+      )}
+
+      {/* Footer */}
+      <div className="text-center text-xs text-slate-600 pb-4">
+        Donn&eacute;es publi&eacute;es par l'&eacute;quipe RestauMargin &mdash; Prix HT indicatifs &mdash; Sources : {pub.sources}
       </div>
     </div>
   );

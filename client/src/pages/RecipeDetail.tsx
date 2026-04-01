@@ -27,7 +27,7 @@ const ALLERGEN_COLORS: Record<string, string> = {
   Gluten: 'bg-yellow-300 text-yellow-900 border border-yellow-400',
   'Crustacés': 'bg-orange-300 text-orange-900 border border-orange-400',
   Oeufs: 'bg-amber-200 text-amber-900 border border-amber-300',
-  Poissons: 'bg-blue-300 text-blue-900 border border-blue-400',
+  Poissons: 'bg-teal-300 text-teal-900 border border-teal-400',
   Arachides: 'bg-red-400 text-white border border-red-500',
   Soja: 'bg-green-300 text-green-900 border border-green-400',
   Lait: 'bg-white text-slate-800 border-2 border-slate-300',
@@ -133,7 +133,7 @@ export default function RecipeDetail() {
       <div className="flex items-center justify-between mb-4 no-print">
         <Link
           to="/recipes"
-          className="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition-colors"
+          className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 text-sm font-medium transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Retour aux recettes
         </Link>

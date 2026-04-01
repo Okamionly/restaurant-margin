@@ -5,7 +5,7 @@ import {
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
   Users, Menu, X as XIcon, Shield, Lock, Mail,
   Scale, ChevronDown, Phone, Send, Loader2,
-  XCircle, Brain, Thermometer, Palette,
+  XCircle, Brain, Thermometer,
 } from 'lucide-react';
 
 /* ─────────────────────── Hooks ─────────────────────── */
@@ -56,176 +56,6 @@ function FadeIn({ children, delay = 0, className = '' }: { children: React.React
     </div>
   );
 }
-
-/* ─────────────────────── Design System ─────────────────────── */
-
-interface DesignTheme {
-  id: string;
-  name: string;
-  font: string;
-  hero: string;
-  accent: string;
-  btn: string;
-  nav: string;
-  badge: string;
-  tag: string;
-  light?: boolean;
-  tp: string;
-  ts: string;
-  th: string;
-  cardBg: string;
-  inputBg: string;
-  sectionAlt: string;
-  footerBorder: string;
-}
-
-const DESIGNS: DesignTheme[] = [
-  {
-    id: 'obsidian-pro',
-    name: 'Obsidian Pro',
-    font: "'Sora', sans-serif",
-    hero: 'bg-gradient-to-br from-black via-slate-950 to-slate-900',
-    accent: 'from-orange-500 to-blue-500',
-    btn: 'bg-gradient-to-r from-orange-500 to-blue-600 hover:from-orange-400 hover:to-blue-500 shadow-orange-500/30',
-    nav: 'bg-black/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-orange-500/10 border-orange-500/20 text-orange-400',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-  {
-    id: 'arctic-clean',
-    name: 'Arctic Clean',
-    font: "'DM Sans', sans-serif",
-    hero: 'bg-gradient-to-br from-white via-sky-50 to-cyan-50',
-    accent: 'from-cyan-500 to-blue-500',
-    btn: 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-cyan-500/30',
-    nav: 'bg-white/90 backdrop-blur-xl border-slate-200',
-    badge: 'bg-cyan-50 border-cyan-200 text-cyan-600',
-    tag: 'bg-slate-100 border-slate-200 text-slate-500',
-    light: true,
-    tp: 'text-slate-900',
-    ts: 'text-slate-600',
-    th: 'hover:text-slate-900',
-    cardBg: 'bg-white border border-slate-200',
-    inputBg: 'bg-white border-slate-300 text-slate-900 placeholder-slate-400',
-    sectionAlt: 'bg-gray-50',
-    footerBorder: 'border-slate-200 bg-gray-50',
-  },
-  {
-    id: 'midnight-neon',
-    name: 'Midnight Neon',
-    font: "'Inter', sans-serif",
-    hero: 'bg-gradient-to-br from-[#0a0a1a] via-[#0d0d2b] to-[#12122a]',
-    accent: 'from-violet-500 to-cyan-400',
-    btn: 'bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 shadow-violet-500/30',
-    nav: 'bg-[#0a0a1a]/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-violet-500/10 border-violet-500/20 text-violet-400',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-  {
-    id: 'ivory-minimal',
-    name: 'Ivory Minimal',
-    font: "'Outfit', sans-serif",
-    hero: 'bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950',
-    accent: 'from-amber-400 to-orange-500',
-    btn: 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 shadow-amber-500/30',
-    nav: 'bg-zinc-950/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-  {
-    id: 'pure-black',
-    name: 'Pure Black',
-    font: "'Plus Jakarta Sans', sans-serif",
-    hero: 'bg-black',
-    accent: 'from-white to-slate-300',
-    btn: 'bg-white text-black hover:bg-slate-200 shadow-white/10',
-    nav: 'bg-black/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-white/10 border-white/20 text-white',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-  {
-    id: 'indigo-glass',
-    name: 'Indigo Glass',
-    font: "'Inter', sans-serif",
-    hero: 'bg-gradient-to-br from-indigo-950 via-indigo-900 to-violet-950',
-    accent: 'from-violet-400 to-indigo-400',
-    btn: 'bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-400 hover:to-indigo-400 shadow-violet-500/30',
-    nav: 'bg-indigo-950/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-violet-500/10 border-violet-500/20 text-violet-400',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-  {
-    id: 'forest-pro',
-    name: 'Forest Pro',
-    font: "'Sora', sans-serif",
-    hero: 'bg-gradient-to-br from-emerald-950 via-green-950 to-emerald-900',
-    accent: 'from-emerald-400 to-green-400',
-    btn: 'bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 shadow-emerald-500/30',
-    nav: 'bg-emerald-950/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-  {
-    id: 'rose-elite',
-    name: 'Rose Elite',
-    font: "'DM Sans', sans-serif",
-    hero: 'bg-gradient-to-br from-rose-950 via-pink-950 to-rose-900',
-    accent: 'from-rose-400 to-pink-400',
-    btn: 'bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-400 hover:to-pink-400 shadow-rose-500/30',
-    nav: 'bg-rose-950/80 backdrop-blur-xl border-white/10',
-    badge: 'bg-rose-500/10 border-rose-500/20 text-rose-400',
-    tag: 'bg-white/5 border-white/10 text-slate-400',
-    tp: 'text-white',
-    ts: 'text-slate-400',
-    th: 'hover:text-white',
-    cardBg: 'bg-white/5 border border-white/10',
-    inputBg: 'bg-white/10 border-white/20 text-white placeholder-slate-500',
-    sectionAlt: 'bg-white/[0.02]',
-    footerBorder: 'border-white/10 bg-black/20',
-  },
-];
 
 /* ─────────────────────── Data ─────────────────────── */
 
@@ -286,10 +116,6 @@ export default function Landing() {
   const [contactSent, setContactSent] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
   const [contactError, setContactError] = useState('');
-  const [designIndex, setDesignIndex] = useState(0);
-  const [designPanelOpen, setDesignPanelOpen] = useState(false);
-
-  const d = DESIGNS[designIndex];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -297,7 +123,6 @@ export default function Landing() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Hero carousel auto-rotation
   useEffect(() => {
     const timer = setInterval(() => setHeroSlide(s => (s + 1) % 3), 4000);
     return () => clearInterval(timer);
@@ -337,60 +162,59 @@ export default function Landing() {
     }
   };
 
-  /* — Stat counter sub-component (needs d.ts) — */
   const StatCounter = ({ value, suffix = '', label }: { value: number; suffix?: string; label: string }) => {
     const { ref, visible } = useInView(0.3);
     const count = useAnimatedCounter(value, 1800, visible);
     return (
       <div ref={ref} className="text-center px-6">
-        <div className={`text-3xl sm:text-4xl font-extrabold bg-gradient-to-b ${d.accent} bg-clip-text text-transparent tracking-tight`}>
+        <div className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-b from-teal-500 to-teal-600 bg-clip-text text-transparent tracking-tight">
           {count}{suffix}
         </div>
-        <div className={`text-sm ${d.ts} mt-1 font-medium`}>{label}</div>
+        <div className="text-sm text-gray-500 mt-1 font-medium">{label}</div>
       </div>
     );
   };
 
   return (
-    <div className={`min-h-screen ${d.hero} ${d.tp} overflow-x-hidden scroll-smooth`} style={{ fontFamily: d.font }}>
+    <div className="min-h-screen bg-white text-gray-900 overflow-x-hidden scroll-smooth" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
       {/* ═══════════════════ NAVBAR ═══════════════════ */}
-      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? `${d.nav} shadow-sm` : 'bg-transparent'} ${scrolled && d.light ? 'border-b border-slate-200' : scrolled ? 'border-b border-white/10' : ''}`}>
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${d.accent} flex items-center justify-center shadow-lg`}>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
-            <span className={`text-xl font-bold ${d.tp}`}>RestauMargin</span>
+            <span className="text-xl font-bold text-gray-900">RestauMargin</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('features')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>Fonctionnalites</button>
-            <button onClick={() => scrollTo('pricing')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>Tarifs</button>
-            <button onClick={() => scrollTo('faq')} className={`text-sm ${d.ts} ${d.th} transition-colors cursor-pointer`}>FAQ</button>
+            <button onClick={() => scrollTo('features')} className="text-sm text-gray-500 hover:text-gray-900 transition-colors cursor-pointer">Fonctionnalites</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-gray-500 hover:text-gray-900 transition-colors cursor-pointer">Tarifs</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-gray-500 hover:text-gray-900 transition-colors cursor-pointer">FAQ</button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className={`text-sm ${d.ts} ${d.th} transition-colors px-3 py-2`}>Connexion</Link>
-            <Link to="/pricing" className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl ${d.btn} text-white text-sm font-semibold transition-all shadow-lg`}>
+            <Link to="/login" className="text-sm text-gray-500 hover:text-gray-900 transition-colors px-3 py-2">Connexion</Link>
+            <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-all shadow-lg">
               Voir les tarifs <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden p-2 ${d.ts} ${d.th}`}>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-gray-500 hover:text-gray-900">
             {mobileMenuOpen ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className={`md:hidden ${d.light ? 'bg-white/95 border-t border-slate-200' : 'bg-black/95 border-t border-white/10'} backdrop-blur-xl shadow-lg`}>
+          <div className="md:hidden bg-white/95 border-t border-gray-200 backdrop-blur-xl shadow-lg">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('features')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>Fonctionnalites</button>
-              <button onClick={() => scrollTo('pricing')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>Tarifs</button>
-              <button onClick={() => scrollTo('faq')} className={`block w-full text-left text-sm ${d.ts} ${d.th} py-2`}>FAQ</button>
-              <hr className={d.light ? 'border-slate-200' : 'border-white/10'} />
-              <Link to="/login" className={`block text-sm ${d.ts} ${d.th} py-2`}>Connexion</Link>
-              <Link to="/pricing" className={`block w-full text-center px-5 py-2.5 rounded-xl ${d.btn} text-white text-sm font-semibold`}>Voir les tarifs</Link>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-gray-500 hover:text-gray-900 py-2">Fonctionnalites</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-gray-500 hover:text-gray-900 py-2">Tarifs</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-gray-500 hover:text-gray-900 py-2">FAQ</button>
+              <hr className="border-gray-200" />
+              <Link to="/login" className="block text-sm text-gray-500 hover:text-gray-900 py-2">Connexion</Link>
+              <Link to="/pricing" className="block w-full text-center px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold">Voir les tarifs</Link>
             </div>
           </div>
         )}
@@ -399,79 +223,73 @@ export default function Landing() {
       {/* ═══════════════════ 1. HERO ═══════════════════ */}
       <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          {/* Neon glow orbs */}
-          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-blue-500/[0.07] rounded-full blur-[120px] animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.05] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/[0.04] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
-          {/* Dot grid */}
-          <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle, #60a5fa 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
-          {/* Gradient line top */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent" />
+          <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.05] rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-teal-400/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-emerald-500/[0.03] rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #0d9488 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
-              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full ${d.badge} text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.08)] animate-pulse`}>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(13,148,136,0.08)]">
                 <Zap className="w-3.5 h-3.5" />
                 PLATEFORME #1 DES RESTAURATEURS
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                <span className={d.tp}>Maitrisez vos marges.</span>
+                <span className="text-gray-900">Maitrisez vos marges.</span>
                 <br />
-                <span className={d.tp}>Augmentez vos </span>
-                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.2)]`}>
+                <span className="text-gray-900">Augmentez vos </span>
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
                   profits.
                 </span>
               </h1>
 
-              <p className={`mt-6 text-lg sm:text-xl ${d.ts} max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]`}>
+              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
                 La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
                   to="/pricing"
-                  className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl ${d.btn} text-white font-semibold shadow-lg transition-all text-base`}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base"
                 >
                   Voir les tarifs <ArrowRight className="w-4 h-4" />
                 </Link>
                 <button
                   onClick={() => scrollTo('demo')}
-                  className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent ${d.tp} font-semibold border ${d.light ? 'border-slate-300 hover:border-blue-400' : 'border-white/20 hover:border-white/40'} hover:shadow-[0_0_15px_rgba(59,130,246,0.08)] transition-all text-base`}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-gray-900 font-semibold border border-gray-300 hover:border-teal-400 hover:shadow-[0_0_15px_rgba(13,148,136,0.08)] transition-all text-base"
                 >
                   Voir la demo <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-              <p className={`mt-3 text-sm ${d.ts} text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]`}>
+              <p className="mt-3 text-sm text-gray-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
                 <Lock className="w-3.5 h-3.5" /> Paiement securise via Stripe
               </p>
             </div>
 
-            {/* Right — Product image */}
+            {/* Right -- Product image */}
             <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
               <div className="relative">
-                <div className={`absolute inset-0 bg-gradient-to-br ${d.light ? 'from-blue-500/[0.07] to-indigo-500/[0.07]' : 'from-blue-500/[0.12] to-indigo-500/[0.12]'} rounded-3xl blur-2xl`} />
-                <div className={`relative ${d.cardBg} rounded-3xl p-8 shadow-lg`}>
-                  {/* Hero image carousel */}
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.07] to-emerald-500/[0.07] rounded-3xl blur-2xl" />
+                <div className="relative bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
                   <div className="relative overflow-hidden rounded-2xl">
                     <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
                       <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" className="w-full h-auto flex-shrink-0" loading="eager" />
                       <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" className="w-full h-auto flex-shrink-0" loading="eager" />
                       <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" className="w-full h-auto flex-shrink-0" loading="eager" />
                     </div>
-                    {/* Dots */}
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
                       {[0, 1, 2].map(i => (
-                        <button key={i} onClick={() => setHeroSlide(i)} className={`w-2 h-2 rounded-full transition-all ${heroSlide === i ? 'bg-blue-600 w-6' : 'bg-slate-400/50'}`} />
+                        <button key={i} onClick={() => setHeroSlide(i)} className={`w-2 h-2 rounded-full transition-all ${heroSlide === i ? 'bg-teal-600 w-6' : 'bg-gray-400/50'}`} />
                       ))}
                     </div>
                   </div>
                 </div>
-                {/* Floating badge */}
-                <div className={`absolute -top-4 -right-4 bg-gradient-to-r ${d.accent} text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold`}>
+                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
                   Nouveau 2026
                 </div>
               </div>
@@ -480,14 +298,14 @@ export default function Landing() {
 
           {/* Stats bar */}
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-            <div className={`mt-16 ${d.cardBg} rounded-2xl py-8 px-4 shadow-lg`}>
-              <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 ${d.light ? 'divide-slate-200' : 'divide-white/10'} md:divide-x`}>
+            <div className="mt-16 bg-white border border-gray-200 shadow-sm rounded-2xl py-8 px-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-gray-200 md:divide-x">
                 <StatCounter value={150} suffix="+" label="Restaurants equipes" />
                 <StatCounter value={8} suffix="%" label="Cout matiere economise" />
                 <StatCounter value={50} suffix="k" label="Pesees par mois" />
                 <div className="text-center px-6">
-                  <div className={`text-3xl sm:text-4xl font-extrabold ${d.tp} tracking-tight`}>4.8/5</div>
-                  <div className={`text-sm ${d.ts} mt-1 font-medium`}>Satisfaction clients</div>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">4.8/5</div>
+                  <div className="text-sm text-gray-500 mt-1 font-medium">Satisfaction clients</div>
                 </div>
               </div>
             </div>
@@ -496,22 +314,16 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 2. TRUSTED BY ═══════════════════ */}
-      <section className={`py-10 ${d.light ? 'border-y border-slate-200 bg-gray-50' : 'border-y border-white/10 bg-white/[0.02]'}`}>
+      <section className="py-10 border-y border-gray-200 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <p className={`text-center text-xs font-semibold ${d.ts} uppercase tracking-widest mb-6`}>
+            <p className="text-center text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
               Ils nous font confiance
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-              {[
-                { name: 'METRO' },
-                { name: 'Transgourmet' },
-                { name: 'Pomona' },
-                { name: 'Sysco' },
-                { name: 'Brake' },
-              ].map((s) => (
-                <span key={s.name} className={`${d.tag} px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none border`}>
-                  {s.name}
+              {['METRO', 'Transgourmet', 'Pomona', 'Sysco', 'Brake'].map((name) => (
+                <span key={name} className="bg-gray-100 border border-gray-200 text-gray-500 px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none">
+                  {name}
                 </span>
               ))}
             </div>
@@ -523,9 +335,8 @@ export default function Landing() {
       <section className="py-20 sm:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
-            {/* Problem */}
             <FadeIn>
-              <div className={`${d.cardBg} rounded-2xl p-8 sm:p-10 h-full hover:border-red-500/30 transition-all duration-500 shadow-sm`}>
+              <div className="bg-white border border-gray-200 rounded-2xl p-8 sm:p-10 h-full hover:border-red-500/30 transition-all duration-500 shadow-sm">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold mb-6">
                   <XCircle className="w-3.5 h-3.5" /> Le probleme
                 </div>
@@ -539,16 +350,15 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
                         <XCircle className="w-4 h-4 text-red-400" />
                       </div>
-                      <p className={`${d.ts} leading-relaxed`}>{text}</p>
+                      <p className="text-gray-500 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
               </div>
             </FadeIn>
 
-            {/* Solution */}
             <FadeIn delay={150}>
-              <div className={`${d.cardBg} rounded-2xl p-8 sm:p-10 h-full hover:border-emerald-500/30 transition-all duration-500 shadow-sm`}>
+              <div className="bg-white border border-gray-200 rounded-2xl p-8 sm:p-10 h-full hover:border-emerald-500/30 transition-all duration-500 shadow-sm">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
                   <CheckCircle2 className="w-3.5 h-3.5" /> La solution RestauMargin
                 </div>
@@ -562,7 +372,7 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       </div>
-                      <p className={`${d.ts} leading-relaxed`}>{text}</p>
+                      <p className="text-gray-500 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -573,93 +383,86 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 4. FEATURES BENTO GRID ═══════════════════ */}
-      <section id="features" className={`py-20 sm:py-28 ${d.sectionAlt}`}>
+      <section id="features" className="py-20 sm:py-28 bg-[#f8fafc]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Fonctionnalites</p>
-              <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight ${d.tp}`}>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Fonctionnalites</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-gray-900">
                 Tout ce dont vous avez besoin pour{' '}
-                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>piloter vos marges</span>
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">piloter vos marges</span>
               </h2>
             </div>
           </FadeIn>
 
-          {/* Bento grid: 2 large + 4 small */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Large card 1 */}
             <FadeIn delay={0} className="lg:col-span-2">
-              <div className={`group relative ${d.cardBg} shadow-sm rounded-2xl p-8 h-full hover:border-blue-400/30 transition-all duration-300 overflow-hidden`}>
-                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl" />
+              <div className="group relative bg-white border border-gray-200 rounded-2xl p-8 h-full hover:border-teal-400/30 transition-all duration-300 overflow-hidden shadow-sm">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-teal-500/5 rounded-full blur-3xl" />
                 <div className="relative">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5 group-hover:bg-blue-500/20 transition">
-                    <ClipboardList className="w-7 h-7 text-blue-400" />
+                  <div className="w-14 h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center mb-5 group-hover:bg-teal-500/20 transition">
+                    <ClipboardList className="w-7 h-7 text-teal-500" />
                   </div>
-                  <h3 className={`text-xl font-bold mb-3 ${d.tp}`}>Fiches techniques intelligentes</h3>
-                  <p className={`${d.ts} leading-relaxed max-w-lg`}>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900">Fiches techniques intelligentes</h3>
+                  <p className="text-gray-500 leading-relaxed max-w-lg">
                     Calculez le cout exact de chaque plat avec ingredients, quantites, etapes de preparation et couts actualises automatiquement. Marge brute, cout matiere, prix de vente — tout est calcule en temps reel.
                   </p>
                 </div>
               </div>
             </FadeIn>
 
-            {/* Small card 1 */}
             <FadeIn delay={80}>
-              <div className={`group ${d.cardBg} shadow-sm rounded-2xl p-7 h-full hover:border-emerald-400/30 transition-all duration-300`}>
+              <div className="group bg-white border border-gray-200 rounded-2xl p-7 h-full hover:border-emerald-400/30 transition-all duration-300 shadow-sm">
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition">
-                  <BarChart3 className="w-6 h-6 text-emerald-400" />
+                  <BarChart3 className="w-6 h-6 text-emerald-500" />
                 </div>
-                <h3 className={`text-lg font-bold mb-2 ${d.tp}`}>Menu Engineering</h3>
-                <p className={`text-sm ${d.ts} leading-relaxed`}>Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Menu Engineering</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
               </div>
             </FadeIn>
 
-            {/* Small card 2 */}
             <FadeIn delay={160}>
-              <div className={`group ${d.cardBg} shadow-sm rounded-2xl p-7 h-full hover:border-orange-400/30 transition-all duration-300`}>
+              <div className="group bg-white border border-gray-200 rounded-2xl p-7 h-full hover:border-orange-400/30 transition-all duration-300 shadow-sm">
                 <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition">
-                  <Truck className="w-6 h-6 text-orange-400" />
+                  <Truck className="w-6 h-6 text-orange-500" />
                 </div>
-                <h3 className={`text-lg font-bold mb-2 ${d.tp}`}>Gestion fournisseurs</h3>
-                <p className={`text-sm ${d.ts} leading-relaxed`}>Comparateur prix, score /10, alertes et suivi tarifaire.</p>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Gestion fournisseurs</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Comparateur prix, score /10, alertes et suivi tarifaire.</p>
               </div>
             </FadeIn>
 
-            {/* Small card 3 */}
             <FadeIn delay={240}>
-              <div className={`group ${d.cardBg} shadow-sm rounded-2xl p-7 h-full hover:border-purple-400/30 transition-all duration-300`}>
+              <div className="group bg-white border border-gray-200 rounded-2xl p-7 h-full hover:border-purple-400/30 transition-all duration-300 shadow-sm">
                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition">
-                  <Thermometer className="w-6 h-6 text-purple-400" />
+                  <Thermometer className="w-6 h-6 text-purple-500" />
                 </div>
-                <h3 className={`text-lg font-bold mb-2 ${d.tp}`}>HACCP & Tracabilite</h3>
-                <p className={`text-sm ${d.ts} leading-relaxed`}>Temperatures, nettoyage, conformite reglementaire.</p>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">HACCP & Tracabilite</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Temperatures, nettoyage, conformite reglementaire.</p>
               </div>
             </FadeIn>
 
-            {/* Large card 2 */}
             <FadeIn delay={320} className="lg:col-span-2">
-              <div className={`group relative ${d.cardBg} shadow-sm rounded-2xl p-8 h-full hover:border-emerald-400/30 transition-all duration-300 overflow-hidden`}>
+              <div className="group relative bg-white border border-gray-200 rounded-2xl p-8 h-full hover:border-emerald-400/30 transition-all duration-300 overflow-hidden shadow-sm">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl" />
                 <div className="relative">
                   <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:bg-emerald-500/20 transition">
                     <Scale className="w-7 h-7 text-emerald-400" />
                   </div>
-                  <h3 className={`text-xl font-bold mb-3 ${d.tp}`}>Station de pesee connectee</h3>
-                  <p className={`${d.ts} leading-relaxed max-w-lg`}>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900">Station de pesee connectee</h3>
+                  <p className="text-gray-500 leading-relaxed max-w-lg">
                     Pesez, calculez, maitrisez en temps reel. Connectez votre balance Bluetooth et suivez vos marges en direct pendant la preparation.
                   </p>
                 </div>
               </div>
             </FadeIn>
 
-            {/* Small card 4 */}
             <FadeIn delay={400}>
-              <div className={`group ${d.cardBg} shadow-sm rounded-2xl p-7 h-full hover:border-cyan-400/30 transition-all duration-300`}>
+              <div className="group bg-white border border-gray-200 rounded-2xl p-7 h-full hover:border-cyan-400/30 transition-all duration-300 shadow-sm">
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition">
                   <Brain className="w-6 h-6 text-cyan-400" />
                 </div>
-                <h3 className={`text-lg font-bold mb-2 ${d.tp}`}>Assistant IA</h3>
-                <p className={`text-sm ${d.ts} leading-relaxed`}>Claude analyse vos donnees et vous conseille en continu.</p>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">Assistant IA</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">Claude analyse vos donnees et vous conseille en continu.</p>
               </div>
             </FadeIn>
           </div>
@@ -671,8 +474,8 @@ export default function Landing() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Comment ca marche</p>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold ${d.tp}`}>3 etapes pour piloter vos marges</h2>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Comment ca marche</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">3 etapes pour piloter vos marges</h2>
             </div>
           </FadeIn>
 
@@ -684,13 +487,13 @@ export default function Landing() {
             ].map((step, i) => (
               <FadeIn key={i} delay={i * 120}>
                 <div className="relative text-center">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${d.accent} flex items-center justify-center text-2xl font-bold text-white mx-auto mb-6 shadow-lg`}>
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-2xl font-bold text-white mx-auto mb-6 shadow-lg">
                     {step.num}
                   </div>
-                  <h3 className={`text-lg font-bold mb-3 ${d.tp}`}>{step.title}</h3>
-                  <p className={`text-sm ${d.ts} leading-relaxed`}>{step.desc}</p>
+                  <h3 className="text-lg font-bold mb-3 text-gray-900">{step.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
                   {i < 2 && (
-                    <ArrowRight className={`hidden md:block absolute top-8 -right-4 w-8 h-8 ${d.ts}`} />
+                    <ArrowRight className="hidden md:block absolute top-8 -right-4 w-8 h-8 text-gray-500" />
                   )}
                 </div>
               </FadeIn>
@@ -700,18 +503,18 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 6. INTEGRATIONS ═══════════════════ */}
-      <section id="integrations" className={`py-20 sm:py-28 ${d.sectionAlt}`}>
+      <section id="integrations" className="py-20 sm:py-28 bg-[#f8fafc]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Compatibilite</p>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold leading-tight ${d.tp}`}>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Compatibilite</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold leading-tight text-gray-900">
                 Compatible avec vos{' '}
-                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
                   logiciels de caisse
                 </span>
               </h2>
-              <p className={`mt-4 text-lg ${d.ts} max-w-2xl mx-auto`}>
+              <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
                 RestauMargin se connecte a vos outils existants pour centraliser toutes vos donnees de vente et simplifier votre gestion.
               </p>
             </div>
@@ -727,21 +530,21 @@ export default function Landing() {
               { name: 'L\'Addition', desc: 'Compatibilite complete avec votre ecosysteme' },
             ].map((pos, i) => (
               <FadeIn key={pos.name} delay={i * 80}>
-                <div className={`group ${d.cardBg} shadow-sm rounded-2xl p-6 h-full hover:border-blue-400/30 transition-all duration-300`}>
+                <div className="group bg-white border border-gray-200 rounded-2xl p-6 h-full hover:border-blue-400/30 transition-all duration-300 shadow-sm">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition">
                       <Zap className="w-5 h-5 text-blue-400" />
                     </div>
-                    <h3 className={`text-lg font-bold ${d.tp}`}>{pos.name}</h3>
+                    <h3 className="text-lg font-bold text-gray-900">{pos.name}</h3>
                   </div>
-                  <p className={`text-sm ${d.ts} leading-relaxed`}>{pos.desc}</p>
+                  <p className="text-sm text-gray-500 leading-relaxed">{pos.desc}</p>
                 </div>
               </FadeIn>
             ))}
           </div>
 
           <FadeIn delay={500}>
-            <p className={`text-center mt-10 text-sm ${d.ts}`}>
+            <p className="text-center mt-10 text-sm text-gray-500">
               Vous utilisez un autre logiciel ?{' '}
               <button onClick={() => scrollTo('contact')} className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-2 transition-colors">
                 Contactez-nous
@@ -757,33 +560,32 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Tarifs</p>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold ${d.tp}`}>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Tarifs</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
                 Un plan pour chaque{' '}
-                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>restaurant</span>
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">restaurant</span>
               </h2>
-              <p className={`mt-4 ${d.ts}`}>Sans engagement. Annulez quand vous voulez.</p>
+              <p className="mt-4 text-gray-500">Sans engagement. Annulez quand vous voulez.</p>
             </div>
           </FadeIn>
 
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
-            {/* Pro — Popular */}
             <FadeIn delay={100}>
-              <div className={`relative ${d.cardBg} border-2 !border-blue-500 rounded-2xl p-8 h-full flex flex-col shadow-[0_0_40px_rgba(59,130,246,0.1)] hover:shadow-[0_0_60px_rgba(59,130,246,0.18)] transition-all duration-500`}>
+              <div className="relative bg-white border-2 !border-blue-500 rounded-2xl p-8 h-full flex flex-col shadow-[0_0_40px_rgba(59,130,246,0.1)] hover:shadow-[0_0_60px_rgba(59,130,246,0.18)] transition-all duration-500">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-500 text-white text-xs font-bold uppercase tracking-wide">
                   Populaire
                 </div>
-                <h3 className={`text-lg font-bold mb-1 mt-2 ${d.tp}`}>Pro</h3>
+                <h3 className="text-lg font-bold mb-1 mt-2 text-gray-900">Pro</h3>
                 <div className="flex items-end gap-1 mb-4">
-                  <span className={`text-4xl font-extrabold ${d.tp}`}>29</span>
-                  <span className={`${d.ts} text-sm mb-1`}>euros/mois</span>
+                  <span className="text-4xl font-extrabold text-gray-900">29</span>
+                  <span className="text-gray-500 text-sm mb-1">euros/mois</span>
                 </div>
-                <p className={`text-sm ${d.ts} mb-6`}>Pour optimiser et developper son restaurant.</p>
+                <p className="text-sm text-gray-500 mb-6">Pour optimiser et developper son restaurant.</p>
                 <div className="space-y-3 mb-8 flex-1">
                   {['Dashboard & statistiques', 'Menu Engineering BCG', 'Gestion fournisseurs avancee', 'Export PDF / Excel', 'Support prioritaire'].map((f) => (
                     <div key={f} className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
-                      <span className={`text-sm ${d.ts}`}>{f}</span>
+                      <span className="text-sm text-gray-500">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -798,20 +600,19 @@ export default function Landing() {
               </div>
             </FadeIn>
 
-            {/* Business */}
             <FadeIn delay={200}>
-              <div className={`${d.cardBg} rounded-2xl p-8 h-full flex flex-col hover:border-emerald-500/30 transition-colors shadow-sm`}>
-                <h3 className={`text-lg font-bold mb-1 ${d.tp}`}>Business</h3>
+              <div className="bg-white border border-gray-200 rounded-2xl p-8 h-full flex flex-col hover:border-emerald-500/30 transition-colors shadow-sm">
+                <h3 className="text-lg font-bold mb-1 text-gray-900">Business</h3>
                 <div className="flex items-end gap-1 mb-4">
-                  <span className={`text-4xl font-extrabold ${d.tp}`}>79</span>
-                  <span className={`${d.ts} text-sm mb-1`}>euros/mois</span>
+                  <span className="text-4xl font-extrabold text-gray-900">79</span>
+                  <span className="text-gray-500 text-sm mb-1">euros/mois</span>
                 </div>
-                <p className={`text-sm ${d.ts} mb-6`}>Pour les groupes multi-restaurants.</p>
+                <p className="text-sm text-gray-500 mb-6">Pour les groupes multi-restaurants.</p>
                 <div className="space-y-3 mb-8 flex-1">
                   {['Tout du plan Pro', 'Multi-restaurants', 'API & webhooks', 'Formation personnalisee', 'Account manager dedie'].map((f) => (
                     <div key={f} className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span className={`text-sm ${d.ts}`}>{f}</span>
+                      <span className="text-sm text-gray-500">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -819,7 +620,7 @@ export default function Landing() {
                   href="https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`block w-full text-center px-6 py-3 rounded-xl ${d.light ? 'bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200' : 'bg-white/10 text-white border border-white/20 hover:bg-white/15'} font-semibold transition-colors`}
+                  className="block w-full text-center px-6 py-3 rounded-xl bg-gray-100 text-gray-900 border border-gray-300 hover:bg-gray-200 font-semibold transition-colors"
                 >
                   Choisir Business
                 </a>
@@ -830,14 +631,14 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 8. TESTIMONIALS ═══════════════════ */}
-      <section className={`py-20 sm:py-28 ${d.sectionAlt}`}>
+      <section className="py-20 sm:py-28 bg-[#f8fafc]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Temoignages</p>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold ${d.tp}`}>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Temoignages</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
                 Ce que disent nos{' '}
-                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>clients</span>
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">clients</span>
               </h2>
             </div>
           </FadeIn>
@@ -845,16 +646,16 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 100}>
-                <div className={`${d.cardBg} rounded-2xl p-7 h-full flex flex-col hover:border-purple-500/30 transition-all duration-500 group shadow-sm`}>
+                <div className="bg-white border border-gray-200 rounded-2xl p-7 h-full flex flex-col hover:border-purple-500/30 transition-all duration-500 group shadow-sm">
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'text-amber-400 fill-amber-400' : d.light ? 'text-slate-200' : 'text-white/20'}`} />
+                      <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200'}`} />
                     ))}
                   </div>
-                  <p className={`${d.ts} text-sm leading-relaxed mb-6 flex-1 italic`}>"{t.quote}"</p>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1 italic">"{t.quote}"</p>
                   <div>
-                    <div className={`font-semibold ${d.tp} text-sm`}>{t.name}</div>
-                    <div className={`text-xs ${d.ts}`}>{t.role} — {t.place}</div>
+                    <div className="font-semibold text-gray-900 text-sm">{t.name}</div>
+                    <div className="text-xs text-gray-500">{t.role} — {t.place}</div>
                   </div>
                 </div>
               </FadeIn>
@@ -868,84 +669,83 @@ export default function Landing() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-12">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">FAQ</p>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold ${d.tp}`}>Questions frequentes</h2>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">FAQ</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">Questions frequentes</h2>
             </div>
           </FadeIn>
 
           <FadeIn delay={100}>
             <div className="space-y-4">
-              {faqItems.map((item, i) => {
-                /* Inline FAQ to use theme vars */
-                return <FAQItemThemed key={i} q={item.q} a={item.a} d={d} />;
-              })}
+              {faqItems.map((item, i) => (
+                <FAQItem key={i} q={item.q} a={item.a} />
+              ))}
             </div>
           </FadeIn>
         </div>
       </section>
 
       {/* ═══════════════════ 10. CONTACT FORM ═══════════════════ */}
-      <section id="contact" className={`py-20 sm:py-28 ${d.sectionAlt}`}>
+      <section id="contact" className="py-20 sm:py-28 bg-[#f8fafc]">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-10">
-              <p className="text-sm font-semibold text-blue-500 uppercase tracking-widest mb-3">Contact</p>
-              <h2 className={`text-3xl sm:text-4xl font-extrabold mb-4 ${d.tp}`}>
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Contact</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 text-gray-900">
                 Parlons de votre{' '}
-                <span className={`bg-gradient-to-r ${d.accent} bg-clip-text text-transparent`}>projet</span>
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">projet</span>
               </h2>
-              <p className={d.ts}>Notre equipe vous recontacte sous 24h.</p>
+              <p className="text-gray-500">Notre equipe vous recontacte sous 24h.</p>
             </div>
 
             {contactSent ? (
               <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-8 text-center">
                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
                 <p className="text-lg font-semibold text-emerald-400">Demande envoyee !</p>
-                <p className={`text-sm ${d.ts} mt-1`}>Nous vous recontactons tres vite.</p>
+                <p className="text-sm text-gray-500 mt-1">Nous vous recontactons tres vite.</p>
               </div>
             ) : (
-              <form onSubmit={handleContactSubmit} className={`${d.cardBg} rounded-2xl p-8 space-y-5 shadow-sm`}>
+              <form onSubmit={handleContactSubmit} className="bg-white border border-gray-200 rounded-2xl p-8 space-y-5 shadow-sm">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={`block text-sm font-medium ${d.ts} mb-1.5`}>Nom</label>
+                    <label className="block text-sm font-medium text-gray-500 mb-1.5">Nom</label>
                     <input
                       type="text"
                       required
                       value={contactForm.nom}
                       onChange={(e) => setContactForm({ ...contactForm, nom: e.target.value })}
-                      className={`w-full px-4 py-2.5 rounded-xl ${d.inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                       placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label className={`block text-sm font-medium ${d.ts} mb-1.5`}>Email</label>
+                    <label className="block text-sm font-medium text-gray-500 mb-1.5">Email</label>
                     <input
                       type="email"
                       required
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className={`w-full px-4 py-2.5 rounded-xl ${d.inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                       placeholder="votre@email.com"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium ${d.ts} mb-1.5`}>Telephone</label>
+                  <label className="block text-sm font-medium text-gray-500 mb-1.5">Telephone</label>
                   <input
                     type="tel"
                     value={contactForm.telephone}
                     onChange={(e) => setContactForm({ ...contactForm, telephone: e.target.value })}
-                    className={`w-full px-4 py-2.5 rounded-xl ${d.inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                     placeholder="06 12 34 56 78"
                   />
                 </div>
                 <div>
-                  <label className={`block text-sm font-medium ${d.ts} mb-1.5`}>Message</label>
+                  <label className="block text-sm font-medium text-gray-500 mb-1.5">Message</label>
                   <textarea
                     rows={4}
                     value={contactForm.message}
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                    className={`w-full px-4 py-2.5 rounded-xl ${d.inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none`}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
                     placeholder="Decrivez votre besoin..."
                   />
                 </div>
@@ -957,7 +757,7 @@ export default function Landing() {
                 <button
                   type="submit"
                   disabled={contactLoading}
-                  className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl ${d.btn} text-white font-semibold text-base transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed`}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-base transition-all shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {contactLoading ? (
                     <>
@@ -976,130 +776,93 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 11. FOOTER ═══════════════════ */}
-      <footer className={`border-t ${d.footerBorder}`}>
+      <footer className="border-t border-gray-200 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Brand */}
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${d.accent} flex items-center justify-center`}>
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
-                <span className={`text-lg font-bold ${d.tp}`}>RestauMargin</span>
+                <span className="text-lg font-bold text-gray-900">RestauMargin</span>
               </div>
-              <p className={`text-sm ${d.ts} leading-relaxed`}>
+              <p className="text-sm text-gray-500 leading-relaxed">
                 La plateforme de gestion des marges pour la restauration professionnelle.
               </p>
               <div className="flex items-center gap-4 mt-4">
-                <div className={`flex items-center gap-1.5 text-xs ${d.ts}`}>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
                   <Shield className="w-3.5 h-3.5 text-blue-400" /> Donnees EU
                 </div>
-                <div className={`flex items-center gap-1.5 text-xs ${d.ts}`}>
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
                   <Lock className="w-3.5 h-3.5 text-emerald-400" /> SSL
                 </div>
               </div>
             </div>
 
-            {/* Produit */}
             <div>
-              <h4 className={`font-semibold ${d.tp} text-sm mb-4`}>Produit</h4>
-              <ul className={`space-y-2.5 text-sm ${d.ts}`}>
-                <li><button onClick={() => scrollTo('features')} className={`${d.th} transition-colors`}>Fonctionnalites</button></li>
-                <li><Link to="/pricing" className={`${d.th} transition-colors`}>Tarifs</Link></li>
-                <li><button onClick={() => scrollTo('integrations')} className={`${d.th} transition-colors`}>Integrations</button></li>
-                <li><button onClick={() => scrollTo('faq')} className={`${d.th} transition-colors`}>FAQ</button></li>
+              <h4 className="font-semibold text-gray-900 text-sm mb-4">Produit</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500">
+                <li><button onClick={() => scrollTo('features')} className="hover:text-gray-900 transition-colors">Fonctionnalites</button></li>
+                <li><Link to="/pricing" className="hover:text-gray-900 transition-colors">Tarifs</Link></li>
+                <li><button onClick={() => scrollTo('integrations')} className="hover:text-gray-900 transition-colors">Integrations</button></li>
+                <li><button onClick={() => scrollTo('faq')} className="hover:text-gray-900 transition-colors">FAQ</button></li>
               </ul>
             </div>
 
-            {/* Legal */}
             <div>
-              <h4 className={`font-semibold ${d.tp} text-sm mb-4`}>Legal</h4>
-              <ul className={`space-y-2.5 text-sm ${d.ts}`}>
-                <li><Link to="/mentions-legales" className={`${d.th} transition-colors`}>Mentions legales</Link></li>
-                <li><Link to="/cgu" className={`${d.th} transition-colors`}>CGU</Link></li>
-                <li><Link to="/politique-confidentialite" className={`${d.th} transition-colors`}>Politique de confidentialite</Link></li>
+              <h4 className="font-semibold text-gray-900 text-sm mb-4">Legal</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500">
+                <li><Link to="/mentions-legales" className="hover:text-gray-900 transition-colors">Mentions legales</Link></li>
+                <li><Link to="/cgu" className="hover:text-gray-900 transition-colors">CGU</Link></li>
+                <li><Link to="/politique-confidentialite" className="hover:text-gray-900 transition-colors">Politique de confidentialite</Link></li>
               </ul>
             </div>
 
-            {/* Contact */}
             <div>
-              <h4 className={`font-semibold ${d.tp} text-sm mb-4`}>Contact</h4>
-              <ul className={`space-y-2.5 text-sm ${d.ts}`}>
+              <h4 className="font-semibold text-gray-900 text-sm mb-4">Contact</h4>
+              <ul className="space-y-2.5 text-sm text-gray-500">
                 <li className="flex items-center gap-2">
-                  <Mail className={`w-4 h-4 ${d.ts}`} />
-                  <a href="mailto:contact@restaumargin.fr" className={`${d.th} transition-colors`}>contact@restaumargin.fr</a>
+                  <Mail className="w-4 h-4 text-gray-500" />
+                  <a href="mailto:contact@restaumargin.fr" className="hover:text-gray-900 transition-colors">contact@restaumargin.fr</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone className={`w-4 h-4 ${d.ts}`} />
+                  <Phone className="w-4 h-4 text-gray-500" />
                   <span>01 23 45 67 89</span>
                 </li>
               </ul>
             </div>
           </div>
 
-          {/* Bottom */}
-          <div className={`border-t ${d.light ? 'border-slate-200' : 'border-white/10'} py-6 flex flex-col sm:flex-row items-center justify-between gap-4`}>
-            <p className={`text-xs ${d.ts}`}>RestauMargin &copy; 2026. Tous droits reserves.</p>
-            <div className={`flex items-center gap-6 text-xs ${d.ts}`}>
-              <Link to="/mentions-legales" className={`${d.th} transition-colors`}>Mentions legales</Link>
-              <Link to="/cgu" className={`${d.th} transition-colors`}>CGU</Link>
-              <Link to="/politique-confidentialite" className={`${d.th} transition-colors`}>Confidentialite</Link>
+          <div className="border-t border-gray-200 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-500">RestauMargin &copy; 2026. Tous droits reserves.</p>
+            <div className="flex items-center gap-6 text-xs text-gray-500">
+              <Link to="/mentions-legales" className="hover:text-gray-900 transition-colors">Mentions legales</Link>
+              <Link to="/cgu" className="hover:text-gray-900 transition-colors">CGU</Link>
+              <Link to="/politique-confidentialite" className="hover:text-gray-900 transition-colors">Confidentialite</Link>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* ═══════════════════ DESIGN SELECTOR ═══════════════════ */}
-      <div className="fixed bottom-6 right-6 z-[60]">
-        {designPanelOpen && (
-          <div className={`absolute bottom-14 right-0 w-64 ${d.light ? 'bg-white border-slate-200 shadow-xl' : 'bg-slate-900 border-white/10 shadow-2xl'} border rounded-2xl p-4 mb-2`}>
-            <p className={`text-xs font-semibold ${d.ts} uppercase tracking-widest mb-3`}>Choisir un design</p>
-            <div className="space-y-1.5 max-h-80 overflow-y-auto">
-              {DESIGNS.map((design, i) => (
-                <button
-                  key={design.id}
-                  onClick={() => { setDesignIndex(i); setDesignPanelOpen(false); }}
-                  className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    i === designIndex
-                      ? `bg-gradient-to-r ${design.accent} text-white`
-                      : `${d.light ? 'text-slate-700 hover:bg-slate-100' : 'text-slate-300 hover:bg-white/10'}`
-                  }`}
-                >
-                  {design.name}
-                  {design.light && <span className="ml-1.5 text-[10px] opacity-60">(clair)</span>}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        <button
-          onClick={() => setDesignPanelOpen(!designPanelOpen)}
-          className={`w-12 h-12 rounded-full bg-gradient-to-r ${d.accent} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform`}
-          title="Changer de design"
-        >
-          <Palette className="w-5 h-5" />
-        </button>
-      </div>
-
     </div>
   );
 }
 
-/* ─────────────────────── Themed FAQ Item ─────────────────────── */
+/* ─────────────────────── FAQ Item ─────────────────────── */
 
-function FAQItemThemed({ q, a, d }: { q: string; a: string; d: DesignTheme }) {
+function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className={`${d.cardBg} rounded-2xl overflow-hidden shadow-sm`}>
+    <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
       <button
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-6 py-5 text-left ${d.light ? 'hover:bg-slate-50' : 'hover:bg-white/5'} transition-colors`}
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-gray-50 transition-colors"
       >
-        <span className={`font-semibold ${d.tp} pr-4`}>{q}</span>
-        <ChevronDown className={`w-5 h-5 ${d.ts} shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        <span className="font-semibold text-gray-900 pr-4">{q}</span>
+        <ChevronDown className={`w-5 h-5 text-gray-500 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
-        <p className={`px-6 text-sm ${d.ts} leading-relaxed`}>{a}</p>
+        <p className="px-6 text-sm text-gray-500 leading-relaxed">{a}</p>
       </div>
     </div>
   );

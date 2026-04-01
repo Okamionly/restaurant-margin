@@ -30,7 +30,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 const TYPE_COLORS: Record<FrenchSupplier['type'], { bg: string; text: string; label: string }> = {
-  grossiste: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', label: 'Grossiste' },
+  grossiste: { bg: 'bg-teal-100 dark:bg-teal-900/40', text: 'text-teal-700 dark:text-teal-300', label: 'Grossiste' },
   specialiste: { bg: 'bg-purple-100 dark:bg-purple-900/40', text: 'text-purple-700 dark:text-purple-300', label: 'Spécialiste' },
   local: { bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', label: 'Local' },
   national: { bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-300', label: 'National' },
@@ -613,7 +613,7 @@ export default function Suppliers() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.totalSuppliers')}</span>
-                <div className="p-2 rounded-lg bg-blue-600"><Truck className="w-5 h-5 text-white" /></div>
+                <div className="p-2 rounded-lg bg-teal-600"><Truck className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalSuppliers}</div>
             </div>
@@ -642,22 +642,22 @@ export default function Suppliers() {
 
           {/* Comparer les prix bar */}
           {compareSupplierIds.size > 0 && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4 flex items-center justify-between">
-              <span className="text-sm text-blue-700 dark:text-blue-300">
+            <div className="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg p-3 mb-4 flex items-center justify-between">
+              <span className="text-sm text-teal-700 dark:text-teal-300">
                 <ArrowRightLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                 {compareSupplierIds.size} {t('suppliers.suppliersSelected')}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCompareSupplierIds(new Set())}
-                  className="text-xs px-3 py-1.5 rounded border border-blue-300 dark:border-blue-700 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800"
+                  className="text-xs px-3 py-1.5 rounded border border-teal-300 dark:border-teal-700 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-800"
                 >
                   {t('suppliers.deselectAll')}
                 </button>
                 <button
                   onClick={() => setShowSupplierCompare(true)}
                   disabled={compareSupplierIds.size < 2}
-                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
                   {t('suppliers.comparePrices')}
@@ -784,7 +784,7 @@ export default function Suppliers() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('suppliers.searchByName')}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
                 />
               </div>
               {/* Supplier slices */}
@@ -801,7 +801,7 @@ export default function Suppliers() {
                       onClick={() => setDetailSupplier(supplier)}
                       className={`cursor-pointer rounded-xl p-3 border transition-all ${
                         detailSupplier?.id === supplier.id
-                          ? 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-sm'
+                          ? 'border-l-4 border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-sm'
                           : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                       }`}
                     >
@@ -850,7 +850,7 @@ export default function Suppliers() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => navigate(`/fournisseur/${detailSupplier.id}`)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-medium"
                           title="Voir catalogue promotionnel"
                         >
                           <ShoppingBag className="w-3.5 h-3.5" />
@@ -893,7 +893,7 @@ export default function Suppliers() {
                       </div>
                       <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
                         <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
-                          <Clock className="w-4 h-4 text-blue-500" />
+                          <Clock className="w-4 h-4 text-teal-500" />
                           {rating.deliveryDays}
                         </div>
                         <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
@@ -916,7 +916,7 @@ export default function Suppliers() {
                             href={detailSupplier.website.startsWith('http') ? detailSupplier.website : `https://${detailSupplier.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                            className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                             {t('suppliers.website')}
@@ -998,7 +998,7 @@ export default function Suppliers() {
                                               {priceHistory.length >= 2 && (
                                                 <MiniPriceChart data={priceHistory} width={60} height={20} />
                                               )}
-                                              <span className="text-sm font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                                              <span className="text-sm font-medium text-teal-600 dark:text-teal-400 whitespace-nowrap">
                                                 {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
                                               </span>
                                               {priceAlerts[ing.id] && (
@@ -1120,7 +1120,7 @@ export default function Suppliers() {
                   type="checkbox"
                   checked={deliveryOnly}
                   onChange={(e) => setDeliveryOnly(e.target.checked)}
-                  className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-slate-300 dark:border-slate-600 text-teal-600 focus:ring-teal-500"
                 />
                 <Truck className="w-4 h-4 text-slate-400 dark:text-slate-400" />
                 <span className="text-sm text-slate-300 dark:text-slate-300">{t('suppliers.deliveryOnly')}</span>
@@ -1187,7 +1187,7 @@ export default function Suppliers() {
                           href={supplier.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="ml-auto flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                          className="ml-auto flex items-center gap-1 text-teal-600 dark:text-teal-400 hover:underline"
                         >
                           <ExternalLink className="w-3 h-3" />
                           Site web
@@ -1282,7 +1282,7 @@ export default function Suppliers() {
                                 page.forEach((_, i) => e.target.checked ? next.add(catalogPage * pageSize + i) : next.delete(catalogPage * pageSize + i));
                                 setCatalogSelected(next);
                               }}
-                              className="accent-blue-600"
+                              className="accent-teal-600"
                             />
                           </th>
                           <th className="px-3 py-2">{t('suppliers.product')}</th>
@@ -1306,12 +1306,12 @@ export default function Suppliers() {
                                     next.has(globalIdx) ? next.delete(globalIdx) : next.add(globalIdx);
                                     return next;
                                   })}
-                                  className="accent-blue-600"
+                                  className="accent-teal-600"
                                 />
                               </td>
                               <td className="px-3 py-2 text-slate-400 dark:text-slate-300">{p.name}</td>
                               <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400">{p.category}</span></td>
-                              <td className="px-3 py-2 font-medium text-blue-600 dark:text-blue-400">{p.prixMoy.toFixed(2)} €</td>
+                              <td className="px-3 py-2 font-medium text-teal-600 dark:text-teal-400">{p.prixMoy.toFixed(2)} €</td>
                               <td className="px-3 py-2 text-slate-400">{p.unit}</td>
                               <td className="px-3 py-2">
                                 {exists ? (
@@ -1325,7 +1325,7 @@ export default function Suppliers() {
                                         showToast(`${p.name} ${t('suppliers.added')}`, 'success');
                                       } catch { showToast(t('suppliers.error'), 'error'); }
                                     }}
-                                    className="text-xs px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white"
+                                    className="text-xs px-2 py-1 rounded bg-teal-600 hover:bg-teal-700 text-white"
                                   >
                                     + {t('suppliers.add')}
                                   </button>
@@ -1381,7 +1381,7 @@ export default function Suppliers() {
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-slate-400 dark:text-slate-400">Produits comparables</span>
-                <div className="p-2 rounded-lg bg-blue-600"><Scale className="w-5 h-5 text-white" /></div>
+                <div className="p-2 rounded-lg bg-teal-600"><Scale className="w-5 h-5 text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{comparatorData.length}</div>
             </div>
@@ -1698,7 +1698,7 @@ export default function Suppliers() {
                   key={cat}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm cursor-pointer select-none border transition-colors ${
                     form.categories.includes(cat)
-                      ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300'
+                      ? 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700 text-teal-700 dark:text-teal-300'
                       : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'
                   }`}
                 >

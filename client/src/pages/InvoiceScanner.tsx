@@ -5,6 +5,7 @@ import {
   X, File, SortAsc, ScanLine, Check, Link2, Pencil, AlertCircle, Loader2,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import { fetchIngredients, updateIngredient } from '../services/api';
@@ -142,6 +143,7 @@ function parseOcrText(text: string): OcrItem[] {
 
 export default function InvoiceScanner() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
   /* State */
@@ -284,7 +286,7 @@ export default function InvoiceScanner() {
   const handleFiles = useCallback((files: FileList | File[]) => {
     const valid = Array.from(files).filter((f) => acceptedTypes.includes(f.type));
     if (valid.length === 0) {
-      showToast('Formats acceptes : PDF, JPG, PNG', 'error');
+      showToast(t('invoiceScanner.invalidFormat'), 'error');
       return;
     }
     setPendingFiles(valid);
@@ -421,12 +423,7 @@ export default function InvoiceScanner() {
     } else {
       setShowMetadataModal(false);
       setPendingFiles([]);
-      showToast(
-        pendingFiles.length === 1
-          ? 'Facture ajoutée avec succès'
-          : `${pendingFiles.length} factures ajoutées`,
-        'success'
-      );
+      showToast(t('invoiceScanner.invoiceAdded'), 'success');
     }
   };
 
@@ -436,7 +433,7 @@ export default function InvoiceScanner() {
       const url = URL.createObjectURL(inv.file);
       window.open(url, '_blank');
     } else {
-      showToast('Apercu non disponible pour les fichiers exemples', 'info');
+      showToast(t('invoiceScanner.previewNotAvailable'), 'info');
     }
   };
 
@@ -450,7 +447,7 @@ export default function InvoiceScanner() {
       a.click();
       URL.revokeObjectURL(url);
     } else {
-      showToast('Telechargement non disponible pour les fichiers exemples', 'info');
+      showToast(t('invoiceScanner.downloadNotAvailable'), 'info');
     }
   };
 
@@ -459,7 +456,7 @@ export default function InvoiceScanner() {
     const inv = invoices.find((i) => i.id === id);
     if (inv?.previewUrl && inv.file) URL.revokeObjectURL(inv.previewUrl);
     setInvoices((prev) => prev.filter((i) => i.id !== id));
-    showToast('Facture supprimée', 'success');
+    showToast(t('invoiceScanner.invoiceDeleted'), 'success');
     if (inv?.dbId) {
       fetch(`/api/invoices/${inv.dbId}`, {
         method: 'DELETE',
@@ -473,13 +470,13 @@ export default function InvoiceScanner() {
   const handleParseOcr = () => {
     const items = parseOcrText(ocrText);
     if (items.length === 0) {
-      showToast('Aucune ligne produit detectee. Verifiez le format : "Nom  qte  unite  prix_u  total"', 'error');
+      showToast(t('invoiceScanner.noLinesDetected'), 'error');
       return;
     }
     setOcrItems(items);
     setOcrParsed(true);
     setShowMatchPanel(false);
-    showToast(`${items.length} ligne(s) extraite(s)`, 'success');
+    showToast(t('invoiceScanner.linesExtracted'), 'success');
   };
 
   const handleOcrItemChange = (id: string, field: keyof OcrItem, value: string) => {
@@ -519,7 +516,7 @@ export default function InvoiceScanner() {
       previewUrl: null,
     };
     setInvoices((prev) => [newInv, ...prev]);
-    showToast('Facture OCR ajoutée au dossier', 'success');
+    showToast(t('invoiceScanner.ocrInvoiceAdded'), 'success');
     setOcrItems([]);
     setOcrText('');
     setOcrParsed(false);
@@ -528,7 +525,7 @@ export default function InvoiceScanner() {
 
   const handleMatchPrices = () => {
     if (ingredientsList.length === 0) {
-      showToast('Aucun ingredient en base pour le matching', 'error');
+      showToast(t('invoiceScanner.noIngredientsForMatching'), 'error');
       return;
     }
     const matches = matchIngredients(ocrItems, ingredientsList);
@@ -539,7 +536,7 @@ export default function InvoiceScanner() {
   const handleApplyPrices = async () => {
     const toUpdate = ocrMatches.filter((m) => m.ingredient && m.ingredient.pricePerUnit !== m.ocrItem.prixUnitaire);
     if (toUpdate.length === 0) {
-      showToast('Aucun prix a mettre a jour', 'info');
+      showToast(t('invoiceScanner.noPricesToUpdate'), 'info');
       return;
     }
     setUpdatingPrices(true);
@@ -558,7 +555,7 @@ export default function InvoiceScanner() {
       setIngredientsList(fresh);
     } catch { /* */ }
     setUpdatingPrices(false);
-    showToast(`${ok} prix mis a jour sur ${toUpdate.length}`, 'success');
+    showToast(t('invoiceScanner.pricesUpdated'), 'success');
     setShowMatchPanel(false);
   };
 
@@ -573,7 +570,7 @@ export default function InvoiceScanner() {
           Dossier Factures
         </h1>
         <p className="text-gray-500 dark:text-gray-400 mt-1">
-          Stockez et organisez vos factures fournisseurs
+          {t('invoiceScanner.subtitle')}
         </p>
       </div>
 
@@ -607,15 +604,15 @@ export default function InvoiceScanner() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total factures', value: totalCount, icon: FileText, color: 'text-blue-600' },
-          { label: 'Ce mois', value: thisMonth, icon: Calendar, color: 'text-green-600' },
+          { label: t('invoiceScanner.totalInvoices'), value: totalCount, icon: FileText, color: 'text-blue-600' },
+          { label: t('invoiceScanner.thisMonth'), value: thisMonth, icon: Calendar, color: 'text-green-600' },
           {
-            label: 'Volume total',
+            label: t('invoiceScanner.totalVolume'),
             value: `${volumeTotal.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`,
             icon: Euro,
             color: 'text-amber-600',
           },
-          { label: 'Fournisseurs', value: uniqueSuppliers, icon: File, color: 'text-purple-600' },
+          { label: t('invoiceScanner.suppliers'), value: uniqueSuppliers, icon: File, color: 'text-purple-600' },
         ].map((card) => (
           <div
             key={card.label}
@@ -643,8 +640,8 @@ export default function InvoiceScanner() {
         onClick={() => fileInputRef.current?.click()}
       >
         <Upload className="w-10 h-10 mx-auto text-gray-400 dark:text-gray-500 mb-3" />
-        <p className="text-gray-600 dark:text-gray-300 font-medium">Glissez vos factures ici</p>
-        <p className="text-gray-400 dark:text-gray-500 text-sm my-2">ou</p>
+        <p className="text-gray-600 dark:text-gray-300 font-medium">{t('invoiceScanner.dropHere')}</p>
+        <p className="text-gray-400 dark:text-gray-500 text-sm my-2">{t('invoiceScanner.or')}</p>
         <button
           type="button"
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
@@ -677,7 +674,7 @@ export default function InvoiceScanner() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Rechercher par nom, fournisseur..."
+              placeholder={t('invoiceScanner.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
@@ -713,7 +710,7 @@ export default function InvoiceScanner() {
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:ring-2 focus:ring-blue-500 appearance-none"
             >
-              <option value="">Tous fournisseurs</option>
+              <option value="">{t('invoiceScanner.allSuppliers')}</option>
               {allFournisseurs.map((f) => (
                 <option key={f} value={f}>
                   {f}
@@ -732,9 +729,9 @@ export default function InvoiceScanner() {
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:ring-2 focus:ring-blue-500 appearance-none"
             >
-              <option value="date">Date (recent)</option>
-              <option value="nom">Nom</option>
-              <option value="fournisseur">Fournisseur</option>
+              <option value="date">{t('invoiceScanner.sortDate')}</option>
+              <option value="nom">{t('invoiceScanner.sortName')}</option>
+              <option value="fournisseur">{t('invoiceScanner.sortSupplier')}</option>
             </select>
           </div>
 
@@ -768,12 +765,12 @@ export default function InvoiceScanner() {
       {loadingInvoices ? (
         <div className="flex items-center justify-center py-12 text-gray-400 dark:text-gray-500 gap-2">
           <Loader2 className="w-6 h-6 animate-spin" />
-          <span>Chargement des factures...</span>
+          <span>{t('invoiceScanner.loading')}</span>
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 text-gray-400 dark:text-gray-500">
           <FolderOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p>Aucune facture trouvee</p>
+          <p>{t('invoiceScanner.noInvoicesFound')}</p>
         </div>
       ) : viewMode === 'grid' ? (
         /* Grid view */
@@ -915,7 +912,7 @@ export default function InvoiceScanner() {
                         onClick={() => handlePreview(inv)}
                         className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50
                                    dark:hover:bg-blue-900/20 rounded-md"
-                        title="Apercu"
+                        title={t('invoiceScanner.preview')}
                       >
                         <Eye className="w-4 h-4" />
                       </button>
@@ -923,7 +920,7 @@ export default function InvoiceScanner() {
                         onClick={() => handleDownload(inv)}
                         className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50
                                    dark:hover:bg-green-900/20 rounded-md"
-                        title="Telecharger"
+                        title={t('invoiceScanner.download')}
                       >
                         <Download className="w-4 h-4" />
                       </button>
@@ -931,7 +928,7 @@ export default function InvoiceScanner() {
                         onClick={() => handleDelete(inv.id)}
                         className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50
                                    dark:hover:bg-red-900/20 rounded-md"
-                        title="Supprimer"
+                        title={t('invoiceScanner.deleteTooltip')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -956,7 +953,7 @@ export default function InvoiceScanner() {
               Scanner OCR
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Collez le texte scanne d&apos;une facture fournisseur. Format attendu par ligne :
+              {t('invoiceScanner.ocrDescription')}
               <span className="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded ml-1">
                 Nom produit  qte  unite  prix_unitaire  total
               </span>
@@ -1102,7 +1099,7 @@ export default function InvoiceScanner() {
                           <button
                             onClick={() => handleRemoveOcrItem(item.id)}
                             className="p-1 text-gray-400 hover:text-red-500 rounded"
-                            title="Supprimer la ligne"
+                            title={t('invoiceScanner.deleteLine')}
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -1113,7 +1110,7 @@ export default function InvoiceScanner() {
                   <tfoot>
                     <tr className="bg-gray-50 dark:bg-gray-900/30">
                       <td colSpan={4} className="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 text-right">
-                        Total HT :
+                        {t('invoiceScanner.totalHT')} :
                       </td>
                       <td className="px-4 py-2.5 text-sm font-bold text-gray-900 dark:text-white text-center">
                         {ocrItems.reduce((s, i) => s + i.total, 0).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} &euro;
@@ -1240,7 +1237,7 @@ export default function InvoiceScanner() {
           {ocrParsed && ocrItems.length === 0 && (
             <div className="text-center py-12 text-gray-400 dark:text-gray-500">
               <AlertCircle className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Aucune ligne detectee dans le texte.</p>
+              <p>{t('invoiceScanner.noLinesInText')}</p>
               <p className="text-xs mt-1">Verifiez que chaque ligne suit le format : Nom  qte  unite  prix  total</p>
             </div>
           )}
@@ -1256,7 +1253,7 @@ export default function InvoiceScanner() {
           setScanLoading(false);
           setAiDetected(false);
         }}
-        title={`Ajouter les informations ${pendingFiles.length > 1 ? `(${currentPendingIndex + 1}/${pendingFiles.length})` : ''}`}
+        title={`${t('invoiceScanner.addInfo')} ${pendingFiles.length > 1 ? `(${currentPendingIndex + 1}/${pendingFiles.length})` : ''}`}
       >
         <div className="space-y-4">
           {pendingFiles[currentPendingIndex] && (
@@ -1276,23 +1273,23 @@ export default function InvoiceScanner() {
           {scanLoading && (
             <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-sm text-blue-700 dark:text-blue-300">
               <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
-              Scan IA en cours... Extraction des données de la facture
+              {t('invoiceScanner.aiScanning')}
             </div>
           )}
           {aiDetected && !scanLoading && (
             <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg text-sm text-emerald-700 dark:text-emerald-300">
               <Check className="w-4 h-4 flex-shrink-0" />
-              Données détectées automatiquement par IA — vérifiez et corrigez si nécessaire
+              {t('invoiceScanner.aiDetected')}
             </div>
           )}
 
-          {/* Fournisseur */}
+          {/* {t('invoiceScanner.supplierLabel')}/}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Fournisseur *
+              {t('invoiceScanner.supplierLabel')}
               {aiDetected && metaForm.fournisseur && (
                 <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
-                  ✓ Détecté par IA
+                  {t('invoiceScanner.detectedByAI')}
                 </span>
               )}
             </label>
@@ -1301,7 +1298,7 @@ export default function InvoiceScanner() {
               list="fournisseurs-list"
               value={metaForm.fournisseur}
               onChange={(e) => setMetaForm((f) => ({ ...f, fournisseur: e.target.value }))}
-              placeholder="Nom du fournisseur"
+              placeholder={t('invoiceScanner.supplierPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:ring-2 focus:ring-blue-500"
@@ -1316,10 +1313,10 @@ export default function InvoiceScanner() {
           {/* Numero facture */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Numero de facture
+              {t('invoiceScanner.invoiceNumberLabel')}
               {aiDetected && metaForm.invoiceNumber && (
                 <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
-                  ✓ Détecté par IA
+                  {t('invoiceScanner.detectedByAI')}
                 </span>
               )}
             </label>
@@ -1327,7 +1324,7 @@ export default function InvoiceScanner() {
               type="text"
               value={metaForm.invoiceNumber}
               onChange={(e) => setMetaForm((f) => ({ ...f, invoiceNumber: e.target.value }))}
-              placeholder="Ex: FAC-2026-001"
+              placeholder={t('invoiceScanner.invoiceNumberPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:ring-2 focus:ring-blue-500"
@@ -1337,10 +1334,10 @@ export default function InvoiceScanner() {
           {/* Date facture */}
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Date de facture
+              {t('invoiceScanner.invoiceDateLabel')}
               {aiDetected && metaForm.dateFacture && (
                 <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
-                  ✓ Détecté par IA
+                  {t('invoiceScanner.detectedByAI')}
                 </span>
               )}
             </label>
@@ -1358,10 +1355,10 @@ export default function InvoiceScanner() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Montant HT
+                {t('invoiceScanner.amountHT')}
                 {aiDetected && metaForm.montantHT && (
                   <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
-                    ✓ IA
+                    {t('invoiceScanner.ai')}
                   </span>
                 )}
               </label>
@@ -1378,10 +1375,10 @@ export default function InvoiceScanner() {
             </div>
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Montant TTC
+                {t('invoiceScanner.amountTTC')}
                 {aiDetected && metaForm.montantTTC && (
                   <span className="text-xs px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded font-normal">
-                    ✓ IA
+                    {t('invoiceScanner.ai')}
                   </span>
                 )}
               </label>
@@ -1401,13 +1398,13 @@ export default function InvoiceScanner() {
           {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Notes
+              {t('invoiceScanner.notes')}
             </label>
             <textarea
               value={metaForm.notes}
               onChange={(e) => setMetaForm((f) => ({ ...f, notes: e.target.value }))}
               rows={2}
-              placeholder="Notes optionnelles..."
+              placeholder={t('invoiceScanner.notesPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:ring-2 focus:ring-blue-500 resize-none"
@@ -1426,7 +1423,7 @@ export default function InvoiceScanner() {
               className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100
                          dark:hover:bg-gray-700 rounded-lg"
             >
-              Annuler
+              {t('common.cancel')}
             </button>
             <button
               onClick={saveCurrentFile}
@@ -1439,7 +1436,7 @@ export default function InvoiceScanner() {
               ) : (
                 <Plus className="w-4 h-4" />
               )}
-              {currentPendingIndex < pendingFiles.length - 1 ? 'Suivant' : 'Ajouter'}
+              {currentPendingIndex < pendingFiles.length - 1 ? t('invoiceScanner.next') : t('invoiceScanner.add')}
             </button>
           </div>
         </div>

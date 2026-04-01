@@ -394,5 +394,44 @@
     "create": "Crear",
     "deleteSupplier": "Eliminar proveedor",
     "deleteConfirm": "Esta seguro de que desea eliminar"
+  },
+  "clients": {
+    "title": "Clientes CRM",
+    "statistics": "Estadísticas",
+    "newClient": "Nuevo cliente",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "add": "Añadir",
+    "send": "Enviar",
+    "edit": "Editar",
+    "noClientFound": "Ningún cliente encontrado",
+    "infos": "Info",
+    "preferences": "Preferencias",
+    "history": "Historial",
+    "documents": "Documentos",
+    "rgpd": "RGPD",
+    "statsTitle": "Estadísticas de clientes",
+    "totalClients": "Total clientes",
+    "vipClients": "Clientes VIP"
+  },
+  "inventory": {
+    "title": "Inventario",
+    "add": "Añadir",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "ok": "OK",
+    "low": "Bajo",
+    "critical": "Crítico",
+    "print": "Imprimir",
+    "exportCSV": "Exportar CSV"
+  },
+  "comptabilite": {
+    "title": "Contabilidad",
+    "loading": "Cargando datos...",
+    "cancel": "Cancelar",
+    "addBtn": "Añadir",
+    "month": "Mes",
+    "quarter": "Trimestre",
+    "year": "Año"
   }
 }

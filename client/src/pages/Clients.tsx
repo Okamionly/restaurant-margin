@@ -6,6 +6,7 @@ import {
   Upload, Copy, ExternalLink, Heart, UserPlus, Send, Loader2,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 
 const API = '';
@@ -159,6 +160,7 @@ const interactionIcons: Record<string, { icon: string; color: string }> = {
 
 export default function Clients() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   // State (persisted to localStorage — no backend Client model yet)
   const [clients, setClients] = useState<Client[]>(initClients);
@@ -249,7 +251,7 @@ export default function Clients() {
        c.nom.toLowerCase() === nom.toLowerCase())
     );
     if (existing) {
-      setDuplicateWarning(`Client similaire trouvé : ${existing.prenom} ${existing.nom} (${existing.email})`);
+      setDuplicateWarning(t('clients.duplicateFound').replace('{name}', `${existing.prenom} ${existing.nom}`).replace('{email}', existing.email));
     } else {
       setDuplicateWarning('');
     }
@@ -257,15 +259,15 @@ export default function Clients() {
 
   function handleSave() {
     if (!form.nom || !form.email) {
-      showToast('Nom et email sont requis', 'error');
+      showToast(t('clients.nameAndEmailRequired'), 'error');
       return;
     }
     if (editingClient) {
       setClients(prev => prev.map(c => c.id === form.id ? form : c));
-      showToast('Client mis à jour avec succès', 'success');
+      showToast(t('clients.clientUpdated'), 'success');
     } else {
       setClients(prev => [...prev, form]);
-      showToast('Nouveau client ajouté', 'success');
+      showToast(t('clients.newClientAdded'), 'success');
     }
     setShowForm(false);
   }
@@ -273,7 +275,7 @@ export default function Clients() {
   function handleDelete(id: string) {
     setClients(prev => prev.filter(c => c.id !== id));
     setShowDetail(false);
-    showToast('Client supprimé', 'success');
+    showToast(t('clients.clientDeleted'), 'success');
   }
 
   function openEmailModal(c: Client) {
@@ -293,7 +295,7 @@ export default function Clients() {
   async function handleSendClientEmail() {
     if (!selectedClient) return;
     if (!emailSubject.trim() || !emailMessage.trim()) {
-      showToast('Veuillez remplir l\'objet et le message', 'error');
+      showToast(t('clients.fillSubjectAndMessage'), 'error');
       return;
     }
     setSendingClientEmail(true);
@@ -309,13 +311,13 @@ export default function Clients() {
         }),
       });
       if (!res.ok) throw new Error('Erreur envoi');
-      showToast(`Email envoyé pour ${selectedClient.prenom} ${selectedClient.nom}`, 'success');
+      showToast(t('clients.emailSent').replace('{name}', `${selectedClient.prenom} ${selectedClient.nom}`), 'success');
       setShowEmail(false);
       setEmailSubject('');
       setEmailMessage('');
       setSelectedTemplate('');
     } catch {
-      showToast('Erreur lors de l\'envoi de l\'email', 'error');
+      showToast(t('clients.emailSendError'), 'error');
     } finally {
       setSendingClientEmail(false);
     }
@@ -330,17 +332,17 @@ export default function Clients() {
     a.download = `client_${c.nom}_${c.prenom}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Données exportées avec succès', 'success');
+    showToast(t('clients.dataExported'), 'success');
   }
 
   function handleRGPDForget(c: Client) {
     setClients(prev => prev.filter(cl => cl.id !== c.id));
     setShowDetail(false);
-    showToast(`Données de ${c.prenom} ${c.nom} supprimées (droit à l'oubli)`, 'success');
+    showToast(t('clients.rgpdForget').replace('{name}', `${c.prenom} ${c.nom}`), 'success');
   }
 
   function handleCSVImport() {
-    showToast('Import CSV : fonctionnalité à venir', 'info');
+    showToast(t('clients.csvImportSoon'), 'info');
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────
@@ -413,30 +415,30 @@ export default function Clients() {
         <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
           <div className="text-center">
             <div className="text-lg font-bold text-slate-900 dark:text-white">{fmt(c.caTotal)}</div>
-            <div className="text-xs text-slate-400 dark:text-slate-500">CA total</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500">{t('clients.caTotal')}</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-slate-900 dark:text-white">{c.nbCommandes}</div>
-            <div className="text-xs text-slate-400 dark:text-slate-500">Commandes</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500">{t('clients.orders')}</div>
           </div>
           <div className="text-center">
             <div className="text-sm font-medium text-slate-400 dark:text-slate-300">{fmtDate(c.derniereVisite)}</div>
-            <div className="text-xs text-slate-400 dark:text-slate-500">Dernière visite</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500">{t('clients.lastVisit')}</div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
-            <Mail className="w-3.5 h-3.5" /> Email
+            <Mail className="w-3.5 h-3.5" /> {t('clients.email')}
           </button>
           <a href={`tel:${c.telephone}`} onClick={(e) => e.stopPropagation()}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
-            <Phone className="w-3.5 h-3.5" /> Appeler
+            <Phone className="w-3.5 h-3.5" /> {t('clients.call')}
           </a>
           <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-50 dark:bg-slate-700 text-slate-300 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors">
-            <FileText className="w-3.5 h-3.5" /> Devis
+            <FileText className="w-3.5 h-3.5" /> {t('clients.quote')}
           </button>
         </div>
       </div>
@@ -500,24 +502,24 @@ export default function Clients() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
             <Users className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-            Clients CRM
+            {t('clients.title')}
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
-            {clients.length} clients &middot; CA total : {fmt(stats.totalCA)}
+            {t('clients.subtitle').replace('{count}', String(clients.length)).replace('{ca}', fmt(stats.totalCA))}
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button onClick={() => setShowStats(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
-            <BarChart3 className="w-4 h-4" /> Statistiques
+            <BarChart3 className="w-4 h-4" /> {t('clients.statistics')}
           </button>
           <button onClick={handleCSVImport}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 text-sm font-medium transition-colors">
-            <Upload className="w-4 h-4" /> Import CSV
+            <Upload className="w-4 h-4" /> {t('clients.importCSV')}
           </button>
           <button onClick={openAdd}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors shadow-sm">
-            <Plus className="w-4 h-4" /> Nouveau client
+            <Plus className="w-4 h-4" /> {t('clients.newClient')}
           </button>
         </div>
       </div>
@@ -528,7 +530,7 @@ export default function Clients() {
           {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input type="text" placeholder="Rechercher par nom, entreprise, email..."
+            <input type="text" placeholder={t('clients.searchPlaceholder')}
               value={search} onChange={e => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
@@ -536,28 +538,28 @@ export default function Clients() {
           {/* Type filter */}
           <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
             className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-400 dark:text-slate-300">
-            <option value="">Tous les types</option>
-            <option value="Particulier">Particulier</option>
-            <option value="Entreprise">Entreprise</option>
-            <option value="Association">Association</option>
+            <option value="">{t('clients.allTypes')}</option>
+            <option value="Particulier">{t('clients.individual')}</option>
+            <option value="Entreprise">{t('clients.company')}</option>
+            <option value="Association">{t('clients.association')}</option>
           </select>
 
           {/* Tag filter */}
           <select value={filterTag} onChange={e => setFilterTag(e.target.value as ClientTag | '')}
             className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-400 dark:text-slate-300">
-            <option value="">Tous les tags</option>
+            <option value="">{t('clients.allTags')}</option>
             <option value="VIP">VIP</option>
-            <option value="Régulier">Régulier</option>
-            <option value="Nouveau">Nouveau</option>
+            <option value="Régulier">{t('clients.regular')}</option>
+            <option value="Nouveau">{t('clients.newTag')}</option>
           </select>
 
           {/* Sort */}
           <div className="flex items-center gap-1">
             <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
               className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-sm text-slate-400 dark:text-slate-300">
-              <option value="nom">Trier par nom</option>
-              <option value="caTotal">Trier par CA</option>
-              <option value="derniereVisite">Trier par visite</option>
+              <option value="nom">{t('clients.sortByName')}</option>
+              <option value="caTotal">{t('clients.sortByCA')}</option>
+              <option value="derniereVisite">{t('clients.sortByVisit')}</option>
             </select>
             <button onClick={() => setSortAsc(!sortAsc)}
               className="p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
@@ -582,7 +584,7 @@ export default function Clients() {
       {/* Results count */}
       {filtered.length !== clients.length && (
         <p className="text-sm text-slate-400 dark:text-slate-400">
-          {filtered.length} résultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
+          {t('clients.resultsCount').replace('{count}', String(filtered.length)).replace('{total}', String(clients.length))}
         </p>
       )}
 
@@ -599,13 +601,13 @@ export default function Clients() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Client</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Type</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Tags</th>
-                <th className="text-right px-4 py-3 font-medium text-slate-400 dark:text-slate-400">CA total</th>
-                <th className="text-center px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Commandes</th>
-                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Dernière visite</th>
-                <th className="text-center px-4 py-3 font-medium text-slate-400 dark:text-slate-400">Actions</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.client')}</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.typCol')}</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.tagsCol')}</th>
+                <th className="text-right px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.caTotal')}</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.orders')}</th>
+                <th className="text-left px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.lastVisit')}</th>
+                <th className="text-center px-4 py-3 font-medium text-slate-400 dark:text-slate-400">{t('clients.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -637,7 +639,7 @@ export default function Clients() {
                         <Mail className="w-4 h-4" />
                       </button>
                       <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
-                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" title="Modifier">
+                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" title={t('clients.edit')}>
                         <Edit2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -649,7 +651,7 @@ export default function Clients() {
           {filtered.length === 0 && (
             <div className="text-center py-12 text-slate-400 dark:text-slate-500">
               <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Aucun client trouvé</p>
+              <p>{t('clients.noClientFound')}</p>
             </div>
           )}
         </div>
@@ -685,28 +687,28 @@ export default function Clients() {
                   </button>
                   <a href={`tel:${selectedClient.telephone}`}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
-                    <Phone className="w-3.5 h-3.5" /> Appeler
+                    <Phone className="w-3.5 h-3.5" /> {t('clients.call')}
                   </a>
                   <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
-                    <Edit2 className="w-3.5 h-3.5" /> Modifier
+                    <Edit2 className="w-3.5 h-3.5" /> {t('clients.edit')}
                   </button>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">{fmt(selectedClient.caTotal)}</div>
-                <div className="text-xs text-slate-400">CA total</div>
+                <div className="text-xs text-slate-400">{t('clients.caTotal')}</div>
               </div>
             </div>
 
             {/* Tabs */}
             <div className="flex gap-1 border-b border-slate-200 dark:border-slate-700 mb-4 overflow-x-auto">
               {([
-                { id: 'infos' as TabId, label: 'Infos' },
-                { id: 'preferences' as TabId, label: 'Préférences' },
-                { id: 'historique' as TabId, label: 'Historique' },
-                { id: 'documents' as TabId, label: 'Documents' },
-                { id: 'rgpd' as TabId, label: 'RGPD' },
+                { id: 'infos' as TabId, label: t('clients.infos') },
+                { id: 'preferences' as TabId, label: t('clients.preferences') },
+                { id: 'historique' as TabId, label: t('clients.history') },
+                { id: 'documents' as TabId, label: t('clients.documents') },
+                { id: 'rgpd' as TabId, label: t('clients.rgpd') },
               ]).map(tab => (
                 <button key={tab.id} onClick={() => setDetailTab(tab.id)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
@@ -723,20 +725,20 @@ export default function Clients() {
             {detailTab === 'infos' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-3">
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Nom complet</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Entreprise</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.entreprise || '—'}</p></div>
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">SIRET</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.siret || '—'}</p></div>
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Adresse</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.adresse || '—'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.fullName')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.companyLabel')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.entreprise || '—'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.siret')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.siret || '—'}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.address')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.adresse || '—'}</p></div>
                 </div>
                 <div className="space-y-3">
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Email</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.email}</p></div>
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Téléphone</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.telephone}</p></div>
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Client depuis</label><p className="text-sm text-slate-900 dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
-                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">Commandes / événements</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.nbCommandes}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.email')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.email}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.phone')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.telephone}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.clientSince')}</label><p className="text-sm text-slate-900 dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
+                  <div><label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.ordersEvents')}</label><p className="text-sm text-slate-900 dark:text-white">{selectedClient.nbCommandes}</p></div>
                 </div>
                 {selectedClient.notes && (
                   <div className="col-span-full">
-                    <label className="text-xs font-medium text-slate-400 dark:text-slate-500">Notes</label>
+                    <label className="text-xs font-medium text-slate-400 dark:text-slate-500">{t('clients.notes')}</label>
                     <p className="text-sm text-slate-400 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 rounded-lg p-3 mt-1">{selectedClient.notes}</p>
                   </div>
                 )}
@@ -748,7 +750,7 @@ export default function Clients() {
               <div className="space-y-6">
                 <div>
                   <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-500" /> Allergènes
+                    <AlertTriangle className="w-4 h-4 text-amber-500" /> {t('clients.allergens')}
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {EU_ALLERGENES.map(a => {
@@ -767,7 +769,7 @@ export default function Clients() {
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-                    <Heart className="w-4 h-4 text-green-500" /> Régime alimentaire
+                    <Heart className="w-4 h-4 text-green-500" /> {t('clients.diet')}
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {REGIMES.map(r => {
@@ -787,7 +789,7 @@ export default function Clients() {
                 {selectedClient.platsFavoris.length > 0 && (
                   <div>
                     <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-                      <Star className="w-4 h-4 text-amber-500" /> Plats favoris
+                      <Star className="w-4 h-4 text-amber-500" /> {t('clients.favoriteDishes')}
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedClient.platsFavoris.map(p => (
@@ -803,7 +805,7 @@ export default function Clients() {
             {detailTab === 'historique' && (
               <div className="space-y-3">
                 {selectedClient.historique.length === 0 ? (
-                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">Aucune interaction enregistrée</p>
+                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">{t('clients.noInteraction')}</p>
                 ) : (
                   <div className="relative pl-6 border-l-2 border-slate-200 dark:border-slate-700 space-y-4">
                     {selectedClient.historique.map(h => (
@@ -832,7 +834,7 @@ export default function Clients() {
             {detailTab === 'documents' && (
               <div className="space-y-3">
                 {selectedClient.documents.length === 0 ? (
-                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">Aucun document lié</p>
+                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">{t('clients.noDocument')}</p>
                 ) : (
                   selectedClient.documents.map(d => (
                     <div key={d.id} className="flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-lg p-3">
@@ -864,7 +866,7 @@ export default function Clients() {
                 <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-5 h-5 text-blue-500" />
-                    <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300">Protection des données</h4>
+                    <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300">{t('clients.dataProtection')}</h4>
                   </div>
                   <div className="space-y-2 text-sm">
                     <p className="text-slate-300 dark:text-slate-400">
@@ -878,11 +880,11 @@ export default function Clients() {
                 <div className="flex flex-wrap gap-3">
                   <button onClick={() => exportClientData(selectedClient)}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-sm font-medium transition-colors">
-                    <Download className="w-4 h-4" /> Exporter les données
+                    <Download className="w-4 h-4" /> {t('clients.exportData')}
                   </button>
                   <button onClick={() => handleRGPDForget(selectedClient)}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-sm font-medium transition-colors">
-                    <Trash2 className="w-4 h-4" /> Droit à l'oubli
+                    <Trash2 className="w-4 h-4" /> {t('clients.rightToForget')}
                   </button>
                 </div>
               </div>
@@ -893,7 +895,7 @@ export default function Clients() {
 
       {/* ── Add/Edit Modal ───────────────────────────────────────────── */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)}
-        title={editingClient ? 'Modifier le client' : 'Nouveau client'}
+        title={editingClient ? t('clients.editClient') : t('clients.newClient')}
         className="max-w-3xl">
         <div className="space-y-5">
           {/* Duplicate warning */}
@@ -906,44 +908,44 @@ export default function Clients() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Prénom</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.firstName')}</label>
               <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Nom *</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.lastName')}</label>
               <input type="text" value={form.nom}
                 onChange={e => { setForm({ ...form, nom: e.target.value }); checkDuplicate(e.target.value, form.email); }}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Email *</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.emailLabel')}</label>
               <input type="email" value={form.email}
                 onChange={e => { setForm({ ...form, email: e.target.value }); checkDuplicate(form.nom, e.target.value); }}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Téléphone</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.phoneLabel')}</label>
               <input type="tel" value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Entreprise</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.companyField')}</label>
               <input type="text" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">SIRET</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.siretField')}</label>
               <input type="text" value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div className="col-span-full">
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Adresse</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.addressField')}</label>
               <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Type</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.type')}</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as ClientType })}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white">
                 <option value="Particulier">Particulier</option>
@@ -952,7 +954,7 @@ export default function Clients() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Tags</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.tags')}</label>
               <div className="flex gap-2 flex-wrap">
                 {(['VIP', 'Régulier', 'Nouveau'] as ClientTag[]).map(tag => (
                   <button key={tag} type="button"
@@ -976,7 +978,7 @@ export default function Clients() {
 
           {/* Allergènes */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">Allergènes (14 allergènes UE)</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">{t('clients.allergensEU')}</label>
             <div className="flex flex-wrap gap-2">
               {EU_ALLERGENES.map(a => (
                 <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
@@ -1000,7 +1002,7 @@ export default function Clients() {
 
           {/* Régime */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">Régime alimentaire</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">{t('clients.dietLabel')}</label>
             <div className="flex flex-wrap gap-2">
               {REGIMES.map(r => (
                 <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
@@ -1024,7 +1026,7 @@ export default function Clients() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Notes</label>
+            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.notes')}</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
               rows={3}
               className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-sm text-slate-900 dark:text-white resize-none" />
@@ -1039,11 +1041,11 @@ export default function Clients() {
             <div className="flex gap-3">
               <button onClick={() => setShowForm(false)}
                 className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                Annuler
+                {t('clients.cancel')}
               </button>
               <button onClick={handleSave}
                 className="px-6 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors">
-                {editingClient ? 'Enregistrer' : 'Ajouter'}
+                {editingClient ? t('clients.save') : t('clients.add')}
               </button>
             </div>
           </div>
@@ -1052,12 +1054,12 @@ export default function Clients() {
 
       {/* ── Email Modal ──────────────────────────────────────────────── */}
       <Modal isOpen={showEmail} onClose={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
-        title={selectedClient ? `Envoyer un email à ${selectedClient.prenom} ${selectedClient.nom}` : 'Email'}>
+        title={selectedClient ? t('clients.sendEmailTo').replace('{name}', `${selectedClient.prenom} ${selectedClient.nom}`) : 'Email'}>
         {selectedClient && (
           <div className="space-y-4">
             {/* Template shortcuts */}
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">Modèles rapides</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-2">{t('clients.quickTemplates')}</label>
               <div className="flex flex-wrap gap-2">
                 {EMAIL_TEMPLATES.map(t => (
                   <button key={t.id}
@@ -1070,22 +1072,22 @@ export default function Clients() {
             </div>
             {/* Subject */}
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Objet</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.subject')}</label>
               <input
                 type="text"
                 value={emailSubject}
                 onChange={(e) => setEmailSubject(e.target.value)}
-                placeholder="Objet de l'email..."
+                placeholder={t('clients.subjectPlaceholder')}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
             </div>
             {/* Message body */}
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">Message</label>
+              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('clients.message')}</label>
               <textarea
                 value={emailMessage}
                 onChange={(e) => setEmailMessage(e.target.value)}
-                placeholder="Votre message..."
+                placeholder={t('clients.messagePlaceholder')}
                 rows={6}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-vertical"
               />
@@ -1096,7 +1098,7 @@ export default function Clients() {
                 onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
                 className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
-                Annuler
+                {t('clients.cancel')}
               </button>
               <button
                 onClick={handleSendClientEmail}
@@ -1104,7 +1106,7 @@ export default function Clients() {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50"
               >
                 {sendingClientEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                Envoyer
+                {t('clients.send')}
               </button>
             </div>
           </div>
@@ -1112,32 +1114,32 @@ export default function Clients() {
       </Modal>
 
       {/* ── Stats Modal ──────────────────────────────────────────────── */}
-      <Modal isOpen={showStats} onClose={() => setShowStats(false)} title="Statistiques clients" className="max-w-3xl">
+      <Modal isOpen={showStats} onClose={() => setShowStats(false)} title={t('clients.statsTitle')} className="max-w-3xl">
         <div className="space-y-8">
           {/* KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-slate-900 dark:text-white">{clients.length}</div>
-              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">Total clients</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('clients.totalClients')}</div>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{fmt(stats.totalCA)}</div>
-              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">CA total</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('clients.caTotal')}</div>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">{fmt(stats.avgCA)}</div>
-              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">CA moyen</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('clients.avgCA')}</div>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{stats.byTag.VIP}</div>
-              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">Clients VIP</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('clients.vipClients')}</div>
             </div>
           </div>
 
           {/* Top 10 by CA */}
           <div>
             <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-blue-500" /> Top 10 clients par CA
+              <BarChart3 className="w-4 h-4 text-blue-500" /> {t('clients.top10ByCA')}
             </h4>
             <BarChartSimple data={stats.top10.map(c => ({ label: `${c.prenom} ${c.nom}`, value: c.caTotal }))} />
           </div>
@@ -1146,7 +1148,7 @@ export default function Clients() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-                <PieChart className="w-4 h-4 text-purple-500" /> Répartition par type
+                <PieChart className="w-4 h-4 text-purple-500" /> {t('clients.distributionByType')}
               </h4>
               <PieChartSimple data={[
                 { label: 'Particulier', value: stats.byType.Particulier, color: '#64748b' },
@@ -1156,7 +1158,7 @@ export default function Clients() {
             </div>
             <div>
               <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-green-500" /> Répartition par tag
+                <TrendingUp className="w-4 h-4 text-green-500" /> {t('clients.distributionByTag')}
               </h4>
               <PieChartSimple data={[
                 { label: 'VIP', value: stats.byTag.VIP, color: '#f59e0b' },

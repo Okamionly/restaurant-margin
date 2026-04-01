@@ -6,6 +6,7 @@ import {
   RefreshCw, SlidersHorizontal, AlertTriangle, Lightbulb, Shield,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 
 const API = '';
@@ -472,6 +473,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
 // ── Main Page Component ──────────────────────────────────────────────────────
 export default function MenuEngineering() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
 
   // Data
@@ -773,10 +775,10 @@ export default function MenuEngineering() {
               <div className="p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl text-white shadow-lg">
                 <BarChart3 className="w-6 h-6" />
               </div>
-              Menu Engineering
+              {t('menuEngineering.title')}
             </h1>
             <p className="text-slate-400 dark:text-slate-400 mt-1">
-              Analyse BCG de votre carte &mdash; identifiez les plats à promouvoir, optimiser ou retirer
+              {t('menuEngineering.subtitle')}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -784,13 +786,13 @@ export default function MenuEngineering() {
               onClick={() => setShowSalesModal(true)}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-medium text-sm shadow-lg shadow-violet-500/25 transition-all"
             >
-              <Plus className="w-4 h-4" /> Saisir vente
+              <Plus className="w-4 h-4" /> {t('menuEngineering.addSale')}
             </button>
             <button
               onClick={() => window.print()}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-200 rounded-xl font-medium text-sm transition-all no-print"
             >
-              <Printer className="w-4 h-4" /> Imprimer
+              <Printer className="w-4 h-4" /> {t('menuEngineering.print')}
             </button>
           </div>
         </div>
@@ -819,7 +821,7 @@ export default function MenuEngineering() {
                   : 'text-slate-300 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
-              <Calendar className="w-3.5 h-3.5" /> Personnalisé
+              <Calendar className="w-3.5 h-3.5" /> {t('menuEngineering.custom')}
             </button>
           </div>
 
@@ -852,7 +854,7 @@ export default function MenuEngineering() {
         {loading && (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
-            <span className="ml-3 text-slate-400 dark:text-slate-400">Chargement de l&apos;analyse...</span>
+            <span className="ml-3 text-slate-400 dark:text-slate-400">{t('menuEngineering.loadingAnalysis')}</span>
           </div>
         )}
 
@@ -862,30 +864,30 @@ export default function MenuEngineering() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <SummaryCard
                 icon={<ShoppingBag className="w-5 h-5" />}
-                label="Total ventes"
+                label={t('menuEngineering.totalSales')}
                 value={data.totalSales.toString()}
-                sub={`sur ${data.days} jours`}
+                sub={`${t('menuEngineering.over')} ${data.days} ${t('menuEngineering.days')}`}
                 color="violet"
               />
               <SummaryCard
                 icon={<DollarSign className="w-5 h-5" />}
-                label="CA total"
+                label={t('menuEngineering.totalRevenue')}
                 value={fmtEur(totalRevenue)}
-                sub="chiffre d'affaires"
+                sub={t('menuEngineering.revenue')}
                 color="emerald"
               />
               <SummaryCard
                 icon={<Percent className="w-5 h-5" />}
-                label="Marge moyenne"
+                label={t('menuEngineering.avgMargin')}
                 value={`${fmt(data.avgMargin, 1)}%`}
-                sub="toutes recettes"
+                sub={t('menuEngineering.allRecipes')}
                 color="blue"
               />
               <SummaryCard
                 icon={<ChefHat className="w-5 h-5" />}
-                label="Nb recettes"
+                label={t('menuEngineering.nbRecipes')}
                 value={items.length.toString()}
-                sub="analysées"
+                sub={t('menuEngineering.analyzed')}
                 color="amber"
               />
             </div>
@@ -924,10 +926,10 @@ export default function MenuEngineering() {
                 <div>
                   <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Target className="w-5 h-5 text-violet-500" />
-                    Matrice BCG &mdash; Menu Engineering
+                    {t('menuEngineering.bcgMatrix')}
                   </h2>
                   <p className="text-sm text-slate-400 dark:text-slate-400 mt-0.5">
-                    Chaque bulle représente un plat. Taille = chiffre d&apos;affaires. Survolez pour les détails.
+                    {t('menuEngineering.bcgDescription')}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-400">
@@ -943,8 +945,8 @@ export default function MenuEngineering() {
               ) : (
                 <div className="text-center py-16 text-slate-400 dark:text-slate-500">
                   <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p className="font-medium">Ajoutez des recettes et des ventes pour voir l&apos;analyse</p>
-                  <p className="text-sm mt-1">Créez vos recettes puis saisissez des ventes pour alimenter la matrice BCG</p>
+                  <p className="font-medium">{t('menuEngineering.addRecipesAndSales')}</p>
+                  <p className="text-sm mt-1">{t('menuEngineering.createRecipesHint')}</p>
                 </div>
               )}
             </div>
@@ -954,7 +956,7 @@ export default function MenuEngineering() {
               <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <Award className="w-5 h-5 text-violet-500" />
-                  Détail par recette
+                  {t('menuEngineering.detailByRecipe')}
                 </h2>
                 <div className="flex items-center gap-2">
                   <select
@@ -962,7 +964,7 @@ export default function MenuEngineering() {
                     onChange={e => setFilterQuadrant(e.target.value as Quadrant | 'all')}
                     className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-sm text-slate-400 dark:text-slate-200"
                   >
-                    <option value="all">Tous les quadrants</option>
+                    <option value="all">{t('menuEngineering.allQuadrants')}</option>
                     {(Object.keys(QUADRANT_CONFIG) as Quadrant[]).map(q => (
                       <option key={q} value={q}>{QUADRANT_CONFIG[q].emoji} {QUADRANT_CONFIG[q].label}</option>
                     ))}
@@ -1011,7 +1013,7 @@ export default function MenuEngineering() {
                     {sortedItems.length === 0 ? (
                       <tr>
                         <td colSpan={12} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500">
-                          Aucun plat trouvé pour ce filtre
+                          {t('menuEngineering.noDishFound')}
                         </td>
                       </tr>
                     ) : (
@@ -1077,9 +1079,9 @@ export default function MenuEngineering() {
                               <button
                                 onClick={() => { setWhatIfRecipeId(item.id); setWhatIfPriceAdjust(0); setShowWhatIf(true); }}
                                 className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors"
-                                title="Simuler un changement de prix"
+                                title={t('menuEngineering.simulatePrice')}
                               >
-                                <SlidersHorizontal className="w-3.5 h-3.5" /> Simuler
+                                <SlidersHorizontal className="w-3.5 h-3.5" /> {t('menuEngineering.simulate')}
                               </button>
                             </td>
                           </tr>
@@ -1100,10 +1102,10 @@ export default function MenuEngineering() {
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                      Recommandations IA
+                      {t('menuEngineering.aiRecommendations')}
                     </h2>
                     <p className="text-sm text-slate-400 dark:text-slate-400">
-                      Suggestions d&apos;optimisation basées sur vos données réelles
+                      {t('menuEngineering.aiRecommendationsDesc')}
                     </p>
                   </div>
                 </div>
@@ -1140,10 +1142,10 @@ export default function MenuEngineering() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                    Légende du score de rentabilité
+                    {t('menuEngineering.scoreLegend')}
                   </h2>
                   <p className="text-sm text-slate-400 dark:text-slate-400">
-                    Score /100 basé sur la marge (40%), popularité (30%) et ratio coût matière (30%)
+                    {t('menuEngineering.scoreLegendDesc')}
                   </p>
                 </div>
               </div>
@@ -1151,22 +1153,22 @@ export default function MenuEngineering() {
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800">
                   <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 text-sm font-bold">71+</span>
                   <div>
-                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 text-sm">Excellent</div>
-                    <div className="text-xs text-emerald-600/70 dark:text-emerald-400/70">Plat très rentable</div>
+                    <div className="font-semibold text-emerald-700 dark:text-emerald-300 text-sm">{t('menuEngineering.excellent')}</div>
+                    <div className="text-xs text-emerald-600/70 dark:text-emerald-400/70">{t('menuEngineering.veryProfitable')}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
                   <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 text-sm font-bold">40-70</span>
                   <div>
-                    <div className="font-semibold text-amber-700 dark:text-amber-300 text-sm">Moyen</div>
-                    <div className="text-xs text-amber-600/70 dark:text-amber-400/70">A optimiser</div>
+                    <div className="font-semibold text-amber-700 dark:text-amber-300 text-sm">{t('menuEngineering.average')}</div>
+                    <div className="text-xs text-amber-600/70 dark:text-amber-400/70">{t('menuEngineering.toOptimize')}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800">
                   <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 text-sm font-bold">&lt;40</span>
                   <div>
-                    <div className="font-semibold text-red-700 dark:text-red-300 text-sm">Faible</div>
-                    <div className="text-xs text-red-600/70 dark:text-red-400/70">Action requise</div>
+                    <div className="font-semibold text-red-700 dark:text-red-300 text-sm">{t('menuEngineering.low')}</div>
+                    <div className="text-xs text-red-600/70 dark:text-red-400/70">{t('menuEngineering.actionRequired')}</div>
                   </div>
                 </div>
               </div>
@@ -1176,17 +1178,17 @@ export default function MenuEngineering() {
       </div>
 
       {/* ── Modal: What-If Scenario ─────────────────────────────────────────── */}
-      <Modal isOpen={showWhatIf} onClose={() => setShowWhatIf(false)} title="Simulation de prix (What-If)">
+      <Modal isOpen={showWhatIf} onClose={() => setShowWhatIf(false)} title={t('menuEngineering.whatIfTitle')}>
         <div className="space-y-5">
           {/* Recipe selector */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Recette</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.recipe')}</label>
             <select
               value={whatIfRecipeId}
               onChange={e => { setWhatIfRecipeId(e.target.value ? Number(e.target.value) : ''); setWhatIfPriceAdjust(0); }}
               className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200"
             >
-              <option value="">Sélectionner une recette...</option>
+              <option value="">{t('menuEngineering.selectRecipe')}</option>
               {items.map(r => (
                 <option key={r.id} value={r.id}>{r.name} ({fmtEur(r.sellingPrice)})</option>
               ))}
@@ -1281,23 +1283,23 @@ export default function MenuEngineering() {
               onClick={() => setShowWhatIf(false)}
               className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
-              Fermer
+              {t('menuEngineering.close')}
             </button>
           </div>
         </div>
       </Modal>
 
       {/* ── Modal: Saisie de vente ──────────────────────────────────────────── */}
-      <Modal isOpen={showSalesModal} onClose={() => setShowSalesModal(false)} title="Saisir une vente">
+      <Modal isOpen={showSalesModal} onClose={() => setShowSalesModal(false)} title={t('menuEngineering.addSaleTitle')}>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Recette</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.recipe')}</label>
             <select
               value={saleRecipeId}
               onChange={e => setSaleRecipeId(e.target.value ? Number(e.target.value) : '')}
               className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200"
             >
-              <option value="">Sélectionner une recette...</option>
+              <option value="">{t('menuEngineering.selectRecipe')}</option>
               {recipes.map(r => (
                 <option key={r.id} value={r.id}>{r.name} ({r.category})</option>
               ))}
@@ -1305,7 +1307,7 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Quantité vendue</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.qtySold')}</label>
             <input
               type="number"
               min="1"
@@ -1317,7 +1319,7 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Date</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.date')}</label>
             <input
               type="date"
               value={saleDate}
@@ -1331,7 +1333,7 @@ export default function MenuEngineering() {
               onClick={() => setShowSalesModal(false)}
               className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
-              Annuler
+              {t('menuEngineering.cancel')}
             </button>
             <button
               onClick={handleSubmitSale}
@@ -1339,14 +1341,14 @@ export default function MenuEngineering() {
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-medium text-sm shadow-lg shadow-violet-500/25 transition-all disabled:opacity-50"
             >
               {saleSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-              Enregistrer
+              {t('menuEngineering.save')}
             </button>
           </div>
         </div>
       </Modal>
 
       {/* ── Modal: Bulk import ──────────────────────────────────────────────── */}
-      <Modal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} title="Import CSV de ventes">
+      <Modal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} title={t('menuEngineering.csvImportTitle')}>
         <div className="space-y-4">
           <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl text-sm text-blue-700 dark:text-blue-300">
             <p className="font-medium mb-1">Format attendu (séparateur: virgule, point-virgule ou tabulation)</p>
@@ -1360,13 +1362,13 @@ export default function MenuEngineering() {
 
           <div>
             <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">
-              Données CSV
+              {t('menuEngineering.csvData')}
             </label>
             <textarea
               rows={8}
               value={bulkCsv}
               onChange={e => setBulkCsv(e.target.value)}
-              placeholder="Collez vos données ici..."
+              placeholder={t('menuEngineering.pasteDataHere')}
               className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200 font-mono text-sm resize-y"
             />
           </div>
@@ -1376,7 +1378,7 @@ export default function MenuEngineering() {
               onClick={() => setShowBulkModal(false)}
               className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
-              Annuler
+              {t('menuEngineering.cancel')}
             </button>
             <button
               onClick={handleBulkImport}
@@ -1384,7 +1386,7 @@ export default function MenuEngineering() {
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-medium text-sm shadow-lg shadow-violet-500/25 transition-all disabled:opacity-50"
             >
               {bulkSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              Importer
+              {t('menuEngineering.import')}
             </button>
           </div>
         </div>

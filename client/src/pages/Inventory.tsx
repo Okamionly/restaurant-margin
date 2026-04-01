@@ -37,7 +37,7 @@ type LocationType = typeof LOCATIONS[number] | '';
 const LOCATION_COLORS: Record<string, string> = {
   'Cuisine': 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
   'Chambre froide': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
-  'Congélateur': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  'Congélateur': 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
   'Réserve sèche': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   'Bar': 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
 };
@@ -476,7 +476,7 @@ export default function Inventory() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
       </div>
     );
   }
@@ -522,7 +522,7 @@ export default function Inventory() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Package className="w-7 h-7 text-blue-600" />
+            <Package className="w-7 h-7 text-teal-600" />
             Inventaire
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
@@ -530,7 +530,7 @@ export default function Inventory() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
           </button>
           {suggestions.length > 0 && (
@@ -598,7 +598,7 @@ export default function Inventory() {
                     {item.currentStock}{" / "}{item.minStock} {item.unit}
                   </div>
                 </div>
-                <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors">
                   Réapprovisionner
                 </button>
               </div>
@@ -611,7 +611,7 @@ export default function Inventory() {
       {valueData && valueData.byCategory.length > 0 && (
         <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
           <h3 className="font-semibold flex items-center gap-2 mb-3">
-            <PieChart className="w-5 h-5 text-blue-600" />
+            <PieChart className="w-5 h-5 text-teal-600" />
             Valeur par catégorie
           </h3>
           <div className="flex flex-wrap gap-3">
@@ -625,7 +625,7 @@ export default function Inventory() {
                     <div className="text-xs text-slate-400 dark:text-slate-400">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
                   </div>
                   <div className="w-16 h-2 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full" style={{ width: `${pct}%` }} />
+                    <div className="h-full bg-teal-500 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
@@ -643,13 +643,13 @@ export default function Inventory() {
             placeholder="Rechercher un ingrédient..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
           />
         </div>
         <select
           value={filterCategory}
           onChange={e => setFilterCategory(e.target.value)}
-          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
         >
           <option value="">Toutes catégories</option>
           {categories.map(cat => (
@@ -659,7 +659,7 @@ export default function Inventory() {
         <select
           value={filterLocation}
           onChange={e => setFilterLocation(e.target.value as LocationType)}
-          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
         >
           <option value="">Tous emplacements</option>
           {LOCATIONS.map(loc => (
@@ -767,7 +767,7 @@ export default function Inventory() {
                             value={inlineStock}
                             onChange={e => setInlineStock(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') handleInlineStockSave(item.id); if (e.key === 'Escape') setEditingStockId(null); }}
-                            className="w-20 px-2 py-1 text-sm border rounded dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-blue-500 outline-none"
+                            className="w-20 px-2 py-1 text-sm border rounded dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none"
                             autoFocus
                             step="0.01"
                           />
@@ -780,7 +780,7 @@ export default function Inventory() {
                         </div>
                       ) : (
                         <span
-                          className="cursor-pointer hover:text-blue-600 transition-colors"
+                          className="cursor-pointer hover:text-teal-600 transition-colors"
                           onClick={() => { setEditingStockId(item.id); setInlineStock(String(item.currentStock)); }}
                           title="Cliquer pour modifier"
                         >
@@ -817,7 +817,7 @@ export default function Inventory() {
                         <button onClick={() => setWeighTarget(item)} className="p-1.5 rounded hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 transition-colors" title="Peser avec la balance">
                           <Scale className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 transition-colors" title="Réapprovisionner">
+                        <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Réapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
                         <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition-colors" title="Modifier">
@@ -848,7 +848,7 @@ export default function Inventory() {
                 const ing = suggestions.find(s => s.id === id);
                 setAddForm(f => ({ ...f, ingredientId: id, unit: ing?.unit || '' }));
               }}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               <option value={0}>-- Sélectionner --</option>
               {suggestions.map(ing => (
@@ -866,7 +866,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.currentStock}
                 onChange={e => setAddForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -877,7 +877,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.minStock}
                 onChange={e => setAddForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -890,7 +890,7 @@ export default function Inventory() {
                 type="date"
                 value={addForm.expirationDate}
                 onChange={e => setAddForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -898,7 +898,7 @@ export default function Inventory() {
               <select
                 value={addForm.location}
                 onChange={e => setAddForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -911,7 +911,7 @@ export default function Inventory() {
             <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               Annuler
             </button>
-            <button onClick={handleAdd} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button onClick={handleAdd} className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
               Ajouter
             </button>
           </div>
@@ -927,7 +927,7 @@ export default function Inventory() {
               type="number"
               value={restockForm.quantity}
               onChange={e => setRestockForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               placeholder="Quantité"
               step="0.01"
               autoFocus
@@ -937,7 +937,7 @@ export default function Inventory() {
             <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               Annuler
             </button>
-            <button onClick={handleRestock} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button onClick={handleRestock} className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
               Réapprovisionner
             </button>
           </div>
@@ -954,7 +954,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.currentStock}
                 onChange={e => setEditForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -964,7 +964,7 @@ export default function Inventory() {
                 type="text"
                 value={editForm.unit}
                 onChange={e => setEditForm(f => ({ ...f, unit: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
           </div>
@@ -975,7 +975,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.minStock}
                 onChange={e => setEditForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -985,7 +985,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.maxStock}
                 onChange={e => setEditForm(f => ({ ...f, maxStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
                 placeholder="Optionnel"
               />
@@ -998,7 +998,7 @@ export default function Inventory() {
                 type="date"
                 value={editForm.expirationDate}
                 onChange={e => setEditForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -1006,7 +1006,7 @@ export default function Inventory() {
               <select
                 value={editForm.location}
                 onChange={e => setEditForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -1020,7 +1020,7 @@ export default function Inventory() {
             <textarea
               value={editForm.notes}
               onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Notes optionnelles..."
             />
@@ -1029,7 +1029,7 @@ export default function Inventory() {
             <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
               Annuler
             </button>
-            <button onClick={handleEdit} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <button onClick={handleEdit} className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
               Enregistrer
             </button>
           </div>
@@ -1045,7 +1045,7 @@ export default function Inventory() {
               type="number"
               value={wasteForm.quantity}
               onChange={e => setWasteForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               placeholder="Quantité"
               step="0.01"
               autoFocus
@@ -1056,7 +1056,7 @@ export default function Inventory() {
             <select
               value={wasteForm.reason}
               onChange={e => setWasteForm(f => ({ ...f, reason: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               {WASTE_REASONS.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
@@ -1068,7 +1068,7 @@ export default function Inventory() {
             <textarea
               value={wasteForm.notes}
               onChange={e => setWasteForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Détails supplémentaires..."
             />

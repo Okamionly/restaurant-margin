@@ -10,6 +10,7 @@ import type { Ingredient, Supplier, InventoryItem } from '../types';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -221,6 +222,7 @@ function OrderTimeline({ status, date }: { status: OrderStatus; date: string }) 
 // ── component ────────────────────────────────────────────────────────────────
 
 export default function AutoOrders() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
@@ -290,7 +292,7 @@ export default function AutoOrders() {
         // Inventory alerts are optional
       }
     } catch {
-      showToast('Erreur lors du chargement des données', 'error');
+      showToast(t('autoOrders.loadError'), 'error');
     } finally {
       setLoading(false);
     }
@@ -384,12 +386,12 @@ export default function AutoOrders() {
 
   async function saveOrder() {
     if (!formSupplierName.trim()) {
-      showToast('Veuillez sélectionner ou saisir un fournisseur', 'error');
+      showToast(t('autoOrders.selectSupplier'), 'error');
       return;
     }
     const validLines = formLines.filter((l) => l.name.trim() && l.quantity > 0);
     if (validLines.length === 0) {
-      showToast('Ajoutez au moins un article valide', 'error');
+      showToast(t('autoOrders.addValidItem'), 'error');
       return;
     }
 
@@ -419,10 +421,10 @@ export default function AutoOrders() {
         // Non-fatal
       }
       setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
-      showToast('Commande modifiée avec succès', 'success');
+      showToast(t('autoOrders.orderModified'), 'success');
     } else if (editingOrderId) {
       setOrders((prev) => prev.map((o) => (o.id === editingOrderId ? orderData : o)));
-      showToast('Commande modifiée avec succès', 'success');
+      showToast(t('autoOrders.orderModified'), 'success');
     } else {
       try {
         const res = await fetch('/api/marketplace/orders', {
@@ -449,7 +451,7 @@ export default function AutoOrders() {
       } catch {
         setOrders((prev) => [orderData, ...prev]);
       }
-      showToast('Commande créée en brouillon', 'success');
+      showToast(t('autoOrders.orderCreatedDraft'), 'success');
     }
 
     setFormOpen(false);
@@ -469,7 +471,7 @@ export default function AutoOrders() {
         body: JSON.stringify({ status: STATUS_TO_API['envoyé'] }),
       }).catch(() => {/* non-fatal */});
     }
-    showToast('Commande marquée comme envoyée', 'success');
+    showToast(t('autoOrders.markedSent'), 'success');
   }
 
   function markReceived(id: number) {
@@ -484,7 +486,7 @@ export default function AutoOrders() {
         body: JSON.stringify({ status: STATUS_TO_API['reçu'] }),
       }).catch(() => {/* non-fatal */});
     }
-    showToast('Commande marquée comme reçue', 'success');
+    showToast(t('autoOrders.markedReceived'), 'success');
   }
 
   function confirmDeleteOrder() {
@@ -498,7 +500,7 @@ export default function AutoOrders() {
         headers: autoOrdersAuthHeaders(),
       }).catch(() => {/* non-fatal */});
     }
-    showToast('Commande supprimée', 'success');
+    showToast(t('autoOrders.orderDeleted'), 'success');
   }
 
   function duplicateOrder(order: Order) {
@@ -512,7 +514,7 @@ export default function AutoOrders() {
       lines: order.lines.map((l) => ({ ...l, id: nextLineId++ })),
     };
     setOrders((prev) => [dup, ...prev]);
-    showToast(`Commande dupliquée pour ${order.supplierName}`, 'success');
+    showToast(t('autoOrders.orderDuplicated'), 'success');
   }
 
   // ── Relancer fournisseur ───────────────────────────────────────────────────
@@ -523,7 +525,7 @@ export default function AutoOrders() {
       const supplier = suppliers.find((s) => s.id === order.supplierId);
       const supplierEmail = supplier?.email || '';
       if (!supplierEmail) {
-        showToast('Email fournisseur manquant — ajoutez-le dans la fiche fournisseur', 'error');
+        showToast(t('autoOrders.missingEmail'), 'error');
         setRelancingId(null);
         return;
       }
@@ -563,9 +565,9 @@ export default function AutoOrders() {
       });
 
       if (!res.ok) throw new Error('Erreur envoi relance');
-      showToast(`Relance envoyée à ${supplierEmail}`, 'success');
+      showToast(t('autoOrders.reminderSent'), 'success');
     } catch {
-      showToast('Erreur lors de l\'envoi de la relance', 'error');
+      showToast(t('autoOrders.reminderError'), 'error');
     } finally {
       setRelancingId(null);
     }
@@ -620,7 +622,7 @@ export default function AutoOrders() {
     const text = `Objet : ${buildEmailSubject(emailOrder)}\n\n${buildEmailBody(emailOrder)}`;
     navigator.clipboard.writeText(text).then(() => {
       setEmailCopied(true);
-      showToast('Commande copiée dans le presse-papier', 'success');
+      showToast(t('autoOrders.copiedToClipboard'), 'success');
       setTimeout(() => setEmailCopied(false), 2000);
     });
   }
@@ -715,7 +717,7 @@ export default function AutoOrders() {
       const supplier = suppliers.find((s) => s.id === order.supplierId);
       const supplierEmail = supplier?.email || emailTo;
       if (!supplierEmail) {
-        showToast('Email fournisseur manquant — ajoutez-le dans la fiche fournisseur', 'error');
+        showToast(t('autoOrders.missingEmail'), 'error');
         setSendingEmail(null);
         return;
       }
@@ -733,9 +735,9 @@ export default function AutoOrders() {
       });
       if (!res.ok) throw new Error('Erreur envoi');
       markSent(order.id);
-      showToast(`Commande envoyée à ${supplierEmail}`, 'success');
+      showToast(t('autoOrders.orderSentEmail'), 'success');
     } catch {
-      showToast('Erreur lors de l\'envoi de l\'email', 'error');
+      showToast(t('autoOrders.emailError'), 'error');
     } finally {
       setSendingEmail(null);
     }
@@ -753,7 +755,7 @@ export default function AutoOrders() {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-        <span className="ml-3 text-slate-400">Chargement...</span>
+        <span className="ml-3 text-slate-400">{t('common.loading')}</span>
       </div>
     );
   }
@@ -765,16 +767,16 @@ export default function AutoOrders() {
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <ShoppingCart className="w-7 h-7 text-blue-400" />
-            Carnet de commandes
+            {t('autoOrders.title')}
           </h1>
-          <p className="text-slate-400 mt-1">Gérez vos commandes fournisseurs</p>
+          <p className="text-slate-400 mt-1">{t('autoOrders.subtitle')}</p>
         </div>
         <button
           onClick={openNewOrderForm}
           className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
         >
           <Plus className="w-4 h-4" />
-          Nouvelle commande
+          {t('autoOrders.newOrder')}
         </button>
       </div>
 
@@ -782,25 +784,25 @@ export default function AutoOrders() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           icon={<FileText className="w-5 h-5 text-blue-400" />}
-          label="Total commandes"
+          label={t('autoOrders.totalOrders')}
           value={String(totalCount)}
           accent="border-blue-500/30 bg-blue-500/5"
         />
         <SummaryCard
           icon={<Clock className="w-5 h-5 text-slate-400" />}
-          label="Brouillons"
+          label={t('autoOrders.drafts')}
           value={String(brouillonCount)}
           accent="border-slate-600/50 bg-slate-800/50"
         />
         <SummaryCard
           icon={<Send className="w-5 h-5 text-blue-400" />}
-          label="Envoyées"
+          label={t('autoOrders.sent')}
           value={String(envoyeCount)}
           accent="border-blue-500/30 bg-blue-500/5"
         />
         <SummaryCard
           icon={<Euro className="w-5 h-5 text-emerald-400" />}
-          label="Valeur totale HT"
+          label={t('autoOrders.totalValueHT')}
           value={fmtEuro(totalValue)}
           accent="border-emerald-500/30 bg-emerald-500/5"
         />
@@ -825,7 +827,7 @@ export default function AutoOrders() {
             className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-xl font-medium text-sm transition shadow-sm"
           >
             <Zap className="w-4 h-4" />
-            Générer les commandes automatiquement
+            {t('autoOrders.generateAutoOrders')}
           </button>
         </div>
       )}
@@ -841,7 +843,7 @@ export default function AutoOrders() {
           }`}
         >
           <Package className="w-4 h-4" />
-          Commandes
+          {t('autoOrders.ordersTab')}
           <span className="px-1.5 py-0.5 bg-slate-600 text-slate-300 rounded text-xs">{orders.length}</span>
         </button>
         <button
@@ -853,7 +855,7 @@ export default function AutoOrders() {
           }`}
         >
           <History className="w-4 h-4" />
-          Historique
+          {t('autoOrders.historyTab')}
           <span className="px-1.5 py-0.5 bg-slate-600 text-slate-300 rounded text-xs">{historyOrders.length}</span>
         </button>
       </div>
@@ -863,8 +865,8 @@ export default function AutoOrders() {
         <section className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex flex-wrap items-center gap-3">
             <Package className="w-5 h-5 text-blue-400" />
-            <h2 className="text-lg font-semibold text-white">Commandes</h2>
-            <span className="text-sm text-slate-500">{filteredOrders.length} commande(s)</span>
+            <h2 className="text-lg font-semibold text-white">{t('autoOrders.ordersTab')}</h2>
+            <span className="text-sm text-slate-500">{filteredOrders.length} {t('autoOrders.ordersCount')}</span>
 
             {/* Status filter */}
             <div className="ml-auto flex items-center gap-2">
@@ -889,8 +891,8 @@ export default function AutoOrders() {
             <div className="p-8 text-center text-slate-500">
               <ShoppingCart className="w-10 h-10 mx-auto mb-2 text-slate-700" />
               {orders.length === 0
-                ? 'Aucune commande pour le moment. Cliquez sur "Nouvelle commande" pour commencer.'
-                : 'Aucune commande pour ce filtre'}
+                ? t('autoOrders.noOrdersYet')
+                : t('autoOrders.noOrdersFilter')}
             </div>
           ) : (
             <div className="divide-y divide-slate-800">
@@ -921,27 +923,27 @@ export default function AutoOrders() {
         <section className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-3">
             <History className="w-5 h-5 text-blue-400" />
-            <h2 className="text-lg font-semibold text-white">Historique des commandes</h2>
-            <span className="text-sm text-slate-500">{historyOrders.length} commande(s) envoyée(s) ou reçue(s)</span>
+            <h2 className="text-lg font-semibold text-white">{t('autoOrders.orderHistory')}</h2>
+            <span className="text-sm text-slate-500">{historyOrders.length} {t('autoOrders.sentOrReceived')}</span>
           </div>
 
           {historyOrders.length === 0 ? (
             <div className="p-8 text-center text-slate-500">
               <History className="w-10 h-10 mx-auto mb-2 text-slate-700" />
-              Aucune commande envoyée ou reçue pour le moment
+              {t('autoOrders.noHistory')}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-slate-800/60">
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Date</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Fournisseur</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Articles</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total HT</th>
-                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total TTC</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Statut</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">Notes</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.date')}</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.supplier')}</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.items')}</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.totalHT')}</th>
+                    <th className="text-right py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.totalTTC')}</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.status')}</th>
+                    <th className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('autoOrders.notes')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800">
@@ -981,12 +983,12 @@ export default function AutoOrders() {
       <Modal
         isOpen={formOpen}
         onClose={() => setFormOpen(false)}
-        title={editingOrderId ? 'Modifier la commande' : 'Nouvelle commande'}
+        title={editingOrderId ? t('autoOrders.editOrder') : t('autoOrders.newOrder')}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           {/* Supplier */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Fournisseur</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('autoOrders.supplier')}</label>
             {suppliers.length > 0 ? (
               <select
                 value={formSupplierId ?? '__custom__'}
@@ -1003,14 +1005,14 @@ export default function AutoOrders() {
               type="text"
               value={formSupplierName}
               onChange={(e) => { setFormSupplierName(e.target.value); setFormSupplierId(null); }}
-              placeholder="Nom du fournisseur"
+              placeholder={t('autoOrders.supplierNamePlaceholder')}
               className="mt-2 w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
           {/* Line items */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Articles</label>
+            <label className="block text-sm font-medium text-slate-300 mb-2">{t('autoOrders.items')}</label>
             <div className="space-y-2">
               {formLines.map((line) => (
                 <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-slate-800/60 rounded-lg border border-slate-700">
@@ -1095,19 +1097,19 @@ export default function AutoOrders() {
               onClick={addLine}
               className="mt-2 flex items-center gap-1 px-3 py-1.5 text-sm text-blue-400 hover:bg-blue-500/10 rounded-lg transition"
             >
-              <Plus className="w-4 h-4" /> Ajouter un article
+              <Plus className="w-4 h-4" /> {t('autoOrders.addItem')}
             </button>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1">{t('autoOrders.notes')}</label>
             <textarea
               value={formNotes}
               onChange={(e) => setFormNotes(e.target.value)}
               rows={2}
               className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800 text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-              placeholder="Notes pour cette commande..."
+              placeholder={t('autoOrders.notesPlaceholder')}
             />
           </div>
 
@@ -1133,14 +1135,14 @@ export default function AutoOrders() {
               onClick={() => setFormOpen(false)}
               className="px-4 py-2 text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition"
             >
-              Annuler
+              {t('common.cancel')}
             </button>
             <button
               onClick={saveOrder}
               className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-sm"
             >
               <Check className="w-4 h-4" />
-              {editingOrderId ? 'Enregistrer' : 'Créer en brouillon'}
+              {editingOrderId ? t('common.save') : t('autoOrders.createDraft')}
             </button>
           </div>
         </div>
@@ -1150,12 +1152,12 @@ export default function AutoOrders() {
       <Modal
         isOpen={!!emailOrder}
         onClose={() => setEmailOrder(null)}
-        title="Envoyer la commande par email"
+        title={t('autoOrders.sendByEmail')}
       >
         {emailOrder && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Destinataire</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">{t('autoOrders.recipient')}</label>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-slate-500 shrink-0" />
                 <input
@@ -1169,14 +1171,14 @@ export default function AutoOrders() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Objet</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">{t('autoOrders.emailSubject')}</label>
               <p className="text-sm text-slate-200 bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2">
                 {buildEmailSubject(emailOrder)}
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Corps du message</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">{t('autoOrders.emailBody')}</label>
               <pre className="text-xs text-slate-300 bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-3 max-h-64 overflow-y-auto whitespace-pre-wrap font-sans leading-relaxed">
                 {buildEmailBody(emailOrder)}
               </pre>
@@ -1187,14 +1189,14 @@ export default function AutoOrders() {
                 onClick={() => setEmailOrder(null)}
                 className="px-4 py-2 text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition text-sm"
               >
-                Annuler
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleCopyToClipboard}
                 className="flex items-center justify-center gap-2 px-4 py-2 border border-slate-600 text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 transition text-sm"
               >
                 {emailCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                {emailCopied ? 'Copié !' : 'Copier dans le presse-papier'}
+                {emailCopied ? t('autoOrders.copied') : t('autoOrders.copyToClipboard')}
               </button>
               <button
                 onClick={() => emailOrder && handleSendOrderEmail(emailOrder)}
@@ -1202,7 +1204,7 @@ export default function AutoOrders() {
                 className="flex items-center justify-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium text-sm transition shadow-sm disabled:opacity-50"
               >
                 {sendingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
-                {sendingEmail ? 'Envoi...' : 'Envoyer par email'}
+                {sendingEmail ? t('autoOrders.sendingEmail') : t('autoOrders.sendEmail')}
               </button>
             </div>
           </div>
@@ -1213,7 +1215,7 @@ export default function AutoOrders() {
       <Modal
         isOpen={showAutoReviewModal}
         onClose={() => { setShowAutoReviewModal(false); setAutoGeneratedOrders([]); }}
-        title="Commandes auto-générées — Vérification"
+        title={t('autoOrders.autoReviewTitle')}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           <p className="text-sm text-slate-400">
@@ -1259,7 +1261,7 @@ export default function AutoOrders() {
               onClick={() => { setShowAutoReviewModal(false); setAutoGeneratedOrders([]); }}
               className="px-4 py-2 text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition"
             >
-              Annuler
+              {t('common.cancel')}
             </button>
             <button
               onClick={confirmAutoOrders}
@@ -1275,8 +1277,8 @@ export default function AutoOrders() {
       {/* ── Delete confirm ────────────────────────────────────────────────── */}
       <ConfirmDialog
         isOpen={deleteTarget !== null}
-        title="Supprimer la commande"
-        message="Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible."
+        title={t('autoOrders.deleteOrderTitle')}
+        message={t('autoOrders.deleteOrderMessage')}
         onConfirm={confirmDeleteOrder}
         onCancel={() => setDeleteTarget(null)}
       />

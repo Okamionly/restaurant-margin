@@ -394,5 +394,44 @@
     "create": "Erstellen",
     "deleteSupplier": "Lieferant loeschen",
     "deleteConfirm": "Sind Sie sicher, dass Sie loeschen moechten"
+  },
+  "clients": {
+    "title": "Kunden CRM",
+    "statistics": "Statistiken",
+    "newClient": "Neuer Kunde",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "add": "Hinzufügen",
+    "send": "Senden",
+    "edit": "Bearbeiten",
+    "noClientFound": "Kein Kunde gefunden",
+    "infos": "Info",
+    "preferences": "Präferenzen",
+    "history": "Verlauf",
+    "documents": "Dokumente",
+    "rgpd": "DSGVO",
+    "statsTitle": "Kundenstatistiken",
+    "totalClients": "Kunden gesamt",
+    "vipClients": "VIP-Kunden"
+  },
+  "inventory": {
+    "title": "Inventar",
+    "add": "Hinzufügen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "ok": "OK",
+    "low": "Niedrig",
+    "critical": "Kritisch",
+    "print": "Drucken",
+    "exportCSV": "CSV Export"
+  },
+  "comptabilite": {
+    "title": "Buchhaltung",
+    "loading": "Daten werden geladen...",
+    "cancel": "Abbrechen",
+    "addBtn": "Hinzufügen",
+    "month": "Monat",
+    "quarter": "Quartal",
+    "year": "Jahr"
   }
 }

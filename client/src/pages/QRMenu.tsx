@@ -195,7 +195,7 @@ export default function QRMenu() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <QrCode className="w-7 h-7 text-blue-600" />
+            <QrCode className="w-7 h-7 text-teal-600" />
             Menu Digital QR Code
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
@@ -206,7 +206,7 @@ export default function QRMenu() {
           href={menuUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
         >
           <ExternalLink className="w-4 h-4" />
           Voir le menu
@@ -248,7 +248,7 @@ export default function QRMenu() {
           {/* Language */}
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 space-y-3">
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wide flex items-center gap-2">
-              <Globe className="w-4 h-4 text-blue-500" />
+              <Globe className="w-4 h-4 text-teal-500" />
               Langue du menu
             </h2>
             <div className="space-y-1.5">
@@ -258,7 +258,7 @@ export default function QRMenu() {
                   onClick={() => setLanguage(lang.code)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     language === lang.code
-                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 ring-1 ring-blue-200 dark:ring-blue-800'
+                      ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 ring-1 ring-teal-200 dark:ring-teal-800'
                       : 'text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
                   }`}
                 >
@@ -287,7 +287,7 @@ export default function QRMenu() {
               className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 copied
                   ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                  : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40'
+                  : 'bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/40'
               }`}
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -361,12 +361,12 @@ function ToggleOption({
       className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group"
     >
       <span className="flex items-center gap-2.5 text-sm text-slate-400 dark:text-slate-300">
-        <span className={enabled ? 'text-blue-500' : 'text-slate-400'}>{enabled ? icon : iconOff}</span>
+        <span className={enabled ? 'text-teal-500' : 'text-slate-400'}>{enabled ? icon : iconOff}</span>
         {label}
       </span>
       <div
         className={`w-10 h-6 rounded-full transition-colors relative ${
-          enabled ? 'bg-blue-600' : 'bg-slate-300 dark:bg-slate-600'
+          enabled ? 'bg-teal-600' : 'bg-slate-300 dark:bg-slate-600'
         }`}
       >
         <div

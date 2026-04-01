@@ -212,7 +212,7 @@ interface ToggleSwitchProps {
   color?: string;
 }
 
-function ToggleSwitch({ enabled, onChange, color = 'bg-blue-600' }: ToggleSwitchProps) {
+function ToggleSwitch({ enabled, onChange, color = 'bg-teal-600' }: ToggleSwitchProps) {
   return (
     <button
       type="button"
@@ -351,7 +351,7 @@ export default function Settings() {
   }
 
   // Hardware integration: future feature
-  const [bluetoothConnected, setBluetoothConnected] = useState(false);
+  const [tealtoothConnected, setBluetoothConnected] = useState(false);
   const [printerConnected, setPrinterConnected] = useState(false);
 
   // ------ Sync profile from user when it loads ------
@@ -630,7 +630,7 @@ export default function Settings() {
             {/* Avatar + basic info */}
             <div className="flex items-start gap-5">
               <div className="relative group">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-violet-500 to-teal-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
                   {getInitials(user?.name)}
                 </div>
                 <button className="absolute inset-0 w-20 h-20 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -751,7 +751,7 @@ export default function Settings() {
         <Section
           id="restaurant"
           icon={<Building2 className="w-5 h-5" />}
-          iconColor="text-blue-600"
+          iconColor="text-teal-600"
           title="Etablissement"
           open={openSections.restaurant}
           onToggle={() => toggleSection('restaurant')}
@@ -833,7 +833,7 @@ export default function Settings() {
             {/* Logo upload placeholder */}
             <div>
               <label className="label">Logo du restaurant</label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center hover:border-teal-400 dark:hover:border-teal-500 transition-colors cursor-pointer">
                 <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
                 <p className="text-sm text-slate-400 dark:text-slate-400">
                   Cliquer ou glisser-deposer pour ajouter un logo
@@ -982,10 +982,10 @@ export default function Settings() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="label mb-0 flex items-center gap-1.5">
-                      <Target className="w-3.5 h-3.5 text-blue-500" />
+                      <Target className="w-3.5 h-3.5 text-teal-500" />
                       Objectif prime cost
                     </label>
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                    <span className="text-sm font-bold text-teal-600 dark:text-teal-400">
                       {financialGoals.primeCost}%
                     </span>
                   </div>
@@ -996,7 +996,7 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.primeCost}
                     onChange={(e) => handleGoalChange('primeCost', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-teal-500"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
                     <span>50%</span>
@@ -1181,7 +1181,7 @@ export default function Settings() {
               <ToggleSwitch
                 enabled={settings.emailNotifications}
                 onChange={(val) => handleChange('emailNotifications', val)}
-                color="bg-blue-600"
+                color="bg-teal-600"
               />
             </div>
 
@@ -1215,7 +1215,7 @@ export default function Settings() {
                     onClick={() => handleChange('theme', opt.value)}
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
                       settings.theme === opt.value
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
+                        ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 shadow-sm'
                         : 'border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
                     }`}
                   >
@@ -1319,14 +1319,14 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <div
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    bluetoothConnected
+                    tealtoothConnected
                       ? 'bg-cyan-100 dark:bg-cyan-900/30'
                       : 'bg-slate-100 dark:bg-slate-700'
                   }`}
                 >
                   <Bluetooth
                     className={`w-5 h-5 ${
-                      bluetoothConnected
+                      tealtoothConnected
                         ? 'text-cyan-600 dark:text-cyan-400'
                         : 'text-slate-400'
                     }`}
@@ -1335,7 +1335,7 @@ export default function Settings() {
                 <div>
                   <p className="text-sm font-medium text-slate-400 dark:text-slate-200">Balance Bluetooth</p>
                   <p className="text-xs text-slate-400 flex items-center gap-1">
-                    {bluetoothConnected ? (
+                    {tealtoothConnected ? (
                       <>
                         <Wifi className="w-3 h-3 text-green-500" /> Connectée
                       </>
@@ -1349,15 +1349,15 @@ export default function Settings() {
               </div>
               <button
                 onClick={() => {
-                  setBluetoothConnected(!bluetoothConnected);
+                  setBluetoothConnected(!tealtoothConnected);
                   showToast(
-                    bluetoothConnected ? 'Balance déconnectée' : 'Recherche de balance en cours...',
-                    bluetoothConnected ? 'info' : 'success',
+                    tealtoothConnected ? 'Balance déconnectée' : 'Recherche de balance en cours...',
+                    tealtoothConnected ? 'info' : 'success',
                   );
                 }}
                 className="btn-secondary text-sm px-4"
               >
-                {bluetoothConnected ? 'Déconnecter' : 'Appairer'}
+                {tealtoothConnected ? 'Déconnecter' : 'Appairer'}
               </button>
             </div>
 
@@ -1498,7 +1498,7 @@ export default function Settings() {
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
-                <UtensilsCrossed className="w-5 h-5 mx-auto mb-1 text-blue-500" />
+                <UtensilsCrossed className="w-5 h-5 mx-auto mb-1 text-teal-500" />
                 <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.recipes}</div>
                 <div className="text-xs text-slate-400 dark:text-slate-400">Recettes</div>
               </div>

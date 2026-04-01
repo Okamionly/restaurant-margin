@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 import { fetchIngredients } from '../services/api';
 import type { Ingredient } from '../types';
@@ -139,6 +140,7 @@ function getWeekNumber(d: Date): number {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function WasteTracker() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [entries, setEntries] = useState<WasteEntry[]>([]);
@@ -409,7 +411,7 @@ export default function WasteTracker() {
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
-  const periodLabels: Record<Period, string> = { jour: "Aujourd'hui", semaine: 'Cette semaine', mois: 'Ce mois' };
+  const periodLabels: Record<Period, string> = { jour: t('wasteTracker.today'), semaine: t('wasteTracker.thisWeek'), mois: t('wasteTracker.thisMonth') };
 
   return (
     <div className="space-y-6">
@@ -418,10 +420,10 @@ export default function WasteTracker() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
             <Trash2 className="w-7 h-7 text-red-500" />
-            Suivi du Gaspillage
+            {t('wasteTracker.title')}
           </h1>
           <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
-            Analysez et réduisez les pertes alimentaires de votre restaurant
+            {t('wasteTracker.subtitle')}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -437,7 +439,7 @@ export default function WasteTracker() {
                     : 'bg-white dark:bg-slate-800 text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                 }`}
               >
-                {p === 'jour' ? 'Jour' : p === 'semaine' ? 'Semaine' : 'Mois'}
+                {p === 'jour' ? t('wasteTracker.day') : p === 'semaine' ? t('wasteTracker.week') : t('wasteTracker.month')}
               </button>
             ))}
           </div>
@@ -446,7 +448,7 @@ export default function WasteTracker() {
             className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Déclarer une perte
+            {t('wasteTracker.declareWaste')}
           </button>
         </div>
       </div>
@@ -456,7 +458,7 @@ export default function WasteTracker() {
         {/* Total waste cost */}
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">Pertes totales</span>
+            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">{t('wasteTracker.totalLosses')}</span>
             <div className="p-2 rounded-lg bg-red-50 dark:bg-red-900/30">
               <TrendingDown className="w-4 h-4 text-red-500" />
             </div>
@@ -478,19 +480,19 @@ export default function WasteTracker() {
         {/* Number of waste events */}
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">Incidents</span>
+            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">{t('wasteTracker.incidents')}</span>
             <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/30">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-white">{entryCount}</div>
-          <span className="text-xs text-slate-400">déclarations</span>
+          <span className="text-xs text-slate-400">{t('wasteTracker.declarations')}</span>
         </div>
 
         {/* Avg cost per incident */}
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">Coût moyen</span>
+            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">{t('wasteTracker.avgCost')}</span>
             <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-900/30">
               <BarChart3 className="w-4 h-4 text-violet-500" />
             </div>
@@ -498,19 +500,19 @@ export default function WasteTracker() {
           <div className="text-2xl font-bold text-slate-900 dark:text-white">
             {entryCount > 0 ? formatEuro(totalCost / entryCount) : '—'}
           </div>
-          <span className="text-xs text-slate-400">par incident</span>
+          <span className="text-xs text-slate-400">{t('wasteTracker.perIncident')}</span>
         </div>
 
         {/* Zero waste score */}
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">Score anti-gaspi</span>
+            <span className="text-sm font-medium text-slate-400 dark:text-slate-400">{t('wasteTracker.antiWasteScore')}</span>
             <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/30">
               <Leaf className="w-4 h-4 text-green-500" />
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-white">{zeroWasteScore.toFixed(0)}/100</div>
-          <span className="text-xs text-slate-400">objectif zéro déchet</span>
+          <span className="text-xs text-slate-400">{t('wasteTracker.zeroWasteGoal')}</span>
         </div>
       </div>
 
@@ -519,7 +521,7 @@ export default function WasteTracker() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-green-500" />
-            <h2 className="font-semibold text-slate-800 dark:text-slate-100">Objectif Zéro Déchet</h2>
+            <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('wasteTracker.zeroWasteObjective')}</h2>
           </div>
           <span className="text-sm text-slate-400 dark:text-slate-400">
             Objectif : réduire de 20% ({formatEuro(monthlyTarget.target)})
@@ -537,9 +539,9 @@ export default function WasteTracker() {
           </div>
         </div>
         <div className="flex justify-between text-xs text-slate-400 mt-1">
-          <span>Critique</span>
-          <span>Bon</span>
-          <span>Excellent</span>
+          <span>{t('wasteTracker.critical')}</span>
+          <span>{t('wasteTracker.good')}</span>
+          <span>{t('wasteTracker.excellent')}</span>
         </div>
       </div>
 
@@ -549,7 +551,7 @@ export default function WasteTracker() {
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
             <PieChartIcon className="w-5 h-5 text-blue-500" />
-            <h2 className="font-semibold text-slate-800 dark:text-slate-100">Pertes par cause</h2>
+            <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('wasteTracker.lossesByCause')}</h2>
           </div>
           {pieData.length > 0 ? (
             <ResponsiveContainer width="100%" height={280}>
@@ -572,7 +574,7 @@ export default function WasteTracker() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[280px] flex items-center justify-center text-slate-400">Aucune donnée</div>
+            <div className="h-[280px] flex items-center justify-center text-slate-400">{t('wasteTracker.noData')}</div>
           )}
         </div>
 
@@ -580,7 +582,7 @@ export default function WasteTracker() {
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-5 h-5 text-emerald-500" />
-            <h2 className="font-semibold text-slate-800 dark:text-slate-100">Évolution des pertes</h2>
+            <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('wasteTracker.lossTrend')}</h2>
           </div>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={barData}>
@@ -600,7 +602,7 @@ export default function WasteTracker() {
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">
             <ArrowDown className="w-5 h-5 text-red-500" />
-            <h2 className="font-semibold text-slate-800 dark:text-slate-100">Top 5 — Ingrédients les plus gaspillés</h2>
+            <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('wasteTracker.top5Wasted')}</h2>
           </div>
           {topWasted.length > 0 ? (
             <div className="space-y-3">
@@ -632,7 +634,7 @@ export default function WasteTracker() {
               })}
             </div>
           ) : (
-            <p className="text-sm text-slate-400">Aucune donnée pour cette période</p>
+            <p className="text-sm text-slate-400">{t('wasteTracker.noDataForPeriod')}</p>
           )}
         </div>
 
@@ -644,7 +646,7 @@ export default function WasteTracker() {
           >
             <div className="flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-amber-500" />
-              <h2 className="font-semibold text-slate-800 dark:text-slate-100">Conseils IA anti-gaspi</h2>
+              <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('wasteTracker.aiTips')}</h2>
             </div>
             {showTips ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
           </button>
@@ -668,7 +670,7 @@ export default function WasteTracker() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h2 className="font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-slate-400" />
-            Dernières déclarations
+            {t('wasteTracker.recentDeclarations')}
           </h2>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -676,7 +678,7 @@ export default function WasteTracker() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Rechercher..."
+              placeholder={t('wasteTracker.search')}
               className="pl-9 pr-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-500 w-full sm:w-64 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -686,11 +688,11 @@ export default function WasteTracker() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-700">
-                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Date</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Ingrédient</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Quantité</th>
-                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Cause</th>
-                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">Coût</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">{t('wasteTracker.date')}</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">{t('wasteTracker.ingredient')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">{t('wasteTracker.quantity')}</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">{t('wasteTracker.cause')}</th>
+                <th className="text-right py-2 px-3 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase">{t('wasteTracker.cost')}</th>
                 <th className="py-2 px-3"></th>
               </tr>
             </thead>
@@ -724,7 +726,7 @@ export default function WasteTracker() {
                         <button
                           onClick={() => handleDeleteEntry(e.id)}
                           className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                          title="Supprimer"
+                          title={t('wasteTracker.delete')}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -734,7 +736,7 @@ export default function WasteTracker() {
                   {recentEntries.length === 0 && (
                     <tr>
                       <td colSpan={6} className="py-8 text-center text-slate-400">
-                        Aucune perte déclarée pour cette période
+                        {t('wasteTracker.noWasteForPeriod')}
                       </td>
                     </tr>
                   )}
@@ -746,17 +748,17 @@ export default function WasteTracker() {
       </div>
 
       {/* Add Waste Modal */}
-      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Déclarer une perte alimentaire">
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title={t('wasteTracker.declareWasteTitle')}>
         <div className="space-y-4">
           {/* Ingredient */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Ingrédient</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('wasteTracker.ingredient')}</label>
             <select
               value={form.ingredientId}
               onChange={e => setForm(f => ({ ...f, ingredientId: e.target.value }))}
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Sélectionner un ingrédient</option>
+              <option value="">{t('wasteTracker.selectIngredient')}</option>
               {ingredients.map(ing => (
                 <option key={ing.id} value={ing.id}>{ing.name} ({formatEuro(ing.pricePerUnit)}/{ing.unit})</option>
               ))}
@@ -765,7 +767,7 @@ export default function WasteTracker() {
 
           {/* Quantity */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Quantité</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('wasteTracker.quantity')}</label>
             <div className="flex items-center gap-2">
               <input
                 type="number"
@@ -786,7 +788,7 @@ export default function WasteTracker() {
 
           {/* Reason */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Cause</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('wasteTracker.cause')}</label>
             <div className="grid grid-cols-2 gap-2">
               {(Object.entries(REASON_LABELS) as [WasteReason, string][]).map(([key, label]) => (
                 <button
@@ -806,12 +808,12 @@ export default function WasteTracker() {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Notes (optionnel)</label>
+            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('wasteTracker.notesOptional')}</label>
             <textarea
               value={form.notes}
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={2}
-              placeholder="Détails supplémentaires..."
+              placeholder={t('wasteTracker.additionalDetails')}
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 resize-none"
             />
           </div>
@@ -821,7 +823,7 @@ export default function WasteTracker() {
             const ing = ingredients.find(i => i.id === parseInt(form.ingredientId));
             return ing ? (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg p-3 text-sm">
-                <span className="text-slate-300 dark:text-slate-300">Coût estimé : </span>
+                <span className="text-slate-300 dark:text-slate-300">{t('wasteTracker.estimatedCost')} : </span>
                 <span className="font-bold text-red-600 dark:text-red-400">
                   {formatEuro(parseFloat(form.quantity || '0') * ing.pricePerUnit)}
                 </span>
@@ -836,7 +838,7 @@ export default function WasteTracker() {
               disabled={submitting}
               className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
             >
-              Annuler
+              {t('wasteTracker.cancel')}
             </button>
             <button
               onClick={handleAddWaste}
@@ -844,7 +846,7 @@ export default function WasteTracker() {
               className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-              Déclarer la perte
+              {t('wasteTracker.declareWaste')}
             </button>
           </div>
         </div>

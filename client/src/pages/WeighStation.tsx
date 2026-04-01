@@ -29,7 +29,7 @@ type HistoryEntry = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   'Viandes': 'bg-red-500/20 text-red-300 border-red-500/30',
-  'Poissons': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  'Poissons': 'bg-teal-500/20 text-teal-300 border-teal-500/30',
   'Legumes': 'bg-green-500/20 text-green-300 border-green-500/30',
   'Fruits': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
   'Produits laitiers': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
@@ -332,7 +332,7 @@ export default function WeighStation() {
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/60 border border-slate-700/50">
             <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${
               status === 'connected' ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]' :
-              status === 'connecting' ? 'bg-blue-400 animate-pulse' :
+              status === 'connecting' ? 'bg-teal-400 animate-pulse' :
               status === 'error' ? 'bg-red-400' :
               'bg-slate-500'
             }`} />
@@ -362,9 +362,9 @@ export default function WeighStation() {
                 connectAnim ? 'animate-pulse' : ''
               } ${
                 status === 'connected' ? 'bg-emerald-600 hover:bg-emerald-500 text-white' :
-                status === 'connecting' ? 'bg-blue-700 text-white' :
+                status === 'connecting' ? 'bg-teal-700 text-white' :
                 status === 'error' ? 'bg-red-600 hover:bg-red-500 text-white' :
-                'bg-blue-600 hover:bg-blue-500 text-white'
+                'bg-teal-600 hover:bg-teal-500 text-white'
               }`}
             >
               {status === 'connected' ? <Wifi className="w-5 h-5" /> :
@@ -573,7 +573,7 @@ export default function WeighStation() {
                       {ing.category}
                     </span>
                     <span className="text-[10px] text-slate-400">{ing.unit}</span>
-                    <span className="text-[10px] text-blue-400">{(ing.pricePerUnit ?? 0).toFixed(2)} €/{ing.unit}</span>
+                    <span className="text-[10px] text-teal-400">{(ing.pricePerUnit ?? 0).toFixed(2)} €/{ing.unit}</span>
                   </div>
                 </div>
                 {selected?.id === ing.id && (
@@ -605,7 +605,7 @@ export default function WeighStation() {
                   <span className={`inline-block text-[10px] px-2 py-0.5 rounded border ${getCategoryColor(selected.category)}`}>
                     {selected.category}
                   </span>
-                  <span className="text-xs text-blue-400 font-medium">
+                  <span className="text-xs text-teal-400 font-medium">
                     {(selected.pricePerUnit ?? 0).toFixed(2)} €/{selected.unit}
                   </span>
                 </div>
@@ -662,7 +662,7 @@ export default function WeighStation() {
               <span
                 className={`font-black tabular-nums tracking-tight transition-all duration-300 ${
                   netWeight > 0 && isStable ? 'text-emerald-400' :
-                  netWeight > 0 ? 'text-blue-300' :
+                  netWeight > 0 ? 'text-teal-300' :
                   'text-slate-300'
                 }`}
                 style={{ fontSize: 'clamp(3.5rem, 10vw, 6rem)', lineHeight: 1 }}
@@ -684,11 +684,11 @@ export default function WeighStation() {
                 </span>
               )}
               {netWeight > 0 && !isStable && (
-                <span className="flex items-center gap-1.5 text-blue-400 text-sm font-medium animate-pulse">
+                <span className="flex items-center gap-1.5 text-teal-400 text-sm font-medium animate-pulse">
                   <span className="flex gap-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </span>
                   Mesure en cours
                 </span>
@@ -851,7 +851,7 @@ export default function WeighStation() {
               <span className="text-slate-400">Aujourd'hui</span>
               <div className="flex items-center gap-4">
                 <span className="text-emerald-400 font-medium">{todayStats.totalWeighs} pesée{todayStats.totalWeighs !== 1 ? 's' : ''}</span>
-                <span className="text-blue-400 font-medium">{todayStats.totalKg} kg total</span>
+                <span className="text-teal-400 font-medium">{todayStats.totalKg} kg total</span>
               </div>
             </div>
           </div>

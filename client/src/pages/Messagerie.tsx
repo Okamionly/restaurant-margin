@@ -5,6 +5,7 @@ import {
   Circle, Users, ChefHat, Truck, MessageSquare,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface Message {
@@ -35,166 +36,7 @@ interface Conversation {
   online?: boolean;
 }
 
-// ── Mock data (fallback si API indisponible) ─────────────────────────────────
-const MOCK_CONVERSATIONS: Conversation[] = [
-  {
-    id: 'mock-1',
-    name: 'Metro Cash & Carry',
-    email: 'commandes@metro.fr',
-    subject: 'Commande viandes semaine 14',
-    isGroup: false,
-    members: ['commandes@metro.fr'],
-    avatar: 'MC',
-    starred: true,
-    unread: 3,
-    category: 'fournisseur',
-    online: true,
-    lastMessage: 'Votre commande #4821 a bien été reçue. Livraison prévue demain matin.',
-    updatedAt: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
-    messages: [
-      {
-        id: 'm1-1',
-        senderId: 'metro',
-        senderName: 'Metro Cash & Carry',
-        text: 'Bonjour, votre commande hebdomadaire de viandes est disponible. Souhaitez-vous confirmer pour la livraison de demain matin entre 7h et 9h ?',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-        read: true,
-        type: 'text',
-      },
-      {
-        id: 'm1-2',
-        senderId: 'me',
-        senderName: 'RestauMargin',
-        text: 'Oui, confirmé. Pouvez-vous ajouter 5 kg de filet de bœuf supplémentaires sur la commande ?',
-        timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-        read: true,
-        type: 'text',
-      },
-      {
-        id: 'm1-3',
-        senderId: 'metro',
-        senderName: 'Metro Cash & Carry',
-        text: 'Votre commande #4821 a bien été reçue. Livraison prévue demain matin.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
-        read: false,
-        type: 'text',
-      },
-    ],
-  },
-  {
-    id: 'mock-2',
-    name: 'Transgourmet',
-    email: 'pro@transgourmet.fr',
-    subject: 'Tarifs poissons printemps',
-    isGroup: false,
-    members: ['pro@transgourmet.fr'],
-    avatar: 'TG',
-    starred: false,
-    unread: 1,
-    category: 'fournisseur',
-    online: false,
-    lastMessage: 'Nouveaux tarifs poissons disponibles pour Q2. Voir PDF joint.',
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-    messages: [
-      {
-        id: 'm2-1',
-        senderId: 'trans',
-        senderName: 'Transgourmet',
-        text: 'Bonjour, veuillez trouver ci-joint notre grille tarifaire mise à jour pour les produits de la mer au printemps 2026.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-        read: false,
-        type: 'text',
-      },
-    ],
-  },
-  {
-    id: 'mock-3',
-    name: 'Équipe cuisine',
-    email: '',
-    subject: 'Planning semaine',
-    isGroup: true,
-    members: ['chef@resto.fr', 'sousChef@resto.fr', 'commis1@resto.fr'],
-    avatar: 'EC',
-    starred: false,
-    unread: 0,
-    category: 'equipe',
-    online: true,
-    lastMessage: 'Réunion briefing à 10h30 avant le service du midi.',
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-    messages: [
-      {
-        id: 'm3-1',
-        senderId: 'chef',
-        senderName: 'Chef Marco',
-        text: 'Team, réunion briefing à 10h30 avant le service du midi. On revoit les plats du jour et les allergènes.',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-        read: true,
-        type: 'text',
-      },
-      {
-        id: 'm3-2',
-        senderId: 'me',
-        senderName: 'RestauMargin',
-        text: "Ok, j'y serai. Je prépare le rapport des coûts matières de la semaine.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2.5).toISOString(),
-        read: true,
-        type: 'text',
-      },
-    ],
-  },
-  {
-    id: 'mock-4',
-    name: 'Pomona Episaveurs',
-    email: 'service-client@pomona.fr',
-    subject: 'Légumes BIO semaine 15',
-    isGroup: false,
-    members: ['service-client@pomona.fr'],
-    avatar: 'PE',
-    starred: false,
-    unread: 0,
-    category: 'fournisseur',
-    online: false,
-    lastMessage: "Facture #2026-0412 disponible dans votre espace client.",
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-    messages: [
-      {
-        id: 'm4-1',
-        senderId: 'pomona',
-        senderName: 'Pomona Episaveurs',
-        text: "Facture #2026-0412 disponible dans votre espace client.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-        read: true,
-        type: 'text',
-      },
-    ],
-  },
-  {
-    id: 'mock-5',
-    name: 'Direction',
-    email: '',
-    subject: 'Objectifs Q2',
-    isGroup: true,
-    members: ['direction@resto.fr', 'compta@resto.fr'],
-    avatar: 'DI',
-    starred: true,
-    unread: 0,
-    category: 'equipe',
-    online: false,
-    lastMessage: 'Les marges du mois de mars sont excellentes. Bravo à toute l\'équipe.',
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-    messages: [
-      {
-        id: 'm5-1',
-        senderId: 'dir',
-        senderName: 'Direction',
-        text: "Les marges du mois de mars sont excellentes. Bravo à toute l'équipe. Objectif pour Q2 : maintenir un food cost < 28%.",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-        read: true,
-        type: 'text',
-      },
-    ],
-  },
-];
+// ── Pas de données mock — chargement API uniquement ─────────────────────────
 
 // ── API helpers ──────────────────────────────────────────────────────────────
 function getHeaders(): Record<string, string> {
@@ -285,6 +127,7 @@ function getCategoryColor(category?: string, isGroup?: boolean) {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function Messagerie() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -322,13 +165,9 @@ export default function Messagerie() {
       setConversations(mapped);
       setUseMock(false);
     } catch (err) {
-      console.warn('API messages indisponible, utilisation des données mock:', err);
-      // Tri mock par date décroissante
-      const sorted = [...MOCK_CONVERSATIONS].sort(
-        (a, b) => new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime()
-      );
-      setConversations(sorted);
-      setUseMock(true);
+      console.warn('API messages indisponible:', err);
+      setConversations([]);
+      setUseMock(false);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -403,15 +242,15 @@ export default function Messagerie() {
 
   // ── Delete ─────────────────────────────────────────────────────────
   async function handleDelete(convId: string) {
-    if (!confirm('Supprimer cette conversation ?')) return;
+    if (!confirm(t('messagerie.deleteConfirm'))) return;
     if (!useMock) {
       try {
         await fetch(`${API}/conversations/${convId}`, { method: 'DELETE', headers: getHeaders() });
-      } catch { showToast('Erreur suppression', 'error'); return; }
+      } catch { showToast(t('messagerie.deleteError'), 'error'); return; }
     }
     setConversations((prev) => prev.filter((c) => c.id !== convId));
     if (activeId === convId) { setActiveId(null); setMobileShowChat(false); }
-    showToast('Conversation supprimée', 'success');
+    showToast(t('messagerie.conversationDeleted'), 'success');
   }
 
   // ── Toggle star ────────────────────────────────────────────────────
@@ -422,7 +261,7 @@ export default function Messagerie() {
     if (!useMock) {
       try {
         await fetch(`${API}/conversations/${convId}/star`, { method: 'PUT', headers: getHeaders() });
-      } catch { showToast('Erreur favoris', 'error'); return; }
+      } catch { showToast(t('messagerie.starError'), 'error'); return; }
     }
     setConversations((prev) =>
       prev.map((c) => c.id === convId ? { ...c, starred: newStarred } : c)
@@ -488,7 +327,7 @@ export default function Messagerie() {
         )
       );
     } catch {
-      showToast("Impossible d'envoyer le message", 'error');
+      showToast(t('messagerie.sendError'), 'error');
       setConversations((prev) =>
         prev.map((c) =>
           c.id === activeId
@@ -568,9 +407,9 @@ export default function Messagerie() {
       setComposeTo('');
       setComposeSubject('');
       setComposeBody('');
-      showToast('Message envoyé', 'success');
+      showToast(t('messagerie.messageSent'), 'success');
     } catch {
-      showToast("Impossible d'envoyer le message", 'error');
+      showToast(t('messagerie.sendError'), 'error');
     } finally {
       setSending(false);
     }
@@ -583,7 +422,7 @@ export default function Messagerie() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <MessageSquare className="w-6 h-6 text-blue-400" />
-          <h1 className="text-2xl font-bold">Messagerie</h1>
+          <h1 className="text-2xl font-bold">{t('messagerie.title')}</h1>
           {totalUnread > 0 && (
             <span className="px-2.5 py-0.5 text-xs font-bold bg-blue-600 text-white rounded-full animate-pulse">
               {totalUnread}
@@ -599,7 +438,7 @@ export default function Messagerie() {
           <button
             onClick={() => fetchConversations(true)}
             className="flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
-            title="Actualiser"
+            title={t('messagerie.refresh')}
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
           </button>
@@ -608,7 +447,7 @@ export default function Messagerie() {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             <Plus className="w-4 h-4" />
-            Nouveau message
+            {t('messagerie.newMessage')}
           </button>
         </div>
       </div>
@@ -625,7 +464,7 @@ export default function Messagerie() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Rechercher..."
+                placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-800 text-sm border border-slate-700 focus:ring-2 focus:ring-blue-500 text-slate-200 placeholder:text-slate-400"
@@ -636,10 +475,10 @@ export default function Messagerie() {
           {/* Tabs */}
           <div className="flex border-b border-slate-800 px-1 pt-1 gap-0.5 overflow-x-auto">
             {([
-              { key: 'all', label: 'Tous' },
-              { key: 'fournisseur', label: 'Fournisseurs' },
-              { key: 'equipe', label: 'Équipe' },
-              { key: 'starred', label: 'Favoris' },
+              { key: 'all', label: t('messagerie.tabAll') },
+              { key: 'fournisseur', label: t('messagerie.tabSuppliers') },
+              { key: 'equipe', label: t('messagerie.tabTeam') },
+              { key: 'starred', label: t('messagerie.tabFavorites') },
             ] as const).map((tab) => (
               <button
                 key={tab.key}
@@ -670,7 +509,7 @@ export default function Messagerie() {
             {!loading && filtered.length === 0 && (
               <div className="p-8 text-center">
                 <Inbox className="w-12 h-12 mx-auto mb-3 text-slate-600" />
-                <p className="text-sm text-slate-400">Aucune conversation</p>
+                <p className="text-sm text-slate-400">{t('messagerie.noConversation')}</p>
               </div>
             )}
             {filtered.map((conv) => (
@@ -760,14 +599,14 @@ export default function Messagerie() {
                       <h2 className="text-sm font-semibold text-white truncate">{activeConv.name}</h2>
                       {activeConv.isGroup && (
                         <span className="text-[10px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded-full">
-                          {activeConv.members.length} membres
+                          {activeConv.members.length} {t('messagerie.members')}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-1 mt-0.5">
                       <Circle className={`w-2 h-2 fill-current ${activeConv.online ? 'text-emerald-400' : 'text-slate-600'}`} />
                       <span className="text-[11px] text-slate-400">
-                        {activeConv.online ? 'En ligne' : 'Hors ligne'}
+                        {activeConv.online ? t('messagerie.online') : t('messagerie.offline')}
                         {activeConv.email && ` · ${activeConv.email}`}
                       </span>
                     </div>
@@ -779,7 +618,7 @@ export default function Messagerie() {
                   <button
                     onClick={() => handleToggleStar(activeConv.id)}
                     className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-yellow-400 transition-colors"
-                    title="Favoris"
+                    title={t('messagerie.tabFavorites')}
                   >
                     {activeConv.starred
                       ? <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -788,7 +627,7 @@ export default function Messagerie() {
                   <button
                     onClick={() => handleDelete(activeConv.id)}
                     className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors"
-                    title="Supprimer"
+                    title={t('common.delete')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -800,8 +639,8 @@ export default function Messagerie() {
                 {activeConv.messages.length === 0 && (
                   <div className="flex flex-col items-center justify-center h-full text-slate-500">
                     <MessageSquare className="w-10 h-10 mb-2 opacity-30" />
-                    <p className="text-sm">Aucun message pour l'instant</p>
-                    <p className="text-xs mt-1">Envoyez le premier message ci-dessous</p>
+                    <p className="text-sm">{t('messagerie.noMessages')}</p>
+                    <p className="text-xs mt-1">{t('messagerie.sendFirstMessage')}</p>
                   </div>
                 )}
 
@@ -883,7 +722,7 @@ export default function Messagerie() {
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder={`Message à ${activeConv.name}... (Entrée pour envoyer)`}
+                      placeholder={`${t('messagerie.messageTo')} ${activeConv.name}...`}
                       rows={1}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm text-slate-200 placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-32 overflow-y-auto transition-all"
                       style={{ minHeight: '42px' }}
@@ -898,14 +737,14 @@ export default function Messagerie() {
                     onClick={handleSend}
                     disabled={!inputText.trim() || sending}
                     className="p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex-shrink-0 mb-0.5 hover:scale-105 active:scale-95"
-                    title="Envoyer (Entrée)"
+                    title={t('messagerie.sendEnter')}
                   >
                     {sending
                       ? <Loader2 className="w-4 h-4 animate-spin" />
                       : <Send className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-[10px] text-slate-600 mt-1.5 pl-10">Shift+Entrée pour nouvelle ligne</p>
+                <p className="text-[10px] text-slate-600 mt-1.5 pl-10">{t('messagerie.shiftEnterNewLine')}</p>
               </div>
             </>
           ) : (
@@ -915,15 +754,15 @@ export default function Messagerie() {
                 <MessageSquare className="w-8 h-8 opacity-30" />
               </div>
               <div className="text-center">
-                <p className="text-base font-medium text-slate-400">Sélectionnez une conversation</p>
-                <p className="text-sm mt-1">Choisissez un contact dans la liste</p>
+                <p className="text-base font-medium text-slate-400">{t('messagerie.selectConversation')}</p>
+                <p className="text-sm mt-1">{t('messagerie.chooseContact')}</p>
               </div>
               <button
                 onClick={() => setShowCompose(true)}
                 className="mt-2 flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg hover:bg-blue-600/30 transition-colors text-sm"
               >
                 <Reply className="w-4 h-4" />
-                Démarrer une conversation
+                {t('messagerie.startConversation')}
               </button>
             </div>
           )}
@@ -944,7 +783,7 @@ export default function Messagerie() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-blue-400" />
-                <h2 className="text-sm font-semibold text-slate-200">Nouveau message</h2>
+                <h2 className="text-sm font-semibold text-slate-200">{t('messagerie.newMessage')}</h2>
               </div>
               <button onClick={() => setShowCompose(false)} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400">
                 <X className="w-4 h-4" />
@@ -954,7 +793,7 @@ export default function Messagerie() {
             {/* Fields */}
             <div className="px-4 py-2 space-y-0">
               <div className="flex items-center border-b border-slate-800 py-2.5 gap-2">
-                <span className="text-xs text-slate-500 w-12 flex-shrink-0">À :</span>
+                <span className="text-xs text-slate-500 w-12 flex-shrink-0">{t('messagerie.to')} :</span>
                 <input
                   type="email"
                   value={composeTo}
@@ -965,12 +804,12 @@ export default function Messagerie() {
                 />
               </div>
               <div className="flex items-center border-b border-slate-800 py-2.5 gap-2">
-                <span className="text-xs text-slate-500 w-12 flex-shrink-0">Objet :</span>
+                <span className="text-xs text-slate-500 w-12 flex-shrink-0">{t('messagerie.subject')} :</span>
                 <input
                   type="text"
                   value={composeSubject}
                   onChange={(e) => setComposeSubject(e.target.value)}
-                  placeholder="Sujet du message"
+                  placeholder={t('messagerie.subjectPlaceholder')}
                   className="flex-1 bg-transparent text-sm text-slate-200 border-0 focus:ring-0 placeholder:text-slate-600 p-0 outline-none"
                 />
               </div>
@@ -981,7 +820,7 @@ export default function Messagerie() {
               <textarea
                 value={composeBody}
                 onChange={(e) => setComposeBody(e.target.value)}
-                placeholder="Rédigez votre message..."
+                placeholder={t('messagerie.composePlaceholder')}
                 rows={8}
                 className="w-full bg-transparent text-sm text-slate-200 border-0 focus:ring-0 placeholder:text-slate-600 resize-none outline-none"
               />
@@ -998,7 +837,7 @@ export default function Messagerie() {
                 className="flex items-center gap-2 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
                 {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                Envoyer
+                {t('common.send')}
               </button>
             </div>
           </div>

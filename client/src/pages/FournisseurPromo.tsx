@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Package, ShoppingCart, Truck, Phone, Mail, MapPin,
   Search, Plus, Minus, Send, Check,
   Building2, Award, Clock, Shield, ArrowLeft, Percent, Tag, Sparkles, Calendar,
-  Star, Filter, ChevronDown,
+  Star, Filter, ChevronDown, Loader2,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -25,7 +25,7 @@ type PromoProduct = {
   stock: 'disponible' | 'stock-faible' | 'rupture';
 };
 
-type MockSupplier = {
+type SupplierData = {
   id: string;
   name: string;
   logo: string;            // emoji as quick logo stand-in
@@ -46,88 +46,17 @@ type MockSupplier = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Mock data – 3 fournisseurs, ~5 produits chacun                     */
+/*  API helpers                                                        */
 /* ------------------------------------------------------------------ */
 
-const MOCK_SUPPLIERS: Record<string, MockSupplier> = {
-  '1': {
-    id: '1',
-    name: 'Metro Cash & Carry',
-    logo: '🏪',
-    email: 'pro@metro.fr',
-    phone: '01 49 38 45 00',
-    address: '5 Rue du Commerce',
-    city: 'Montpellier',
-    region: 'Hérault',
-    contactName: 'Service Professionnel',
-    categories: ['Viandes', 'Poissons', 'Légumes', 'Épicerie', 'Produits laitiers'],
-    delivery: true,
-    minOrder: '150 € HT',
-    paymentTerms: '30 jours fin de mois',
-    website: 'www.metro.fr',
-    siret: '622 060 000 00015',
-    rating: 4.5,
-    products: [
-      { id: 101, name: 'Entrecôte de bœuf Charolais', category: 'Viandes', unit: 'kg', normalPrice: 28.90, promoPrice: 22.90, discount: 21, endDate: '2026-04-15', badge: 'promo', origin: 'France', stock: 'disponible' },
-      { id: 102, name: 'Filet de saumon frais', category: 'Poissons', unit: 'kg', normalPrice: 24.50, promoPrice: 19.90, discount: 19, endDate: '2026-04-10', badge: 'promo', origin: 'Norvège', stock: 'disponible' },
-      { id: 103, name: 'Huile d\'olive extra vierge 5L', category: 'Épicerie', unit: 'bidon', normalPrice: 32.00, promoPrice: 26.50, discount: 17, endDate: '2026-04-30', badge: null, origin: 'Espagne', stock: 'disponible' },
-      { id: 104, name: 'Mozzarella di Bufala DOP', category: 'Produits laitiers', unit: 'kg', normalPrice: 18.90, promoPrice: 14.90, discount: 21, endDate: '2026-04-08', badge: 'nouveau', origin: 'Italie', stock: 'stock-faible' },
-      { id: 105, name: 'Pommes de terre Agata', category: 'Légumes', unit: 'sac 10kg', normalPrice: 12.50, promoPrice: 9.90, discount: 21, endDate: '2026-04-20', badge: 'promo', origin: 'France', stock: 'disponible' },
-      { id: 106, name: 'Riz Basmati premium 5kg', category: 'Épicerie', unit: 'sac', normalPrice: 14.90, promoPrice: 11.90, discount: 20, endDate: '2026-04-25', badge: 'bio', origin: 'Inde', stock: 'disponible' },
-    ],
-  },
-  '2': {
-    id: '2',
-    name: 'Transgourmet',
-    logo: '🚛',
-    email: 'contact@transgourmet.fr',
-    phone: '01 56 33 60 00',
-    address: '35 Rue de la Gare',
-    city: 'Lyon',
-    region: 'Rhône',
-    contactName: 'Marie Dupont',
-    categories: ['Viandes', 'Poissons', 'Légumes', 'Surgelés', 'Boissons'],
-    delivery: true,
-    minOrder: '200 € HT',
-    paymentTerms: '45 jours',
-    website: 'www.transgourmet.fr',
-    siret: '378 901 946 00028',
-    rating: 4.2,
-    products: [
-      { id: 201, name: 'Cuisses de canard confites', category: 'Viandes', unit: 'kg', normalPrice: 19.80, promoPrice: 15.90, discount: 20, endDate: '2026-04-12', badge: 'promo', origin: 'France', stock: 'disponible' },
-      { id: 202, name: 'Crevettes tigrées surgelées', category: 'Surgelés', unit: 'kg', normalPrice: 22.00, promoPrice: 16.90, discount: 23, endDate: '2026-04-18', badge: 'promo', origin: 'Madagascar', stock: 'disponible' },
-      { id: 203, name: 'Tomates San Marzano pelées', category: 'Épicerie', unit: 'carton 6x800g', normalPrice: 18.50, promoPrice: 14.50, discount: 22, endDate: '2026-04-30', badge: null, origin: 'Italie', stock: 'disponible' },
-      { id: 204, name: 'Épinards frais bio', category: 'Légumes', unit: 'kg', normalPrice: 6.90, promoPrice: 4.90, discount: 29, endDate: '2026-04-07', badge: 'bio', origin: 'France', stock: 'stock-faible' },
-      { id: 205, name: 'Côtes de porc fermier', category: 'Viandes', unit: 'kg', normalPrice: 12.50, promoPrice: 9.90, discount: 21, endDate: '2026-04-22', badge: 'nouveau', origin: 'France', stock: 'disponible' },
-    ],
-  },
-  '3': {
-    id: '3',
-    name: 'Pomona',
-    logo: '🍎',
-    email: 'commandes@pomona.fr',
-    phone: '01 56 80 53 00',
-    address: '12 Avenue des Grossistes',
-    city: 'Paris',
-    region: 'Île-de-France',
-    contactName: 'Jean-Pierre Martin',
-    categories: ['Légumes', 'Fruits', 'Poissons', 'Produits laitiers', 'Épicerie'],
-    delivery: true,
-    minOrder: '100 € HT',
-    paymentTerms: '30 jours',
-    website: 'www.pomona.fr',
-    siret: '301 256 789 00035',
-    rating: 4.7,
-    products: [
-      { id: 301, name: 'Asperges vertes françaises', category: 'Légumes', unit: 'botte', normalPrice: 8.90, promoPrice: 6.50, discount: 27, endDate: '2026-04-14', badge: 'nouveau', origin: 'France', stock: 'disponible' },
-      { id: 302, name: 'Bar de ligne sauvage', category: 'Poissons', unit: 'kg', normalPrice: 38.00, promoPrice: 29.90, discount: 21, endDate: '2026-04-09', badge: 'promo', origin: 'Bretagne', stock: 'stock-faible' },
-      { id: 303, name: 'Fraises Gariguette', category: 'Fruits', unit: 'barquette 500g', normalPrice: 5.90, promoPrice: 4.20, discount: 29, endDate: '2026-04-11', badge: 'promo', origin: 'Lot-et-Garonne', stock: 'disponible' },
-      { id: 304, name: 'Comté AOP 18 mois', category: 'Produits laitiers', unit: 'kg', normalPrice: 22.50, promoPrice: 18.90, discount: 16, endDate: '2026-04-28', badge: null, origin: 'Jura', stock: 'disponible' },
-      { id: 305, name: 'Mangues Kent bio', category: 'Fruits', unit: 'kg', normalPrice: 7.50, promoPrice: 5.90, discount: 21, endDate: '2026-04-20', badge: 'bio', origin: 'Pérou', stock: 'disponible' },
-      { id: 306, name: 'Carottes des sables', category: 'Légumes', unit: 'kg', normalPrice: 3.20, promoPrice: 2.40, discount: 25, endDate: '2026-04-16', badge: 'promo', origin: 'Mont-Saint-Michel', stock: 'disponible' },
-    ],
-  },
-};
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
+}
 
 const CATEGORY_ICONS: Record<string, string> = {
   'Tous': '📋',
@@ -160,17 +89,59 @@ function formatDate(dateStr: string): string {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+const EMPTY_SUPPLIER: SupplierData = {
+  id: '',
+  name: '',
+  logo: '📦',
+  email: '',
+  phone: '',
+  address: '',
+  city: '',
+  region: '',
+  contactName: '',
+  categories: [],
+  delivery: false,
+  minOrder: '',
+  paymentTerms: '',
+  website: '',
+  siret: '',
+  rating: 0,
+  products: [],
+};
+
 export default function FournisseurPromo() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const supplier = MOCK_SUPPLIERS[id || '1'] || MOCK_SUPPLIERS['1'];
-
+  const [supplier, setSupplier] = useState<SupplierData>(EMPTY_SUPPLIER);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [cart, setCart] = useState<Record<number, number>>({});
   const [search, setSearch] = useState('');
   const [selectedCat, setSelectedCat] = useState('Tous');
   const [sent, setSent] = useState(false);
   const [sortBy, setSortBy] = useState<'discount' | 'price' | 'name' | 'endDate'>('discount');
+
+  const fetchSupplierPromo = useCallback(async () => {
+    if (!id) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(`/api/suppliers/${id}/promos`, { headers: authHeaders() });
+      if (!res.ok) throw new Error('Erreur réseau');
+      const data = await res.json();
+      setSupplier(data && data.id ? data : EMPTY_SUPPLIER);
+    } catch {
+      setError('Impossible de charger les promotions');
+      setSupplier(EMPTY_SUPPLIER);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchSupplierPromo();
+  }, [fetchSupplierPromo]);
 
   const categories = useMemo(() => {
     const cats = [...new Set(supplier.products.map(p => p.category))];
@@ -222,7 +193,37 @@ export default function FournisseurPromo() {
   }
 
   const promoCount = supplier.products.filter(p => p.badge === 'promo').length;
-  const avgDiscount = Math.round(supplier.products.reduce((s, p) => s + p.discount, 0) / supplier.products.length);
+  const avgDiscount = supplier.products.length > 0
+    ? Math.round(supplier.products.reduce((s, p) => s + p.discount, 0) / supplier.products.length)
+    : 0;
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 text-slate-400">
+        <Loader2 className="w-8 h-8 animate-spin mb-4" />
+        <p>Chargement des promotions...</p>
+      </div>
+    );
+  }
+
+  if (error || !supplier.id) {
+    return (
+      <div className="space-y-6">
+        <button
+          onClick={() => navigate('/suppliers')}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Retour aux fournisseurs
+        </button>
+        <div className="flex flex-col items-center justify-center h-64 bg-slate-900/50 border border-slate-800 rounded-2xl">
+          <Package className="w-12 h-12 text-slate-300 mb-4 opacity-40" />
+          <p className="text-slate-400 font-medium mb-2">Aucune promotion disponible</p>
+          <p className="text-slate-500 text-sm">{error || 'Ce fournisseur n\'a pas de promotions en cours.'}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

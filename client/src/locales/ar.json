@@ -394,5 +394,34 @@
     "create": "إنشاء",
     "deleteSupplier": "حذف المورد",
     "deleteConfirm": "هل أنت متأكد من حذف"
+  },
+  "clients": {
+    "title": "عملاء CRM",
+    "statistics": "إحصائيات",
+    "newClient": "عميل جديد",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "add": "إضافة",
+    "send": "إرسال",
+    "edit": "تعديل",
+    "infos": "معلومات",
+    "preferences": "تفضيلات",
+    "history": "سجل",
+    "documents": "وثائق",
+    "statsTitle": "إحصائيات العملاء",
+    "totalClients": "إجمالي العملاء",
+    "vipClients": "عملاء VIP"
+  },
+  "inventory": {
+    "title": "المخزون",
+    "add": "إضافة",
+    "cancel": "إلغاء",
+    "save": "حفظ"
+  },
+  "comptabilite": {
+    "title": "المحاسبة",
+    "loading": "جاري تحميل البيانات...",
+    "cancel": "إلغاء",
+    "addBtn": "إضافة"
   }
 }

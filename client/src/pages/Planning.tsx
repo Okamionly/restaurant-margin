@@ -35,7 +35,7 @@ type ShiftType = 'matin' | 'midi' | 'soir';
 
 const ROLES: EmployeeRole[] = ['Chef', 'Commis', 'Serveur', 'Serveuse', 'Plongeur', 'Plongeuse', 'Patissier', 'Patissiere'];
 
-const ROLE_LABELS: Record<EmployeeRole, string> = {
+const ROLE_LABELS: Record<string, string> = {
   Chef: 'Chef',
   Commis: 'Commis',
   Serveur: 'Serveur',
@@ -350,8 +350,8 @@ export default function Planning() {
     setShiftForm({
       ...emptyShiftForm,
       date: day || '',
-      start: st?.start || '',
-      end: st?.end || '',
+      startTime: st?.start || '',
+      endTime: st?.end || '',
     });
     setShowShiftModal(true);
   }
@@ -363,7 +363,7 @@ export default function Planning() {
       date: s.date || '',
       startTime: s.startTime || '',
       endTime: s.endTime || '',
-      poste: s.type || 'cuisine',
+      type: s.type || 'cuisine',
     });
     setShowShiftModal(true);
   }
@@ -381,7 +381,7 @@ export default function Planning() {
     const overlap = shifts.some(s => {
       if (editShift && s.id === editShift.id) return false;
       if (s.employeeId !== empId || s.date !== shiftForm.date) return false;
-      return s.start < shiftForm.endTime && s.end > shiftForm.startTime;
+      return s.startTime < shiftForm.endTime && s.endTime > shiftForm.startTime;
     });
     if (overlap) {
       showToast('Chevauchement detecte pour cet employe ce jour', 'error');
@@ -463,7 +463,7 @@ export default function Planning() {
     const st = SHIFT_TYPES.find(s => s.key === shiftType)!;
     const overlap = shifts.some(s => {
       if (s.employeeId !== dragEmployee.id || s.date !== dayStr) return false;
-      return s.start < st.end && s.end > st.start;
+      return s.startTime < st.end && s.endTime > st.start;
     });
     if (overlap) {
       showToast('Chevauchement detecte', 'error');
@@ -478,9 +478,9 @@ export default function Planning() {
     const shiftData = {
       employeeId: dragEmployee.id,
       date: dayStr,
-      start: st.start,
-      end: st.end,
-      poste,
+      startTime: st.start,
+      endTime: st.end,
+      type: shiftType,
     };
     const newShift: Shift = { id: localId, ...shiftData };
     try {
@@ -656,7 +656,7 @@ export default function Planning() {
                           </div>
                           <div className="space-y-1">
                             {zoneShifts
-                              .sort((a, b) => a.start.localeCompare(b.start))
+                              .sort((a, b) => a.startTime.localeCompare(b.startTime))
                               .map(s => {
                                 const emp = employees.find(e => e.id === s.employeeId);
                                 if (!emp) return null;
@@ -1162,7 +1162,7 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
             </div>
             <div className="space-y-2">
               {zoneShifts
-                .sort((a, b) => a.start.localeCompare(b.start))
+                .sort((a, b) => a.startTime.localeCompare(b.startTime))
                 .map(s => {
                   const emp = employees.find(e => e.id === s.employeeId);
                   if (!emp) return null;
@@ -1258,7 +1258,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
             {zoneShifts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {zoneShifts
-                  .sort((a, b) => a.start.localeCompare(b.start))
+                  .sort((a, b) => a.startTime.localeCompare(b.startTime))
                   .map(s => {
                     const emp = employees.find(e => e.id === s.employeeId);
                     if (!emp) return null;

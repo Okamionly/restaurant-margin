@@ -73,16 +73,16 @@ function StatCounter({ value, suffix = '', label }: { value: number; suffix?: st
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border border-white/10 rounded-2xl overflow-hidden bg-white/5 shadow-sm">
+    <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/5 transition-colors"
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-slate-50 transition-colors"
       >
-        <span className="font-semibold text-white pr-4">{q}</span>
+        <span className="font-semibold text-slate-900 pr-4">{q}</span>
         <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
-        <p className="px-6 text-sm text-slate-400 leading-relaxed">{a}</p>
+        <p className="px-6 text-sm text-slate-300 leading-relaxed">{a}</p>
       </div>
     </div>
   );
@@ -165,8 +165,6 @@ export default function Landing() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const [activeDesign, setActiveDesign] = useState(0);
-
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setContactLoading(true);
@@ -196,122 +194,47 @@ export default function Landing() {
     }
   };
 
-  const DESIGNS = [
-    {
-      id: 0, name: 'Obsidian Pro', font: "'Sora', sans-serif",
-      hero: 'bg-gradient-to-br from-gray-950 via-slate-900 to-black',
-      accent: 'text-blue-400', btn: 'bg-blue-600 hover:bg-blue-500',
-      nav: 'bg-black/80 backdrop-blur-xl border-b border-white/5',
-      badge: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
-      tag: 'Inspiré Toast POS',
-    },
-    {
-      id: 1, name: 'Arctic Clean', font: "'DM Sans', sans-serif",
-      hero: 'bg-gradient-to-br from-slate-50 via-white to-blue-50',
-      accent: 'text-blue-600', btn: 'bg-blue-600 hover:bg-blue-700',
-      nav: 'bg-white/90 backdrop-blur-xl border-b border-slate-200',
-      badge: 'bg-blue-50 text-blue-700 border border-blue-200',
-      tag: 'Inspiré Lightspeed',
-      light: true,
-    },
-    {
-      id: 2, name: 'Midnight Neon', font: "'Manrope', sans-serif",
-      hero: 'bg-[#080C14]',
-      accent: 'text-cyan-400', btn: 'bg-cyan-500 hover:bg-cyan-400',
-      nav: 'bg-[#080C14]/95 backdrop-blur-xl border-b border-cyan-500/10',
-      badge: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
-      tag: 'Inspiré Linear',
-    },
-    {
-      id: 3, name: 'Ivory Minimal', font: "'Outfit', sans-serif",
-      hero: 'bg-gradient-to-b from-zinc-900 to-zinc-950',
-      accent: 'text-amber-400', btn: 'bg-amber-500 hover:bg-amber-400',
-      nav: 'bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-700',
-      badge: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
-      tag: 'Inspiré Square',
-    },
-    {
-      id: 4, name: 'Pure Black', font: "'Plus Jakarta Sans', sans-serif",
-      hero: 'bg-black',
-      accent: 'text-white', btn: 'bg-white text-black hover:bg-gray-100',
-      nav: 'bg-black/95 backdrop-blur-xl border-b border-white/10',
-      badge: 'bg-white/5 text-white border border-white/10',
-      tag: 'Inspiré Vercel',
-    },
-    {
-      id: 5, name: 'Indigo Glass', font: "'Inter', sans-serif",
-      hero: 'bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950',
-      accent: 'text-violet-400', btn: 'bg-violet-600 hover:bg-violet-500',
-      nav: 'bg-indigo-950/80 backdrop-blur-xl border-b border-violet-500/10',
-      badge: 'bg-violet-500/10 text-violet-400 border border-violet-500/20',
-      tag: 'Inspiré Figma',
-    },
-    {
-      id: 6, name: 'Forest Pro', font: "'Sora', sans-serif",
-      hero: 'bg-gradient-to-br from-emerald-950 via-slate-900 to-gray-950',
-      accent: 'text-emerald-400', btn: 'bg-emerald-500 hover:bg-emerald-400',
-      nav: 'bg-slate-950/90 backdrop-blur-xl border-b border-emerald-500/10',
-      badge: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-      tag: 'Inspiré Stripe',
-    },
-    {
-      id: 7, name: 'Rose Elite', font: "'DM Sans', sans-serif",
-      hero: 'bg-gradient-to-br from-rose-950 via-slate-900 to-gray-950',
-      accent: 'text-rose-400', btn: 'bg-rose-500 hover:bg-rose-400',
-      nav: 'bg-slate-950/90 backdrop-blur-xl border-b border-rose-500/10',
-      badge: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
-      tag: 'Inspiré Notion',
-    },
-  ];
-  const d = DESIGNS[activeDesign];
-  const isLight = !!(d as any).light;
-  const tp = isLight ? 'text-slate-900' : 'text-white';       // text primary
-  const ts = isLight ? 'text-slate-600' : 'text-slate-400';   // text secondary
-  const th = isLight ? 'hover:text-slate-900' : 'hover:text-white'; // hover text
-  const cardBg = isLight ? 'bg-white border-slate-200' : 'bg-white/5 border-white/10';
-  const inputBg = isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-white/10 border-white/20 text-white';
-
   return (
-    <div style={{ fontFamily: d.font }} className={`min-h-screen ${d.hero} ${tp} overflow-x-hidden scroll-smooth`}>
+    <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden scroll-smooth">
 
       {/* ═══════════════════ NAVBAR ═══════════════════ */}
-      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? d.nav + ' shadow-sm' : 'bg-transparent'}`}>
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-700/25">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
-            <span className={`text-xl font-bold ${tp}`}>RestauMargin</span>
+            <span className="text-xl font-bold text-slate-900">RestauMargin</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('features')} className={`text-sm ${ts} ${th} transition-colors cursor-pointer`}>Fonctionnalites</button>
-            <button onClick={() => scrollTo('station')} className={`text-sm ${ts} ${th} transition-colors cursor-pointer`}>Kit Station</button>
-            <button onClick={() => scrollTo('pricing')} className={`text-sm ${ts} ${th} transition-colors cursor-pointer`}>Tarifs</button>
-            <button onClick={() => scrollTo('faq')} className={`text-sm ${ts} ${th} transition-colors cursor-pointer`}>FAQ</button>
+            <button onClick={() => scrollTo('features')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">Fonctionnalites</button>
+            <button onClick={() => scrollTo('station')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">Kit Station</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">Tarifs</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-slate-400 hover:text-slate-900 transition-colors cursor-pointer">FAQ</button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className={`text-sm ${ts} ${th} transition-colors px-3 py-2`}>Connexion</Link>
+            <Link to="/login" className="text-sm text-slate-400 hover:text-slate-900 transition-colors px-3 py-2">Connexion</Link>
             <Link to="/pricing" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-blue-600/40 hover:shadow-blue-500/60">
               Voir les tarifs <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden p-2 ${ts} ${th}`}>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-slate-400 hover:text-slate-900">
             {mobileMenuOpen ? <XIcon className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className={`md:hidden ${isLight ? 'bg-white/95 border-slate-200' : 'bg-slate-900/95 border-white/10'} backdrop-blur-xl border-t shadow-lg`}>
+          <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200 shadow-lg">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('features')} className={`block w-full text-left text-sm ${ts} ${th} py-2`}>Fonctionnalites</button>
-              <button onClick={() => scrollTo('station')} className={`block w-full text-left text-sm ${ts} ${th} py-2`}>Kit Station</button>
-              <button onClick={() => scrollTo('pricing')} className={`block w-full text-left text-sm ${ts} ${th} py-2`}>Tarifs</button>
-              <button onClick={() => scrollTo('faq')} className={`block w-full text-left text-sm ${ts} ${th} py-2`}>FAQ</button>
-              <hr className={`${isLight ? 'border-slate-200' : 'border-white/10'}`} />
-              <Link to="/login" className={`block text-sm ${ts} ${th} py-2`}>Connexion</Link>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">Fonctionnalites</button>
+              <button onClick={() => scrollTo('station')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">Kit Station</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">Tarifs</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-slate-300 hover:text-slate-900 py-2">FAQ</button>
+              <hr className="border-slate-200" />
+              <Link to="/login" className="block text-sm text-slate-300 hover:text-slate-900 py-2">Connexion</Link>
               <Link to="/pricing" className="block w-full text-center px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold">Voir les tarifs</Link>
             </div>
           </div>
@@ -335,34 +258,34 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
-              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 tracking-wide animate-pulse ${d.badge}`}>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(59,130,246,0.08)] animate-pulse">
                 <Zap className="w-3.5 h-3.5" />
                 PLATEFORME #1 DES RESTAURATEURS
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                <span className={tp}>Maitrisez vos marges.</span>
+                <span className="text-slate-900">Maitrisez vos marges.</span>
                 <br />
-                <span className={tp}>Augmentez vos </span>
-                <span className={`${d.accent} drop-shadow-[0_0_30px_rgba(59,130,246,0.2)]`}>
+                <span className="text-slate-900">Augmentez vos </span>
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.2)]">
                   profits.
                 </span>
               </h1>
 
-              <p className={`mt-6 text-lg sm:text-xl ${ts} max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]`}>
+              <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
                 La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
                   to="/pricing"
-                  className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-white font-semibold shadow-lg transition-all text-base ${d.btn}`}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:from-blue-500 hover:to-purple-500 transition-all text-base"
                 >
                   Voir les tarifs <ArrowRight className="w-4 h-4" />
                 </Link>
                 <button
                   onClick={() => scrollTo('demo')}
-                  className={`inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent ${tp} font-semibold border ${isLight ? 'border-slate-300' : 'border-white/20'} hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.08)] transition-all text-base`}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-slate-900 font-semibold border border-slate-300 hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.08)] transition-all text-base"
                 >
                   Voir la demo <ArrowRight className="w-4 h-4" />
                 </button>
@@ -376,7 +299,7 @@ export default function Landing() {
             <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/[0.07] to-indigo-500/[0.07] rounded-3xl blur-2xl" />
-                <div className="relative ${cardBg} border rounded-3xl p-8 shadow-lg">
+                <div className="relative bg-white border border-slate-200 rounded-3xl p-8 shadow-lg">
                   {/* Hero image carousel */}
                   <div className="relative overflow-hidden rounded-2xl">
                     <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
@@ -402,14 +325,14 @@ export default function Landing() {
 
           {/* Stats bar */}
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-            <div className={`mt-16 ${isLight ? 'bg-white border-slate-200' : 'bg-white/5 border-white/10'} border rounded-2xl py-8 px-4 shadow-lg`}>
-              <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 ${isLight ? 'divide-slate-200' : 'divide-white/10'} md:divide-x`}>
+            <div className="mt-16 bg-white border border-slate-200 rounded-2xl py-8 px-4 shadow-lg">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-slate-200 md:divide-x">
                 <StatCounter value={150} suffix="+" label="Restaurants equipes" />
                 <StatCounter value={8} suffix="%" label="Cout matiere economise" />
                 <StatCounter value={50} suffix="k" label="Pesees par mois" />
                 <div className="text-center px-6">
-                  <div className={`text-3xl sm:text-4xl font-extrabold ${tp} tracking-tight`}>4.8/5</div>
-                  <div className={`text-sm ${ts} mt-1 font-medium`}>Satisfaction clients</div>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">4.8/5</div>
+                  <div className="text-sm text-slate-400 mt-1 font-medium">Satisfaction clients</div>
                 </div>
               </div>
             </div>
@@ -418,7 +341,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 2. TRUSTED BY ═══════════════════ */}
-      <section className={`py-10 border-y ${isLight ? 'border-slate-200 bg-gray-50' : 'border-white/5 bg-white/[0.02]'}`} style={{ borderImage: 'linear-gradient(to right, transparent, rgba(59,130,246,0.15), rgba(168,85,247,0.15), transparent) 1' }}>
+      <section className="py-10 border-y border-slate-200 bg-gray-50" style={{ borderImage: 'linear-gradient(to right, transparent, rgba(59,130,246,0.15), rgba(168,85,247,0.15), transparent) 1' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-6">
@@ -432,7 +355,7 @@ export default function Landing() {
                 { name: 'Sysco', color: 'bg-slate-100 text-slate-400' },
                 { name: 'Brake', color: 'bg-slate-100 text-slate-400' },
               ].map((s) => (
-                <span key={s.name} className={`${s.color} px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none border ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+                <span key={s.name} className={`${s.color} px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none border border-slate-200`}>
                   {s.name}
                 </span>
               ))}
@@ -447,7 +370,7 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
             {/* Problem */}
             <FadeIn>
-              <div className="${cardBg} border rounded-2xl p-8 sm:p-10 h-full hover:border-blue-400 hover:shadow-[0_0_30px_rgba(59,130,246,0.08)] transition-all duration-500 shadow-sm">
+              <div className="bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 h-full hover:border-blue-400 hover:shadow-[0_0_30px_rgba(59,130,246,0.08)] transition-all duration-500 shadow-sm">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold mb-6">
                   <XCircle className="w-3.5 h-3.5" /> Le probleme
                 </div>
@@ -461,7 +384,7 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
                         <XCircle className="w-4 h-4 text-red-400" />
                       </div>
-                      <p className={`${ts} leading-relaxed`}>{text}</p>
+                      <p className="text-slate-300 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -470,7 +393,7 @@ export default function Landing() {
 
             {/* Solution */}
             <FadeIn delay={150}>
-              <div className="${cardBg} border rounded-2xl p-8 sm:p-10 h-full hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.08)] transition-all duration-500 shadow-sm">
+              <div className="bg-white border border-emerald-200 rounded-2xl p-8 sm:p-10 h-full hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.08)] transition-all duration-500 shadow-sm">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-6">
                   <CheckCircle2 className="w-3.5 h-3.5" /> La solution RestauMargin
                 </div>
@@ -484,7 +407,7 @@ export default function Landing() {
                       <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       </div>
-                      <p className={`${ts} leading-relaxed`}>{text}</p>
+                      <p className="text-slate-300 leading-relaxed">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -495,7 +418,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 4. FEATURES BENTO GRID ═══════════════════ */}
-      <section id="features" className={`py-20 sm:py-28 ${isLight ? 'bg-gray-50' : 'bg-white/[0.02]'}`}>
+      <section id="features" className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
@@ -511,7 +434,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {/* Large card 1 */}
             <FadeIn delay={0} className="lg:col-span-2">
-              <div className="group relative ${cardBg} border shadow-sm rounded-2xl p-8 h-full hover:border-blue-400 transition-all duration-300 overflow-hidden">
+              <div className="group relative bg-white border border-slate-200 shadow-sm rounded-2xl p-8 h-full hover:border-blue-400 transition-all duration-300 overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl" />
                 <div className="relative">
                   <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-5 group-hover:bg-blue-500/20 transition">
@@ -527,40 +450,40 @@ export default function Landing() {
 
             {/* Small card 1 */}
             <FadeIn delay={80}>
-              <div className="group ${cardBg} border shadow-sm rounded-2xl p-7 h-full hover:border-emerald-400 transition-all duration-300">
+              <div className="group bg-white border border-slate-200 shadow-sm rounded-2xl p-7 h-full hover:border-emerald-400 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition">
                   <BarChart3 className="w-6 h-6 text-emerald-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Menu Engineering</h3>
-                <p className={`text-sm ${ts} leading-relaxed`}>Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Matrice BCG, identifiez vos plats stars et vos poids morts.</p>
               </div>
             </FadeIn>
 
             {/* Small card 2 */}
             <FadeIn delay={160}>
-              <div className="group ${cardBg} border shadow-sm rounded-2xl p-7 h-full hover:border-orange-400 transition-all duration-300">
+              <div className="group bg-white border border-slate-200 shadow-sm rounded-2xl p-7 h-full hover:border-orange-400 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:bg-orange-500/20 transition">
                   <Truck className="w-6 h-6 text-orange-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Gestion fournisseurs</h3>
-                <p className={`text-sm ${ts} leading-relaxed`}>Comparateur prix, score /10, alertes et suivi tarifaire.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Comparateur prix, score /10, alertes et suivi tarifaire.</p>
               </div>
             </FadeIn>
 
             {/* Small card 3 */}
             <FadeIn delay={240}>
-              <div className="group ${cardBg} border shadow-sm rounded-2xl p-7 h-full hover:border-purple-400 transition-all duration-300">
+              <div className="group bg-white border border-slate-200 shadow-sm rounded-2xl p-7 h-full hover:border-purple-400 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition">
                   <Thermometer className="w-6 h-6 text-purple-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">HACCP & Tracabilite</h3>
-                <p className={`text-sm ${ts} leading-relaxed`}>Temperatures, nettoyage, conformite reglementaire.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Temperatures, nettoyage, conformite reglementaire.</p>
               </div>
             </FadeIn>
 
             {/* Large card 2 */}
             <FadeIn delay={320} className="lg:col-span-2">
-              <div className="group relative ${cardBg} border shadow-sm rounded-2xl p-8 h-full hover:border-emerald-400 transition-all duration-300 overflow-hidden">
+              <div className="group relative bg-white border border-slate-200 shadow-sm rounded-2xl p-8 h-full hover:border-emerald-400 transition-all duration-300 overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl" />
                 <div className="relative">
                   <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:bg-emerald-500/20 transition">
@@ -576,12 +499,12 @@ export default function Landing() {
 
             {/* Small card 4 */}
             <FadeIn delay={400}>
-              <div className="group ${cardBg} border shadow-sm rounded-2xl p-7 h-full hover:border-cyan-400 transition-all duration-300">
+              <div className="group bg-white border border-slate-200 shadow-sm rounded-2xl p-7 h-full hover:border-cyan-400 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 transition">
                   <Brain className="w-6 h-6 text-cyan-400" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Assistant IA</h3>
-                <p className={`text-sm ${ts} leading-relaxed`}>Claude analyse vos donnees et vous conseille en continu.</p>
+                <p className="text-sm text-slate-300 leading-relaxed">Claude analyse vos donnees et vous conseille en continu.</p>
               </div>
             </FadeIn>
           </div>
@@ -610,7 +533,7 @@ export default function Landing() {
                     {step.num}
                   </div>
                   <h3 className="text-lg font-bold mb-3">{step.title}</h3>
-                  <p className={`text-sm ${ts} leading-relaxed`}>{step.desc}</p>
+                  <p className="text-sm text-slate-300 leading-relaxed">{step.desc}</p>
                   {i < 2 && (
                     <ArrowRight className="hidden md:block absolute top-8 -right-4 w-8 h-8 text-slate-300" />
                   )}
@@ -622,7 +545,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 6. KIT STATION ═══════════════════ */}
-      <section id="station" className={`py-20 sm:py-28 ${isLight ? 'bg-gray-50' : 'bg-white/[0.02]'}`}>
+      <section id="station" className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left — Content */}
@@ -666,7 +589,7 @@ export default function Landing() {
 
                 <div className="flex flex-wrap gap-3 mt-6">
                   {['Balance 5kg', 'BLE 5.0', 'Inox 304L'].map((badge) => (
-                    <span key={badge} className="px-3 py-1.5 ${isLight ? 'bg-slate-100' : 'bg-white/10'} border ${isLight ? 'border-slate-200' : 'border-white/10'} rounded-full text-xs text-slate-400 font-medium">
+                    <span key={badge} className="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-400 font-medium">
                       {badge}
                     </span>
                   ))}
@@ -678,7 +601,7 @@ export default function Landing() {
             <FadeIn delay={200}>
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.07] to-blue-500/[0.07] rounded-3xl blur-2xl" />
-                <div className="relative ${cardBg} border rounded-3xl p-8 shadow-lg">
+                <div className="relative bg-white border border-slate-200 rounded-3xl p-8 shadow-lg">
                   <video
                     src="/images/hero/station-demo.mp4"
                     autoPlay
@@ -689,17 +612,17 @@ export default function Landing() {
                     poster="/images/hero/hero-1.webp"
                   />
                   <div className="grid grid-cols-3 gap-3 mt-6 text-center">
-                    <div className="p-3 ${isLight ? 'bg-slate-50' : 'bg-white/5'} border ${isLight ? 'border-slate-200' : 'border-white/10'} rounded-xl">
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                       <Scale className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
                       <div className="text-xs text-slate-400">Capacite</div>
                       <div className="text-sm font-semibold">5 kg</div>
                     </div>
-                    <div className="p-3 ${isLight ? 'bg-slate-50' : 'bg-white/5'} border ${isLight ? 'border-slate-200' : 'border-white/10'} rounded-xl">
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                       <Bluetooth className="w-5 h-5 text-blue-400 mx-auto mb-1" />
                       <div className="text-xs text-slate-400">Connexion</div>
                       <div className="text-sm font-semibold">BLE 5.0</div>
                     </div>
-                    <div className="p-3 ${isLight ? 'bg-slate-50' : 'bg-white/5'} border ${isLight ? 'border-slate-200' : 'border-white/10'} rounded-xl">
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                       <Tablet className="w-5 h-5 text-purple-400 mx-auto mb-1" />
                       <div className="text-xs text-slate-400">Ecran</div>
                       <div className="text-sm font-semibold">11" FHD</div>
@@ -760,7 +683,7 @@ export default function Landing() {
 
             {/* Business */}
             <FadeIn delay={200}>
-              <div className="${cardBg} border rounded-2xl p-8 h-full flex flex-col hover:border-slate-300 transition-colors shadow-sm">
+              <div className="bg-white border border-slate-200 rounded-2xl p-8 h-full flex flex-col hover:border-slate-300 transition-colors shadow-sm">
                 <h3 className="text-lg font-bold mb-1">Business</h3>
                 <div className="flex items-end gap-1 mb-4">
                   <span className="text-4xl font-extrabold">79</span>
@@ -779,7 +702,7 @@ export default function Landing() {
                   href="https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`block w-full text-center px-6 py-3 rounded-xl ${isLight ? 'bg-slate-100 text-slate-900 hover:bg-slate-200 border-slate-300' : 'bg-white/10 text-white hover:bg-white/20 border-white/20'} font-semibold transition-colors border`}
+                  className="block w-full text-center px-6 py-3 rounded-xl bg-slate-100 text-slate-900 font-semibold hover:bg-slate-200 transition-colors border border-slate-300"
                 >
                   Choisir Business
                 </a>
@@ -790,7 +713,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 8. TESTIMONIALS ═══════════════════ */}
-      <section className={`py-20 sm:py-28 ${isLight ? 'bg-gray-50' : 'bg-white/[0.02]'}`}>
+      <section className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
@@ -805,7 +728,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 100}>
-                <div className="${cardBg} border rounded-2xl p-7 h-full flex flex-col hover:border-purple-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.06)] transition-all duration-500 group shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-2xl p-7 h-full flex flex-col hover:border-purple-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.06)] transition-all duration-500 group shadow-sm">
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, j) => (
                       <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
@@ -813,7 +736,7 @@ export default function Landing() {
                   </div>
                   <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-1 italic">"{t.quote}"</p>
                   <div>
-                    <div className={`font-semibold ${tp} text-sm`}>{t.name}</div>
+                    <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
                     <div className="text-xs text-slate-400">{t.role} — {t.place}</div>
                   </div>
                 </div>
@@ -844,7 +767,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 10. CONTACT FORM ═══════════════════ */}
-      <section id="contact" className={`py-20 sm:py-28 ${isLight ? 'bg-gray-50' : 'bg-white/[0.02]'}`}>
+      <section id="contact" className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-10">
@@ -863,7 +786,7 @@ export default function Landing() {
                 <p className="text-sm text-slate-400 mt-1">Nous vous recontactons tres vite.</p>
               </div>
             ) : (
-              <form onSubmit={handleContactSubmit} className="${cardBg} border rounded-2xl p-8 space-y-5 shadow-sm">
+              <form onSubmit={handleContactSubmit} className="bg-white border border-slate-200 rounded-2xl p-8 space-y-5 shadow-sm">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-medium text-slate-400 mb-1.5">Nom</label>
@@ -872,7 +795,7 @@ export default function Landing() {
                       required
                       value={contactForm.nom}
                       onChange={(e) => setContactForm({ ...contactForm, nom: e.target.value })}
-                      className={`w-full px-4 py-2.5 rounded-xl ${inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400`}
+                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400"
                       placeholder="Votre nom"
                     />
                   </div>
@@ -883,7 +806,7 @@ export default function Landing() {
                       required
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className={`w-full px-4 py-2.5 rounded-xl ${inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400`}
+                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400"
                       placeholder="votre@email.com"
                     />
                   </div>
@@ -894,7 +817,7 @@ export default function Landing() {
                     type="tel"
                     value={contactForm.telephone}
                     onChange={(e) => setContactForm({ ...contactForm, telephone: e.target.value })}
-                    className={`w-full px-4 py-2.5 rounded-xl ${inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400`}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400"
                     placeholder="06 12 34 56 78"
                   />
                 </div>
@@ -904,7 +827,7 @@ export default function Landing() {
                     rows={4}
                     value={contactForm.message}
                     onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                    className={`w-full px-4 py-2.5 rounded-xl ${inputBg} text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none placeholder-slate-400`}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none placeholder-slate-400"
                     placeholder="Decrivez votre besoin..."
                   />
                 </div>
@@ -935,7 +858,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════════ 11. FOOTER ═══════════════════ */}
-      <footer className={`border-t ${isLight ? 'border-slate-200 bg-gray-50' : 'border-white/10 bg-black/20'}`}>
+      <footer className="border-t border-slate-200 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Brand */}
@@ -944,16 +867,16 @@ export default function Landing() {
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
-                <span className={`text-lg font-bold ${tp}`}>RestauMargin</span>
+                <span className="text-lg font-bold text-slate-900">RestauMargin</span>
               </div>
-              <p className={`text-sm ${ts} leading-relaxed`}>
+              <p className="text-sm text-slate-400 leading-relaxed">
                 La plateforme de gestion des marges pour la restauration professionnelle.
               </p>
               <div className="flex items-center gap-4 mt-4">
-                <div className={`flex items-center gap-1.5 text-xs ${ts}`}>
+                <div className="flex items-center gap-1.5 text-xs text-slate-400">
                   <Shield className="w-3.5 h-3.5 text-blue-400" /> Donnees EU
                 </div>
-                <div className={`flex items-center gap-1.5 text-xs ${ts}`}>
+                <div className="flex items-center gap-1.5 text-xs text-slate-400">
                   <Lock className="w-3.5 h-3.5 text-emerald-400" /> SSL
                 </div>
               </div>
@@ -961,35 +884,35 @@ export default function Landing() {
 
             {/* Produit */}
             <div>
-              <h4 className={`font-semibold ${tp} text-sm mb-4`}>Produit</h4>
-              <ul className={`space-y-2.5 text-sm ${ts}`}>
-                <li><button onClick={() => scrollTo('features')} className={`${th} transition-colors`}>Fonctionnalites</button></li>
-                <li><Link to="/pricing" className={`${th} transition-colors`}>Tarifs</Link></li>
-                <li><Link to="/station-produit" className={`${th} transition-colors`}>Kit Station</Link></li>
-                <li><button onClick={() => scrollTo('faq')} className={`${th} transition-colors`}>FAQ</button></li>
+              <h4 className="font-semibold text-slate-900 text-sm mb-4">Produit</h4>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                <li><button onClick={() => scrollTo('features')} className="hover:text-slate-900 transition-colors">Fonctionnalites</button></li>
+                <li><Link to="/pricing" className="hover:text-slate-900 transition-colors">Tarifs</Link></li>
+                <li><Link to="/station-produit" className="hover:text-slate-900 transition-colors">Kit Station</Link></li>
+                <li><button onClick={() => scrollTo('faq')} className="hover:text-slate-900 transition-colors">FAQ</button></li>
               </ul>
             </div>
 
             {/* Legal */}
             <div>
-              <h4 className={`font-semibold ${tp} text-sm mb-4`}>Legal</h4>
-              <ul className={`space-y-2.5 text-sm ${ts}`}>
-                <li><Link to="/mentions-legales" className={`${th} transition-colors`}>Mentions legales</Link></li>
-                <li><Link to="/cgu" className={`${th} transition-colors`}>CGU</Link></li>
-                <li><Link to="/politique-confidentialite" className={`${th} transition-colors`}>Politique de confidentialite</Link></li>
+              <h4 className="font-semibold text-slate-900 text-sm mb-4">Legal</h4>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                <li><Link to="/mentions-legales" className="hover:text-slate-900 transition-colors">Mentions legales</Link></li>
+                <li><Link to="/cgu" className="hover:text-slate-900 transition-colors">CGU</Link></li>
+                <li><Link to="/politique-confidentialite" className="hover:text-slate-900 transition-colors">Politique de confidentialite</Link></li>
               </ul>
             </div>
 
             {/* Contact */}
             <div>
-              <h4 className={`font-semibold ${tp} text-sm mb-4`}>Contact</h4>
-              <ul className={`space-y-2.5 text-sm ${ts}`}>
+              <h4 className="font-semibold text-slate-900 text-sm mb-4">Contact</h4>
+              <ul className="space-y-2.5 text-sm text-slate-400">
                 <li className="flex items-center gap-2">
-                  <Mail className={`w-4 h-4 ${ts}`} />
-                  <a href="mailto:contact@restaumargin.fr" className={`${th} transition-colors`}>contact@restaumargin.fr</a>
+                  <Mail className="w-4 h-4 text-slate-300" />
+                  <a href="mailto:contact@restaumargin.fr" className="hover:text-slate-900 transition-colors">contact@restaumargin.fr</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone className={`w-4 h-4 ${ts}`} />
+                  <Phone className="w-4 h-4 text-slate-300" />
                   <span>01 23 45 67 89</span>
                 </li>
               </ul>
@@ -997,45 +920,16 @@ export default function Landing() {
           </div>
 
           {/* Bottom */}
-          <div className={`border-t ${isLight ? 'border-slate-200' : 'border-white/10'} py-6 flex flex-col sm:flex-row items-center justify-between gap-4`}>
-            <p className={`text-xs ${ts}`}>RestauMargin &copy; 2026. Tous droits reserves.</p>
-            <div className={`flex items-center gap-6 text-xs ${ts}`}>
-              <Link to="/mentions-legales" className={`${th} transition-colors`}>Mentions legales</Link>
-              <Link to="/cgu" className={`${th} transition-colors`}>CGU</Link>
-              <Link to="/politique-confidentialite" className={`${th} transition-colors`}>Confidentialite</Link>
+          <div className="border-t border-slate-200 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-300">RestauMargin &copy; 2026. Tous droits reserves.</p>
+            <div className="flex items-center gap-6 text-xs text-slate-300">
+              <Link to="/mentions-legales" className="hover:text-slate-800 transition-colors">Mentions legales</Link>
+              <Link to="/cgu" className="hover:text-slate-800 transition-colors">CGU</Link>
+              <Link to="/politique-confidentialite" className="hover:text-slate-800 transition-colors">Confidentialite</Link>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* Design Switcher - Floating */}
-      <div className="fixed bottom-6 right-6 z-50 group">
-        <div className="flex flex-col items-end gap-2">
-          {/* Designs panel (visible on hover) */}
-          <div className="hidden group-hover:flex flex-col gap-1.5 bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-2xl p-3 shadow-2xl max-h-80 overflow-y-auto">
-            {DESIGNS.map((design, idx) => (
-              <button
-                key={design.id}
-                onClick={() => setActiveDesign(idx)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-all text-xs font-medium whitespace-nowrap ${
-                  activeDesign === idx
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-800'
-                }`}
-              >
-                <span className="w-3 h-3 rounded-full bg-current opacity-70 flex-shrink-0" />
-                <span>{design.name}</span>
-                <span className="text-[10px] opacity-60 ml-1">{design.tag}</span>
-              </button>
-            ))}
-          </div>
-          {/* Toggle button */}
-          <button className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-700 shadow-xl flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-500 transition-all">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-4" /></svg>
-          </button>
-        </div>
-      </div>
-
     </div>
   );
 }

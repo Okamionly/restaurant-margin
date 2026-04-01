@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -145,6 +146,7 @@ const EXPENSE_CATEGORIES = [
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function Comptabilite() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
 
   // Data — starts empty, populated by API

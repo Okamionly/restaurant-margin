@@ -48,6 +48,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ---------------------------------------------------------------------------
 // Types & defaults
@@ -297,6 +298,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function Settings() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { showToast } = useToast();
   const [settings, setSettings] = useState<AppSettings>(loadSettings);

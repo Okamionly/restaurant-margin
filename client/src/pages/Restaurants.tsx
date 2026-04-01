@@ -3,6 +3,7 @@ import { Building2, MapPin, Phone, Users, Plus, Edit, Trash2, Check, ChefHat, Cl
 import { useRestaurant, type Restaurant } from '../hooks/useRestaurant';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface RestaurantFormData {
   name: string;
@@ -21,6 +22,7 @@ const EMPTY_FORM: RestaurantFormData = {
 };
 
 export default function Restaurants() {
+  const { t } = useTranslation();
   const { restaurants, selectedRestaurant, loading, switchRestaurant, addRestaurant, updateRestaurant, removeRestaurant } = useRestaurant();
   const { showToast } = useToast();
   const [showModal, setShowModal] = useState(false);

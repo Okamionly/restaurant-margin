@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
+import { useTranslation } from '../hooks/useTranslation';
 
 const API = '';
 
@@ -163,6 +164,7 @@ function getFirstDayOfMonth(year: number, month: number): number {
 // ── Component ──────────────────────────────────────────────────────────
 
 export default function Seminaires() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
 
   const [events, setEvents] = useState<SeminaireEvent[]>([]);

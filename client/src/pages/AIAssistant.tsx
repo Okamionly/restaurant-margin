@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface ActionResult {
   type: string;
@@ -79,6 +80,7 @@ const SpeechRecognitionAPI =
     : null;
 
 export default function AIAssistant() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([
     {

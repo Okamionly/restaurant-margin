@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChefHat, Moon, Sun, AlertTriangle, Loader2, Clock, Flame, Leaf, Fish, Egg, Milk, Nut } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -66,6 +67,7 @@ function normalizeCategory(cat: string): string {
 }
 
 export default function PublicMenu() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const hidePrices = searchParams.get('hidePrices') === '1';
   const hideAllergens = searchParams.get('hideAllergens') === '1';

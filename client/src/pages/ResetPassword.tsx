@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Lock, CheckCircle, AlertCircle, Loader2, ChefHat } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [token, setToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface UserInfo {
   id: number;
@@ -27,6 +28,7 @@ function authHeaders(): Record<string, string> {
 }
 
 export default function UserManagement() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { showToast } = useToast();
   const [users, setUsers] = useState<UserInfo[]>([]);

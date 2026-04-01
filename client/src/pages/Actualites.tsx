@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X, Clock, ChevronRight, ArrowRight, CalendarDays } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface NewsItem {
   id: number;
@@ -68,6 +69,7 @@ interface MercurialeSummary {
 }
 
 export default function Actualites() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { showToast: addToast } = useToast();
   const [news, setNews] = useState<NewsItem[]>([]);

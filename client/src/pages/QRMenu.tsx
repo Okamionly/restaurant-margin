@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo } from 'react';
 import { QrCode, Eye, EyeOff, Printer, Copy, Check, Globe, Smartphone, ExternalLink } from 'lucide-react';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Simple SVG QR Code Generator ──────────────────────────────────────────
 // Encodes text into a QR code matrix using a basic version of the algorithm.
@@ -130,6 +131,7 @@ const LANGUAGES = [
 ];
 
 export default function QRMenu() {
+  const { t } = useTranslation();
   const { selectedRestaurant } = useRestaurant();
   const [showPrices, setShowPrices] = useState(true);
   const [showAllergens, setShowAllergens] = useState(true);

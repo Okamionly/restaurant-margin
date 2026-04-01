@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plug, Key, Webhook, Copy, RefreshCw, ExternalLink, Check, Zap, ShoppingBag, Calculator, Calendar, Truck, Eye, EyeOff, Plus, Send, Clock } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -184,6 +185,7 @@ const LIVRAISON_INTEGRATIONS: Integration[] = [
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function Integrations() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const [apiKeyVisible, setApiKeyVisible] = useState(false);
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>(INITIAL_WEBHOOKS);

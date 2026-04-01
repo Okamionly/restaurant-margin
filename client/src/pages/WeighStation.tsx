@@ -7,6 +7,7 @@ import {
 import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 const API = '';
 
@@ -77,6 +78,7 @@ const STEPS = [
 type DisplayUnit = 'g' | 'kg' | 'L' | 'pièce';
 
 export default function WeighStation() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { status, reading, error, connect, disconnect } = useScale();

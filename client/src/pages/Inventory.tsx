@@ -16,6 +16,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
+import { useTranslation } from '../hooks/useTranslation';
 
 const CATEGORY_EMOJIS: Record<string, string> = {
   'Viandes': '🥩',
@@ -112,6 +113,7 @@ function getExpirationOrder(expStatus: string): number {
 }
 
 export default function Inventory() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [items, setItems] = useState<InventoryItem[]>([]);

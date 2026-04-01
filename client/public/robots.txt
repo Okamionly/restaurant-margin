@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /ingredients
+Disallow: /recettes
+Disallow: /planning
+Disallow: /settings
+Disallow: /api/
+
+Sitemap: https://www.restaumargin.fr/sitemap.xml

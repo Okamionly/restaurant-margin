@@ -77,6 +77,29 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 
 app.use(express.json());
 
+// --- Health Check Endpoint (monitoring) ---
+app.get('/api/health', async (_req, res) => {
+  const start = Date.now();
+  let dbStatus = 'ok';
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+  } catch {
+    dbStatus = 'error';
+  }
+  const responseTime = Date.now() - start;
+  const status = dbStatus === 'ok' ? 200 : 503;
+  res.status(status).json({
+    status: dbStatus === 'ok' ? 'healthy' : 'degraded',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    responseTime: `${responseTime}ms`,
+    services: {
+      database: dbStatus,
+      api: 'ok',
+    },
+  });
+});
+
 // --- Auth Middleware ---
 interface JwtPayload { userId: number; email: string; role: string; }
 

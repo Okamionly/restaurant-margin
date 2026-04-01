@@ -13,6 +13,7 @@ import mercurialeRoutes from './routes/mercuriale';
 
 const app = express();
 const prisma = new PrismaClient();
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET env variable required');

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RestauMargin - Pitch Deck Investisseur</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --bg-light: #334155;
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --teal-glow: rgba(13, 148, 136, 0.3);
+    --white: #f8fafc;
+    --gray: #94a3b8;
+    --gray-light: #cbd5e1;
+    --orange: #f97316;
+    --red: #ef4444;
+    --green: #22c55e;
+    --purple: #a855f7;
+  }
+
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  .slide {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, var(--teal-glow) 0%, transparent 60%);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .slide-number {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    font-size: 14px;
+    color: var(--gray);
+    font-weight: 500;
+    letter-spacing: 2px;
+  }
+
+  .slide-content {
+    max-width: 1100px;
+    width: 100%;
+    z-index: 1;
+  }
+
+  h1 {
+    font-size: 64px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.15;
+    margin-bottom: 40px;
+  }
+
+  h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--teal-light);
+  }
+
+  .teal { color: var(--teal-light); }
+  .orange { color: var(--orange); }
+  .red { color: var(--red); }
+  .green { color: var(--green); }
+  .purple { color: var(--purple); }
+
+  .tagline {
+    font-size: 24px;
+    color: var(--gray-light);
+    font-weight: 400;
+    margin-bottom: 40px;
+  }
+
+  .big-number {
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--teal-light);
+    line-height: 1;
+  }
+
+  .big-number.orange-num { color: var(--orange); }
+  .big-number.green-num { color: var(--green); }
+  .big-number.purple-num { color: var(--purple); }
+
+  .stat-label {
+    font-size: 18px;
+    color: var(--gray);
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-light);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(13, 148, 136, 0.15);
+  }
+
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .bullet-list li {
+    font-size: 22px;
+    padding: 16px 0;
+    padding-left: 36px;
+    position: relative;
+    color: var(--gray-light);
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    line-height: 1.5;
+  }
+
+  .bullet-list li:last-child { border-bottom: none; }
+
+  .bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 24px;
+    width: 12px;
+    height: 12px;
+    background: var(--teal);
+    border-radius: 50%;
+  }
+
+  .bullet-list li strong { color: var(--white); font-weight: 600; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+  }
+
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-light);
+    border-radius: 20px;
+    padding: 36px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--teal);
+  }
+
+  .feature-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+
+  .feature-card h3 {
+    font-size: 22px;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .feature-card p {
+    font-size: 16px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* Comparison table */
+  .comp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 30px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .comp-table th, .comp-table td {
+    padding: 20px 28px;
+    text-align: left;
+    font-size: 18px;
+  }
+
+  .comp-table thead th {
+    background: var(--bg-light);
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-light);
+  }
+
+  .comp-table thead th:last-child {
+    color: var(--teal-light);
+  }
+
+  .comp-table tbody tr {
+    background: var(--bg-card);
+  }
+
+  .comp-table tbody tr:nth-child(even) {
+    background: rgba(30, 41, 59, 0.6);
+  }
+
+  .comp-table td {
+    color: var(--gray-light);
+    border-bottom: 1px solid var(--bg-light);
+  }
+
+  .comp-table td:first-child {
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .comp-table td:last-child {
+    color: var(--teal-light);
+    font-weight: 600;
+  }
+
+  .comp-table .old { color: var(--red); opacity: 0.7; }
+
+  /* Roadmap */
+  .roadmap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .roadmap-item {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-light);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    border-top: 3px solid var(--teal);
+  }
+
+  .roadmap-item h3 {
+    font-size: 18px;
+    color: var(--teal-light);
+    margin-bottom: 16px;
+  }
+
+  .roadmap-item ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .roadmap-item li {
+    font-size: 15px;
+    color: var(--gray-light);
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .roadmap-item li::before {
+    content: '\2022';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+  }
+
+  /* Funnel / Use of funds */
+  .funds-bar {
+    display: flex;
+    height: 60px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 30px 0 20px;
+  }
+
+  .funds-bar div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--white);
+  }
+
+  .funds-bar .dev { background: var(--teal); flex: 6; }
+  .funds-bar .sales { background: var(--orange); flex: 2; }
+  .funds-bar .marketing { background: var(--purple); flex: 2; }
+
+  .funds-legend {
+    display: flex;
+    gap: 40px;
+    margin-top: 10px;
+  }
+
+  .funds-legend span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    color: var(--gray-light);
+  }
+
+  .funds-legend .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Team */
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .team-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-light);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .team-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--bg);
+  }
+
+  .team-card h3 {
+    color: var(--white);
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .team-card .role {
+    color: var(--teal-light);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .team-card p {
+    color: var(--gray);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Contact */
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .contact-links a {
+    color: var(--teal-light);
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .contact-links a:hover { color: var(--white); }
+
+  .copyright {
+    position: absolute;
+    bottom: 30px;
+    color: var(--gray);
+    font-size: 14px;
+  }
+
+  /* Logo */
+  .logo-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 60px rgba(13, 148, 136, 0.3);
+  }
+
+  .logo-icon svg { width: 70px; height: 70px; fill: var(--bg); }
+
+  /* Price badge */
+  .price-badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    color: var(--bg);
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 32px;
+    margin-top: 20px;
+  }
+
+  .price-badge span { font-size: 18px; font-weight: 500; }
+
+  /* Nav dots */
+  .nav-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .nav-dots a {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-light);
+    display: block;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .nav-dots a:hover, .nav-dots a.active {
+    background: var(--teal);
+    transform: scale(1.4);
+  }
+
+  /* Traction metrics */
+  .traction-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .traction-card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-light);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .traction-card .big-number { font-size: 48px; }
+
+  /* Print / PDF styles */
+  @media print {
+    .slide { page-break-after: always; min-height: 100vh; }
+    .nav-dots { display: none; }
+    body { background: var(--bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 40px 24px; }
+    h1 { font-size: 36px; }
+    h2 { font-size: 32px; }
+    .grid-2, .team-grid { grid-template-columns: 1fr; }
+    .roadmap { grid-template-columns: 1fr 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .traction-grid { grid-template-columns: 1fr 1fr; }
+    .big-number { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation dots -->
+<nav class="nav-dots">
+  <a href="#slide1" title="Cover"></a>
+  <a href="#slide2" title="Probleme"></a>
+  <a href="#slide3" title="Solution"></a>
+  <a href="#slide4" title="Demo"></a>
+  <a href="#slide5" title="Marche"></a>
+  <a href="#slide6" title="Business Model"></a>
+  <a href="#slide7" title="Concurrence"></a>
+  <a href="#slide8" title="Traction"></a>
+  <a href="#slide9" title="Roadmap"></a>
+  <a href="#slide10" title="Equipe"></a>
+  <a href="#slide11" title="Demande"></a>
+  <a href="#slide12" title="Contact"></a>
+</nav>
+
+<!-- SLIDE 1 : COVER -->
+<section class="slide" id="slide1">
+  <div class="slide-content" style="text-align: center;">
+    <div class="logo-icon" style="margin: 0 auto 30px;">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C9.5 2 7.5 3.5 7 5.5C5 6 3.5 7.8 3.5 10c0 1.5.7 2.9 1.8 3.8L4 21l3.5-1.5L12 21l4.5-1.5L20 21l-1.3-7.2c1.1-.9 1.8-2.3 1.8-3.8 0-2.2-1.5-4-3.5-4.5C16.5 3.5 14.5 2 12 2zm-2 7a1 1 0 110 2 1 1 0 010-2zm4 0a1 1 0 110 2 1 1 0 010-2z"/>
+      </svg>
+    </div>
+    <h1>Restau<span class="teal">Margin</span></h1>
+    <p class="tagline">L'IA qui gere votre restaurant</p>
+    <div class="price-badge">29&#8364;<span>/mois</span></div>
+    <p style="margin-top: 30px; color: var(--gray); font-size: 16px;">Pitch Deck Investisseur -- 2026</p>
+  </div>
+  <span class="slide-number">01 / 12</span>
+</section>
+
+<!-- SLIDE 2 : LE PROBLEME -->
+<section class="slide" id="slide2">
+  <div class="slide-content">
+    <h2>Le <span class="red">Probleme</span></h2>
+    <ul class="bullet-list">
+      <li><strong>60% des restaurants</strong> ferment dans les 3 premieres annees</li>
+      <li><strong>Cause #1 :</strong> mauvaise gestion des couts matiere -- les restaurateurs ne savent pas combien leur coute chaque plat</li>
+      <li><strong>Les outils actuels</strong> (Inpulse, Koust) coutent <strong class="red">200 a 400&#8364;/mois</strong> -- inaccessibles pour les independants</li>
+    </ul>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="big-number" style="color: var(--red);">60%</div>
+        <div class="stat-label">Taux d'echec</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-number" style="color: var(--orange);">30%</div>
+        <div class="stat-label">Cout matiere moyen</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-number" style="color: var(--red);">400&#8364;</div>
+        <div class="stat-label">Prix concurrence / mois</div>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">02 / 12</span>
+</section>
+
+<!-- SLIDE 3 : LA SOLUTION -->
+<section class="slide" id="slide3">
+  <div class="slide-content">
+    <h2>La <span class="teal">Solution</span></h2>
+    <p class="tagline">RestauMargin -- IA conversationnelle pour restaurateurs</p>
+    <ul class="bullet-list">
+      <li><strong>Parle a ton restaurant, il repond</strong> -- interface chat vocal intuitive</li>
+      <li><strong>19 actions IA</strong> depuis le chat : fiches techniques, commandes, alertes, marges...</li>
+      <li><strong>Prix :</strong> <span class="teal" style="font-size: 28px; font-weight: 800;">29&#8364;/mois</span> -- <strong>7x moins cher</strong> que la concurrence</li>
+    </ul>
+    <div style="text-align: center; margin-top: 40px;">
+      <div class="price-badge">29&#8364;<span>/mois</span></div>
+      <p style="color: var(--gray); margin-top: 12px; font-size: 18px;">vs 200-400&#8364; chez les concurrents</p>
+    </div>
+  </div>
+  <span class="slide-number">03 / 12</span>
+</section>
+
+<!-- SLIDE 4 : DEMO PRODUIT -->
+<section class="slide" id="slide4">
+  <div class="slide-content">
+    <h2>Demo <span class="teal">Produit</span></h2>
+    <div class="grid-2">
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F3A4;</div>
+        <h3>Chat IA Vocal</h3>
+        <p>Parlez a votre assistant IA. Creez des fiches techniques, verifiez vos marges, passez des commandes -- tout par la voix.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4CB;</div>
+        <h3>Fiches Techniques Auto</h3>
+        <p>Generation automatique de fiches techniques avec couts, grammages, et calcul de marge en temps reel.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4B0;</div>
+        <h3>Mercuriale Transgourmet</h3>
+        <p>Prix reels fournisseurs integres. Plus besoin de chercher les tarifs -- ils sont deja dans l'app.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F9EA;</div>
+        <h3>Smart Ingredient</h3>
+        <p>API Spoonacular integree : donnees nutritionnelles, allergenes, et suggestions d'ingredients automatiques.</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">04 / 12</span>
+</section>
+
+<!-- SLIDE 5 : MARCHE -->
+<section class="slide" id="slide5">
+  <div class="slide-content">
+    <h2>Le <span class="teal">Marche</span></h2>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="big-number">175k</div>
+        <div class="stat-label">Restaurants en France</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-number green-num">60M&#8364;</div>
+        <div class="stat-label">TAM / an</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-number orange-num">80k</div>
+        <div class="stat-label">SAM (bistrots + brasseries)</div>
+      </div>
+      <div class="stat-card">
+        <div class="big-number purple-num">800</div>
+        <div class="stat-label">SOM an 1 (1%)</div>
+      </div>
+    </div>
+    <div style="margin-top: 50px; background: var(--bg-card); border-radius: 16px; padding: 32px; border: 1px solid var(--bg-light);">
+      <h3 style="margin-bottom: 16px;">Calcul TAM</h3>
+      <p style="font-size: 20px; color: var(--gray-light);">
+        175 000 restaurants x <span class="teal" style="font-weight: 700;">29&#8364;</span> x 12 mois = <span class="green" style="font-weight: 800; font-size: 28px;">60,9M&#8364; / an</span>
+      </p>
+      <p style="font-size: 18px; color: var(--gray); margin-top: 12px;">
+        Objectif An 1 : 800 clients = <span class="teal" style="font-weight: 700;">278k&#8364; ARR</span>
+      </p>
+    </div>
+  </div>
+  <span class="slide-number">05 / 12</span>
+</section>
+
+<!-- SLIDE 6 : BUSINESS MODEL -->
+<section class="slide" id="slide6">
+  <div class="slide-content">
+    <h2>Business <span class="teal">Model</span></h2>
+    <div class="stats-row" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="stat-card" style="border-top: 3px solid var(--teal);">
+        <h3 style="color: var(--teal-light); font-size: 20px;">SaaS Abonnements</h3>
+        <div style="margin: 20px 0;">
+          <div style="font-size: 36px; font-weight: 800; color: var(--white);">29&#8364;</div>
+          <div style="color: var(--gray); font-size: 14px;">Pro / mois</div>
+        </div>
+        <div style="margin-top: 12px;">
+          <div style="font-size: 36px; font-weight: 800; color: var(--white);">79&#8364;</div>
+          <div style="color: var(--gray); font-size: 14px;">Business / mois</div>
+        </div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid var(--orange);">
+        <h3 style="color: var(--orange); font-size: 20px;">Kit Station Balance</h3>
+        <div style="margin: 20px 0;">
+          <div style="font-size: 36px; font-weight: 800; color: var(--white);">85%</div>
+          <div style="color: var(--gray); font-size: 14px;">Marge hardware</div>
+        </div>
+        <p style="color: var(--gray); font-size: 15px; margin-top: 12px;">Tab A9+ + Balance Bluetooth + Kiosque mode</p>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid var(--purple);">
+        <h3 style="color: var(--purple); font-size: 20px;">Mercuriale Premium</h3>
+        <div style="margin: 20px 0;">
+          <div style="font-size: 36px; font-weight: 800; color: var(--white);">Data</div>
+          <div style="color: var(--gray); font-size: 14px;">Fournisseurs</div>
+        </div>
+        <p style="color: var(--gray); font-size: 15px; margin-top: 12px;">Tarifs reels integres de Transgourmet et autres</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">06 / 12</span>
+</section>
+
+<!-- SLIDE 7 : CONCURRENCE -->
+<section class="slide" id="slide7">
+  <div class="slide-content">
+    <h2>Analyse <span class="teal">Concurrentielle</span></h2>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Critere</th>
+          <th>Inpulse / Koust</th>
+          <th>RestauMargin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Prix</td>
+          <td class="old">200 - 400&#8364; / mois</td>
+          <td>29&#8364; / mois</td>
+        </tr>
+        <tr>
+          <td>Cible</td>
+          <td class="old">Chaines & groupes</td>
+          <td>Independants & PME</td>
+        </tr>
+        <tr>
+          <td>IA</td>
+          <td class="old">Previsions seulement</td>
+          <td>19 actions CRUD + vocal</td>
+        </tr>
+        <tr>
+          <td>Interface</td>
+          <td class="old">UX 2018</td>
+          <td>Luxury tech 2026</td>
+        </tr>
+        <tr>
+          <td>Onboarding</td>
+          <td class="old">Formation requise</td>
+          <td>Parle, c'est fait</td>
+        </tr>
+        <tr>
+          <td>Hardware</td>
+          <td class="old">Aucun</td>
+          <td>Kit Station Balance</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <span class="slide-number">07 / 12</span>
+</section>
+
+<!-- SLIDE 8 : TRACTION -->
+<section class="slide" id="slide8">
+  <div class="slide-content">
+    <h2><span class="teal">Traction</span> & Milestones</h2>
+    <div class="traction-grid">
+      <div class="traction-card">
+        <div class="big-number teal">Live</div>
+        <div class="stat-label">MVP en production</div>
+        <p style="color: var(--gray); font-size: 14px; margin-top: 8px;">restaumargin.fr</p>
+      </div>
+      <div class="traction-card">
+        <div class="big-number orange-num">43</div>
+        <div class="stat-label">Pages</div>
+        <p style="color: var(--gray); font-size: 14px; margin-top: 8px;">Application complete</p>
+      </div>
+      <div class="traction-card">
+        <div class="big-number green-num">25</div>
+        <div class="stat-label">API Routes</div>
+        <p style="color: var(--gray); font-size: 14px; margin-top: 8px;">Backend robuste</p>
+      </div>
+      <div class="traction-card">
+        <div class="big-number purple-num">19</div>
+        <div class="stat-label">Actions IA</div>
+        <p style="color: var(--gray); font-size: 14px; margin-top: 8px;">Chat vocal intelligent</p>
+      </div>
+    </div>
+    <div style="margin-top: 40px; background: var(--bg-card); border: 1px solid var(--bg-light); border-radius: 16px; padding: 28px; display: flex; align-items: center; gap: 20px;">
+      <div style="font-size: 40px;">&#x1F91D;</div>
+      <div>
+        <h3 style="color: var(--white); font-size: 20px; margin-bottom: 4px;">Partenariat Transgourmet</h3>
+        <p style="color: var(--gray); font-size: 16px;">Tarifs reels fournisseurs integres -- donnees exclusives</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">08 / 12</span>
+</section>
+
+<!-- SLIDE 9 : ROADMAP -->
+<section class="slide" id="slide9">
+  <div class="slide-content">
+    <h2><span class="teal">Roadmap</span></h2>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <h3>Q2 2026</h3>
+        <ul>
+          <li>100 premiers clients</li>
+          <li>App mobile PWA</li>
+          <li>Onboarding automatise</li>
+        </ul>
+      </div>
+      <div class="roadmap-item" style="border-top-color: var(--orange);">
+        <h3 style="color: var(--orange);">Q3 2026</h3>
+        <ul>
+          <li>Integrations caisses</li>
+          <li>Lightspeed</li>
+          <li>Zelty</li>
+          <li>API partenaires</li>
+        </ul>
+      </div>
+      <div class="roadmap-item" style="border-top-color: var(--purple);">
+        <h3 style="color: var(--purple);">Q4 2026</h3>
+        <ul>
+          <li>Kit Station Balance</li>
+          <li>Marketplace fournisseurs</li>
+          <li>500 clients actifs</li>
+        </ul>
+      </div>
+      <div class="roadmap-item" style="border-top-color: var(--green);">
+        <h3 style="color: var(--green);">2027</h3>
+        <ul>
+          <li>Expansion EU</li>
+          <li>Espagne</li>
+          <li>Italie</li>
+          <li>Allemagne</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">09 / 12</span>
+</section>
+
+<!-- SLIDE 10 : EQUIPE -->
+<section class="slide" id="slide10">
+  <div class="slide-content">
+    <h2>L'<span class="teal">Equipe</span></h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">YG</div>
+        <h3>Youssef Guessous</h3>
+        <div class="role">CEO & Fondateur</div>
+        <p>Vision produit, strategie commerciale et connaissance du secteur restauration. Pilote le developpement et les partenariats.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, var(--purple), #c084fc);">AI</div>
+        <h3>Claude AI</h3>
+        <div class="role" style="color: var(--purple);">CTO Virtuel</div>
+        <p>Developpement full-stack, architecture technique, IA conversationnelle. 43 pages et 25 API routes livrees en temps record.</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-number">10 / 12</span>
+</section>
+
+<!-- SLIDE 11 : LA DEMANDE -->
+<section class="slide" id="slide11">
+  <div class="slide-content">
+    <h2>La <span class="teal">Demande</span></h2>
+    <div style="text-align: center; margin-bottom: 40px;">
+      <div class="big-number" style="font-size: 96px;">150k&#8364;</div>
+      <div class="stat-label" style="font-size: 22px;">Levee Seed</div>
+    </div>
+    <div class="funds-bar">
+      <div class="dev">60% Dev</div>
+      <div class="sales">20% Sales</div>
+      <div class="marketing">20% Mktg</div>
+    </div>
+    <div class="funds-legend">
+      <span><span class="dot" style="background: var(--teal);"></span> Developpement produit (90k&#8364;)</span>
+      <span><span class="dot" style="background: var(--orange);"></span> Commercial (30k&#8364;)</span>
+      <span><span class="dot" style="background: var(--purple);"></span> Marketing (30k&#8364;)</span>
+    </div>
+    <div style="margin-top: 40px; background: var(--bg-card); border: 1px solid var(--teal); border-radius: 16px; padding: 32px; text-align: center;">
+      <h3 style="color: var(--white); font-size: 24px; margin-bottom: 8px;">Objectif</h3>
+      <div class="big-number green-num" style="font-size: 56px;">500</div>
+      <p style="color: var(--gray-light); font-size: 18px; margin-top: 8px;">clients payants en 12 mois</p>
+      <p style="color: var(--teal-light); font-size: 20px; font-weight: 700; margin-top: 8px;">= 174k&#8364; ARR</p>
+    </div>
+  </div>
+  <span class="slide-number">11 / 12</span>
+</section>
+
+<!-- SLIDE 12 : CONTACT -->
+<section class="slide" id="slide12">
+  <div class="slide-content" style="text-align: center;">
+    <div class="logo-icon" style="margin: 0 auto 30px;">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C9.5 2 7.5 3.5 7 5.5C5 6 3.5 7.8 3.5 10c0 1.5.7 2.9 1.8 3.8L4 21l3.5-1.5L12 21l4.5-1.5L20 21l-1.3-7.2c1.1-.9 1.8-2.3 1.8-3.8 0-2.2-1.5-4-3.5-4.5C16.5 3.5 14.5 2 12 2zm-2 7a1 1 0 110 2 1 1 0 010-2zm4 0a1 1 0 110 2 1 1 0 010-2z"/>
+      </svg>
+    </div>
+    <h1>Restau<span class="teal">Margin</span></h1>
+    <p class="tagline">L'IA qui gere votre restaurant</p>
+    <div class="contact-links">
+      <a href="mailto:contact@restaumargin.fr">contact@restaumargin.fr</a>
+      <a href="https://www.restaumargin.fr" target="_blank">www.restaumargin.fr</a>
+    </div>
+    <p class="copyright">RestauMargin &copy; 2026 -- Tous droits reserves</p>
+  </div>
+  <span class="slide-number">12 / 12</span>
+</section>
+
+<script>
+  // Active nav dot on scroll
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dots a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(slides).indexOf(entry.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

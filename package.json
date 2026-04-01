@@ -10,7 +10,8 @@
     "build:server": "cd server && npm run build",
     "build": "npm run build:server && npm run build:client",
     "build:vercel": "cd server && npx prisma generate && cd ../client && npx vite build",
-    "seed": "cd server && npx tsx src/seed.ts"
+    "seed": "cd server && npx tsx src/seed.ts",
+    "parse-pdf": "npx tsx scripts/parse-supplier-pdf.ts"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
@@ -23,6 +24,7 @@
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^8.0.4",
+    "pdf-parse": "^1.1.1",
     "prisma": "^5.22.0",
     "recharts": "^3.8.0",
     "resend": "^6.9.4"

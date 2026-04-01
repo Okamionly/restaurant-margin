@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RestauMargin - Analytics Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f172a;
+      --bg-card: rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --teal: #14b8a6;
+      --teal-dim: rgba(20,184,166,0.15);
+      --teal-glow: rgba(20,184,166,0.3);
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-bright: #f8fafc;
+      --red: #f43f5e;
+      --amber: #f59e0b;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --purple: #a78bfa;
+    }
+
+    body {
+      font-family: 'Satoshi', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .dashboard {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .header-badge {
+      display: inline-block;
+      background: var(--teal-dim);
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--text-bright);
+      letter-spacing: -0.5px;
+    }
+    .header h1 span { color: var(--teal); }
+    .header p {
+      color: var(--text-dim);
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    /* Section titles */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin: 48px 0 20px;
+      padding-left: 16px;
+      border-left: 3px solid var(--teal);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(20,184,166,0.15);
+    }
+    .card-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 16px;
+    }
+
+    /* Grid layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    /* Progress bars */
+    .metric-row { margin-bottom: 18px; }
+    .metric-row:last-child { margin-bottom: 0; }
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .metric-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .metric-value { font-size: 22px; font-weight: 900; color: var(--text-bright); }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 100px;
+      background: linear-gradient(90deg, var(--teal), #2dd4bf);
+      transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Badges */
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .badge {
+      display: inline-block;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 100px;
+      background: var(--teal-dim);
+      color: var(--teal);
+      border: 1px solid rgba(20,184,166,0.2);
+    }
+
+    /* Stat number cards */
+    .stat-card { text-align: center; padding: 24px 16px; }
+    .stat-number {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* Chart containers */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-height: 300px;
+    }
+
+    /* Gauge */
+    .gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    .gauge-value {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--teal);
+      margin-top: 12px;
+    }
+    .gauge-max {
+      font-size: 16px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: rgba(255,255,255,0.08);
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-dot {
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid;
+    }
+    .tl-dot.done { background: var(--green); border-color: var(--green); }
+    .tl-dot.progress { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+    .tl-dot.planned { background: transparent; border-color: var(--text-dim); }
+    .tl-quarter {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+    .tl-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+    .tl-status {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 10px;
+      border-radius: 100px;
+      margin-left: 8px;
+    }
+    .tl-status.done { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tl-status.progress { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .tl-status.planned { background: rgba(148,163,184,0.12); color: var(--text-dim); }
+
+    /* Design system bar */
+    .ds-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .ds-row:last-child { margin-bottom: 0; }
+    .ds-label { font-size: 13px; color: var(--text-dim); width: 120px; flex-shrink: 0; }
+    .ds-bar-track {
+      flex: 1;
+      height: 24px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+    }
+    .ds-bar-fill {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-badge">Internal Analytics</div>
+      <h1>Restau<span>Margin</span></h1>
+      <p>Project metrics -- updated 1 April 2026</p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 1 : PRODUIT -->
+    <!-- ============================================ -->
+    <div class="section-title">Produit</div>
+
+    <div class="grid-2">
+      <!-- Progress bars -->
+      <div class="card">
+        <div class="card-label">Scope du projet</div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span class="metric-name">Pages</span>
+            <span class="metric-value">43</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:86%"></div></div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span class="metric-name">Routes API</span>
+            <span class="metric-value">25</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span class="metric-name">Actions IA</span>
+            <span class="metric-value">19</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:38%"></div></div>
+        </div>
+
+        <div class="metric-row">
+          <div class="metric-header">
+            <span class="metric-name">Composants</span>
+            <span class="metric-value">11</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:22%"></div></div>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div class="card">
+        <div class="card-label">Langues supportees</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <span class="metric-value">5</span>
+          <span class="metric-name">langues actives</span>
+        </div>
+        <div class="badges">
+          <span class="badge">FR Francais</span>
+          <span class="badge">EN English</span>
+          <span class="badge">ES Espanol</span>
+          <span class="badge">AR Arabe</span>
+          <span class="badge">ZH Chinois</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2 : MERCURIALE -->
+    <!-- ============================================ -->
+    <div class="section-title">Mercuriale</div>
+
+    <div class="grid-2">
+      <!-- Stats -->
+      <div class="card">
+        <div class="card-label">Donnees marche</div>
+        <div class="grid-3" style="margin-top:8px;">
+          <div class="stat-card">
+            <div class="stat-number">59</div>
+            <div class="stat-label">Prix reels inseres</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" style="color:var(--amber)">7</div>
+            <div class="stat-label">Alertes / Opportunites</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" style="color:var(--green)">6</div>
+            <div class="stat-label">Alternatives</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie chart -->
+      <div class="card">
+        <div class="card-label">Repartition par categorie</div>
+        <div class="chart-container">
+          <canvas id="pieCategories"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3 : DESIGN SYSTEM -->
+    <!-- ============================================ -->
+    <div class="section-title">Design System</div>
+
+    <div class="grid-2">
+      <!-- Gauge -->
+      <div class="card">
+        <div class="card-label">Score audit design</div>
+        <div class="gauge-wrap">
+          <canvas id="gaugeScore" width="220" height="130"></canvas>
+          <div class="gauge-value">5.75</div>
+          <div class="gauge-max">/ 10</div>
+        </div>
+      </div>
+
+      <!-- Migration bar -->
+      <div class="card">
+        <div class="card-label">Migration blue &rarr; teal</div>
+        <div class="chart-container" style="max-height:200px;">
+          <canvas id="barMigration"></canvas>
+        </div>
+        <div style="margin-top:16px;">
+          <div class="ds-row">
+            <span class="ds-label">Remplacements</span>
+            <span class="metric-value" style="font-size:18px;">193</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Components row -->
+    <div class="grid-4" style="margin-top:20px;">
+      <div class="card stat-card">
+        <div class="stat-number">11</div>
+        <div class="stat-label">Composants crees</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-number" style="color:var(--red)">4</div>
+        <div class="stat-label">Composants manquants</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-number" style="color:var(--amber)">294</div>
+        <div class="stat-label">Blue restants</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-number" style="color:var(--green)">207</div>
+        <div class="stat-label">Teal migres</div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4 : ROADMAP -->
+    <!-- ============================================ -->
+    <div class="section-title">Roadmap 2026</div>
+
+    <div class="card">
+      <div class="timeline">
+        <!-- Q2 -->
+        <div class="tl-item">
+          <div class="tl-dot done"></div>
+          <div class="tl-quarter">Q2 2026 -- Avril / Mai / Juin</div>
+          <div class="tl-title">Mercuriale V2 & prix en temps reel <span class="tl-status done">Done</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot done"></div>
+          <div class="tl-title">Design System unification (teal) <span class="tl-status done">Done</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot progress"></div>
+          <div class="tl-title">i18n complet (5 langues) <span class="tl-status progress">In progress</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot progress"></div>
+          <div class="tl-title">VIP Macro Upload & Publish <span class="tl-status progress">In progress</span></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="tl-item">
+          <div class="tl-dot planned"></div>
+          <div class="tl-quarter">Q3 2026 -- Juillet / Aout / Septembre</div>
+          <div class="tl-title">Kit hardware (Tab A9+ & balance BT) <span class="tl-status planned">Planned</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot planned"></div>
+          <div class="tl-title">CRM restaurateurs & onboarding <span class="tl-status planned">Planned</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot planned"></div>
+          <div class="tl-title">Stripe billing & plans SaaS <span class="tl-status planned">Planned</span></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="tl-item">
+          <div class="tl-dot planned"></div>
+          <div class="tl-quarter">Q4 2026 -- Octobre / Novembre / Decembre</div>
+          <div class="tl-title">Multi-tenancy & white label <span class="tl-status planned">Planned</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot planned"></div>
+          <div class="tl-title">Analytics avances & rapports PDF <span class="tl-status planned">Planned</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot planned"></div>
+          <div class="tl-title">Marketplace fournisseurs <span class="tl-status planned">Planned</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:48px;color:var(--text-dim);font-size:13px;">
+      RestauMargin Internal Dashboard &middot; Auto-generated &middot; 1 Apr 2026
+    </div>
+  </div>
+
+  <script>
+    // Chart.js global config
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Satoshi', sans-serif";
+    Chart.defaults.font.weight = 500;
+
+    // ---- PIE: Categories Mercuriale ----
+    new Chart(document.getElementById('pieCategories'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Viandes', 'Poissons', 'Legumes', 'Produits laitiers', 'Epicerie'],
+        datasets: [{
+          data: [18, 12, 14, 8, 7],
+          backgroundColor: [
+            '#f43f5e',
+            '#3b82f6',
+            '#22c55e',
+            '#f59e0b',
+            '#a78bfa'
+          ],
+          borderColor: '#0f172a',
+          borderWidth: 3,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: { padding: 14, usePointStyle: true, pointStyleWidth: 10, font: { size: 12 } }
+          }
+        }
+      }
+    });
+
+    // ---- BAR: Migration blue vs teal ----
+    new Chart(document.getElementById('barMigration'), {
+      type: 'bar',
+      data: {
+        labels: ['Blue restants', 'Teal migres'],
+        datasets: [{
+          data: [294, 207],
+          backgroundColor: ['#3b82f6', '#14b8a6'],
+          borderRadius: 8,
+          barPercentage: 0.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.raw + ' occurrences' } }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            ticks: { font: { size: 11 } }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { font: { size: 12, weight: 600 } }
+          }
+        }
+      }
+    });
+
+    // ---- GAUGE: Design score (canvas 2D) ----
+    (function() {
+      const canvas = document.getElementById('gaugeScore');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = 220 * dpr;
+      canvas.height = 130 * dpr;
+      ctx.scale(dpr, dpr);
+
+      const cx = 110, cy = 110, r = 85;
+      const startAngle = Math.PI;
+      const endAngle = 2 * Math.PI;
+      const score = 5.75;
+      const pct = score / 10;
+      const scoreAngle = startAngle + pct * Math.PI;
+
+      // Track
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, startAngle, endAngle);
+      ctx.lineWidth = 16;
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Gradient fill
+      const grad = ctx.createLinearGradient(cx - r, cy, cx + r, cy);
+      grad.addColorStop(0, '#f43f5e');
+      grad.addColorStop(0.5, '#f59e0b');
+      grad.addColorStop(1, '#14b8a6');
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, startAngle, scoreAngle);
+      ctx.lineWidth = 16;
+      ctx.strokeStyle = grad;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Needle dot
+      const nx = cx + r * Math.cos(scoreAngle);
+      const ny = cy + r * Math.sin(scoreAngle);
+      ctx.beginPath();
+      ctx.arc(nx, ny, 6, 0, 2 * Math.PI);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(nx, ny, 3, 0, 2 * Math.PI);
+      ctx.fillStyle = '#14b8a6';
+      ctx.fill();
+    })();
+  </script>
+</body>
+</html>

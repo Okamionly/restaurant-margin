@@ -5,8 +5,48 @@
 @layer base {
   body {
     @apply antialiased bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+    font-family: 'General Sans', 'DM Sans', 'Inter', system-ui, sans-serif;
   }
 }
+
+/* ── Luxury Tech Noise Texture Overlay ──────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ── Dark mode gradient mesh background ────────────────────────────────── */
+.dark body {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(13,148,136,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(6,182,212,0.05) 0%, transparent 50%),
+    #020617;
+}
+
+/* ── Staggered reveal animations ───────────────────────────────────────── */
+@keyframes luxFadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stagger-1 { animation: luxFadeInUp 0.5s ease-out 0.05s both; }
+.stagger-2 { animation: luxFadeInUp 0.5s ease-out 0.12s both; }
+.stagger-3 { animation: luxFadeInUp 0.5s ease-out 0.19s both; }
+.stagger-4 { animation: luxFadeInUp 0.5s ease-out 0.26s both; }
+.stagger-5 { animation: luxFadeInUp 0.5s ease-out 0.33s both; }
+
+/* ── Custom scrollbar (luxury thin) ────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(13,148,136,0.4); }
+
+/* ── Selection color ───────────────────────────────────────────────────── */
+::selection { background: rgba(13,148,136,0.3); color: white; }
 
 /* Remove black focus outline on SVG chart elements */
 .recharts-wrapper svg:focus,
@@ -19,7 +59,23 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-teal-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-teal-500 transition-colors dark:bg-teal-600 dark:hover:bg-teal-500;
+    @apply bg-teal-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-teal-500 transition-all duration-300 dark:bg-teal-600 dark:hover:bg-teal-500;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(135deg, rgba(13,148,136,0.4), rgba(6,182,212,0.4));
+    border-radius: inherit;
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover::after {
+    opacity: 1;
   }
   .btn-secondary {
     @apply bg-white text-slate-700 px-4 py-2 rounded-lg font-medium border border-slate-300 hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600;
@@ -36,8 +92,22 @@
     @apply block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1;
   }
   .card {
-    @apply bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6
-      hover:shadow-md hover:border-teal-500/30 dark:hover:border-teal-500/30 transition-all duration-200;
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200 p-6 transition-all duration-300;
+    /* Dark mode glassmorphism */
+  }
+  .dark .card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  .card:hover {
+    @apply shadow-md;
+    transform: translateY(-2px);
+  }
+  .dark .card:hover {
+    border-color: rgba(13, 148, 136, 0.3);
+    box-shadow: 0 0 30px rgba(13, 148, 136, 0.08);
   }
   .section-title {
     @apply text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight;

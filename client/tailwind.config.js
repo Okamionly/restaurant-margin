@@ -4,6 +4,10 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        satoshi: ['Satoshi', 'DM Sans', 'Inter', 'sans-serif'],
+        'general-sans': ['General Sans', 'DM Sans', 'Inter', 'sans-serif'],
+      },
       colors: {
         neon: {
           teal: '#0d9488',

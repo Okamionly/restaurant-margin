@@ -69,12 +69,12 @@ const TAB_ICONS: Record<TabKey, any> = {
 
 // ── Stat card color configs ────────────────────────────────────────────────
 const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
-  teal:   { gradient: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-slate-800',   border: 'border-t-teal-500' },
-  green:  { gradient: 'from-green-50 to-white dark:from-green-950/30 dark:to-slate-800',  border: 'border-t-green-500' },
-  amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',  border: 'border-t-amber-500' },
-  purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800', border: 'border-t-purple-500' },
-  cyan:   { gradient: 'from-cyan-50 to-white dark:from-cyan-950/30 dark:to-slate-800',    border: 'border-t-cyan-500' },
-  slate:  { gradient: 'from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-800',   border: 'border-t-slate-500' },
+  teal:   { gradient: 'from-teal-50 to-white dark:from-teal-950/20 dark:to-slate-900/40',   border: 'border-t-teal-400' },
+  green:  { gradient: 'from-green-50 to-white dark:from-green-950/20 dark:to-slate-900/40',  border: 'border-t-emerald-400' },
+  amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/20 dark:to-slate-900/40',  border: 'border-t-amber-400' },
+  purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/20 dark:to-slate-900/40', border: 'border-t-purple-400' },
+  cyan:   { gradient: 'from-cyan-50 to-white dark:from-cyan-950/20 dark:to-slate-900/40',    border: 'border-t-cyan-400' },
+  slate:  { gradient: 'from-slate-50 to-white dark:from-slate-900/30 dark:to-slate-900/40',   border: 'border-t-slate-400' },
 };
 
 // ── Animated Number Counter ────────────────────────────────────────────────
@@ -110,26 +110,26 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
 }) {
   const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.teal;
   return (
-    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 border-t-[3px] ${style.border} p-4 sm:p-5 hover:shadow-md transition-shadow`}>
+    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700/50 border-t-[3px] ${style.border} p-4 sm:p-5 transition-all duration-300 hover:shadow-lg dark:hover:shadow-teal-900/10 hover:-translate-y-0.5 dark:bg-slate-800/40 dark:backdrop-blur-md`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-400 truncate">{title}</span>
-        <div className={`p-2 rounded-lg ${color}`}>
+        <span className="text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-400 truncate font-general-sans">{title}</span>
+        <div className={`p-2 rounded-lg ${color} shadow-lg`}>
           <Icon className="w-4 h-4 text-white" />
         </div>
       </div>
       <div className="flex items-end gap-2">
-        <div className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100">
+        <div className="text-2xl sm:text-3xl font-black font-satoshi text-slate-800 dark:text-slate-100 tracking-tight">
           {numericValue !== undefined
             ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
             : value}
         </div>
         {trend && (
-          <div className={`flex items-center gap-0.5 mb-1 ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+          <div className={`flex items-center gap-0.5 mb-1 ${trend === 'up' ? 'text-emerald-400' : 'text-red-400'}`}>
             {trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
           </div>
         )}
       </div>
-      {subtitle && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate font-general-sans">{subtitle}</p>}
     </div>
   );
 }
@@ -182,7 +182,7 @@ interface ChartTooltipProps {
 function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm min-w-[180px]">
+    <div className="bg-white dark:bg-slate-800/90 dark:backdrop-blur-lg shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600/50 text-sm min-w-[180px]">
       <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1.5">
         {String(payload[0]?.payload?.fullName || label || payload[0]?.payload?.name || '')}
       </p>
@@ -559,7 +559,7 @@ export default function Dashboard() {
   if (!stats || stats.totalRecipes === 0) {
     return (
       <div>
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">{t("dashboard.title")}</h2>
+        <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight mb-6"><span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span></h2>
         <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
           <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
           <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
@@ -578,10 +578,12 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* ── Header + Quick Actions ────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 stagger-1">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t("dashboard.title")}</h2>
-          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
+          <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight">
+            <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
+          </h2>
+          <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-general-sans">
             {stats.totalRecipes} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
           </p>
         </div>
@@ -620,7 +622,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 stagger-2">
         <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-teal-600" colorKey="teal" />
         <StatCard
           title={t("dashboard.avgMargin")}
@@ -662,10 +664,12 @@ export default function Dashboard() {
       </div>
 
       {/* ── Alert Ticker Banner ──────────────────────────────────────── */}
-      <AlertTicker alerts={stats.alertRecipes} />
+      <div className="stagger-3">
+        <AlertTicker alerts={stats.alertRecipes} />
+      </div>
 
       {/* ── Menu du Marché + Suggestions IA ────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-4">
         {/* Menu du Marché */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex items-center gap-2 mb-4">

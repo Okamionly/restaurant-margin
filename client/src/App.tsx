@@ -349,8 +349,8 @@ function AppLayout() {
             collapsed ? 'justify-center' : ''
           } ${
             isActive
-              ? 'bg-teal-500/10 text-teal-400 dark:bg-teal-500/10 dark:text-teal-400 border-l-[3px] border-teal-500 pl-[9px]'
-              : 'text-slate-400 hover:bg-teal-500/5 hover:text-white hover:translate-x-1'
+              ? 'bg-teal-500/8 text-teal-300 dark:bg-teal-500/8 dark:text-teal-300 border-l-[2px] border-teal-400 pl-[10px]'
+              : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200 hover:translate-x-0.5'
           }`
         }
       >
@@ -370,10 +370,13 @@ function AppLayout() {
   // Sidebar content (shared between desktop and mobile)
   const sidebarContent = (collapsed = false) => (
     <div className="flex flex-col h-full">
+      {/* Gradient accent line */}
+      <div className="h-[1px] bg-gradient-to-r from-teal-500 via-cyan-400 to-transparent" />
+
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-4 border-b border-slate-700/50 ${collapsed ? 'justify-center px-2' : ''}`}>
-        <ChefHat className="w-8 h-8 text-teal-400 flex-shrink-0" />
-        {!collapsed && <span className="text-lg font-bold text-white sidebar-label">RestauMargin</span>}
+      <div className={`flex items-center gap-3 px-4 py-5 border-b border-slate-700/30 ${collapsed ? 'justify-center px-2' : ''}`}>
+        <ChefHat className="w-8 h-8 text-teal-400 flex-shrink-0 drop-shadow-[0_0_6px_rgba(13,148,136,0.5)]" />
+        {!collapsed && <span className="text-lg font-bold text-white sidebar-label font-satoshi tracking-tight">RestauMargin</span>}
       </div>
 
       {/* Restaurant selector */}
@@ -396,12 +399,12 @@ function AppLayout() {
       </div>
 
       {/* Nav sections - scrollable area */}
-      <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1 pb-4 sidebar-scroll">
+      <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1.5 pb-4 sidebar-scroll">
         {navSections.map((section, idx) => (
-          <div key={section.title} className={idx > 0 ? 'pt-3' : ''}>
-            {!collapsed && idx > 0 && <div className="border-t border-slate-700/30 mb-3" />}
+          <div key={section.title} className={idx > 0 ? 'pt-4' : ''}>
+            {!collapsed && idx > 0 && <div className="border-t border-slate-700/20 mb-3" />}
             {!collapsed && (
-              <div className="px-3 py-1.5 text-[9px] font-medium tracking-[0.15em] text-slate-500/70 uppercase sidebar-label">
+              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-slate-500/60 uppercase sidebar-label font-satoshi">
                 {section.title}
               </div>
             )}
@@ -441,8 +444,8 @@ function AppLayout() {
         )}
 
         {/* User profile */}
-        <div className={`flex items-center gap-3 px-3 py-3 mt-3 rounded-xl bg-slate-800/40 border border-slate-700/30 ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 ring-2 ring-teal-500/20">
+        <div className={`flex items-center gap-3 px-3 py-3 mt-3 rounded-xl bg-slate-800/30 border border-slate-700/20 backdrop-blur-sm ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 ring-2 ring-teal-400/20 shadow-[0_0_12px_rgba(13,148,136,0.2)]">
             {userInitials}
           </div>
           {!collapsed && (

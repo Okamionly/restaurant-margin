@@ -115,6 +115,17 @@
       gtag('js', new Date());
       gtag('config', 'G-XXXXXXXXXX');
     </script>
+    <!-- Sentry Error Tracking (CDN léger) -->
+    <script src="https://browser.sentry-cdn.com/7.99.0/bundle.tracing.min.js" crossorigin="anonymous"></script>
+    <script>
+      if (window.Sentry) {
+        Sentry.init({
+          dsn: 'https://PLACEHOLDER@sentry.io/PLACEHOLDER',
+          tracesSampleRate: 0.1,
+          environment: window.location.hostname === 'www.restaumargin.fr' ? 'production' : 'development'
+        });
+      }
+    </script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

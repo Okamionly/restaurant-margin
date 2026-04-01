@@ -54,6 +54,42 @@ router.post('/register', async (req: any, res) => {
       data: { name: 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },
     });
 
+    // Send welcome onboarding email (non-blocking)
+    try {
+      const resendApiKey = process.env.RESEND_API_KEY;
+      if (resendApiKey) {
+        const resend = new Resend(resendApiKey);
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: user.email,
+          subject: 'Bienvenue sur RestauMargin ! 🍳',
+          html: `
+            <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <div style="background: #0d9488; padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 24px;">Bienvenue sur RestauMargin</h1>
+              </div>
+              <div style="padding: 30px; background: #f8fafc; border-radius: 0 0 12px 12px;">
+                <p style="font-size: 16px; color: #1e293b;">Bonjour ${user.name},</p>
+                <p style="font-size: 16px; color: #1e293b;">Votre essai gratuit de 14 jours est activé !</p>
+                <p style="font-size: 16px; color: #1e293b; font-weight: 600;">Voici vos 3 premières étapes :</p>
+                <ol style="font-size: 15px; color: #334155; line-height: 1.8;">
+                  <li>Ajoutez vos premiers ingrédients</li>
+                  <li>Créez une fiche technique avec l'IA</li>
+                  <li>Testez la commande vocale</li>
+                </ol>
+                <div style="text-align: center; margin-top: 24px;">
+                  <a href="https://www.restaumargin.fr/dashboard" style="display: inline-block; background: #0d9488; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">Commencer maintenant →</a>
+                </div>
+                <p style="font-size: 13px; color: #94a3b8; margin-top: 24px; text-align: center;">L'équipe RestauMargin</p>
+              </div>
+            </div>
+          `,
+        });
+      }
+    } catch (emailErr) {
+      console.error('Failed to send welcome email:', emailErr);
+    }
+
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
     res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan }, restaurantId: restaurant.id });
   } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }

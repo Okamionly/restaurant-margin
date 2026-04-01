@@ -556,13 +556,13 @@ export default function Ingredients() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
-                      <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')}>
+                      <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingrédient">
                         <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       </button>
-                      <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600" title={t('ingredients.editTooltip')}>
+                      <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingrédient">
                         <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                       </button>
-                      <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')}>
+                      <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingrédient">
                         <Trash2 className="w-4 h-4 text-red-500" />
                       </button>
                     </div>
@@ -745,6 +745,7 @@ export default function Ingredients() {
                   <button
                     type="button"
                     onClick={() => { setForm({ ...form, supplier: '', supplierId: null }); setSupplierQuery(''); }}
+                    aria-label="Effacer le fournisseur"
                     className="absolute right-8 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600"
                   >
                     <X className="w-3 h-3 text-slate-400" />

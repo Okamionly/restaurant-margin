@@ -42,7 +42,7 @@ export default function Modal({ isOpen, onClose, title, children, className = ''
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/80 dark:border-slate-700/80">
           <h3 id="modal-title" className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          <button onClick={onClose} aria-label="Fermer" className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
             <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
           </button>
         </div>

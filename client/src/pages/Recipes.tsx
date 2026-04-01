@@ -827,6 +827,7 @@ export default function Recipes() {
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
             title={t("recipes.gridView")}
+            aria-label="Vue grille"
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
@@ -834,6 +835,7 @@ export default function Recipes() {
             onClick={() => setViewMode('table')}
             className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
             title={t("recipes.tableView")}
+            aria-label="Vue tableau"
           >
             <List className="w-4 h-4" />
           </button>
@@ -905,13 +907,13 @@ export default function Recipes() {
                       <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.view")}>
                         <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                       </Link>
-                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
+                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                         <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                       </button>
-                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")}>
+                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
                         <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                       </button>
-                      <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")}>
+                      <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                         <Trash2 className="w-4 h-4 text-red-500" />
                       </button>
                     </div>
@@ -978,13 +980,13 @@ export default function Recipes() {
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
-                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")}>
+                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                     <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
                   </button>
-                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")}>
+                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
                     <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   </button>
-                  <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")}>
+                  <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                     <Trash2 className="w-4 h-4 text-red-500" />
                   </button>
                 </div>
@@ -1101,7 +1103,7 @@ export default function Recipes() {
                         {aiSuggestionsChecked.filter(Boolean).length}/{aiSuggestions.length} selectionnes
                       </span>
                     </div>
-                    <button type="button" onClick={() => setShowAiSuggestions(false)} className="p-1 text-slate-400 hover:text-white">
+                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="p-1 text-slate-400 hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
@@ -1324,7 +1326,7 @@ export default function Recipes() {
                             setFormIngredients(updated);
                           }}
                         />
-                        <button type="button" onClick={() => removeIngredientLine(idx)} className="p-1 text-red-400 hover:text-red-600 flex-shrink-0">
+                        <button type="button" onClick={() => removeIngredientLine(idx)} aria-label="Retirer l'ingrédient" className="p-1 text-red-400 hover:text-red-600 flex-shrink-0">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

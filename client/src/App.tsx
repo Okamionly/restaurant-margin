@@ -79,6 +79,7 @@ const Pricing = lazyRetry(() => import('./pages/Pricing'));
 const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
+const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -427,6 +428,7 @@ function AppLayout() {
         <button
           onClick={() => setDarkMode(!darkMode)}
           title={darkMode ? 'Mode clair' : 'Mode sombre'}
+          aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700/70 hover:text-white transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
         >
           {darkMode ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
@@ -461,6 +463,7 @@ function AppLayout() {
           <button
             onClick={logout}
             title="Deconnexion"
+            aria-label="Déconnexion"
             className="p-1.5 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-all duration-200 flex-shrink-0"
           >
             <LogOut className="w-4 h-4" />
@@ -497,6 +500,7 @@ function AppLayout() {
           <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-50 no-print animate-slide-in">
             <button
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Fermer le menu"
               className="absolute top-4 right-3 p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
@@ -512,6 +516,7 @@ function AppLayout() {
         <header className="md:hidden bg-white dark:bg-slate-800 border-b dark:border-slate-700 px-4 py-3 flex items-center justify-between no-print">
           <button
             onClick={() => setMobileMenuOpen(true)}
+            aria-label="Ouvrir le menu"
             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
             <Menu className="w-5 h-5" />
@@ -627,6 +632,7 @@ function App() {
           <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
           <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
+          <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
           <Route
             path="/station"

@@ -116,11 +116,72 @@ export default function Landing() {
   const [contactSent, setContactSent] = useState(false);
   const [contactLoading, setContactLoading] = useState(false);
   const [contactError, setContactError] = useState('');
+  const [showExitPopup, setShowExitPopup] = useState(false);
+
+  // Newsletter slide-in state
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [newsletterSent, setNewsletterSent] = useState(false);
+
+  // Newsletter slide-in: show after 30s, once only, not if logged in
+  useEffect(() => {
+    const dismissed = localStorage.getItem('newsletterDismissed');
+    const isLoggedIn = !!localStorage.getItem('token');
+    if (dismissed || isLoggedIn) return;
+    const timer = setTimeout(() => setShowNewsletter(true), 30000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNewsletterLoading(true);
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newsletterEmail,
+          source: 'newsletter',
+          message: 'Inscription newsletter mercuriale',
+        }),
+      });
+      setNewsletterSent(true);
+      localStorage.setItem('newsletterDismissed', '1');
+    } catch {
+      // silently fail
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
+
+  const dismissNewsletter = () => {
+    setShowNewsletter(false);
+    localStorage.setItem('newsletterDismissed', '1');
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Exit-intent popup: show once per session, not on mobile, not if logged in
+  useEffect(() => {
+    const isMobile = window.matchMedia('(pointer: coarse)').matches;
+    const alreadyShown = localStorage.getItem('exitPopupShown');
+    const isLoggedIn = !!localStorage.getItem('token');
+    if (isMobile || alreadyShown || isLoggedIn) return;
+
+    const handleMouseOut = (e: MouseEvent) => {
+      if (e.clientY < 10) {
+        setShowExitPopup(true);
+        localStorage.setItem('exitPopupShown', '1');
+        document.removeEventListener('mouseout', handleMouseOut);
+      }
+    };
+    document.addEventListener('mouseout', handleMouseOut);
+    return () => document.removeEventListener('mouseout', handleMouseOut);
   }, []);
 
   useEffect(() => {
@@ -313,18 +374,81 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══════════════════ 2. TRUSTED BY ═══════════════════ */}
+      {/* ═══════════════════ 2. COMPATIBLE SUPPLIERS ═══════════════════ */}
       <section className="py-10 border-y border-gray-200 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <p className="text-center text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
-              Ils nous font confiance
+              Compatible avec vos fournisseurs
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
               {['METRO', 'Transgourmet', 'Pomona', 'Sysco', 'Brake'].map((name) => (
                 <span key={name} className="bg-gray-100 border border-gray-200 text-gray-500 px-5 py-2 rounded-full text-sm font-bold tracking-tight opacity-60 hover:opacity-100 transition-opacity select-none">
                   {name}
                 </span>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ═══════════════════ 2b. SOCIAL PROOF ═══════════════════ */}
+      <section className="py-16 sm:py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-sm font-semibold mb-4">
+                <Star className="w-4 h-4 fill-teal-500 text-teal-500" />
+                4.8/5 satisfaction
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                150+ restaurants utilisent RestauMargin
+              </h2>
+              <p className="text-gray-500 text-sm">
+                Ils ont repris le controle de leurs marges
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  name: 'Sophie Martin',
+                  city: 'Lyon',
+                  type: 'Brasserie',
+                  quote: "En 2 mois, on a identifie 8 plats qui nous faisaient perdre de l'argent. Nos marges ont augmente de 4 points.",
+                },
+                {
+                  name: 'Karim Benali',
+                  city: 'Paris',
+                  type: 'Restaurant gastronomique',
+                  quote: "Fini les tableurs Excel. Je vois en temps reel l'impact de chaque changement de prix fournisseur sur mes plats.",
+                },
+                {
+                  name: 'Marie Dupont',
+                  city: 'Bordeaux',
+                  type: 'Bistrot',
+                  quote: "Simple, rapide, efficace. Meme mon chef qui deteste l'informatique l'utilise tous les jours.",
+                },
+              ].map((t, i) => (
+                <div key={i} className="bg-gray-50 border border-gray-200 rounded-2xl p-6 hover:border-teal-300 transition-colors duration-300">
+                  <div className="flex gap-0.5 mb-3">
+                    {[...Array(5)].map((_, j) => (
+                      <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                    &laquo;&nbsp;{t.quote}&nbsp;&raquo;
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-sm font-bold">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{t.name}</p>
+                      <p className="text-xs text-gray-500">{t.type} — {t.city}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </FadeIn>
@@ -551,6 +675,63 @@ export default function Landing() {
               </button>{' '}
               pour verifier la compatibilite.
             </p>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ═══════════════════ 6b. COMPARISON TABLE ═══════════════════ */}
+      <section className="py-20 sm:py-28 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center mb-14">
+              <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Comparatif</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">Pourquoi RestauMargin ?</h2>
+              <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">Le seul outil qui combine IA conversationnelle, commande vocale et prix fournisseurs reels.</p>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={200}>
+            <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
+              <table className="w-full min-w-[640px] text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-4 px-5 font-semibold text-gray-700 bg-gray-50/80">Fonctionnalite</th>
+                    <th className="py-4 px-5 font-bold text-white bg-teal-600 text-center min-w-[140px]">RestauMargin</th>
+                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[110px]">Inpulse</th>
+                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[110px]">Koust</th>
+                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[110px]">Melba</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { feature: 'Prix / mois', rm: '29\u20AC', inpulse: '~200\u20AC+', koust: '~80\u20AC', melba: '~60\u20AC', highlight: true },
+                    { feature: 'IA conversationnelle', rm: '19 actions', inpulse: null, koust: null, melba: null },
+                    { feature: 'Commande vocale', rm: true, inpulse: null, koust: null, melba: null },
+                    { feature: 'Mercuriale Transgourmet', rm: 'Prix reels', inpulse: null, koust: null, melba: null },
+                    { feature: 'Fiches techniques', rm: 'Auto-IA', inpulse: 'Manuel', koust: 'Manuel', melba: 'Manuel' },
+                    { feature: 'HACCP', rm: true, inpulse: null, koust: true, melba: null },
+                    { feature: 'Menu Engineering', rm: 'Matrice BCG', inpulse: null, koust: true, melba: null },
+                    { feature: 'Essai gratuit', rm: '14 jours', inpulse: null, koust: null, melba: null },
+                  ].map((row, i) => {
+                    const renderCell = (val: string | boolean | null, isTeal: boolean) => {
+                      if (val === null) return <span className="text-gray-300 text-lg">&#10005;</span>;
+                      if (val === true) return <span className="text-emerald-500 text-lg font-bold">&#10003;</span>;
+                      return <span className={isTeal ? 'font-bold text-teal-700' : 'text-gray-600'}>{val}</span>;
+                    };
+                    return (
+                      <tr key={i} className={`border-b border-gray-100 last:border-b-0 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'}`}>
+                        <td className="py-3.5 px-5 font-medium text-gray-800">{row.feature}</td>
+                        <td className="py-3.5 px-5 text-center bg-teal-50/60">{renderCell(row.rm, true)}</td>
+                        <td className="py-3.5 px-5 text-center">{renderCell(row.inpulse, false)}</td>
+                        <td className="py-3.5 px-5 text-center">{renderCell(row.koust, false)}</td>
+                        <td className="py-3.5 px-5 text-center">{renderCell(row.melba, false)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-center mt-6 text-xs text-gray-400">Donnees publiques au 01/04/2026. Les prix concurrents sont des estimations basees sur les informations disponibles.</p>
           </FadeIn>
         </div>
       </section>
@@ -843,6 +1024,94 @@ export default function Landing() {
           </div>
         </div>
       </footer>
+
+      {/* ═══════════════════ NEWSLETTER SLIDE-IN ═══════════════════ */}
+      <div
+        className={`fixed bottom-6 right-6 z-[90] w-[300px] transition-all duration-500 ease-out ${
+          showNewsletter ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="bg-white border border-teal-200 rounded-2xl shadow-xl p-5 relative">
+          <button
+            onClick={dismissNewsletter}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label="Fermer"
+          >
+            <XIcon className="w-4 h-4" />
+          </button>
+
+          {newsletterSent ? (
+            <div className="text-center py-2">
+              <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-gray-900">Inscription confirmee !</p>
+              <p className="text-xs text-gray-500 mt-1">A bientot dans votre boite mail.</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">📊</span>
+                <h4 className="text-sm font-bold text-gray-900">Mercuriale hebdomadaire</h4>
+              </div>
+              <p className="text-xs text-gray-500 mb-3">
+                Recevez les prix du marche chaque semaine
+              </p>
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <input
+                  type="email"
+                  required
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  placeholder="votre@email.com"
+                  className="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                />
+                <button
+                  type="submit"
+                  disabled={newsletterLoading}
+                  className="px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
+                >
+                  {newsletterLoading ? '...' : "S'inscrire"}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* ═══════════════════ EXIT-INTENT POPUP ═══════════════════ */}
+      {showExitPopup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="relative mx-4 w-full max-w-md bg-white/80 backdrop-blur-xl border border-gray-200 rounded-3xl shadow-2xl p-8 text-center animate-scale-in">
+            <button
+              onClick={() => setShowExitPopup(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Fermer"
+            >
+              <XIcon className="w-5 h-5" />
+            </button>
+
+            <div className="text-5xl mb-4">🎁</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Attendez !</h3>
+            <p className="text-lg font-semibold text-teal-600 mb-1">
+              Essayez RestauMargin gratuitement pendant 14 jours
+            </p>
+            <p className="text-sm text-gray-500 mb-6">Pas de carte bancaire requise</p>
+
+            <Link
+              to="/login?mode=register"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-teal-600 hover:to-teal-700 transition-all duration-200"
+            >
+              Commencer mon essai gratuit <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <button
+              onClick={() => setShowExitPopup(false)}
+              className="block mx-auto mt-4 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Non merci
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

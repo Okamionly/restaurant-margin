@@ -1769,29 +1769,53 @@ app.post('/api/orders/send-email', authWithRestaurant, async (req: any, res) => 
       `<tr><td style="padding:8px;border-bottom:1px solid #e2e8f0;">${l.name}</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;">${l.quantity} ${l.unit}</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;text-align:right;">${(l.total || 0).toFixed(2)} €</td></tr>`
     ).join('');
 
+    // Get restaurant info for the email header
+    const restaurant = await prisma.restaurant.findUnique({ where: { id: req.restaurantId } });
+    const restaurantName = restaurant?.name || 'Mon Restaurant';
+    const restaurantAddress = restaurant?.address || '';
+    const restaurantPhone = restaurant?.phone || '';
+    const orderRef = `CMD-${Date.now().toString(36).toUpperCase()}`;
+
     const resend = new Resend(resendKey);
     await resend.emails.send({
-      from: 'RestauMargin <contact@restaumargin.fr>',
+      from: `${restaurantName} <contact@restaumargin.fr>`,
       to: supplierEmail,
       replyTo: 'contact@restaumargin.fr',
-      subject: `Commande — RestauMargin pour ${supplierName}`,
+      subject: `Commande ${orderRef} — ${restaurantName}`,
       html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-          <div style="background:#1e40af;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
-            <h2 style="margin:0;">Bon de commande</h2>
-            <p style="margin:4px 0 0;opacity:0.8;">RestauMargin — ${new Date().toLocaleDateString('fr-FR')}</p>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
+          <!-- Header with logo area -->
+          <div style="background:#0f172a;color:white;padding:20px 24px;border-radius:12px 12px 0 0;">
+            <table style="width:100%"><tr>
+              <td><img src="https://www.restaumargin.fr/logo192.png" alt="${restaurantName}" style="height:40px;border-radius:8px;" /></td>
+              <td style="text-align:right;">
+                <p style="margin:0;font-size:20px;font-weight:bold;">${restaurantName}</p>
+                ${restaurantAddress ? `<p style="margin:2px 0 0;opacity:0.7;font-size:12px;">${restaurantAddress}</p>` : ''}
+                ${restaurantPhone ? `<p style="margin:2px 0 0;opacity:0.7;font-size:12px;">Tél: ${restaurantPhone}</p>` : ''}
+              </td>
+            </tr></table>
           </div>
+          <!-- Order ref banner -->
+          <div style="background:#1e40af;color:white;padding:12px 24px;text-align:center;">
+            <p style="margin:0;font-size:16px;font-weight:bold;">BON DE COMMANDE</p>
+            <p style="margin:2px 0 0;opacity:0.8;font-size:13px;">Réf: ${orderRef} — ${new Date().toLocaleDateString('fr-FR')}</p>
+          </div>
+          <!-- Body -->
           <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
             <p>Bonjour <strong>${supplierName}</strong>,</p>
             <p>Veuillez trouver ci-dessous notre commande :</p>
             <table style="width:100%;border-collapse:collapse;margin:16px 0;">
-              <thead><tr style="background:#f8fafc;"><th style="padding:8px;text-align:left;">Article</th><th style="padding:8px;text-align:left;">Quantité</th><th style="padding:8px;text-align:right;">Total</th></tr></thead>
+              <thead><tr style="background:#f1f5f9;"><th style="padding:10px 8px;text-align:left;font-size:13px;color:#475569;">Article</th><th style="padding:10px 8px;text-align:left;font-size:13px;color:#475569;">Quantité</th><th style="padding:10px 8px;text-align:right;font-size:13px;color:#475569;">Total HT</th></tr></thead>
               <tbody>${linesHtml}</tbody>
-              <tfoot><tr><td colspan="2" style="padding:12px 8px;font-weight:bold;">Total HT</td><td style="padding:12px 8px;text-align:right;font-weight:bold;font-size:18px;">${(totalHT || 0).toFixed(2)} €</td></tr></tfoot>
+              <tfoot><tr style="background:#f8fafc;"><td colspan="2" style="padding:12px 8px;font-weight:bold;font-size:15px;">TOTAL HT</td><td style="padding:12px 8px;text-align:right;font-weight:bold;font-size:18px;color:#1e40af;">${(totalHT || 0).toFixed(2)} €</td></tr></tfoot>
             </table>
-            ${notes ? `<p style="color:#64748b;"><em>Notes : ${notes}</em></p>` : ''}
+            ${notes ? `<div style="background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 16px;margin:16px 0;border-radius:4px;"><strong>Notes :</strong> ${notes}</div>` : ''}
+            <p style="margin-top:24px;">Merci de confirmer la réception de cette commande en répondant à cet email.</p>
             <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-            <p style="color:#94a3b8;font-size:12px;">Envoyé depuis RestauMargin — www.restaumargin.fr</p>
+            <table style="width:100%;font-size:11px;color:#94a3b8;"><tr>
+              <td>${restaurantName}${restaurantAddress ? ` — ${restaurantAddress}` : ''}</td>
+              <td style="text-align:right;">contact@restaumargin.fr — www.restaumargin.fr</td>
+            </tr></table>
           </div>
         </div>
       `,

@@ -30,25 +30,6 @@ interface FAQItem {
 // ── Data ─────────────────────────────────────────────────────────────────────
 const PLANS: Plan[] = [
   {
-    id: 'gratuit',
-    name: 'Gratuit',
-    price: '0€',
-    period: '/mois',
-    description: 'Idéal pour démarrer et tester RestauMargin',
-    icon: <Package className="w-6 h-6" />,
-    badge: 'Plan actuel',
-    features: [
-      '1 restaurant',
-      '20 recettes max',
-      '50 ingrédients',
-      'Fiches techniques',
-      'Calcul de marge basique',
-    ],
-    cta: 'Plan actuel',
-    gradient: 'from-slate-500/10 to-slate-600/10',
-    borderColor: 'border-slate-200 dark:border-slate-700',
-  },
-  {
     id: 'pro',
     name: 'Pro',
     price: '29€',
@@ -58,9 +39,10 @@ const PLANS: Plan[] = [
     highlighted: true,
     badge: 'Recommandé',
     features: [
-      'Tout du Gratuit +',
+      '1 restaurant',
       'Recettes illimitées',
       'Ingrédients illimités',
+      'Fiches techniques',
       'Scanner de factures (OCR)',
       'Mercuriale (suivi des prix)',
       'Menu Engineering (matrice BCG)',
@@ -68,7 +50,7 @@ const PLANS: Plan[] = [
       'Commandes automatiques',
       'Support prioritaire',
     ],
-    cta: 'Passer au Pro',
+    cta: 'S\'abonner au Pro',
     gradient: 'from-blue-500/10 to-indigo-600/10',
     borderColor: 'border-blue-300 dark:border-blue-600',
   },
@@ -119,27 +101,26 @@ const FAQ_ITEMS: FAQItem[] = [
 // ── Feature comparison data ──────────────────────────────────────────────────
 interface FeatureRow {
   name: string;
-  gratuit: boolean | string;
   pro: boolean | string;
   business: boolean | string;
 }
 
 const FEATURE_COMPARISON: FeatureRow[] = [
-  { name: 'Restaurants', gratuit: '1', pro: '1', business: 'Jusqu\'à 10' },
-  { name: 'Recettes', gratuit: '20', pro: 'Illimité', business: 'Illimité' },
-  { name: 'Ingrédients', gratuit: '50', pro: 'Illimité', business: 'Illimité' },
-  { name: 'Fiches techniques', gratuit: true, pro: true, business: true },
-  { name: 'Calcul de marge', gratuit: 'Basique', pro: 'Avancé', business: 'Avancé' },
-  { name: 'Scanner de factures (OCR)', gratuit: false, pro: true, business: true },
-  { name: 'Mercuriale', gratuit: false, pro: true, business: true },
-  { name: 'Menu Engineering', gratuit: false, pro: true, business: true },
-  { name: 'HACCP & Traçabilité', gratuit: false, pro: true, business: true },
-  { name: 'Commandes automatiques', gratuit: false, pro: true, business: true },
-  { name: 'API ouverte', gratuit: false, pro: false, business: true },
-  { name: 'Intégration caisse', gratuit: false, pro: false, business: true },
-  { name: 'Marketplace fournisseurs', gratuit: false, pro: false, business: true },
-  { name: 'Manager dédié', gratuit: false, pro: false, business: true },
-  { name: 'Support', gratuit: 'Email', pro: 'Prioritaire', business: 'Dédié' },
+  { name: 'Restaurants', pro: '1', business: 'Jusqu\'à 10' },
+  { name: 'Recettes', pro: 'Illimité', business: 'Illimité' },
+  { name: 'Ingrédients', pro: 'Illimité', business: 'Illimité' },
+  { name: 'Fiches techniques', pro: true, business: true },
+  { name: 'Calcul de marge', pro: 'Avancé', business: 'Avancé' },
+  { name: 'Scanner de factures (OCR)', pro: true, business: true },
+  { name: 'Mercuriale', pro: true, business: true },
+  { name: 'Menu Engineering', pro: true, business: true },
+  { name: 'HACCP & Traçabilité', pro: true, business: true },
+  { name: 'Commandes automatiques', pro: true, business: true },
+  { name: 'API ouverte', pro: false, business: true },
+  { name: 'Intégration caisse', pro: false, business: true },
+  { name: 'Marketplace fournisseurs', pro: false, business: true },
+  { name: 'Manager dédié', pro: false, business: true },
+  { name: 'Support', pro: 'Prioritaire', business: 'Dédié' },
 ];
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -147,11 +128,11 @@ export default function Subscription() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
   // Simulated usage stats (would come from context/API in real app)
-  const currentPlan = 'Gratuit';
-  const recipesUsed = 12;
-  const recipesMax = 20;
-  const ingredientsUsed = 34;
-  const ingredientsMax = 50;
+  const currentPlan = 'Pro';
+  const recipesUsed = 25;
+  const recipesMax = 999;
+  const ingredientsUsed = 410;
+  const ingredientsMax = 999;
 
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);
@@ -232,12 +213,12 @@ export default function Subscription() {
           </h2>
           <p className="mt-3 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
             Des outils puissants pour optimiser la rentabilité de votre restaurant.
-            Commencez gratuitement, évoluez quand vous êtes prêt.
+            Choisissez le plan qui correspond à vos besoins.
           </p>
         </div>
 
         {/* ── Pricing Cards ─────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
           {PLANS.map((plan) => (
             <div
               key={plan.id}
@@ -308,15 +289,12 @@ export default function Subscription() {
                   className={`mt-8 w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${
                     plan.highlighted
                       ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5'
-                      : plan.id === 'gratuit'
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-default'
-                        : 'bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 hover:-translate-y-0.5'
+                      : 'bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 hover:-translate-y-0.5'
                   }`}
-                  disabled={plan.id === 'gratuit'}
                 >
                   <span className="inline-flex items-center gap-2">
                     {plan.cta}
-                    {plan.id !== 'gratuit' && <ArrowRight className="w-4 h-4" />}
+                    <ArrowRight className="w-4 h-4" />
                   </span>
                 </button>
               </div>
@@ -347,16 +325,12 @@ export default function Subscription() {
                   </p>
 
                   <div className="mt-6 flex items-baseline gap-2">
-                    <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
-                      1 200€
+                    <span className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">
+                      Bientôt disponible
                     </span>
-                    <span className="text-gray-500 dark:text-gray-400">one-shot</span>
-                    <span className="text-gray-400 dark:text-gray-500 mx-1">+</span>
-                    <span className="text-xl font-bold text-gray-900 dark:text-white">29€</span>
-                    <span className="text-gray-500 dark:text-gray-400">/mois</span>
                   </div>
-                  <p className="mt-1 text-sm text-blue-600 dark:text-blue-400 font-medium">
-                    Plan Pro inclus
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    Plan Pro inclus — Prix et date à venir
                   </p>
 
                   <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -380,9 +354,9 @@ export default function Subscription() {
 
                 {/* Right CTA */}
                 <div className="flex-shrink-0">
-                  <button className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5 text-lg">
+                  <button disabled className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500/50 to-orange-500/50 text-white/70 font-bold rounded-xl shadow-lg text-lg cursor-not-allowed">
                     <CreditCard className="w-5 h-5" />
-                    Commander le kit
+                    Bientôt disponible
                   </button>
                 </div>
               </div>
@@ -402,12 +376,6 @@ export default function Subscription() {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th className="text-left py-4 px-6 text-sm font-semibold text-gray-500 dark:text-gray-400 w-1/3">
                     Fonctionnalité
-                  </th>
-                  <th className="text-center py-4 px-4 text-sm font-semibold text-gray-500 dark:text-gray-400">
-                    <div className="flex flex-col items-center gap-1">
-                      <Package className="w-4 h-4" />
-                      Gratuit
-                    </div>
                   </th>
                   <th className="text-center py-4 px-4 text-sm font-semibold text-blue-600 dark:text-blue-400">
                     <div className="flex flex-col items-center gap-1">
@@ -436,7 +404,7 @@ export default function Subscription() {
                     <td className="py-3.5 px-6 text-sm text-gray-700 dark:text-gray-300 font-medium">
                       {row.name}
                     </td>
-                    {(['gratuit', 'pro', 'business'] as const).map((plan) => (
+                    {(['pro', 'business'] as const).map((plan) => (
                       <td key={plan} className="py-3.5 px-4 text-center">
                         {typeof row[plan] === 'boolean' ? (
                           row[plan] ? (

@@ -44,6 +44,7 @@ const Ingredients = lazyRetry(() => import('./pages/Ingredients'));
 const Recipes = lazyRetry(() => import('./pages/Recipes'));
 const RecipeDetail = lazyRetry(() => import('./pages/RecipeDetail'));
 const Suppliers = lazyRetry(() => import('./pages/Suppliers'));
+const FournisseurPromo = lazyRetry(() => import('./pages/FournisseurPromo'));
 const Inventory = lazyRetry(() => import('./pages/Inventory'));
 const RFQPage = lazyRetry(() => import('./pages/RFQ'));
 const MenuBuilder = lazyRetry(() => import('./pages/MenuBuilder'));
@@ -561,6 +562,7 @@ function AppLayout() {
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/fournisseur/:id" element={<FournisseurPromo />} />
               <Route path="/integrations" element={<Integrations />} />
               <Route path="/comptabilite" element={<Comptabilite />} />
               <Route path="/devis" element={<DevisPage />} />

@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
-  Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown,
+  Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown, ShoppingBag,
   ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
   Star, Clock, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers,
 } from 'lucide-react';
@@ -149,6 +150,7 @@ function supplierToForm(s: Supplier): SupplierFormData {
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function Suppliers() {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
@@ -846,6 +848,14 @@ export default function Suppliers() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          onClick={() => navigate(`/fournisseur/${detailSupplier.id}`)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium"
+                          title="Voir catalogue promotionnel"
+                        >
+                          <ShoppingBag className="w-3.5 h-3.5" />
+                          Catalogue
+                        </button>
                         <button
                           onClick={() => openEdit(detailSupplier)}
                           className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-400"

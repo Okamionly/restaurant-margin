@@ -1,26 +1,34 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Package, Star, ShoppingCart, Truck, Phone, Mail, MapPin, Globe,
-  ChevronRight, Search, Filter, Plus, Minus, Send, Check, Loader2,
-  Building2, Award, Clock, Shield,
+  Package, ShoppingCart, Truck, Phone, Mail, MapPin,
+  Search, Plus, Minus, Send, Check,
+  Building2, Award, Clock, Shield, ArrowLeft, Percent, Tag, Sparkles, Calendar,
+  Star, Filter, ChevronDown,
 } from 'lucide-react';
 
-type Product = {
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
+type PromoProduct = {
   id: number;
   name: string;
-  category: string;
+  category: 'Viandes' | 'Poissons' | 'Légumes' | 'Épicerie' | 'Produits laitiers' | 'Boissons' | 'Surgelés' | 'Fruits';
   unit: string;
-  pricePerUnit: number;
+  normalPrice: number;
+  promoPrice: number;
+  discount: number;        // %
+  endDate: string;         // YYYY-MM-DD
+  badge: 'promo' | 'nouveau' | 'bio' | null;
   origin?: string;
-  bio?: boolean;
-  promo?: boolean;
-  promoPrice?: number;
+  stock: 'disponible' | 'stock-faible' | 'rupture';
 };
 
-type Supplier = {
-  id: number;
+type MockSupplier = {
+  id: string;
   name: string;
+  logo: string;            // emoji as quick logo stand-in
   email: string;
   phone: string;
   address: string;
@@ -33,94 +41,166 @@ type Supplier = {
   paymentTerms: string;
   website: string;
   siret: string;
+  rating: number;
+  products: PromoProduct[];
 };
 
-function authHeaders() {
-  const token = localStorage.getItem('token');
-  const restaurantId = localStorage.getItem('activeRestaurantId');
-  return { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-Restaurant-Id': restaurantId || '1' };
-}
+/* ------------------------------------------------------------------ */
+/*  Mock data – 3 fournisseurs, ~5 produits chacun                     */
+/* ------------------------------------------------------------------ */
+
+const MOCK_SUPPLIERS: Record<string, MockSupplier> = {
+  '1': {
+    id: '1',
+    name: 'Metro Cash & Carry',
+    logo: '🏪',
+    email: 'pro@metro.fr',
+    phone: '01 49 38 45 00',
+    address: '5 Rue du Commerce',
+    city: 'Montpellier',
+    region: 'Hérault',
+    contactName: 'Service Professionnel',
+    categories: ['Viandes', 'Poissons', 'Légumes', 'Épicerie', 'Produits laitiers'],
+    delivery: true,
+    minOrder: '150 € HT',
+    paymentTerms: '30 jours fin de mois',
+    website: 'www.metro.fr',
+    siret: '622 060 000 00015',
+    rating: 4.5,
+    products: [
+      { id: 101, name: 'Entrecôte de bœuf Charolais', category: 'Viandes', unit: 'kg', normalPrice: 28.90, promoPrice: 22.90, discount: 21, endDate: '2026-04-15', badge: 'promo', origin: 'France', stock: 'disponible' },
+      { id: 102, name: 'Filet de saumon frais', category: 'Poissons', unit: 'kg', normalPrice: 24.50, promoPrice: 19.90, discount: 19, endDate: '2026-04-10', badge: 'promo', origin: 'Norvège', stock: 'disponible' },
+      { id: 103, name: 'Huile d\'olive extra vierge 5L', category: 'Épicerie', unit: 'bidon', normalPrice: 32.00, promoPrice: 26.50, discount: 17, endDate: '2026-04-30', badge: null, origin: 'Espagne', stock: 'disponible' },
+      { id: 104, name: 'Mozzarella di Bufala DOP', category: 'Produits laitiers', unit: 'kg', normalPrice: 18.90, promoPrice: 14.90, discount: 21, endDate: '2026-04-08', badge: 'nouveau', origin: 'Italie', stock: 'stock-faible' },
+      { id: 105, name: 'Pommes de terre Agata', category: 'Légumes', unit: 'sac 10kg', normalPrice: 12.50, promoPrice: 9.90, discount: 21, endDate: '2026-04-20', badge: 'promo', origin: 'France', stock: 'disponible' },
+      { id: 106, name: 'Riz Basmati premium 5kg', category: 'Épicerie', unit: 'sac', normalPrice: 14.90, promoPrice: 11.90, discount: 20, endDate: '2026-04-25', badge: 'bio', origin: 'Inde', stock: 'disponible' },
+    ],
+  },
+  '2': {
+    id: '2',
+    name: 'Transgourmet',
+    logo: '🚛',
+    email: 'contact@transgourmet.fr',
+    phone: '01 56 33 60 00',
+    address: '35 Rue de la Gare',
+    city: 'Lyon',
+    region: 'Rhône',
+    contactName: 'Marie Dupont',
+    categories: ['Viandes', 'Poissons', 'Légumes', 'Surgelés', 'Boissons'],
+    delivery: true,
+    minOrder: '200 € HT',
+    paymentTerms: '45 jours',
+    website: 'www.transgourmet.fr',
+    siret: '378 901 946 00028',
+    rating: 4.2,
+    products: [
+      { id: 201, name: 'Cuisses de canard confites', category: 'Viandes', unit: 'kg', normalPrice: 19.80, promoPrice: 15.90, discount: 20, endDate: '2026-04-12', badge: 'promo', origin: 'France', stock: 'disponible' },
+      { id: 202, name: 'Crevettes tigrées surgelées', category: 'Surgelés', unit: 'kg', normalPrice: 22.00, promoPrice: 16.90, discount: 23, endDate: '2026-04-18', badge: 'promo', origin: 'Madagascar', stock: 'disponible' },
+      { id: 203, name: 'Tomates San Marzano pelées', category: 'Épicerie', unit: 'carton 6x800g', normalPrice: 18.50, promoPrice: 14.50, discount: 22, endDate: '2026-04-30', badge: null, origin: 'Italie', stock: 'disponible' },
+      { id: 204, name: 'Épinards frais bio', category: 'Légumes', unit: 'kg', normalPrice: 6.90, promoPrice: 4.90, discount: 29, endDate: '2026-04-07', badge: 'bio', origin: 'France', stock: 'stock-faible' },
+      { id: 205, name: 'Côtes de porc fermier', category: 'Viandes', unit: 'kg', normalPrice: 12.50, promoPrice: 9.90, discount: 21, endDate: '2026-04-22', badge: 'nouveau', origin: 'France', stock: 'disponible' },
+    ],
+  },
+  '3': {
+    id: '3',
+    name: 'Pomona',
+    logo: '🍎',
+    email: 'commandes@pomona.fr',
+    phone: '01 56 80 53 00',
+    address: '12 Avenue des Grossistes',
+    city: 'Paris',
+    region: 'Île-de-France',
+    contactName: 'Jean-Pierre Martin',
+    categories: ['Légumes', 'Fruits', 'Poissons', 'Produits laitiers', 'Épicerie'],
+    delivery: true,
+    minOrder: '100 € HT',
+    paymentTerms: '30 jours',
+    website: 'www.pomona.fr',
+    siret: '301 256 789 00035',
+    rating: 4.7,
+    products: [
+      { id: 301, name: 'Asperges vertes françaises', category: 'Légumes', unit: 'botte', normalPrice: 8.90, promoPrice: 6.50, discount: 27, endDate: '2026-04-14', badge: 'nouveau', origin: 'France', stock: 'disponible' },
+      { id: 302, name: 'Bar de ligne sauvage', category: 'Poissons', unit: 'kg', normalPrice: 38.00, promoPrice: 29.90, discount: 21, endDate: '2026-04-09', badge: 'promo', origin: 'Bretagne', stock: 'stock-faible' },
+      { id: 303, name: 'Fraises Gariguette', category: 'Fruits', unit: 'barquette 500g', normalPrice: 5.90, promoPrice: 4.20, discount: 29, endDate: '2026-04-11', badge: 'promo', origin: 'Lot-et-Garonne', stock: 'disponible' },
+      { id: 304, name: 'Comté AOP 18 mois', category: 'Produits laitiers', unit: 'kg', normalPrice: 22.50, promoPrice: 18.90, discount: 16, endDate: '2026-04-28', badge: null, origin: 'Jura', stock: 'disponible' },
+      { id: 305, name: 'Mangues Kent bio', category: 'Fruits', unit: 'kg', normalPrice: 7.50, promoPrice: 5.90, discount: 21, endDate: '2026-04-20', badge: 'bio', origin: 'Pérou', stock: 'disponible' },
+      { id: 306, name: 'Carottes des sables', category: 'Légumes', unit: 'kg', normalPrice: 3.20, promoPrice: 2.40, discount: 25, endDate: '2026-04-16', badge: 'promo', origin: 'Mont-Saint-Michel', stock: 'disponible' },
+    ],
+  },
+};
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'Viandes': '🥩', 'Poissons': '🐟', 'Légumes': '🥬', 'Fruits': '🍎',
-  'Produits laitiers': '🧀', 'Épicerie': '🫒', 'Herbes': '🌿',
-  'Boissons': '🍷', 'Charcuterie': '🥓', 'Boulangerie': '🥖',
-  'Condiments': '🫙', 'Surgelés': '❄️', 'Œufs': '🥚', 'Divers': '📦',
+  'Tous': '📋',
+  'Viandes': '🥩',
+  'Poissons': '🐟',
+  'Légumes': '🥬',
+  'Fruits': '🍎',
+  'Produits laitiers': '🧀',
+  'Épicerie': '🫒',
+  'Boissons': '🍷',
+  'Surgelés': '❄️',
 };
+
+const BADGE_CONFIG: Record<string, { label: string; bg: string; text: string; icon: typeof Tag }> = {
+  promo:   { label: 'PROMO',   bg: 'bg-red-500/20',     text: 'text-red-400',     icon: Percent },
+  nouveau: { label: 'NOUVEAU', bg: 'bg-amber-500/20',   text: 'text-amber-400',   icon: Sparkles },
+  bio:     { label: 'BIO',     bg: 'bg-emerald-500/20', text: 'text-emerald-400', icon: Tag },
+};
+
+function daysRemaining(dateStr: string): number {
+  const diff = new Date(dateStr).getTime() - Date.now();
+  return Math.max(0, Math.ceil(diff / 86400000));
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
 
 export default function FournisseurPromo() {
   const { id } = useParams<{ id: string }>();
-  const [supplier, setSupplier] = useState<Supplier | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
+
+  const supplier = MOCK_SUPPLIERS[id || '1'] || MOCK_SUPPLIERS['1'];
+
   const [cart, setCart] = useState<Record<number, number>>({});
   const [search, setSearch] = useState('');
   const [selectedCat, setSelectedCat] = useState('Tous');
-  const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [sortBy, setSortBy] = useState<'discount' | 'price' | 'name' | 'endDate'>('discount');
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const [supRes, ingRes] = await Promise.all([
-          fetch(`/api/suppliers/${id}`, { headers: authHeaders() }),
-          fetch(`/api/ingredients?supplierId=${id}`, { headers: authHeaders() }),
-        ]);
-        if (supRes.ok) setSupplier(await supRes.json());
-        if (ingRes.ok) {
-          const ings = await ingRes.json();
-          setProducts(Array.isArray(ings) ? ings : []);
-        }
-      } catch {}
-      // If no supplier-specific products, load all ingredients as demo catalog
-      if (products.length === 0) {
-        try {
-          const res = await fetch('/api/ingredients', { headers: authHeaders() });
-          if (res.ok) {
-            const all = await res.json();
-            setProducts(Array.isArray(all) ? all.slice(0, 100) : []);
-          }
-        } catch {}
-      }
-      setLoading(false);
-    }
-    load();
-  }, [id]);
+  const categories = useMemo(() => {
+    const cats = [...new Set(supplier.products.map(p => p.category))];
+    return ['Tous', ...cats];
+  }, [supplier]);
 
-  // If no supplier found, use demo data
-  useEffect(() => {
-    if (!loading && !supplier) {
-      setSupplier({
-        id: Number(id) || 1,
-        name: 'Metro Cash & Carry',
-        email: 'pro@metro.fr',
-        phone: '01 49 38 45 00',
-        address: 'Zone Commerciale',
-        city: 'Montpellier',
-        region: 'Hérault',
-        contactName: 'Service Professionnel',
-        categories: ['Viandes', 'Poissons', 'Légumes', 'Produits laitiers', 'Épicerie'],
-        delivery: true,
-        minOrder: '150 € HT',
-        paymentTerms: '30 jours fin de mois',
-        website: 'www.metro.fr',
-        siret: '123 456 789 00012',
-      });
-    }
-  }, [loading, supplier, id]);
-
-  const categories = ['Tous', ...new Set(products.map(p => p.category).filter(Boolean))];
-  const filtered = products.filter(p => {
-    const matchSearch = (p.name || '').toLowerCase().includes(search.toLowerCase());
-    const matchCat = selectedCat === 'Tous' || p.category === selectedCat;
-    return matchSearch && matchCat;
-  });
+  const filtered = useMemo(() => {
+    let list = supplier.products.filter(p => {
+      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      const matchCat = selectedCat === 'Tous' || p.category === selectedCat;
+      return matchSearch && matchCat;
+    });
+    list.sort((a, b) => {
+      if (sortBy === 'discount') return b.discount - a.discount;
+      if (sortBy === 'price') return a.promoPrice - b.promoPrice;
+      if (sortBy === 'endDate') return new Date(a.endDate).getTime() - new Date(b.endDate).getTime();
+      return a.name.localeCompare(b.name);
+    });
+    return list;
+  }, [supplier, search, selectedCat, sortBy]);
 
   const cartTotal = Object.entries(cart).reduce((sum, [pid, qty]) => {
-    const p = products.find(pr => pr.id === Number(pid));
-    return sum + (p ? (p.promoPrice || p.pricePerUnit) * qty : 0);
+    const p = supplier.products.find(pr => pr.id === Number(pid));
+    return sum + (p ? p.promoPrice * qty : 0);
   }, 0);
   const cartCount = Object.values(cart).reduce((s, q) => s + q, 0);
+  const cartSavings = Object.entries(cart).reduce((sum, [pid, qty]) => {
+    const p = supplier.products.find(pr => pr.id === Number(pid));
+    return sum + (p ? (p.normalPrice - p.promoPrice) * qty : 0);
+  }, 0);
 
   function addToCart(productId: number) {
     setCart(prev => ({ ...prev, [productId]: (prev[productId] || 0) + 1 }));
@@ -134,100 +214,124 @@ export default function FournisseurPromo() {
     });
   }
 
-  async function handleOrder() {
-    if (cartCount === 0 || !supplier) return;
-    setSending(true);
-    try {
-      const orderLines = Object.entries(cart).map(([pid, qty]) => {
-        const p = products.find(pr => pr.id === Number(pid))!;
-        return { name: p.name, quantity: qty, unit: p.unit, total: (p.promoPrice || p.pricePerUnit) * qty };
-      });
-      await fetch('/api/orders/send-email', {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify({
-          supplierName: supplier.name,
-          supplierEmail: supplier.email,
-          orderLines,
-          totalHT: cartTotal,
-          notes: `Commande depuis le catalogue fournisseur`,
-        }),
-      });
-      setSent(true);
-      setCart({});
-    } catch {}
-    setSending(false);
+  function handleOrder() {
+    if (cartCount === 0) return;
+    setSent(true);
+    setCart({});
+    setTimeout(() => setSent(false), 3000);
   }
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-96">
-      <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-    </div>
-  );
+  const promoCount = supplier.products.filter(p => p.badge === 'promo').length;
+  const avgDiscount = Math.round(supplier.products.reduce((s, p) => s + p.discount, 0) / supplier.products.length);
 
   return (
     <div className="space-y-6">
-      {/* Supplier Header */}
+      {/* Back button */}
+      <button
+        onClick={() => navigate('/suppliers')}
+        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Retour aux fournisseurs
+      </button>
+
+      {/* ── Supplier Header ──────────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                <Building2 className="w-7 h-7" />
+              <div className="w-16 h-16 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl">
+                {supplier.logo}
               </div>
               <div>
-                <h1 className="text-2xl font-bold">{supplier?.name}</h1>
-                <p className="text-blue-200 text-sm">{supplier?.contactName}</p>
+                <h1 className="text-2xl font-bold">{supplier.name}</h1>
+                <p className="text-blue-200 text-sm">{supplier.contactName}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-3.5 h-3.5 ${i < Math.floor(supplier.rating) ? 'fill-amber-400 text-amber-400' : 'text-white/30'}`}
+                    />
+                  ))}
+                  <span className="text-xs text-blue-200 ml-1">{supplier.rating}</span>
+                </div>
               </div>
             </div>
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-blue-100">
-              {supplier?.phone && (
-                <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" />{supplier.phone}</span>
-              )}
-              {supplier?.email && (
-                <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" />{supplier.email}</span>
-              )}
-              {supplier?.city && (
-                <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{supplier.city}{supplier.region ? `, ${supplier.region}` : ''}</span>
-              )}
+              <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" />{supplier.phone}</span>
+              <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" />{supplier.email}</span>
+              <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{supplier.city}, {supplier.region}</span>
             </div>
           </div>
           <div className="text-right space-y-2">
-            {supplier?.delivery && (
+            {supplier.delivery && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 text-emerald-200 rounded-full text-xs font-medium">
                 <Truck className="w-3.5 h-3.5" /> Livraison
               </span>
             )}
           </div>
         </div>
-        {/* Tags */}
+
+        {/* Category tags */}
         <div className="flex flex-wrap gap-2 mt-4">
-          {(supplier?.categories || []).map(cat => (
+          {supplier.categories.map(cat => (
             <span key={cat} className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium">
               {CATEGORY_ICONS[cat] || '📦'} {cat}
             </span>
           ))}
         </div>
+
         {/* Trust badges */}
         <div className="flex items-center gap-6 mt-4 pt-4 border-t border-white/20 text-xs text-blue-200">
           <span className="flex items-center gap-1.5"><Award className="w-3.5 h-3.5" /> Fournisseur certifié</span>
-          <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {supplier?.paymentTerms || 'Paiement 30j'}</span>
-          <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Min. {supplier?.minOrder || '100€ HT'}</span>
-          {supplier?.siret && <span className="flex items-center gap-1.5">SIRET: {supplier.siret}</span>}
+          <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {supplier.paymentTerms}</span>
+          <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Min. {supplier.minOrder}</span>
+          <span className="flex items-center gap-1.5">SIRET: {supplier.siret}</span>
         </div>
       </div>
 
-      {/* Search + Filter bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Rechercher un produit..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500"
-          />
+      {/* ── Promo stats banner ───────────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Produits en promo', value: `${promoCount}`, icon: Tag, color: 'text-red-400' },
+          { label: 'Réduction moyenne', value: `-${avgDiscount}%`, icon: Percent, color: 'text-amber-400' },
+          { label: 'Produits au catalogue', value: `${supplier.products.length}`, icon: Package, color: 'text-blue-400' },
+          { label: 'Catégories', value: `${supplier.categories.length}`, icon: Filter, color: 'text-emerald-400' },
+        ].map(stat => (
+          <div key={stat.label} className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+            <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
+            <p className="text-xl font-bold text-white">{stat.value}</p>
+            <p className="text-[11px] text-slate-400">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Search + Filter bar ──────────────────────────────────────── */}
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Rechercher un produit..."
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+          <div className="relative">
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as any)}
+              className="appearance-none pl-4 pr-10 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500 focus:outline-none cursor-pointer"
+            >
+              <option value="discount">Meilleure réduction</option>
+              <option value="price">Prix croissant</option>
+              <option value="endDate">Fin de promo proche</option>
+              <option value="name">Nom A-Z</option>
+            </select>
+          </div>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {categories.map(cat => (
@@ -246,51 +350,105 @@ export default function FournisseurPromo() {
         </div>
       </div>
 
-      {/* Products Grid */}
+      {/* ── Products Grid ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filtered.map(product => {
           const inCart = cart[product.id] || 0;
+          const days = daysRemaining(product.endDate);
+          const badgeConf = product.badge ? BADGE_CONFIG[product.badge] : null;
+
           return (
             <div
               key={product.id}
-              className={`bg-slate-900/50 border rounded-xl p-4 transition-all ${
-                inCart > 0 ? 'border-blue-500/50 ring-1 ring-blue-500/20' : 'border-slate-800 hover:border-slate-700'
+              className={`bg-slate-900/50 border rounded-xl p-4 transition-all flex flex-col justify-between ${
+                inCart > 0
+                  ? 'border-blue-500/50 ring-1 ring-blue-500/20'
+                  : product.stock === 'rupture'
+                  ? 'border-slate-800 opacity-50'
+                  : 'border-slate-800 hover:border-slate-700'
               }`}
             >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="font-medium text-white text-sm">{product.name}</p>
-                  <span className="text-xs text-slate-400">{product.category}</span>
-                </div>
-                {product.promo && (
-                  <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-[10px] font-bold rounded-full">PROMO</span>
-                )}
-              </div>
-              <div className="flex items-end justify-between">
-                <div>
-                  {product.promo && product.promoPrice ? (
-                    <div>
-                      <span className="text-xs text-slate-400 line-through">{(product.pricePerUnit ?? 0).toFixed(2)} €</span>
-                      <p className="text-lg font-bold text-emerald-400">{(product.promoPrice ?? 0).toFixed(2)} €<span className="text-xs text-slate-400 font-normal">/{product.unit}</span></p>
+              {/* Top: name, badge, origin */}
+              <div>
+                <div className="flex items-start justify-between mb-1">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-white text-sm truncate">{product.name}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-slate-400">{CATEGORY_ICONS[product.category] || ''} {product.category}</span>
+                      {product.origin && (
+                        <span className="text-[10px] text-slate-500">· {product.origin}</span>
+                      )}
                     </div>
-                  ) : (
-                    <p className="text-lg font-bold text-white">{(product.pricePerUnit ?? 0).toFixed(2)} €<span className="text-xs text-slate-400 font-normal">/{product.unit}</span></p>
+                  </div>
+                  {badgeConf && (
+                    <span className={`flex items-center gap-1 px-2 py-0.5 ${badgeConf.bg} ${badgeConf.text} text-[10px] font-bold rounded-full shrink-0 ml-2`}>
+                      <badgeConf.icon className="w-3 h-3" />
+                      {badgeConf.label}
+                    </span>
                   )}
                 </div>
-                {inCart > 0 ? (
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => removeFromCart(product.id)} className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300">
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="text-sm font-bold text-white w-6 text-center">{inCart}</span>
-                    <button onClick={() => addToCart(product.id)} className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-500 flex items-center justify-center text-white">
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
+
+                {/* Discount ribbon */}
+                <div className="flex items-center gap-2 my-3">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg">
+                    <Percent className="w-3 h-3" />
+                    -{product.discount}%
+                  </span>
+                  <div className="flex items-center gap-1 text-[11px] text-slate-400">
+                    <Calendar className="w-3 h-3" />
+                    Jusqu'au {formatDate(product.endDate)}
+                    {days <= 3 && days > 0 && (
+                      <span className="text-amber-400 font-medium ml-1">({days}j restants)</span>
+                    )}
+                    {days === 0 && (
+                      <span className="text-red-400 font-medium ml-1">(Dernier jour !)</span>
+                    )}
                   </div>
-                ) : (
-                  <button onClick={() => addToCart(product.id)} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors">
-                    <Plus className="w-3.5 h-3.5 inline mr-1" />Ajouter
-                  </button>
+                </div>
+
+                {/* Stock indicator */}
+                {product.stock === 'stock-faible' && (
+                  <p className="text-[10px] text-amber-400 mb-2">Stock faible - commandez vite</p>
+                )}
+                {product.stock === 'rupture' && (
+                  <p className="text-[10px] text-red-400 mb-2">Rupture de stock</p>
+                )}
+              </div>
+
+              {/* Bottom: prices + cart */}
+              <div className="flex items-end justify-between mt-2">
+                <div>
+                  <span className="text-xs text-slate-400 line-through">{product.normalPrice.toFixed(2)} €</span>
+                  <p className="text-lg font-bold text-emerald-400">
+                    {product.promoPrice.toFixed(2)} €
+                    <span className="text-xs text-slate-400 font-normal">/{product.unit}</span>
+                  </p>
+                </div>
+                {product.stock !== 'rupture' && (
+                  inCart > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => removeFromCart(product.id)}
+                        className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="text-sm font-bold text-white w-6 text-center">{inCart}</span>
+                      <button
+                        onClick={() => addToCart(product.id)}
+                        className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-500 flex items-center justify-center text-white"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => addToCart(product.id)}
+                      className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
+                    >
+                      <Plus className="w-3.5 h-3.5" />Ajouter
+                    </button>
+                  )
                 )}
               </div>
             </div>
@@ -305,7 +463,7 @@ export default function FournisseurPromo() {
         </div>
       )}
 
-      {/* Floating Cart */}
+      {/* ── Floating Cart ────────────────────────────────────────────── */}
       {cartCount > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl px-6 py-4 flex items-center gap-6 max-w-lg w-[calc(100%-2rem)]">
           <div className="flex items-center gap-3">
@@ -315,17 +473,29 @@ export default function FournisseurPromo() {
             <div>
               <p className="text-white font-bold">{cartCount} article{cartCount > 1 ? 's' : ''}</p>
               <p className="text-blue-400 text-sm font-semibold">{cartTotal.toFixed(2)} € HT</p>
+              {cartSavings > 0 && (
+                <p className="text-emerald-400 text-[11px]">Économie : {cartSavings.toFixed(2)} €</p>
+              )}
             </div>
           </div>
           <button
             onClick={handleOrder}
-            disabled={sending || sent}
+            disabled={sent}
             className="ml-auto flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-white font-semibold rounded-xl transition-colors"
           >
-            {sent ? <><Check className="w-4 h-4" /> Envoyée</> :
-             sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Envoi...</> :
-             <><Send className="w-4 h-4" /> Commander</>}
+            {sent ? <><Check className="w-4 h-4" /> Envoyée</> : <><Send className="w-4 h-4" /> Commander</>}
           </button>
+        </div>
+      )}
+
+      {/* Sent confirmation toast */}
+      {sent && (
+        <div className="fixed top-6 right-6 z-50 bg-emerald-500 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in">
+          <Check className="w-5 h-5" />
+          <div>
+            <p className="font-semibold">Commande envoyée !</p>
+            <p className="text-sm text-emerald-100">Un email a été envoyé à {supplier.name}</p>
+          </div>
         </div>
       )}
     </div>

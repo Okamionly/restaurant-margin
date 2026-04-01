@@ -77,19 +77,162 @@ function marketplaceHeaders(): Record<string, string> {
 
 // ── Data (loaded from API, empty by default) ─────────────────────────────────
 
-const SUPPLIERS: Supplier[] = [];
+const SUPPLIERS: Supplier[] = [
+  { id: 'metro', name: 'Metro', logo: 'M', rating: 4.5, reviewCount: 328, deliveryDays: 1, premium: true, bio: false, local: false, description: 'Grossiste N°1 en France. Large gamme de produits alimentaires et non-alimentaires pour les professionnels de la restauration.', phone: '01 49 48 80 00' },
+  { id: 'transgourmet', name: 'Transgourmet', logo: 'T', rating: 4.3, reviewCount: 215, deliveryDays: 1, premium: true, bio: true, local: false, description: 'Distributeur de produits alimentaires et d\'hygiene pour la restauration. Gamme bio certifiee AB.', phone: '01 60 47 89 00' },
+  { id: 'pomona', name: 'Pomona', logo: 'P', rating: 4.6, reviewCount: 189, deliveryDays: 1, premium: false, bio: true, local: true, description: 'Specialiste fruits et legumes frais. Approvisionnement local et circuits courts privilegies.', phone: '01 46 87 30 00' },
+  { id: 'sysco', name: 'Sysco France', logo: 'S', rating: 4.2, reviewCount: 142, deliveryDays: 2, premium: true, bio: false, local: false, description: 'Leader mondial de la distribution alimentaire. Gamme complete viandes, poissons, epicerie.', phone: '01 44 92 70 00' },
+  { id: 'brake', name: 'Brake France', logo: 'B', rating: 4.0, reviewCount: 98, deliveryDays: 2, premium: false, bio: false, local: false, description: 'Solutions alimentaires pour la restauration collective et commerciale. Produits surgeles et frais.', phone: '02 41 21 60 00' },
+  { id: 'davigel', name: 'Davigel', logo: 'D', rating: 4.4, reviewCount: 176, deliveryDays: 2, premium: false, bio: false, local: false, description: 'Expert en produits surgeles haut de gamme pour la restauration. Desserts, plats elabores, poissons.', phone: '02 32 29 40 00' },
+  { id: 'passionfroid', name: 'PassionFroid', logo: 'PF', rating: 4.1, reviewCount: 134, deliveryDays: 1, premium: false, bio: true, local: true, description: 'Distributeur multi-specialiste en produits frais, surgeles et epicerie. Filiere bio developpee.', phone: '01 64 11 60 00' },
+  { id: 'prodistrib', name: 'ProDistrib', logo: 'PD', rating: 3.9, reviewCount: 67, deliveryDays: 3, premium: false, bio: false, local: true, description: 'Distributeur regional specialise en epicerie, condiments et produits secs pour restaurateurs.', phone: '04 72 51 30 00' },
+  { id: 'episaveurs', name: 'EpiSaveurs', logo: 'E', rating: 4.3, reviewCount: 156, deliveryDays: 2, premium: false, bio: true, local: false, description: 'Epicerie fine et ingredients de qualite pour les chefs. Huiles, vinaigres, epices du monde entier.', phone: '01 53 86 40 00' },
+  { id: 'sodexo', name: 'Sodexo Supplies', logo: 'SS', rating: 4.0, reviewCount: 112, deliveryDays: 2, premium: false, bio: false, local: false, description: 'Approvisionnement professionnel pour la restauration collective. Volumes importants, prix negocies.', phone: '01 30 85 75 00' },
+];
 
-const CATEGORIES = ['Viandes', 'Poissons', 'Legumes', 'Fruits', 'Epicerie', 'Boissons', 'Surgeles', 'Produits laitiers'];
+const CATEGORIES = ['Viandes', 'Poissons', 'Fruits & Legumes', 'Epicerie', 'Boissons', 'Surgeles', 'Produits laitiers'];
 
-const PRODUCTS: Product[] = [];
+const PRODUCTS: Product[] = [
+  // ── Viandes ──
+  { id: 'v1', name: 'Filet de boeuf', category: 'Viandes', description: 'Filet de boeuf francais, race Charolaise, piece de 2-3kg', offers: [
+    { supplierId: 'metro', price: 38.90, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'sysco', price: 36.50, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'transgourmet', price: 39.80, unit: 'kg', minOrder: 2, inStock: true },
+  ]},
+  { id: 'v2', name: 'Blanc de poulet fermier', category: 'Viandes', description: 'Poulet fermier Label Rouge, filets sans peau', offers: [
+    { supplierId: 'metro', price: 9.80, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'transgourmet', price: 10.20, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'passionfroid', price: 9.50, unit: 'kg', minOrder: 5, inStock: true },
+  ]},
+  { id: 'v3', name: 'Entrecote de boeuf', category: 'Viandes', description: 'Entrecote maturee 21 jours, origine France', offers: [
+    { supplierId: 'metro', price: 28.50, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'sysco', price: 27.90, unit: 'kg', minOrder: 5, inStock: true },
+    { supplierId: 'sodexo', price: 29.10, unit: 'kg', minOrder: 5, inStock: false },
+  ]},
+  { id: 'v4', name: 'Carre d\'agneau', category: 'Viandes', description: 'Carre d\'agneau francais, 8 cotes, pare a blanc', offers: [
+    { supplierId: 'metro', price: 24.90, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'transgourmet', price: 25.60, unit: 'kg', minOrder: 2, inStock: true },
+  ]},
+  { id: 'v5', name: 'Magret de canard', category: 'Viandes', description: 'Magret de canard du Sud-Ouest IGP, frais', offers: [
+    { supplierId: 'sysco', price: 16.80, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'passionfroid', price: 17.20, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'metro', price: 17.50, unit: 'kg', minOrder: 2, inStock: true },
+  ]},
+  // ── Poissons ──
+  { id: 'p1', name: 'Filet de saumon', category: 'Poissons', description: 'Saumon Atlantique d\'Ecosse, filet avec peau, qualite sushi', offers: [
+    { supplierId: 'metro', price: 22.50, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'transgourmet', price: 23.80, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'davigel', price: 21.90, unit: 'kg', minOrder: 3, inStock: true },
+  ]},
+  { id: 'p2', name: 'Bar de ligne', category: 'Poissons', description: 'Bar de ligne sauvage, peche Atlantique Nord-Est, entier', offers: [
+    { supplierId: 'pomona', price: 32.00, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'metro', price: 34.50, unit: 'kg', minOrder: 1, inStock: true },
+  ]},
+  { id: 'p3', name: 'Crevettes gambas', category: 'Poissons', description: 'Gambas entieres crues calibre 16/20, congelees', offers: [
+    { supplierId: 'davigel', price: 18.90, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'brake', price: 19.50, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'sysco', price: 20.10, unit: 'kg', minOrder: 2, inStock: false },
+  ]},
+  { id: 'p4', name: 'Dos de cabillaud', category: 'Poissons', description: 'Cabillaud peche durable MSC, dos sans arete', offers: [
+    { supplierId: 'metro', price: 19.80, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'davigel', price: 18.50, unit: 'kg', minOrder: 5, inStock: true },
+  ]},
+  // ── Fruits & Legumes ──
+  { id: 'fl1', name: 'Tomates grappe bio', category: 'Fruits & Legumes', description: 'Tomates grappe bio francaises, calibre 57-67mm', offers: [
+    { supplierId: 'pomona', price: 3.20, unit: 'kg', minOrder: 5, inStock: true },
+    { supplierId: 'transgourmet', price: 3.50, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'passionfroid', price: 3.10, unit: 'kg', minOrder: 5, inStock: true },
+  ]},
+  { id: 'fl2', name: 'Salade mesclun', category: 'Fruits & Legumes', description: 'Mesclun frais pret a l\'emploi, sachet 500g', offers: [
+    { supplierId: 'pomona', price: 8.50, unit: 'kg', minOrder: 2, inStock: true },
+    { supplierId: 'metro', price: 9.20, unit: 'kg', minOrder: 2, inStock: true },
+  ]},
+  { id: 'fl3', name: 'Pommes de terre Agata', category: 'Fruits & Legumes', description: 'Pommes de terre Agata, chair ferme, calibre 40-65mm', offers: [
+    { supplierId: 'pomona', price: 1.20, unit: 'kg', minOrder: 10, inStock: true },
+    { supplierId: 'metro', price: 1.35, unit: 'kg', minOrder: 10, inStock: true },
+    { supplierId: 'sodexo', price: 1.15, unit: 'kg', minOrder: 25, inStock: true },
+  ]},
+  { id: 'fl4', name: 'Citrons jaunes bio', category: 'Fruits & Legumes', description: 'Citrons jaunes bio non traites, origine Espagne', offers: [
+    { supplierId: 'pomona', price: 2.80, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'episaveurs', price: 3.10, unit: 'kg', minOrder: 2, inStock: true },
+  ]},
+  { id: 'fl5', name: 'Oignons jaunes', category: 'Fruits & Legumes', description: 'Oignons jaunes France, filet 5kg', offers: [
+    { supplierId: 'pomona', price: 1.60, unit: 'kg', minOrder: 5, inStock: true },
+    { supplierId: 'metro', price: 1.75, unit: 'kg', minOrder: 5, inStock: true },
+    { supplierId: 'prodistrib', price: 1.50, unit: 'kg', minOrder: 10, inStock: true },
+  ]},
+  // ── Epicerie ──
+  { id: 'e1', name: 'Huile d\'olive extra vierge', category: 'Epicerie', description: 'Huile d\'olive vierge extra, premiere pression a froid, bidon 5L', offers: [
+    { supplierId: 'episaveurs', price: 28.50, unit: '5L', minOrder: 1, inStock: true },
+    { supplierId: 'metro', price: 32.00, unit: '5L', minOrder: 1, inStock: true },
+    { supplierId: 'transgourmet', price: 30.50, unit: '5L', minOrder: 1, inStock: true },
+  ]},
+  { id: 'e2', name: 'Farine T55', category: 'Epicerie', description: 'Farine de ble T55, sac 25kg, panification et patisserie', offers: [
+    { supplierId: 'metro', price: 18.90, unit: '25kg', minOrder: 1, inStock: true },
+    { supplierId: 'prodistrib', price: 17.50, unit: '25kg', minOrder: 2, inStock: true },
+    { supplierId: 'sodexo', price: 19.20, unit: '25kg', minOrder: 1, inStock: true },
+  ]},
+  { id: 'e3', name: 'Vinaigre balsamique', category: 'Epicerie', description: 'Vinaigre balsamique de Modene IGP, bouteille 1L', offers: [
+    { supplierId: 'episaveurs', price: 8.90, unit: 'L', minOrder: 3, inStock: true },
+    { supplierId: 'metro', price: 9.50, unit: 'L', minOrder: 2, inStock: true },
+  ]},
+  { id: 'e4', name: 'Sel de Guerande', category: 'Epicerie', description: 'Fleur de sel de Guerande, seau 1kg', offers: [
+    { supplierId: 'episaveurs', price: 12.80, unit: 'kg', minOrder: 1, inStock: true },
+    { supplierId: 'prodistrib', price: 13.50, unit: 'kg', minOrder: 1, inStock: true },
+  ]},
+  { id: 'e5', name: 'Riz basmati', category: 'Epicerie', description: 'Riz basmati long grain, sac 5kg, origine Inde', offers: [
+    { supplierId: 'metro', price: 9.90, unit: '5kg', minOrder: 2, inStock: true },
+    { supplierId: 'prodistrib', price: 9.20, unit: '5kg', minOrder: 3, inStock: true },
+    { supplierId: 'sodexo', price: 10.50, unit: '5kg', minOrder: 2, inStock: true },
+  ]},
+  // ── Boissons ──
+  { id: 'b1', name: 'Eau minerale plate', category: 'Boissons', description: 'Eau minerale naturelle, pack 6x1.5L', offers: [
+    { supplierId: 'metro', price: 3.20, unit: 'pack', minOrder: 10, inStock: true },
+    { supplierId: 'sodexo', price: 2.90, unit: 'pack', minOrder: 20, inStock: true },
+    { supplierId: 'brake', price: 3.10, unit: 'pack', minOrder: 10, inStock: true },
+  ]},
+  { id: 'b2', name: 'Jus d\'orange frais', category: 'Boissons', description: 'Jus d\'orange 100% pur jus, brique 1L', offers: [
+    { supplierId: 'passionfroid', price: 2.80, unit: 'L', minOrder: 12, inStock: true },
+    { supplierId: 'metro', price: 3.10, unit: 'L', minOrder: 6, inStock: true },
+  ]},
+  { id: 'b3', name: 'Coca-Cola', category: 'Boissons', description: 'Coca-Cola Original, pack 24x33cl canettes', offers: [
+    { supplierId: 'metro', price: 16.80, unit: 'pack', minOrder: 2, inStock: true },
+    { supplierId: 'sodexo', price: 15.90, unit: 'pack', minOrder: 5, inStock: true },
+    { supplierId: 'brake', price: 16.20, unit: 'pack', minOrder: 3, inStock: true },
+  ]},
+  // ── Surgeles ──
+  { id: 's1', name: 'Frites surgelees', category: 'Surgeles', description: 'Frites 10/10 precuites surgelees, sac 2.5kg', offers: [
+    { supplierId: 'davigel', price: 4.50, unit: '2.5kg', minOrder: 4, inStock: true },
+    { supplierId: 'brake', price: 4.20, unit: '2.5kg', minOrder: 6, inStock: true },
+    { supplierId: 'metro', price: 4.80, unit: '2.5kg', minOrder: 4, inStock: true },
+  ]},
+  { id: 's2', name: 'Fondant au chocolat', category: 'Surgeles', description: 'Fondant au chocolat noir 70%, portion individuelle x12', offers: [
+    { supplierId: 'davigel', price: 18.90, unit: 'x12', minOrder: 2, inStock: true },
+    { supplierId: 'brake', price: 19.50, unit: 'x12', minOrder: 2, inStock: true },
+  ]},
+  // ── Produits laitiers ──
+  { id: 'pl1', name: 'Beurre doux AOP', category: 'Produits laitiers', description: 'Beurre doux AOP Charentes-Poitou, plaque 1kg', offers: [
+    { supplierId: 'transgourmet', price: 9.80, unit: 'kg', minOrder: 5, inStock: true },
+    { supplierId: 'metro', price: 10.20, unit: 'kg', minOrder: 3, inStock: true },
+    { supplierId: 'passionfroid', price: 9.50, unit: 'kg', minOrder: 5, inStock: true },
+  ]},
+  { id: 'pl2', name: 'Creme fraiche epaisse', category: 'Produits laitiers', description: 'Creme fraiche epaisse 30% MG, pot 1L', offers: [
+    { supplierId: 'passionfroid', price: 4.20, unit: 'L', minOrder: 6, inStock: true },
+    { supplierId: 'transgourmet', price: 4.50, unit: 'L', minOrder: 4, inStock: true },
+    { supplierId: 'metro', price: 4.60, unit: 'L', minOrder: 4, inStock: true },
+  ]},
+  { id: 'pl3', name: 'Parmesan Reggiano', category: 'Produits laitiers', description: 'Parmigiano Reggiano AOP 24 mois, meule tranchee', offers: [
+    { supplierId: 'episaveurs', price: 22.50, unit: 'kg', minOrder: 1, inStock: true },
+    { supplierId: 'metro', price: 24.80, unit: 'kg', minOrder: 1, inStock: true },
+  ]},
+];
 
 // ── Category colors ───────────────────────────────────────────────────────────
 
 const CATEGORY_COLORS: Record<string, string> = {
   Viandes: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
   Poissons: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  Legumes: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-  Fruits: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+  'Fruits & Legumes': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   Epicerie: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   Boissons: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
   Surgeles: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',

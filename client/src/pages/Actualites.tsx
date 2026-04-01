@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X, Sparkles, Clock, ChevronRight } from 'lucide-react';
+import { Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X, Clock, ChevronRight } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 
 interface NewsItem {
@@ -97,9 +97,9 @@ export default function Actualites() {
         return;
       }
       setNews(Array.isArray(data.items) ? data.items : []);
-      addToast(`${data.count} actualités générées par l'IA`, 'success');
+      addToast(`${data.count} actualités mises à jour`, 'success');
     } catch {
-      addToast('Erreur lors de la génération IA', 'error');
+      addToast('Erreur lors de la mise à jour', 'error');
     } finally {
       setGenerating(false);
     }
@@ -130,7 +130,7 @@ export default function Actualites() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Newspaper className="w-6 h-6 text-blue-400" />
-            <h1 className="text-2xl font-bold text-white">Actualités IA</h1>
+            <h1 className="text-2xl font-bold text-white">Actualités</h1>
             {highCount > 0 && (
               <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white animate-pulse">
                 {highCount} urgent{highCount > 1 ? 's' : ''}
@@ -138,7 +138,7 @@ export default function Actualites() {
             )}
           </div>
           <p className="text-slate-400 text-sm">
-            Veille marché & recommandations personnalisées générées par l'IA
+            Veille marché & recommandations personnalisées
             {latestMercurialeRef && (
               <span className="ml-2 text-slate-400">
                 — Mercuriale du {latestMercurialeRef}
@@ -151,12 +151,8 @@ export default function Actualites() {
           disabled={generating}
           className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl font-medium transition-colors text-sm"
         >
-          {generating ? (
-            <RefreshCw className="w-4 h-4 animate-spin" />
-          ) : (
-            <Sparkles className="w-4 h-4" />
-          )}
-          {generating ? 'Analyse en cours...' : 'Actualiser avec l\'IA'}
+          <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
+          {generating ? 'Analyse en cours...' : 'Actualiser'}
         </button>
       </div>
 
@@ -201,15 +197,15 @@ export default function Actualites() {
           <Newspaper className="w-12 h-12 text-slate-300 mb-4" />
           <p className="text-slate-400 font-medium mb-2">Aucune actualité disponible</p>
           <p className="text-slate-400 text-sm mb-4">
-            Cliquez sur "Actualiser avec l'IA" pour générer des recommandations personnalisées
+            Cliquez sur "Actualiser" pour charger les dernières recommandations
           </p>
           <button
             onClick={handleGenerate}
             disabled={generating}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
           >
-            <Sparkles className="w-4 h-4" />
-            Générer maintenant
+            <RefreshCw className="w-4 h-4" />
+            Actualiser maintenant
           </button>
         </div>
       ) : (
@@ -260,8 +256,7 @@ export default function Actualites() {
                     {item.mercurialeRef && ` · Mercuriale ${item.mercurialeRef}`}
                   </span>
                   <span className="ml-auto flex items-center gap-1 text-[11px] text-slate-300">
-                    <Sparkles className="w-3 h-3" />
-                    Généré par IA
+                    Veille sectorielle
                   </span>
                 </div>
               </div>
@@ -275,13 +270,13 @@ export default function Actualites() {
         <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-5">
           <div className="flex items-start gap-3">
             <div className="p-2 bg-blue-600/20 rounded-lg flex-shrink-0">
-              <Sparkles className="w-4 h-4 text-blue-400" />
+              <Newspaper className="w-4 h-4 text-blue-400" />
             </div>
             <div>
               <h4 className="text-white text-sm font-semibold mb-1">Comment fonctionne cette section ?</h4>
               <p className="text-slate-400 text-sm leading-relaxed">
-                L'IA analyse la <strong className="text-slate-300">mercuriale des prix fournisseurs</strong> (Metro, Transgourmet, Rungis)
-                et la croise avec <strong className="text-slate-300">vos ingrédients et fiches techniques</strong> pour générer
+                Les actualités sont basées sur la <strong className="text-slate-300">mercuriale des prix fournisseurs</strong> (Metro, Transgourmet, Rungis)
+                croisée avec <strong className="text-slate-300">vos ingrédients et fiches techniques</strong> pour vous proposer
                 des recommandations personnalisées : alertes de hausse, opportunités d'économies, et conseils pour protéger vos marges.
               </p>
               <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-400">

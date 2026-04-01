@@ -4,6 +4,7 @@ import {
   ChevronDown, ChevronUp, TrendingDown, AlertCircle, Package,
   Users, BarChart3, Calendar, Tag
 } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 // ── Types ───────────────────────────────────────────────────────────────────
 type RFQStatus = 'ouvert' | 'en_cours' | 'ferme';

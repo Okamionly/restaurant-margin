@@ -81,6 +81,7 @@ interface MenuSelection {
 
 interface SeminaireEvent {
   id: number;
+  title?: string;
   clientNom: string;
   clientEmail: string;
   clientTelephone: string;

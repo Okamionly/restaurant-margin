@@ -2381,6 +2381,163 @@ app.patch('/api/news/:id/dismiss', authWithRestaurant, async (req: any, res) => 
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur dismiss' }); }
 });
 
+// ── Editorial Recipes (Recettes de la semaine) ──
+
+// PUBLIC — latest recipes of the current week
+app.get('/api/editorial-recipes/latest', async (_req, res) => {
+  try {
+    const recipes: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipes
+      WHERE published = true
+      ORDER BY week_date DESC, id DESC
+      LIMIT 20
+    `;
+    res.json(recipes);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur chargement recettes éditoriales' }); }
+});
+
+// PUBLIC — detail of one editorial recipe with ingredients
+app.get('/api/editorial-recipes/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const recipes: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipes WHERE id = ${id}
+    `;
+    if (recipes.length === 0) return res.status(404).json({ error: 'Recette non trouvée' });
+    const ingredients: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipe_ingredients WHERE recipe_id = ${id} ORDER BY id
+    `;
+    res.json({ ...recipes[0], ingredients });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur chargement recette éditoriale' }); }
+});
+
+// ADMIN — create editorial recipe
+app.post('/api/editorial-recipes', authMiddleware, async (req: any, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
+    const { title, description, image_url, portions, category, difficulty, prep_time, cook_time, cost_per_portion, suggested_price, margin_percent, season, chef_tip, week_date } = req.body;
+    if (!title?.trim()) return res.status(400).json({ error: 'Titre requis' });
+    const result: any[] = await prisma.$queryRaw`
+      INSERT INTO editorial_recipes (title, description, image_url, portions, category, difficulty, prep_time, cook_time, cost_per_portion, suggested_price, margin_percent, season, chef_tip, week_date)
+      VALUES (${title}, ${description || null}, ${image_url || null}, ${portions || 4}, ${category || 'Plat'}, ${difficulty || 'Moyen'}, ${prep_time || 30}, ${cook_time || 30}, ${cost_per_portion || 0}, ${suggested_price || 0}, ${margin_percent || 0}, ${season || null}, ${chef_tip || null}, ${week_date || null})
+      RETURNING *
+    `;
+    res.status(201).json(result[0]);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création recette éditoriale' }); }
+});
+
+// ADMIN — add ingredients to an editorial recipe
+app.post('/api/editorial-recipes/:id/ingredients', authMiddleware, async (req: any, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
+    const recipeId = parseInt(req.params.id);
+    if (isNaN(recipeId)) return res.status(400).json({ error: 'ID invalide' });
+    const { ingredients } = req.body;
+    if (!Array.isArray(ingredients) || ingredients.length === 0) return res.status(400).json({ error: 'Ingrédients requis' });
+    for (const ing of ingredients) {
+      await prisma.$executeRaw`
+        INSERT INTO editorial_recipe_ingredients (recipe_id, ingredient_name, quantity, unit, price_per_unit, total_cost, supplier, image_url)
+        VALUES (${recipeId}, ${ing.ingredient_name}, ${ing.quantity || 0}, ${ing.unit || 'kg'}, ${ing.price_per_unit || 0}, ${ing.total_cost || 0}, ${ing.supplier || 'Transgourmet'}, ${ing.image_url || null})
+      `;
+    }
+    const allIngredients: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipe_ingredients WHERE recipe_id = ${recipeId} ORDER BY id
+    `;
+    res.status(201).json(allIngredients);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout ingrédients' }); }
+});
+
+// AUTH — copy editorial recipe to restaurant's own recipes
+app.post('/api/editorial-recipes/:id/add-to-mine', authWithRestaurant, async (req: any, res) => {
+  try {
+    const editorialId = parseInt(req.params.id);
+    if (isNaN(editorialId)) return res.status(400).json({ error: 'ID invalide' });
+    const editorialRecipes: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipes WHERE id = ${editorialId}
+    `;
+    if (editorialRecipes.length === 0) return res.status(404).json({ error: 'Recette éditoriale non trouvée' });
+    const er = editorialRecipes[0];
+    const editorialIngredients: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipe_ingredients WHERE recipe_id = ${editorialId}
+    `;
+    // Create ingredients in restaurant if they don't exist, then create recipe
+    const ingredientIds: { ingredientId: number; quantity: number }[] = [];
+    for (const ei of editorialIngredients) {
+      // Check if ingredient already exists for this restaurant
+      let existing = await prisma.ingredient.findFirst({
+        where: { name: ei.ingredient_name, restaurantId: req.restaurantId },
+      });
+      if (!existing) {
+        existing = await prisma.ingredient.create({
+          data: {
+            name: ei.ingredient_name,
+            unit: ei.unit || 'kg',
+            pricePerUnit: parseFloat(ei.price_per_unit) || 0,
+            category: er.category || 'Divers',
+            restaurantId: req.restaurantId,
+          },
+        });
+      }
+      ingredientIds.push({ ingredientId: existing.id, quantity: parseFloat(ei.quantity) || 0 });
+    }
+    const recipe = await prisma.recipe.create({
+      data: {
+        name: er.title,
+        category: er.category || 'Plat',
+        sellingPrice: parseFloat(er.suggested_price) || 0,
+        nbPortions: er.portions || 4,
+        description: er.description || null,
+        prepTimeMinutes: er.prep_time || null,
+        cookTimeMinutes: er.cook_time || null,
+        laborCostPerHour: 0,
+        restaurantId: req.restaurantId,
+        ingredients: {
+          create: ingredientIds.map(i => ({ ingredientId: i.ingredientId, quantity: i.quantity, wastePercent: 0 })),
+        },
+      },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+    res.status(201).json(recipe);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout recette' }); }
+});
+
+// AUTH — create order from editorial recipe ingredients
+app.post('/api/editorial-recipes/:id/order', authWithRestaurant, async (req: any, res) => {
+  try {
+    const editorialId = parseInt(req.params.id);
+    if (isNaN(editorialId)) return res.status(400).json({ error: 'ID invalide' });
+    const editorialRecipes: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipes WHERE id = ${editorialId}
+    `;
+    if (editorialRecipes.length === 0) return res.status(404).json({ error: 'Recette éditoriale non trouvée' });
+    const er = editorialRecipes[0];
+    const editorialIngredients: any[] = await prisma.$queryRaw`
+      SELECT * FROM editorial_recipe_ingredients WHERE recipe_id = ${editorialId}
+    `;
+    // Create a marketplace order with all ingredients
+    const orderItems = editorialIngredients.map((ei: any) => ({
+      productName: ei.ingredient_name,
+      quantity: parseFloat(ei.quantity) || 1,
+      unit: ei.unit || 'kg',
+      unitPrice: parseFloat(ei.price_per_unit) || 0,
+      total: parseFloat(ei.total_cost) || 0,
+    }));
+    const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);
+    const order = await prisma.marketplaceOrder.create({
+      data: {
+        supplierName: editorialIngredients[0]?.supplier || 'Transgourmet',
+        totalHT,
+        notes: `Commande depuis recette éditoriale : ${er.title}`,
+        restaurantId: req.restaurantId,
+        items: { create: orderItems },
+      },
+      include: { items: true },
+    });
+    res.status(201).json(order);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création commande' }); }
+});
+
 // 404 catch-all
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });

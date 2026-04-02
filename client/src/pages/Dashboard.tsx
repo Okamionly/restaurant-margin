@@ -435,6 +435,7 @@ export default function Dashboard() {
   const [serviceMode, setServiceMode] = useState<'all' | 'lunch' | 'dinner'>('all');
   const [avgPricePerCouvert, setAvgPricePerCouvert] = useState(25);
   const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
+  const [aiUsage, setAiUsage] = useState<{ used: number; limit: number; percentage: number } | null>(null);
   const navigate = useNavigate();
 
   const TABS: { key: TabKey; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -446,6 +447,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     trackEvent('page_view', { page: 'dashboard' });
+    // Fetch AI usage
+    const token = localStorage.getItem('token');
+    const restaurantId = localStorage.getItem('activeRestaurantId');
+    fetch('/api/ai/usage', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+      },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setAiUsage(data); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -862,6 +875,42 @@ export default function Dashboard() {
           colorKey="slate"
         />
       </div>
+
+      {/* ── AI Usage Mini Card ──────────────────────────────────────── */}
+      {aiUsage && (
+        <div className="stagger-3">
+          <Link
+            to="/assistant"
+            className="flex items-center gap-4 bg-gradient-to-r from-slate-900/60 to-slate-800/40 border border-slate-700/50 rounded-xl p-4 hover:border-teal-500/30 transition-all duration-300 group"
+          >
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-teal-600 to-cyan-600 shadow-lg shadow-teal-500/20">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-sm font-medium text-slate-300">
+                  IA : {aiUsage.used}/{aiUsage.limit}
+                </span>
+                <span className="text-xs text-teal-400 group-hover:text-teal-300 transition-colors">
+                  Voir details →
+                </span>
+              </div>
+              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ease-out ${
+                    aiUsage.percentage > 80
+                      ? 'bg-red-500'
+                      : aiUsage.percentage > 50
+                      ? 'bg-amber-500'
+                      : 'bg-teal-500'
+                  }`}
+                  style={{ width: `${Math.min(aiUsage.percentage, 100)}%` }}
+                />
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
 
       {/* ── Alert Ticker Banner ──────────────────────────────────────── */}
       <div className="stagger-3">

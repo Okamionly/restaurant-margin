@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Anthropic from '@anthropic-ai/sdk';
+import { Resend } from 'resend';
 import { prisma, authWithRestaurant } from '../middleware';
 
 const router = Router();
@@ -60,7 +61,7 @@ export function checkAiRateLimit(restaurantId: number): boolean {
 // ── AI Chat ──
 router.post('/chat', authWithRestaurant, async (req: any, res) => {
   try {
-    const { message } = req.body;
+    const { message, history } = req.body;
     if (!message) return res.status(400).json({ error: 'Message requis' });
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
 
@@ -76,6 +77,20 @@ router.post('/chat', authWithRestaurant, async (req: any, res) => {
     } else { entry.count++; }
 
     const restaurantId = req.restaurantId;
+
+    // ── Monthly AI quota check ──
+    const month = new Date().toISOString().slice(0, 7);
+    const MONTHLY_LIMIT = 500;
+    const usageRows: any[] = await prisma.$queryRaw`
+      SELECT requests_count FROM ai_usage
+      WHERE restaurant_id = ${restaurantId} AND month = ${month}
+    `;
+    if (usageRows[0]?.requests_count >= MONTHLY_LIMIT) {
+      return res.status(429).json({
+        error: 'Quota IA mensuel atteint (500 requetes). Passez au plan Business pour plus.',
+        usage: { used: usageRows[0].requests_count, limit: MONTHLY_LIMIT }
+      });
+    }
 
     // ── Step 1: Classify intent with Haiku (fast, cheap) ──
     const intent = await classifyIntent(message.trim());
@@ -164,7 +179,44 @@ router.post('/chat', authWithRestaurant, async (req: any, res) => {
 
     const context = contextParts.length > 0 ? contextParts.join('\n\n') : 'Aucune donnée chargée pour cette demande.';
 
-    const actionSystemPrompt = `Tu es l'assistant IA RestauMargin, expert en gestion restaurant. Tu analyses les données et agis via des blocs \`\`\`action JSON.
+    const actionSystemPrompt = `Tu es l'assistant IA conversationnel RestauMargin, expert en gestion restaurant. Tu analyses les données et agis via des blocs \`\`\`action JSON.
+
+Tu dois :
+- Poser des questions de suivi quand l'utilisateur est vague
+- Guider l'utilisateur étape par étape
+- Confirmer avant d'exécuter une action importante
+- Être naturel et humain dans tes réponses
+
+EXEMPLES DE CONVERSATIONS :
+
+User: "Fais-moi une commande"
+Assistant: "Bien sûr ! Qu'est-ce qu'il vous faut ? Dites-moi les produits et quantités."
+
+User: "5kg tomates, 3kg poulet, 2L crème"
+Assistant: "Voici votre commande :
+- Tomates 5kg
+- Poulet 3kg
+- Crème 2L
+Chez quel fournisseur ? Transgourmet est disponible avec les prix suivants :
+- Tomates : 3.99€/kg (total 19.95€)
+- Poulet fermier : 8.03€/kg (total 24.09€)
+Total estimé : 52.04€ HT
+Je l'envoie ?"
+
+User: "Oui envoie"
+Assistant: [EXECUTE create_order + send_order_email]
+"Commande envoyée par email à Transgourmet ! Récapitulatif dans vos commandes."
+
+User: "Crée-moi un menu du jour"
+Assistant: "Pour combien de couverts ? Et quel budget par personne ?"
+
+User: "30 couverts, 15€"
+Assistant: "Voici ma suggestion basée sur vos ingrédients :
+- Entrée : Salade de mesclun (coût 1.20€/portion)
+- Plat : Filet de truite sauce beurre blanc (coût 3.38€/portion)
+- Dessert : Mousse chocolat (coût 0.80€/portion)
+Total coût : 5.38€ — Marge 64% à 15€
+Je crée les fiches techniques ?"
 
 ACTIONS (format: {"type":"<type>","data":{...}} entre \`\`\`action et \`\`\`):
 - create_recipe(name, portions, category, sellingPrice, description?, ingredients[{name,quantity,unit,pricePerUnit,category}])
@@ -183,6 +235,8 @@ ACTIONS (format: {"type":"<type>","data":{...}} entre \`\`\`action et \`\`\`):
 - margin_analysis() — marges par plat/catégorie
 - best_sellers(period: week|month|quarter)
 - cost_alert() — hausses >5% sur 30j
+- send_order_email(supplier, email, items[{name,quantity,unit,price}], notes?) — envoyer commande par email au fournisseur
+- suggest_menu(covers, budget) — suggérer un menu basé sur les ingrédients disponibles
 - daily_report(date)
 - log_temperature(zone, temperature, recordedBy, notes?)
 - cleaning_checklist(date)
@@ -197,11 +251,40 @@ ${context}`;
     const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
     const maxTokens = ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
+    // Build messages with conversation history
+    const claudeMessages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+    if (history && Array.isArray(history)) {
+      const recentHistory = history.slice(-5);
+      for (const h of recentHistory) {
+        claudeMessages.push({
+          role: h.role === 'user' ? 'user' : 'assistant',
+          content: h.content,
+        });
+      }
+    }
+    claudeMessages.push({ role: 'user' as const, content: message.trim() });
+
+    // Ensure messages alternate correctly (Claude requires user/assistant alternation)
+    const sanitizedMessages: typeof claudeMessages = [];
+    for (const msg of claudeMessages) {
+      const last = sanitizedMessages[sanitizedMessages.length - 1];
+      if (last && last.role === msg.role) {
+        // Merge consecutive same-role messages
+        last.content += '\n' + msg.content;
+      } else {
+        sanitizedMessages.push({ ...msg });
+      }
+    }
+    // Claude requires first message to be 'user'
+    if (sanitizedMessages.length > 0 && sanitizedMessages[0].role === 'assistant') {
+      sanitizedMessages.shift();
+    }
+
     const response = await anthropic.messages.create({
       model: aiModel,
       max_tokens: maxTokens,
       system: actionSystemPrompt,
-      messages: [{ role: 'user', content: message.trim() }],
+      messages: sanitizedMessages,
     });
 
     const fullText = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
@@ -812,6 +895,83 @@ ${context}`;
             } as any);
           }
 
+        } else if (actionData.type === 'send_order_email') {
+          const d = actionData.data;
+          try {
+            const restaurant = await prisma.restaurant.findFirst({ where: { id: restaurantId } });
+            const items = d.items || [];
+            const itemsList = items.map((i: any) =>
+              `<tr><td style="padding:8px;border:1px solid #ddd;">${i.name}</td><td style="padding:8px;border:1px solid #ddd;">${i.quantity} ${i.unit}</td><td style="padding:8px;border:1px solid #ddd;">${(i.price * i.quantity).toFixed(2)}€</td></tr>`
+            ).join('');
+            const total = items.reduce((s: number, i: any) => s + (i.price || 0) * (i.quantity || 0), 0);
+
+            const resendKey = process.env.RESEND_API_KEY;
+            if (!resendKey) {
+              actions.push({ type: 'send_order_email', success: false, message: 'Service email non configuré (RESEND_API_KEY manquante)' });
+            } else {
+              const resend = new Resend(resendKey);
+              await resend.emails.send({
+                from: `${restaurant?.name || 'RestauMargin'} <contact@restaumargin.fr>`,
+                to: d.email || 'contact@transgourmet.fr',
+                subject: `Commande ${restaurant?.name || ''} — ${new Date().toLocaleDateString('fr-FR')}`,
+                html: `
+                  <div style="font-family: sans-serif; max-width: 600px;">
+                    <h2>Commande de ${restaurant?.name || 'Restaurant'}</h2>
+                    <p>${restaurant?.address || ''}</p>
+                    <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
+                      <tr style="background: #0d9488; color: white;">
+                        <th>Produit</th><th>Quantité</th><th>Total</th>
+                      </tr>
+                      ${itemsList}
+                      <tr style="font-weight: bold;">
+                        <td colspan="2" style="padding:8px;border:1px solid #ddd;">Total HT</td><td style="padding:8px;border:1px solid #ddd;">${total.toFixed(2)}€</td>
+                      </tr>
+                    </table>
+                    ${d.notes ? `<p><strong>Notes :</strong> ${d.notes}</p>` : ''}
+                    <p style="color: #666; font-size: 12px;">Envoyé via RestauMargin</p>
+                  </div>
+                `
+              });
+              actions.push({ type: 'send_order_email', success: true, message: `Email envoyé à ${d.supplier || 'fournisseur'} (${d.email || 'contact@transgourmet.fr'})` });
+            }
+          } catch (emailErr: any) {
+            console.error('Send order email error:', emailErr.message);
+            actions.push({ type: 'send_order_email', success: false, message: `Erreur envoi email: ${emailErr.message}`, error: emailErr.message });
+          }
+
+        } else if (actionData.type === 'suggest_menu') {
+          const d = actionData.data;
+          try {
+            const covers = d.covers || 30;
+            const budget = d.budget || 15;
+            // Use available ingredients sorted by price to suggest affordable dishes
+            const availableIngredients = await prisma.ingredient.findMany({
+              where: { restaurantId },
+              orderBy: { pricePerUnit: 'asc' },
+              take: 50,
+            });
+            const existingRecipes = await prisma.recipe.findMany({
+              where: { restaurantId },
+              include: { ingredients: { include: { ingredient: true } } },
+              take: 30,
+            });
+            const recipeSuggestions = existingRecipes.map((r: any) => {
+              const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+              const costPerPortion = r.nbPortions > 0 ? cost / r.nbPortions : cost;
+              return { name: r.name, id: r.id, category: r.category, costPerPortion: Math.round(costPerPortion * 100) / 100, sellingPrice: r.sellingPrice };
+            }).filter((r: any) => r.costPerPortion <= budget * 0.4) // food cost < 40% of budget
+              .sort((a: any, b: any) => a.costPerPortion - b.costPerPortion);
+
+            actions.push({
+              type: 'suggest_menu', success: true,
+              message: `${recipeSuggestions.length} recettes compatibles avec un budget de ${budget}€/couvert pour ${covers} couverts`,
+              data: { covers, budget, suggestions: recipeSuggestions, ingredientsCount: availableIngredients.length },
+            } as any);
+          } catch (menuErr: any) {
+            console.error('Suggest menu error:', menuErr.message);
+            actions.push({ type: 'suggest_menu', success: false, message: `Erreur suggestion menu: ${menuErr.message}` });
+          }
+
         } else {
           actions.push({ type: actionData.type, success: false, message: `Action "${actionData.type}" non reconnue` });
         }
@@ -822,6 +982,25 @@ ${context}`;
     }
 
     const cleanedText = fullText.replace(/```action\s*\n?[\s\S]*?```/g, '').trim();
+
+    // ── Track AI usage ──
+    const inputTokens = response.usage?.input_tokens || 0;
+    const outputTokens = response.usage?.output_tokens || 0;
+    const estimatedCost = (inputTokens * 0.00025 + outputTokens * 0.00125) / 1000;
+    try {
+      await prisma.$executeRaw`
+        INSERT INTO ai_usage (restaurant_id, month, requests_count, tokens_used, estimated_cost, updated_at)
+        VALUES (${restaurantId}, ${month}, 1, ${inputTokens + outputTokens}, ${estimatedCost}, NOW())
+        ON CONFLICT (restaurant_id, month)
+        DO UPDATE SET
+          requests_count = ai_usage.requests_count + 1,
+          tokens_used = ai_usage.tokens_used + ${inputTokens + outputTokens},
+          estimated_cost = ai_usage.estimated_cost + ${estimatedCost},
+          updated_at = NOW()
+      `;
+    } catch (trackErr: any) {
+      console.error('AI usage tracking error:', trackErr.message);
+    }
 
     res.json({ response: cleanedText, actions, usage: response.usage });
   } catch (e: any) {
@@ -992,6 +1171,38 @@ Réponds UNIQUEMENT en JSON valide: { "anomalies": [{ "item": "nom produit", "in
   } catch (e: any) {
     console.error('AI invoice-check error:', e.message);
     res.status(500).json({ error: 'Service IA temporairement indisponible.' });
+  }
+});
+
+// ── AI Usage Quota ──
+router.get('/usage', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    const month = new Date().toISOString().slice(0, 7);
+    const MONTHLY_LIMIT = 500;
+
+    const rows: any[] = await prisma.$queryRaw`
+      SELECT requests_count, tokens_used, estimated_cost
+      FROM ai_usage
+      WHERE restaurant_id = ${restaurantId} AND month = ${month}
+    `;
+
+    const used = rows[0]?.requests_count || 0;
+    const tokens = rows[0]?.tokens_used || 0;
+    const estimatedCost = parseFloat(rows[0]?.estimated_cost || '0');
+    const percentage = Math.round((used / MONTHLY_LIMIT) * 1000) / 10;
+
+    res.json({
+      used,
+      limit: MONTHLY_LIMIT,
+      percentage,
+      tokens,
+      estimatedCost: Math.round(estimatedCost * 100) / 100,
+      month,
+    });
+  } catch (e: any) {
+    console.error('AI usage error:', e.message);
+    res.status(500).json({ error: 'Erreur lors de la recuperation de l\'usage IA.' });
   }
 });
 

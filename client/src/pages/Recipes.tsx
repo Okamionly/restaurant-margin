@@ -13,6 +13,45 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';
 import { trackEvent } from '../utils/analytics';
 
+// ── Unit conversion: convert quantity to the price unit ─────────────────
+// Price is per priceUnit (e.g., €/kg). Quantity may be in g, cl, etc.
+// Returns the quantity converted to the price unit.
+function convertToBaseUnit(quantity: number, inputUnit: string, priceUnit: string): number {
+  const u = inputUnit.toLowerCase().trim();
+  const p = priceUnit.toLowerCase().trim();
+
+  // Same unit → no conversion
+  if (u === p) return quantity;
+
+  // Weight conversions → to kg
+  if (p === 'kg') {
+    if (u === 'g') return quantity / 1000;
+    if (u === 'mg') return quantity / 1000000;
+  }
+  if (p === 'g') {
+    if (u === 'kg') return quantity * 1000;
+  }
+
+  // Volume conversions → to L
+  if (p === 'l' || p === 'litre' || p === 'litres') {
+    if (u === 'cl') return quantity / 100;
+    if (u === 'ml') return quantity / 1000;
+    if (u === 'dl') return quantity / 10;
+  }
+  if (p === 'cl') {
+    if (u === 'l' || u === 'litre') return quantity * 100;
+    if (u === 'ml') return quantity / 10;
+  }
+
+  // Piece/unité → no conversion needed
+  if (['pièce', 'piece', 'pièces', 'pieces', 'unité', 'unite', 'botte', 'bouteille', 'sachet', 'boîte', 'barquette'].includes(u)) {
+    return quantity;
+  }
+
+  // Default: assume same unit
+  return quantity;
+}
+
 function MarginBadge({ percent }: { percent: number }) {
   const color = percent >= 70 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : percent >= 60 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
   return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{percent.toFixed(1)}%</span>;
@@ -615,18 +654,25 @@ export default function Recipes() {
     setFormIngredients(formIngredients.filter((_, i) => i !== index));
   }
 
-  // Real-time cost calculation
+  // Real-time cost calculation with unit conversion
   const liveCost = formIngredients.reduce((total, fi) => {
     const qty = parseFloat(fi.quantity) || 0;
     const waste = parseFloat(fi.wastePercent) || 0;
     const effectiveQty = qty * (1 + waste / 100);
     if (fi.ingredientId) {
       const ing = ingredients.find((i) => i.id === fi.ingredientId);
-      return total + (ing ? ing.pricePerUnit * effectiveQty : 0);
+      if (!ing) return total;
+      const inputUnit = fi.unit || ing.unit || 'kg';
+      const priceUnit = ing.unit || 'kg';
+      const convertedQty = convertToBaseUnit(effectiveQty, inputUnit, priceUnit);
+      return total + ing.pricePerUnit * convertedQty;
     }
-    // New ingredient: use the price typed by user
+    // New ingredient: use the price typed by user (price is per newUnit)
     const newPrice = parseFloat(fi.newPrice) || 0;
-    return total + newPrice * effectiveQty;
+    const inputUnit = fi.unit || fi.newUnit || 'kg';
+    const priceUnit = fi.newUnit || 'kg';
+    const convertedQty = convertToBaseUnit(effectiveQty, inputUnit, priceUnit);
+    return total + newPrice * convertedQty;
   }, 0);
 
   const livePortions = parseInt(form.nbPortions) || 1;
@@ -762,7 +808,8 @@ export default function Recipes() {
       if (found) {
         foundCount++;
         const effectiveQty = ti.quantity * (1 + ti.wastePercent / 100);
-        estimatedCost += found.pricePerUnit * effectiveQty;
+        const convertedQty = convertToBaseUnit(effectiveQty, ti.unit || found.unit || 'kg', found.unit || 'kg');
+        estimatedCost += found.pricePerUnit * convertedQty;
       }
     });
     const costPerPortion = estimatedCost / tpl.nbPortions;
@@ -1303,10 +1350,13 @@ export default function Recipes() {
                   const isNewIngredient = !fi.ingredientId;
                   const unitPrice = isNewIngredient ? (parseFloat(fi.newPrice) || 0) : (ing?.pricePerUnit || 0);
                   const unitLabel = isNewIngredient ? fi.newUnit : (ing?.unit || '');
+                  const inputUnit = fi.unit || unitLabel || 'kg';
+                  const priceUnit = unitLabel || 'kg';
                   const qty = parseFloat(fi.quantity) || 0;
                   const waste = parseFloat(fi.wastePercent) || 0;
                   const effectiveQty = qty * (1 + waste / 100);
-                  const lineTotal = unitPrice * effectiveQty;
+                  const convertedQty = convertToBaseUnit(effectiveQty, inputUnit, priceUnit);
+                  const lineTotal = unitPrice * convertedQty;
                   return (
                     <div key={idx} className="border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-2">
                       {/* Row 1: Ingredient name combobox */}

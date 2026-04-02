@@ -1,0 +1,806 @@
+[
+  {
+    "name": "> Le Duo Haché façon bouchère VBF 100g et 140g > à partir de",
+    "price": 1.25,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": ",11 €",
+    "price": 171.11,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": ",89 €",
+    "price": 159.89,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "-13,2%",
+    "price": 12.64,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "-11,8%",
+    "price": 17.19,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "-10,0%",
+    "price": 20.57,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Code : 214137",
+    "price": 3.38,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "de 250 g",
+    "price": 1.08,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "de 140 g",
+    "price": 1.94,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "de 150 g",
+    "price": 1.28,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "de 350 g",
+    "price": 1.83,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "le kilo",
+    "price": 14.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Code : 300940",
+    "price": 1.68,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Code : 231499",
+    "price": 6.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Code : 967689",
+    "price": 2.39,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Code : 818543",
+    "price": 1.15,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Code : 572307",
+    "price": 12.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "À MOINS DE",
+    "price": 1.95,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "PRIX/PORTION DE REVIENT HT",
+    "price": 0.16,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pomme de terre grenaille (120 g) - Code 300940",
+    "price": 1.68,
+    "unit": "kg",
+    "category": "Fruits & Légumes"
+  },
+  {
+    "name": "Romarin frais, beurre, huile d’olive, sel et poivre",
+    "price": 0.25,
+    "unit": "kg",
+    "category": "Produits laitiers"
+  },
+  {
+    "name": "Pomme de terre grenaille (180 g) - Code 300940",
+    "price": 1.28,
+    "unit": "kg",
+    "category": "Fruits & Légumes"
+  },
+  {
+    "name": "Huile d ’olive Economy, Ail, Thym, Chimichurri",
+    "price": 0.57,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Panais (120 g) - Code 422775",
+    "price": 1.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "0,160 € HT",
+    "price": 1.33,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Carottes, Huile Olive Economy, Crème 18% Quality, Emmental Economy",
+    "price": 0.26,
+    "unit": "kg",
+    "category": "Fruits & Légumes"
+  },
+  {
+    "name": "Asperges vertes (80 g) - Code 572307",
+    "price": 1.46,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Aneth fraîche, huile d’olive, citron, sel et poivre",
+    "price": 0.35,
+    "unit": "kg",
+    "category": "Fruits & Légumes"
+  },
+  {
+    "name": "SACHET",
+    "price": 3.99,
+    "unit": "sachet",
+    "category": "Épicerie"
+  },
+  {
+    "name": ",00 €",
+    "price": 149.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "1.5/1.9 kg",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bq s/at par 20 pièces",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "4/5 kg",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "2/3 kg",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bq s/at par 5 pièces",
+    "price": 12.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "A la caisse de 6 kg",
+    "price": 11.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "France",
+    "price": 5.4,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bourriche de 48",
+    "price": 36.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bourriche de 96",
+    "price": 66.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Barquette de 10 pièces France",
+    "price": 28.5,
+    "unit": "kg",
+    "category": "Poissons"
+  },
+  {
+    "name": "/600 g",
+    "price": 15.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/800 g",
+    "price": 13.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/180 g",
+    "price": 32.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/220 g",
+    "price": 37.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "g/1 kg",
+    "price": 19.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "1/1,5 kg",
+    "price": 22.2,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Sachet de 1 kg",
+    "price": 15.9,
+    "unit": "sachet",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse de bois",
+    "price": 36.95,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Atlantique Nord Est",
+    "price": 4.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse 3kg",
+    "price": 12.2,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse de 5 kg",
+    "price": 14.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse de 3 kg",
+    "price": 9.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "3/4 kg",
+    "price": 12.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "2,75 kg",
+    "price": 26.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse de 6 kg",
+    "price": 13.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pièce de 1/2 kg",
+    "price": 31.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pièce de 2/3 kg",
+    "price": 39.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Méditerranée",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "4/6 kg",
+    "price": 20.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "2/4 kg",
+    "price": 16.6,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/1000 g",
+    "price": 14.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Estonie",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/400 g",
+    "price": 14.2,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/500 g",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse de 4",
+    "price": 14.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "s/vide par 1 pièce",
+    "price": 18.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse de 10 kg",
+    "price": 16.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse 5kg",
+    "price": 16.1,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse 2kg",
+    "price": 22.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Espagne/Croatie/Egypte",
+    "price": 32.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Caisse 6kg",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "A la pièce",
+    "price": 25.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Grèce / Turquie / Espagne",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/500G",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "5/6 kg",
+    "price": 12.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "6/7 kg",
+    "price": 12.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "7/8 kg",
+    "price": 12.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Ecosse",
+    "price": 15.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Hollande",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "1/2 kg",
+    "price": 24.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/160 g",
+    "price": 20.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/200 g",
+    "price": 20.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/160g",
+    "price": 22.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "/130 g",
+    "price": 25.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bq s/at par 10 pièces",
+    "price": 23.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Croatie",
+    "price": 32.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Norvège",
+    "price": 20.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Espagne",
+    "price": 7.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": ",90 €",
+    "price": 115.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Anneaux d'encornet décongelées saumurées",
+    "price": 15.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Lamelle d'encornet décongelées saumurées",
+    "price": 9.99,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Par 6 pots",
+    "price": 23.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Madagascar",
+    "price": 33.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Canada",
+    "price": 50.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bq s/at de 2 kg",
+    "price": 3.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Au sac de 10 kg",
+    "price": 3.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Danemark, Pays-Bas",
+    "price": 18.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "U.S.A.",
+    "price": 55.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Irlande",
+    "price": 18.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Terrine de Langoustines",
+    "price": 19.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Terrine de Saint-Jacques au muscadet",
+    "price": 15.95,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Terrine de Crabe Armoricaine",
+    "price": 26.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Terrine du Pêcheur",
+    "price": 14.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Terrine de Homard au Cognac",
+    "price": 23.3,
+    "unit": "kg",
+    "category": "Poissons"
+  },
+  {
+    "name": "Pot de 1,5 kg",
+    "price": 13.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pacifique Nord Est",
+    "price": 9.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Bq s/at par 8 pièces",
+    "price": 12.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Transformée en France",
+    "price": 6.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pologne",
+    "price": 67.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Rouleau de 600 g",
+    "price": 70.0,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "A la pièce de 300/500 g",
+    "price": 43.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "A la pièce de 100/150 g",
+    "price": 47.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pièce de 2 kg",
+    "price": 35.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Lituanie",
+    "price": 4.1,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Islande",
+    "price": 7.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pot de 1 kg",
+    "price": 16.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pot de 300g",
+    "price": 43.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pot de 100 g",
+    "price": 5.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Belgique",
+    "price": 10.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pot de 50g",
+    "price": 10.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Atlantique Centre Est",
+    "price": 118.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": ",50 €",
+    "price": 118.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pot de 900 g",
+    "price": 16.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Elevé en France",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pêchée en eau douce Chine",
+    "price": 30.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Iles Féroé",
+    "price": 44.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Boîte de 975 g",
+    "price": 28.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Pot de 780 g",
+    "price": 5.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "BRETAGNE",
+    "price": 8.5,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Portugal",
+    "price": 15.3,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Colis de 50",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Boîte de 500 g",
+    "price": 12.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Paquet de 200 g",
+    "price": 2.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  },
+  {
+    "name": "Paquet de 135 g",
+    "price": 2.9,
+    "unit": "kg",
+    "category": "Épicerie"
+  }
+]

@@ -80,6 +80,7 @@ const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
+const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -265,6 +266,7 @@ function AppLayout() {
         { to: '/actualites', icon: Newspaper, label: 'Actualités IA' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
+        { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
       ],
     },
@@ -568,6 +570,7 @@ function AppLayout() {
               <Route path="/planning" element={<Planning />} />
               <Route path="/seminaires" element={<Seminaires />} />
               <Route path="/haccp" element={<HACCPPage />} />
+              <Route path="/recettes-semaine" element={<EditorialRecipes />} />
               <Route path="/assistant" element={<AIAssistant />} />
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/clients" element={<Clients />} />

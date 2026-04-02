@@ -1,8 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff } from 'lucide-react';
+import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { trackEvent } from '../utils/analytics';
+
+interface AIUsage {
+  used: number;
+  limit: number;
+  percentage: number;
+  tokens: number;
+  estimatedCost: number;
+  month: string;
+}
 
 interface ActionResult {
   type: string;
@@ -43,13 +52,20 @@ function getActionLabel(type: string): string {
     case 'create_recipe': return 'Fiche technique creee';
     case 'add_ingredient': return 'Ingredient ajoute';
     case 'create_order': return 'Commande creee';
+    case 'send_order_email': return 'Email envoye au fournisseur';
+    case 'suggest_menu': return 'Menu suggere';
     default: return 'Action executee';
   }
 }
 
-async function getAIResponse(message: string): Promise<{ response: string; actions?: ActionResult[] }> {
+async function getAIResponse(message: string, history: Message[]): Promise<{ response: string; actions?: ActionResult[] }> {
   const token = localStorage.getItem('token');
   const restaurantId = localStorage.getItem('activeRestaurantId');
+  // Send last 6 messages as history (backend will limit to 5)
+  const recentHistory = history.slice(-6).map(m => ({
+    role: m.role,
+    content: m.content,
+  }));
   const res = await fetch('/api/ai/chat', {
     method: 'POST',
     headers: {
@@ -57,7 +73,7 @@ async function getAIResponse(message: string): Promise<{ response: string; actio
       Authorization: `Bearer ${token}`,
       ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
     },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, history: recentHistory }),
   });
   const data = await res.json();
   if (!res.ok) {
@@ -94,8 +110,31 @@ export default function AIAssistant() {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [aiUsage, setAiUsage] = useState<AIUsage | null>(null);
+  const [quotaReached, setQuotaReached] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Fetch AI usage on mount
+  const fetchUsage = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const restaurantId = localStorage.getItem('activeRestaurantId');
+      const res = await fetch('/api/ai/usage', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+        },
+      });
+      if (res.ok) {
+        const data: AIUsage = await res.json();
+        setAiUsage(data);
+        setQuotaReached(data.used >= data.limit);
+      }
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => { fetchUsage(); }, [fetchUsage]);
 
   // Voice recognition state
   const [isListening, setIsListening] = useState(false);
@@ -220,7 +259,7 @@ export default function AIAssistant() {
     trackEvent('ai_chat_sent');
 
     try {
-      const { response, actions } = await getAIResponse(messageText);
+      const { response, actions } = await getAIResponse(messageText, messages);
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -229,11 +268,15 @@ export default function AIAssistant() {
         actions: actions && actions.length > 0 ? actions : undefined,
       };
       setMessages((prev) => [...prev, assistantMessage]);
+      // Refresh usage after successful message
+      fetchUsage();
     } catch (err: any) {
+      const errMsg = err?.message || "Desole, une erreur s'est produite. Veuillez reessayer.";
+      if (errMsg.includes('Quota')) setQuotaReached(true);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: err?.message || "Desole, une erreur s'est produite. Veuillez reessayer.",
+        content: errMsg,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -333,6 +376,38 @@ export default function AIAssistant() {
           </div>
         </div>
       </div>
+
+      {/* AI Quota Bar */}
+      {aiUsage && (
+        <div className="mb-4 bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-teal-400" />
+              <span className="text-sm font-medium text-slate-300">
+                Quota IA : {aiUsage.used}/{aiUsage.limit} requetes ce mois ({aiUsage.percentage}%)
+              </span>
+            </div>
+            <span className="text-xs text-slate-500">{aiUsage.estimatedCost.toFixed(2)} EUR</span>
+          </div>
+          <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-700 ease-out ${
+                aiUsage.percentage > 80
+                  ? 'bg-red-500'
+                  : aiUsage.percentage > 50
+                  ? 'bg-amber-500'
+                  : 'bg-teal-500'
+              }`}
+              style={{ width: `${Math.min(aiUsage.percentage, 100)}%` }}
+            />
+          </div>
+          {quotaReached && (
+            <p className="text-xs text-red-400 mt-2 font-medium">
+              Quota mensuel atteint. Passez au plan Business pour continuer.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Chat container */}
       <div className="flex-1 flex flex-col bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
@@ -473,7 +548,8 @@ export default function AIAssistant() {
                   cancelAutoSend();
                 }}
                 onKeyDown={handleKeyDown}
-                placeholder={isListening ? 'Parlez maintenant...' : 'Demandez-moi de creer une recette, ajouter un ingredient...'}
+                disabled={quotaReached}
+                placeholder={quotaReached ? 'Quota IA mensuel atteint' : isListening ? 'Parlez maintenant...' : 'Demandez-moi de creer une recette, ajouter un ingredient...'}
                 rows={1}
                 className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 resize-none transition-all"
                 style={{ minHeight: '44px', maxHeight: '120px' }}
@@ -516,7 +592,7 @@ export default function AIAssistant() {
                 cancelAutoSend();
                 handleSend();
               }}
-              disabled={!input.trim() || isTyping}
+              disabled={!input.trim() || isTyping || quotaReached}
               className="flex-shrink-0 p-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />

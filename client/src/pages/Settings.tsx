@@ -310,6 +310,7 @@ export default function Settings() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     profile: true,
     restaurant: false,
+    coefficients: false,
     notifications: false,
     app: false,
     connexions: false,
@@ -355,6 +356,25 @@ export default function Settings() {
 
   // Financial goals
   const [financialGoals, setFinancialGoals] = useState<FinancialGoals>(loadFinancialGoals);
+
+  // Category coefficients
+  const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 5.0, 'Accompagnement': 2.5 };
+  const [coefficients, setCoefficients] = useState<Record<string, number>>(() => {
+    try {
+      const stored = localStorage.getItem('coefficients');
+      if (stored) return { ...DEFAULT_COEFFICIENTS, ...JSON.parse(stored) };
+    } catch {}
+    return { ...DEFAULT_COEFFICIENTS };
+  });
+
+  function handleCoefficientChange(category: string, value: number) {
+    setCoefficients(prev => ({ ...prev, [category]: value }));
+  }
+
+  function saveCoefficients() {
+    localStorage.setItem('coefficients', JSON.stringify(coefficients));
+    showToast('Coefficients sauvegardés avec succès', 'success');
+  }
 
   function handleGoalChange<K extends keyof FinancialGoals>(key: K, value: FinancialGoals[K]) {
     setFinancialGoals((prev) => {
@@ -1121,6 +1141,64 @@ export default function Settings() {
             </div>
 
             <SectionSaveButton onClick={() => handleSaveSettings('Etablissement')} />
+          </div>
+        </Section>
+
+        {/* ================================================================
+            2b. COEFFICIENTS PAR CATEGORIE
+           ================================================================ */}
+        <Section
+          id="coefficients"
+          icon={<Calculator className="w-5 h-5" />}
+          iconColor="text-teal-600"
+          title="Coefficients multiplicateurs par catégorie"
+          open={openSections.coefficients}
+          onToggle={() => toggleSection('coefficients')}
+        >
+          <div className="space-y-4">
+            <p className="text-sm text-slate-400">
+              Définissez le coefficient multiplicateur pour chaque catégorie de recette. Le prix de vente suggéré = coût matière x coefficient.
+            </p>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b dark:border-slate-700">
+                    <th className="text-left py-2 px-3 text-slate-400 dark:text-slate-400 font-medium">Catégorie</th>
+                    <th className="text-center py-2 px-3 text-slate-400 dark:text-slate-400 font-medium">Coefficient</th>
+                    <th className="text-right py-2 px-3 text-slate-400 dark:text-slate-400 font-medium">Prix suggéré pour 3&#8364; de coût</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(coefficients).map(([category, coeff]) => (
+                    <tr key={category} className="border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                      <td className="py-2.5 px-3 font-medium text-slate-700 dark:text-slate-200">{category}</td>
+                      <td className="py-2.5 px-3 text-center">
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="1"
+                          max="20"
+                          className="input w-20 text-center font-mono text-sm"
+                          value={coeff}
+                          onChange={(e) => handleCoefficientChange(category, parseFloat(e.target.value) || 1)}
+                        />
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono text-teal-600 dark:text-teal-400 font-semibold">
+                        {(3 * coeff).toFixed(2)} &#8364;
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button onClick={saveCoefficients} className="btn-primary flex items-center gap-2 text-sm">
+                <Save className="w-4 h-4" />
+                Enregistrer
+              </button>
+            </div>
           </div>
         </Section>
 

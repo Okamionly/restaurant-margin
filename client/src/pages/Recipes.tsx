@@ -356,6 +356,21 @@ function RecipePhotoPlaceholder({ category }: { category: string }) {
   );
 }
 
+// ── Category coefficients (shared with Settings) ──────────────────────
+const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 5.0, 'Accompagnement': 2.5 };
+
+function loadCoefficients(): Record<string, number> {
+  try {
+    const stored = localStorage.getItem('coefficients');
+    if (stored) return { ...DEFAULT_COEFFICIENTS, ...JSON.parse(stored) };
+  } catch {}
+  return { ...DEFAULT_COEFFICIENTS };
+}
+
+function getCoefficient(category: string, coeffs: Record<string, number>): number {
+  return coeffs[category] || DEFAULT_COEFFICIENTS[category] || 3.5;
+}
+
 export default function Recipes() {
   const { t } = useTranslation();
   const { showToast } = useToast();
@@ -366,6 +381,11 @@ export default function Recipes() {
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+
+  // Category coefficients
+  const [coefficients, setCoefficients] = useState<Record<string, number>>(loadCoefficients);
+  const [editingCoeff, setEditingCoeff] = useState(false);
+  const [tempCoeff, setTempCoeff] = useState<number>(3.5);
 
   // View & filter state
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
@@ -689,6 +709,10 @@ export default function Recipes() {
   const liveSellingPrice = parseFloat(form.sellingPrice) || 0;
   const liveMargin = liveSellingPrice > 0 ? ((liveSellingPrice - liveTotalPerPortion) / liveSellingPrice) * 100 : 0;
 
+  // Suggested price based on category coefficient
+  const liveCoeff = getCoefficient(form.category, coefficients);
+  const liveSuggestedPrice = liveTotalPerPortion * liveCoeff;
+
   // Keyboard shortcut: Ctrl+Enter to save
   const handleFormKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
@@ -948,7 +972,12 @@ export default function Recipes() {
                   <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.sellingPrice.toFixed(2)}&euro;</td>
                   <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
-                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.margin.coefficient.toFixed(2)}</td>
+                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">
+                    {recipe.margin.coefficient.toFixed(2)}
+                    <span className="text-[10px] ml-1 text-teal-500" title={`Coeff. catégorie ${recipe.category}`}>
+                      (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)})
+                    </span>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 justify-end">
                       <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.view")}>
@@ -1011,6 +1040,11 @@ export default function Recipes() {
                       {recipe.margin.marginPercent.toFixed(1)}%
                     </div>
                   </div>
+                </div>
+
+                {/* Coefficient info */}
+                <div className="text-[11px] text-teal-500 dark:text-teal-400 font-mono mb-2">
+                  Coeff. ×{recipe.margin.coefficient.toFixed(2)} (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)} {recipe.category})
                 </div>
 
                 {/* Allergen icons row */}
@@ -1322,6 +1356,65 @@ export default function Recipes() {
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
               </div>
             </div>
+            {/* Suggested price based on coefficient */}
+            {liveTotalPerPortion > 0 && (
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-teal-200 dark:border-slate-600">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm text-slate-400 dark:text-slate-300">Prix suggéré</span>
+                  {editingCoeff ? (
+                    <span className="flex items-center gap-1">
+                      <span className="text-xs text-slate-400">×</span>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="1"
+                        max="20"
+                        className="input w-16 text-center text-xs py-0.5 font-mono"
+                        value={tempCoeff}
+                        autoFocus
+                        onChange={(e) => setTempCoeff(parseFloat(e.target.value) || 1)}
+                        onBlur={() => {
+                          const updated = { ...coefficients, [form.category]: tempCoeff };
+                          setCoefficients(updated);
+                          localStorage.setItem('coefficients', JSON.stringify(updated));
+                          setEditingCoeff(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            const updated = { ...coefficients, [form.category]: tempCoeff };
+                            setCoefficients(updated);
+                            localStorage.setItem('coefficients', JSON.stringify(updated));
+                            setEditingCoeff(false);
+                          } else if (e.key === 'Escape') {
+                            setEditingCoeff(false);
+                          }
+                        }}
+                      />
+                      <span className="text-xs text-slate-400">({form.category})</span>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-400 transition-colors"
+                      onClick={() => { setTempCoeff(liveCoeff); setEditingCoeff(true); }}
+                      title="Modifier le coefficient"
+                    >
+                      <span className="font-mono">×{liveCoeff.toFixed(1)}</span>
+                      <span>({form.category})</span>
+                      <Pencil className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="text-sm font-bold font-mono text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors cursor-pointer"
+                  onClick={() => setForm(prev => ({ ...prev, sellingPrice: liveSuggestedPrice.toFixed(2) }))}
+                  title="Appliquer comme prix de vente"
+                >
+                  {liveSuggestedPrice.toFixed(2)} &euro;
+                </button>
+              </div>
+            )}
             {liveSellingPrice > 0 && (
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-teal-200 dark:border-slate-600">
                 <span className="text-sm font-semibold text-slate-400 dark:text-slate-200">{t("recipes.estimatedMarginLabel")}</span>

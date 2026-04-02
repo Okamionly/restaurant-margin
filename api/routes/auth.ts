@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import { prisma, JWT_SECRET, TOKEN_EXPIRY, authMiddleware, JwtPayload } from '../middleware';
+import { buildWelcomeEmail } from '../utils/emailTemplates';
 
 const router = Router();
 
@@ -63,27 +64,7 @@ router.post('/register', async (req: any, res) => {
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: user.email,
           subject: 'Bienvenue sur RestauMargin ! 🍳',
-          html: `
-            <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="background: #0d9488; padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
-                <h1 style="color: white; margin: 0; font-size: 24px;">Bienvenue sur RestauMargin</h1>
-              </div>
-              <div style="padding: 30px; background: #f8fafc; border-radius: 0 0 12px 12px;">
-                <p style="font-size: 16px; color: #1e293b;">Bonjour ${user.name},</p>
-                <p style="font-size: 16px; color: #1e293b;">Votre essai gratuit de 14 jours est activé !</p>
-                <p style="font-size: 16px; color: #1e293b; font-weight: 600;">Voici vos 3 premières étapes :</p>
-                <ol style="font-size: 15px; color: #334155; line-height: 1.8;">
-                  <li>Ajoutez vos premiers ingrédients</li>
-                  <li>Créez une fiche technique avec l'IA</li>
-                  <li>Testez la commande vocale</li>
-                </ol>
-                <div style="text-align: center; margin-top: 24px;">
-                  <a href="https://www.restaumargin.fr/dashboard" style="display: inline-block; background: #0d9488; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">Commencer maintenant →</a>
-                </div>
-                <p style="font-size: 13px; color: #94a3b8; margin-top: 24px; text-align: center;">L'équipe RestauMargin</p>
-              </div>
-            </div>
-          `,
+          html: buildWelcomeEmail({ userName: user.name }),
         });
       }
     } catch (emailErr) {

@@ -311,26 +311,74 @@ body::before {
 
 /* Print styles */
 @media print {
-  /* Hide sidebar, header, connectivity bar, and elements marked no-print */
-  nav, header, aside, .no-print, .sidebar {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  /* Remove noise overlay, scrollbars, and decorative pseudo-elements */
+  body::before {
     display: none !important;
   }
-  /* Full width content */
-  main {
+
+  /* Hide sidebar, header, navbar, connectivity bar, no-print elements */
+  nav, header, aside, footer,
+  .no-print, .sidebar,
+  [role="navigation"],
+  .sidebar-scroll {
+    display: none !important;
+  }
+
+  /* Full width content, no margin/padding from layout */
+  main, main > div, #root, #root > div {
+    margin: 0 !important;
     margin-left: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
     width: 100% !important;
   }
-  /* Clean backgrounds */
-  body {
+
+  /* Clean backgrounds - force white, no dark mode */
+  html, body {
     background: white !important;
     color: black !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    overflow: visible !important;
   }
+
+  /* Remove scrollbar artifacts */
+  * {
+    overflow: visible !important;
+    scrollbar-width: none !important;
+  }
+  *::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Remove all shadows and rounded corners for clean A4 */
+  .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl {
+    box-shadow: none !important;
+  }
+
   /* Avoid page breaks inside cards/tables */
   .rounded-2xl, .rounded-xl, table {
     break-inside: avoid;
+  }
+
+  /* Force dark mode text to be readable on white paper */
+  .dark body, .dark main, .dark #root {
+    background: white !important;
+    color: black !important;
+  }
+  .dark .text-white,
+  .dark .text-slate-100,
+  .dark .text-slate-200,
+  .dark .text-slate-300 {
+    color: #1e293b !important;
+  }
+  .dark .text-slate-400,
+  .dark .text-slate-500 {
+    color: #475569 !important;
   }
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
@@ -54,6 +55,10 @@ export default function Ingredients() {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const supplierDropdownRef = useRef<HTMLDivElement>(null);
   const nameDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Price history state
+  const [priceHistory, setPriceHistory] = useState<{ date: string; price: number }[]>([]);
+  const [priceHistoryLoading, setPriceHistoryLoading] = useState(false);
 
   // Last price for edited ingredient
   const lastPrice = useMemo(() => {
@@ -133,6 +138,25 @@ export default function Ingredients() {
     if (restaurantLoading || !selectedRestaurant) return;
     loadIngredients();
   }, [selectedRestaurant, restaurantLoading]);
+
+  // Fetch price history when editing an ingredient
+  useEffect(() => {
+    if (!editingId) {
+      setPriceHistory([]);
+      return;
+    }
+    setPriceHistoryLoading(true);
+    const token = localStorage.getItem('token');
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    fetch(`/api/price-history?ingredientId=${editingId}`, { headers })
+      .then(res => res.ok ? res.json() : [])
+      .then((data: { date: string; price: number }[]) => {
+        setPriceHistory(data);
+      })
+      .catch(() => setPriceHistory([]))
+      .finally(() => setPriceHistoryLoading(false));
+  }, [editingId]);
 
   async function loadIngredients() {
     try {
@@ -578,6 +602,88 @@ export default function Ingredients() {
 
       {/* Form Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t('ingredients.editModalTitle') : t('ingredients.newModalTitle')}>
+        {/* Price History Chart (edit mode only) */}
+        {editingId && (
+          <div className="mb-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                Historique des prix (30j)
+              </span>
+              {priceHistory.length >= 2 && (() => {
+                const first = priceHistory[0].price;
+                const last = priceHistory[priceHistory.length - 1].price;
+                const diff = last - first;
+                const pct = first > 0 ? ((diff / first) * 100).toFixed(1) : '0';
+                const isUp = diff > 0;
+                const isDown = diff < 0;
+                return (
+                  <span className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-slate-400'}`}>
+                    {isUp && <TrendingUp className="w-3.5 h-3.5" />}
+                    {isDown && <TrendingDown className="w-3.5 h-3.5" />}
+                    {isUp ? '+' : ''}{pct}%
+                  </span>
+                );
+              })()}
+            </div>
+            {priceHistoryLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+              </div>
+            ) : priceHistory.length === 0 ? (
+              <p className="text-xs text-slate-400 dark:text-slate-500 text-center py-3">
+                Pas d'historique disponible
+              </p>
+            ) : (
+              <div className="h-28">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={priceHistory} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: '#94a3b8' }}
+                      tickFormatter={(v: string) => {
+                        const d = new Date(v);
+                        return `${d.getDate()}/${d.getMonth() + 1}`;
+                      }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: '#94a3b8' }}
+                      width={40}
+                      tickFormatter={(v: number) => `${v.toFixed(1)}`}
+                      axisLine={false}
+                      tickLine={false}
+                      domain={['auto', 'auto']}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#1e293b',
+                        border: '1px solid #334155',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        color: '#e2e8f0',
+                      }}
+                      formatter={(value: unknown) => [`${Number(value).toFixed(2)} \u20AC`, 'Prix']}
+                      labelFormatter={(label: unknown) => {
+                        const d = new Date(String(label));
+                        return d.toLocaleDateString('fr-FR');
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="price"
+                      stroke="#14b8a6"
+                      strokeWidth={2}
+                      dot={false}
+                      activeDot={{ r: 3, fill: '#14b8a6' }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} className={`space-y-4 transition-colors duration-500 ${saveSuccess ? 'bg-green-50 dark:bg-green-900/20 rounded-lg p-2 -m-2' : ''}`}>
           {/* Name with autocomplete */}
           <div className="relative" ref={nameDropdownRef}>

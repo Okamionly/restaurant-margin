@@ -2,6 +2,7 @@ import { Router } from 'express';
 import Anthropic from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
 import { prisma, authWithRestaurant } from '../middleware';
+import { buildOrderEmail } from '../utils/emailTemplates';
 
 const router = Router();
 
@@ -971,37 +972,36 @@ ${context}`;
           try {
             const restaurant = await prisma.restaurant.findFirst({ where: { id: restaurantId } });
             const items = d.items || [];
-            const itemsList = items.map((i: any) =>
-              `<tr><td style="padding:8px;border:1px solid #ddd;">${i.name}</td><td style="padding:8px;border:1px solid #ddd;">${i.quantity} ${i.unit}</td><td style="padding:8px;border:1px solid #ddd;">${(i.price * i.quantity).toFixed(2)}€</td></tr>`
-            ).join('');
-            const total = items.reduce((s: number, i: any) => s + (i.price || 0) * (i.quantity || 0), 0);
+            const orderNum = `CMD-${Date.now().toString(36).toUpperCase()}`;
 
             const resendKey = process.env.RESEND_API_KEY;
             if (!resendKey) {
               actions.push({ type: 'send_order_email', success: false, message: 'Service email non configuré (RESEND_API_KEY manquante)' });
             } else {
               const resend = new Resend(resendKey);
+              const emailHtml = buildOrderEmail({
+                restaurantName: restaurant?.name || 'Restaurant',
+                restaurantAddress: (restaurant as any)?.address || '',
+                restaurantPhone: (restaurant as any)?.phone || '',
+                restaurantEmail: (restaurant as any)?.email || '',
+                orderNumber: orderNum,
+                date: new Date().toLocaleDateString('fr-FR'),
+                supplierName: d.supplier || 'Fournisseur',
+                supplierAddress: d.supplierAddress || '',
+                items: items.map((i: any) => ({
+                  name: i.name,
+                  quantity: i.quantity || 1,
+                  unit: i.unit || 'kg',
+                  unitPrice: i.price || 0,
+                })),
+                notes: d.notes,
+              });
+
               await resend.emails.send({
                 from: `${restaurant?.name || 'RestauMargin'} <contact@restaumargin.fr>`,
                 to: d.email || 'contact@transgourmet.fr',
-                subject: `Commande ${restaurant?.name || ''} — ${new Date().toLocaleDateString('fr-FR')}`,
-                html: `
-                  <div style="font-family: sans-serif; max-width: 600px;">
-                    <h2>Commande de ${restaurant?.name || 'Restaurant'}</h2>
-                    <p>${restaurant?.address || ''}</p>
-                    <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
-                      <tr style="background: #0d9488; color: white;">
-                        <th>Produit</th><th>Quantité</th><th>Total</th>
-                      </tr>
-                      ${itemsList}
-                      <tr style="font-weight: bold;">
-                        <td colspan="2" style="padding:8px;border:1px solid #ddd;">Total HT</td><td style="padding:8px;border:1px solid #ddd;">${total.toFixed(2)}€</td>
-                      </tr>
-                    </table>
-                    ${d.notes ? `<p><strong>Notes :</strong> ${d.notes}</p>` : ''}
-                    <p style="color: #666; font-size: 12px;">Envoyé via RestauMargin</p>
-                  </div>
-                `
+                subject: `Commande ${orderNum} — ${restaurant?.name || ''} — ${new Date().toLocaleDateString('fr-FR')}`,
+                html: emailHtml,
               });
               actions.push({ type: 'send_order_email', success: true, message: `Email envoyé à ${d.supplier || 'fournisseur'} (${d.email || 'contact@transgourmet.fr'})` });
             }

@@ -40,6 +40,37 @@ const ALLERGEN_COLORS: Record<string, string> = {
   Mollusques: 'bg-cyan-300 text-cyan-900 border border-cyan-400',
 };
 
+// ─── Auto-detection: ingredient name keywords → allergen ───
+const ALLERGEN_KEYWORD_MAP: { allergen: string; keywords: string[] }[] = [
+  { allergen: 'Gluten', keywords: ['blé', 'ble', 'farine', 'semoule', 'orge', 'seigle', 'avoine', 'épeautre', 'epeautre', 'kamut', 'pain', 'pâte', 'pate', 'chapelure', 'couscous', 'boulgour'] },
+  { allergen: 'Crustacés', keywords: ['crustacé', 'crustace', 'crevette', 'homard', 'langouste', 'langoustine', 'crabe', 'écrevisse', 'ecrevisse', 'gambas'] },
+  { allergen: 'Oeufs', keywords: ['œuf', 'oeuf', 'oeufs', 'œufs', 'jaune d\'oeuf', 'blanc d\'oeuf', 'mayonnaise'] },
+  { allergen: 'Poissons', keywords: ['poisson', 'saumon', 'cabillaud', 'thon', 'truite', 'sole', 'bar', 'merlu', 'colin', 'anchois', 'sardine', 'dorade', 'lotte', 'lieu', 'flétan', 'fletan', 'maquereau', 'morue'] },
+  { allergen: 'Arachides', keywords: ['arachide', 'cacahuète', 'cacahuete', 'cacahouète', 'cacahouete'] },
+  { allergen: 'Soja', keywords: ['soja', 'tofu', 'edamame', 'tempeh', 'miso'] },
+  { allergen: 'Lait', keywords: ['lait', 'crème', 'creme', 'beurre', 'fromage', 'yaourt', 'yogourt', 'mascarpone', 'ricotta', 'mozzarella', 'parmesan', 'gruyère', 'gruyere', 'emmental', 'comté', 'comte', 'chèvre', 'chevre', 'roquefort', 'camembert', 'brie', 'reblochon', 'raclette', 'lactose', 'crème fraîche', 'creme fraiche', 'babeurre', 'petit-suisse'] },
+  { allergen: 'Fruits à coque', keywords: ['amande', 'noisette', 'noix', 'cajou', 'pistache', 'pécan', 'pecan', 'macadamia', 'noix de coco', 'pignon', 'pralin'] },
+  { allergen: 'Céleri', keywords: ['céleri', 'celeri'] },
+  { allergen: 'Moutarde', keywords: ['moutarde'] },
+  { allergen: 'Sésame', keywords: ['sésame', 'sesame', 'tahini', 'tahin'] },
+  { allergen: 'Sulfites', keywords: ['sulfite', 'vin', 'vinaigre', 'vin rouge', 'vin blanc', 'porto', 'madère', 'madere', 'xérès', 'xeres'] },
+  { allergen: 'Lupin', keywords: ['lupin'] },
+  { allergen: 'Mollusques', keywords: ['mollusque', 'moule', 'huître', 'huitre', 'calamar', 'poulpe', 'seiche', 'escargot', 'palourde', 'coque', 'bulot', 'bigorneau', 'encornet', 'saint-jacques'] },
+];
+
+function detectAllergens(ingredientNames: string[]): string[] {
+  const detected = new Set<string>();
+  for (const name of ingredientNames) {
+    const lower = name.toLowerCase();
+    for (const { allergen, keywords } of ALLERGEN_KEYWORD_MAP) {
+      if (keywords.some((kw) => lower.includes(kw))) {
+        detected.add(allergen);
+      }
+    }
+  }
+  return Array.from(detected).sort();
+}
+
 const DONUT_COLORS = ['#ef4444', '#f59e0b', '#22c55e'];
 
 function formatDate(dateStr: string) {
@@ -116,6 +147,16 @@ export default function RecipeDetail() {
   const allAllergens = Array.from(
     new Set(recipe.ingredients.flatMap((ri) => ri.ingredient.allergens || []))
   ).sort();
+
+  // Auto-detected allergens from ingredient names
+  const autoDetectedAllergens = useMemo(() => {
+    return detectAllergens(recipe.ingredients.map((ri) => ri.ingredient.name));
+  }, [recipe]);
+
+  // Merge DB allergens + auto-detected, deduplicated
+  const mergedAllergens = useMemo(() => {
+    return Array.from(new Set([...allAllergens, ...autoDetectedAllergens])).sort();
+  }, [allAllergens, autoDetectedAllergens]);
 
   const totalTime = (recipe.prepTimeMinutes || 0) + (recipe.cookTimeMinutes || 0);
 
@@ -406,25 +447,27 @@ export default function RecipeDetail() {
               </div>
             </div>
 
-            {/* Allergens */}
-            {allAllergens.length > 0 && (
-              <div>
-                <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3 text-amber-500" />
-                  Allergènes
-                </h2>
+            {/* Allergens (auto-detected + DB) */}
+            <div>
+              <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3 text-amber-500" />
+                Allergènes
+              </h2>
+              {mergedAllergens.length > 0 ? (
                 <div className="flex flex-wrap gap-1">
-                  {allAllergens.map((a) => (
+                  {mergedAllergens.map((a) => (
                     <span
                       key={a}
                       className={`px-1.5 py-0.5 rounded text-[9px] font-bold leading-tight ${ALLERGEN_COLORS[a] || 'bg-amber-200 text-amber-800 border border-amber-300'}`}
                     >
-                      {a}
+                      {'\u26A0\uFE0F'} {a}
                     </span>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="text-[10px] text-green-600 dark:text-green-400 italic">Aucun allergène majeur détecté</p>
+              )}
+            </div>
 
             {/* Timing */}
             {totalTime > 0 && (
@@ -465,8 +508,8 @@ export default function RecipeDetail() {
       <style>{`
         @media print {
           @page {
-            size: A4;
-            margin: 10mm;
+            size: A4 portrait;
+            margin: 8mm 10mm;
           }
 
           /* Hide everything except fiche technique */
@@ -488,31 +531,50 @@ export default function RecipeDetail() {
             display: none !important;
           }
 
-          /* Compact print typography */
+          /* ── Base fiche styling ── */
           #fiche-technique {
             font-size: 9pt;
             border: 1px solid #cbd5e1;
             border-radius: 0;
             box-shadow: none;
             background: white !important;
-            color: black !important;
+            color: #1e293b !important;
+            page-break-inside: avoid;
+            max-height: 277mm;
+            overflow: hidden;
           }
 
+          /* ── Header (dark bar with restaurant name) ── */
           #fiche-technique .fiche-header {
             background-color: #1e293b !important;
             color: white !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
+          #fiche-technique .fiche-header * {
+            color: white !important;
+          }
+          #fiche-technique .fiche-header .text-slate-300 {
+            color: #cbd5e1 !important;
+          }
+          #fiche-technique .fiche-header .text-slate-400 {
+            color: #94a3b8 !important;
+          }
 
+          /* ── Title bar ── */
+          #fiche-technique .bg-slate-50 {
+            background-color: #f8fafc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+
+          /* ── Body layout ── */
           #fiche-technique .fiche-body {
             display: flex !important;
           }
-
           #fiche-technique .fiche-left {
             flex: 3 !important;
           }
-
           #fiche-technique .fiche-right {
             flex: 2 !important;
             background-color: #f8fafc !important;
@@ -520,96 +582,150 @@ export default function RecipeDetail() {
             print-color-adjust: exact;
           }
 
+          /* ── Table ── */
           #fiche-technique table {
             border-collapse: collapse;
             font-size: 8.5pt;
           }
-
           #fiche-technique th,
           #fiche-technique td {
             border: none;
             padding: 2px 4px;
           }
-
           #fiche-technique thead tr {
             border-bottom: 2px solid #94a3b8 !important;
           }
-
           #fiche-technique tbody tr {
             border-bottom: 1px solid #e2e8f0;
           }
-
+          #fiche-technique tbody tr:nth-child(even) {
+            background-color: #f8fafc !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
           #fiche-technique tfoot tr {
             border-top: 2px solid #64748b !important;
           }
 
-          /* Force colored backgrounds on allergen badges */
+          /* ── Force all text colors for readability on white ── */
+          #fiche-technique h1,
+          #fiche-technique .text-slate-900,
+          #fiche-technique .text-slate-800 {
+            color: #0f172a !important;
+          }
+          #fiche-technique .text-slate-500,
+          #fiche-technique .text-slate-400 {
+            color: #64748b !important;
+          }
+          #fiche-technique .font-mono.font-bold {
+            color: #1e293b !important;
+          }
+
+          /* ── Margin color indicators (keep meaningful colors) ── */
+          #fiche-technique .text-green-600 { color: #16a34a !important; }
+          #fiche-technique .text-amber-600 { color: #d97706 !important; }
+          #fiche-technique .text-red-600 { color: #dc2626 !important; }
+
+          /* ── Allergen badges ── */
           #fiche-technique span[class*="bg-"] {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
 
-          /* Force background colors for timing boxes */
-          #fiche-technique .bg-slate-800 {
+          /* ── Timing boxes ── */
+          #fiche-technique .bg-white {
+            background-color: white !important;
+          }
+          #fiche-technique div.bg-slate-800 {
             background-color: #1e293b !important;
             color: white !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
-
-          #fiche-technique .bg-slate-50\\/50,
-          #fiche-technique .bg-slate-50 {
-            background-color: #f8fafc !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+          #fiche-technique div.bg-slate-800 * {
+            color: white !important;
+          }
+          #fiche-technique div.bg-slate-800 .text-slate-300 {
+            color: #cbd5e1 !important;
           }
 
-          #fiche-technique .bg-slate-100 {
-            background-color: #f1f5f9 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-
-          /* Metric rows */
+          /* ── Metric rows ── */
           #fiche-technique .metric-row:nth-child(even) {
             background-color: #f8fafc !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
+          #fiche-technique .metric-row .text-slate-500 {
+            color: #475569 !important;
+          }
+          #fiche-technique .metric-row .font-mono {
+            color: #1e293b !important;
+          }
 
-          /* Category badge */
+          /* ── Category badge ── */
           #fiche-technique .bg-slate-200 {
             background-color: #e2e8f0 !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
 
-          /* Ensure the whole fiche fits on one page */
-          #fiche-technique {
-            page-break-inside: avoid;
-            max-height: 277mm; /* A4 height minus margins */
-            overflow: hidden;
+          /* ── Selling price ── */
+          #fiche-technique .text-2xl {
+            color: #0f172a !important;
           }
 
-          /* Footer */
+          /* ── Footer ── */
           #fiche-technique .fiche-footer {
             background-color: #f1f5f9 !important;
+            border-top: 1px solid #cbd5e1 !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
+          #fiche-technique .fiche-footer span {
+            color: #64748b !important;
+          }
 
-          /* Dark mode overrides for print */
-          .dark #fiche-technique,
+          /* ── Borders ── */
+          #fiche-technique .border-slate-200,
+          #fiche-technique .border-slate-300 {
+            border-color: #cbd5e1 !important;
+          }
+          #fiche-technique .border-r {
+            border-right: 1px solid #cbd5e1 !important;
+          }
+
+          /* ── Donut legend text ── */
+          #fiche-technique .text-\\[10px\\] .text-slate-500 {
+            color: #64748b !important;
+          }
+
+          /* ── Dark mode full override for print ── */
+          .dark #fiche-technique {
+            background: white !important;
+            color: #1e293b !important;
+          }
           .dark #fiche-technique * {
-            color: black !important;
+            color: #1e293b !important;
           }
           .dark #fiche-technique .fiche-header,
           .dark #fiche-technique .fiche-header * {
             color: white !important;
           }
-          .dark #fiche-technique .bg-slate-800.text-white,
-          .dark #fiche-technique .bg-slate-800.text-white * {
+          .dark #fiche-technique div.bg-slate-800,
+          .dark #fiche-technique div.bg-slate-800 * {
             color: white !important;
+          }
+          .dark #fiche-technique .text-green-600 { color: #16a34a !important; }
+          .dark #fiche-technique .text-amber-600 { color: #d97706 !important; }
+          .dark #fiche-technique .text-red-600 { color: #dc2626 !important; }
+          .dark #fiche-technique .bg-slate-50,
+          .dark #fiche-technique .bg-slate-800\\/50,
+          .dark #fiche-technique .bg-slate-800\\/30 {
+            background-color: #f8fafc !important;
+          }
+          .dark #fiche-technique .border-slate-700,
+          .dark #fiche-technique .border-slate-600 {
+            border-color: #cbd5e1 !important;
           }
         }
       `}</style>

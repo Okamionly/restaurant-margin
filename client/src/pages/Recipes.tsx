@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert } from 'lucide-react';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
 import type { MercurialeSuggestedIngredient } from '../services/api';
@@ -426,6 +426,12 @@ export default function Recipes() {
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [variantTarget, setVariantTarget] = useState<Recipe | null>(null);
+  const [variantName, setVariantName] = useState('');
+  const [variantCategory, setVariantCategory] = useState('');
+  const [variantPortions, setVariantPortions] = useState('');
+  const [variantLoading, setVariantLoading] = useState(false);
+  const navigate = useNavigate();
 
   // New: form enhancements state
   const [saving, setSaving] = useState(false);
@@ -813,13 +819,44 @@ export default function Recipes() {
     }
   }
 
-  async function handleClone(id: number) {
+  function openVariantModal(recipe: Recipe) {
+    setVariantTarget(recipe);
+    setVariantName(`${recipe.name} \u2014 Variante`);
+    setVariantCategory(recipe.category);
+    setVariantPortions(String(recipe.nbPortions));
+    setVariantLoading(false);
+  }
+
+  async function handleVariantCreate() {
+    if (!variantTarget || !variantName.trim()) return;
+    setVariantLoading(true);
     try {
-      await cloneRecipe(id);
+      // 1) Clone via existing API
+      const cloned = await cloneRecipe(variantTarget.id);
+      // 2) Update with user's chosen name, category, portions
+      const updatedIngredients = cloned.ingredients.map((ri) => ({
+        ingredientId: ri.ingredientId,
+        quantity: ri.quantity,
+        wastePercent: ri.wastePercent,
+      }));
+      await updateRecipe(cloned.id, {
+        name: variantName.trim(),
+        category: variantCategory,
+        sellingPrice: cloned.sellingPrice,
+        nbPortions: parseInt(variantPortions) || cloned.nbPortions,
+        description: cloned.description || undefined,
+        prepTimeMinutes: cloned.prepTimeMinutes ?? undefined,
+        cookTimeMinutes: cloned.cookTimeMinutes ?? undefined,
+        laborCostPerHour: cloned.laborCostPerHour ?? undefined,
+        ingredients: updatedIngredients,
+      });
       showToast(t("recipes.recipeCloned"), 'success');
-      loadData();
+      setVariantTarget(null);
+      navigate(`/recipes/${cloned.id}`);
     } catch {
       showToast(t("recipes.errorCloning"), 'error');
+    } finally {
+      setVariantLoading(false);
     }
   }
 

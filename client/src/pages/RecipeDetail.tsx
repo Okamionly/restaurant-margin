@@ -240,7 +240,7 @@ export default function RecipeDetail() {
         </div>
 
         {/* ─── TITLE BAR ─── */}
-        <div className="px-5 py-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-750">
+        <div className="px-5 py-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
           <div className="flex items-baseline justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">{recipe.name}</h1>

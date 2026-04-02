@@ -304,7 +304,7 @@ export default function RecipeDetail() {
                       </td>
                       <td className="py-1 text-center text-slate-400 dark:text-slate-400">{ri.ingredient.unit}</td>
                       <td className="py-1 text-center font-mono text-slate-400">{waste > 0 ? `${waste}%` : '—'}</td>
-                      <td className="py-1 text-right font-mono text-slate-300 dark:text-slate-400">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
+                      <td className="py-1 text-right font-mono text-slate-500 dark:text-slate-400">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
                       <td className="py-1 text-right font-mono font-bold text-slate-800 dark:text-slate-200 pr-1">{lineTotal.toFixed(2)}</td>
                     </tr>
                   );
@@ -398,7 +398,7 @@ export default function RecipeDetail() {
                   {donutData.map((d, i) => (
                     <div key={i} className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-sm inline-block flex-shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
-                      <span className="text-slate-300 dark:text-slate-400 flex-1">{d.name}</span>
+                      <span className="text-slate-500 dark:text-slate-400 flex-1">{d.name}</span>
                       <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{d.value.toFixed(2)} &euro;</span>
                     </div>
                   ))}
@@ -636,7 +636,7 @@ function MetricRow({
 }) {
   return (
     <div className={`metric-row flex items-center justify-between px-3 py-1.5 ${!last ? 'border-b border-slate-200 dark:border-slate-700' : ''} ${bold ? 'bg-slate-50 dark:bg-slate-700/50' : ''}`}>
-      <span className={`text-slate-300 dark:text-slate-400 ${bold ? 'font-semibold text-slate-400 dark:text-slate-300' : ''}`}>{label}</span>
+      <span className={`text-slate-500 dark:text-slate-400 ${bold ? 'font-semibold text-slate-600 dark:text-slate-300' : ''}`}>{label}</span>
       <div className="text-right">
         <span className={`font-mono font-bold ${valueClass || 'text-slate-800 dark:text-slate-200'}`}>{value}</span>
         {sub && <span className="text-slate-400 dark:text-slate-500 ml-1 text-[9px]">{sub}</span>}

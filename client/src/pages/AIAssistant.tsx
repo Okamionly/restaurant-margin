@@ -372,7 +372,7 @@ export default function AIAssistant() {
           </div>
           <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
             <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-            <span className="text-xs text-blue-400 font-medium">Claude AI</span>
+            <span className="text-xs text-teal-400 font-medium">IA Pro</span>
           </div>
         </div>
       </div>
@@ -387,7 +387,7 @@ export default function AIAssistant() {
                 Quota IA : {aiUsage.used}/{aiUsage.limit} requetes ce mois ({aiUsage.percentage}%)
               </span>
             </div>
-            <span className="text-xs text-slate-500">{aiUsage.estimatedCost.toFixed(2)} EUR</span>
+            <span className="text-xs text-slate-500">{aiUsage.month}</span>
           </div>
           <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
             <div
@@ -599,7 +599,7 @@ export default function AIAssistant() {
             </button>
           </div>
           <p className="text-[10px] text-slate-300 mt-2 text-center">
-            Propulse par Claude AI — Analyse et agit sur votre restaurant
+            Assistant IA RestauMargin — Analyse et agit sur votre restaurant
           </p>
         </div>
       </div>

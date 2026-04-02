@@ -12,6 +12,7 @@ ingredientsRouter.get('/', authWithRestaurant, async (req: AuthRequest, res: Res
     const ingredients = await prisma.ingredient.findMany({
       where: { restaurantId: req.restaurantId! },
       orderBy: { name: 'asc' },
+      include: { supplierRef: { select: { id: true, name: true } } },
     });
     res.json(ingredients);
   } catch (error) {

@@ -767,7 +767,7 @@ export default function Dashboard() {
         {/* Original empty state card below */}
         <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
           <ChefHat className="w-14 h-14 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <h3 className="text-lg font-semibold text-slate-300 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
+          <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
           <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
           <div className="flex gap-4 justify-center">
             <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
@@ -1400,7 +1400,7 @@ export default function Dashboard() {
                         return (
                           <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
                             <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                            <p className="text-slate-300 dark:text-slate-300">{d?.value?.toFixed(2)} € ({pct}%)</p>
+                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} € ({pct}%)</p>
                           </div>
                         );
                       }}
@@ -1432,7 +1432,7 @@ export default function Dashboard() {
                         return (
                           <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
                             <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                            <p className="text-slate-300 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
+                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
                             <p className="text-slate-400 dark:text-slate-400">{pct}% {t("dashboard.ofTotalCost")}</p>
                           </div>
                         );
@@ -1772,7 +1772,7 @@ export default function Dashboard() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-300 dark:text-slate-300">
+                <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
                   <tr>
                     <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.dish")}</th>
                     <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.cat")}</th>

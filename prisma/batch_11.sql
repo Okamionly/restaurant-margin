@@ -1,0 +1,22 @@
+INSERT INTO ingredients (name, unit, "pricePerUnit", supplier, category, "restaurantId", "supplierId", "createdAt", "updatedAt") VALUES
+('Saumon fumé ficelle prétranché avec peau', 'kg', 44.3, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Saumon fumé ficelle Ecosse', 'kg', 40.3, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Saumon fumé entier Norvège', 'kg', 36.9, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Saumon fumé tranché machine', 'kg', 30.9, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Saumon fumé tranché Ecosse', 'kg', 29.99, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Saumon fumé tranché ASC JC David', 'kg', 44.3, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Saumon fumé tranché frais ou décongelé', 'pièce', 28.9, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Thon en morceau à l''huile d''olive', 'kg', 28.9, 'Transgourmet', 'Poissons', 5, 8, NOW(), NOW()),
+('Pot de 780 g', 'kg', 5.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Pot de 780 g', 'kg', 5.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Spaghetti de Mer Frais Salé BIO', 'kg', 17.5, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Wakamé frais salé BIO', 'kg', 20.5, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Kombu royal frais salé BIO', 'kg', 17.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Laitue de mer fraiche salée BIO', 'kg', 17.9, 'Transgourmet', 'Produits laitiers', 5, 8, NOW(), NOW()),
+('Rameaux de salicornes', 'kg', 8.5, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Salicorne', 'kg', 15.3, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Encre de seiche', 'kg', 8.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Encre de seiche', 'kg', 12.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Blinis gros x4', 'kg', 2.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW()),
+('Blinis minis x16', 'kg', 2.9, 'Transgourmet', 'Épicerie', 5, 8, NOW(), NOW())
+ON CONFLICT DO NOTHING;

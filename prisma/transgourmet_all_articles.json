@@ -1,0 +1,4562 @@
+[
+  {
+    "code": "300815",
+    "name": "POULET FERM,ARGOAT 1,6/1,7K LR",
+    "price": 8.03,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301162",
+    "name": "PINTADE FERM,NORMA,1,2/1,4K LR",
+    "price": 9.24,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301165",
+    "name": "PINTADE BOURGOGNE 1,2/1,4KG LR",
+    "price": 9.69,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301167",
+    "name": "SUPREME PINT,BOUR,180/240X4 LR",
+    "price": 20.53,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301214",
+    "name": "CAILLE CHALLANS 225G IGP LR",
+    "price": 15.69,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301436",
+    "name": "CANARD PAC NU 2,9KG",
+    "price": 10.27,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301437",
+    "name": "FLT,CANARD A/PEAU 460G X2",
+    "price": 22.01,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301438",
+    "name": "CUISSE DE CANARD 350G X2",
+    "price": 13.27,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301439",
+    "name": "SAUTE CANARD S/OS S/P X2,5KG",
+    "price": 20.55,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301441",
+    "name": "SAUTE CANARD S/OS A/P 2,5KG",
+    "price": 16.34,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301443",
+    "name": "FLT, CANETTE 190G X2",
+    "price": 25.71,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301444",
+    "name": "CUISSE DE CANETTE 180G X2",
+    "price": 13.36,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "301546",
+    "name": "CANETTE PAC NUE 1,5KG",
+    "price": 11.04,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "302501",
+    "name": "PLT FERMIER JNE 1.4/1.6 KG LR",
+    "price": 6.62,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431729",
+    "name": "POULET FERMIER NU 1,5/1,7KG LR",
+    "price": 7.21,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "151686",
+    "name": "POULET FERMIER PAC 1.2/1.4K LR",
+    "price": 7.27,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431720",
+    "name": "CUISSE DINDE FEMEL,2PCE 1K4 LR",
+    "price": 7.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "233462",
+    "name": "POULET FERMIER BLC 1,6/1,8K LR",
+    "price": 8.38,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "832766",
+    "name": "POULET FERM,LR BLANC 1,3/1,5K",
+    "price": 8.38,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432408",
+    "name": "PLT FERMIER JAUNE LR 1,4/1,6KG",
+    "price": 8.36,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432184",
+    "name": "CUIS.PLT.FERM.LR BOURG.S/V X10",
+    "price": 9.25,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431731",
+    "name": "PINTADE FERM,MAIN,PAC NU 1K2LR",
+    "price": 9.78,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "235600",
+    "name": "DINDE FERMIERE LOUE 3.75KG LR",
+    "price": 13.56,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431721",
+    "name": "EMINCE HAUT CUISSE DDE 2,5K LR",
+    "price": 14.52,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431724",
+    "name": "SAUTE DINDE 50/70G 2,5 KG LR",
+    "price": 14.68,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "538471",
+    "name": "MORCEAUX FLT DDE 40/60G 2K5 LR",
+    "price": 15.65,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431726",
+    "name": "FLT DINDE S/P 2PCES 1,5 KG LR",
+    "price": 15.29,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431725",
+    "name": "SOT L'Y LAISSE DINDE 1 KG LR",
+    "price": 16.62,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "969615",
+    "name": "ESCAL.DINDE 130/150G X10 LR",
+    "price": 16.68,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431723",
+    "name": "ROTI FLT DINDE S/B 1,8/2,2K LR",
+    "price": 17.24,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432395",
+    "name": "FLT POULET GASCOGNE LR 160GX10",
+    "price": 19.88,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431987",
+    "name": "SUPREME PINTADE S/ATX4 770G LR",
+    "price": 21.03,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432435",
+    "name": "FLT,PLT,FERM,LR 120/150GX6",
+    "price": 23.24,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431804",
+    "name": "POULET FERMIER NU 1,5KG *BIO",
+    "price": 10.38,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431801",
+    "name": "EMINCES CUISSE PLT SP 2K5*BIO",
+    "price": 21.67,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431802",
+    "name": "SAUTE POULET FERM,SO 2,5K *BIO",
+    "price": 21.67,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432348",
+    "name": "EMINCE CUISS,PLT FERM, 1KG*BIO",
+    "price": 22.62,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431803",
+    "name": "FLT POULET FERMIER 720GX4 *BIO",
+    "price": 32.36,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432409",
+    "name": "POULE CL, A PAC NUE 1,1/1,2 KG",
+    "price": 4.85,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "101478",
+    "name": "COQUELET PAC NU 500/650 G",
+    "price": 8.82,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432390",
+    "name": "MCX COQ S/COLONNE NU 200/250G",
+    "price": 8.72,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432428",
+    "name": "PINTADE CLASSE A PAC NUE 1,2KG",
+    "price": 7.67,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432376",
+    "name": "CUISSE PINTAD,DEJ,180/220G X10",
+    "price": 10.85,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432378",
+    "name": "CUISSE PINTAD,DEJ,150/180G X10",
+    "price": 10.85,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432436",
+    "name": "SUPREME PINTADE 180/220G X10",
+    "price": 17.11,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432452",
+    "name": "CARCASSE POULET VRAC 5 KG",
+    "price": 3.75,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "835157",
+    "name": "CUISSE PLT A/DOS 240/260GX10X2",
+    "price": 4.98,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "228442",
+    "name": "AILE POULET 2,5KG",
+    "price": 5.24,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432423",
+    "name": "CUIS POULET A/DOS 220/240G X10",
+    "price": 5.31,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "507518",
+    "name": "POULET A PAC NU S/T.BLANC 1.2K",
+    "price": 5.49,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432346",
+    "name": "POULET BLANC PAC NU A S/T 1KG",
+    "price": 5.49,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432379",
+    "name": "HAUT CUIS, POULET 130/160G X20",
+    "price": 5.69,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432426",
+    "name": "PILON DE POULET NU 80/120G",
+    "price": 5.69,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432427",
+    "name": "CUISSE PLT DEJ,180/200G X10",
+    "price": 5.8,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432357",
+    "name": "POULET A PAC NU S/T BLANC 1,4K",
+    "price": 5.79,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432420",
+    "name": "CUISSE PLT DEJ 200/220G X10",
+    "price": 5.8,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432437",
+    "name": "CUISSE PLT,DEJ,220/240G X10",
+    "price": 6.27,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432384",
+    "name": "CUIS,PLT,S/OS AP SNACK 1,5KX10",
+    "price": 9.89,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432434",
+    "name": "CUISSE PLT FERMIER 200/240GX10",
+    "price": 9.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "244526",
+    "name": "SAUTE PLT S/O S/P 50/70G 2,5KG",
+    "price": 10.12,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432415",
+    "name": "EMINCE CUISSE PLT S/OS SP 1 KG",
+    "price": 10.55,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "666828",
+    "name": "FLT.POULET S/P.120/140GX10",
+    "price": 10.59,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432432",
+    "name": "SUPREME POULET 200/240G X10",
+    "price": 10.6,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "229852",
+    "name": "FLT,POULET S/OS S/P 90/120GX10",
+    "price": 10.59,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "311727",
+    "name": "SUPREME POULET 160/200 G X10",
+    "price": 10.94,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432468",
+    "name": "FLT. POULET S/AT 2 KG",
+    "price": 11.11,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432433",
+    "name": "AIGUIL,POULET 1KG",
+    "price": 11.18,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "203254",
+    "name": "AIGUIL,POULET THYM/CIT,SV 2,5K",
+    "price": 11.81,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "970540",
+    "name": "ESCAL,PLT JAUNE 130/150 G X10",
+    "price": 11.72,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "780431",
+    "name": "SUPREME PLT JAUNE 200/240G X10",
+    "price": 11.94,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "273440",
+    "name": "SAUTE PLT P,CHAMPS 2,5KG",
+    "price": 16.62,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432429",
+    "name": "POULET NU BRESSE AOP 1,8/2,2KG",
+    "price": 18.11,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432349",
+    "name": "POULET BRESSE NU 1,4/1,5KG AOP",
+    "price": 21.16,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "219699",
+    "name": "EMINCE EPAUL,DDE S/P S/O 2,5KG",
+    "price": 7.93,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "242972",
+    "name": "CORDON BLEU VOLAILLE 100GX10",
+    "price": 9.2,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "233921",
+    "name": "EMINCE CUISSE DINDE S/P 2,5 KG",
+    "price": 9.31,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432354",
+    "name": "OSSO BUCCO DINDE 100/120G X10",
+    "price": 7.8,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432360",
+    "name": "ROTI DINDE MIXTE 1,8/2,2 KG",
+    "price": 10.12,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432386",
+    "name": "ESCAL,DINDE 110/130G X10",
+    "price": 11.37,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432388",
+    "name": "EMINCE FILET DINDE 2,5KG",
+    "price": 11.26,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432413",
+    "name": "ROTI FLT DINDE S/B 1,8/2,2K",
+    "price": 11.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432418",
+    "name": "CUISSE DINDE FEMELLE X2 1,455K",
+    "price": 7.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432422",
+    "name": "ESCAL,DINDE 130/150G X10",
+    "price": 11.36,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432424",
+    "name": "ESCAL,DINDE 90/110G X10",
+    "price": 11.37,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432425",
+    "name": "EMINCE HAUT CUISSE DINDE 2,5KG",
+    "price": 9.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432430",
+    "name": "FLT,DINDE S/P 1,5/1,9KG",
+    "price": 10.38,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432431",
+    "name": "SAUTE DINDE 50/70G 2,5KG",
+    "price": 9.35,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "682039",
+    "name": "SAUTE DINDE 70/90G 2,5KG",
+    "price": 9.07,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432362",
+    "name": "PIGEONNEAU ROYAL NU 540/600 G",
+    "price": 22.43,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "101475",
+    "name": "SAUTE CANARD S/O,40/60G 2,5 KG",
+    "price": 18.26,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "273419",
+    "name": "EFFILOCHE CANARD CONFIT 2KG",
+    "price": 45.08,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431914",
+    "name": "CUIS,CANET, A/PEAU 150/200GX15",
+    "price": 10.05,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431915",
+    "name": "CUISSE CANET,A/PEAU 150/200GX2",
+    "price": 10.05,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "311886",
+    "name": "MANCHON CANARD X6 900 G",
+    "price": 6.83,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432358",
+    "name": "ANDOUILLET, CANARD 110/140GX10",
+    "price": 15.24,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432405",
+    "name": "FILET CANARD AP 250/300G X2",
+    "price": 15.74,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431918",
+    "name": "FLT,CANETTE A/PEAU 200/250G X2",
+    "price": 17.22,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431919",
+    "name": "FLT,CANETTE A/PEAU 170/200GX15",
+    "price": 17.22,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432049",
+    "name": "CUISSE CANETTE DOMBES 200 G X2",
+    "price": 15.49,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432407",
+    "name": "CUISSE CANETTE 150/200G NUE",
+    "price": 9.89,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432419",
+    "name": "FILET CANETTE DOMBE 200G X2",
+    "price": 21.69,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "672121",
+    "name": "CANETTE BARBARIE 1,3/1,7K",
+    "price": 8.96,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "242161",
+    "name": "RABLE LAPIN DESOS,250/300GX5",
+    "price": 19.78,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432078",
+    "name": "RABLE LAPIN MCX S/OS 2,5KG",
+    "price": 21.67,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432353",
+    "name": "LAPIN ENTIER NU +1,4KG",
+    "price": 9.89,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432355",
+    "name": "EMINCE LAPIN S/PEAU S/V 1KG",
+    "price": 20.29,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432382",
+    "name": "CUISSE LAPIN NU 180/220G",
+    "price": 17.76,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432383",
+    "name": "RABLE DE LAPIN NU 350 G BBC",
+    "price": 17.32,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432387",
+    "name": "RABLE LAPIN NU 300/400G",
+    "price": 16.23,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "261841",
+    "name": "AIGUILLET,PLT,CORN FLAKES X1KG",
+    "price": 14.32,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431986",
+    "name": "NUGGETS VOLAILLE S/ATM 20G X50",
+    "price": 8.68,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "242596",
+    "name": "AIGUIL,POULET ROTIE 2KG",
+    "price": 18.02,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "257639",
+    "name": "PAUPIETT DINDE S/F 130/150GX10",
+    "price": 14.12,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "257665",
+    "name": "SAUCISSE VOLAILLE S/ATM 50GX20",
+    "price": 11.29,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432410",
+    "name": "FOIE VOLAILLE 1KG",
+    "price": 4.77,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432412",
+    "name": "GESIER VOLAILLE S/V 1KG",
+    "price": 4.83,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432397",
+    "name": "HACHE VOLAILLE AU COUTEAU 1 KG",
+    "price": 11.86,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "283015",
+    "name": "KNACK VOLAILLE CUITE 1,2KG HAL",
+    "price": 10.12,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "311704",
+    "name": "AIGUIL, POULET 2,5 KG HALAL",
+    "price": 11.14,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "431906",
+    "name": "POULET BLC QRT,ARR, 10KG HALAL",
+    "price": 4.98,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432402",
+    "name": "FLT,PLT SP HALAL 120/140GX2,5K",
+    "price": 11.02,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "432404",
+    "name": "FILET POULET S/PEAU HALAL 2,5K",
+    "price": 11.02,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "01 LDC FDV TARIF GAMME Avril 2026"
+  },
+  {
+    "code": "822637",
+    "name": "K ROTI DE BŒUF MACREUSE/TT/TG CUIT SV 2,2KG",
+    "price": 19.36,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "920551",
+    "name": "K ROTI DE BŒUF PALERON CUIT BRAISE SV 2,2KG",
+    "price": 18.04,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "273406",
+    "name": "K PALERON DE BŒUF CONFIT CUIT SV 2KG (dans la graisse de canard)",
+    "price": 18.3,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "400401",
+    "name": "K PALERON DE VEAU CONFIT CUIT SV 1KG (dans la graisse de canard)",
+    "price": 19.0,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "224787",
+    "name": "K PALERON DE VEAU CONFIT CUIT SV 1KG CONGELE",
+    "price": 20.89,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "811632",
+    "name": "K ROTI DE PORC FILET CUIT SV 2,2KG",
+    "price": 10.16,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "224788",
+    "name": "K ECHINE DE PORC CONFITE CUITE SV 2KG CONGELE",
+    "price": 11.66,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "811631",
+    "name": "K ROTI DE DINDE FILET CUIT SV 2,2KG",
+    "price": 16.02,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "224589",
+    "name": "SAUTE DE VEAU 35G CUIT CONGELE",
+    "price": 20.75,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "224590",
+    "name": "SAUTE DE PORC 35G CUIT CONGELE",
+    "price": 11.85,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "159183",
+    "name": "K FAUX FILET FACON TATAKI VBF 200G PRECUIT MARINE CONGELE",
+    "price": 32.1,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "614804",
+    "name": "K TRANCHE ROTI BŒUF CUIT 20G CONGELE IQF",
+    "price": 19.95,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "811001",
+    "name": "K SOURIS D'AGNEAU CUITE 350g/550G x 1",
+    "price": 19.16,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "920550",
+    "name": "K JARRET DE PORC A LA FLEUR DE BIERE CUIT 380/600G",
+    "price": 9.2,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "614675",
+    "name": "K CHILI CON CARNE CUIT 300G SOUS VIDE CONGELE",
+    "price": 13.68,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "822640",
+    "name": "K ROTI DE BŒUF JUMEAU CUIT SV 1,4KG",
+    "price": 18.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "218190",
+    "name": "K FONDANT DE VEAU CUIT (au Pineau des Charentes) SV 1,2KG",
+    "price": 18.45,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "431939",
+    "name": "K NOIX DE JOUE DE BŒUF CUITE CONFITE SV 2KG ENV",
+    "price": 17.89,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "432497",
+    "name": "K FONDANT DE VEAU CUIT CONFIT SV 1,2KG",
+    "price": 17.54,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "738428",
+    "name": "K NOIX JOUE PORC CUIT CONFIT SV 1KG",
+    "price": 13.55,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "614676",
+    "name": "K EFFILOCHE DE PORC CUIT CONFIT OIGNON-POIVRE 500G SOUS VIDE CONGELE",
+    "price": 15.8,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "432288",
+    "name": "K EFFILOCHE DE PORC CUIT SAVEUR EPICES CAJUN 500G SOUS VIDE FRAIS",
+    "price": 14.2,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "930542",
+    "name": "K BOURGUIGNON BŒUF UE 35G CUIT SV 5KG CONGELE",
+    "price": 19.23,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "224589",
+    "name": "K SAUTE DE VEAU 35G CUIT CONGELE",
+    "price": 20.75,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "224590",
+    "name": "K SAUTE DE PORC 35G CUIT CONGELE",
+    "price": 11.85,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "101463",
+    "name": "K ROTI DE BŒUF MACREUSE/TT/TG CUIT SV 2,2KG CONGELE",
+    "price": 21.16,
+    "unit": "pièce",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "950891",
+    "name": "K ROTI DE BŒUF JUMEAU CUIT SV 1,4KG CONGELE",
+    "price": 19.9,
+    "unit": "pièce",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "998643",
+    "name": "K ROTI DE BŒUF PALERON CUIT BRAISE SV 2,2KG CONGELE",
+    "price": 19.34,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "257516",
+    "name": "K FONDANT DE VEAU CUIT (au Pineau des Charentes) SV 1,2KG CONGELE",
+    "price": 20.77,
+    "unit": "pièce",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "998640",
+    "name": "K ROTI DE PORC FILET CUIT SV 2,2KG CONGELE",
+    "price": 11.35,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "758804",
+    "name": "K JARRET DE PORC A LA FLEUR DE BIERE CUIT CONGELE",
+    "price": 9.95,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "950892",
+    "name": "K ROTI DE DINDE FILET CUIT SV 2,2KG CONGELE",
+    "price": 17.06,
+    "unit": "pièce",
+    "category": "Surgelés",
+    "source": "04 - Tarif beauvallet 1er avril"
+  },
+  {
+    "code": "101480",
+    "name": "FILET BŒUF SP 2,8KG+ VBF",
+    "price": 27.09,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "208527",
+    "name": "FILET BŒUF SP 2,4KG+ VBF",
+    "price": 26.48,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "257636",
+    "name": "FILET BŒUF SP 2KG+ VBF",
+    "price": 25.37,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "853101",
+    "name": "BAVETTE ALOYAU PAD VBF",
+    "price": 21.83,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "208569",
+    "name": "ENTRECOTE SP 3KG+ VBF",
+    "price": 22.64,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "855493",
+    "name": "CARRE COTE BOEUF DEVERTEBRE VBF",
+    "price": 20.37,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "852566",
+    "name": "COEUR DE RUMSTEAK PAD VBF",
+    "price": 17.94,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "101479",
+    "name": "FAUX FILET SP 6KG+ VBF",
+    "price": 16.93,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "852822",
+    "name": "COEUR DE TENDE TRANCHE PAD VBF",
+    "price": 17.44,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "217135",
+    "name": "DESSUS PALETTE PAD VBF SV",
+    "price": 16.93,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "852905",
+    "name": "ROND GITE PAD VBF",
+    "price": 17.54,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "852830",
+    "name": "PALERON SP VBF",
+    "price": 16.12,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "200891",
+    "name": "NOIX BASSE COTE SP 4 FACES VBF",
+    "price": 15.62,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628438",
+    "name": "FILET BOEUF SP",
+    "price": 26.83,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628420",
+    "name": "FILET BOEUF SP",
+    "price": 26.23,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628412",
+    "name": "FILET BOEUF SP",
+    "price": 25.17,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628388",
+    "name": "ENTRECOTE SP",
+    "price": 19.61,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628370",
+    "name": "ENTRECOTE SP",
+    "price": 18.75,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628339",
+    "name": "CARRE COTE BOEUF DEVERTEBRE",
+    "price": 16.12,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628321",
+    "name": "FAUX FILET SP",
+    "price": 15.82,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628453",
+    "name": "FAUX FILET SP",
+    "price": 15.21,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628461",
+    "name": "FAUX FILET SP",
+    "price": 14.71,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628511",
+    "name": "BAVETTE ALOYAU PAD",
+    "price": 16.93,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628552",
+    "name": "ONGLET BOEUF SP",
+    "price": 15.21,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628503",
+    "name": "COEUR DE TENDE TRANCHE PAD",
+    "price": 16.12,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628396",
+    "name": "COEUR DE RUMSTEAK PAD",
+    "price": 15.62,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628537",
+    "name": "NOIX BASSE COTE SP 4 FACES",
+    "price": 14.81,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "868000",
+    "name": "BOULE MACREUSE PAD",
+    "price": 15.82,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628479",
+    "name": "PALERON SP",
+    "price": 13.29,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628487",
+    "name": "JARRET BOEUF SANS OS",
+    "price": 12.84,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628446",
+    "name": "LANGUE BŒUF",
+    "price": 10.82,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "101473",
+    "name": "FILET MIGNON VEAU SP",
+    "price": 29.51,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "625103",
+    "name": "CARRE VEAU ENTIER AVEC OS",
+    "price": 15.42,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "225087",
+    "name": "CŒUR QUASI VEAU SP",
+    "price": 18.24,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "432372",
+    "name": "PICANHA DE VEAU SP (aiguillette de quasi)",
+    "price": 17.54,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "258542",
+    "name": "ARAIGNEE DE VEAU SP *",
+    "price": 15.01,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628602",
+    "name": "NOIX VEAU SP",
+    "price": 18.14,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628560",
+    "name": "NOIX VEAU PATISSIERE SP",
+    "price": 15.72,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628545",
+    "name": "SOUS NOIX VEAU SP",
+    "price": 15.92,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628578",
+    "name": "EPAULE VEAU SANS OS SP",
+    "price": 14.3,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "628586",
+    "name": "BAS CARRE VEAU SANS OS",
+    "price": 14.05,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "101472",
+    "name": "FOIE VEAU ENTIER",
+    "price": 17.13,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "101471",
+    "name": "TETE VEAU S/OS A/LANGUE A PLAT",
+    "price": 10.87,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "239995",
+    "name": "ROGNON VEAU AVEC GRAISSE",
+    "price": 6.02,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "101398",
+    "name": "GIGOT AGNEAU SANS OS *",
+    "price": 19.15,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "920587",
+    "name": "1/2 CARRE PORCELET AVEC OS *",
+    "price": 13.5,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "920589",
+    "name": "CUISSOT PORCELET SANS OS *",
+    "price": 12.64,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "920588",
+    "name": "EPAULE PORCELET SANS OS *",
+    "price": 11.07,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "208526",
+    "name": "FILET MIGNON PORC SP *",
+    "price": 9.71,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "970561",
+    "name": "GRILLADE DE PORC *",
+    "price": 8.95,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "214137",
+    "name": "ARAIGNEE PORC SP *",
+    "price": 8.95,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - BEAUVALLET TARIF NEGOCE HEBDO(1)"
+  },
+  {
+    "code": "873472",
+    "name": "FILET BOEUF SP 2,5KG+*",
+    "price": 24.9,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873584",
+    "name": "FILET BOEUF SP 2KG+*",
+    "price": 22.86,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873583",
+    "name": "COEUR DE RTK PAD",
+    "price": 13.61,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873563",
+    "name": "ENTRECOTE 3+",
+    "price": 16.84,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873317",
+    "name": "ENTRECOTE 2,5+",
+    "price": 15.68,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "874553",
+    "name": "POIRE PAD",
+    "price": 13.61,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873564",
+    "name": "AIGUILLETTE BARONNE",
+    "price": 14.54,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873311",
+    "name": "CARRE COTE BF DEVERTEBRE*",
+    "price": 15.22,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "872863",
+    "name": "FAUX FILET 7+",
+    "price": 15.01,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873468",
+    "name": "FAUX FILET 6+",
+    "price": 14.6,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873558",
+    "name": "FAUX FILET 5+",
+    "price": 13.03,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873561",
+    "name": "FAUX FILET 4+",
+    "price": 12.57,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873467",
+    "name": "PALERON",
+    "price": 12.57,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873313",
+    "name": "JARRET BOEUF S/OS",
+    "price": 11.43,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873423",
+    "name": "COEUR DE TT PAD 4KG+",
+    "price": 14.76,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873565",
+    "name": "BAVETTE ALOYAU PAD",
+    "price": 15.34,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873560",
+    "name": "NOIX BASSE COTE",
+    "price": 13.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873566",
+    "name": "ONGLET BOEUF SP*",
+    "price": 13.26,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873473",
+    "name": "HAMPE BŒUF PAD",
+    "price": 12.32,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873586",
+    "name": "LANGUE BOEUF*",
+    "price": 8.76,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "100642",
+    "name": "DESSUS PALETTE",
+    "price": 14.13,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873466",
+    "name": "SOUS NOIX VEAU",
+    "price": 17.01,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873559",
+    "name": "NOIX VEAU PATISSIERE",
+    "price": 14.88,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "212934",
+    "name": "EPAULE VEAU",
+    "price": 13.84,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "873312",
+    "name": "BAS CARRE VEAU",
+    "price": 13.15,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "980565",
+    "name": "FILET MIGNON PORC",
+    "price": 7.68,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "223257",
+    "name": "CŒUR TT SIMMENTAL *",
+    "price": 16.03,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "206708",
+    "name": "CŒUR RTK SIMMENTAL",
+    "price": 14.53,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "206709",
+    "name": "FAUX FILET SIMMENTAL",
+    "price": 16.03,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "206704",
+    "name": "ENTRECOTE SIMMENTAL",
+    "price": 22.1,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "223250",
+    "name": "FILET SIMMENTAL *",
+    "price": 29.32,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "242455",
+    "name": "BAVETTE ALOYAU SIMMENTAL",
+    "price": 16.14,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "257378",
+    "name": "BASSE COTE SIMMENTAL *",
+    "price": 14.53,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "971572",
+    "name": "COEUR DE RTK PAD HALAL",
+    "price": 14.08,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "971575",
+    "name": "ENTRECOTE 2,5+ HALAL",
+    "price": 17.82,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "971576",
+    "name": "FAUX FILET 4+ HALAL",
+    "price": 13.72,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "971573",
+    "name": "BAVETTE ALOYAU PAD HALAL",
+    "price": 15.74,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "971574",
+    "name": "NOIX BASSE COTE HALAL *",
+    "price": 14.41,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "311630",
+    "name": "BOULE MACREUSE HALAL",
+    "price": 13.84,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "856147",
+    "name": "JARRET BŒUF S/OS HALAL",
+    "price": 11.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "212315",
+    "name": "FILET DE POULET CRU S/AT 2,5KG *",
+    "price": 7.65,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "212173",
+    "name": "FLT DE POULET CRU S/AT 2,5KG HALAL *",
+    "price": 7.65,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "475592",
+    "name": "AIGUILLETTE DE POULET S/AT 8X1KG HALAL*",
+    "price": 8.14,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "466434",
+    "name": "PILON DE POULET 2X3KG HALAL*",
+    "price": 4.62,
+    "unit": "kg",
+    "category": "Viandes",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "768037",
+    "name": "VIANDE HT CUISSE S/OS S/PEAU 4X2.5KG HALAL*",
+    "price": 6.98,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "14 - TARIF HAPI TRADING hebdo"
+  },
+  {
+    "code": "426217",
+    "name": "ORANGE A JUS 6/7 15KG \"RG\"",
+    "price": 1.19,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "755687",
+    "name": "CITRON BERGAMOTE CAT I '\"CASTAGNARO\" COLIS 2,5 KG CAT I",
+    "price": 4.89,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "146481",
+    "name": "ORANGE NAVEL CAT I CAL 3 / COLIS 8.5 KG",
+    "price": 2.19,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "195115",
+    "name": "CITRON BERGAMOTE \"LIMONETTE DE MARRAKECH\" CAT I",
+    "price": 4.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "950925",
+    "name": "CITRON 4/5 FILET 1KG CAT 1 IMPORT",
+    "price": 2.59,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "239023",
+    "name": "CITRON CAVIAR JAUNE BQTE 100G",
+    "price": 15.99,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "454893",
+    "name": "CITRON CAVIAR ROSE BQTE 100G",
+    "price": 15.99,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "899494",
+    "name": "BANANE P14 18,5KG CAT 1 IMPORT",
+    "price": 1.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "422740",
+    "name": "BANANE P20 5KG CAT1 IMPORT",
+    "price": 1.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "969539",
+    "name": "FRAISE GARIGUETTE 800G C.1 France",
+    "price": 16.49,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "968485",
+    "name": "FRAISE GARIQUETTE 250G C.1 FRANCE",
+    "price": 4.99,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "276466",
+    "name": "FRAMBOISE 125G CAT 1",
+    "price": 3.29,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966498",
+    "name": "FRAMBOISE 125G CAT 1 driscoll",
+    "price": 3.99,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "8720",
+    "name": "MURE 125G CAT 1",
+    "price": 3.99,
+    "unit": "pièce",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "276467",
+    "name": "GROSEILLE 125G CAT 1",
+    "price": 3.99,
+    "unit": "pièce",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "943415",
+    "name": "PASTEQUE FASHION S/P 7,5KG CAL 2",
+    "price": 3.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966798",
+    "name": "TOMATE CERISE ALLONGEE CAT1 FR.250G",
+    "price": 2.49,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966554",
+    "name": "TOMATE COTELEE NOIRE CRIMEE CAT2 FR.3,5KG",
+    "price": 5.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966795",
+    "name": "TOMATE ANANAS COTELEE FR.CAT2 3.5KG",
+    "price": 5.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "967633",
+    "name": "TOMATE COTELEE MARMANDE CAT2 FR. 3.5KG",
+    "price": 5.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966511",
+    "name": "TOMATE COCKTAIL GRAPPE CAT1 FR. 3.5KG",
+    "price": 6.49,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "825589",
+    "name": "TOMATE CERISE MULTICOLORE CAT1 FR.4KG",
+    "price": 6.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "8942",
+    "name": "AUBERGINE FILET 1KG",
+    "price": 4.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "235662",
+    "name": "COURGETTE FILET 1KG",
+    "price": 2.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "8940",
+    "name": "POIVRON ROUGE 1KG CAT 1 UE",
+    "price": 4.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "8941",
+    "name": "POIVRON VERT FILET 1KG CAT 1 UE",
+    "price": 4.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "852087",
+    "name": "POIVRON JAUNE FILET 1KG CAT 1 UE",
+    "price": 4.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "12194",
+    "name": "ASPERGE VIOLETTE 16/22 C.1 France",
+    "price": 18.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "422858",
+    "name": "ASPERGE BLANCHE 500G CAL 16/22 C.1 France",
+    "price": 10.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "572306",
+    "name": "ASPERGE VIOLETTE 16/22 C.1 France",
+    "price": 13.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "572307",
+    "name": "ASPERGE VERTE 16/22 C.1 France",
+    "price": 12.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "968223",
+    "name": "AIL DES OURS C.1 France",
+    "price": 17.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "195228",
+    "name": "CEBETTE 100G PROVENCE CAT 1",
+    "price": 1.46,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966688",
+    "name": "CHOU FLEUR CAT 1",
+    "price": 2.99,
+    "unit": "pièce",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "235968",
+    "name": "POIREAU BOTTE 1KG CAT 1",
+    "price": 1.59,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "969477",
+    "name": "SALADE CRAQUANTE ITALIENNE CAT 1 500g \"MARIUS AUDA\"",
+    "price": 3.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "747140",
+    "name": "SALADE MELANGE NICOIS CAT 1500G \"MARIUS AUDA\"",
+    "price": 3.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "802984",
+    "name": "SALADE MELANGE BISTROT CAT 1 500G \"MARIUS AUDA\"",
+    "price": 3.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "278412",
+    "name": "PDT AGRIA FRITE 10KG CAT 1 France",
+    "price": 0.79,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "563761",
+    "name": "PDT SIRTEMANOIRMOUTIER France IGP 35/55",
+    "price": 9.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "813312",
+    "name": "FEUILLE CAPUCINE X15PCE",
+    "price": 4.51,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "530452",
+    "name": "FLEUR LAVANDE 30G",
+    "price": 3.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "971528",
+    "name": "FLEUR PHLOX",
+    "price": 3.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "660955",
+    "name": "FLEUR PENSEE/VIOLA",
+    "price": 3.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "784696",
+    "name": "FLEUR DE FENOUIL",
+    "price": 3.95,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "660954",
+    "name": "FLEUR MINI BATAILLE",
+    "price": 3.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "228623",
+    "name": "MICRO POUSSE FOLIE DE RADIS France 40G",
+    "price": 5.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "489931",
+    "name": "MICRO POUSSE CORIANDRE France 30G",
+    "price": 5.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "672874",
+    "name": "MICRO POUSSE POIS VERT France 40G",
+    "price": 5.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "228402",
+    "name": "MICRO POUSSE MELI-MELO France 40G",
+    "price": 5.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "228443",
+    "name": "MICRO POUSSE MOUTARDE France 40G",
+    "price": 5.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "228525",
+    "name": "MICRO POUSSE RADIS POURPRE France 40G",
+    "price": 5.99,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "413758",
+    "name": "TRUFFE FRAICHE HIVER 3/4 PIECES CAT 1 100G FR",
+    "price": 290.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "727108",
+    "name": "TRUFFE FRAICHE HIVER 1/2 PIECES CAT 1 100G FR",
+    "price": 290.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "598244",
+    "name": "TRUFFE FRAICHE HIVER 8/10 PIECES CAT 1 100G FR",
+    "price": 250.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "535499",
+    "name": "COFFRET TRUFFE HIVER 1P EXTRA 100G + RAPE + BROSSE",
+    "price": 149.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "519455",
+    "name": "FRUIT DE LA PASSION CAT1 1KG",
+    "price": 15.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966084",
+    "name": "ANANAS B9 CAT2 *BIO",
+    "price": 3.49,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "877044",
+    "name": "BASILIC PETIT POT X6 CAT2 FR.*BIO",
+    "price": 1.79,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "273396",
+    "name": "BATAVIA X12 CAT2 FR.3.6KG *BIO",
+    "price": 16.8,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966413",
+    "name": "CELERI RAVE FR.X8 8KG CAT2*BIO",
+    "price": 2.79,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "966808",
+    "name": "CHOU BLANC CAT2 FR.1KG *BIO",
+    "price": 2.29,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "969494",
+    "name": "MANDARINE 3/4 CAT2 6KG *BIO",
+    "price": 2.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "301774",
+    "name": "CONCOMBRE 3/4 CAT2 *BIO",
+    "price": 24.0,
+    "unit": "kg",
+    "category": "Fruits & Légumes",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "785809",
+    "name": "PDT MAIWEN BROSSEE 40/60 FR.10KG CAT2 *BIO X",
+    "price": 1.89,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "877055",
+    "name": "PERSIL FRISE PETIT POT X6 FR.CAT2 BIO",
+    "price": 1.79,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "877040",
+    "name": "ROMARIN PETIT POT CAT2 FR.(6) *BIO",
+    "price": 1.79,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "877042",
+    "name": "THYM PETIT POT X6 FR.CAT2 *BIO",
+    "price": 1.79,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "LES ESSENTIELS S14 2026"
+  },
+  {
+    "code": "300881",
+    "name": "1.5/1.9 kg",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "301099",
+    "name": "Filet de saumon sans peau sans arrêtes ASC",
+    "price": 24.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300884",
+    "name": "120 g",
+    "price": 23.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300885",
+    "name": "150 g",
+    "price": 23.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300886",
+    "name": "180 g",
+    "price": 23.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300887",
+    "name": "90 g",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300888",
+    "name": "120 g",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300889",
+    "name": "150 g",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300890",
+    "name": "180 g",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300892",
+    "name": "4/5 kg",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302401",
+    "name": "2/3 kg",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302402",
+    "name": "Truite entière vidée grattée",
+    "price": 12.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302403",
+    "name": "Truite portion vidée",
+    "price": 11.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302389",
+    "name": "600/800 g",
+    "price": 20.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "421166",
+    "name": "Filet de truite avec peau sans arêtes",
+    "price": 12.95,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302398",
+    "name": "Pavé de truite avec peau",
+    "price": 26.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "301215",
+    "name": "Huître Marennes Oléron n°2 IGP",
+    "price": 42.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "301219",
+    "name": "Huître Marennes Oléron n°3 IGP",
+    "price": 36.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "301650",
+    "name": "Huître Marennes Oléron n°3 IGP",
+    "price": 66.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302628",
+    "name": "Filet de dorade",
+    "price": 28.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302622",
+    "name": "400/600 g",
+    "price": 16.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302623",
+    "name": "600/800 g",
+    "price": 18.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302626",
+    "name": "140/180 g",
+    "price": 32.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302627",
+    "name": "180/220 g",
+    "price": 37.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302618",
+    "name": "400/600 g",
+    "price": 15.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302619",
+    "name": "600/800 g",
+    "price": 17.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302620",
+    "name": "800g/1 kg",
+    "price": 19.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302621",
+    "name": "1/1,5 kg",
+    "price": 22.2,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302002",
+    "name": "Filet de harend doux Label Rouge",
+    "price": 15.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "300800",
+    "name": "Filet de haddock moyen fumé à l'ancienne MSC",
+    "price": 36.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232506",
+    "name": "Dos cabillaud avec peau",
+    "price": 36.99,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432368",
+    "name": "Dos cabillaud sans peau",
+    "price": 31.99,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432486",
+    "name": "300g +",
+    "price": 19.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227730",
+    "name": "Filet de cabillaud avec peau",
+    "price": 26.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232319",
+    "name": "Filet de lieu noir sans peau",
+    "price": 14.99,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230774",
+    "name": "Filet merlan papillon",
+    "price": 12.2,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230777",
+    "name": "Filet églefin sans peau Ecosse",
+    "price": 13.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "320026",
+    "name": "Filet de lieu jaune avec peau",
+    "price": 31.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "236558",
+    "name": "Filet de lieu noir sans peau",
+    "price": 14.99,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "239971",
+    "name": "Filet de sardine papillon",
+    "price": 9.0,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "202491",
+    "name": "Longe de thon fraiche",
+    "price": 22.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "276490",
+    "name": "Longe de thon pour sashimi décongelée",
+    "price": 27.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432499",
+    "name": "Longe de thon albacore décongelé MSC",
+    "price": 26.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "618770",
+    "name": "Préparation de longe de thon albacore décongelé MSC",
+    "price": 26.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "236560",
+    "name": "Préparation de longe de thon albacore décongelée saumurée MSC",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "200547",
+    "name": "Préparation de longe d'espadon décongelée saumurée",
+    "price": 17.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "613969",
+    "name": "Longe d'Espadon fraiche",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432537",
+    "name": "Aile de raie pelée 1 face",
+    "price": 13.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980499",
+    "name": "Pièce de 1/2 kg",
+    "price": 31.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980503",
+    "name": "Pièce de 2/3 kg",
+    "price": 39.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "204787",
+    "name": "Bouille roche",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227724",
+    "name": "Brochet",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227726",
+    "name": "Cabillaud VDK 4/6 kg",
+    "price": 20.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227734",
+    "name": "Merlu 3/4 kg",
+    "price": 21.0,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235838",
+    "name": "Lieu jaune 2/4 kg VDK",
+    "price": 16.6,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235879",
+    "name": "Queue de lotte 2/4 kg",
+    "price": 27.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235848",
+    "name": "800/1000 g",
+    "price": 32.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235971",
+    "name": "2/3 kg",
+    "price": 43.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "200540",
+    "name": "Sandre 2/4 kg",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "200541",
+    "name": "Sardine bretonne",
+    "price": 6.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "266761",
+    "name": "300/400 g",
+    "price": 41.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "716326",
+    "name": "400/500 g",
+    "price": 45.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "716327",
+    "name": "500/600 g",
+    "price": 45.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227764",
+    "name": "500/600 g",
+    "price": 50.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432230",
+    "name": "Filet de saumon avec peau TRIM B",
+    "price": 14.99,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "421504",
+    "name": "1,5/1,9 kg",
+    "price": 23.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "685298",
+    "name": "1,5/1,9 kg",
+    "price": 23.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "311544",
+    "name": "1,5/1,9 kg",
+    "price": 18.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "509688",
+    "name": "1,5/1,9 kg",
+    "price": 18.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "60453",
+    "name": "1,5/1,9 kg",
+    "price": 16.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432472",
+    "name": "Filet de Saumon sans peau, sans arêtes, sans flanc TRIM E",
+    "price": 16.1,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "209265",
+    "name": "Filet de saumon Label Rouge",
+    "price": 24.95,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "218202",
+    "name": "Filet de saumon avec peau 1,7/1,9 kg (issu Label Rouge)",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230782",
+    "name": "Filet de bar avec peau écaillée",
+    "price": 23.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "317222",
+    "name": "Filet de bar avec peau écaillée sans arrêtes",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230781",
+    "name": "Filet de dorade royale avec peau écaillée",
+    "price": 22.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "317221",
+    "name": "Filet de dorade royale avec peau écaillée sans arêtes",
+    "price": 29.0,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235884",
+    "name": "Filet de maigre",
+    "price": 32.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "315895",
+    "name": "Filet de truite avec peau",
+    "price": 19.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230790",
+    "name": "300/400 g",
+    "price": 14.2,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "615271",
+    "name": "400/600 g",
+    "price": 16.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "746629",
+    "name": "600/800 g",
+    "price": 17.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223265",
+    "name": "600/800 g",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432538",
+    "name": "1,8/2,6 kg",
+    "price": 25.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432539",
+    "name": "2,6/3,5 kg",
+    "price": 32.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223288",
+    "name": "Bar portefeuille",
+    "price": 17.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230780",
+    "name": "300/400 g",
+    "price": 14.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "317274",
+    "name": "400/600 g",
+    "price": 15.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232019",
+    "name": "600/800 g",
+    "price": 15.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227983",
+    "name": "Dorade royale portefeuille",
+    "price": 17.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227748",
+    "name": "600/800 g",
+    "price": 13.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "707730",
+    "name": "800/1000 g",
+    "price": 14.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235882",
+    "name": "Maigre",
+    "price": 14.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "227941",
+    "name": "Maigre gratté vidé",
+    "price": 18.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "745226",
+    "name": "Maigre ASC",
+    "price": 15.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "745225",
+    "name": "Maigre BIO",
+    "price": 16.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "668153",
+    "name": "400/500 g",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "668153",
+    "name": "400/500G",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "509756",
+    "name": "500/600 g",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "101481",
+    "name": "3/4 kg",
+    "price": 12.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242287",
+    "name": "5/6 kg",
+    "price": 12.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242288",
+    "name": "6/7 kg",
+    "price": 12.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242948",
+    "name": "7/8 kg",
+    "price": 12.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223259",
+    "name": "Saumon entier Label Rouge",
+    "price": 15.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "745227",
+    "name": "Seriole lalandi",
+    "price": 29.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "231814",
+    "name": "1/2 kg",
+    "price": 24.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "231815",
+    "name": "2/3 kg",
+    "price": 32.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "231816",
+    "name": "3/4 kg",
+    "price": 37.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980902",
+    "name": "140/160 g",
+    "price": 50.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980903",
+    "name": "180/200 g",
+    "price": 50.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980904",
+    "name": "140/160g",
+    "price": 44.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980905",
+    "name": "180/200 g",
+    "price": 44.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232464",
+    "name": "60/80 g",
+    "price": 25.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "202494",
+    "name": "110/130 g",
+    "price": 25.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "212154",
+    "name": "110/130 g",
+    "price": 25.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980915",
+    "name": "140/160 g",
+    "price": 22.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980916",
+    "name": "180/200 g",
+    "price": 25.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235645",
+    "name": "Pavé de lieu jaune avec peau gratté",
+    "price": 35.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "231705",
+    "name": "Pavé de lotte sans peau",
+    "price": 60.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "233566",
+    "name": "Tronçon de lotte",
+    "price": 51.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432125",
+    "name": "140/160g",
+    "price": 23.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980890",
+    "name": "180/200 g",
+    "price": 29.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432330",
+    "name": "140/160 g",
+    "price": 29.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432331",
+    "name": "180/200 g",
+    "price": 32.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432124",
+    "name": "140/160g",
+    "price": 22.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432111",
+    "name": "140/160 g",
+    "price": 22.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "668831",
+    "name": "180/200 g",
+    "price": 30.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980899",
+    "name": "180/200 g",
+    "price": 30.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432329",
+    "name": "Filet de dorade royale avec peau ASC",
+    "price": 32.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "206702",
+    "name": "Filet d'omble chevalier avec peau",
+    "price": 36.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235605",
+    "name": "Pavé de maigre",
+    "price": 42.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242330",
+    "name": "80/100 g",
+    "price": 20.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998957",
+    "name": "140/160 g",
+    "price": 20.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "101395",
+    "name": "180/200 g",
+    "price": 20.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242331",
+    "name": "80/100 g",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "233597",
+    "name": "120 g",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998959",
+    "name": "140/160 g",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998961",
+    "name": "180/200 g",
+    "price": 21.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "403160",
+    "name": "Pavé de turbot sans peau",
+    "price": 115.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980894",
+    "name": "Bar entier vidée grattée",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "980901",
+    "name": "Dorade royale vidée grattée",
+    "price": 16.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "233565",
+    "name": "Tronçon de turbot",
+    "price": 90.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "228482",
+    "name": "60/80 g",
+    "price": 25.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "228502",
+    "name": "110/130 g",
+    "price": 25.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "228522",
+    "name": "140/160 g",
+    "price": 25.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "228600",
+    "name": "180/200 g",
+    "price": 25.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235862",
+    "name": "Anneaux d'encornet décongelées saumurées",
+    "price": 15.3,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235863",
+    "name": "Lamelle d'encornet décongelées saumurées",
+    "price": 9.99,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242593",
+    "name": "Tentacules de calamar décongelées saumurées",
+    "price": 9.9,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "204175",
+    "name": "Amandes de mer",
+    "price": 4.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998969",
+    "name": "Bulot cuit",
+    "price": 10.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "209269",
+    "name": "Corail d'oursin pasteurisé",
+    "price": 23.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "207513",
+    "name": "Coques",
+    "price": 10.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "222053",
+    "name": "Couteau",
+    "price": 9.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235579",
+    "name": "20/30",
+    "price": 10.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432123",
+    "name": "30/50",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432110",
+    "name": "30/50",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "311563",
+    "name": "40/60",
+    "price": 8.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998971",
+    "name": "40/60",
+    "price": 8.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998972",
+    "name": "60/80",
+    "price": 7.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "311564",
+    "name": "60/80",
+    "price": 7.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242285",
+    "name": "Crevette grise moyenne",
+    "price": 21.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432157",
+    "name": "Crevette grise décortiquée",
+    "price": 8.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432158",
+    "name": "Crevette grise jumbo",
+    "price": 23.95,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432114",
+    "name": "Crevette cuite LABEL ROUGE",
+    "price": 33.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "231813",
+    "name": "Chair de tourteaux",
+    "price": 75.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "625460",
+    "name": "Huitre fine normande n°3",
+    "price": 30.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302375",
+    "name": "Huitre fine normande n°2",
+    "price": 35.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223286",
+    "name": "400/600 g",
+    "price": 50.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223287",
+    "name": "600/800 g",
+    "price": 54.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223284",
+    "name": "400/600 g",
+    "price": 62.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "223285",
+    "name": "600/800 g",
+    "price": 64.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235856",
+    "name": "10/15",
+    "price": 29.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235857",
+    "name": "16/20",
+    "price": 23.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "998973",
+    "name": "Bq s/at de 2 kg",
+    "price": 3.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232502",
+    "name": "Au sac de 10 kg",
+    "price": 3.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302346",
+    "name": "Moule Hollande PAC BIO",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432107",
+    "name": "Moule décortiquée",
+    "price": 18.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242308",
+    "name": "Noix St Jacques avec corail Normande",
+    "price": 37.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "204772",
+    "name": "Noix St jacques avec corail Ecosse",
+    "price": 29.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "836008",
+    "name": "Noix St jacques avec corail Normande",
+    "price": 35.99,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "101484",
+    "name": "Préparation noix de saint jacques décongelée",
+    "price": 55.9,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "238125",
+    "name": "Tourteau cuit sous vide",
+    "price": 18.3,
+    "unit": "pièce",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401981",
+    "name": "Terrine de Langoustines",
+    "price": 19.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401982",
+    "name": "Terrine de Saint-Jacques au muscadet",
+    "price": 15.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432544",
+    "name": "Terrine de Crabe Armoricaine",
+    "price": 26.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "726002",
+    "name": "Terrine du Pêcheur",
+    "price": 14.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "726003",
+    "name": "Terrine de Homard au Cognac",
+    "price": 23.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432106",
+    "name": "Cocktail de fruits de mer en saumure",
+    "price": 13.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432597",
+    "name": "120 g",
+    "price": 9.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "466964",
+    "name": "Fish and Chips de Colin",
+    "price": 12.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432598",
+    "name": "Filet de colin meunière",
+    "price": 13.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "219720",
+    "name": "Brandade de morue parmentière",
+    "price": 6.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "233341",
+    "name": "Caviar Oscietre",
+    "price": 67.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235578",
+    "name": "Caviar Aquitaine Baeri",
+    "price": 68.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401968",
+    "name": "Poulpe pour carpaccio",
+    "price": 70.0,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401969",
+    "name": "Poulpe entier cuit",
+    "price": 43.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401970",
+    "name": "Tentacule de poulpe cuit",
+    "price": 47.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "726001",
+    "name": "Marinade de pouple",
+    "price": 42.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "269481",
+    "name": "Marinade de calamars",
+    "price": 35.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "613967",
+    "name": "Filet de bonite melva canutera à l'huile d'olive",
+    "price": 7.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "407121",
+    "name": "Filet de Haddock fumé",
+    "price": 36.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432471",
+    "name": "Chute de haddock fumé",
+    "price": 24.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "431673",
+    "name": "Filet de hareng doux fumé JC DAVID Label Rouge",
+    "price": 4.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "311921",
+    "name": "Filets de hareng fumé",
+    "price": 10.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432178",
+    "name": "Filet de truite fumé sans arrête tranché machine",
+    "price": 37.0,
+    "unit": "pièce",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242299",
+    "name": "Morue salée",
+    "price": 19.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242553",
+    "name": "Miettes de morue salée",
+    "price": 18.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "263435",
+    "name": "Miette de surimi",
+    "price": 4.1,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "416892",
+    "name": "Rouleau de surimi SMC",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "272323",
+    "name": "Jus de moule",
+    "price": 5.4,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "400099",
+    "name": "Pot de 500 g",
+    "price": 7.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "280717",
+    "name": "Tarama blanc",
+    "price": 16.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "318031",
+    "name": "Tarama truffe d'été",
+    "price": 11.95,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "400119",
+    "name": "Pot de 500 g",
+    "price": 11.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "228683",
+    "name": "Pot de 300g",
+    "price": 43.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232829",
+    "name": "Œuf de saumon sauvage",
+    "price": 13.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "700973",
+    "name": "Œuf de lompe rouge",
+    "price": 5.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "225693",
+    "name": "Œuf de lompe noir",
+    "price": 5.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432232",
+    "name": "Œufs de poisson volant wazabi décongelé",
+    "price": 8.5,
+    "unit": "kg",
+    "category": "Surgelés",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "230756",
+    "name": "Œuf truite",
+    "price": 36.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432488",
+    "name": "Œuf truite",
+    "price": 10.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432542",
+    "name": "Œufs de brochet",
+    "price": 10.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "320002",
+    "name": "Poutargue classique sans cire",
+    "price": 118.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "320003",
+    "name": "Poutargue fumée sans cire",
+    "price": 119.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235585",
+    "name": "Pot de crevettes moyenne en saumure",
+    "price": 16.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "280718",
+    "name": "Pot de crevettes moyenne en saumure",
+    "price": 16.5,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432143",
+    "name": "Pot de crevettes grosse en saumure",
+    "price": 17.0,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "267950",
+    "name": "Pot de chair de crabe ordinaire",
+    "price": 14.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432341",
+    "name": "Pot de queue d'écrevisses de Louisiane en saumure",
+    "price": 30.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "28716",
+    "name": "Rillettes de maquereau fumé au poivre",
+    "price": 4.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "280715",
+    "name": "Sardines à l'huile d'olive vierge extra BIO millésimées",
+    "price": 5.4,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401975",
+    "name": "Saumon fumé ficelle prétranché avec peau",
+    "price": 44.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "232021",
+    "name": "Saumon fumé ficelle Ecosse",
+    "price": 40.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432100",
+    "name": "Saumon fumé entier Norvège",
+    "price": 36.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "741406",
+    "name": "Saumon fumé tranché machine",
+    "price": 30.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "210650",
+    "name": "Saumon fumé tranché Ecosse",
+    "price": 29.99,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "302507",
+    "name": "Saumon fumé tranché ASC JC David",
+    "price": 44.3,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432540",
+    "name": "Saumon fumé tranché frais ou décongelé",
+    "price": 28.9,
+    "unit": "pièce",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "613964",
+    "name": "Thon en morceau à l'huile d'olive",
+    "price": 28.9,
+    "unit": "kg",
+    "category": "Poissons",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "242293",
+    "name": "Pot de 780 g",
+    "price": 5.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "280714",
+    "name": "Pot de 780 g",
+    "price": 5.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "400411",
+    "name": "Spaghetti de Mer Frais Salé BIO",
+    "price": 17.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "432316",
+    "name": "Wakamé frais salé BIO",
+    "price": 20.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "400407",
+    "name": "Kombu royal frais salé BIO",
+    "price": 17.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "400410",
+    "name": "Laitue de mer fraiche salée BIO",
+    "price": 17.9,
+    "unit": "kg",
+    "category": "Produits laitiers",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "657577",
+    "name": "Rameaux de salicornes",
+    "price": 8.5,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "613978",
+    "name": "Salicorne",
+    "price": 15.3,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "235992",
+    "name": "Encre de seiche",
+    "price": 8.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "320006",
+    "name": "Encre de seiche",
+    "price": 12.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401952",
+    "name": "Blinis gros x4",
+    "price": 2.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  },
+  {
+    "code": "401951",
+    "name": "Blinis minis x16",
+    "price": 2.9,
+    "unit": "kg",
+    "category": "Épicerie",
+    "source": "TARIF SEAFOOD_HEBDO_S14"
+  }
+]

@@ -918,7 +918,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
           >
             {t("recipes.allCategories")} ({recipes.length})
           </button>
@@ -926,7 +926,7 @@ export default function Recipes() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
             >
               {cat} ({count})
             </button>
@@ -968,7 +968,7 @@ export default function Recipes() {
               ) : sortedFiltered.map((recipe) => (
                 <tr key={recipe.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                   <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{recipe.name}</td>
-                  <td className="px-4 py-3 text-slate-300 dark:text-slate-400">{recipe.category}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{recipe.category}</td>
                   <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.sellingPrice.toFixed(2)}&euro;</td>
                   <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
@@ -984,7 +984,7 @@ export default function Recipes() {
                         <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                       </Link>
                       <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                        <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
+                        <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                       </button>
                       <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
                         <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
@@ -1062,7 +1062,7 @@ export default function Recipes() {
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
                   <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                    <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
+                    <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                   </button>
                   <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
                     <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
@@ -1136,7 +1136,7 @@ export default function Recipes() {
                         <div className="text-xs text-slate-400 mt-0.5">{tpl.description}</div>
                         {/* Preview card with cost/margin estimates */}
                         <div className="flex items-center gap-3 mt-1.5 text-xs">
-                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300">
+                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                             {tpl.suggestedIngredients.length} {t("recipes.ingredients")}
                           </span>
                           {preview.foundCount > 0 && (
@@ -1337,21 +1337,21 @@ export default function Recipes() {
               <span className="text-sm font-semibold text-teal-800 dark:text-teal-300">{t("recipes.livePreview")}</span>
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex justify-between text-slate-300 dark:text-slate-300">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>{t("recipes.materialCost")}</span>
                 <strong className="font-mono">{liveCost.toFixed(2)} &euro;</strong>
               </div>
-              <div className="flex justify-between text-slate-300 dark:text-slate-300">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>{t("recipes.costPerPortion")}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} &euro;</strong>
               </div>
               {liveLaborPerPortion > 0 && (
-                <div className="flex justify-between text-slate-300 dark:text-slate-300">
+                <div className="flex justify-between text-slate-600 dark:text-slate-300">
                   <span>{t("recipes.laborPerPortion")}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} &euro;</strong>
                 </div>
               )}
-              <div className="flex justify-between text-slate-300 dark:text-slate-300">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>{t("recipes.totalPerPortion")}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
               </div>

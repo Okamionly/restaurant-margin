@@ -475,7 +475,7 @@ export default function Ingredients() {
           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
             !filterCategory
               ? 'bg-teal-600 text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
           }`}
         >
           {t('ingredients.allCategories')} ({ingredients.length})
@@ -487,7 +487,7 @@ export default function Ingredients() {
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               filterCategory === cat
                 ? 'bg-teal-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
             {cat} ({categoryCounts[cat] || 0})
@@ -498,7 +498,7 @@ export default function Ingredients() {
       {/* Table */}
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-700 text-slate-300 dark:text-slate-300 text-left">
+          <thead className="bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-left">
             <tr>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.nameColumn')} field="name" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.categoryColumn')} field="category" /></th>
@@ -534,7 +534,7 @@ export default function Ingredients() {
                     <span className="px-2 py-1 rounded-full text-xs bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300">{ing.category}</span>
                   </td>
                   <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{ing.pricePerUnit.toFixed(2)} &euro;</td>
-                  <td className="px-4 py-3 text-slate-300 dark:text-slate-400">{ing.unit}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{ing.unit}</td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
                       {(ing.allergens || []).map((a) => (
@@ -546,7 +546,7 @@ export default function Ingredients() {
                   </td>
                   <td className="px-4 py-3">
                     {ing.supplierRef?.name || ing.supplier ? (
-                      <span className="inline-flex items-center gap-1.5 text-slate-300 dark:text-slate-300">
+                      <span className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
                         <Truck className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400 flex-shrink-0" />
                         {ing.supplierRef?.name || ing.supplier}
                       </span>
@@ -560,7 +560,7 @@ export default function Ingredients() {
                         <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       </button>
                       <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingrédient">
-                        <Pencil className="w-4 h-4 text-slate-300 dark:text-slate-400" />
+                        <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                       </button>
                       <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingrédient">
                         <Trash2 className="w-4 h-4 text-red-500" />

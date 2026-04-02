@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff, BarChart3 } from 'lucide-react';
+import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff, BarChart3, Camera } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { trackEvent } from '../utils/analytics';
@@ -27,6 +27,7 @@ interface Message {
   content: string;
   timestamp: Date;
   actions?: ActionResult[];
+  image?: string; // base64 data URL for photo messages
 }
 
 const QUICK_SUGGESTIONS = [
@@ -58,7 +59,7 @@ function getActionLabel(type: string): string {
   }
 }
 
-async function getAIResponse(message: string, history: Message[]): Promise<{ response: string; actions?: ActionResult[] }> {
+async function getAIResponse(message: string, history: Message[], image?: string): Promise<{ response: string; actions?: ActionResult[] }> {
   const token = localStorage.getItem('token');
   const restaurantId = localStorage.getItem('activeRestaurantId');
   // Send last 6 messages as history (backend will limit to 5)
@@ -66,6 +67,8 @@ async function getAIResponse(message: string, history: Message[]): Promise<{ res
     role: m.role,
     content: m.content,
   }));
+  const body: any = { message, history: recentHistory };
+  if (image) body.image = image;
   const res = await fetch('/api/ai/chat', {
     method: 'POST',
     headers: {
@@ -73,7 +76,7 @@ async function getAIResponse(message: string, history: Message[]): Promise<{ res
       Authorization: `Bearer ${token}`,
       ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
     },
-    body: JSON.stringify({ message, history: recentHistory }),
+    body: JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok) {
@@ -112,6 +115,7 @@ export default function AIAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const [aiUsage, setAiUsage] = useState<AIUsage | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
+  const [pendingImage, setPendingImage] = useState<string | null>(null); // base64 data URL
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -242,24 +246,48 @@ export default function AIAssistant() {
     trackEvent('voice_command');
   }
 
+  function handlePhotoCapture() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment'; // Camera arriere sur mobile
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        setPendingImage(dataUrl);
+        setInput('Identifie cet ingredient et propose de l\'ajouter a mon inventaire');
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
   async function handleSend(text?: string) {
     const messageText = (text || input).trim();
     if (!messageText || isTyping) return;
 
+    const currentImage = pendingImage;
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: messageText,
       timestamp: new Date(),
+      image: currentImage || undefined,
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
+    setPendingImage(null);
     setIsTyping(true);
-    trackEvent('ai_chat_sent');
+    trackEvent(currentImage ? 'ai_photo_sent' : 'ai_chat_sent');
 
     try {
-      const { response, actions } = await getAIResponse(messageText, messages);
+      // Extract base64 data (without data URL prefix) to send to API
+      const imageBase64 = currentImage ? currentImage.split(',')[1] : undefined;
+      const { response, actions } = await getAIResponse(messageText, messages, imageBase64);
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -438,6 +466,13 @@ export default function AIAssistant() {
                     : 'bg-slate-800 text-slate-300 rounded-bl-md border border-slate-700/50'
                 }`}
               >
+                {msg.image && (
+                  <img
+                    src={msg.image}
+                    alt="Photo envoyee"
+                    className="w-40 h-40 object-cover rounded-xl mb-2 border border-white/20"
+                  />
+                )}
                 {formatContent(msg.content)}
                 {msg.actions && msg.actions.length > 0 && renderActions(msg.actions)}
                 <div
@@ -502,6 +537,20 @@ export default function AIAssistant() {
 
         {/* Input bar */}
         <div className="border-t border-slate-800 p-3">
+          {/* Pending image preview */}
+          {pendingImage && (
+            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-teal-500/10 border border-teal-500/20 rounded-xl">
+              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-teal-500/30" />
+              <span className="text-sm text-teal-400 flex-1">Photo prete a envoyer</span>
+              <button
+                onClick={() => setPendingImage(null)}
+                className="text-xs text-teal-300 hover:text-white underline transition-colors"
+              >
+                Supprimer
+              </button>
+            </div>
+          )}
+
           {/* Listening indicator */}
           {isListening && (
             <div className="flex items-center justify-center gap-3 mb-2 py-2 px-3 bg-red-500/10 border border-red-500/20 rounded-xl">
@@ -564,6 +613,16 @@ export default function AIAssistant() {
               </div>
             </div>
 
+            {/* Photo button */}
+            <button
+              onClick={handlePhotoCapture}
+              disabled={quotaReached || isTyping}
+              title="Prendre une photo d'ingredient"
+              className="flex-shrink-0 p-3 bg-teal-600 hover:bg-teal-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+            >
+              <Camera className="w-5 h-5" />
+            </button>
+
             {/* Mic button */}
             {speechSupported ? (
               <button
@@ -592,7 +651,7 @@ export default function AIAssistant() {
                 cancelAutoSend();
                 handleSend();
               }}
-              disabled={!input.trim() || isTyping || quotaReached}
+              disabled={(!input.trim() && !pendingImage) || isTyping || quotaReached}
               className="flex-shrink-0 p-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />

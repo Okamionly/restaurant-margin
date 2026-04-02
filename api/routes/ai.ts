@@ -61,7 +61,7 @@ export function checkAiRateLimit(restaurantId: number): boolean {
 // ── AI Chat ──
 router.post('/chat', authWithRestaurant, async (req: any, res) => {
   try {
-    const { message, history } = req.body;
+    const { message, history, image } = req.body;
     if (!message) return res.status(400).json({ error: 'Message requis' });
     if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
 
@@ -218,6 +218,27 @@ Assistant: "Voici ma suggestion basée sur vos ingrédients :
 Total coût : 5.38€ — Marge 64% à 15€
 Je crée les fiches techniques ?"
 
+IMPORTANT — MENU DE LA SEMAINE :
+Quand l'utilisateur demande "fais-moi un menu de la semaine", "menu semaine", "suggère un menu", "menu de la semaine" :
+1. Utilise l'action generate_weekly_menu pour récupérer le stock, la mercuriale et les recettes existantes
+2. Avec les données retournées, construis un menu STRUCTURÉ pour chaque jour (lundi→vendredi) :
+   - 1 entrée + 1 plat + 1 dessert par jour
+   - Coût portion estimé pour chaque plat
+   - Prix de vente suggéré (coefficient ×3 entrées, ×3.5 plats, ×4 desserts)
+   - Marge estimée en %
+3. RÈGLES DE CONSTRUCTION :
+   - Utiliser en priorité les ingrédients en stock (données stock)
+   - Profiter des prix en baisse de la mercuriale (opportunités)
+   - Respecter la saisonnalité du mois en cours :
+     * Janvier-Mars : poireaux, choux, endives, agrumes, carottes, navets, céleri
+     * Avril-Juin : asperges, petits pois, fraises, radis, artichauts, fèves
+     * Juillet-Septembre : tomates, courgettes, aubergines, pêches, melons, haricots verts
+     * Octobre-Décembre : cèpes, potiron, châtaignes, pommes, poires, topinambours
+   - VARIER les protéines (pas la même viande/poisson 2 jours de suite)
+   - Varier les modes de cuisson (pas tout grillé ou tout en sauce)
+4. FORMAT : Présenter sous forme de TABLEAU structuré avec colonnes Jour | Entrée | Plat | Dessert | Coût total | Prix vente | Marge %
+5. Ajouter un RÉSUMÉ en bas : coût moyen/jour, marge moyenne, total hebdo estimé
+
 IMPORTANT — CRÉATION DE RECETTE :
 Quand l'utilisateur demande de créer une recette (ex: "Crée-moi un risotto aux cèpes") :
 1. NE PAS créer directement avec create_recipe
@@ -260,9 +281,12 @@ ACTIONS (format: {"type":"<type>","data":{...}} entre \`\`\`action et \`\`\`):
 - cost_alert() — hausses >5% sur 30j
 - send_order_email(supplier, email, items[{name,quantity,unit,price}], notes?) — envoyer commande par email au fournisseur
 - suggest_menu(covers, budget) — suggérer un menu basé sur les ingrédients disponibles
+- generate_weekly_menu() — générer un menu complet de la semaine (lundi→vendredi) avec entrée+plat+dessert, coûts et marges
 - daily_report(date)
 - log_temperature(zone, temperature, recordedBy, notes?)
 - cleaning_checklist(date)
+
+PHOTO D'INGRÉDIENT : Si l'utilisateur envoie une photo, identifie le produit alimentaire visible, estime le poids/quantité si visible sur l'emballage ou visuellement, et propose une action add_ingredient avec le nom, la catégorie appropriée et le prix estimé depuis la mercuriale ou les prix marché restauration FR. Décris ce que tu vois et demande confirmation avant d'ajouter.
 
 RÈGLES : Prix réalistes restauration FR. Catégories recettes: Entrées/Plats/Desserts/Boissons/Accompagnements. Catégories ingrédients: Viandes/Poissons/Légumes/Fruits/Produits laitiers/Épicerie sèche/Surgelés/Boissons/Condiments/Boulangerie. Unités: kg/g/L/cl/unité/botte/pièce. Shifts: Matin/Midi/Soir/Coupure. Zones HACCP: Frigo/Congélateur/Plats chauds/Réception. Toujours inclure ingrédients avec quantités/prix dans create_recipe. Utiliser les IDs visibles dans les données. Concis, max 400 mots, français.
 
@@ -270,12 +294,14 @@ DONNÉES DU RESTAURANT :
 ${context}`;
 
     // ── Step 3: Choose model + max_tokens based on intent & message length ──
-    const useAdvancedModel = intent === 'analysis' || message.trim().length > 200;
+    const isWeeklyMenu = /menu.*(semaine|hebdo)|semaine.*menu|sugg[eè]re.*menu|fais.*moi.*un.*menu/i.test(message.trim());
+    const hasImage = !!image;
+    const useAdvancedModel = intent === 'analysis' || isWeeklyMenu || hasImage || message.trim().length > 200;
     const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
-    const maxTokens = ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
+    const maxTokens = isWeeklyMenu ? 4096 : ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
     // Build messages with conversation history
-    const claudeMessages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+    const claudeMessages: Array<{ role: 'user' | 'assistant'; content: any }> = [];
     if (history && Array.isArray(history)) {
       const recentHistory = history.slice(-5);
       for (const h of recentHistory) {
@@ -285,15 +311,37 @@ ${context}`;
         });
       }
     }
-    claudeMessages.push({ role: 'user' as const, content: message.trim() });
+
+    // Build the current user message — with image if provided
+    if (hasImage) {
+      const userContent: any[] = [
+        {
+          type: 'image',
+          source: {
+            type: 'base64',
+            media_type: 'image/jpeg',
+            data: image,
+          },
+        },
+        { type: 'text', text: message.trim() },
+      ];
+      claudeMessages.push({ role: 'user' as const, content: userContent });
+    } else {
+      claudeMessages.push({ role: 'user' as const, content: message.trim() });
+    }
 
     // Ensure messages alternate correctly (Claude requires user/assistant alternation)
     const sanitizedMessages: typeof claudeMessages = [];
     for (const msg of claudeMessages) {
       const last = sanitizedMessages[sanitizedMessages.length - 1];
       if (last && last.role === msg.role) {
-        // Merge consecutive same-role messages
-        last.content += '\n' + msg.content;
+        // Merge consecutive same-role messages (only for text messages)
+        if (typeof last.content === 'string' && typeof msg.content === 'string') {
+          last.content += '\n' + msg.content;
+        } else {
+          // For multimodal messages, keep them separate by inserting a placeholder
+          sanitizedMessages.push({ ...msg });
+        }
       } else {
         sanitizedMessages.push({ ...msg });
       }
@@ -307,7 +355,7 @@ ${context}`;
       model: aiModel,
       max_tokens: maxTokens,
       system: actionSystemPrompt,
-      messages: sanitizedMessages,
+      messages: sanitizedMessages as any,
     });
 
     const fullText = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
@@ -993,6 +1041,109 @@ ${context}`;
           } catch (menuErr: any) {
             console.error('Suggest menu error:', menuErr.message);
             actions.push({ type: 'suggest_menu', success: false, message: `Erreur suggestion menu: ${menuErr.message}` });
+          }
+
+        } else if (actionData.type === 'generate_weekly_menu') {
+          try {
+            // 1. Récupérer le stock actuel (ingrédients avec inventaire)
+            const stockItems = await prisma.inventoryItem.findMany({
+              where: { restaurantId },
+              include: { ingredient: true },
+            });
+            const stockSummary = stockItems.map((item: any) => ({
+              name: item.ingredient.name,
+              category: item.ingredient.category,
+              currentStock: item.currentStock,
+              unit: item.ingredient.unit,
+              pricePerUnit: item.ingredient.pricePerUnit,
+              isLow: item.currentStock < item.minStock,
+            }));
+
+            // 2. Récupérer la mercuriale (prix actuels + tendances)
+            let mercurialePrices: any[] = [];
+            try {
+              mercurialePrices = await prisma.$queryRaw`
+                SELECT mp.ingredient_name, mp.category, mp.price, mp.unit, mp.trend, mp.previous_price,
+                       mp.variation_percent, mp.origin, mp.quality_label
+                FROM mercuriale_prices mp
+                JOIN mercuriale_publications pub ON mp.publication_id = pub.id
+                WHERE pub.published = true
+                ORDER BY pub.week_date DESC
+                LIMIT 100
+              `;
+            } catch { /* mercuriale tables may not exist yet */ }
+
+            // Identifier les opportunités (prix en baisse)
+            const opportunities = mercurialePrices.filter((p: any) =>
+              p.trend === 'down' || (p.variation_percent && p.variation_percent < -2)
+            );
+
+            // 3. Récupérer les recettes existantes avec leurs coûts
+            const existingRecipes = await prisma.recipe.findMany({
+              where: { restaurantId },
+              include: { ingredients: { include: { ingredient: true } } },
+            });
+            const recipesByCategory: any = { 'Entrées': [], 'Plats': [], 'Desserts': [] };
+            for (const r of existingRecipes) {
+              const cost = (r as any).ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+              const costPerPortion = r.nbPortions > 0 ? cost / r.nbPortions : cost;
+              const category = r.category || 'Plats';
+              if (recipesByCategory[category]) {
+                recipesByCategory[category].push({
+                  id: r.id,
+                  name: r.name,
+                  costPerPortion: Math.round(costPerPortion * 100) / 100,
+                  sellingPrice: r.sellingPrice,
+                  margin: r.sellingPrice > 0 ? Math.round((r.sellingPrice - costPerPortion) / r.sellingPrice * 1000) / 10 : 0,
+                  ingredients: (r as any).ingredients.map((ri: any) => ri.ingredient.name),
+                });
+              }
+            }
+
+            // 4. Tous les ingrédients disponibles (pour suggestions nouvelles recettes)
+            const allIngredients = await prisma.ingredient.findMany({
+              where: { restaurantId },
+              orderBy: { pricePerUnit: 'asc' },
+            });
+            const ingredientsByCategory: any = {};
+            for (const ing of allIngredients) {
+              const cat = ing.category || 'Autre';
+              if (!ingredientsByCategory[cat]) ingredientsByCategory[cat] = [];
+              ingredientsByCategory[cat].push({
+                name: ing.name,
+                pricePerUnit: ing.pricePerUnit,
+                unit: ing.unit,
+              });
+            }
+
+            // Déterminer le mois actuel pour la saisonnalité
+            const currentMonth = new Date().getMonth() + 1; // 1-12
+            const seasonMap: any = {
+              '1-3': 'Hiver (poireaux, choux, endives, agrumes, carottes, navets, céleri)',
+              '4-6': 'Printemps (asperges, petits pois, fraises, radis, artichauts, fèves)',
+              '7-9': 'Été (tomates, courgettes, aubergines, pêches, melons, haricots verts)',
+              '10-12': 'Automne (cèpes, potiron, châtaignes, pommes, poires, topinambours)',
+            };
+            const seasonKey = currentMonth <= 3 ? '1-3' : currentMonth <= 6 ? '4-6' : currentMonth <= 9 ? '7-9' : '10-12';
+            const currentSeason = seasonMap[seasonKey];
+
+            actions.push({
+              type: 'generate_weekly_menu', success: true,
+              message: `Données récupérées: ${existingRecipes.length} recettes, ${stockItems.length} articles en stock, ${mercurialePrices.length} prix mercuriale, ${opportunities.length} opportunités (prix en baisse)`,
+              data: {
+                season: currentSeason,
+                month: currentMonth,
+                stock: stockSummary.slice(0, 30),
+                mercurialeOpportunities: opportunities.slice(0, 20),
+                mercurialePrices: mercurialePrices.slice(0, 50),
+                existingRecipes: recipesByCategory,
+                ingredientsByCategory,
+                coefficients: { 'Entrées': 3, 'Plats': 3.5, 'Desserts': 4 },
+              },
+            } as any);
+          } catch (menuWeekErr: any) {
+            console.error('Generate weekly menu error:', menuWeekErr.message);
+            actions.push({ type: 'generate_weekly_menu', success: false, message: `Erreur génération menu semaine: ${menuWeekErr.message}` });
           }
 
         } else {

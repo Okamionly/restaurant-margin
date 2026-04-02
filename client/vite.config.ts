@@ -12,11 +12,12 @@ export default defineConfig({
         name: 'RestauMargin - Calcul de Marge',
         short_name: 'RestauMargin',
         description: 'Application de calcul de marge pour la restauration',
-        theme_color: '#1e40af',
-        background_color: '#f8fafc',
+        theme_color: '#0d9488',
+        background_color: '#020617',
         display: 'standalone',
         start_url: '/',
         scope: '/',
+        lang: 'fr',
         orientation: 'portrait-primary',
         categories: ['business', 'finance', 'food'],
         icons: [
@@ -42,6 +43,26 @@ export default defineConfig({
             type: 'image/svg+xml',
           },
         ],
+        shortcuts: [
+          {
+            name: 'Nouvelle recette',
+            short_name: 'Recettes',
+            url: '/recipes',
+            icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+          },
+          {
+            name: 'Assistant IA',
+            short_name: 'Assistant',
+            url: '/assistant',
+            icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+          },
+          {
+            name: 'Mercuriale',
+            short_name: 'Mercuriale',
+            url: '/mercuriale',
+            icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+          },
+        ],
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
@@ -65,6 +86,28 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 60 * 24, // 24h
               },
               networkTimeoutSeconds: 5,
+            },
+          },
+          {
+            urlPattern: /\.(?:woff2?|ttf|otf|eot)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'font-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
             },
           },
         ],

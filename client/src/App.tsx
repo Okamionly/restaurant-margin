@@ -186,6 +186,7 @@ function AppLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const location = useLocation();
 
@@ -207,8 +208,16 @@ function AppLayout() {
     const handler = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e as BeforeInstallPromptEvent);
+      if (!localStorage.getItem('pwa-install-dismissed')) {
+        setShowInstallBanner(true);
+      }
     };
     window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setInstallPrompt(null);
+      setShowInstallBanner(false);
+    });
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
     }
@@ -222,7 +231,13 @@ function AppLayout() {
     if (result.outcome === 'accepted') {
       setIsInstalled(true);
       setInstallPrompt(null);
+      setShowInstallBanner(false);
     }
+  }
+
+  function dismissInstallBanner() {
+    setShowInstallBanner(false);
+    localStorage.setItem('pwa-install-dismissed', '1');
   }
 
   useEffect(() => {
@@ -532,6 +547,31 @@ function AppLayout() {
 
         {/* Connectivity status bar */}
         <ConnectivityBar />
+
+        {/* PWA Install banner */}
+        {showInstallBanner && !isInstalled && (
+          <div className="bg-teal-600/15 border-b border-teal-500/30 text-teal-300 px-4 py-2.5 flex items-center justify-between text-sm">
+            <div className="flex items-center gap-2">
+              <Download className="w-4 h-4 flex-shrink-0" />
+              <span>Installez RestauMargin sur votre appareil pour un acces rapide</span>
+            </div>
+            <div className="flex items-center gap-2 ml-4">
+              <button
+                onClick={handleInstall}
+                className="px-3 py-1 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium text-xs whitespace-nowrap transition-colors"
+              >
+                Installer
+              </button>
+              <button
+                onClick={dismissInstallBanner}
+                className="p-1 hover:bg-teal-500/20 rounded-lg transition-colors"
+                aria-label="Fermer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Email verification banner */}
         {user && user.emailVerified === false && (

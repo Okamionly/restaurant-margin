@@ -500,16 +500,85 @@ export default function Suppliers() {
     }
   }, [filtered]);
 
-  // Collapsible categories in detail panel
-  const [collapsedCats, setCollapsedCats] = useState<Set<string>>(new Set());
+  // Accordion: expanded categories & subcategories (default all collapsed)
+  const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set());
+  const [expandedSubCats, setExpandedSubCats] = useState<Set<string>>(new Set());
+  const [catalogDetailSearch, setCatalogDetailSearch] = useState('');
 
   function toggleCatCollapse(cat: string) {
-    setCollapsedCats(prev => {
+    setExpandedCats(prev => {
       const next = new Set(prev);
       next.has(cat) ? next.delete(cat) : next.add(cat);
       return next;
     });
   }
+
+  function toggleSubCatCollapse(key: string) {
+    setExpandedSubCats(prev => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  }
+
+  // Category emoji map
+  const CATEGORY_EMOJIS: Record<string, string> = {
+    'Viandes': '🥩',
+    'Poissons & Fruits de mer': '🐟',
+    'Légumes': '🥬',
+    'Fruits': '🍎',
+    'Produits laitiers': '🧀',
+    'Épices & Condiments': '🌶️',
+    'Féculents & Céréales': '🌾',
+    'Huiles & Matières grasses': '🫒',
+    'Boissons': '🥤',
+    'Autres': '📦',
+  };
+
+  // Subcategory mapping for finer grouping
+  const SUBCATEGORY_RULES: Record<string, (name: string) => string> = {
+    'Viandes': (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('boeuf') || n.includes('bœuf') || n.includes('entrecôte') || n.includes('bavette') || n.includes('faux-filet') || n.includes('rumsteck') || n.includes('côte de boeuf')) return 'Boeuf';
+      if (n.includes('volaille') || n.includes('poulet') || n.includes('dinde') || n.includes('canard') || n.includes('pintade') || n.includes('chapon')) return 'Volaille';
+      if (n.includes('porc') || n.includes('cochon') || n.includes('jambon') || n.includes('lard') || n.includes('saucisse')) return 'Porc';
+      if (n.includes('veau')) return 'Veau';
+      if (n.includes('agneau') || n.includes('mouton')) return 'Agneau';
+      return 'Autres viandes';
+    },
+    'Poissons & Fruits de mer': (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('saumon') || n.includes('truite') || n.includes('cabillaud') || n.includes('bar') || n.includes('sole') || n.includes('dorade') || n.includes('thon') || n.includes('merlu') || n.includes('lieu')) return 'Poissons';
+      if (n.includes('crevette') || n.includes('moule') || n.includes('huître') || n.includes('homard') || n.includes('langouste') || n.includes('crabe') || n.includes('coquille') || n.includes('calmar') || n.includes('poulpe')) return 'Fruits de mer';
+      return 'Autres produits de la mer';
+    },
+    'Légumes': (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('tomate') || n.includes('poivron') || n.includes('aubergine') || n.includes('courgette') || n.includes('concombre')) return 'Légumes-fruits';
+      if (n.includes('carotte') || n.includes('navet') || n.includes('betterave') || n.includes('radis') || n.includes('céleri')) return 'Racines';
+      if (n.includes('salade') || n.includes('laitue') || n.includes('épinard') || n.includes('roquette') || n.includes('mâche') || n.includes('chou')) return 'Feuilles & Salades';
+      if (n.includes('oignon') || n.includes('ail') || n.includes('échalote') || n.includes('poireau')) return 'Alliacées';
+      if (n.includes('champignon') || n.includes('cèpe') || n.includes('girolle') || n.includes('truffe') || n.includes('morille')) return 'Champignons';
+      return 'Autres légumes';
+    },
+    'Fruits': (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('pomme') || n.includes('poire') || n.includes('pêche') || n.includes('abricot') || n.includes('prune') || n.includes('cerise')) return 'Fruits à noyau/pépin';
+      if (n.includes('fraise') || n.includes('framboise') || n.includes('myrtille') || n.includes('mûre') || n.includes('cassis') || n.includes('groseille')) return 'Fruits rouges';
+      if (n.includes('orange') || n.includes('citron') || n.includes('mandarine') || n.includes('pamplemousse') || n.includes('lime') || n.includes('clémentine')) return 'Agrumes';
+      if (n.includes('banane') || n.includes('mangue') || n.includes('ananas') || n.includes('papaye') || n.includes('passion') || n.includes('litchi') || n.includes('coco')) return 'Fruits exotiques';
+      return 'Autres fruits';
+    },
+    'Produits laitiers': (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('lait')) return 'Lait';
+      if (n.includes('fromage') || n.includes('comté') || n.includes('gruyère') || n.includes('emmental') || n.includes('brie') || n.includes('camembert') || n.includes('roquefort') || n.includes('chèvre') || n.includes('parmesan') || n.includes('mozzarella') || n.includes('feta') || n.includes('reblochon')) return 'Fromages';
+      if (n.includes('crème') || n.includes('beurre') || n.includes('mascarpone')) return 'Crème & Beurre';
+      if (n.includes('yaourt') || n.includes('yogourt') || n.includes('fromage blanc')) return 'Yaourts';
+      if (n.includes('oeuf') || n.includes('œuf')) return 'Oeufs';
+      return 'Autres produits laitiers';
+    },
+  };
 
   // ── render ─────────────────────────────────────────────────────────────────
 
@@ -936,7 +1005,7 @@ export default function Suppliers() {
                       </div>
                     )}
 
-                    {/* Catalogue section: ingredients grouped by category */}
+                    {/* Catalogue section: accordion by category/subcategory */}
                     {(() => {
                       const catalog = supplierCatalogMap[detailSupplier.id];
                       if (!catalog || catalog.count === 0) return (
@@ -948,77 +1017,193 @@ export default function Suppliers() {
                           <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
                         </div>
                       );
-                      const sortedCategories = Object.keys(catalog.byCategory).sort();
+
+                      // Filter ingredients by search
+                      const searchLower = catalogDetailSearch.toLowerCase().trim();
+                      const filteredByCategory: Record<string, Ingredient[]> = {};
+                      let filteredCount = 0;
+                      Object.entries(catalog.byCategory).forEach(([cat, ings]) => {
+                        const filtered = searchLower
+                          ? ings.filter(i => i.name.toLowerCase().includes(searchLower))
+                          : ings;
+                        if (filtered.length > 0) {
+                          filteredByCategory[cat] = filtered;
+                          filteredCount += filtered.length;
+                        }
+                      });
+
+                      const sortedCategories = Object.keys(filteredByCategory).sort();
+                      const avgPrice = filteredCount > 0
+                        ? Object.values(filteredByCategory).flat().reduce((s, i) => s + i.pricePerUnit, 0) / filteredCount
+                        : 0;
+
                       return (
                         <div>
-                          <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-200 flex items-center gap-2">
-                              <Layers className="w-4 h-4 text-purple-500" />
-                              Catalogue ({catalog.count} produits)
-                            </h4>
-                            <div className="text-right">
-                              <span className="text-xs text-slate-400">Cout total unitaire</span>
-                              <span className="ml-2 text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                                {catalog.totalSpend.toFixed(2)} EUR
-                              </span>
+                          {/* Stats bar */}
+                          <div className="grid grid-cols-3 gap-2 mb-3">
+                            <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-center">
+                              <div className="text-lg font-bold text-teal-400">{catalog.count}</div>
+                              <div className="text-[10px] text-slate-400 uppercase tracking-wide">Articles</div>
+                            </div>
+                            <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-center">
+                              <div className="text-lg font-bold text-purple-400">{sortedCategories.length}</div>
+                              <div className="text-[10px] text-slate-400 uppercase tracking-wide">Categories</div>
+                            </div>
+                            <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-center">
+                              <div className="text-lg font-bold text-emerald-400">{avgPrice.toFixed(2)} EUR</div>
+                              <div className="text-[10px] text-slate-400 uppercase tracking-wide">Prix moyen</div>
                             </div>
                           </div>
 
-                          <div className="space-y-2">
+                          {/* Search bar */}
+                          <div className="relative mb-3">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                            <input
+                              type="text"
+                              placeholder="Rechercher dans le catalogue..."
+                              value={catalogDetailSearch}
+                              onChange={e => setCatalogDetailSearch(e.target.value)}
+                              className="w-full pl-9 pr-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/30 transition-colors"
+                            />
+                            {catalogDetailSearch && (
+                              <button onClick={() => setCatalogDetailSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-700 rounded">
+                                <X className="w-3 h-3 text-slate-400" />
+                              </button>
+                            )}
+                          </div>
+
+                          {searchLower && (
+                            <p className="text-xs text-slate-400 mb-2">
+                              {filteredCount} resultat{filteredCount !== 1 ? 's' : ''} pour "{catalogDetailSearch}"
+                            </p>
+                          )}
+
+                          {/* Accordion categories */}
+                          <div className="space-y-1.5">
                             {sortedCategories.map(cat => {
-                              const catIngredients = catalog.byCategory[cat];
-                              const isCollapsed = collapsedCats.has(`${detailSupplier.id}-${cat}`);
+                              const catIngredients = filteredByCategory[cat];
+                              const catKey = `${detailSupplier.id}-${cat}`;
+                              const isExpanded = expandedCats.has(catKey);
                               const catTotal = catIngredients.reduce((s, i) => s + i.pricePerUnit, 0);
+                              const emoji = CATEGORY_EMOJIS[cat] || '📦';
+
+                              // Build subcategories
+                              const subCatFn = SUBCATEGORY_RULES[cat];
+                              const subGroups: Record<string, Ingredient[]> = {};
+                              if (subCatFn) {
+                                catIngredients.forEach(ing => {
+                                  const sub = subCatFn(ing.name);
+                                  if (!subGroups[sub]) subGroups[sub] = [];
+                                  subGroups[sub].push(ing);
+                                });
+                              } else {
+                                subGroups['_all'] = catIngredients;
+                              }
+                              const hasSubGroups = !!subCatFn && Object.keys(subGroups).length > 1;
+
                               return (
-                                <div key={cat} className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+                                <div key={cat} className="border border-slate-700/80 rounded-xl overflow-hidden bg-slate-900/50">
+                                  {/* Category header */}
                                   <button
-                                    onClick={() => toggleCatCollapse(`${detailSupplier.id}-${cat}`)}
-                                    className="w-full flex items-center justify-between px-3 py-2.5 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-left"
+                                    onClick={() => toggleCatCollapse(catKey)}
+                                    className="w-full flex items-center justify-between px-3 py-3 hover:bg-slate-800/70 transition-all duration-200 text-left group"
                                   >
-                                    <div className="flex items-center gap-2">
-                                      <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
-                                      <span className="text-sm font-medium text-slate-400 dark:text-slate-200">{cat}</span>
-                                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-600 text-slate-400 dark:text-slate-400">
+                                    <div className="flex items-center gap-2.5">
+                                      <ChevronRight className={`w-4 h-4 text-teal-500 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+                                      <span className="text-base" role="img">{emoji}</span>
+                                      <span className="text-sm font-semibold text-slate-200 group-hover:text-teal-300 transition-colors">{cat}</span>
+                                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-teal-900/40 text-teal-300 font-medium">
                                         {catIngredients.length}
                                       </span>
                                     </div>
-                                    <span className="text-xs font-medium text-slate-400 dark:text-slate-400">
+                                    <span className="text-xs font-semibold text-emerald-400">
                                       {catTotal.toFixed(2)} EUR
                                     </span>
                                   </button>
-                                  {!isCollapsed && (
-                                    <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                                      {catIngredients
-                                        .sort((a, b) => a.name.localeCompare(b.name))
-                                        .map(ing => {
-                                          const priceHistory = getMockPriceHistory(ing.pricePerUnit);
+
+                                  {/* Expanded content with smooth transition */}
+                                  <div className={`transition-all duration-200 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                    {hasSubGroups ? (
+                                      // Render subcategories
+                                      <div className="border-t border-slate-700/50">
+                                        {Object.entries(subGroups).sort(([a], [b]) => a.localeCompare(b)).map(([subCat, subIngs]) => {
+                                          const subKey = `${catKey}-${subCat}`;
+                                          const isSubExpanded = expandedSubCats.has(subKey);
+                                          const subTotal = subIngs.reduce((s, i) => s + i.pricePerUnit, 0);
                                           return (
-                                            <div key={ing.id} className="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                              <span className="flex-1 text-sm text-slate-400 dark:text-slate-300 truncate">{ing.name}</span>
-                                              {priceHistory.length >= 2 && (
-                                                <MiniPriceChart data={priceHistory} width={60} height={20} />
-                                              )}
-                                              <span className="text-sm font-medium text-teal-600 dark:text-teal-400 whitespace-nowrap">
-                                                {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
-                                              </span>
-                                              {priceAlerts[ing.id] && (
-                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
-                                                  priceAlerts[ing.id].pctChange > 0
-                                                    ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                                                    : 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
-                                                }`}>
-                                                  {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
-                                                </span>
-                                              )}
+                                            <div key={subCat} className="border-b border-slate-800/50 last:border-b-0">
+                                              <button
+                                                onClick={() => toggleSubCatCollapse(subKey)}
+                                                className="w-full flex items-center justify-between pl-8 pr-3 py-2 hover:bg-slate-800/40 transition-colors text-left"
+                                              >
+                                                <div className="flex items-center gap-2">
+                                                  <ChevronRight className={`w-3 h-3 text-slate-500 transition-transform duration-150 ${isSubExpanded ? 'rotate-90' : ''}`} />
+                                                  <span className="text-xs font-medium text-slate-300">{subCat}</span>
+                                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-700 text-slate-400">
+                                                    {subIngs.length}
+                                                  </span>
+                                                </div>
+                                                <span className="text-[11px] text-slate-400">{subTotal.toFixed(2)} EUR</span>
+                                              </button>
+                                              <div className={`transition-all duration-150 ease-in-out overflow-hidden ${isSubExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                                <div className="divide-y divide-slate-800/30">
+                                                  {subIngs.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
+                                                    <div key={ing.id} className="flex items-center gap-2 pl-12 pr-3 py-1.5 hover:bg-slate-800/30 transition-colors">
+                                                      <span className="flex-1 text-xs text-slate-300 truncate">{ing.name}</span>
+                                                      <span className="text-xs font-medium text-teal-400 whitespace-nowrap">
+                                                        {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                                                      </span>
+                                                      {priceAlerts[ing.id] && (
+                                                        <span className={`text-[9px] font-bold px-1 py-0.5 rounded-full shrink-0 ${
+                                                          priceAlerts[ing.id].pctChange > 0
+                                                            ? 'bg-red-900/30 text-red-400'
+                                                            : 'bg-green-900/30 text-green-400'
+                                                        }`}>
+                                                          {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                              </div>
                                             </div>
                                           );
                                         })}
-                                    </div>
-                                  )}
+                                      </div>
+                                    ) : (
+                                      // Flat list (no subcategories)
+                                      <div className="divide-y divide-slate-800/30 border-t border-slate-700/50">
+                                        {catIngredients.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
+                                          <div key={ing.id} className="flex items-center gap-2 pl-9 pr-3 py-1.5 hover:bg-slate-800/30 transition-colors">
+                                            <span className="flex-1 text-xs text-slate-300 truncate">{ing.name}</span>
+                                            <span className="text-xs font-medium text-teal-400 whitespace-nowrap">
+                                              {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                                            </span>
+                                            {priceAlerts[ing.id] && (
+                                              <span className={`text-[9px] font-bold px-1 py-0.5 rounded-full shrink-0 ${
+                                                priceAlerts[ing.id].pctChange > 0
+                                                  ? 'bg-red-900/30 text-red-400'
+                                                  : 'bg-green-900/30 text-green-400'
+                                              }`}>
+                                                {priceAlerts[ing.id].pctChange > 0 ? '+' : ''}{priceAlerts[ing.id].pctChange}%
+                                              </span>
+                                            )}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               );
                             })}
                           </div>
+
+                          {filteredCount === 0 && searchLower && (
+                            <div className="text-center py-6 text-slate-500">
+                              <Search className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                              <p className="text-sm">Aucun article trouve pour "{catalogDetailSearch}"</p>
+                            </div>
+                          )}
                         </div>
                       );
                     })()}

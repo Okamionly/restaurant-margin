@@ -748,13 +748,214 @@ export default function Dashboard() {
     );
   }
 
-  // ── Empty state with onboarding ─────────────────────────────────────────
+  // ── Computed alerts (available even with partial data) ──────────────────
+  const quickAlerts = useMemo(() => {
+    const alerts: { id: string; icon: React.ComponentType<{ className?: string }>; text: string; color: string; bgColor: string; link: string }[] = [];
+    // Ingredients without supplier
+    const noSupplierCount = ingredients.filter(i => !i.supplier && !i.supplierId).length;
+    if (noSupplierCount > 0) {
+      alerts.push({
+        id: 'no-supplier',
+        icon: ShoppingBasket,
+        text: `${noSupplierCount} ${noSupplierCount > 1 ? 'ingrédients sans fournisseur' : 'ingrédient sans fournisseur'}`,
+        color: 'text-amber-600 dark:text-amber-400',
+        bgColor: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/40',
+        link: '/ingredients',
+      });
+    }
+    // Low margin recipes
+    const lowMarginRecipes = recipes.filter(r => r.margin?.marginPercent < 60);
+    if (lowMarginRecipes.length > 0) {
+      alerts.push({
+        id: 'low-margin',
+        icon: TrendingDown,
+        text: `${lowMarginRecipes.length} ${lowMarginRecipes.length > 1 ? 'recettes avec marge < 60%' : 'recette avec marge < 60%'}`,
+        color: 'text-red-600 dark:text-red-400',
+        bgColor: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/40',
+        link: '/recipes',
+      });
+    }
+    // Ingredients without price
+    const zeroPriceCount = ingredients.filter(i => !i.pricePerUnit || i.pricePerUnit === 0).length;
+    if (zeroPriceCount > 0) {
+      alerts.push({
+        id: 'no-price',
+        icon: AlertTriangle,
+        text: `${zeroPriceCount} ${zeroPriceCount > 1 ? 'ingrédients sans prix défini' : 'ingrédient sans prix défini'}`,
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800/40',
+        link: '/ingredients',
+      });
+    }
+    return alerts;
+  }, [ingredients, recipes]);
+
+  // ── Top 5 recipes by margin ───────────────────────────────────────────
+  const top5Margin = useMemo(() => {
+    if (recipes.length === 0) return [];
+    return [...recipes]
+      .sort((a, b) => b.margin.marginPercent - a.margin.marginPercent)
+      .slice(0, 5);
+  }, [recipes]);
+
+  // ── Category donut data (for partial state) ───────────────────────────
+  const partialCategoryData = useMemo(() => {
+    if (recipes.length === 0 && ingredients.length === 0) return [];
+    if (recipes.length > 0) {
+      const catMap = new Map<string, number>();
+      recipes.forEach(r => catMap.set(r.category, (catMap.get(r.category) || 0) + 1));
+      return Array.from(catMap.entries()).map(([name, count]) => ({ name, count }));
+    }
+    // Fallback: ingredient categories
+    const catMap = new Map<string, number>();
+    ingredients.forEach(i => catMap.set(i.category || 'Autres', (catMap.get(i.category || 'Autres') || 0) + 1));
+    return Array.from(catMap.entries()).map(([name, count]) => ({ name, count }));
+  }, [recipes, ingredients]);
+
+  // ── Empty state with onboarding — now shows dynamic KPIs ──────────────
   if (!stats || stats.totalRecipes === 0) {
+    const avgFoodCostPct = recipes.length > 0
+      ? recipes.reduce((s, r) => s + (r.margin.costPerPortion / r.sellingPrice * 100), 0) / recipes.length
+      : 0;
+    const avgMarginPct = recipes.length > 0
+      ? recipes.reduce((s, r) => s + r.margin.marginPercent, 0) / recipes.length
+      : 0;
+    const hasAnyData = ingredients.length > 0 || recipes.length > 0;
+
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight">
-          <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
-        </h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 stagger-1">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight">
+              <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
+            </h2>
+            {hasAnyData && (
+              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-general-sans">
+                {recipes.length} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link to="/ingredients" className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm">
+              <Plus className="w-4 h-4" /> {t("dashboard.addIngredients")}
+            </Link>
+            <Link to="/recipes" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm">
+              <ClipboardList className="w-4 h-4" /> {t("dashboard.createRecipe")}
+            </Link>
+          </div>
+        </div>
+
+        {/* 4 Stat Cards — always visible */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger-2">
+          <StatCard
+            title="Recettes"
+            numericValue={recipes.length}
+            decimals={0}
+            icon={ClipboardList}
+            color="bg-teal-600"
+            colorKey="teal"
+          />
+          <StatCard
+            title="Ingrédients"
+            numericValue={ingredients.length}
+            decimals={0}
+            icon={ShoppingBasket}
+            color="bg-purple-600"
+            colorKey="purple"
+          />
+          <StatCard
+            title="Food Cost Moyen"
+            numericValue={avgFoodCostPct}
+            suffix="%"
+            subtitle={recipes.length === 0 ? 'Ajoutez des recettes' : undefined}
+            icon={DollarSign}
+            color={avgFoodCostPct > 35 ? 'bg-red-500' : 'bg-green-600'}
+            colorKey={avgFoodCostPct > 35 ? 'amber' : 'green'}
+            trend={recipes.length > 0 ? (avgFoodCostPct <= 35 ? 'up' : 'down') : null}
+          />
+          <StatCard
+            title="Marge Moyenne"
+            numericValue={avgMarginPct}
+            suffix="%"
+            subtitle={recipes.length === 0 ? 'Ajoutez des recettes' : avgMarginPct >= 70 ? 'Objectif atteint' : 'Objectif : 70%'}
+            icon={TrendingUp}
+            color={avgMarginPct >= 70 ? 'bg-green-600' : avgMarginPct >= 60 ? 'bg-amber-500' : 'bg-red-500'}
+            colorKey={avgMarginPct >= 70 ? 'green' : 'amber'}
+            trend={recipes.length > 0 ? (avgMarginPct >= 70 ? 'up' : 'down') : null}
+          />
+        </div>
+
+        {/* Quick Alerts */}
+        {quickAlerts.length > 0 && (
+          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 stagger-3">
+            <div className="flex items-center gap-2 mb-4">
+              <ShieldAlert className="w-5 h-5 text-amber-500" />
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">Alertes rapides</h3>
+              <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 font-general-sans">{quickAlerts.length} alerte{quickAlerts.length > 1 ? 's' : ''}</span>
+            </div>
+            <div className="space-y-2">
+              {quickAlerts.map(alert => {
+                const AlertIcon = alert.icon;
+                return (
+                  <Link
+                    key={alert.id}
+                    to={alert.link}
+                    className={`flex items-center gap-3 p-3 rounded-xl border transition-all hover:shadow-md hover:-translate-y-0.5 ${alert.bgColor}`}
+                  >
+                    <AlertIcon className={`w-4 h-4 flex-shrink-0 ${alert.color}`} />
+                    <span className={`text-sm font-medium ${alert.color}`}>{alert.text}</span>
+                    <ArrowRight className={`w-3.5 h-3.5 ml-auto flex-shrink-0 ${alert.color} opacity-50`} />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Ingredient category donut (when ingredients exist) */}
+        {partialCategoryData.length > 0 && (
+          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 stagger-4">
+            <div className="flex items-center gap-2 mb-4">
+              <PieChartIcon className="w-5 h-5 text-teal-600" />
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">
+                {recipes.length > 0 ? 'Répartition par catégorie' : 'Ingrédients par catégorie'}
+              </h3>
+            </div>
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Pie
+                  data={partialCategoryData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={100}
+                  paddingAngle={3}
+                  dataKey="count"
+                  nameKey="name"
+                  label={(props: unknown) => {
+                    const { cx, cy, midAngle, outerRadius, name, count, percent } = props as { cx: number; cy: number; midAngle: number; outerRadius: number; name: string; count: number; percent: number };
+                    const RADIAN = Math.PI / 180;
+                    const radius = (outerRadius || 0) + 20;
+                    const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
+                    const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
+                    if ((percent || 0) < 0.05) return null;
+                    return (
+                      <text x={x} y={y} fill="currentColor" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" className="text-xs fill-slate-600 dark:fill-slate-300">
+                        {String(name || '').slice(0, 15)} ({count})
+                      </text>
+                    );
+                  }}
+                  labelLine={true}
+                >
+                  {partialCategoryData.map((_entry, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<ChartTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
 
         {/* Onboarding Checklist */}
         <OnboardingChecklist
@@ -764,16 +965,18 @@ export default function Dashboard() {
           navigate={navigate}
         />
 
-        {/* Original empty state card below */}
-        <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-          <ChefHat className="w-14 h-14 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
-          <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
-            <Link to="/recipes" className="btn-secondary">{t("dashboard.createRecipe")}</Link>
+        {/* CTA if truly empty */}
+        {!hasAnyData && (
+          <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+            <ChefHat className="w-14 h-14 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
+            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
+            <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
+            <div className="flex gap-4 justify-center">
+              <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
+              <Link to="/recipes" className="btn-secondary">{t("dashboard.createRecipe")}</Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -915,6 +1118,110 @@ export default function Dashboard() {
       {/* ── Alert Ticker Banner ──────────────────────────────────────── */}
       <div className="stagger-3">
         <AlertTicker alerts={stats.alertRecipes} />
+      </div>
+
+      {/* ── Top 5 Margin + Quick Alerts ────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-3">
+        {/* Top 5 recipes by margin — mini table */}
+        {top5Margin.length > 0 && (
+          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-teal-400/5 blur-3xl pointer-events-none" />
+            <div className="relative flex items-center gap-2 mb-4">
+              <Trophy className="w-5 h-5 text-amber-500" />
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">Top 5 — Meilleures marges</h3>
+            </div>
+            <div className="relative overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-slate-700">
+                    <th className="text-left py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Recette</th>
+                    <th className="text-right py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Coût</th>
+                    <th className="text-right py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Prix</th>
+                    <th className="text-right py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Marge</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {top5Margin.map((recipe, i) => {
+                    const marginColor = recipe.margin.marginPercent >= 70
+                      ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20'
+                      : recipe.margin.marginPercent >= 60
+                        ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20'
+                        : 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20';
+                    return (
+                      <tr
+                        key={recipe.id}
+                        className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                        style={{ animationDelay: `${i * 60}ms` }}
+                      >
+                        <td className="py-2.5">
+                          <Link to={`/recipes/${recipe.id}`} className="flex items-center gap-2 group">
+                            <span className="text-xs font-bold text-slate-300 dark:text-slate-600 w-4">{i + 1}</span>
+                            <span className="font-medium text-slate-700 dark:text-slate-200 truncate max-w-[160px] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                              {recipe.name}
+                            </span>
+                          </Link>
+                        </td>
+                        <td className="py-2.5 text-right text-slate-500 dark:text-slate-400 tabular-nums">
+                          {recipe.margin.costPerPortion.toFixed(2)} €
+                        </td>
+                        <td className="py-2.5 text-right text-slate-700 dark:text-slate-300 font-medium tabular-nums">
+                          {recipe.sellingPrice.toFixed(2)} €
+                        </td>
+                        <td className="py-2.5 text-right">
+                          <span className={`inline-block px-2 py-0.5 rounded-md text-xs font-bold tabular-nums ${marginColor}`}>
+                            {recipe.margin.marginPercent.toFixed(1)}%
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium mt-3">
+              Voir toutes les recettes <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        )}
+
+        {/* Quick Alerts */}
+        {quickAlerts.length > 0 && (
+          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
+            <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-amber-400/5 blur-3xl pointer-events-none" />
+            <div className="relative flex items-center gap-2 mb-4">
+              <ShieldAlert className="w-5 h-5 text-amber-500" />
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">Alertes rapides</h3>
+              <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-medium">
+                {quickAlerts.length}
+              </span>
+            </div>
+            <div className="relative space-y-2.5">
+              {quickAlerts.map((alert, i) => {
+                const AlertIcon = alert.icon;
+                return (
+                  <Link
+                    key={alert.id}
+                    to={alert.link}
+                    className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group ${alert.bgColor}`}
+                    style={{ animationDelay: `${i * 80}ms` }}
+                  >
+                    <div className={`p-2 rounded-lg bg-white/50 dark:bg-slate-800/50 ${alert.color}`}>
+                      <AlertIcon className="w-4 h-4" />
+                    </div>
+                    <span className={`text-sm font-medium flex-1 ${alert.color}`}>{alert.text}</span>
+                    <ArrowRight className={`w-3.5 h-3.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${alert.color}`} />
+                  </Link>
+                );
+              })}
+            </div>
+            {quickAlerts.length === 0 && (
+              <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/40">
+                <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">Tout est en ordre</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Menu du Marché + Suggestions IA ────────────────────────── */}

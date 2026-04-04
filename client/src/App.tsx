@@ -7,8 +7,8 @@ import ChatbotAssistant from './components/ChatbotAssistant';
 import KitchenTimer from './components/KitchenTimer';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
-import CommandPalette from './components/CommandPalette';
-import AlertsBell from './components/AlertsBell';
+// import CommandPalette from './components/CommandPalette';
+// import AlertsBell from './components/AlertsBell';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
@@ -714,7 +714,7 @@ function AppLayout() {
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-slate-700/30 ${collapsed ? 'justify-center px-2' : ''}`}>
         <ChefHat className="w-8 h-8 text-teal-400 flex-shrink-0 drop-shadow-[0_0_6px_rgba(13,148,136,0.5)]" />
         {!collapsed && <span className="text-lg font-bold text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
-        {!collapsed && <AlertsBell />}
+        {!collapsed && {/* <AlertsBell /> */}}
         {!collapsed && notificationBell}
       </div>
 
@@ -863,7 +863,7 @@ function AppLayout() {
           </div>
           <div className="flex items-center gap-1">
               <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"><Search className="w-5 h-5 text-slate-500 dark:text-slate-400" /></button>
-              <AlertsBell />
+              {/* <AlertsBell /> */}
               {notificationBell}
             </div>
         </header>
@@ -960,7 +960,7 @@ function AppLayout() {
       </div>
 
       {/* Command Palette (Ctrl+K) & Global Search (Ctrl+Shift+K) */}
-      <CommandPalette />
+      {/* <CommandPalette /> */}
       <GlobalSearch />
       <ChatbotAssistant />
       {/* Kitchen Timer - floating bottom-left */}

@@ -122,37 +122,37 @@ function SidebarRestaurantSelector() {
     <div ref={ref} className="relative px-3 mb-4">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-slate-800 dark:bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium transition-colors border border-slate-700"
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#111111] dark:text-white text-sm font-medium transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A]"
       >
         <Building2 className="w-4 h-4 flex-shrink-0 text-teal-400" />
         <span className="truncate flex-1 text-left sidebar-label">{selectedRestaurant.name}</span>
         <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform sidebar-label ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 py-1">
+        <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] z-50 py-1">
           {restaurants.map((r) => (
             <button
               key={r.id}
               onClick={() => { switchRestaurant(r.id); setOpen(false); }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors ${
                 r.id === selectedRestaurant.id
-                  ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-semibold'
+                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
               }`}
             >
               <Building2 className="w-4 h-4 flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <div className="font-medium truncate">{r.name}</div>
-                <div className="text-xs text-slate-400 dark:text-slate-500 truncate">{r.cuisineType || ''}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{r.cuisineType || ''}</div>
               </div>
-              {r.id === selectedRestaurant.id && <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />}
+              {r.id === selectedRestaurant.id && <Check className="w-4 h-4 text-[#111111] dark:text-white flex-shrink-0" />}
             </button>
           ))}
-          <div className="border-t border-slate-100 dark:border-slate-700 mt-1 pt-1">
+          <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-1 pt-1">
             <NavLink
               to="/restaurants"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-3 py-2 text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="flex items-center gap-3 px-3 py-2 text-sm text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
             >
               <Settings className="w-4 h-4" />
               Gerer les restaurants
@@ -656,7 +656,7 @@ function AppLayout() {
           onClick={() => alert('Cette fonctionnalité sera disponible prochainement')}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group w-full opacity-50 cursor-not-allowed ${
             collapsed ? 'justify-center' : ''
-          } text-slate-500`}
+          } text-[#9CA3AF] dark:text-[#737373]`}
         >
           <span className="relative flex-shrink-0">
             <item.icon className="w-5 h-5" />
@@ -665,7 +665,7 @@ function AppLayout() {
             <>
               <span className="sidebar-label truncate">{item.label}</span>
               {item.badgeText && (
-                <span className="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                <span className="ml-auto text-[9px] font-semibold uppercase tracking-wide bg-[#E5E7EB] text-[#6B7280] dark:bg-[#1A1A1A] dark:text-[#737373] px-1.5 py-0.5 rounded-full whitespace-nowrap">
                   {item.badgeText}
                 </span>
               )}
@@ -686,8 +686,8 @@ function AppLayout() {
             collapsed ? 'justify-center' : ''
           } ${
             isActive
-              ? 'bg-teal-500/8 text-teal-300 dark:bg-teal-500/8 dark:text-teal-300 border-l-[2px] border-teal-400 pl-[10px]'
-              : 'text-slate-400 hover:bg-white/[0.03] hover:text-slate-200 hover:translate-x-0.5'
+              ? 'bg-[#111111] text-white dark:bg-white dark:text-[#000000] border-l-[2px] border-[#111111] dark:border-white pl-[10px]'
+              : 'text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white hover:translate-x-0.5'
           }`
         }
       >
@@ -707,14 +707,14 @@ function AppLayout() {
   // Sidebar content (shared between desktop and mobile)
   const sidebarContent = (collapsed = false) => (
     <div className="flex flex-col h-full">
-      {/* Gradient accent line */}
-      <div className="h-[1px] bg-gradient-to-r from-teal-500 via-cyan-400 to-transparent" />
+      {/* Accent line */}
+      <div className="h-[1px] bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
 
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b border-slate-700/30 ${collapsed ? 'justify-center px-2' : ''}`}>
-        <ChefHat className="w-8 h-8 text-teal-400 flex-shrink-0 drop-shadow-[0_0_6px_rgba(13,148,136,0.5)]" />
-        {!collapsed && <span className="text-lg font-bold text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
-        {!collapsed && {/* <AlertsBell /> */}}
+      <div className={`flex items-center gap-3 px-4 py-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] ${collapsed ? 'justify-center px-2' : ''}`}>
+        <ChefHat className="w-8 h-8 text-[#111111] dark:text-white flex-shrink-0" />
+        {!collapsed && <span className="text-lg font-bold text-[#111111] dark:text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
+        {/* AlertsBell disabled - component not yet created */}
         {!collapsed && notificationBell}
       </div>
 
@@ -741,13 +741,13 @@ function AppLayout() {
       <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1.5 pb-4 sidebar-scroll">
         {navSections.map((section, idx) => (
           <div key={section.title} className={idx > 0 ? 'pt-4' : ''}>
-            {!collapsed && idx > 0 && <div className="border-t border-slate-700/20 mb-3" />}
+            {!collapsed && idx > 0 && <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] mb-3" />}
             {!collapsed && (
-              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-slate-500/60 uppercase sidebar-label font-satoshi">
+              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#9CA3AF] dark:text-[#737373] uppercase sidebar-label font-satoshi">
                 {section.title}
               </div>
             )}
-            {collapsed && <div className="border-t border-slate-700/50 my-2" />}
+            {collapsed && <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] my-2" />}
             <div className="space-y-0.5">
               {section.items.map((item) => renderNavItem(item, collapsed))}
             </div>
@@ -756,7 +756,7 @@ function AppLayout() {
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t border-slate-700/50 px-3 py-3 space-y-1">
+      <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] px-3 py-3 space-y-1">
         {/* Bottom nav items */}
         {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
 
@@ -765,7 +765,7 @@ function AppLayout() {
           onClick={() => setDarkMode(!darkMode)}
           title={darkMode ? 'Mode clair' : 'Mode sombre'}
           aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700/70 hover:text-white transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
         >
           {darkMode ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
           {!collapsed && <span className="sidebar-label">{darkMode ? 'Mode clair' : 'Mode sombre'}</span>}
@@ -784,14 +784,14 @@ function AppLayout() {
         )}
 
         {/* User profile */}
-        <div className={`flex items-center gap-3 px-3 py-3 mt-3 rounded-xl bg-slate-800/30 border border-slate-700/20 backdrop-blur-sm ${collapsed ? 'justify-center' : ''}`}>
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 ring-2 ring-teal-400/20 shadow-[0_0_12px_rgba(13,148,136,0.2)]">
+        <div className={`flex items-center gap-3 px-3 py-3 mt-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] ${collapsed ? 'justify-center' : ''}`}>
+          <div className="w-10 h-10 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black text-sm font-bold flex-shrink-0">
             {userInitials}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0 sidebar-label">
-              <div className="text-sm font-semibold text-white truncate">{user?.name || user?.email}</div>
-              <div className="text-[11px] text-slate-500 truncate">
+              <div className="text-sm font-semibold text-[#111111] dark:text-white truncate">{user?.name || user?.email}</div>
+              <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373] truncate">
                 {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
               </div>
             </div>
@@ -800,7 +800,7 @@ function AppLayout() {
             onClick={logout}
             title="Deconnexion"
             aria-label="Déconnexion"
-            className="p-1.5 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-all duration-200 flex-shrink-0"
+            className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-all duration-200 flex-shrink-0"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -810,17 +810,17 @@ function AppLayout() {
   );
 
   return (
-    <div className="min-h-screen flex bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen flex bg-white dark:bg-black text-[#111111] dark:text-white">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
         Aller au contenu principal
       </a>
       {/* Desktop sidebar (>= 1024px): full width */}
-      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-30 no-print">
+      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-[#FAFAFA] border-r border-[#E5E7EB] dark:bg-[#0A0A0A] dark:border-r dark:border-[#1A1A1A] z-30 no-print">
         {sidebarContent(false)}
       </aside>
 
       {/* Tablet sidebar (768-1024px): icons only */}
-      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-30 no-print">
+      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 bg-[#FAFAFA] border-r border-[#E5E7EB] dark:bg-[#0A0A0A] dark:border-r dark:border-[#1A1A1A] z-30 no-print">
         {sidebarContent(true)}
       </aside>
 
@@ -833,11 +833,11 @@ function AppLayout() {
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Sidebar panel */}
-          <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-950 dark:to-black z-50 no-print animate-slide-in">
+          <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-[#FAFAFA] border-r border-[#E5E7EB] dark:bg-[#0A0A0A] dark:border-r dark:border-[#1A1A1A] z-50 no-print animate-slide-in">
             <button
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Fermer le menu"
-              className="absolute top-4 right-3 p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              className="absolute top-4 right-3 p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -849,20 +849,20 @@ function AppLayout() {
       {/* Main content area */}
       <div className="flex-1 flex flex-col min-h-screen lg:ml-56 md:ml-16 ml-0">
         {/* Mobile top bar */}
-        <header className="md:hidden bg-white dark:bg-slate-800 border-b dark:border-slate-700 px-4 py-3 flex items-center justify-between no-print">
+        <header className="md:hidden bg-white dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-3 flex items-center justify-between no-print">
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Ouvrir le menu"
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <ChefHat className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-            <span className="font-bold text-slate-900 dark:text-white">RestauMargin</span>
+            <ChefHat className="w-6 h-6 text-[#111111] dark:text-white" />
+            <span className="font-bold text-[#111111] dark:text-white">RestauMargin</span>
           </div>
           <div className="flex items-center gap-1">
-              <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"><Search className="w-5 h-5 text-slate-500 dark:text-slate-400" /></button>
+              <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
               {/* <AlertsBell /> */}
               {notificationBell}
             </div>

@@ -43,7 +43,6 @@ interface SavedMenu {
 
 const SECTION_LABELS: Record<string, string> = {
   'Entree': 'Entrees',
-  'Entree': 'Entrees',
   'Plat': 'Plats',
   'Dessert': 'Desserts',
   'Boisson': 'Boissons',

@@ -1,4 +1,4 @@
-import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData, InventoryItem, InventoryValue } from '../types';
+import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData, InventoryItem, InventoryValue, RecipeOptimizationResult } from '../types';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -285,6 +285,15 @@ export async function cloneRecipe(id: number): Promise<Recipe> {
   return handleResponse<Recipe>(res);
 }
 
+export async function optimizeRecipeCost(recipeId: number): Promise<RecipeOptimizationResult> {
+  const res = await fetch(`${API_BASE}/ai/optimize-recipe`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ recipeId }),
+  });
+  return handleResponse<RecipeOptimizationResult>(res);
+}
+
 // --- Suppliers ---
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
@@ -337,6 +346,40 @@ export async function linkSupplierIngredients(id: number): Promise<{ linked: num
     headers: authHeaders(),
   });
   return handleResponse<{ linked: number; supplierName: string }>(res);
+}
+
+export interface SupplierScoreBreakdown {
+  supplierId: number;
+  supplierName: string;
+  scores: {
+    fiabilite: number;
+    competitivite: number;
+    diversite: number;
+    historique: number;
+    global: number;
+  };
+  details?: {
+    totalOrders: number;
+    completedOrders: number;
+    priceComparisons: number;
+    betterPriceCount: number;
+    supplierIngredientCount: number;
+    totalUniqueIngredients: number;
+    monthsSinceCreation: number;
+  };
+  estimatedScores?: string[];
+  note?: string | null;
+  recommendation?: string;
+}
+
+export async function fetchSupplierScore(id: number): Promise<SupplierScoreBreakdown> {
+  const res = await fetch(`${API_BASE}/suppliers/${id}/score`, { headers: authHeaders() });
+  return handleResponse<SupplierScoreBreakdown>(res);
+}
+
+export async function fetchAllSupplierScores(): Promise<SupplierScoreBreakdown[]> {
+  const res = await fetch(`${API_BASE}/suppliers/scores/all`, { headers: authHeaders() });
+  return handleResponse<SupplierScoreBreakdown[]>(res);
 }
 
 // --- Inventory ---

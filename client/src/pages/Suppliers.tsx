@@ -4,12 +4,14 @@ import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown, ShoppingBag,
   ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
-  Star, Clock, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers,
+  Star, Clock, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers, TrendingUp,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
   linkSupplierIngredients, fetchIngredients, updateIngredient, createIngredient,
+  fetchSupplierScore, fetchAllSupplierScores,
 } from '../services/api';
+import type { SupplierScoreBreakdown } from '../services/api';
 import type { Supplier, Ingredient } from '../types';
 
 type SupplierIngredient = Pick<Ingredient, 'id' | 'name' | 'unit' | 'pricePerUnit' | 'category'>;
@@ -147,6 +149,59 @@ function supplierToForm(s: Supplier): SupplierFormData {
   };
 }
 
+// ── Circular Score Indicator (SVG) ──────────────────────────────────────────
+
+function CircularScore({ score, size = 48, strokeWidth = 4 }: { score: number; size?: number; strokeWidth?: number }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = Math.max(0, Math.min(100, score));
+  const offset = circumference - (progress / 100) * circumference;
+  const color = score > 70 ? '#14b8a6' : score >= 40 ? '#f59e0b' : '#ef4444';
+  const bgColor = score > 70 ? 'rgba(20,184,166,0.15)' : score >= 40 ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)';
+
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} className="text-slate-700/30" />
+        <circle
+          cx={size / 2} cy={size / 2} r={radius} fill="none"
+          stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
+          strokeDasharray={circumference} strokeDashoffset={offset}
+          style={{ transition: 'stroke-dashoffset 0.8s ease-in-out' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-xs font-bold" style={{ color }}>{score}</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Score Bar (horizontal) ─────────────────────────────────────────────────
+
+function ScoreBar({ label, score, icon }: { label: string; score: number; icon: React.ReactNode }) {
+  const color = score > 70 ? 'bg-teal-500' : score >= 40 ? 'bg-amber-500' : 'bg-red-500';
+  const textColor = score > 70 ? 'text-teal-400' : score >= 40 ? 'text-amber-400' : 'text-red-400';
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <span className="flex items-center gap-1.5 text-slate-400">
+          {icon}
+          {label}
+        </span>
+        <span className={`font-bold ${textColor}`}>{score}/100</span>
+      </div>
+      <div className="h-2 bg-slate-700/50 rounded-full overflow-hidden">
+        <div
+          className={`h-full rounded-full ${color}`}
+          style={{ width: `${Math.max(2, score)}%`, transition: 'width 0.8s ease-in-out' }}
+        />
+      </div>
+    </div>
+  );
+}
+
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function Suppliers() {
@@ -196,6 +251,13 @@ export default function Suppliers() {
   // Supplier detail view
   const [detailSupplier, setDetailSupplier] = useState<Supplier | null>(null);
 
+  // Supplier scoring
+  const [backendScores, setBackendScores] = useState<Record<number, SupplierScoreBreakdown>>({});
+  const [detailScore, setDetailScore] = useState<SupplierScoreBreakdown | null>(null);
+  const [loadingScore, setLoadingScore] = useState(false);
+  const [showScoreCompare, setShowScoreCompare] = useState(false);
+  const [expandedScoreId, setExpandedScoreId] = useState<number | null>(null);
+
   // Quick-add from templates
   const [showQuickAdd, setShowQuickAdd] = useState(false);
 
@@ -228,6 +290,28 @@ export default function Suppliers() {
   }, [showToast, selectedRestaurant, restaurantLoading]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Load all supplier scores from backend
+  useEffect(() => {
+    if (suppliers.length === 0) return;
+    fetchAllSupplierScores()
+      .then((allScores) => {
+        const map: Record<number, SupplierScoreBreakdown> = {};
+        allScores.forEach((s) => { map[s.supplierId] = s; });
+        setBackendScores(map);
+      })
+      .catch(() => {});
+  }, [suppliers]);
+
+  // Load detailed score when selecting a supplier
+  useEffect(() => {
+    if (!detailSupplier) { setDetailScore(null); return; }
+    setLoadingScore(true);
+    fetchSupplierScore(detailSupplier.id)
+      .then(setDetailScore)
+      .catch(() => setDetailScore(null))
+      .finally(() => setLoadingScore(false));
+  }, [detailSupplier?.id]);
 
   // ── Mes fournisseurs: stats ────────────────────────────────────────────────
 
@@ -639,6 +723,16 @@ export default function Suppliers() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('suppliers.title')}</h2>
             <div className="flex items-center gap-2">
+              {/* Score comparison button */}
+              {suppliers.length >= 2 && (
+                <button
+                  onClick={() => setShowScoreCompare(true)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-teal-500/50 rounded-lg text-teal-400 hover:bg-teal-900/20 transition-colors"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Comparer les fournisseurs
+                </button>
+              )}
               {/* Quick-add dropdown */}
               <div className="relative">
                 <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
@@ -864,7 +958,10 @@ export default function Suppliers() {
                     <p className="text-sm">{t('suppliers.noSupplierFound')}</p>
                   </div>
                 ) : (
-                  filtered.map(supplier => (
+                  filtered.map(supplier => {
+                    const bScore = backendScores[supplier.id];
+                    const globalScore = bScore?.scores?.global ?? 0;
+                    return (
                     <div
                       key={supplier.id}
                       onClick={() => setDetailSupplier(supplier)}
@@ -874,33 +971,45 @@ export default function Suppliers() {
                           : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-sm text-slate-800 dark:text-white truncate">{supplier.name}</span>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <CircularScore score={globalScore} size={38} strokeWidth={3} />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-semibold text-sm text-slate-800 dark:text-white truncate">{supplier.name}</span>
+                              {globalScore > 80 && (
+                                <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 font-bold">
+                                  <Award className="w-2.5 h-2.5" /> Top
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-400">
+                              {supplier.city && <span>{supplier.city}</span>}
+                              {supplier.delivery && <span className="text-emerald-500">&#10003; Livraison</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <span className="shrink-0 text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium">
                           {supplierCatalogMap[supplier.id]?.count ?? 0} produits
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-400 dark:text-slate-400">
-                        {supplier.city && <span>{supplier.city}</span>}
-                        {supplier.delivery && <span className="text-emerald-500">&#10003; Livraison</span>}
-                      </div>
-                      <div className="flex flex-wrap gap-1 mt-1.5">
+                      <div className="flex flex-wrap gap-1 mt-1.5 ml-[50px]">
                         {(supplier.categories || []).slice(0, 3).map(cat => (
                           <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300">{cat}</span>
                         ))}
                       </div>
                     </div>
-                  ))
-                )}
+                    );
+                  }))
+                }
               </div>
             </div>
 
             {/* RIGHT: Detail panel */}
             <div className="flex-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-y-auto">
               {detailSupplier ? (() => {
-                const rating = getMockRating(detailSupplier.id);
-                const score = supplierScores[detailSupplier.id] ?? 0;
-                const scoreColor = score > 7 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : score >= 5 ? 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
+                const globalScoreVal = backendScores[detailSupplier.id]?.scores?.global ?? 0;
+                const scoreColor = globalScoreVal > 70 ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300' : globalScoreVal >= 40 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
                 return (
                   <div className="p-6 space-y-5">
                     {/* Header with name + actions */}
@@ -908,7 +1017,7 @@ export default function Suppliers() {
                       <div>
                         <h3 className="text-xl font-bold text-slate-800 dark:text-white">{detailSupplier.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${scoreColor}`}>{score}/10</span>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${scoreColor}`}>{globalScoreVal}/100</span>
                           {detailSupplier.delivery && (
                             <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 font-medium flex items-center gap-1">
                               <Check className="w-3 h-3" /> Livraison
@@ -950,27 +1059,43 @@ export default function Suppliers() {
                       </div>
                     </div>
 
-                    {/* Rating summary */}
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
-                        <div className="flex items-center justify-center gap-0.5 mb-1">
-                          {[1,2,3,4,5].map(n => (
-                            <Star key={n} className={`w-4 h-4 ${n <= rating.reliability ? 'text-amber-400 fill-amber-400' : 'text-slate-300 dark:text-slate-600'}`} />
-                          ))}
+                    {/* Scoring Dashboard */}
+                    <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                      <div className="flex items-center gap-4 mb-4">
+                        <CircularScore score={detailScore?.scores?.global ?? 0} size={64} strokeWidth={5} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold text-white">Score Global</span>
+                            {(detailScore?.scores?.global ?? 0) > 80 && (
+                              <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30">
+                                <Award className="w-3 h-3" /> Top fournisseur
+                              </span>
+                            )}
+                          </div>
+                          {detailScore?.recommendation && (
+                            <p className="text-xs text-slate-400 mt-0.5">{detailScore.recommendation}</p>
+                          )}
+                          {detailScore?.note && (
+                            <p className="text-[10px] text-amber-400/80 mt-1 flex items-center gap-1">
+                              <AlertTriangle className="w-3 h-3" /> {detailScore.note}
+                            </p>
+                          )}
                         </div>
-                        <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.reliability')}</span>
                       </div>
-                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
-                        <div className="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center justify-center gap-1">
-                          <Clock className="w-4 h-4 text-teal-500" />
-                          {rating.deliveryDays}
+                      {loadingScore ? (
+                        <div className="flex items-center justify-center py-4">
+                          <span className="w-5 h-5 border-2 border-teal-500/30 border-t-teal-500 rounded-full animate-spin" />
                         </div>
-                        <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.deliveryDelay')}</span>
-                      </div>
-                      <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 text-center">
-                        <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{rating.minOrderAmount}</div>
-                        <span className="text-xs text-slate-400 dark:text-slate-400">{t('suppliers.minOrder')}</span>
-                      </div>
+                      ) : detailScore ? (
+                        <div className="space-y-3">
+                          <ScoreBar label="Fiabilite livraison" score={detailScore.scores.fiabilite} icon={<Truck className="w-3.5 h-3.5" />} />
+                          <ScoreBar label="Competitivite prix" score={detailScore.scores.competitivite} icon={<TrendingUp className="w-3.5 h-3.5" />} />
+                          <ScoreBar label="Diversite catalogue" score={detailScore.scores.diversite} icon={<Package className="w-3.5 h-3.5" />} />
+                          <ScoreBar label="Historique" score={detailScore.scores.historique} icon={<Clock className="w-3.5 h-3.5" />} />
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-500 text-center py-2">Chargement des scores...</p>
+                      )}
                     </div>
 
                     {/* Contact info */}
@@ -1976,6 +2101,89 @@ export default function Suppliers() {
             )}
           </button>
         </div>
+      </Modal>
+
+      {/* ================================================================== */}
+      {/* Score Comparison Modal                                             */}
+      {/* ================================================================== */}
+      <Modal isOpen={showScoreCompare} onClose={() => setShowScoreCompare(false)} title="Comparer les fournisseurs">
+        {(() => {
+          const scoredSuppliers = suppliers
+            .map(s => ({ supplier: s, score: backendScores[s.id] }))
+            .filter(x => x.score)
+            .sort((a, b) => (b.score?.scores?.global ?? 0) - (a.score?.scores?.global ?? 0));
+
+          if (scoredSuppliers.length === 0) {
+            return <p className="text-sm text-slate-400 py-6 text-center">Aucun score disponible.</p>;
+          }
+
+          return (
+            <div className="overflow-x-auto max-h-[70vh]">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-slate-800 z-10">
+                  <tr>
+                    <th className="text-left px-3 py-2.5 text-xs text-slate-400 font-medium">Fournisseur</th>
+                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                      <div className="flex items-center justify-center gap-1"><Star className="w-3 h-3" /> Global</div>
+                    </th>
+                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                      <div className="flex items-center justify-center gap-1"><Truck className="w-3 h-3" /> Fiabilite</div>
+                    </th>
+                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                      <div className="flex items-center justify-center gap-1"><TrendingUp className="w-3 h-3" /> Prix</div>
+                    </th>
+                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                      <div className="flex items-center justify-center gap-1"><Package className="w-3 h-3" /> Catalogue</div>
+                    </th>
+                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                      <div className="flex items-center justify-center gap-1"><Clock className="w-3 h-3" /> Historique</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-700/50">
+                  {scoredSuppliers.map(({ supplier, score }, idx) => {
+                    const g = score?.scores?.global ?? 0;
+                    const isTop = g > 80;
+                    return (
+                      <tr key={supplier.id} className={`hover:bg-slate-700/30 ${idx === 0 ? 'bg-teal-900/10' : ''}`}>
+                        <td className="px-3 py-3">
+                          <div className="flex items-center gap-2">
+                            <CircularScore score={g} size={32} strokeWidth={3} />
+                            <div>
+                              <span className="font-medium text-white text-sm">{supplier.name}</span>
+                              {isTop && (
+                                <span className="ml-1.5 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold">
+                                  <Award className="w-2.5 h-2.5" /> Top
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-center">
+                          <span className={`font-bold text-sm ${g > 70 ? 'text-teal-400' : g >= 40 ? 'text-amber-400' : 'text-red-400'}`}>{g}</span>
+                        </td>
+                        {[score?.scores?.fiabilite, score?.scores?.competitivite, score?.scores?.diversite, score?.scores?.historique].map((val, i) => {
+                          const v = val ?? 0;
+                          const c = v > 70 ? 'text-teal-400' : v >= 40 ? 'text-amber-400' : 'text-red-400';
+                          return (
+                            <td key={i} className="px-3 py-3 text-center">
+                              <div className="flex flex-col items-center gap-1">
+                                <span className={`font-semibold text-xs ${c}`}>{v}</span>
+                                <div className="w-12 h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
+                                  <div className={`h-full rounded-full ${v > 70 ? 'bg-teal-500' : v >= 40 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${Math.max(2, v)}%` }} />
+                                </div>
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })()}
       </Modal>
 
       {/* ================================================================== */}

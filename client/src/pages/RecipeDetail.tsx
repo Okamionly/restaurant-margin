@@ -1,9 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit } from 'lucide-react';
+import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { fetchRecipe } from '../services/api';
-import type { Recipe } from '../types';
+import { fetchRecipe, optimizeRecipeCost } from '../services/api';
+import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 
 // ─── Category emoji map ───
 const CATEGORY_EMOJI: Record<string, string> = {
@@ -110,6 +110,27 @@ export default function RecipeDetail() {
   const [loading, setLoading] = useState(true);
   const [simPrice, setSimPrice] = useState<number | null>(null);
   const [portions, setPortions] = useState<number | null>(null);
+  const [optimizing, setOptimizing] = useState(false);
+  const [optimizationResult, setOptimizationResult] = useState<RecipeOptimizationResult | null>(null);
+  const [showOptimizer, setShowOptimizer] = useState(false);
+  const [appliedSuggestions, setAppliedSuggestions] = useState<Set<number>>(new Set());
+  const [optimizeError, setOptimizeError] = useState<string | null>(null);
+
+  const handleOptimize = useCallback(async () => {
+    if (!recipe) return;
+    setOptimizing(true);
+    setOptimizeError(null);
+    try {
+      const result = await optimizeRecipeCost(recipe.id);
+      setOptimizationResult(result);
+      setShowOptimizer(true);
+      setAppliedSuggestions(new Set());
+    } catch (err: any) {
+      setOptimizeError(err.message || 'Erreur lors de l\'optimisation');
+    } finally {
+      setOptimizing(false);
+    }
+  }, [recipe]);
 
   useEffect(() => {
     if (id) {
@@ -179,6 +200,14 @@ export default function RecipeDetail() {
           <ArrowLeft className="w-4 h-4" /> Retour aux recettes
         </Link>
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleOptimize}
+            disabled={optimizing}
+            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {optimizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            {optimizing ? 'Analyse...' : 'Optimiser IA'}
+          </button>
           <Link
             to={`/recipes/${recipe.id}/edit`}
             className="btn-secondary flex items-center gap-2 text-sm"
@@ -729,6 +758,177 @@ export default function RecipeDetail() {
           }
         }
       `}</style>
+
+      {/* ─── Optimize error toast ─── */}
+      {optimizeError && (
+        <div className="fixed bottom-4 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in no-print">
+          <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+          <span className="text-sm">{optimizeError}</span>
+          <button onClick={() => setOptimizeError(null)} className="p-1 hover:bg-red-500 rounded-lg transition-colors">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* ─── AI Recipe Cost Optimizer Modal ─── */}
+      {showOptimizer && optimizationResult && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto no-print" role="dialog" aria-modal="true" onClick={() => setShowOptimizer(false)}>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+          <div
+            className="relative bg-slate-900 rounded-2xl shadow-2xl w-full max-w-3xl my-8 border border-slate-700 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-teal-600 to-teal-500">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-6 h-6 text-white" />
+                <div>
+                  <h3 className="text-lg font-bold text-white">Optimisation IA des couts</h3>
+                  <p className="text-teal-100 text-xs">{optimizationResult.recipe.name}</p>
+                </div>
+              </div>
+              <button onClick={() => setShowOptimizer(false)} className="p-1.5 rounded-lg hover:bg-teal-400/30 transition-colors">
+                <X className="w-5 h-5 text-white" />
+              </button>
+            </div>
+
+            {/* Cost comparison cards */}
+            <div className="px-6 py-4 bg-slate-800/50 border-b border-slate-700">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 text-center">
+                  <div className="text-xs text-slate-400 font-medium mb-1">Cout actuel</div>
+                  <div className="text-2xl font-bold text-red-400">{optimizationResult.optimization.currentTotalCost.toFixed(2)} &euro;</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} &euro;/portion</div>
+                </div>
+                <div className="bg-slate-800 rounded-xl p-4 border border-teal-600/50 text-center relative">
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">OPTIMISE</div>
+                  <div className="text-xs text-slate-400 font-medium mb-1">Cout optimise</div>
+                  <div className="text-2xl font-bold text-teal-400">{optimizationResult.optimization.optimizedTotalCost.toFixed(2)} &euro;</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} &euro;/portion</div>
+                </div>
+                <div className="bg-slate-800 rounded-xl p-4 border border-emerald-600/50 text-center">
+                  <div className="text-xs text-slate-400 font-medium mb-1">Economies</div>
+                  <div className="text-2xl font-bold text-emerald-400">-{optimizationResult.optimization.totalSavingsEuros.toFixed(2)} &euro;</div>
+                  <div className="text-xs text-emerald-500 mt-0.5 font-semibold">-{optimizationResult.optimization.totalSavingsPercent.toFixed(1)}%</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Summary */}
+            {optimizationResult.optimization.summary && (
+              <div className="px-6 py-3 bg-teal-900/20 border-b border-slate-700">
+                <p className="text-sm text-teal-200">{optimizationResult.optimization.summary}</p>
+              </div>
+            )}
+
+            {/* Suggestions list */}
+            <div className="px-6 py-4 max-h-[50vh] overflow-y-auto">
+              <h4 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                <TrendingDown className="w-4 h-4 text-teal-400" />
+                Suggestions d'optimisation ({optimizationResult.optimization.suggestions.length})
+              </h4>
+              <div className="space-y-3">
+                {optimizationResult.optimization.suggestions.map((suggestion: OptimizationSuggestion, index: number) => {
+                  const isApplied = appliedSuggestions.has(index);
+                  const TypeIcon = suggestion.type === 'substitution' ? Package
+                    : suggestion.type === 'seasonal' ? Leaf
+                    : suggestion.type === 'supplier' ? ShoppingCart
+                    : TrendingDown;
+                  const typeLabel = suggestion.type === 'substitution' ? 'Substitution'
+                    : suggestion.type === 'seasonal' ? 'Saisonnalite'
+                    : suggestion.type === 'supplier' ? 'Fournisseur'
+                    : 'Quantite';
+                  const typeBg = suggestion.type === 'substitution' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                    : suggestion.type === 'seasonal' ? 'bg-green-500/10 text-green-400 border-green-500/30'
+                    : suggestion.type === 'supplier' ? 'bg-orange-500/10 text-orange-400 border-orange-500/30'
+                    : 'bg-purple-500/10 text-purple-400 border-purple-500/30';
+                  const impactColor = suggestion.quality_impact === 'aucun' ? 'text-green-400'
+                    : suggestion.quality_impact === 'minimal' ? 'text-yellow-400'
+                    : 'text-orange-400';
+                  const impactLabel = suggestion.quality_impact === 'aucun' ? 'Aucun impact'
+                    : suggestion.quality_impact === 'minimal' ? 'Impact minimal'
+                    : 'Impact modere';
+
+                  return (
+                    <div
+                      key={index}
+                      className={`rounded-xl border p-4 transition-all duration-300 ${
+                        isApplied
+                          ? 'bg-teal-900/20 border-teal-600/50'
+                          : 'bg-slate-800/80 border-slate-700 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${typeBg}`}>
+                              <TypeIcon className="w-3 h-3" />
+                              {typeLabel}
+                            </span>
+                            <span className={`text-[10px] font-medium ${impactColor}`}>{impactLabel}</span>
+                          </div>
+                          <div className="text-sm font-semibold text-white mb-1">{suggestion.ingredientName}</div>
+                          <p className="text-xs text-slate-400 mb-2">{suggestion.suggestion}</p>
+                          <div className="flex items-center gap-3 text-xs">
+                            <span className="text-red-400 line-through">{suggestion.currentCost.toFixed(2)} &euro;</span>
+                            <ArrowRight className="w-3 h-3 text-slate-500" />
+                            <span className="text-teal-400 font-semibold">{suggestion.estimatedNewCost.toFixed(2)} &euro;</span>
+                            <span className="text-emerald-400 font-bold">-{suggestion.savingsPercent.toFixed(0)}%</span>
+                          </div>
+                          {suggestion.reasoning && (
+                            <p className="text-[11px] text-slate-500 mt-2 italic">{suggestion.reasoning}</p>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => {
+                            setAppliedSuggestions(prev => {
+                              const next = new Set(prev);
+                              if (next.has(index)) {
+                                next.delete(index);
+                              } else {
+                                next.add(index);
+                              }
+                              return next;
+                            });
+                          }}
+                          className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                            isApplied
+                              ? 'bg-teal-600 text-white'
+                              : 'bg-slate-700 text-slate-300 hover:bg-teal-600 hover:text-white'
+                          }`}
+                        >
+                          {isApplied ? <Check className="w-3.5 h-3.5" /> : null}
+                          {isApplied ? 'Applique' : 'Appliquer'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+                {optimizationResult.optimization.suggestions.length === 0 && (
+                  <div className="text-center py-8 text-slate-500">
+                    <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Cette recette est deja bien optimisee !</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal footer */}
+            {appliedSuggestions.size > 0 && (
+              <div className="px-6 py-3 bg-slate-800 border-t border-slate-700 flex items-center justify-between">
+                <span className="text-xs text-slate-400">{appliedSuggestions.size} suggestion{appliedSuggestions.size > 1 ? 's' : ''} selectionnee{appliedSuggestions.size > 1 ? 's' : ''}</span>
+                <button
+                  onClick={() => setShowOptimizer(false)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-colors"
+                >
+                  <Check className="w-4 h-4" />
+                  Valider la selection
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

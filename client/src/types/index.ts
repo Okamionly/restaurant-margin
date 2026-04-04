@@ -92,6 +92,47 @@ export interface Recipe {
   updatedAt: string;
 }
 
+export interface OptimizationSuggestion {
+  type: 'substitution' | 'seasonal' | 'quantity' | 'supplier';
+  ingredientName: string;
+  currentCost: number;
+  suggestion: string;
+  alternativeName: string | null;
+  estimatedNewCost: number;
+  savingsPercent: number;
+  reasoning: string;
+  quality_impact: 'aucun' | 'minimal' | 'modere';
+}
+
+export interface RecipeOptimizationResult {
+  recipe: {
+    id: number;
+    name: string;
+    category: string;
+    sellingPrice: number;
+    nbPortions: number;
+  };
+  currentCost: number;
+  costPerPortion: number;
+  ingredients: {
+    name: string;
+    category: string;
+    quantity: number;
+    unit: string;
+    pricePerUnit: number;
+    totalCost: number;
+    supplier: string;
+  }[];
+  optimization: {
+    suggestions: OptimizationSuggestion[];
+    currentTotalCost: number;
+    optimizedTotalCost: number;
+    totalSavingsEuros: number;
+    totalSavingsPercent: number;
+    summary: string;
+  };
+}
+
 export interface InventoryItem {
   id: number;
   ingredientId: number;

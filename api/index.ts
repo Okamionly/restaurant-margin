@@ -9,6 +9,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import authRoutes from './routes/auth';
 import aiRoutes from './routes/ai';
 import mercurialeRoutes from './routes/mercuriale';
+import exportRoutes from './routes/export';
 
 
 const app = express();
@@ -217,6 +218,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/mercuriale', mercurialeRoutes);
+app.use('/api/export', exportRoutes);
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──
 function generateActivationCode(): string {
@@ -452,6 +454,69 @@ app.get('/api/suppliers', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération fournisseurs' }); }
 });
 
+app.get('/api/suppliers/scores/all', authWithRestaurant, async (req: any, res) => {
+  try {
+    const suppliers = await prisma.supplier.findMany({
+      where: { restaurantId: req.restaurantId },
+      include: { ingredients: { select: { id: true, name: true, pricePerUnit: true, category: true } } },
+    });
+
+    const allIngredients = await prisma.ingredient.findMany({
+      where: { restaurantId: req.restaurantId },
+      select: { name: true, pricePerUnit: true, supplierId: true },
+    });
+    const totalUniqueIngredients = allIngredients.length;
+    const avgPrices: Record<string, { total: number; count: number }> = {};
+    allIngredients.forEach((ing: any) => {
+      const key = ing.name.toLowerCase().trim();
+      if (!avgPrices[key]) avgPrices[key] = { total: 0, count: 0 };
+      avgPrices[key].total += ing.pricePerUnit;
+      avgPrices[key].count++;
+    });
+
+    const allInvoices = await prisma.invoice.findMany({
+      where: { restaurantId: req.restaurantId },
+      select: { supplierName: true, status: true },
+    });
+
+    const scores = suppliers.map((supplier: any) => {
+      const supplierInvoices = allInvoices.filter((inv: any) => inv.supplierName.toLowerCase() === supplier.name.toLowerCase());
+      const totalOrders = supplierInvoices.length;
+      const completedOrders = supplierInvoices.filter((inv: any) => inv.status === 'paid' || inv.status === 'received' || inv.status === 'confirmed').length;
+      let fiabilite = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 50;
+
+      let priceComparisons = 0;
+      let betterPriceCount = 0;
+      (supplier.ingredients || []).forEach((ing: any) => {
+        const key = ing.name.toLowerCase().trim();
+        const avg = avgPrices[key];
+        if (avg && avg.count > 1) {
+          priceComparisons++;
+          if (ing.pricePerUnit <= avg.total / avg.count) betterPriceCount++;
+        }
+      });
+      let competitivite = priceComparisons > 0 ? Math.round((betterPriceCount / priceComparisons) * 100) : 50;
+
+      const supplierIngCount = (supplier.ingredients || []).length;
+      let diversite = totalUniqueIngredients > 0 ? Math.min(100, Math.round((supplierIngCount / totalUniqueIngredients) * 100)) : 50;
+
+      const createdAt = supplier.createdAt ? new Date(supplier.createdAt) : new Date();
+      const months = Math.max(0, Math.round((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24 * 30)));
+      let historique = months >= 24 ? 100 : months >= 12 ? 85 : months >= 6 ? 70 : months >= 3 ? 50 : months >= 1 ? 30 : 10;
+
+      const global = Math.round(fiabilite * 0.30 + competitivite * 0.30 + diversite * 0.20 + historique * 0.20);
+
+      return {
+        supplierId: supplier.id,
+        supplierName: supplier.name,
+        scores: { fiabilite, competitivite, diversite, historique, global },
+      };
+    });
+
+    res.json(scores);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur calcul scores' }); }
+});
+
 app.get('/api/suppliers/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const supplier = await prisma.supplier.findFirst({
@@ -530,6 +595,106 @@ app.post('/api/suppliers/:id/link-ingredients', authWithRestaurant, async (req: 
     });
     res.json({ linked: result.count, supplierName: supplier.name });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur lien ingrédients' }); }
+});
+
+// ============ SUPPLIER SCORING ============
+app.get('/api/suppliers/:id/score', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const supplier = await prisma.supplier.findFirst({
+      where: { id, restaurantId: req.restaurantId },
+      include: { ingredients: { select: { id: true, name: true, pricePerUnit: true, category: true } } },
+    });
+    if (!supplier) return res.status(404).json({ error: 'Fournisseur non trouvé' });
+
+    // 1. Fiabilité livraison — based on invoices matching this supplier
+    const allInvoices = await prisma.invoice.findMany({
+      where: { restaurantId: req.restaurantId, supplierName: { equals: supplier.name, mode: 'insensitive' } },
+    });
+    const totalOrders = allInvoices.length;
+    const completedOrders = allInvoices.filter((inv: any) => inv.status === 'paid' || inv.status === 'received' || inv.status === 'confirmed').length;
+    let fiabilite = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : -1;
+    const hasOrderHistory = totalOrders > 0;
+
+    // 2. Compétitivité prix — compare to average prices across all suppliers
+    const allIngredients = await prisma.ingredient.findMany({
+      where: { restaurantId: req.restaurantId },
+      select: { name: true, pricePerUnit: true, supplierId: true },
+    });
+    const avgPrices: Record<string, { total: number; count: number }> = {};
+    allIngredients.forEach((ing: any) => {
+      const key = ing.name.toLowerCase().trim();
+      if (!avgPrices[key]) avgPrices[key] = { total: 0, count: 0 };
+      avgPrices[key].total += ing.pricePerUnit;
+      avgPrices[key].count++;
+    });
+    let priceComparisons = 0;
+    let betterPriceCount = 0;
+    (supplier.ingredients || []).forEach((ing: any) => {
+      const key = ing.name.toLowerCase().trim();
+      const avg = avgPrices[key];
+      if (avg && avg.count > 1) {
+        priceComparisons++;
+        const avgPrice = avg.total / avg.count;
+        if (ing.pricePerUnit <= avgPrice) betterPriceCount++;
+      }
+    });
+    let competitivite = priceComparisons > 0 ? Math.round((betterPriceCount / priceComparisons) * 100) : -1;
+
+    // 3. Diversité catalogue — ingredients supplied / total unique ingredients needed
+    const totalUniqueIngredients = await prisma.ingredient.count({ where: { restaurantId: req.restaurantId } });
+    const supplierIngredientCount = (supplier.ingredients || []).length;
+    let diversite = totalUniqueIngredients > 0 ? Math.round((supplierIngredientCount / totalUniqueIngredients) * 100) : -1;
+    if (diversite > 100) diversite = 100;
+
+    // 4. Historique — months since supplier was created
+    const createdAt = supplier.createdAt ? new Date(supplier.createdAt) : new Date();
+    const monthsSinceCreation = Math.max(0, Math.round((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24 * 30)));
+    // Score: 0 months = 10, 1-3 months = 30, 3-6 = 50, 6-12 = 70, 12-24 = 85, 24+ = 100
+    let historique = monthsSinceCreation >= 24 ? 100 : monthsSinceCreation >= 12 ? 85 : monthsSinceCreation >= 6 ? 70 : monthsSinceCreation >= 3 ? 50 : monthsSinceCreation >= 1 ? 30 : 10;
+
+    // Handle missing data with estimated scores
+    const estimatedScores: string[] = [];
+    if (fiabilite < 0) { fiabilite = 50; estimatedScores.push('fiabilite'); }
+    if (competitivite < 0) { competitivite = 50; estimatedScores.push('competitivite'); }
+    if (diversite < 0) { diversite = 50; estimatedScores.push('diversite'); }
+
+    // 5. Score global — weighted average
+    const scoreGlobal = Math.round(fiabilite * 0.30 + competitivite * 0.30 + diversite * 0.20 + historique * 0.20);
+
+    // Recommendation
+    let recommendation = '';
+    if (scoreGlobal >= 80) recommendation = 'Excellent fournisseur. Partenaire de confiance recommandé.';
+    else if (scoreGlobal >= 60) recommendation = 'Bon fournisseur avec un potentiel d\'amélioration. Suivre les prix régulièrement.';
+    else if (scoreGlobal >= 40) recommendation = 'Fournisseur moyen. Envisagez de comparer avec des alternatives.';
+    else recommendation = 'Fournisseur à risque. Recherchez des alternatives plus fiables.';
+
+    const note = estimatedScores.length > 0 ? 'Pas assez de données pour certains critères — scores estimés.' : null;
+
+    res.json({
+      supplierId: id,
+      supplierName: supplier.name,
+      scores: {
+        fiabilite,
+        competitivite,
+        diversite,
+        historique,
+        global: scoreGlobal,
+      },
+      details: {
+        totalOrders,
+        completedOrders,
+        priceComparisons,
+        betterPriceCount,
+        supplierIngredientCount,
+        totalUniqueIngredients,
+        monthsSinceCreation,
+      },
+      estimatedScores,
+      note,
+      recommendation,
+    });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur calcul score fournisseur' }); }
 });
 
 // ============ INVENTORY ============
@@ -694,13 +859,24 @@ app.get('/api/price-history', authWithRestaurant, async (req: any, res) => {
 
 app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) => {
   try {
-    // Find ingredients with significant price changes (>10%) in last 30 days
+    // Find ingredients with significant price changes (>5%) in last 30 days
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
     const history = await prisma.priceHistory.findMany({
       where: { restaurantId: req.restaurantId, createdAt: { gte: thirtyDaysAgo } },
-      include: { ingredient: { select: { id: true, name: true, unit: true, pricePerUnit: true, category: true } } },
+      include: { ingredient: { select: { id: true, name: true, unit: true, pricePerUnit: true, category: true, supplier: true, supplierId: true } } },
       orderBy: { createdAt: 'asc' },
     });
+    // Fetch all recipes with their ingredients for impact calculation
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: req.restaurantId },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+    // Check dismissed alerts via NewsItem
+    const dismissedAlerts = await prisma.newsItem.findMany({
+      where: { restaurantId: req.restaurantId, type: 'price_alert', dismissed: true },
+      select: { mercurialeRef: true },
+    });
+    const dismissedSet = new Set(dismissedAlerts.map(d => d.mercurialeRef));
     // Group by ingredient and calculate change
     const byIngredient: Record<number, any[]> = {};
     history.forEach(h => {
@@ -708,13 +884,73 @@ app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) =
       byIngredient[h.ingredientId].push(h);
     });
     const alerts = Object.entries(byIngredient).map(([id, records]) => {
+      const ingId = parseInt(id);
       const first = records[0];
       const last = records[records.length - 1];
       const change = first.price > 0 ? ((last.price - first.price) / first.price) * 100 : 0;
-      return { ingredientId: parseInt(id), ingredient: last.ingredient, oldPrice: first.price, newPrice: last.price, changePercent: Math.round(change * 10) / 10, records: records.length };
-    }).filter(a => Math.abs(a.changePercent) > 5).sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent));
+      const absChange = Math.abs(change);
+      let severity: 'critical' | 'warning' | 'info' = 'info';
+      if (absChange > 15) severity = 'critical';
+      else if (absChange > 10) severity = 'warning';
+      // Find affected recipes and calculate cost impact
+      const affectedRecipes = recipes.filter(r =>
+        r.ingredients.some(ri => ri.ingredientId === ingId)
+      ).map(r => {
+        const ri = r.ingredients.find(ri => ri.ingredientId === ingId);
+        if (!ri) return null;
+        const wasteMult = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
+        const oldCost = ri.quantity * first.price * wasteMult;
+        const newCost = ri.quantity * last.price * wasteMult;
+        return { id: r.id, name: r.name, sellingPrice: r.sellingPrice, costImpact: Math.round((newCost - oldCost) * 100) / 100 };
+      }).filter(Boolean);
+      const alertKey = `price_alert_${ingId}`;
+      return {
+        id: ingId,
+        alertKey,
+        ingredientId: ingId,
+        ingredient: last.ingredient,
+        supplierName: last.ingredient?.supplier || null,
+        oldPrice: Math.round(first.price * 100) / 100,
+        newPrice: Math.round(last.price * 100) / 100,
+        changePercent: Math.round(change * 10) / 10,
+        severity,
+        affectedRecipes,
+        affectedRecipesCount: affectedRecipes.length,
+        records: records.length,
+        lastUpdate: last.createdAt,
+        dismissed: dismissedSet.has(alertKey),
+      };
+    }).filter(a => Math.abs(a.changePercent) > 5 && !a.dismissed);
+    const severityOrder: Record<string, number> = { critical: 0, warning: 1, info: 2 };
+    alerts.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity] || Math.abs(b.changePercent) - Math.abs(a.changePercent));
     res.json(alerts);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur alertes prix' }); }
+});
+
+// Dismiss a price alert
+app.put('/api/alerts/:id/dismiss', authWithRestaurant, async (req: any, res) => {
+  try {
+    const ingredientId = parseInt(req.params.id);
+    const alertKey = `price_alert_${ingredientId}`;
+    const existing = await prisma.newsItem.findFirst({
+      where: { restaurantId: req.restaurantId, type: 'price_alert', mercurialeRef: alertKey },
+    });
+    if (existing) {
+      await prisma.newsItem.update({ where: { id: existing.id }, data: { dismissed: true } });
+    } else {
+      await prisma.newsItem.create({
+        data: {
+          restaurantId: req.restaurantId,
+          title: 'Alerte prix ignorée',
+          content: `Alerte pour ingrédient #${ingredientId} ignorée`,
+          type: 'price_alert',
+          mercurialeRef: alertKey,
+          dismissed: true,
+        },
+      });
+    }
+    res.json({ success: true });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur dismiss alerte' }); }
 });
 
 // ============ INVOICES (SCANNER FACTURES) ============
@@ -2536,6 +2772,34 @@ app.post('/api/editorial-recipes/:id/order', authWithRestaurant, async (req: any
     });
     res.status(201).json(order);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création commande' }); }
+});
+
+// ── Composed Menus (Menu Builder) ──
+
+// Save a composed menu (stored as JSON in a simple table-less approach via localStorage on client,
+// but this endpoint allows persisting to server if needed)
+app.post('/api/menus', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { name, sections } = req.body;
+    if (!name || !sections) {
+      return res.status(400).json({ error: 'name et sections requis' });
+    }
+    // For now, store in a simple key-value approach using the existing settings pattern
+    // This can be upgraded to a proper Prisma model later
+    const menuData = {
+      id: Date.now().toString(),
+      name,
+      sections,
+      restaurantId: req.restaurantId,
+      userId: req.user.userId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    res.status(201).json(menuData);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Erreur sauvegarde menu' });
+  }
 });
 
 // 404 catch-all

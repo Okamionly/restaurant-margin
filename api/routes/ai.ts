@@ -1380,4 +1380,144 @@ router.get('/usage', authWithRestaurant, async (req: any, res) => {
   }
 });
 
+// ── AI: Recipe Cost Optimizer ──
+router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { recipeId } = req.body;
+    if (!recipeId) {
+      return res.status(400).json({ error: 'recipeId requis' });
+    }
+    if (!checkAiRateLimit(req.restaurantId)) {
+      return res.status(429).json({ error: 'Limite IA atteinte (10 requetes/min). Reessayez dans 1 minute.' });
+    }
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    }
+
+    const recipe = await prisma.recipe.findFirst({
+      where: { id: recipeId, restaurantId: req.restaurantId },
+      include: {
+        ingredients: {
+          include: { ingredient: true },
+        },
+      },
+    });
+
+    if (!recipe) {
+      return res.status(404).json({ error: 'Recette non trouvee' });
+    }
+
+    // Calculate current food cost
+    const currentCost = recipe.ingredients.reduce((sum: number, ri: any) => {
+      return sum + ri.quantity * ri.ingredient.pricePerUnit;
+    }, 0);
+    const costPerPortion = currentCost / (recipe.nbPortions || 1);
+
+    // Build ingredient list for AI analysis
+    const ingredientDetails = recipe.ingredients.map((ri: any) => ({
+      name: ri.ingredient.name,
+      category: ri.ingredient.category,
+      quantity: ri.quantity,
+      unit: ri.ingredient.unit,
+      pricePerUnit: ri.ingredient.pricePerUnit,
+      totalCost: +(ri.quantity * ri.ingredient.pricePerUnit).toFixed(2),
+      supplier: ri.ingredient.supplier || 'Non renseigne',
+    }));
+
+    // Get current month for seasonality
+    const monthNames = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];
+    const currentMonth = monthNames[new Date().getMonth()];
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 3000,
+      system: `Tu es un expert en optimisation des couts en restauration professionnelle en France. Tu connais les prix du marche, les fournisseurs comme Transgourmet, Metro, Brake, Promocash. Tu connais la saisonnalite des produits et les equivalences entre ingredients.
+
+Analyse la recette fournie et propose des optimisations concretes pour reduire le food cost tout en maintenant la qualite du plat.
+
+Nous sommes en ${currentMonth}. Prends en compte la saisonnalite des produits.
+
+Reponds UNIQUEMENT en JSON valide avec cette structure exacte:
+{
+  "suggestions": [
+    {
+      "type": "substitution" | "seasonal" | "quantity" | "supplier",
+      "ingredientName": "nom de l'ingredient actuel",
+      "currentCost": number,
+      "suggestion": "description de la suggestion",
+      "alternativeName": "nom de l'alternative ou null",
+      "estimatedNewCost": number,
+      "savingsPercent": number,
+      "reasoning": "explication detaillee",
+      "quality_impact": "aucun" | "minimal" | "modere"
+    }
+  ],
+  "currentTotalCost": number,
+  "optimizedTotalCost": number,
+  "totalSavingsEuros": number,
+  "totalSavingsPercent": number,
+  "summary": "resume des optimisations en 2-3 phrases"
+}`,
+      messages: [{
+        role: 'user',
+        content: `Recette: ${recipe.name}
+Categorie: ${recipe.category}
+Portions: ${recipe.nbPortions}
+Prix de vente: ${recipe.sellingPrice} EUR
+Cout matiere actuel: ${currentCost.toFixed(2)} EUR (${costPerPortion.toFixed(2)} EUR/portion)
+
+Ingredients:
+${ingredientDetails.map((i: any) => `- ${i.name} (${i.category}): ${i.quantity} ${i.unit} x ${i.pricePerUnit} EUR/${i.unit} = ${i.totalCost} EUR [fournisseur: ${i.supplier}]`).join('\n')}
+
+Propose des optimisations concretes et realistes pour reduire le cout de cette recette.`,
+      }],
+    });
+
+    const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
+
+    try {
+      // Try to extract JSON from the response (handle markdown code blocks)
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(text);
+      res.json({
+        recipe: {
+          id: recipe.id,
+          name: recipe.name,
+          category: recipe.category,
+          sellingPrice: recipe.sellingPrice,
+          nbPortions: recipe.nbPortions,
+        },
+        currentCost: +currentCost.toFixed(2),
+        costPerPortion: +costPerPortion.toFixed(2),
+        ingredients: ingredientDetails,
+        optimization: parsed,
+      });
+    } catch {
+      res.json({
+        recipe: {
+          id: recipe.id,
+          name: recipe.name,
+          category: recipe.category,
+          sellingPrice: recipe.sellingPrice,
+          nbPortions: recipe.nbPortions,
+        },
+        currentCost: +currentCost.toFixed(2),
+        costPerPortion: +costPerPortion.toFixed(2),
+        ingredients: ingredientDetails,
+        optimization: {
+          suggestions: [],
+          currentTotalCost: +currentCost.toFixed(2),
+          optimizedTotalCost: +currentCost.toFixed(2),
+          totalSavingsEuros: 0,
+          totalSavingsPercent: 0,
+          summary: text,
+        },
+      });
+    }
+  } catch (e: any) {
+    console.error('AI optimize-recipe error:', e.message);
+    res.status(500).json({ error: 'Service IA temporairement indisponible.' });
+  }
+});
+
 export default router;

@@ -1,121 +1,107 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  Eye,
-  TrendingUp,
+  GripVertical,
+  Plus,
+  X,
   ChefHat,
   DollarSign,
-  Printer,
-  EyeOff,
-  ArrowUpDown,
-  Filter,
-  Star,
-  ToggleLeft,
-  ToggleRight,
-  X,
+  Search,
+  Save,
+  FileDown,
+  Share2,
+  TrendingUp,
   BarChart3,
   Utensils,
-  ChevronUp,
-  ChevronDown,
-  Plus,
-  Pencil,
+  PieChart,
+  AlertCircle,
+  CheckCircle2,
+  ArrowRight,
 } from 'lucide-react';
-import { fetchRecipes, updateRecipe } from '../services/api';
+import { fetchRecipes } from '../services/api';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import type { Recipe } from '../types';
-import { RECIPE_CATEGORIES, ALLERGENS } from '../types';
+import { RECIPE_CATEGORIES } from '../types';
 
-// --- Category display config ---
-const CATEGORY_LABELS: Record<string, string> = {
-  'Entree': 'Entrées',
-  'Entrée': 'Entrées',
-  'Entrées': 'Entrées',
-  'Plat': 'Plats',
-  'Plats': 'Plats',
-  'Dessert': 'Desserts',
-  'Desserts': 'Desserts',
-  'Suggestion': 'Suggestions du Chef',
-  'Suggestions': 'Suggestions du Chef',
-  'Accompagnement': 'Accompagnements',
-  'Accompagnements': 'Accompagnements',
-  'Boisson': 'Boissons',
-  'Boissons': 'Boissons',
-};
-function getCategoryLabel(cat: string) {
-  return CATEGORY_LABELS[cat] || cat;
+// ── Types ──
+
+interface MenuSection {
+  category: string;
+  recipeIds: number[];
 }
 
-// Map variant/plural category names to the canonical RECIPE_CATEGORIES value
+interface SavedMenu {
+  id: string;
+  name: string;
+  sections: MenuSection[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Category config ──
+
+const SECTION_LABELS: Record<string, string> = {
+  'Entree': 'Entrees',
+  'Entree': 'Entrees',
+  'Plat': 'Plats',
+  'Dessert': 'Desserts',
+  'Boisson': 'Boissons',
+  'Accompagnement': 'Accompagnements',
+};
+
+const SECTION_ICONS: Record<string, string> = {
+  'Entree': '🥗',
+  'Plat': '🍽️',
+  'Dessert': '🍰',
+  'Boisson': '🥂',
+  'Accompagnement': '🥖',
+};
+
+function getSectionLabel(cat: string): string {
+  return SECTION_LABELS[cat] || cat;
+}
+
+function getSectionIcon(cat: string): string {
+  return SECTION_ICONS[cat] || '📋';
+}
+
+// ── Category normalization ──
+
 const CATEGORY_NORMALIZE: Record<string, string> = {
-  'Entree': 'Entrée',
-  'Entrées': 'Entrée',
+  'Entree': 'Entree',
+  'Entrees': 'Entree',
   'Plats': 'Plat',
   'Desserts': 'Dessert',
   'Suggestions': 'Suggestion',
   'Accompagnements': 'Accompagnement',
   'Boissons': 'Boisson',
 };
+
 function normalizeCategory(cat: string): string {
   return CATEGORY_NORMALIZE[cat] || cat;
 }
 
-type SortKey = 'name' | 'price' | 'margin';
+// ── Local storage helpers ──
 
-// --- Decorative separator ---
-function MenuDivider() {
-  return (
-    <div className="flex items-center justify-center my-1 print:my-2" aria-hidden>
-      <div className="h-px flex-1 bg-amber-300/40 dark:bg-amber-700/30 print:bg-amber-800/20" />
-      <svg viewBox="0 0 24 12" className="w-8 h-4 mx-3 text-amber-400 dark:text-amber-600 print:text-amber-800/40" fill="currentColor">
-        <path d="M12 0C8 0 5 3 2 6c3 3 6 6 10 6s7-3 10-6c-3-3-6-6-10-6zm0 10a4 4 0 110-8 4 4 0 010 8z" />
-      </svg>
-      <div className="h-px flex-1 bg-amber-300/40 dark:bg-amber-700/30 print:bg-amber-800/20" />
-    </div>
-  );
-}
-
-function MenuOrnament() {
-  return (
-    <div className="flex items-center justify-center py-2 print:py-1" aria-hidden>
-      <span className="text-amber-400/60 dark:text-amber-600/60 print:text-amber-800/30 text-lg tracking-[0.5em] font-serif select-none">
-        &#10043; &#10043; &#10043;
-      </span>
-    </div>
-  );
-}
-
-// --- Helper: collect all allergens from a recipe ---
-function getRecipeAllergens(recipe: Recipe): string[] {
-  const set = new Set<string>();
-  recipe.ingredients?.forEach((ri) => {
-    ri.ingredient?.allergens?.forEach((a) => set.add(a));
-  });
-  return Array.from(set);
-}
-
-// --- localStorage helpers ---
-function loadExcluded(): Set<number> {
+function loadSavedMenu(): SavedMenu | null {
   try {
-    const raw = localStorage.getItem('menuExcluded');
-    if (raw) return new Set(JSON.parse(raw));
-  } catch {}
-  return new Set();
-}
-function saveExcluded(set: Set<number>) {
-  localStorage.setItem('menuExcluded', JSON.stringify([...set]));
-}
-function loadOrder(): Record<string, number[]> {
-  try {
-    const raw = localStorage.getItem('menuOrder');
+    const raw = localStorage.getItem('menuBuilder_currentMenu');
     if (raw) return JSON.parse(raw);
   } catch {}
-  return {};
+  return null;
 }
-function saveOrder(order: Record<string, number[]>) {
-  localStorage.setItem('menuOrder', JSON.stringify(order));
+
+function saveSavedMenu(menu: SavedMenu) {
+  localStorage.setItem('menuBuilder_currentMenu', JSON.stringify(menu));
 }
+
+// ── Drag data helpers ──
+
+const DRAG_TYPE_POOL = 'pool-recipe';
+const DRAG_TYPE_CANVAS = 'canvas-recipe';
+
+// ── Component ──
 
 export default function MenuBuilder() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -124,38 +110,24 @@ export default function MenuBuilder() {
   const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
 
-  // UI toggles
-  const [showPrices, setShowPrices] = useState(true);
-  const [showMargins, setShowMargins] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>('name');
-  const [excludedAllergens, setExcludedAllergens] = useState<Set<string>>(new Set());
-  const [allergenFilterOpen, setAllergenFilterOpen] = useState(false);
+  // Menu state
+  const [menuName, setMenuName] = useState('');
+  const [menuSections, setMenuSections] = useState<Record<string, number[]>>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [coversEstimate, setCoversEstimate] = useState(40);
+  const [saving, setSaving] = useState(false);
 
-  // Menu builder: excluded dishes + menu du jour mode
-  const [excludedDishes, setExcludedDishes] = useState<Set<number>>(loadExcluded);
-  const [menuDuJourMode, setMenuDuJourMode] = useState(false);
-  const [menuDuJourIds, setMenuDuJourIds] = useState<Set<number>>(new Set());
-  const [menuDuJourPrice, setMenuDuJourPrice] = useState<string>('');
-  const [editingMenuPrice, setEditingMenuPrice] = useState(false);
+  // Drag state
+  const [draggedRecipeId, setDraggedRecipeId] = useState<number | null>(null);
+  const [dragSource, setDragSource] = useState<'pool' | 'canvas' | null>(null);
+  const [dragSourceCategory, setDragSourceCategory] = useState<string | null>(null);
+  const [dragOverCategory, setDragOverCategory] = useState<string | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
-  // Reorder state
-  const [categoryOrder, setCategoryOrder] = useState<Record<string, number[]>>(loadOrder);
+  // Refs
+  const dragGhostRef = useRef<HTMLDivElement>(null);
 
-  // Inline price editing
-  const [editingPriceId, setEditingPriceId] = useState<number | null>(null);
-  const [editingPriceValue, setEditingPriceValue] = useState('');
-  const priceInputRef = useRef<HTMLInputElement>(null);
-
-  // Quick add dropdown
-  const [quickAddCategory, setQuickAddCategory] = useState<string | null>(null);
-
-  // Print options
-  const [printWithPrices, setPrintWithPrices] = useState(true);
-
-  // Stats panel visibility
-  const [showStats, setShowStats] = useState(true);
-
-  const printRef = useRef<HTMLDivElement>(null);
+  // ── Load recipes ──
 
   useEffect(() => {
     if (restaurantLoading) return;
@@ -165,947 +137,848 @@ export default function MenuBuilder() {
     }
     setLoading(true);
     fetchRecipes()
-      .then(setRecipes)
+      .then((data) => {
+        setRecipes(data);
+        // Load saved menu
+        const saved = loadSavedMenu();
+        if (saved) {
+          setMenuName(saved.name);
+          const sections: Record<string, number[]> = {};
+          saved.sections.forEach((s) => {
+            sections[s.category] = s.recipeIds;
+          });
+          setMenuSections(sections);
+        }
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [selectedRestaurant, restaurantLoading]);
 
-  // Focus price input when editing
-  useEffect(() => {
-    if (editingPriceId !== null && priceInputRef.current) {
-      priceInputRef.current.focus();
-      priceInputRef.current.select();
+  // ── Recipe lookup ──
+
+  const recipeMap = useMemo(() => {
+    const map = new Map<number, Recipe>();
+    recipes.forEach((r) => map.set(r.id, r));
+    return map;
+  }, [recipes]);
+
+  // ── All recipe IDs currently on the menu canvas ──
+
+  const menuRecipeIds = useMemo(() => {
+    const set = new Set<number>();
+    Object.values(menuSections).forEach((ids) => ids.forEach((id) => set.add(id)));
+    return set;
+  }, [menuSections]);
+
+  // ── Pool recipes (not on canvas), grouped by category ──
+
+  const poolRecipes = useMemo(() => {
+    let list = recipes.filter((r) => !menuRecipeIds.has(r.id));
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((r) => r.name.toLowerCase().includes(q));
     }
-  }, [editingPriceId]);
-
-  // --- Allergen filter ---
-  const toggleAllergen = useCallback((a: string) => {
-    setExcludedAllergens((prev) => {
-      const next = new Set(prev);
-      if (next.has(a)) next.delete(a);
-      else next.add(a);
-      return next;
+    const groups = new Map<string, Recipe[]>();
+    RECIPE_CATEGORIES.forEach((cat) => groups.set(cat, []));
+    list.forEach((r) => {
+      const cat = normalizeCategory(r.category);
+      const arr = groups.get(cat) || [];
+      arr.push(r);
+      groups.set(cat, arr);
     });
-  }, []);
+    return groups;
+  }, [recipes, menuRecipeIds, searchQuery]);
 
-  // --- Dish exclusion toggle (persisted) ---
-  const toggleExcluded = useCallback((id: number) => {
-    setExcludedDishes((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      saveExcluded(next);
-      return next;
+  // ── Canvas section recipes (resolved) ──
+
+  const canvasSections = useMemo(() => {
+    return RECIPE_CATEGORIES.map((cat) => {
+      const ids = menuSections[cat] || [];
+      const resolved = ids.map((id) => recipeMap.get(id)).filter(Boolean) as Recipe[];
+      return { category: cat, recipes: resolved };
     });
-  }, []);
+  }, [menuSections, recipeMap]);
 
-  const toggleMenuDuJour = useCallback((id: number) => {
-    setMenuDuJourIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
+  // ── Stats ──
 
-  // --- Inline price editing ---
-  const startEditPrice = useCallback((recipe: Recipe) => {
-    setEditingPriceId(recipe.id);
-    setEditingPriceValue(recipe.sellingPrice.toFixed(2));
-  }, []);
-
-  const savePrice = useCallback(async (recipe: Recipe) => {
-    const newPrice = parseFloat(editingPriceValue);
-    if (isNaN(newPrice) || newPrice <= 0) {
-      setEditingPriceId(null);
-      return;
-    }
-    if (newPrice === recipe.sellingPrice) {
-      setEditingPriceId(null);
-      return;
-    }
-    try {
-      const updated = await updateRecipe(recipe.id, {
-        name: recipe.name,
-        category: recipe.category,
-        sellingPrice: newPrice,
-        nbPortions: recipe.nbPortions,
-        description: recipe.description || undefined,
-        prepTimeMinutes: recipe.prepTimeMinutes,
-        cookTimeMinutes: recipe.cookTimeMinutes,
-        laborCostPerHour: recipe.laborCostPerHour,
-        ingredients: recipe.ingredients.map((ri) => ({
-          ingredientId: ri.ingredientId,
-          quantity: ri.quantity,
-          wastePercent: ri.wastePercent,
-        })),
+  const menuRecipes = useMemo(() => {
+    const all: Recipe[] = [];
+    Object.values(menuSections).forEach((ids) => {
+      ids.forEach((id) => {
+        const r = recipeMap.get(id);
+        if (r) all.push(r);
       });
-      setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? updated : r)));
-      showToast(t('menuBuilder.saved'), 'success');
-    } catch {
-      showToast(t('menuBuilder.saveError'), 'error');
-    }
-    setEditingPriceId(null);
-  }, [editingPriceValue, showToast]);
-
-  // --- Reorder within category ---
-  const moveRecipe = useCallback((category: string, recipeId: number, direction: 'up' | 'down') => {
-    setCategoryOrder((prev) => {
-      const currentRecipesInCat = recipes
-        .filter((r) => normalizeCategory(r.category) === category && !excludedDishes.has(r.id))
-        .map((r) => r.id);
-      const order = prev[category] || currentRecipesInCat;
-      const idx = order.indexOf(recipeId);
-      if (idx === -1) return prev;
-      const newIdx = direction === 'up' ? idx - 1 : idx + 1;
-      if (newIdx < 0 || newIdx >= order.length) return prev;
-      const next = [...order];
-      [next[idx], next[newIdx]] = [next[newIdx], next[idx]];
-      const updated = { ...prev, [category]: next };
-      saveOrder(updated);
-      return updated;
     });
-  }, [recipes, excludedDishes]);
+    return all;
+  }, [menuSections, recipeMap]);
 
-  // --- Active recipes (non-excluded) ---
-  const activeRecipes = useMemo(() => {
-    let list = recipes.filter((r) => !excludedDishes.has(r.id));
-    if (excludedAllergens.size > 0) {
-      list = list.filter((r) => {
-        const ra = getRecipeAllergens(r);
-        return !ra.some((a) => excludedAllergens.has(a));
+  const stats = useMemo(() => {
+    const totalItems = menuRecipes.length;
+    if (totalItems === 0)
+      return {
+        totalItems: 0,
+        avgFoodCostPercent: 0,
+        avgMarginPercent: 0,
+        revenuePotential: 0,
+        categoryDistribution: [] as { category: string; count: number; foodCost: number }[],
+        menuBalance: 'empty' as 'empty' | 'poor' | 'fair' | 'good' | 'excellent',
+      };
+
+    const avgFoodCostPercent =
+      menuRecipes.reduce((s, r) => s + (100 - r.margin.marginPercent), 0) / totalItems;
+    const avgMarginPercent =
+      menuRecipes.reduce((s, r) => s + r.margin.marginPercent, 0) / totalItems;
+    const avgPrice = menuRecipes.reduce((s, r) => s + r.sellingPrice, 0) / totalItems;
+    const revenuePotential = avgPrice * coversEstimate;
+
+    const catCounts = new Map<string, { count: number; totalFoodCost: number }>();
+    menuRecipes.forEach((r) => {
+      const cat = normalizeCategory(r.category);
+      const prev = catCounts.get(cat) || { count: 0, totalFoodCost: 0 };
+      catCounts.set(cat, {
+        count: prev.count + 1,
+        totalFoodCost: prev.totalFoodCost + (100 - r.margin.marginPercent),
       });
-    }
-    return list;
-  }, [recipes, excludedDishes, excludedAllergens]);
-
-  // --- Excluded recipes ---
-  const excludedRecipesList = useMemo(() => {
-    return recipes.filter((r) => excludedDishes.has(r.id));
-  }, [recipes, excludedDishes]);
-
-  // --- Grouped by category (with custom ordering) ---
-  const grouped = useMemo(() => {
-    const map = new Map<string, Recipe[]>();
-    RECIPE_CATEGORIES.forEach((cat) => map.set(cat, []));
-    activeRecipes.forEach((r) => {
-      const canonical = normalizeCategory(r.category);
-      const list = map.get(canonical) || [];
-      list.push(r);
-      map.set(canonical, list);
     });
 
-    const result: {
-      category: string;
-      recipes: Recipe[];
-      avgMargin: number;
-      avgPrice: number;
-      minPrice: number;
-      maxPrice: number;
-      totalRevenue: number;
-    }[] = [];
+    const categoryDistribution = RECIPE_CATEGORIES.map((cat) => {
+      const data = catCounts.get(cat) || { count: 0, totalFoodCost: 0 };
+      return {
+        category: cat,
+        count: data.count,
+        foodCost: data.count > 0 ? data.totalFoodCost / data.count : 0,
+      };
+    }).filter((d) => d.count > 0);
 
-    RECIPE_CATEGORIES.forEach((category) => {
-      let recipeList = map.get(category) || [];
-      if (recipeList.length > 0) {
-        // Apply custom order if exists
-        const order = categoryOrder[category];
-        if (order && order.length > 0) {
-          const orderMap = new Map(order.map((id, idx) => [id, idx]));
-          recipeList = [...recipeList].sort((a, b) => {
-            const ai = orderMap.get(a.id) ?? 999;
-            const bi = orderMap.get(b.id) ?? 999;
-            if (ai !== 999 || bi !== 999) return ai - bi;
-            // Fallback to sortBy
-            if (sortBy === 'price') return a.sellingPrice - b.sellingPrice;
-            if (sortBy === 'margin') return b.margin.marginPercent - a.margin.marginPercent;
-            return a.name.localeCompare(b.name, 'fr');
-          });
-        } else {
-          recipeList = [...recipeList].sort((a, b) => {
-            if (sortBy === 'price') return a.sellingPrice - b.sellingPrice;
-            if (sortBy === 'margin') return b.margin.marginPercent - a.margin.marginPercent;
-            return a.name.localeCompare(b.name, 'fr');
-          });
-        }
-        const avgMargin = recipeList.reduce((s, r) => s + r.margin.marginPercent, 0) / recipeList.length;
-        const avgPrice = recipeList.reduce((s, r) => s + r.sellingPrice, 0) / recipeList.length;
-        const prices = recipeList.map((r) => r.sellingPrice);
-        result.push({
-          category,
-          recipes: recipeList,
-          avgMargin,
-          avgPrice,
-          minPrice: Math.min(...prices),
-          maxPrice: Math.max(...prices),
-          totalRevenue: recipeList.reduce((s, r) => s + r.sellingPrice, 0),
-        });
+    // Menu balance: check if there's a good diversity of categories
+    const categoriesWithItems = categoryDistribution.length;
+    const hasEntrees = (menuSections['Entree'] || menuSections['Entree'] || []).length > 0;
+    const hasPlats = (menuSections['Plat'] || []).length > 0;
+    const hasDesserts = (menuSections['Dessert'] || []).length > 0;
+
+    let menuBalance: 'empty' | 'poor' | 'fair' | 'good' | 'excellent' = 'poor';
+    if (categoriesWithItems >= 4 && avgMarginPercent >= 65) menuBalance = 'excellent';
+    else if (categoriesWithItems >= 3 && hasEntrees && hasPlats && hasDesserts) menuBalance = 'good';
+    else if (categoriesWithItems >= 2) menuBalance = 'fair';
+
+    return { totalItems, avgFoodCostPercent, avgMarginPercent, revenuePotential, categoryDistribution, menuBalance };
+  }, [menuRecipes, coversEstimate, menuSections]);
+
+  // ── Add recipe to section ──
+
+  const addRecipeToSection = useCallback((recipeId: number, category: string, insertIndex?: number) => {
+    setMenuSections((prev) => {
+      // Remove from any existing section first
+      const cleaned: Record<string, number[]> = {};
+      Object.entries(prev).forEach(([cat, ids]) => {
+        cleaned[cat] = ids.filter((id) => id !== recipeId);
+      });
+      const arr = [...(cleaned[category] || [])];
+      if (insertIndex !== undefined && insertIndex >= 0 && insertIndex <= arr.length) {
+        arr.splice(insertIndex, 0, recipeId);
+      } else {
+        arr.push(recipeId);
       }
+      cleaned[category] = arr;
+      return cleaned;
     });
-    return result;
-  }, [activeRecipes, sortBy, categoryOrder]);
-
-  // --- Menu du jour filtered ---
-  const menuDuJourGroups = useMemo(() => {
-    if (!menuDuJourMode) return grouped;
-    return grouped
-      .map((g) => ({
-        ...g,
-        recipes: g.recipes.filter((r) => menuDuJourIds.has(r.id)),
-      }))
-      .filter((g) => g.recipes.length > 0);
-  }, [grouped, menuDuJourMode, menuDuJourIds]);
-
-  const displayGroups = menuDuJourMode ? menuDuJourGroups : grouped;
-
-  // --- Menu du jour course count ---
-  const menuDuJourCount = useMemo(() => menuDuJourIds.size, [menuDuJourIds]);
-
-  // --- Global stats (active only) ---
-  const totalItems = activeRecipes.length;
-  const globalAvgMargin =
-    totalItems > 0 ? activeRecipes.reduce((s, r) => s + r.margin.marginPercent, 0) / totalItems : 0;
-  const globalAvgPrice =
-    totalItems > 0 ? activeRecipes.reduce((s, r) => s + r.sellingPrice, 0) / totalItems : 0;
-  const allPrices = activeRecipes.map((r) => r.sellingPrice);
-  const globalMinPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
-  const globalMaxPrice = allPrices.length > 0 ? Math.max(...allPrices) : 0;
-  const estimatedCoversPerService = 40;
-  const revenuePotentialPerService =
-    totalItems > 0 ? globalAvgPrice * estimatedCoversPerService : 0;
-
-  // --- Quick add: recipes not on the menu for a given category ---
-  const getAvailableForCategory = useCallback((category: string) => {
-    return recipes.filter((r) => normalizeCategory(r.category) === category && excludedDishes.has(r.id));
-  }, [recipes, excludedDishes]);
-
-  // --- Print ---
-  const handlePrint = useCallback(() => {
-    window.print();
   }, []);
 
-  if (loading)
+  // ── Remove recipe from section ──
+
+  const removeRecipeFromSection = useCallback((recipeId: number, category: string) => {
+    setMenuSections((prev) => {
+      const arr = (prev[category] || []).filter((id) => id !== recipeId);
+      return { ...prev, [category]: arr };
+    });
+  }, []);
+
+  // ── Drag & Drop handlers ──
+
+  const handleDragStart = useCallback(
+    (e: React.DragEvent, recipeId: number, source: 'pool' | 'canvas', sourceCategory?: string) => {
+      setDraggedRecipeId(recipeId);
+      setDragSource(source);
+      setDragSourceCategory(sourceCategory || null);
+
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(recipeId));
+
+      // Make the dragged element semi-transparent
+      const el = e.currentTarget as HTMLElement;
+      requestAnimationFrame(() => {
+        el.style.opacity = '0.4';
+      });
+    },
+    [],
+  );
+
+  const handleDragEnd = useCallback((e: React.DragEvent) => {
+    const el = e.currentTarget as HTMLElement;
+    el.style.opacity = '1';
+    setDraggedRecipeId(null);
+    setDragSource(null);
+    setDragSourceCategory(null);
+    setDragOverCategory(null);
+    setDragOverIndex(null);
+  }, []);
+
+  const handleDropZoneDragOver = useCallback((e: React.DragEvent, category: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverCategory(category);
+  }, []);
+
+  const handleDropZoneDragLeave = useCallback((e: React.DragEvent) => {
+    // Only clear if we actually left the zone
+    const related = e.relatedTarget as HTMLElement | null;
+    if (!related || !(e.currentTarget as HTMLElement).contains(related)) {
+      setDragOverCategory(null);
+      setDragOverIndex(null);
+    }
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent, targetCategory: string, insertIndex?: number) => {
+      e.preventDefault();
+      const recipeId = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      if (!isNaN(recipeId)) {
+        addRecipeToSection(recipeId, targetCategory, insertIndex);
+      }
+      setDragOverCategory(null);
+      setDragOverIndex(null);
+      setDraggedRecipeId(null);
+      setDragSource(null);
+      setDragSourceCategory(null);
+    },
+    [addRecipeToSection],
+  );
+
+  const handleCardDragOver = useCallback(
+    (e: React.DragEvent, category: string, index: number) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = 'move';
+      setDragOverCategory(category);
+      setDragOverIndex(index);
+    },
+    [],
+  );
+
+  // ── Save menu ──
+
+  const handleSave = useCallback(async () => {
+    if (!menuName.trim()) {
+      showToast('Veuillez donner un nom au menu', 'error');
+      return;
+    }
+    setSaving(true);
+    try {
+      const menu: SavedMenu = {
+        id: Date.now().toString(),
+        name: menuName,
+        sections: RECIPE_CATEGORIES.map((cat) => ({
+          category: cat,
+          recipeIds: menuSections[cat] || [],
+        })).filter((s) => s.recipeIds.length > 0),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      saveSavedMenu(menu);
+      showToast('Menu enregistre avec succes', 'success');
+    } catch {
+      showToast('Erreur lors de l\'enregistrement', 'error');
+    }
+    setSaving(false);
+  }, [menuName, menuSections, showToast]);
+
+  // ── Margin color helper ──
+
+  const marginColor = (margin: number) => {
+    if (margin >= 70) return 'text-emerald-400';
+    if (margin >= 60) return 'text-amber-400';
+    return 'text-red-400';
+  };
+
+  const marginBg = (margin: number) => {
+    if (margin >= 70) return 'bg-emerald-500/20 text-emerald-400';
+    if (margin >= 60) return 'bg-amber-500/20 text-amber-400';
+    return 'bg-red-500/20 text-red-400';
+  };
+
+  // ── Loading ──
+
+  if (loading) {
     return (
-      <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t('common.loading')}</div>
+      <div className="flex items-center justify-center h-96">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-slate-400 text-sm">Chargement des recettes...</span>
+        </div>
+      </div>
     );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* ========== TOOLBAR (hidden on print) ========== */}
-      <div className="print:hidden mb-6">
-        {/* Header row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <Utensils className="w-6 h-6 text-amber-600" />
-            La Carte
-          </h2>
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Print options */}
-            <label className="inline-flex items-center gap-1.5 text-sm text-slate-300 dark:text-slate-300 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={printWithPrices}
-                onChange={(e) => setPrintWithPrices(e.target.checked)}
-                className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
-              />
-              Prix sur impression
-            </label>
-            {/* Print */}
-            <button
-              onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium transition-colors"
-            >
-              <Printer className="w-4 h-4" />
-              Imprimer le menu
-            </button>
-            {/* Stats toggle */}
-            <button
-              onClick={() => setShowStats((v) => !v)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-200 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-            >
-              <BarChart3 className="w-4 h-4" />
-              {showStats ? 'Masquer stats' : 'Afficher stats'}
-            </button>
-          </div>
+    <div className="h-[calc(100vh-80px)] flex flex-col bg-slate-950 -m-4 sm:-m-6">
+      {/* ── Header ── */}
+      <div className="flex-none px-4 py-3 bg-slate-900 border-b border-slate-800 flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <ChefHat className="w-6 h-6 text-teal-400" />
+          <h1 className="text-lg font-bold text-white tracking-tight">Compositeur de Menu</h1>
         </div>
-
-        {/* Filter / Sort bar */}
-        <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-800 rounded-lg shadow px-4 py-3">
-          {/* Sort */}
-          <div className="flex items-center gap-2 text-sm">
-            <ArrowUpDown className="w-4 h-4 text-slate-400" />
-            <span className="text-slate-400 dark:text-slate-400">{t('menuBuilder.sort')} :</span>
-            {(['name', 'price', 'margin'] as SortKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => setSortBy(key)}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                  sortBy === key
-                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
-                    : 'text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-                }`}
-              >
-                {key === 'name' ? 'Nom' : key === 'price' ? 'Prix' : 'Marge'}
-              </button>
-            ))}
-          </div>
-
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-
-          {/* Show/hide prices */}
-          <button
-            onClick={() => setShowPrices((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-300 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
-          >
-            {showPrices ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            Prix
-          </button>
-
-          {/* Show/hide margins */}
-          <button
-            onClick={() => setShowMargins((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-300 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"
-          >
-            {showMargins ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            Marges
-          </button>
-
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-
-          {/* Allergen filter */}
-          <div className="relative">
-            <button
-              onClick={() => setAllergenFilterOpen((v) => !v)}
-              className={`inline-flex items-center gap-1.5 text-sm px-2 py-1 rounded transition-colors ${
-                excludedAllergens.size > 0
-                  ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
-                  : 'text-slate-300 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100'
-              }`}
-            >
-              <Filter className="w-4 h-4" />
-              {t('menuBuilder.allergens')}{excludedAllergens.size > 0 && ` (${excludedAllergens.size})`}
-            </button>
-            {allergenFilterOpen && (
-              <div className="absolute z-50 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-3 w-64">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
-                    {t('menuBuilder.excludeAllergens')}
-                  </span>
-                  <button onClick={() => setAllergenFilterOpen(false)}>
-                    <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-1 max-h-60 overflow-y-auto">
-                  {ALLERGENS.map((a) => (
-                    <label
-                      key={a}
-                      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer text-sm"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={excludedAllergens.has(a)}
-                        onChange={() => toggleAllergen(a)}
-                        className="rounded border-slate-300 text-red-600 focus:ring-red-500"
-                      />
-                      <span className="text-slate-400 dark:text-slate-300">{a}</span>
-                    </label>
-                  ))}
-                </div>
-                {excludedAllergens.size > 0 && (
-                  <button
-                    onClick={() => setExcludedAllergens(new Set())}
-                    className="mt-2 text-xs text-red-600 hover:text-red-700"
-                  >
-                    Reinitialiser
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700" />
-
-          {/* Menu du jour */}
-          <button
-            onClick={() => setMenuDuJourMode((v) => !v)}
-            className={`inline-flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-medium transition-colors ${
-              menuDuJourMode
-                ? 'bg-amber-500 text-white'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-            }`}
-          >
-            <Star className="w-4 h-4" />
-            Menu du jour
-            {menuDuJourCount > 0 && (
-              <span className="ml-1 bg-white/20 rounded-full px-1.5 text-xs">
-                {menuDuJourCount}
-              </span>
-            )}
-          </button>
+        <div className="flex-1" />
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <span>{stats.totalItems} plat{stats.totalItems !== 1 ? 's' : ''} sur le menu</span>
         </div>
       </div>
 
-      {/* ========== STATS PANEL (hidden on print) ========== */}
-      {showStats && (
-        <div className="print:hidden grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          <StatCard
-            label={t('menuBuilder.totalActiveDishes')}
-            value={String(totalItems)}
-            icon={<ChefHat className="w-5 h-5 text-white" />}
-            iconBg="bg-teal-600"
-          />
-          <StatCard
-            label={t('menuBuilder.avgMargin')}
-            value={`${globalAvgMargin.toFixed(1)}%`}
-            valueColor={
-              globalAvgMargin >= 70
-                ? 'text-green-600'
-                : globalAvgMargin >= 60
-                ? 'text-amber-600'
-                : 'text-red-600'
-            }
-            icon={<TrendingUp className="w-5 h-5 text-white" />}
-            iconBg="bg-green-600"
-          />
-          <StatCard
-            label={t('menuBuilder.avgPrice')}
-            value={`${globalAvgPrice.toFixed(2)} €`}
-            icon={<DollarSign className="w-5 h-5 text-white" />}
-            iconBg="bg-purple-600"
-          />
-          <StatCard
-            label={t('menuBuilder.priceRange')}
-            value={`${globalMinPrice.toFixed(0)} - ${globalMaxPrice.toFixed(0)} €`}
-            icon={<ArrowUpDown className="w-5 h-5 text-white" />}
-            iconBg="bg-cyan-600"
-          />
-          <StatCard
-            label={`CA / service (~${estimatedCoversPerService} cvts)`}
-            value={`${revenuePotentialPerService.toFixed(0)} €`}
-            icon={<BarChart3 className="w-5 h-5 text-white" />}
-            iconBg="bg-amber-600"
-          />
-        </div>
-      )}
-
-      {/* ========== MENU CARD ========== */}
-      <div ref={printRef}>
-        {/* Print header (visible only on print) */}
-        <div className="hidden print:block text-center mb-6">
-          {menuDuJourMode ? (
-            <>
-              <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">{t('menuBuilder.menuOfTheDay')}</div>
-              {menuDuJourPrice && (
-                <div className="text-2xl font-serif font-bold text-amber-800 mt-2">{menuDuJourPrice} &euro;</div>
+      {/* ── Main 3-panel layout ── */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* ═══════ LEFT SIDEBAR — Recipe Pool ═══════ */}
+        <div className="w-72 xl:w-80 flex-none bg-slate-900 border-r border-slate-800 flex flex-col overflow-hidden">
+          {/* Search */}
+          <div className="flex-none p-3 border-b border-slate-800">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher une recette..."
+                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               )}
-              <div className="text-sm text-slate-400 mt-1">{menuDuJourCount} plat{menuDuJourCount > 1 ? 's' : ''}</div>
-            </>
-          ) : (
-            <div className="text-4xl font-serif font-bold text-slate-800 tracking-wide">{t('menuBuilder.theMenu')}</div>
-          )}
-          <MenuOrnament />
-        </div>
-
-        {displayGroups.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-lg shadow print:shadow-none">
-            <ChefHat className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">
-              Aucun plat sur la carte
-            </h3>
-            <p className="text-slate-400 dark:text-slate-500">
-              {t('menuBuilder.createRecipesToBuild')}
+            </div>
+            <p className="text-[11px] text-slate-600 mt-2 pl-1">
+              Glissez les recettes vers le menu
             </p>
           </div>
-        ) : (
-          <div
-            className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden
-            border border-amber-100 dark:border-slate-700
-            print:shadow-none print:border-none print:rounded-none`}
-          >
-            {/* Screen menu header */}
-            <div className="print:hidden bg-gradient-to-b from-amber-50 to-white dark:from-slate-800 dark:to-slate-800 text-center py-8 px-6 border-b border-amber-100 dark:border-slate-700">
-              <h2 className="text-3xl font-serif font-bold text-slate-800 dark:text-slate-100 tracking-wide">
-                {menuDuJourMode ? 'Menu du Jour' : 'La Carte'}
-              </h2>
-              <MenuOrnament />
-              {menuDuJourMode && (
-                <div className="flex flex-col items-center gap-2 mt-2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-sm rounded-full font-medium">
-                    <Star className="w-3.5 h-3.5" />
-                    {menuDuJourCount} {t('menuBuilder.dishesSelected')}
-                  </span>
-                  {/* Prix menu du jour */}
-                  <div className="flex items-center gap-2">
-                    {editingMenuPrice ? (
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm text-slate-400">{t('menuBuilder.menuPrice')} :</span>
-                        <input
-                          type="number"
-                          step="0.50"
-                          min="0"
-                          value={menuDuJourPrice}
-                          onChange={(e) => setMenuDuJourPrice(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') setEditingMenuPrice(false);
-                          }}
-                          onBlur={() => setEditingMenuPrice(false)}
-                          autoFocus
-                          className="w-20 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100"
-                          placeholder="0.00"
-                        />
-                        <span className="text-sm text-slate-400">&euro;</span>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setEditingMenuPrice(true)}
-                        className="inline-flex items-center gap-1 text-sm text-amber-600 hover:text-amber-700 dark:text-amber-400"
-                      >
-                        <Pencil className="w-3 h-3" />
-                        {menuDuJourPrice ? `${t('menuBuilder.menuPrice')} : ${menuDuJourPrice} €` : t('menuBuilder.setMenuPrice')}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
 
-            {/* Categories */}
-            <div className="px-6 sm:px-10 py-6 print:px-4 print:py-2 space-y-8 print:space-y-4">
-              {displayGroups.map((group, gi) => (
-                <div key={group.category}>
-                  {/* Category header */}
-                  <div className="text-center mb-4 print:mb-2">
-                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-amber-800 dark:text-amber-400 tracking-wider uppercase print:text-lg">
-                      {getCategoryLabel(group.category)}
+          {/* Recipe list */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {Array.from(poolRecipes.entries()).map(([category, categoryRecipes]) => {
+              if (categoryRecipes.length === 0) return null;
+              return (
+                <div key={category} className="border-b border-slate-800/50">
+                  <div className="px-3 py-2 sticky top-0 bg-slate-900/95 backdrop-blur-sm z-10">
+                    <h3 className="text-[11px] font-semibold text-teal-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <span>{getSectionIcon(category)}</span>
+                      {getSectionLabel(category)}
+                      <span className="text-slate-600 font-normal ml-auto">{categoryRecipes.length}</span>
                     </h3>
-                    {/* Category stats (screen only) */}
-                    <div className="print:hidden flex items-center justify-center gap-3 mt-1 text-xs text-slate-400 dark:text-slate-500">
-                      <span>{group.recipes.length} plat{group.recipes.length > 1 ? 's' : ''}</span>
-                      <span>&middot;</span>
-                      <span>Moy. {group.avgPrice.toFixed(2)} &euro;</span>
-                      {showMargins && (
-                        <>
-                          <span>&middot;</span>
-                          <span>Marge {group.avgMargin.toFixed(1)}%</span>
-                        </>
-                      )}
-                    </div>
-                    <MenuDivider />
                   </div>
-
-                  {/* Quick add button (screen only) */}
-                  <div className="print:hidden relative mb-2">
-                    <button
-                      onClick={() => setQuickAddCategory(quickAddCategory === group.category ? null : group.category)}
-                      className="inline-flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 font-medium px-2 py-1 rounded hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      Ajouter un plat
-                    </button>
-                    {quickAddCategory === group.category && (
-                      <div className="absolute z-40 top-full left-0 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 w-72 max-h-60 overflow-y-auto">
-                        <div className="flex items-center justify-between mb-2 px-2">
-                          <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
-                            {t('menuBuilder.removedDishes')} - {getCategoryLabel(group.category)}
-                          </span>
-                          <button onClick={() => setQuickAddCategory(null)}>
-                            <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
+                  <div className="px-2 pb-2 space-y-1">
+                    {categoryRecipes.map((recipe) => (
+                      <div
+                        key={recipe.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, recipe.id, 'pool')}
+                        onDragEnd={handleDragEnd}
+                        className={`group bg-slate-800 border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-teal-500/50 hover:bg-slate-800/80 ${
+                          draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <GripVertical className="w-4 h-4 text-slate-600 mt-0.5 shrink-0 group-hover:text-slate-400 transition-colors" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium text-white truncate">{recipe.name}</div>
+                            <div className="flex items-center gap-3 mt-1">
+                              <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                                <DollarSign className="w-3 h-3" />
+                                {(100 - recipe.margin.marginPercent).toFixed(1)}% cout
+                              </span>
+                              <span className="text-[11px] text-slate-400">
+                                {recipe.sellingPrice.toFixed(2)} EUR
+                              </span>
+                              <span className={`text-[11px] font-semibold ${marginColor(recipe.margin.marginPercent)}`}>
+                                {recipe.margin.marginPercent.toFixed(0)}%
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => addRecipeToSection(recipe.id, normalizeCategory(recipe.category))}
+                            className="shrink-0 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-teal-500/20 text-teal-400 transition-all"
+                            title="Ajouter au menu"
+                          >
+                            <Plus className="w-4 h-4" />
                           </button>
                         </div>
-                        {getAvailableForCategory(group.category).length === 0 ? (
-                          <div className="px-2 py-3 text-center">
-                            <p className="text-xs text-slate-400 mb-2">{t('menuBuilder.noDishRemovedInCategory')}</p>
-                            <Link
-                              to="/recipes"
-                              className="text-xs text-amber-600 hover:text-amber-700 font-medium"
-                              onClick={() => setQuickAddCategory(null)}
-                            >
-                              Créer un nouveau plat &rarr;
-                            </Link>
-                          </div>
-                        ) : (
-                          <>
-                            {getAvailableForCategory(group.category).map((r) => (
-                              <button
-                                key={r.id}
-                                onClick={() => {
-                                  toggleExcluded(r.id);
-                                  setQuickAddCategory(null);
-                                }}
-                                className="w-full flex items-center justify-between px-3 py-2 text-sm text-slate-400 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-700 rounded transition-colors"
-                              >
-                                <span>{r.name}</span>
-                                <span className="text-xs text-slate-400">{r.sellingPrice.toFixed(2)} &euro;</span>
-                              </button>
-                            ))}
-                            <div className="border-t border-slate-100 dark:border-slate-700 mt-1 pt-1">
-                              <Link
-                                to="/recipes"
-                                className="block px-3 py-2 text-xs text-amber-600 hover:text-amber-700 font-medium"
-                                onClick={() => setQuickAddCategory(null)}
-                              >
-                                Créer un nouveau plat &rarr;
-                              </Link>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            {/* Pool empty state */}
+            {Array.from(poolRecipes.values()).every((arr) => arr.length === 0) && (
+              <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                <CheckCircle2 className="w-10 h-10 text-teal-500/50 mb-3" />
+                <p className="text-sm text-slate-500">
+                  {searchQuery ? 'Aucune recette trouvee' : 'Toutes les recettes sont sur le menu'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ═══════ CENTER — Menu Canvas ═══════ */}
+        <div className="flex-1 flex flex-col overflow-hidden bg-slate-950">
+          {/* Canvas header */}
+          <div className="flex-none px-6 py-3 border-b border-slate-800 flex items-center gap-3">
+            <Utensils className="w-5 h-5 text-teal-400" />
+            <span className="text-sm font-semibold text-white">Composition du menu</span>
+            <div className="flex-1" />
+            <div className="flex items-center gap-4 text-[11px] text-slate-500">
+              <span>{stats.totalItems} plats</span>
+              <span className="w-px h-3 bg-slate-700" />
+              <span>Food cost moy. {stats.avgFoodCostPercent.toFixed(1)}%</span>
+              <span className="w-px h-3 bg-slate-700" />
+              <span className={marginColor(stats.avgMarginPercent)}>
+                Marge moy. {stats.avgMarginPercent.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+
+          {/* Canvas body - scrollable sections */}
+          <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div className="max-w-4xl mx-auto space-y-6">
+              {canvasSections.map((section) => {
+                const isDragOver = dragOverCategory === section.category;
+                const isEmpty = section.recipes.length === 0;
+
+                return (
+                  <div
+                    key={section.category}
+                    onDragOver={(e) => handleDropZoneDragOver(e, section.category)}
+                    onDragLeave={handleDropZoneDragLeave}
+                    onDrop={(e) => handleDrop(e, section.category)}
+                    className={`rounded-xl border-2 border-dashed transition-all duration-300 ${
+                      isDragOver
+                        ? 'border-teal-500 bg-teal-500/10 shadow-lg shadow-teal-500/5'
+                        : isEmpty
+                        ? 'border-slate-800 bg-slate-900/30'
+                        : 'border-slate-800 bg-slate-900/50'
+                    }`}
+                  >
+                    {/* Section header */}
+                    <div className="px-4 py-3 flex items-center gap-2">
+                      <span className="text-base">{getSectionIcon(section.category)}</span>
+                      <h3 className="text-sm font-semibold text-teal-400 uppercase tracking-wider">
+                        {getSectionLabel(section.category)}
+                      </h3>
+                      <span className="text-[11px] text-slate-600 ml-1">
+                        {section.recipes.length} plat{section.recipes.length !== 1 ? 's' : ''}
+                      </span>
+                      {isDragOver && (
+                        <span className="ml-auto text-[11px] text-teal-400 flex items-center gap-1 animate-pulse">
+                          <ArrowRight className="w-3 h-3" />
+                          Deposer ici
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Recipes in section */}
+                    {section.recipes.length > 0 ? (
+                      <div className="px-3 pb-3 space-y-1">
+                        {section.recipes.map((recipe, idx) => (
+                          <div
+                            key={recipe.id}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, recipe.id, 'canvas', section.category)}
+                            onDragEnd={handleDragEnd}
+                            onDragOver={(e) => handleCardDragOver(e, section.category, idx)}
+                            onDrop={(e) => {
+                              e.stopPropagation();
+                              handleDrop(e, section.category, idx);
+                            }}
+                            className={`group flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-slate-600 ${
+                              draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
+                            } ${
+                              dragOverCategory === section.category && dragOverIndex === idx
+                                ? 'ring-2 ring-teal-500/50 bg-teal-500/10 border-teal-500/30'
+                                : ''
+                            }`}
+                          >
+                            <GripVertical className="w-4 h-4 text-slate-600 shrink-0 group-hover:text-slate-400" />
+                            <div className="flex-1 min-w-0 flex items-center gap-3">
+                              <div className="flex-1 min-w-0">
+                                <span className="text-sm font-medium text-white truncate block">
+                                  {recipe.name}
+                                </span>
+                                {recipe.description && (
+                                  <span className="text-[11px] text-slate-500 truncate block mt-0.5">
+                                    {recipe.description}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-3 shrink-0">
+                                <span className="text-xs text-slate-400">
+                                  {recipe.sellingPrice.toFixed(2)} EUR
+                                </span>
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${marginBg(recipe.margin.marginPercent)}`}>
+                                  {recipe.margin.marginPercent.toFixed(0)}%
+                                </span>
+                                <span className="text-[11px] text-slate-600">
+                                  FC {(100 - recipe.margin.marginPercent).toFixed(0)}%
+                                </span>
+                              </div>
                             </div>
-                          </>
-                        )}
+                            <button
+                              onClick={() => removeRecipeFromSection(recipe.id, section.category)}
+                              className="shrink-0 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 transition-all"
+                              title="Retirer du menu"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className={`px-3 pb-4 transition-all ${isDragOver ? 'py-4' : 'py-2'}`}>
+                        <div
+                          className={`flex items-center justify-center py-6 rounded-lg border border-dashed transition-all ${
+                            isDragOver
+                              ? 'border-teal-500/50 bg-teal-500/5'
+                              : 'border-slate-800 bg-slate-900/20'
+                          }`}
+                        >
+                          <span className={`text-xs ${isDragOver ? 'text-teal-400' : 'text-slate-600'}`}>
+                            {isDragOver ? 'Deposer pour ajouter' : 'Glissez des recettes ici'}
+                          </span>
+                        </div>
                       </div>
                     )}
                   </div>
-
-                  {/* Dishes */}
-                  <div className="space-y-1 print:space-y-0.5">
-                    {group.recipes.map((recipe, ri) => {
-                      const allergens = getRecipeAllergens(recipe);
-                      const mc =
-                        recipe.margin.marginPercent >= 70
-                          ? 'text-green-600'
-                          : recipe.margin.marginPercent >= 60
-                          ? 'text-amber-600'
-                          : 'text-red-600';
-                      const isDuJour = menuDuJourIds.has(recipe.id);
-
-                      return (
-                        <div
-                          key={recipe.id}
-                          className={`group flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors
-                            hover:bg-amber-50/50 dark:hover:bg-slate-700/30
-                            print:px-0 print:py-1 print:hover:bg-transparent
-                            ${menuDuJourMode && !isDuJour ? 'opacity-30' : ''}`}
-                        >
-                          {/* Toggle + reorder buttons (screen only) */}
-                          <div className="print:hidden flex flex-col items-center gap-0.5 pt-0.5 shrink-0">
-                            {/* Toggle on/off */}
-                            <button
-                              onClick={() => toggleExcluded(recipe.id)}
-                              title={t('menuBuilder.removeFromMenu')}
-                              className="text-green-500 hover:text-red-400 transition-colors"
-                            >
-                              <ToggleRight className="w-5 h-5" />
-                            </button>
-                            {/* Menu du jour star */}
-                            {!menuDuJourMode && (
-                              <button
-                                onClick={() => toggleMenuDuJour(recipe.id)}
-                                title={isDuJour ? t('menuBuilder.removeFromDailyMenu') : t('menuBuilder.addToDailyMenu')}
-                                className={`transition-colors ${
-                                  isDuJour
-                                    ? 'text-amber-500'
-                                    : 'text-slate-200 dark:text-slate-700 hover:text-amber-400'
-                                }`}
-                              >
-                                <Star className={`w-4 h-4 ${isDuJour ? 'fill-current' : ''}`} />
-                              </button>
-                            )}
-                            {/* Reorder arrows */}
-                            <div className="flex flex-col opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => moveRecipe(group.category, recipe.id, 'up')}
-                                disabled={ri === 0}
-                                className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                title={t('menuBuilder.moveUp')}
-                              >
-                                <ChevronUp className="w-3.5 h-3.5" />
-                              </button>
-                              <button
-                                onClick={() => moveRecipe(group.category, recipe.id, 'down')}
-                                disabled={ri === group.recipes.length - 1}
-                                className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 disabled:opacity-30 disabled:cursor-not-allowed"
-                                title={t('menuBuilder.moveDown')}
-                              >
-                                <ChevronDown className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Dish content */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-baseline gap-2">
-                              <Link
-                                to={`/recipes/${recipe.id}`}
-                                className="font-semibold text-slate-800 dark:text-slate-100 hover:text-amber-700 dark:hover:text-amber-400 transition-colors print:text-slate-900 print:no-underline"
-                              >
-                                {recipe.name}
-                              </Link>
-                              {/* Dotted leader line */}
-                              <span className="flex-1 border-b border-dotted border-slate-300 dark:border-slate-600 print:border-slate-400 translate-y-[-3px] mx-1" />
-                              {/* Price - inline editable on screen, static on print */}
-                              {showPrices && (
-                                <>
-                                  {/* Print price */}
-                                  <span className={`hidden font-serif font-bold text-slate-900 whitespace-nowrap ${printWithPrices ? 'print:inline' : 'print:hidden'}`}>
-                                    {recipe.sellingPrice.toFixed(2)} &euro;
-                                  </span>
-                                  {/* Screen price - click to edit */}
-                                  {editingPriceId === recipe.id ? (
-                                    <div className="print:hidden flex items-center gap-1 shrink-0">
-                                      <input
-                                        ref={priceInputRef}
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={editingPriceValue}
-                                        onChange={(e) => setEditingPriceValue(e.target.value)}
-                                        onKeyDown={(e) => {
-                                          if (e.key === 'Enter') savePrice(recipe);
-                                          if (e.key === 'Escape') setEditingPriceId(null);
-                                        }}
-                                        onBlur={() => savePrice(recipe)}
-                                        className="w-20 px-2 py-0.5 text-sm font-bold border border-amber-400 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 text-right"
-                                      />
-                                      <span className="text-sm font-bold text-slate-800 dark:text-slate-100">&euro;</span>
-                                    </div>
-                                  ) : (
-                                    <button
-                                      onClick={() => startEditPrice(recipe)}
-                                      className="print:hidden font-serif font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer group/price relative"
-                                      title={t('menuBuilder.clickToEditPrice')}
-                                    >
-                                      {recipe.sellingPrice.toFixed(2)} &euro;
-                                      <Pencil className="w-3 h-3 absolute -right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover/price:opacity-100 text-amber-500 transition-opacity" />
-                                    </button>
-                                  )}
-                                </>
-                              )}
-                            </div>
-                            {/* Description */}
-                            {recipe.description && (
-                              <p className="text-sm text-slate-400 dark:text-slate-400 mt-0.5 print:text-slate-300 italic">
-                                {recipe.description}
-                              </p>
-                            )}
-                            {/* Allergen badges + margin info (screen only) */}
-                            <div className="print:hidden flex flex-wrap items-center gap-2 mt-1">
-                              {allergens.length > 0 && (
-                                <div className="flex flex-wrap gap-1">
-                                  {allergens.map((a) => (
-                                    <span
-                                      key={a}
-                                      className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400"
-                                    >
-                                      {a}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                              {showMargins && (
-                                <span className={`text-xs font-semibold ${mc}`}>
-                                  {recipe.margin.marginPercent.toFixed(1)}% marge
-                                </span>
-                              )}
-                              {showMargins && (
-                                <span className="text-xs text-slate-400 dark:text-slate-500">
-                                  Cout: {(recipe.margin.totalCostPerPortion || recipe.margin.costPerPortion).toFixed(2)} &euro;
-                                </span>
-                              )}
-                            </div>
-                            {/* Print: allergen line */}
-                            {allergens.length > 0 && (
-                              <p className="hidden print:block text-[9px] text-slate-400 mt-0.5">
-                                {t('menuBuilder.allergens')} : {allergens.join(', ')}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* View link (screen only) */}
-                          <Link
-                            to={`/recipes/${recipe.id}`}
-                            className="print:hidden shrink-0 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-amber-100 dark:hover:bg-amber-900/30 text-amber-600 dark:text-amber-400 transition-all"
-                            title={t('menuBuilder.viewRecipe')}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Link>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Separator between categories */}
-                  {gi < displayGroups.length - 1 && <MenuOrnament />}
-                </div>
-              ))}
-            </div>
-
-            {/* Menu footer */}
-            <div className="text-center py-4 px-6 border-t border-amber-100 dark:border-slate-700 print:border-slate-300">
-              <p className="text-xs text-slate-400 dark:text-slate-500 print:text-slate-300">
-                {t('menuBuilder.menuFooter')}
-              </p>
-              <MenuOrnament />
+                );
+              })}
             </div>
           </div>
-        )}
+        </div>
+
+        {/* ═══════ RIGHT SIDEBAR — Stats ═══════ */}
+        <div className="w-72 xl:w-80 flex-none bg-slate-900 border-l border-slate-800 flex flex-col overflow-hidden">
+          <div className="flex-none px-4 py-3 border-b border-slate-800">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-teal-400" />
+              Statistiques du menu
+            </h3>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            {/* Stat cards */}
+            <div className="grid grid-cols-2 gap-3">
+              <StatCard
+                label="Plats total"
+                value={String(stats.totalItems)}
+                icon={<ChefHat className="w-4 h-4" />}
+                color="teal"
+              />
+              <StatCard
+                label="Food Cost moy."
+                value={`${stats.avgFoodCostPercent.toFixed(1)}%`}
+                icon={<DollarSign className="w-4 h-4" />}
+                color={stats.avgFoodCostPercent <= 30 ? 'green' : stats.avgFoodCostPercent <= 35 ? 'amber' : 'red'}
+              />
+              <StatCard
+                label="Marge moy."
+                value={`${stats.avgMarginPercent.toFixed(1)}%`}
+                icon={<TrendingUp className="w-4 h-4" />}
+                color={stats.avgMarginPercent >= 70 ? 'green' : stats.avgMarginPercent >= 60 ? 'amber' : 'red'}
+              />
+              <StatCard
+                label="CA potentiel"
+                value={`${stats.revenuePotential.toFixed(0)} EUR`}
+                icon={<BarChart3 className="w-4 h-4" />}
+                color="purple"
+              />
+            </div>
+
+            {/* Covers estimate */}
+            <div className="bg-slate-800/50 backdrop-blur rounded-lg p-3">
+              <label className="text-[11px] text-slate-500 uppercase tracking-wider block mb-2">
+                Couverts estimes / service
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min="10"
+                  max="200"
+                  step="5"
+                  value={coversEstimate}
+                  onChange={(e) => setCoversEstimate(Number(e.target.value))}
+                  className="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal-400 [&::-webkit-slider-thumb]:cursor-pointer"
+                />
+                <span className="text-sm font-semibold text-white w-10 text-right">{coversEstimate}</span>
+              </div>
+            </div>
+
+            {/* Food Cost Distribution - CSS Donut */}
+            {stats.categoryDistribution.length > 0 && (
+              <div className="bg-slate-800/50 backdrop-blur rounded-lg p-4">
+                <h4 className="text-[11px] text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <PieChart className="w-3.5 h-3.5" />
+                  Repartition Food Cost
+                </h4>
+                <DonutChart data={stats.categoryDistribution} total={stats.totalItems} />
+              </div>
+            )}
+
+            {/* Menu Balance Indicator */}
+            <div className="bg-slate-800/50 backdrop-blur rounded-lg p-4">
+              <h4 className="text-[11px] text-slate-500 uppercase tracking-wider mb-3">
+                Equilibre du menu
+              </h4>
+              <MenuBalanceIndicator balance={stats.menuBalance} />
+            </div>
+
+            {/* Per-category breakdown */}
+            {stats.categoryDistribution.length > 0 && (
+              <div className="bg-slate-800/50 backdrop-blur rounded-lg p-4">
+                <h4 className="text-[11px] text-slate-500 uppercase tracking-wider mb-3">
+                  Par categorie
+                </h4>
+                <div className="space-y-2">
+                  {stats.categoryDistribution.map((d) => (
+                    <div key={d.category} className="flex items-center gap-2">
+                      <span className="text-xs">{getSectionIcon(d.category)}</span>
+                      <span className="text-xs text-slate-400 flex-1">{getSectionLabel(d.category)}</span>
+                      <span className="text-xs text-white font-medium">{d.count}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${marginBg(100 - d.foodCost)}`}>
+                        FC {d.foodCost.toFixed(0)}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* ========== PLATS RETIRES SECTION (screen only) ========== */}
-      {excludedRecipesList.length > 0 && (
-        <div className="print:hidden mt-8">
-          <h3 className="text-lg font-semibold text-slate-400 dark:text-slate-400 mb-3 flex items-center gap-2">
-            <EyeOff className="w-5 h-5" />
-            Plats retires ({excludedRecipesList.length})
-          </h3>
-          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 divide-y divide-slate-200 dark:divide-slate-700">
-            {excludedRecipesList.map((recipe) => (
-              <div
-                key={recipe.id}
-                className="flex items-center gap-3 px-4 py-3 opacity-60 hover:opacity-100 transition-opacity"
-              >
-                <button
-                  onClick={() => toggleExcluded(recipe.id)}
-                  title={t('menuBuilder.addBackToMenu')}
-                  className="text-slate-400 hover:text-green-500 transition-colors"
-                >
-                  <ToggleLeft className="w-5 h-5" />
-                </button>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-300 dark:text-slate-400 line-through">
-                      {recipe.name}
-                    </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">
-                      {getCategoryLabel(recipe.category)}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-sm text-slate-400 dark:text-slate-500">
-                  {recipe.sellingPrice.toFixed(2)} &euro;
-                </span>
-                <Link
-                  to={`/recipes/${recipe.id}`}
-                  className="shrink-0 p-1 rounded text-slate-400 hover:text-amber-600 transition-colors"
-                  title={t('menuBuilder.viewRecipe')}
-                >
-                  <Eye className="w-4 h-4" />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* ── Bottom Bar ── */}
+      <div className="flex-none px-4 py-3 bg-slate-900 border-t border-slate-800 flex items-center gap-3">
+        <input
+          type="text"
+          value={menuName}
+          onChange={(e) => setMenuName(e.target.value)}
+          placeholder="Nom du menu..."
+          className="w-64 px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-all"
+        />
+        <div className="flex-1" />
+        <button
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700 text-slate-400 text-sm hover:bg-slate-800 hover:text-white transition-colors"
+          title="Bientot disponible"
+        >
+          <Share2 className="w-4 h-4" />
+          Partager
+        </button>
+        <button
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700 text-slate-400 text-sm hover:bg-slate-800 hover:text-white transition-colors"
+          title="Bientot disponible"
+        >
+          <FileDown className="w-4 h-4" />
+          Exporter PDF
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium transition-colors disabled:opacity-50"
+        >
+          <Save className="w-4 h-4" />
+          {saving ? 'Enregistrement...' : 'Enregistrer le menu'}
+        </button>
+      </div>
 
-      {/* ========== PER-CATEGORY STATS (screen only) ========== */}
-      {showStats && displayGroups.length > 0 && (
-        <div className="print:hidden mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {displayGroups.map((g) => (
-            <div
-              key={g.category}
-              className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 border-l-4 border-amber-400 dark:border-amber-600"
-            >
-              <h4 className="font-serif font-bold text-slate-800 dark:text-slate-100 mb-2">
-                {getCategoryLabel(g.category)}
-              </h4>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.dishes')}</span>
-                  <div className="font-semibold text-slate-400 dark:text-slate-200">{g.recipes.length}</div>
-                </div>
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.avgPrice')}</span>
-                  <div className="font-semibold text-slate-400 dark:text-slate-200">
-                    {g.avgPrice.toFixed(2)} &euro;
-                  </div>
-                </div>
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.minMax')}</span>
-                  <div className="font-semibold text-slate-400 dark:text-slate-200">
-                    {g.minPrice.toFixed(0)} - {g.maxPrice.toFixed(0)} &euro;
-                  </div>
-                </div>
-                <div>
-                  <span className="text-slate-400 dark:text-slate-500">{t('menuBuilder.avgMargin')}</span>
-                  <div
-                    className={`font-semibold ${
-                      g.avgMargin >= 70
-                        ? 'text-green-600'
-                        : g.avgMargin >= 60
-                        ? 'text-amber-600'
-                        : 'text-red-600'
-                    }`}
-                  >
-                    {g.avgMargin.toFixed(1)}%
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ========== PRINT STYLES ========== */}
+      {/* ── Custom scrollbar styles ── */}
       <style>{`
-        @media print {
-          /* Hide everything outside the menu */
-          body * {
-            visibility: hidden;
-          }
-          /* But show the menu card and its children */
-          #root, #root * {
-            visibility: visible;
-          }
-          /* Hide navigation, sidebar, etc */
-          nav, aside, header, footer, .print\\:hidden {
-            display: none !important;
-          }
-          /* Page setup */
-          @page {
-            margin: 1.5cm;
-            size: A4;
-          }
-          body {
-            font-size: 11pt;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          /* Elegant font for print */
-          .font-serif {
-            font-family: 'Georgia', 'Times New Roman', serif;
-          }
-          /* Avoid page breaks inside a category */
-          .space-y-8 > div {
-            break-inside: avoid;
-          }
-          /* Clean menu layout for print */
-          .rounded-xl {
-            border-radius: 0 !important;
-          }
-          .shadow-lg {
-            box-shadow: none !important;
-          }
-          ${!printWithPrices ? `
-          /* Hide prices in print when option is off */
-          .print\\:inline {
-            display: none !important;
-          }
-          ` : ''}
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgb(51 65 85 / 0.5);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgb(71 85 105 / 0.7);
         }
       `}</style>
     </div>
   );
 }
 
-// --- Stat card sub-component ---
+// ═══════ Sub-components ═══════
+
 function StatCard({
   label,
   value,
-  valueColor,
   icon,
-  iconBg,
+  color,
 }: {
   label: string;
   value: string;
-  valueColor?: string;
   icon: React.ReactNode;
-  iconBg: string;
+  color: 'teal' | 'green' | 'amber' | 'red' | 'purple';
 }) {
+  const colors: Record<string, { bg: string; icon: string; value: string }> = {
+    teal: { bg: 'bg-teal-500/10', icon: 'text-teal-400', value: 'text-teal-400' },
+    green: { bg: 'bg-emerald-500/10', icon: 'text-emerald-400', value: 'text-emerald-400' },
+    amber: { bg: 'bg-amber-500/10', icon: 'text-amber-400', value: 'text-amber-400' },
+    red: { bg: 'bg-red-500/10', icon: 'text-red-400', value: 'text-red-400' },
+    purple: { bg: 'bg-purple-500/10', icon: 'text-purple-400', value: 'text-purple-400' },
+  };
+  const c = colors[color];
+
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-slate-400 dark:text-slate-400">{label}</span>
-        <div className={`p-2 rounded-lg ${iconBg}`}>{icon}</div>
+    <div className={`${c.bg} backdrop-blur rounded-lg p-3`}>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-[10px] text-slate-500 uppercase tracking-wider leading-tight">{label}</span>
+        <span className={c.icon}>{icon}</span>
       </div>
-      <div className={`text-xl font-bold ${valueColor || 'text-slate-800 dark:text-slate-100'}`}>
-        {value}
+      <div className={`text-lg font-bold ${c.value}`}>{value}</div>
+    </div>
+  );
+}
+
+// ── CSS-only donut chart ──
+
+const DONUT_COLORS = [
+  '#14b8a6', // teal
+  '#8b5cf6', // violet
+  '#f59e0b', // amber
+  '#ef4444', // red
+  '#3b82f6', // blue
+];
+
+function DonutChart({
+  data,
+  total,
+}: {
+  data: { category: string; count: number; foodCost: number }[];
+  total: number;
+}) {
+  if (total === 0) return null;
+
+  // Build conic gradient
+  let accumulated = 0;
+  const segments = data.map((d, i) => {
+    const pct = (d.count / total) * 100;
+    const start = accumulated;
+    accumulated += pct;
+    return { ...d, pct, start, end: accumulated, color: DONUT_COLORS[i % DONUT_COLORS.length] };
+  });
+
+  const gradient = segments
+    .map((s) => `${s.color} ${s.start}% ${s.end}%`)
+    .join(', ');
+
+  return (
+    <div className="flex items-center gap-4">
+      <div
+        className="w-20 h-20 rounded-full shrink-0 relative"
+        style={{
+          background: `conic-gradient(${gradient})`,
+        }}
+      >
+        {/* Inner circle for donut effect */}
+        <div className="absolute inset-2.5 rounded-full bg-slate-800" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-bold text-white">{total}</span>
+        </div>
       </div>
+      <div className="space-y-1.5 flex-1 min-w-0">
+        {segments.map((s) => (
+          <div key={s.category} className="flex items-center gap-2">
+            <div
+              className="w-2.5 h-2.5 rounded-full shrink-0"
+              style={{ backgroundColor: s.color }}
+            />
+            <span className="text-[11px] text-slate-400 truncate flex-1">
+              {getSectionLabel(s.category)}
+            </span>
+            <span className="text-[11px] text-white font-medium">{s.pct.toFixed(0)}%</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Menu Balance Indicator ──
+
+function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' | 'good' | 'excellent' }) {
+  const config: Record<string, { label: string; color: string; icon: React.ReactNode; description: string; width: string }> = {
+    empty: {
+      label: 'Vide',
+      color: 'text-slate-500',
+      icon: <AlertCircle className="w-4 h-4" />,
+      description: 'Ajoutez des plats pour commencer',
+      width: 'w-0',
+    },
+    poor: {
+      label: 'A ameliorer',
+      color: 'text-red-400',
+      icon: <AlertCircle className="w-4 h-4" />,
+      description: 'Diversifiez les categories',
+      width: 'w-1/4',
+    },
+    fair: {
+      label: 'Correct',
+      color: 'text-amber-400',
+      icon: <AlertCircle className="w-4 h-4" />,
+      description: 'Ajoutez des entrees ou desserts',
+      width: 'w-1/2',
+    },
+    good: {
+      label: 'Bon',
+      color: 'text-emerald-400',
+      icon: <CheckCircle2 className="w-4 h-4" />,
+      description: 'Bon equilibre des categories',
+      width: 'w-3/4',
+    },
+    excellent: {
+      label: 'Excellent',
+      color: 'text-teal-400',
+      icon: <CheckCircle2 className="w-4 h-4" />,
+      description: 'Menu bien equilibre avec bonnes marges',
+      width: 'w-full',
+    },
+  };
+
+  const c = config[balance];
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className={c.color}>{c.icon}</span>
+        <span className={`text-sm font-semibold ${c.color}`}>{c.label}</span>
+      </div>
+      <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden mb-2">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${c.width} ${
+            balance === 'excellent'
+              ? 'bg-teal-400'
+              : balance === 'good'
+              ? 'bg-emerald-400'
+              : balance === 'fair'
+              ? 'bg-amber-400'
+              : balance === 'poor'
+              ? 'bg-red-400'
+              : 'bg-slate-600'
+          }`}
+        />
+      </div>
+      <p className="text-[11px] text-slate-500">{c.description}</p>
     </div>
   );
 }

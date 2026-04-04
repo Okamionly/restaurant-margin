@@ -317,6 +317,7 @@ export default function Settings() {
     security: false,
     referral: false,
     data: false,
+    exports: false,
     danger: false,
   });
 
@@ -382,6 +383,56 @@ export default function Settings() {
       saveFinancialGoals(next);
       return next;
     });
+  }
+
+  // Export comptable state
+  const [exportDateFrom, setExportDateFrom] = useState('');
+  const [exportDateTo, setExportDateTo] = useState('');
+  const [exportFormat, setExportFormat] = useState<'csv' | 'xlsx'>('csv');
+  const [exportLoading, setExportLoading] = useState<string | null>(null);
+
+  async function handleExport(type: string, label: string) {
+    setExportLoading(type);
+    try {
+      const token = getToken();
+      const restaurantId = localStorage.getItem('restaurantId') || '1';
+      const params = new URLSearchParams();
+      if (exportDateFrom) params.set('dateFrom', exportDateFrom);
+      if (exportDateTo) params.set('dateTo', exportDateTo);
+      params.set('format', exportFormat);
+      const qs = params.toString() ? `?${params.toString()}` : '';
+
+      const res = await fetch(`${API_BASE}/export/${type}${qs}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'X-Restaurant-Id': restaurantId,
+        },
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Erreur serveur' }));
+        throw new Error(err.error || 'Erreur export');
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const disposition = res.headers.get('Content-Disposition');
+      const filename = disposition
+        ? disposition.split('filename=')[1]?.replace(/"/g, '') || `${type}.csv`
+        : `${type}.csv`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      showToast(`${label} telecharge avec succes`, 'success');
+    } catch (e: any) {
+      showToast(e.message || 'Erreur lors de l\'export', 'error');
+    } finally {
+      setExportLoading(null);
+    }
   }
 
   // Hardware integration: future feature
@@ -1726,6 +1777,182 @@ export default function Settings() {
               </div>
             </div>
 
+          </div>
+        </Section>
+
+        {/* ================================================================
+            8b. EXPORTS COMPTABLES
+           ================================================================ */}
+        <Section
+          id="exports"
+          icon={<FileSpreadsheet className="w-5 h-5" />}
+          iconColor="text-teal-600"
+          title="Exports comptables"
+          open={openSections.exports}
+          onToggle={() => toggleSection('exports')}
+        >
+          <div className="space-y-5">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Exportez vos donnees au format CSV compatible avec les logiciels de comptabilite francais (Pennylane, Sage, QuickBooks). Separateur point-virgule, encodage UTF-8 avec accents.
+            </p>
+
+            {/* Date range & format selectors */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Date debut</label>
+                <input
+                  type="date"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
+                  value={exportDateFrom}
+                  onChange={(e) => setExportDateFrom(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Date fin</label>
+                <input
+                  type="date"
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
+                  value={exportDateTo}
+                  onChange={(e) => setExportDateTo(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Format</label>
+                <select
+                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
+                  value={exportFormat}
+                  onChange={(e) => setExportFormat(e.target.value as 'csv' | 'xlsx')}
+                >
+                  <option value="csv">CSV (;)</option>
+                  <option value="xlsx">Excel (.xlsx)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Export cards grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {/* Card: Ingredients & Couts */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <ChefHat className="w-5 h-5 text-green-500" />
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Ingredients & Couts</h4>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                  Liste complete des ingredients avec prix unitaires, fournisseurs et categories.
+                </p>
+                <button
+                  onClick={() => handleExport('ingredients-costs', 'Ingredients & Couts')}
+                  disabled={exportLoading === 'ingredients-costs'}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {exportLoading === 'ingredients-costs' ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {exportLoading === 'ingredients-costs' ? 'Export...' : 'Telecharger'}
+                </button>
+              </div>
+
+              {/* Card: Recettes & Marges */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <UtensilsCrossed className="w-5 h-5 text-teal-500" />
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Recettes & Marges</h4>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                  Toutes les recettes avec food cost, prix de vente, marge et coefficient.
+                </p>
+                <button
+                  onClick={() => handleExport('recipes-margins', 'Recettes & Marges')}
+                  disabled={exportLoading === 'recipes-margins'}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {exportLoading === 'recipes-margins' ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {exportLoading === 'recipes-margins' ? 'Export...' : 'Telecharger'}
+                </button>
+              </div>
+
+              {/* Card: Historique Commandes */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-blue-500" />
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Historique Commandes</h4>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                  Toutes les factures fournisseurs avec details des lignes, dates et montants.
+                </p>
+                <button
+                  onClick={() => handleExport('orders-history', 'Historique Commandes')}
+                  disabled={exportLoading === 'orders-history'}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {exportLoading === 'orders-history' ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {exportLoading === 'orders-history' ? 'Export...' : 'Telecharger'}
+                </button>
+              </div>
+
+              {/* Card: Valorisation Stock */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <Database className="w-5 h-5 text-purple-500" />
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Valorisation Stock</h4>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                  Inventaire complet avec quantites, prix unitaires et valeur totale du stock.
+                </p>
+                <button
+                  onClick={() => handleExport('inventory-valuation', 'Valorisation Stock')}
+                  disabled={exportLoading === 'inventory-valuation'}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {exportLoading === 'inventory-valuation' ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {exportLoading === 'inventory-valuation' ? 'Export...' : 'Telecharger'}
+                </button>
+              </div>
+
+              {/* Card: Rapport Mensuel */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-orange-500" />
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Rapport Mensuel P&L</h4>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                  Synthese mensuelle : chiffre d'affaires, achats, marge brute, resultat.
+                </p>
+                <button
+                  onClick={() => handleExport('monthly-report', 'Rapport Mensuel')}
+                  disabled={exportLoading === 'monthly-report'}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {exportLoading === 'monthly-report' ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {exportLoading === 'monthly-report' ? 'Export...' : 'Telecharger'}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-blue-700 dark:text-blue-300">
+                Les fichiers CSV utilisent le separateur point-virgule (;) et l'encodage UTF-8 avec BOM pour une compatibilite optimale avec Excel, Pennylane, Sage et QuickBooks.
+              </p>
+            </div>
           </div>
         </Section>
 

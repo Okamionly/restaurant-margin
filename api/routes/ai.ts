@@ -1527,4 +1527,248 @@ Propose des optimisations concretes et realistes pour reduire le cout de cette r
   }
 });
 
+// ── Weekly AI Report ──────────────────────────────────────────────────────
+router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
+    }
+
+    const restaurantId = req.restaurantId;
+
+    // Rate limit: 1 report per hour per restaurant
+    if (!checkAiRateLimit(restaurantId)) {
+      return res.status(429).json({ error: 'Limite atteinte. Réessayez dans quelques minutes.' });
+    }
+
+    // ── Collect all data for the weekly report ──
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const weekAgoStr = oneWeekAgo.toISOString().slice(0, 10);
+    const todayStr = now.toISOString().slice(0, 10);
+
+    // 1. Recipes & margins
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId, deletedAt: null },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+
+    const recipeStats = recipes.map((r: any) => {
+      const cost = r.ingredients.reduce((s: number, ri: any) => {
+        return s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit;
+      }, 0);
+      const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
+      return { name: r.name, category: r.category, sellingPrice: r.sellingPrice, cost: +cost.toFixed(2), margin: +margin.toFixed(1) };
+    });
+
+    const recipeCount = recipeStats.length;
+    const avgMargin = recipeCount > 0 ? +(recipeStats.reduce((s, r) => s + r.margin, 0) / recipeCount).toFixed(1) : 0;
+    const avgFoodCost = recipeCount > 0 ? +(recipeStats.reduce((s, r) => s + r.cost, 0) / recipeCount).toFixed(2) : 0;
+
+    // Top 5 & Bottom 5 by margin
+    const sortedByMargin = [...recipeStats].sort((a, b) => b.margin - a.margin);
+    const topRecipes = sortedByMargin.slice(0, 5);
+    const bottomRecipes = sortedByMargin.slice(-5).reverse();
+
+    // 2. Stock alerts
+    const inventory = await prisma.inventoryItem.findMany({
+      where: { restaurantId },
+      include: { ingredient: true },
+    });
+    const stockAlerts = inventory.filter((i: any) => i.currentStock < i.minStock).map((i: any) => ({
+      name: i.ingredient.name,
+      current: i.currentStock,
+      min: i.minStock,
+      unit: i.ingredient.unit,
+    }));
+
+    // 3. Waste data (last 7 days)
+    const wasteLogs = await prisma.wasteLog.findMany({
+      where: { restaurantId, date: { gte: weekAgoStr, lte: todayStr } },
+      include: { ingredient: true },
+    });
+    const totalWasteCost = wasteLogs.reduce((s: number, w: any) => s + (w.costImpact || 0), 0);
+    const wasteByReason = wasteLogs.reduce((acc: Record<string, number>, w: any) => {
+      acc[w.reason] = (acc[w.reason] || 0) + (w.costImpact || 0);
+      return acc;
+    }, {});
+
+    // 4. Planning hours (last 7 days)
+    const shifts = await prisma.shift.findMany({
+      where: { restaurantId, date: { gte: weekAgoStr, lte: todayStr } },
+      include: { employee: true },
+    });
+    const totalHours = shifts.reduce((s: number, sh: any) => {
+      const [sh1, sm1] = (sh.startTime || '0:0').split(':').map(Number);
+      const [sh2, sm2] = (sh.endTime || '0:0').split(':').map(Number);
+      return s + ((sh2 * 60 + sm2) - (sh1 * 60 + sm1)) / 60;
+    }, 0);
+    const totalLaborCost = shifts.reduce((s: number, sh: any) => {
+      const [sh1, sm1] = (sh.startTime || '0:0').split(':').map(Number);
+      const [sh2, sm2] = (sh.endTime || '0:0').split(':').map(Number);
+      const hours = ((sh2 * 60 + sm2) - (sh1 * 60 + sm1)) / 60;
+      return s + hours * (sh.employee?.hourlyRate || 12);
+    }, 0);
+
+    // 5. Sales data (last 7 days)
+    const sales = await prisma.menuSale.findMany({
+      where: { restaurantId, date: { gte: weekAgoStr, lte: todayStr } },
+    });
+    const totalRevenue = sales.reduce((s: number, sale: any) => s + sale.revenue, 0);
+    const totalQuantitySold = sales.reduce((s: number, sale: any) => s + sale.quantity, 0);
+
+    // 6. Food cost trends (category breakdown)
+    const categoryBreakdown: Record<string, { count: number; avgMargin: number; totalCost: number }> = {};
+    recipeStats.forEach(r => {
+      if (!categoryBreakdown[r.category]) categoryBreakdown[r.category] = { count: 0, avgMargin: 0, totalCost: 0 };
+      categoryBreakdown[r.category].count++;
+      categoryBreakdown[r.category].avgMargin += r.margin;
+      categoryBreakdown[r.category].totalCost += r.cost;
+    });
+    Object.keys(categoryBreakdown).forEach(cat => {
+      categoryBreakdown[cat].avgMargin = +(categoryBreakdown[cat].avgMargin / categoryBreakdown[cat].count).toFixed(1);
+      categoryBreakdown[cat].totalCost = +categoryBreakdown[cat].totalCost.toFixed(2);
+    });
+
+    // ── Build JSON payload for Claude ──
+    const reportData = {
+      periode: `${weekAgoStr} au ${todayStr}`,
+      recettes: { nombre: recipeCount, margeAvg: avgMargin, coutMoyenPortion: avgFoodCost },
+      top5Marges: topRecipes.map(r => `${r.name} (${r.margin}%)`),
+      bottom5Marges: bottomRecipes.map(r => `${r.name} (${r.margin}%)`),
+      alertesStock: stockAlerts.length > 0 ? stockAlerts.map(a => `${a.name}: ${a.current}/${a.min} ${a.unit}`) : ['Aucune alerte'],
+      pertes: { coutTotal: +totalWasteCost.toFixed(2), parRaison: wasteByReason },
+      planning: { heuresTotal: +totalHours.toFixed(1), coutMain: +totalLaborCost.toFixed(2) },
+      ventes: { ca: +totalRevenue.toFixed(2), quantiteVendue: totalQuantitySold },
+      repartitionCategories: categoryBreakdown,
+    };
+
+    // ── Call Claude Haiku for the report ──
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
+      messages: [{
+        role: 'user',
+        content: `Génère un rapport hebdomadaire concis pour un restaurateur. Données: ${JSON.stringify(reportData)}. Format: 3-5 paragraphes en français, ton professionnel, avec recommandations actionables. Utilise des emojis professionnels pour structurer (📊 📈 ⚠️ 💡 ✅). Commence par un résumé exécutif, puis détaille les points clés, termine par des recommandations concrètes.`,
+      }],
+      system: 'Tu es un consultant expert en gestion de restaurant. Tu analyses les données et génères des rapports professionnels, concis et actionnables en français. Ne mentionne jamais que tu es une IA.',
+    });
+
+    const reportText = (response.content[0] as any).text || 'Rapport indisponible.';
+
+    // ── Increment AI usage ──
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month) DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    // ── Build key metrics ──
+    const keyMetrics = {
+      recipeCount,
+      avgMargin,
+      avgFoodCost,
+      totalRevenue: +totalRevenue.toFixed(2),
+      totalWasteCost: +totalWasteCost.toFixed(2),
+      totalLaborCost: +totalLaborCost.toFixed(2),
+      totalHours: +totalHours.toFixed(1),
+      stockAlertCount: stockAlerts.length,
+      totalQuantitySold,
+    };
+
+    res.json({
+      report: reportText,
+      generatedAt: new Date().toISOString(),
+      keyMetrics,
+    });
+  } catch (e: any) {
+    console.error('AI weekly-report error:', e.message);
+    res.status(500).json({ error: 'Service IA temporairement indisponible.' });
+  }
+});
+
+// ── Send Weekly Report by Email ───────────────────────────────────────────
+router.post('/weekly-report/send-email', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { report, keyMetrics } = req.body;
+    if (!report) return res.status(400).json({ error: 'Rapport requis' });
+
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configuré (RESEND_API_KEY manquante)' });
+
+    const restaurantId = req.restaurantId;
+    const restaurant = await prisma.restaurant.findFirst({ where: { id: restaurantId } });
+    const user = await prisma.user.findFirst({ where: { id: req.user?.userId } });
+    const recipientEmail = user?.email || (restaurant as any)?.email;
+
+    if (!recipientEmail) return res.status(400).json({ error: 'Aucun email destinataire trouvé.' });
+
+    const resend = new Resend(resendKey);
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const metricsHtml = keyMetrics ? `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;">
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#111;">${keyMetrics.recipeCount || 0}</div>
+          <div style="font-size:12px;color:#6b7280;">Recettes</div>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#111;">${keyMetrics.avgMargin || 0}%</div>
+          <div style="font-size:12px;color:#6b7280;">Marge moyenne</div>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#111;">${keyMetrics.totalRevenue || 0}&euro;</div>
+          <div style="font-size:12px;color:#6b7280;">CA semaine</div>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#${(keyMetrics.totalWasteCost || 0) > 50 ? 'dc2626' : '111'};">${keyMetrics.totalWasteCost || 0}&euro;</div>
+          <div style="font-size:12px;color:#6b7280;">Pertes</div>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#111;">${keyMetrics.totalHours || 0}h</div>
+          <div style="font-size:12px;color:#6b7280;">Heures planning</div>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#${(keyMetrics.stockAlertCount || 0) > 0 ? 'dc2626' : '111'};">${keyMetrics.stockAlertCount || 0}</div>
+          <div style="font-size:12px;color:#6b7280;">Alertes stock</div>
+        </div>
+      </div>
+    ` : '';
+
+    const reportHtml = report.split('\n').map((p: string) => p.trim() ? `<p style="margin:0 0 12px;line-height:1.6;color:#374151;">${p}</p>` : '').join('');
+
+    const emailHtml = `
+      <div style="max-width:640px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+        <div style="background:#111;color:#fff;padding:24px 32px;border-radius:12px 12px 0 0;">
+          <h1 style="margin:0;font-size:20px;font-weight:800;">Rapport Hebdomadaire IA</h1>
+          <p style="margin:4px 0 0;font-size:13px;color:#9ca3af;">${restaurant?.name || 'Restaurant'} &mdash; Semaine du ${dateStr}</p>
+        </div>
+        <div style="background:#fff;padding:24px 32px;border:1px solid #e5e7eb;border-top:none;">
+          ${metricsHtml}
+          <div style="margin-top:20px;">
+            ${reportHtml}
+          </div>
+        </div>
+        <div style="background:#f9fafb;padding:16px 32px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;text-align:center;">
+          <p style="margin:0;font-size:12px;color:#9ca3af;">Rapport généré par RestauMargin IA</p>
+        </div>
+      </div>
+    `;
+
+    await resend.emails.send({
+      from: `${restaurant?.name || 'RestauMargin'} <contact@restaumargin.fr>`,
+      to: recipientEmail,
+      subject: `Rapport Hebdomadaire — ${restaurant?.name || 'Restaurant'} — ${dateStr}`,
+      html: emailHtml,
+    });
+
+    res.json({ success: true, message: `Rapport envoyé à ${recipientEmail}` });
+  } catch (e: any) {
+    console.error('AI weekly-report email error:', e.message);
+    res.status(500).json({ error: `Erreur envoi email: ${e.message}` });
+  }
+});
+
 export default router;

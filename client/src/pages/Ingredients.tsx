@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare, BarChart3, Bell, AlertTriangle, Minus } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
@@ -13,6 +13,46 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import IngredientAvatar from '../components/IngredientAvatar';
+
+// ── Price alert helpers (localStorage) ─────────────────────────────────
+interface PriceAlert {
+  ingredientId: number;
+  threshold: number;
+}
+
+function getPriceAlerts(): PriceAlert[] {
+  try {
+    return JSON.parse(localStorage.getItem('restaumargin_price_alerts') || '[]');
+  } catch { return []; }
+}
+
+function setPriceAlert(ingredientId: number, threshold: number) {
+  const alerts = getPriceAlerts().filter(a => a.ingredientId !== ingredientId);
+  if (threshold > 0) alerts.push({ ingredientId, threshold });
+  localStorage.setItem('restaumargin_price_alerts', JSON.stringify(alerts));
+}
+
+function removePriceAlert(ingredientId: number) {
+  const alerts = getPriceAlerts().filter(a => a.ingredientId !== ingredientId);
+  localStorage.setItem('restaumargin_price_alerts', JSON.stringify(alerts));
+}
+
+function getAlertForIngredient(ingredientId: number): number | null {
+  const alert = getPriceAlerts().find(a => a.ingredientId === ingredientId);
+  return alert ? alert.threshold : null;
+}
+
+// ── Price history response type ────────────────────────────────────────
+interface PriceHistoryResponse {
+  data: { date: string; price: number }[];
+  minPrice: number;
+  maxPrice: number;
+  avgPrice: number;
+  currentPrice: number;
+  trend: 'up' | 'down' | 'stable';
+  volatility: number;
+  supplierPrices: { supplierId: number | null; supplierName: string; price: number }[];
+}
 
 const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[], barcode: '' };
 
@@ -61,9 +101,17 @@ export default function Ingredients() {
   const supplierDropdownRef = useRef<HTMLDivElement>(null);
   const nameDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Price history state
+  // Price history state (edit form mini-chart)
   const [priceHistory, setPriceHistory] = useState<{ date: string; price: number }[]>([]);
   const [priceHistoryLoading, setPriceHistoryLoading] = useState(false);
+
+  // Price tracker modal state
+  const [trackerIngredient, setTrackerIngredient] = useState<Ingredient | null>(null);
+  const [trackerData, setTrackerData] = useState<PriceHistoryResponse | null>(null);
+  const [trackerLoading, setTrackerLoading] = useState(false);
+  const [trackerPeriod, setTrackerPeriod] = useState<30 | 90 | 365>(30);
+  const [alertInput, setAlertInput] = useState('');
+  const [alertsChecked, setAlertsChecked] = useState(false);
 
   // Last price for edited ingredient
   const lastPrice = useMemo(() => {
@@ -169,10 +217,74 @@ export default function Ingredients() {
       setIngredients(data);
       setSuppliers(sups);
       setInventoryItems(inv);
+      // Check price alerts once per session
+      if (!alertsChecked) {
+        setAlertsChecked(true);
+        const alerts = getPriceAlerts();
+        for (const alert of alerts) {
+          const ing = data.find((i: Ingredient) => i.id === alert.ingredientId);
+          if (ing && ing.pricePerUnit > alert.threshold) {
+            showToast(
+              `Alerte prix : ${ing.name} a ${ing.pricePerUnit.toFixed(2)} \u20AC (seuil: ${alert.threshold.toFixed(2)} \u20AC)`,
+              'error'
+            );
+          }
+        }
+      }
     } catch {
       showToast(t('ingredients.loadError'), 'error');
     } finally {
       setLoading(false);
+    }
+  }
+
+  // Fetch enhanced price history for the tracker modal
+  async function fetchTrackerData(ingredientId: number, period: number) {
+    setTrackerLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(`/api/price-history?ingredientId=${ingredientId}&period=${period}`, { headers });
+      if (res.ok) {
+        const data: PriceHistoryResponse = await res.json();
+        setTrackerData(data);
+      } else {
+        setTrackerData(null);
+      }
+    } catch {
+      setTrackerData(null);
+    } finally {
+      setTrackerLoading(false);
+    }
+  }
+
+  // Open price tracker modal
+  function openPriceTracker(ing: Ingredient) {
+    setTrackerIngredient(ing);
+    setTrackerPeriod(30);
+    setAlertInput(String(getAlertForIngredient(ing.id) || ''));
+    fetchTrackerData(ing.id, 30);
+  }
+
+  // Change period in tracker
+  function changeTrackerPeriod(period: 30 | 90 | 365) {
+    setTrackerPeriod(period);
+    if (trackerIngredient) {
+      fetchTrackerData(trackerIngredient.id, period);
+    }
+  }
+
+  // Save alert threshold
+  function saveAlertThreshold() {
+    if (!trackerIngredient) return;
+    const val = parseFloat(alertInput);
+    if (val > 0) {
+      setPriceAlert(trackerIngredient.id, val);
+      showToast(`Alerte configuree : ${trackerIngredient.name} > ${val.toFixed(2)} \u20AC`, 'success');
+    } else {
+      removePriceAlert(trackerIngredient.id);
+      showToast(`Alerte supprimee pour ${trackerIngredient.name}`, 'success');
     }
   }
 
@@ -637,7 +749,19 @@ export default function Ingredients() {
                   <td className="px-4 py-3">
                     <span className="px-2 py-1 rounded-full text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white">{ing.category}</span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{ing.pricePerUnit.toFixed(2)} &euro;</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => openPriceTracker(ing)}
+                      className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors group"
+                      title="Voir l'historique des prix"
+                    >
+                      {ing.pricePerUnit.toFixed(2)} &euro;
+                      <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      {getAlertForIngredient(ing.id) !== null && (
+                        <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                      )}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{ing.unit}</td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
@@ -1107,6 +1231,244 @@ export default function Ingredients() {
             </div>
           </div>
         </form>
+      </Modal>
+
+      {/* ── Price Tracker Modal ──────────────────────────────────────── */}
+      <Modal
+        isOpen={!!trackerIngredient}
+        onClose={() => { setTrackerIngredient(null); setTrackerData(null); }}
+        title={trackerIngredient ? `Historique des prix — ${trackerIngredient.name}` : 'Historique des prix'}
+        className="max-w-2xl"
+      >
+        {trackerIngredient && (
+          <div className="space-y-5">
+            {/* Period selector */}
+            <div className="flex gap-2">
+              {([30, 90, 365] as const).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => changeTrackerPeriod(p)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    trackerPeriod === p
+                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                      : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                  }`}
+                >
+                  {p === 30 ? '30 jours' : p === 90 ? '90 jours' : '1 an'}
+                </button>
+              ))}
+            </div>
+
+            {/* Chart */}
+            {trackerLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF] dark:text-[#737373]" />
+              </div>
+            ) : trackerData && trackerData.data.length > 0 ? (
+              <div className="h-56 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={trackerData.data} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                      tickFormatter={(v: string) => {
+                        const d = new Date(v);
+                        return `${d.getDate()}/${d.getMonth() + 1}`;
+                      }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
+                      width={45}
+                      tickFormatter={(v: number) => `${v.toFixed(2)}`}
+                      axisLine={false}
+                      tickLine={false}
+                      domain={['auto', 'auto']}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: '#000000',
+                        border: '1px solid #1A1A1A',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        color: '#FFFFFF',
+                      }}
+                      formatter={(value: unknown) => [`${Number(value).toFixed(2)} \u20AC`, 'Prix']}
+                      labelFormatter={(label: unknown) => {
+                        const d = new Date(String(label));
+                        return d.toLocaleDateString('fr-FR');
+                      }}
+                    />
+                    {/* Average reference line */}
+                    <ReferenceLine
+                      y={trackerData.avgPrice}
+                      stroke="#9CA3AF"
+                      strokeDasharray="4 4"
+                      strokeWidth={1}
+                    />
+                    {/* Alert threshold line */}
+                    {getAlertForIngredient(trackerIngredient.id) !== null && (
+                      <ReferenceLine
+                        y={getAlertForIngredient(trackerIngredient.id)!}
+                        stroke="#EF4444"
+                        strokeDasharray="6 3"
+                        strokeWidth={1.5}
+                        label={{ value: 'Alerte', position: 'right', fill: '#EF4444', fontSize: 10 }}
+                      />
+                    )}
+                    <Line
+                      type="monotone"
+                      dataKey="price"
+                      stroke="#111111"
+                      strokeWidth={2}
+                      dot={false}
+                      activeDot={{ r: 4, fill: '#111111', stroke: '#fff', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">
+                <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                <p className="text-sm">Pas d'historique de prix disponible</p>
+                <p className="text-xs mt-1">L'historique s'enregistre a chaque modification de prix.</p>
+              </div>
+            )}
+
+            {/* Stats cards */}
+            {trackerData && trackerData.data.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Min</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.minPrice.toFixed(2)} &euro;</p>
+                </div>
+                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Max</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.maxPrice.toFixed(2)} &euro;</p>
+                </div>
+                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Moyenne</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.avgPrice.toFixed(2)} &euro;</p>
+                </div>
+                <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
+                  <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Actuel</p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.currentPrice.toFixed(2)} &euro;</p>
+                    {trackerData.trend === 'up' && <TrendingUp className="w-4 h-4 text-red-500" />}
+                    {trackerData.trend === 'down' && <TrendingDown className="w-4 h-4 text-emerald-500" />}
+                    {trackerData.trend === 'stable' && <Minus className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Volatility indicator */}
+            {trackerData && trackerData.data.length > 1 && (
+              <div className="flex items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-1">Volatilite</p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${
+                          trackerData.volatility > 15 ? 'bg-red-500' : trackerData.volatility > 5 ? 'bg-yellow-500' : 'bg-emerald-500'
+                        }`}
+                        style={{ width: `${Math.min(100, trackerData.volatility * 3)}%` }}
+                      />
+                    </div>
+                    <span className={`text-xs font-semibold ${
+                      trackerData.volatility > 15 ? 'text-red-500' : trackerData.volatility > 5 ? 'text-yellow-500' : 'text-emerald-500'
+                    }`}>
+                      {trackerData.volatility > 15 ? 'Haute' : trackerData.volatility > 5 ? 'Moyenne' : 'Basse'}
+                      {' '}({trackerData.volatility.toFixed(1)}%)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Supplier comparison */}
+            {trackerData && trackerData.supplierPrices.length > 1 && (
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+                <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-2">
+                  Comparaison fournisseurs
+                </p>
+                <div className="space-y-2">
+                  {trackerData.supplierPrices
+                    .sort((a, b) => a.price - b.price)
+                    .map((sp, idx) => {
+                      const cheapest = trackerData.supplierPrices.reduce((min, s) => s.price < min.price ? s : min, trackerData.supplierPrices[0]);
+                      const isCheapest = sp.price === cheapest.price;
+                      const pctDiff = cheapest.price > 0 ? ((sp.price - cheapest.price) / cheapest.price * 100) : 0;
+                      return (
+                        <div key={idx} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Truck className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                            <span className={`text-sm ${isCheapest ? 'font-semibold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                              {sp.supplierName}
+                            </span>
+                            {isCheapest && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-semibold">
+                                Meilleur prix
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-sm font-mono ${isCheapest ? 'font-bold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                              {sp.price.toFixed(2)} &euro;
+                            </span>
+                            {!isCheapest && pctDiff > 0 && (
+                              <span className="text-[10px] text-red-500 font-semibold">+{pctDiff.toFixed(1)}%</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+
+            {/* Price alert threshold */}
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Bell className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">
+                  Alerte si prix depasse
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className="input flex-1"
+                  value={alertInput}
+                  onChange={(e) => setAlertInput(e.target.value)}
+                  placeholder={`Ex: ${(trackerIngredient.pricePerUnit * 1.1).toFixed(2)} \u20AC`}
+                />
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">&euro;/{trackerIngredient.unit}</span>
+                <button
+                  onClick={saveAlertThreshold}
+                  className="btn-primary text-sm px-4"
+                >
+                  {parseFloat(alertInput) > 0 ? 'Sauvegarder' : 'Supprimer'}
+                </button>
+              </div>
+              {getAlertForIngredient(trackerIngredient.id) !== null && (
+                <p className="text-xs mt-2 flex items-center gap-1.5">
+                  <AlertTriangle className={`w-3 h-3 ${trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500' : 'text-emerald-500'}`} />
+                  <span className={trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0) ? 'text-red-500 font-semibold' : 'text-emerald-500'}>
+                    {trackerIngredient.pricePerUnit > (getAlertForIngredient(trackerIngredient.id) || 0)
+                      ? `Prix actuel (${trackerIngredient.pricePerUnit.toFixed(2)} \u20AC) depasse le seuil !`
+                      : `Prix sous le seuil (${getAlertForIngredient(trackerIngredient.id)?.toFixed(2)} \u20AC)`
+                    }
+                  </span>
+                </p>
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
 
       {/* Weigh Modal */}

@@ -13,6 +13,7 @@ import CommandPalette from './components/CommandPalette';
 import AlertsBell from './components/AlertsBell';
 import NotificationCenter from './components/NotificationCenter';
 import ShortcutsModal from './components/ShortcutsModal';
+import ActiveUsers from './components/ActiveUsers';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
@@ -91,6 +92,8 @@ const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
 const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));
 const Analytics = lazyRetry(() => import('./pages/Analytics'));
+const FeedbackPage = lazyRetry(() => import('./pages/Feedback'));
+const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -236,6 +239,7 @@ function GlobalSearch() {
     { id: 'p-qr', name: 'Menu QR Code', category: 'pages', path: '/qr-menu', icon: QrCode },
     { id: 'p-abonnement', name: 'Mon abonnement', category: 'pages', path: '/abonnement', icon: CreditCard },
     { id: 'p-station', name: 'Station Balance', category: 'pages', path: '/station', icon: Scale },
+    { id: 'p-feedback', name: 'Avis clients', category: 'pages', path: '/feedback', icon: MessageSquare },
   ];
 
   // Fetch data on open
@@ -652,6 +656,7 @@ function AppLayout() {
       title: 'COMMUNICATION',
       items: [
         { to: '/messagerie', icon: MessageSquare, label: 'Messages' },
+        { to: '/feedback', icon: MessageSquare, label: 'Avis clients' },
         { to: '/clients', icon: Contact, label: 'Clients CRM' },
       ],
     },
@@ -761,6 +766,9 @@ function AppLayout() {
           <SidebarRestaurantSelector />
         </div>
       )}
+
+      {/* Active users (collaboration indicators) */}
+      {!collapsed && <ActiveUsers />}
 
       {/* Station Balance button */}
       <div className={`px-3 mb-3 ${collapsed ? 'mt-4' : ''}`}>
@@ -1021,6 +1029,7 @@ function AppLayout() {
               <Route path="/recettes-semaine" element={<EditorialRecipes />} />
               <Route path="/assistant" element={<AIAssistant />} />
               <Route path="/messagerie" element={<Messagerie />} />
+              <Route path="/feedback" element={<FeedbackPage />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/marketplace" element={<Marketplace />} />
               <Route path="/fournisseur/:id" element={<FournisseurPromo />} />
@@ -1084,6 +1093,7 @@ function App() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/menu-public" element={<PublicMenu />} />
+          <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
           <Route path="/station-produit" element={<StationLanding />} />
           <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
           <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />

@@ -7,6 +7,7 @@ import {
   Package, ClipboardList, FileText, ShoppingCart,
   Lightbulb, Sparkles, Star, Zap, ArrowDown,
   Building2, ShoppingBasket, Mic, Check,
+  X, Loader2, Copy, Mail, Download,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -451,7 +452,100 @@ export default function Dashboard() {
   const [pnlPeriod, setPnlPeriod] = useState<'week' | 'month' | 'year'>('month');
   const [pnlData, setPnlData] = useState<any>(null);
   const [pnlLoading, setPnlLoading] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportData, setReportData] = useState<{ report: string; generatedAt: string; keyMetrics: any } | null>(null);
+  const [reportCopied, setReportCopied] = useState(false);
+  const [reportEmailSending, setReportEmailSending] = useState(false);
+  const [reportEmailSent, setReportEmailSent] = useState(false);
   const navigate = useNavigate();
+
+  // ── Weekly AI Report ──────────────────────────────────────────────────
+  const REPORT_CACHE_KEY = 'restaumargin_weekly_report';
+  const REPORT_CACHE_TTL = 24 * 60 * 60 * 1000; // 24h
+
+  const fetchWeeklyReport = useCallback(async () => {
+    // Check localStorage cache first
+    try {
+      const cached = localStorage.getItem(REPORT_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - new Date(parsed.generatedAt).getTime() < REPORT_CACHE_TTL) {
+          setReportData(parsed);
+          setReportModalOpen(true);
+          return;
+        }
+        localStorage.removeItem(REPORT_CACHE_KEY);
+      }
+    } catch { /* ignore parse errors */ }
+
+    setReportLoading(true);
+    setReportModalOpen(true);
+    try {
+      const token = localStorage.getItem('token');
+      const restaurantId = localStorage.getItem('activeRestaurantId');
+      const res = await fetch('/api/ai/weekly-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+        },
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Erreur serveur' }));
+        throw new Error(err.error || 'Erreur serveur');
+      }
+      const data = await res.json();
+      setReportData(data);
+      localStorage.setItem(REPORT_CACHE_KEY, JSON.stringify(data));
+    } catch (err: any) {
+      console.error('Weekly report error:', err.message);
+      setReportData({ report: `Erreur: ${err.message}`, generatedAt: new Date().toISOString(), keyMetrics: null });
+    } finally {
+      setReportLoading(false);
+    }
+  }, []);
+
+  const copyReport = useCallback(() => {
+    if (!reportData?.report) return;
+    navigator.clipboard.writeText(reportData.report).then(() => {
+      setReportCopied(true);
+      setTimeout(() => setReportCopied(false), 2000);
+    });
+  }, [reportData]);
+
+  const sendReportByEmail = useCallback(async () => {
+    if (!reportData) return;
+    setReportEmailSending(true);
+    try {
+      const token = localStorage.getItem('token');
+      const restaurantId = localStorage.getItem('activeRestaurantId');
+      const res = await fetch('/api/ai/weekly-report/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+        },
+        body: JSON.stringify({ report: reportData.report, keyMetrics: reportData.keyMetrics }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Erreur' }));
+        throw new Error(err.error || 'Erreur envoi email');
+      }
+      setReportEmailSent(true);
+      setTimeout(() => setReportEmailSent(false), 3000);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setReportEmailSending(false);
+    }
+  }, [reportData]);
+
+  const printReport = useCallback(() => {
+    window.print();
+  }, []);
 
   const TABS: { key: TabKey; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { key: 'overview', label: t("dashboard.tabOverview"), desc: t("dashboard.tabOverviewDesc"), icon: TAB_ICONS.overview },
@@ -1054,6 +1148,12 @@ export default function Dashboard() {
           >
             <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
           </Link>
+          <button
+            onClick={fetchWeeklyReport}
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors shadow-sm no-print"
+          >
+            <Sparkles className="w-4 h-4" /> Rapport IA
+          </button>
           <button
             onClick={() => window.print()}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm no-print"
@@ -2484,6 +2584,119 @@ export default function Dashboard() {
               </div>
             </>
           )}
+        </div>
+      )}
+
+      {/* ── Weekly AI Report Modal ──────────────────────────────────────── */}
+      {reportModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 no-print">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setReportModalOpen(false)} />
+          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-hidden bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl flex flex-col print-report">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#111111] dark:bg-white rounded-lg">
+                  <Sparkles className="w-5 h-5 text-white dark:text-black" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold font-satoshi text-[#111111] dark:text-white">Rapport Hebdomadaire IA</h3>
+                  {reportData?.generatedAt && (
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-general-sans">
+                      {new Date(reportData.generatedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => setReportModalOpen(false)}
+                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              >
+                <X className="w-5 h-5 text-[#9CA3AF]" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-5">
+              {reportLoading ? (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                  <Loader2 className="w-8 h-8 text-[#111111] dark:text-white animate-spin" />
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] font-general-sans">Analyse de vos donnees en cours...</p>
+                  <p className="text-xs text-[#D1D5DB] dark:text-[#525252] font-general-sans">Recettes, marges, stock, pertes, planning...</p>
+                </div>
+              ) : reportData ? (
+                <>
+                  {/* Key Metrics Cards */}
+                  {reportData.keyMetrics && (
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                      <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+                        <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.recipeCount}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Recettes</p>
+                      </div>
+                      <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+                        <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.avgMargin}%</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Marge moy.</p>
+                      </div>
+                      <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+                        <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.totalRevenue}{"€"}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">CA semaine</p>
+                      </div>
+                      <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+                        <p className={`text-2xl font-black font-satoshi ${(reportData.keyMetrics.totalWasteCost || 0) > 50 ? 'text-red-500' : 'text-[#111111] dark:text-white'}`}>{reportData.keyMetrics.totalWasteCost}{"€"}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Pertes</p>
+                      </div>
+                      <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+                        <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.totalHours}h</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Heures planning</p>
+                      </div>
+                      <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+                        <p className={`text-2xl font-black font-satoshi ${(reportData.keyMetrics.stockAlertCount || 0) > 0 ? 'text-red-500' : 'text-[#111111] dark:text-white'}`}>{reportData.keyMetrics.stockAlertCount}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Alertes stock</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Report Text */}
+                  <div className="space-y-3">
+                    {reportData.report.split('\n').filter((p: string) => p.trim()).map((paragraph: string, i: number) => (
+                      <p key={i} className="text-sm leading-relaxed text-[#374151] dark:text-[#D4D4D4] font-general-sans">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                </>
+              ) : null}
+            </div>
+
+            {/* Footer Actions */}
+            {reportData && !reportLoading && (
+              <div className="flex items-center justify-between px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-general-sans">
+                  Rapport en cache 24h
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={copyReport}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors"
+                  >
+                    {reportCopied ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Copie !</> : <><Copy className="w-3.5 h-3.5" /> Copier</>}
+                  </button>
+                  <button
+                    onClick={sendReportByEmail}
+                    disabled={reportEmailSending}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors disabled:opacity-50"
+                  >
+                    {reportEmailSending ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Envoi...</> : reportEmailSent ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Envoye !</> : <><Mail className="w-3.5 h-3.5" /> Envoyer par email</>}
+                  </button>
+                  <button
+                    onClick={printReport}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                  >
+                    <Download className="w-3.5 h-3.5" /> PDF
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

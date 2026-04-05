@@ -73,6 +73,7 @@ model Restaurant {
   seminaires        Seminaire[]
   marketplaceOrders MarketplaceOrder[]
   newsItems         NewsItem[]
+  customerFeedback  CustomerFeedback[]
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
@@ -582,4 +583,17 @@ model NewsletterSubscriber {
   unsubscribed Boolean  @default(false)
 
   @@map("newsletter_subscribers")
+}
+
+model CustomerFeedback {
+  id           Int        @id @default(autoincrement())
+  restaurantId Int
+  rating       Int
+  comment      String?
+  source       String     @default("app")
+  createdAt    DateTime   @default(now())
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, createdAt])
+  @@map("customer_feedback")
 }

@@ -1166,17 +1166,93 @@ app.post('/api/rfqs/:rfqId/quotes/:quoteId/select', authWithRestaurant, async (_
 // ============ PRICE HISTORY (MERCURIALE) ============
 app.get('/api/price-history', authWithRestaurant, async (req: any, res) => {
   try {
-    const { ingredientId, days } = req.query;
+    const { ingredientId, days, period } = req.query;
     const where: any = {};
     if (ingredientId) where.ingredientId = parseInt(ingredientId);
-    if (days) where.createdAt = { gte: new Date(Date.now() - parseInt(days) * 86400000) };
+    // Support both "days" (legacy) and "period" (new) params
+    const periodDays = period ? parseInt(period) : days ? parseInt(days) : null;
+    if (periodDays) where.createdAt = { gte: new Date(Date.now() - periodDays * 86400000) };
     where.restaurantId = req.restaurantId;
     const history = await prisma.priceHistory.findMany({
       where,
-      include: { ingredient: { select: { id: true, name: true, unit: true, category: true } } },
-      orderBy: { createdAt: 'desc' },
-      take: 500,
+      include: { ingredient: { select: { id: true, name: true, unit: true, category: true, pricePerUnit: true, supplier: true, supplierId: true } } },
+      orderBy: { createdAt: 'asc' },
+      take: 1000,
     });
+
+    // If a specific ingredientId is requested, compute enhanced stats
+    if (ingredientId) {
+      const prices = history.map((h: any) => h.price);
+      const dataPoints = history.map((h: any) => ({ date: h.date || h.createdAt, price: h.price }));
+
+      if (prices.length === 0) {
+        // Return current ingredient price as single data point if no history
+        const ingredient = await prisma.ingredient.findFirst({
+          where: { id: parseInt(ingredientId), restaurantId: req.restaurantId },
+          select: { id: true, name: true, pricePerUnit: true, supplier: true, supplierId: true },
+        });
+        const currentPrice = ingredient?.pricePerUnit ?? 0;
+        return res.json({
+          data: [{ date: new Date().toISOString().slice(0, 10), price: currentPrice }],
+          minPrice: currentPrice,
+          maxPrice: currentPrice,
+          avgPrice: currentPrice,
+          currentPrice,
+          trend: 'stable' as const,
+          volatility: 0,
+          supplierPrices: [],
+        });
+      }
+
+      const minPrice = Math.min(...prices);
+      const maxPrice = Math.max(...prices);
+      const avgPrice = prices.reduce((s: number, p: number) => s + p, 0) / prices.length;
+      const currentPrice = prices[prices.length - 1];
+
+      // Trend: compare first third avg vs last third avg
+      const third = Math.max(1, Math.floor(prices.length / 3));
+      const firstThirdAvg = prices.slice(0, third).reduce((s: number, p: number) => s + p, 0) / third;
+      const lastThirdAvg = prices.slice(-third).reduce((s: number, p: number) => s + p, 0) / third;
+      const trendPct = firstThirdAvg > 0 ? ((lastThirdAvg - firstThirdAvg) / firstThirdAvg) * 100 : 0;
+      const trend = trendPct > 3 ? 'up' : trendPct < -3 ? 'down' : 'stable';
+
+      // Volatility: coefficient of variation (std dev / mean * 100)
+      const variance = prices.reduce((s: number, p: number) => s + Math.pow(p - avgPrice, 2), 0) / prices.length;
+      const stdDev = Math.sqrt(variance);
+      const volatility = avgPrice > 0 ? (stdDev / avgPrice) * 100 : 0;
+
+      // Supplier comparison: find other ingredients with same name but different supplier
+      let supplierPrices: { supplierId: number | null; supplierName: string; price: number }[] = [];
+      if (ingredientId) {
+        const ing = await prisma.ingredient.findFirst({
+          where: { id: parseInt(ingredientId), restaurantId: req.restaurantId },
+        });
+        if (ing) {
+          const sameNameIngs = await prisma.ingredient.findMany({
+            where: { restaurantId: req.restaurantId, name: { equals: ing.name, mode: 'insensitive' }, deletedAt: null },
+            select: { id: true, pricePerUnit: true, supplier: true, supplierId: true, supplierRef: { select: { id: true, name: true } } },
+          });
+          supplierPrices = sameNameIngs.map((s: any) => ({
+            supplierId: s.supplierId || s.supplierRef?.id || null,
+            supplierName: s.supplierRef?.name || s.supplier || 'Sans fournisseur',
+            price: s.pricePerUnit,
+          }));
+        }
+      }
+
+      return res.json({
+        data: dataPoints,
+        minPrice: Math.round(minPrice * 100) / 100,
+        maxPrice: Math.round(maxPrice * 100) / 100,
+        avgPrice: Math.round(avgPrice * 100) / 100,
+        currentPrice: Math.round(currentPrice * 100) / 100,
+        trend,
+        volatility: Math.round(volatility * 10) / 10,
+        supplierPrices,
+      });
+    }
+
+    // Legacy: return raw history array when no ingredientId
     res.json(history);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur historique prix' }); }
 });
@@ -4206,6 +4282,196 @@ app.get('/api/analytics/report', authWithRestaurant, async (req: any, res) => {
   } catch (e: any) {
     console.error('[ANALYTICS REPORT]', e.message);
     res.status(500).json({ error: 'Erreur génération rapport analytique' });
+  }
+});
+
+// ============ PRESENCE (real-time collaboration indicators) ============
+const activeUsers = new Map<number, { userId: number; name: string; page: string; restaurantId: number; lastSeen: Date }>();
+
+// Cleanup stale entries every 2 minutes
+setInterval(() => {
+  const cutoff = new Date(Date.now() - 120_000);
+  for (const [uid, entry] of activeUsers) {
+    if (entry.lastSeen < cutoff) activeUsers.delete(uid);
+  }
+}, 120_000);
+
+// POST /api/presence/heartbeat — update current user's page + last seen
+app.post('/api/presence/heartbeat', authMiddleware, (req: any, res) => {
+  const { page, restaurantId, name } = req.body;
+  if (!page || !restaurantId) {
+    return res.status(400).json({ error: 'page et restaurantId requis' });
+  }
+  activeUsers.set(req.user.userId, {
+    userId: req.user.userId,
+    name: name || req.user.email?.split('@')[0] || `User ${req.user.userId}`,
+    page: String(page),
+    restaurantId: Number(restaurantId),
+    lastSeen: new Date(),
+  });
+  res.json({ ok: true });
+});
+
+// GET /api/presence/active — returns active users (last 60s)
+app.get('/api/presence/active', authMiddleware, (req: any, res) => {
+  const cutoff = new Date(Date.now() - 60_000);
+  const restaurantId = req.headers['x-restaurant-id'] ? parseInt(String(req.headers['x-restaurant-id']), 10) : null;
+  const result: { userId: number; name: string; page: string; lastSeen: string }[] = [];
+  for (const entry of activeUsers.values()) {
+    if (entry.lastSeen >= cutoff && entry.userId !== req.user.userId) {
+      if (!restaurantId || entry.restaurantId === restaurantId) {
+        result.push({
+          userId: entry.userId,
+          name: entry.name,
+          page: entry.page,
+          lastSeen: entry.lastSeen.toISOString(),
+        });
+      }
+    }
+  }
+  res.json(result);
+});
+
+// ── Customer Feedback ─────────────────────────────────────────────────
+
+// POST /api/feedback — submit feedback (public, no auth for public form)
+app.post('/api/feedback', async (req: any, res) => {
+  try {
+    const { rating, comment, source, restaurantId } = req.body;
+    if (!rating || !restaurantId) {
+      return res.status(400).json({ error: 'rating et restaurantId requis' });
+    }
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ error: 'rating doit être entre 1 et 5' });
+    }
+    const restaurant = await prisma.restaurant.findUnique({ where: { id: Number(restaurantId) } });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant non trouvé' });
+    }
+    const feedback = await prisma.customerFeedback.create({
+      data: {
+        restaurantId: Number(restaurantId),
+        rating: Number(rating),
+        comment: comment ? String(comment).slice(0, 2000) : null,
+        source: source || 'app',
+      },
+    });
+    res.json(feedback);
+  } catch (e: any) {
+    console.error('[FEEDBACK CREATE]', e.message);
+    res.status(500).json({ error: 'Erreur création avis' });
+  }
+});
+
+// GET /api/feedback — list feedback with pagination (protected)
+app.get('/api/feedback', authWithRestaurant, async (req: any, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+    const offset = (page - 1) * limit;
+    const ratingFilter = req.query.rating ? Number(req.query.rating) : undefined;
+    const sourceFilter = req.query.source || undefined;
+    const periodDays = req.query.period ? Number(req.query.period) : undefined;
+
+    const where: any = { restaurantId: req.restaurantId };
+    if (ratingFilter && ratingFilter >= 1 && ratingFilter <= 5) where.rating = ratingFilter;
+    if (sourceFilter) where.source = sourceFilter;
+    if (periodDays) {
+      const since = new Date();
+      since.setDate(since.getDate() - periodDays);
+      where.createdAt = { gte: since };
+    }
+
+    const [feedbacks, total] = await Promise.all([
+      prisma.customerFeedback.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit,
+      }),
+      prisma.customerFeedback.count({ where }),
+    ]);
+    res.json({ feedbacks, total, page, totalPages: Math.ceil(total / limit) });
+  } catch (e: any) {
+    console.error('[FEEDBACK LIST]', e.message);
+    res.status(500).json({ error: 'Erreur liste avis' });
+  }
+});
+
+// GET /api/feedback/stats — stats and distribution (protected)
+app.get('/api/feedback/stats', authWithRestaurant, async (req: any, res) => {
+  try {
+    const periodDays = req.query.period ? Number(req.query.period) : undefined;
+    const where: any = { restaurantId: req.restaurantId };
+    if (periodDays) {
+      const since = new Date();
+      since.setDate(since.getDate() - periodDays);
+      where.createdAt = { gte: since };
+    }
+
+    const allFeedbacks = await prisma.customerFeedback.findMany({
+      where: { restaurantId: req.restaurantId },
+      orderBy: { createdAt: 'asc' },
+      select: { rating: true, createdAt: true },
+    });
+
+    const filteredFeedbacks = periodDays
+      ? allFeedbacks.filter(f => {
+          const since = new Date();
+          since.setDate(since.getDate() - periodDays);
+          return f.createdAt >= since;
+        })
+      : allFeedbacks;
+
+    const totalCount = filteredFeedbacks.length;
+    const avgRating = totalCount > 0
+      ? Math.round((filteredFeedbacks.reduce((s, f) => s + f.rating, 0) / totalCount) * 10) / 10
+      : 0;
+
+    const distribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    filteredFeedbacks.forEach(f => { distribution[f.rating]++; });
+
+    // Weekly trend (last 12 weeks)
+    const trend: { week: string; avg: number; count: number }[] = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const weekStart = new Date(now);
+      weekStart.setDate(weekStart.getDate() - (i * 7 + weekStart.getDay()));
+      weekStart.setHours(0, 0, 0, 0);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 7);
+      const weekFeedbacks = allFeedbacks.filter(f => f.createdAt >= weekStart && f.createdAt < weekEnd);
+      const weekAvg = weekFeedbacks.length > 0
+        ? Math.round((weekFeedbacks.reduce((s, f) => s + f.rating, 0) / weekFeedbacks.length) * 10) / 10
+        : 0;
+      trend.push({
+        week: weekStart.toISOString().slice(0, 10),
+        avg: weekAvg,
+        count: weekFeedbacks.length,
+      });
+    }
+
+    res.json({ avgRating, totalCount, distribution, trend });
+  } catch (e: any) {
+    console.error('[FEEDBACK STATS]', e.message);
+    res.status(500).json({ error: 'Erreur stats avis' });
+  }
+});
+
+// GET /api/feedback/restaurant/:id — get restaurant name for public form (no auth)
+app.get('/api/feedback/restaurant/:id', async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id },
+      select: { id: true, name: true },
+    });
+    if (!restaurant) return res.status(404).json({ error: 'Restaurant non trouvé' });
+    res.json(restaurant);
+  } catch (e: any) {
+    console.error('[FEEDBACK RESTAURANT]', e.message);
+    res.status(500).json({ error: 'Erreur récupération restaurant' });
   }
 });
 

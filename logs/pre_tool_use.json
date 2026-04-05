@@ -5000,5 +5000,18 @@
       "description": "Check TypeScript compilation for errors"
     },
     "tool_use_id": "toolu_01LNXPG35sS9Bo5qvG47Wkgg"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "mcp__b9330123-b138-435e-bf59-830456397ec3__execute_sql",
+    "tool_input": {
+      "project_id": "wsrzcgbfekifalgtwmyy",
+      "query": "ALTER TABLE \"marketplace_orders\" ADD COLUMN IF NOT EXISTS \"supplierId\" INTEGER;\nALTER TABLE \"marketplace_orders\" ADD COLUMN IF NOT EXISTS \"expectedDelivery\" DATE;\nALTER TABLE \"marketplace_orders\" ADD COLUMN IF NOT EXISTS \"receivedAt\" TIMESTAMP;\nALTER TABLE \"marketplace_order_items\" ADD COLUMN IF NOT EXISTS \"ingredientId\" INTEGER;\nALTER TABLE \"marketplace_order_items\" ADD COLUMN IF NOT EXISTS \"receivedQuantity\" FLOAT;\nCREATE INDEX IF NOT EXISTS \"idx_orders_restaurant_created\" ON \"marketplace_orders\" (\"restaurantId\", \"createdAt\");"
+    },
+    "tool_use_id": "toolu_01B9nCfVXbZyZYAHxiRbxi5G"
   }
 ]

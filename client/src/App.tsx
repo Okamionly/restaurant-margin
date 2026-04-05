@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense, useCallback } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles, Newspaper, Bell, AlertTriangle, Keyboard, Search } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles, Newspaper, Bell, AlertTriangle, Keyboard, Search } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
@@ -94,6 +94,8 @@ const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));
 const Analytics = lazyRetry(() => import('./pages/Analytics'));
 const FeedbackPage = lazyRetry(() => import('./pages/Feedback'));
 const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
+const PublicRecipe = lazyRetry(() => import('./pages/PublicRecipe'));
+const MenuCalendar = lazyRetry(() => import('./pages/MenuCalendar'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -233,6 +235,7 @@ function GlobalSearch() {
     { id: 'p-marketplace', name: 'Marketplace', category: 'pages', path: '/marketplace', icon: Store },
     { id: 'p-settings', name: 'Parametres', category: 'pages', path: '/settings', icon: Settings },
     { id: 'p-gaspillage', name: 'Gaspillage', category: 'pages', path: '/gaspillage', icon: Trash2 },
+    { id: 'p-menu-calendar', name: 'Menu Calendrier', category: 'pages', path: '/menu-calendar', icon: Calendar },
     { id: 'p-haccp', name: 'HACCP', category: 'pages', path: '/haccp', icon: ShieldCheck },
     { id: 'p-assistant', name: 'Assistant IA', category: 'pages', path: '/assistant', icon: Sparkles },
     { id: 'p-seminaires', name: 'Seminaires', category: 'pages', path: '/seminaires', icon: PartyPopper },
@@ -628,6 +631,7 @@ function AppLayout() {
         { to: '/inventory', icon: Package, label: 'Inventaire' },
         { to: '/suppliers', icon: Truck, label: 'Fournisseurs' },
         { to: '/gaspillage', icon: Trash2, label: 'Gaspillage' },
+        { to: '/menu-calendar', icon: Calendar, label: 'Menu Calendrier' },
       ],
     },
     {
@@ -1015,6 +1019,7 @@ function AppLayout() {
               <Route path="/suppliers" element={<Suppliers />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/gaspillage" element={<WasteTracker />} />
+              <Route path="/menu-calendar" element={<MenuCalendar />} />
               <Route path="/rfqs" element={<RFQPage />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/scanner-factures" element={<InvoiceScanner />} />
@@ -1094,6 +1099,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/menu-public" element={<PublicMenu />} />
           <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
+          <Route path="/r/:token" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><PublicRecipe /></Suspense>} />
           <Route path="/station-produit" element={<StationLanding />} />
           <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
           <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />

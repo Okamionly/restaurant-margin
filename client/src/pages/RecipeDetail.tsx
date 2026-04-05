@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight, Camera, Share2, Copy, ChevronLeft, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { fetchRecipe, optimizeRecipeCost } from '../services/api';
+import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, getRecipeShareLink } from '../services/api';
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 
 // ─── Category emoji map ───
@@ -126,6 +126,66 @@ export default function RecipeDetail() {
   const [showOptimizer, setShowOptimizer] = useState(false);
   const [appliedSuggestions, setAppliedSuggestions] = useState<Set<number>>(new Set());
   const [optimizeError, setOptimizeError] = useState<string | null>(null);
+  // Photo gallery state
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Sharing state
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const handlePhotoUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!recipe || !e.target.files?.length) return;
+    const file = e.target.files[0];
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 5 * 1024 * 1024) { alert('Image trop lourde (max 5 Mo)'); return; }
+    setUploadingPhoto(true);
+    try {
+      const reader = new FileReader();
+      const dataUri = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      // Resize to max 800px width for MVP data URI storage
+      const resized = await resizeImage(dataUri, 800);
+      const updated = await addRecipePhoto(recipe.id, resized);
+      setRecipe(updated);
+      setPhotoIndex((updated.photos?.length || 1) - 1);
+    } catch (err) { console.error('Erreur upload photo', err); }
+    finally { setUploadingPhoto(false); if (fileInputRef.current) fileInputRef.current.value = ''; }
+  }, [recipe]);
+
+  const handleDeletePhoto = useCallback(async (idx: number) => {
+    if (!recipe) return;
+    try {
+      const updated = await deleteRecipePhoto(recipe.id, idx);
+      setRecipe(updated);
+      setPhotoIndex(Math.max(0, idx - 1));
+    } catch (err) { console.error('Erreur suppression photo', err); }
+  }, [recipe]);
+
+  const handleShare = useCallback(async () => {
+    if (!recipe) return;
+    setShareLoading(true);
+    try {
+      const { url } = await getRecipeShareLink(recipe.id);
+      setShareUrl(url);
+      setShowShareModal(true);
+    } catch (err) { console.error('Erreur partage', err); }
+    finally { setShareLoading(false); }
+  }, [recipe]);
+
+  const handleCopyLink = useCallback(async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch { /* fallback */ }
+  }, [shareUrl]);
 
   const handleOptimize = useCallback(async () => {
     if (!recipe) return;
@@ -212,6 +272,14 @@ export default function RecipeDetail() {
         </Link>
         <div className="flex items-center gap-2">
           <button
+            onClick={handleShare}
+            disabled={shareLoading}
+            className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors disabled:opacity-50"
+          >
+            {shareLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+            Partager
+          </button>
+          <button
             onClick={handleOptimize}
             disabled={optimizing}
             className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -233,6 +301,144 @@ export default function RecipeDetail() {
           </button>
         </div>
       </div>
+
+      {/* ─── Photo Gallery (hidden on print) ─── */}
+      <div className="no-print mb-4">
+        {(recipe.photos?.length ?? 0) > 0 ? (
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-md overflow-hidden">
+            {/* Main photo */}
+            <div className="relative aspect-[16/9] bg-[#F3F4F6] dark:bg-[#171717]">
+              <img
+                src={recipe.photos![photoIndex]}
+                alt={`${recipe.name} - photo ${photoIndex + 1}`}
+                className="w-full h-full object-cover"
+              />
+              {/* Navigation arrows */}
+              {recipe.photos!.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setPhotoIndex((photoIndex - 1 + recipe.photos!.length) % recipe.photos!.length)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setPhotoIndex((photoIndex + 1) % recipe.photos!.length)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+              {/* Delete photo */}
+              <button
+                onClick={() => handleDeletePhoto(photoIndex)}
+                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                title="Supprimer cette photo"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+              {/* Photo counter */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-3 py-1 rounded-full">
+                {photoIndex + 1} / {recipe.photos!.length}
+              </div>
+            </div>
+            {/* Thumbnails + Add button */}
+            <div className="flex items-center gap-2 p-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              {recipe.photos!.map((photo, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setPhotoIndex(idx)}
+                  className={`w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-colors ${idx === photoIndex ? 'border-[#111111] dark:border-white' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                >
+                  <img src={photo} alt={`Miniature ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+              {(recipe.photos?.length ?? 0) < 5 && (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadingPhoto}
+                  className="w-14 h-14 rounded-lg border-2 border-dashed border-[#D1D5DB] dark:border-[#1A1A1A] flex items-center justify-center text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white hover:border-[#111111] dark:hover:border-white transition-colors flex-shrink-0"
+                >
+                  {uploadingPhoto ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                </button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingPhoto}
+            className="w-full py-8 rounded-xl border-2 border-dashed border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] flex flex-col items-center gap-2 text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white hover:border-[#111111] dark:hover:border-white transition-colors"
+          >
+            {uploadingPhoto ? <Loader2 className="w-6 h-6 animate-spin" /> : <Camera className="w-6 h-6" />}
+            <span className="text-sm font-medium">Ajouter une photo</span>
+          </button>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handlePhotoUpload}
+          className="hidden"
+        />
+      </div>
+
+      {/* ─── Share Modal ─── */}
+      {showShareModal && shareUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 no-print" onClick={() => setShowShareModal(false)}>
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Partager la recette</h3>
+              <button onClick={() => setShowShareModal(false)} className="text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              {/* Link */}
+              <div>
+                <label className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1 block">Lien public</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={shareUrl}
+                    className="flex-1 px-3 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-mono"
+                  />
+                  <button
+                    onClick={handleCopyLink}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${shareCopied ? 'bg-green-600 text-white' : 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E5E5]'}`}
+                  >
+                    {shareCopied ? <><Check className="w-4 h-4" /> Copié</> : <><Copy className="w-4 h-4" /> Copier</>}
+                  </button>
+                </div>
+              </div>
+              {/* QR Code */}
+              <div>
+                <label className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2 block">QR Code</label>
+                <div className="flex justify-center p-4 bg-white rounded-xl border border-[#E5E7EB]">
+                  <QRCodeSVG value={shareUrl} size={180} />
+                </div>
+              </div>
+              {/* Preview link */}
+              <a
+                href={shareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm font-medium text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Voir la page publique
+              </a>
+              {/* Info note */}
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center">
+                Cette page publique affiche la recette sans prix ni marges.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── Interactive tools (hidden on print) ─── */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-md mb-4 overflow-hidden no-print">
@@ -975,5 +1181,40 @@ function SimCard({ label, value, highlight, warn }: { label: string; value: stri
       <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] font-medium">{label}</div>
       <div className={`text-lg font-bold mt-0.5 ${textColor}`}>{value}</div>
     </div>
+  );
+}
+
+/* ─── Image resize utility ─── */
+function resizeImage(dataUri: string, maxWidth: number): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxWidth / img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.8));
+    };
+    img.src = dataUri;
+  });
+}
+
+/* ─── Simple QR Code SVG (no external lib) ─── */
+function QRCodeSVG({ value, size = 180 }: { value: string; size?: number }) {
+  // Encode text into a simple QR-like pattern using a hash-based approach
+  // For production, use a real QR library — this generates a visual placeholder
+  // that links via the Google Charts API for an actual QR code
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(value)}&format=svg`;
+  return (
+    <img
+      src={qrUrl}
+      alt="QR Code"
+      width={size}
+      height={size}
+      className="mx-auto"
+      style={{ imageRendering: 'pixelated' }}
+    />
   );
 }

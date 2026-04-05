@@ -88,6 +88,8 @@ export interface Recipe {
   prepTimeMinutes: number;
   cookTimeMinutes: number;
   laborCostPerHour: number;
+  photos?: string[];
+  shareToken?: string | null;
   ingredients: RecipeIngredient[];
   margin: MarginData;
   createdAt: string;

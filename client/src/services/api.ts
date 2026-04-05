@@ -361,6 +361,35 @@ export async function optimizeRecipeCost(recipeId: number): Promise<RecipeOptimi
   return handleResponse<RecipeOptimizationResult>(res);
 }
 
+// --- Recipe Photos & Sharing ---
+
+export async function addRecipePhoto(recipeId: number, photo: string): Promise<Recipe> {
+  const res = await fetch(`${API_BASE}/recipes/${recipeId}/photo`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ photo }),
+  });
+  return handleResponse<Recipe>(res);
+}
+
+export async function deleteRecipePhoto(recipeId: number, photoIndex: number): Promise<Recipe> {
+  const res = await fetch(`${API_BASE}/recipes/${recipeId}/photo/${photoIndex}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  return handleResponse<Recipe>(res);
+}
+
+export async function getRecipeShareLink(recipeId: number): Promise<{ token: string; url: string }> {
+  const res = await fetch(`${API_BASE}/recipes/${recipeId}/share`, { headers: authHeaders() });
+  return handleResponse<{ token: string; url: string }>(res);
+}
+
+export async function fetchPublicRecipe(token: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/public/recipe/${token}`);
+  return handleResponse<any>(res);
+}
+
 // --- Suppliers ---
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
@@ -435,6 +464,22 @@ export async function fetchSupplierScore(id: number): Promise<SupplierScoreBreak
 export async function fetchAllSupplierScores(): Promise<SupplierScoreBreakdown[]> {
   const res = await fetch(`${API_BASE}/suppliers/scores/all`, { headers: authHeaders() });
   return handleResponse<SupplierScoreBreakdown[]>(res);
+}
+
+export interface ImportPricesResult {
+  updated: number;
+  updatedNames: string[];
+  notFound: string[];
+  errors: string[];
+}
+
+export async function importSupplierPrices(supplierId: number, csvText: string): Promise<ImportPricesResult> {
+  const res = await fetch(`${API_BASE}/suppliers/${supplierId}/import-prices`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ csv: csvText }),
+  });
+  return handleResponse<ImportPricesResult>(res);
 }
 
 // --- Inventory ---

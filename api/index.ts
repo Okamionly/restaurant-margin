@@ -703,6 +703,95 @@ app.put('/api/recipes/:id/restore', authWithRestaurant, async (req: any, res) =>
   } catch { res.status(500).json({ error: 'Erreur restauration recette' }); }
 });
 
+// ============ RECIPE PHOTOS & SHARING ============
+
+// POST /api/recipes/:id/photo — add a photo (base64 data URI) to recipe
+app.post('/api/recipes/:id/photo', authWithRestaurant, async (req: any, res) => {
+  try {
+    const recipeId = parseInt(req.params.id);
+    const recipe = await prisma.recipe.findFirst({ where: { id: recipeId, restaurantId: req.restaurantId, deletedAt: null } });
+    if (!recipe) return res.status(404).json({ error: 'Recette non trouvée' });
+    const { photo } = req.body;
+    if (!photo || typeof photo !== 'string') return res.status(400).json({ error: 'Photo requise (base64 data URI)' });
+    const currentPhotos: string[] = (recipe as any).photos || [];
+    if (currentPhotos.length >= 5) return res.status(400).json({ error: 'Maximum 5 photos par recette' });
+    const updated = await prisma.recipe.update({
+      where: { id: recipeId },
+      data: { photos: { push: photo } },
+      include: recipeInclude,
+    });
+    res.json(formatRecipe(updated));
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur ajout photo' }); }
+});
+
+// DELETE /api/recipes/:id/photo/:index — remove a photo by index
+app.delete('/api/recipes/:id/photo/:index', authWithRestaurant, async (req: any, res) => {
+  try {
+    const recipeId = parseInt(req.params.id);
+    const photoIndex = parseInt(req.params.index);
+    const recipe = await prisma.recipe.findFirst({ where: { id: recipeId, restaurantId: req.restaurantId, deletedAt: null } });
+    if (!recipe) return res.status(404).json({ error: 'Recette non trouvée' });
+    const currentPhotos: string[] = (recipe as any).photos || [];
+    if (photoIndex < 0 || photoIndex >= currentPhotos.length) return res.status(400).json({ error: 'Index photo invalide' });
+    const newPhotos = currentPhotos.filter((_: string, i: number) => i !== photoIndex);
+    const updated = await prisma.recipe.update({
+      where: { id: recipeId },
+      data: { photos: newPhotos },
+      include: recipeInclude,
+    });
+    res.json(formatRecipe(updated));
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression photo' }); }
+});
+
+// GET /api/recipes/:id/share — generate a share token, return public URL
+app.get('/api/recipes/:id/share', authWithRestaurant, async (req: any, res) => {
+  try {
+    const recipeId = parseInt(req.params.id);
+    const recipe = await prisma.recipe.findFirst({ where: { id: recipeId, restaurantId: req.restaurantId, deletedAt: null } });
+    if (!recipe) return res.status(404).json({ error: 'Recette non trouvée' });
+    let token = (recipe as any).shareToken;
+    if (!token) {
+      const crypto = require('crypto');
+      token = crypto.randomBytes(16).toString('hex');
+      await prisma.recipe.update({ where: { id: recipeId }, data: { shareToken: token } });
+    }
+    const baseUrl = req.headers.origin || 'https://restaumargin.fr';
+    res.json({ token, url: `${baseUrl}/r/${token}` });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur génération lien de partage' }); }
+});
+
+// GET /api/public/recipe/:token — public recipe endpoint (no auth)
+app.get('/api/public/recipe/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    if (!token || token.length < 10) return res.status(400).json({ error: 'Token invalide' });
+    const recipe = await prisma.recipe.findFirst({
+      where: { shareToken: token, deletedAt: null },
+      include: {
+        ingredients: { include: { ingredient: true } },
+        restaurant: { select: { name: true } },
+      },
+    });
+    if (!recipe) return res.status(404).json({ error: 'Recette non trouvée' });
+    res.json({
+      name: recipe.name,
+      category: recipe.category,
+      description: recipe.description,
+      nbPortions: recipe.nbPortions,
+      prepTimeMinutes: recipe.prepTimeMinutes,
+      cookTimeMinutes: recipe.cookTimeMinutes,
+      photos: (recipe as any).photos || [],
+      restaurantName: recipe.restaurant.name,
+      ingredients: recipe.ingredients.map((ri: any) => ({
+        name: ri.ingredient.name,
+        quantity: ri.quantity,
+        unit: ri.ingredient.unit,
+        category: ri.ingredient.category,
+      })),
+    });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération recette publique' }); }
+});
+
 // ============ SUPPLIERS ============
 app.get('/api/suppliers', authWithRestaurant, async (req: any, res) => {
   try {
@@ -993,6 +1082,92 @@ app.get('/api/suppliers/:id/score', authWithRestaurant, async (req: any, res) =>
       recommendation,
     });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur calcul score fournisseur' }); }
+});
+
+// ============ SUPPLIER PRICE IMPORT (CSV) ============
+app.post('/api/suppliers/:id/import-prices', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const supplier = await prisma.supplier.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!supplier) return res.status(404).json({ error: 'Fournisseur non trouve' });
+
+    const csvText = typeof req.body === 'string' ? req.body : (req.body?.csv ?? '');
+    if (!csvText || !csvText.trim()) return res.status(400).json({ error: 'CSV vide' });
+
+    const lines = csvText.trim().split(/\r?\n/);
+    if (lines.length < 2) return res.status(400).json({ error: 'Le CSV doit contenir au moins un en-tete et une ligne de donnees' });
+
+    // Skip header row
+    const dataLines = lines.slice(1).filter((l: string) => l.trim());
+    const updated: string[] = [];
+    const notFound: string[] = [];
+    const errors: string[] = [];
+
+    // Fetch all ingredients for this restaurant
+    const allIngredients = await prisma.ingredient.findMany({
+      where: { restaurantId: req.restaurantId, deletedAt: null },
+      select: { id: true, name: true, unit: true, pricePerUnit: true, supplierId: true },
+    });
+
+    // Build case-insensitive lookup map
+    const ingredientMap = new Map<string, typeof allIngredients[0]>();
+    allIngredients.forEach((ing) => {
+      ingredientMap.set(ing.name.toLowerCase().trim(), ing);
+    });
+
+    for (const line of dataLines) {
+      // Split by semicolon (French Excel format)
+      const parts = line.split(';').map((p: string) => p.trim());
+      if (parts.length < 3) {
+        errors.push(`Ligne invalide (moins de 3 colonnes): "${line}"`);
+        continue;
+      }
+      const [productName, unit, priceStr] = parts;
+      if (!productName) { errors.push(`Nom produit vide: "${line}"`); continue; }
+
+      // Parse price: accept both comma and dot as decimal separator
+      const price = parseFloat(priceStr.replace(',', '.'));
+      if (isNaN(price) || price < 0) {
+        errors.push(`Prix invalide pour "${productName}": "${priceStr}"`);
+        continue;
+      }
+
+      // Find matching ingredient (case-insensitive)
+      const ingredient = ingredientMap.get(productName.toLowerCase().trim());
+      if (!ingredient) {
+        notFound.push(productName);
+        continue;
+      }
+
+      // Update ingredient price and link to supplier
+      await prisma.ingredient.update({
+        where: { id: ingredient.id },
+        data: { pricePerUnit: price, supplierId: id },
+      });
+
+      // Create price history entry
+      await prisma.priceHistory.create({
+        data: {
+          ingredientId: ingredient.id,
+          price,
+          date: new Date().toISOString().slice(0, 10),
+          source: 'csv-import',
+          restaurantId: req.restaurantId,
+        },
+      });
+
+      // Audit trail
+      logAudit(req.user.userId, req.restaurantId, 'UPDATE', 'ingredient', ingredient.id, {
+        pricePerUnit: { old: ingredient.pricePerUnit, new: price },
+        source: 'csv-import',
+        supplierId: id,
+      });
+
+      updated.push(productName);
+    }
+
+    res.json({ updated: updated.length, updatedNames: updated, notFound, errors });
+  } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur import CSV: ' + e.message }); }
 });
 
 // ============ INVENTORY ============
@@ -4472,6 +4647,220 @@ app.get('/api/feedback/restaurant/:id', async (req: any, res) => {
   } catch (e: any) {
     console.error('[FEEDBACK RESTAURANT]', e.message);
     res.status(500).json({ error: 'Erreur récupération restaurant' });
+  }
+});
+
+// ============ BUDGET STATUS & CONFIG ============
+
+// GET /api/budget/status — daily/weekly/monthly spending + budget usage
+app.get('/api/budget/status', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+
+    // Fetch restaurant budget config
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id: restaurantId },
+      select: { dailyBudget: true, weeklyBudget: true, monthlyBudget: true, budgetEmailAlert: true },
+    });
+    if (!restaurant) return res.status(404).json({ error: 'Restaurant non trouvé' });
+
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    // Week start (Monday)
+    const dayOfWeek = now.getDay(); // 0=Sun
+    const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - mondayOffset);
+    const weekStartStr = weekStart.toISOString().slice(0, 10);
+
+    // Month start
+    const monthStartStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+
+    // Today's spending from invoices
+    const todayInvoices = await prisma.invoice.aggregate({
+      where: { restaurantId, invoiceDate: todayStr },
+      _sum: { totalAmount: true },
+    });
+    // Today's spending from financial entries (expenses only)
+    const todayExpenses = await prisma.financialEntry.aggregate({
+      where: { restaurantId, date: todayStr, type: 'expense' },
+      _sum: { amount: true },
+    });
+    const todaySpending = (todayInvoices._sum.totalAmount || 0) + (todayExpenses._sum.amount || 0);
+
+    // Week spending
+    const weekInvoices = await prisma.invoice.aggregate({
+      where: { restaurantId, invoiceDate: { gte: weekStartStr, lte: todayStr } },
+      _sum: { totalAmount: true },
+    });
+    const weekExpenses = await prisma.financialEntry.aggregate({
+      where: { restaurantId, date: { gte: weekStartStr, lte: todayStr }, type: 'expense' },
+      _sum: { amount: true },
+    });
+    const weekSpending = (weekInvoices._sum.totalAmount || 0) + (weekExpenses._sum.amount || 0);
+
+    // Month spending
+    const monthInvoices = await prisma.invoice.aggregate({
+      where: { restaurantId, invoiceDate: { gte: monthStartStr, lte: todayStr } },
+      _sum: { totalAmount: true },
+    });
+    const monthExpenses = await prisma.financialEntry.aggregate({
+      where: { restaurantId, date: { gte: monthStartStr, lte: todayStr }, type: 'expense' },
+      _sum: { amount: true },
+    });
+    const monthSpending = (monthInvoices._sum.totalAmount || 0) + (monthExpenses._sum.amount || 0);
+
+    // Budget used % (today vs daily budget)
+    const dailyBudget = restaurant.dailyBudget || 0;
+    const budgetUsed = dailyBudget > 0 ? Math.round((todaySpending / dailyBudget) * 1000) / 10 : 0;
+
+    // Days over budget this month — get daily totals
+    let daysOverBudget = 0;
+    if (dailyBudget > 0) {
+      const monthInvoicesByDay = await prisma.invoice.groupBy({
+        by: ['invoiceDate'],
+        where: { restaurantId, invoiceDate: { gte: monthStartStr, lte: todayStr } },
+        _sum: { totalAmount: true },
+      });
+      const monthExpensesByDay = await prisma.financialEntry.groupBy({
+        by: ['date'],
+        where: { restaurantId, date: { gte: monthStartStr, lte: todayStr }, type: 'expense' },
+        _sum: { amount: true },
+      });
+
+      const dailyTotals = new Map<string, number>();
+      for (const row of monthInvoicesByDay) {
+        dailyTotals.set(row.invoiceDate, (dailyTotals.get(row.invoiceDate) || 0) + (row._sum.totalAmount || 0));
+      }
+      for (const row of monthExpensesByDay) {
+        dailyTotals.set(row.date, (dailyTotals.get(row.date) || 0) + (row._sum.amount || 0));
+      }
+      for (const [, total] of dailyTotals) {
+        if (total > dailyBudget) daysOverBudget++;
+      }
+    }
+
+    // Forecast: projected month-end spending
+    const dayOfMonth = now.getDate();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const dailyAverage = dayOfMonth > 0 ? monthSpending / dayOfMonth : 0;
+    const forecast = Math.round(dailyAverage * daysInMonth * 100) / 100;
+
+    res.json({
+      dailyBudget: restaurant.dailyBudget,
+      weeklyBudget: restaurant.weeklyBudget,
+      monthlyBudget: restaurant.monthlyBudget,
+      budgetEmailAlert: restaurant.budgetEmailAlert,
+      todaySpending: Math.round(todaySpending * 100) / 100,
+      weekSpending: Math.round(weekSpending * 100) / 100,
+      monthSpending: Math.round(monthSpending * 100) / 100,
+      budgetUsed,
+      daysOverBudget,
+      forecast,
+      dayOfMonth,
+      daysInMonth,
+    });
+  } catch (e: any) {
+    console.error('[BUDGET STATUS]', e.message);
+    res.status(500).json({ error: 'Erreur récupération budget' });
+  }
+});
+
+// PUT /api/budget/set — set daily/weekly/monthly budget targets
+app.put('/api/budget/set', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    const { dailyBudget, weeklyBudget, monthlyBudget, budgetEmailAlert } = req.body;
+
+    const updateData: any = {};
+    if (dailyBudget !== undefined) updateData.dailyBudget = dailyBudget === null ? null : parseFloat(dailyBudget);
+    if (weeklyBudget !== undefined) updateData.weeklyBudget = weeklyBudget === null ? null : parseFloat(weeklyBudget);
+    if (monthlyBudget !== undefined) updateData.monthlyBudget = monthlyBudget === null ? null : parseFloat(monthlyBudget);
+    if (budgetEmailAlert !== undefined) updateData.budgetEmailAlert = !!budgetEmailAlert;
+
+    const updated = await prisma.restaurant.update({
+      where: { id: restaurantId },
+      data: updateData,
+      select: { dailyBudget: true, weeklyBudget: true, monthlyBudget: true, budgetEmailAlert: true },
+    });
+
+    res.json(updated);
+  } catch (e: any) {
+    console.error('[BUDGET SET]', e.message);
+    res.status(500).json({ error: 'Erreur mise à jour budget' });
+  }
+});
+
+// ── Menu Calendar ──
+
+app.get('/api/menu-calendar', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { month } = req.query; // format: 2026-04
+    if (!month || !/^\d{4}-\d{2}$/.test(month as string)) {
+      return res.status(400).json({ error: 'Paramètre month requis (format: YYYY-MM)' });
+    }
+    const [year, m] = (month as string).split('-').map(Number);
+    const startDate = new Date(year, m - 1, 1);
+    const endDate = new Date(year, m, 0); // last day of month
+
+    const entries = await prisma.menuCalendar.findMany({
+      where: {
+        restaurantId: req.restaurantId,
+        date: { gte: startDate, lte: endDate },
+      },
+      include: { recipe: { select: { id: true, name: true, category: true, sellingPrice: true } } },
+      orderBy: [{ date: 'asc' }, { mealType: 'asc' }],
+    });
+    res.json(entries);
+  } catch (e: any) {
+    console.error('[MENU-CALENDAR GET]', e.message);
+    res.status(500).json({ error: 'Erreur récupération menu calendrier' });
+  }
+});
+
+app.post('/api/menu-calendar', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { date, mealType, menuItems } = req.body;
+    if (!date || !mealType || !menuItems || !Array.isArray(menuItems)) {
+      return res.status(400).json({ error: 'date, mealType et menuItems requis' });
+    }
+    const created = [];
+    for (const item of menuItems) {
+      const entry = await prisma.menuCalendar.create({
+        data: {
+          restaurantId: req.restaurantId,
+          date: new Date(date),
+          mealType,
+          recipeId: item.recipeId,
+          category: item.category || null,
+        },
+        include: { recipe: { select: { id: true, name: true, category: true, sellingPrice: true } } },
+      });
+      created.push(entry);
+    }
+    res.json(created);
+  } catch (e: any) {
+    console.error('[MENU-CALENDAR POST]', e.message);
+    res.status(500).json({ error: 'Erreur création menu calendrier' });
+  }
+});
+
+app.delete('/api/menu-calendar/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+
+    const entry = await prisma.menuCalendar.findFirst({
+      where: { id, restaurantId: req.restaurantId },
+    });
+    if (!entry) return res.status(404).json({ error: 'Entrée non trouvée' });
+
+    await prisma.menuCalendar.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (e: any) {
+    console.error('[MENU-CALENDAR DELETE]', e.message);
+    res.status(500).json({ error: 'Erreur suppression menu calendrier' });
   }
 });
 

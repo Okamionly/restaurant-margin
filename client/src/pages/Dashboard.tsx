@@ -220,6 +220,202 @@ function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   );
 }
 
+// ── Budget Widget ─────────────────────────────────────────────────────────
+interface BudgetData {
+  dailyBudget: number | null;
+  weeklyBudget: number | null;
+  monthlyBudget: number | null;
+  todaySpending: number;
+  weekSpending: number;
+  monthSpending: number;
+  budgetUsed: number;
+  daysOverBudget: number;
+  forecast: number;
+  dayOfMonth: number;
+  daysInMonth: number;
+}
+
+function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditBudget: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [dailyInput, setDailyInput] = useState('');
+
+  if (!data) return null;
+
+  const hasBudget = data.dailyBudget && data.dailyBudget > 0;
+  const pct = hasBudget ? Math.min(data.budgetUsed, 100) : 0;
+  const overBudget = data.budgetUsed > 100;
+  const overAmount = overBudget ? data.todaySpending - (data.dailyBudget || 0) : 0;
+
+  // SVG circular progress ring
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (pct / 100) * circumference;
+
+  // Color based on percentage — detect dark mode
+  const isDark = document.documentElement.classList.contains('dark');
+  const ringColor = !hasBudget
+    ? (isDark ? '#737373' : '#9CA3AF')
+    : data.budgetUsed < 70
+    ? (isDark ? '#FFFFFF' : '#111111')
+    : data.budgetUsed < 90
+    ? (isDark ? '#F59E0B' : '#D97706')
+    : (isDark ? '#EF4444' : '#DC2626');
+
+  const handleSaveBudget = async () => {
+    const val = parseFloat(dailyInput);
+    if (isNaN(val) || val <= 0) return;
+    try {
+      const token = localStorage.getItem('token');
+      const restaurantId = localStorage.getItem('activeRestaurantId');
+      await fetch('/api/budget/set', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+        },
+        body: JSON.stringify({ dailyBudget: val }),
+      });
+      setEditing(false);
+      onEditBudget();
+    } catch {}
+  };
+
+  return (
+    <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
+      {/* Over-budget alert banner */}
+      {overBudget && (
+        <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50">
+          <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
+          <span className="text-xs font-medium text-red-700 dark:text-red-300">
+            Attention : depassement de budget de {overAmount.toFixed(2)}€
+          </span>
+        </div>
+      )}
+
+      <div className="flex items-start gap-5">
+        {/* Circular progress ring */}
+        <div className="relative flex-shrink-0">
+          <svg width="88" height="88" viewBox="0 0 88 88" className="transform -rotate-90">
+            {/* Background ring */}
+            <circle
+              cx="44" cy="44" r={radius}
+              fill="none" strokeWidth="6"
+              className="stroke-[#E5E7EB] dark:stroke-[#1A1A1A]"
+            />
+            {/* Progress ring */}
+            <circle
+              cx="44" cy="44" r={radius}
+              fill="none" strokeWidth="6"
+              strokeLinecap="round"
+              style={{
+                stroke: ringColor,
+                strokeDasharray: circumference,
+                strokeDashoffset: hasBudget ? strokeDashoffset : circumference,
+                transition: 'stroke-dashoffset 0.8s ease-out',
+              }}
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-lg font-black text-[#111111] dark:text-white leading-none">
+              {hasBudget ? `${Math.round(data.budgetUsed)}%` : '---'}
+            </span>
+            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">budget</span>
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Budget du jour</h3>
+            <button
+              onClick={() => {
+                if (!editing) {
+                  setDailyInput(String(data.dailyBudget || ''));
+                  setEditing(true);
+                } else {
+                  setEditing(false);
+                }
+              }}
+              className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+            >
+              {editing ? 'Annuler' : 'Modifier'}
+            </button>
+          </div>
+
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                value={dailyInput}
+                onChange={(e) => setDailyInput(e.target.value)}
+                placeholder="Budget quotidien"
+                className="w-full px-2.5 py-1.5 text-sm bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF]"
+                autoFocus
+                onKeyDown={(e) => { if (e.key === 'Enter') handleSaveBudget(); }}
+              />
+              <span className="text-sm text-[#9CA3AF]">€</span>
+              <button
+                onClick={handleSaveBudget}
+                className="px-2.5 py-1.5 text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+              >
+                OK
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Today */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
+                <span className="font-semibold text-[#111111] dark:text-white">
+                  {data.todaySpending.toFixed(2)}€
+                  {hasBudget && (
+                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {data.dailyBudget}€</span>
+                  )}
+                </span>
+              </div>
+              {/* Week */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#9CA3AF] dark:text-[#737373]">Semaine</span>
+                <span className="font-semibold text-[#111111] dark:text-white">
+                  {data.weekSpending.toFixed(2)}€
+                  {data.weeklyBudget && data.weeklyBudget > 0 && (
+                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {data.weeklyBudget}€</span>
+                  )}
+                </span>
+              </div>
+              {/* Month */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#9CA3AF] dark:text-[#737373]">Mois</span>
+                <span className="font-semibold text-[#111111] dark:text-white">
+                  {data.monthSpending.toFixed(2)}€
+                  {data.monthlyBudget && data.monthlyBudget > 0 && (
+                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {data.monthlyBudget}€</span>
+                  )}
+                </span>
+              </div>
+              {/* Forecast + days over */}
+              {hasBudget && (
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <span className="text-[#9CA3AF] dark:text-[#737373]">
+                    Prevision fin de mois
+                  </span>
+                  <span className="font-semibold text-[#111111] dark:text-white">{data.forecast.toFixed(0)}€</span>
+                </div>
+              )}
+              {data.daysOverBudget > 0 && (
+                <div className="text-[10px] text-red-600 dark:text-red-400 font-medium">
+                  {data.daysOverBudget} jour{data.daysOverBudget > 1 ? 's' : ''} en depassement ce mois
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Alert Ticker Banner ───────────────────────────────────────────────────
 function AlertTicker({ alerts }: { alerts: Recipe[] }) {
   const { t } = useTranslation();
@@ -459,6 +655,25 @@ export default function Dashboard() {
   const [reportEmailSending, setReportEmailSending] = useState(false);
   const [reportEmailSent, setReportEmailSent] = useState(false);
   const navigate = useNavigate();
+  const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
+
+  // ── Budget fetch ──────────────────────────────────────────────────────
+  const fetchBudget = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const restaurantId = localStorage.getItem('activeRestaurantId');
+      const res = await fetch('/api/budget/status', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+        },
+      });
+      if (res.ok) {
+        const d = await res.json();
+        setBudgetData(d);
+      }
+    } catch {}
+  }, []);
 
   // ── Weekly AI Report ──────────────────────────────────────────────────
   const REPORT_CACHE_KEY = 'restaumargin_weekly_report';
@@ -577,7 +792,8 @@ export default function Dashboard() {
       .then(([r, i]) => { setRecipes(r); setIngredients(i); })
       .catch(() => console.error('Erreur chargement'))
       .finally(() => setLoading(false));
-  }, [selectedRestaurant, restaurantLoading]);
+    fetchBudget();
+  }, [selectedRestaurant, restaurantLoading, fetchBudget]);
 
   // ── P&L data fetch ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -1248,6 +1464,11 @@ export default function Dashboard() {
           </Link>
         </div>
       )}
+
+      {/* ── Budget Widget ─────────────────────────────────────────── */}
+      <div className="stagger-3">
+        <BudgetWidget data={budgetData} onEditBudget={fetchBudget} />
+      </div>
 
       {/* ── Alert Ticker Banner ──────────────────────────────────────── */}
       <div className="stagger-3">

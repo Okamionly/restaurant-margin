@@ -74,6 +74,11 @@ model Restaurant {
   marketplaceOrders MarketplaceOrder[]
   newsItems         NewsItem[]
   customerFeedback  CustomerFeedback[]
+  menuCalendar      MenuCalendar[]
+  dailyBudget       Float?
+  weeklyBudget      Float?
+  monthlyBudget     Float?
+  budgetEmailAlert  Boolean            @default(false)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
@@ -162,11 +167,14 @@ model Recipe {
   cookTimeMinutes  Int?
   laborCostPerHour Float              @default(0)
   deletedAt        DateTime?
+  photos           String[]           @default([])
+  shareToken       String?            @unique
   restaurantId     Int
   restaurant       Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   ingredients      RecipeIngredient[]
+  menuCalendar     MenuCalendar[]
 
   @@index([restaurantId, category])
   @@map("recipes")
@@ -596,4 +604,19 @@ model CustomerFeedback {
 
   @@index([restaurantId, createdAt])
   @@map("customer_feedback")
+}
+
+model MenuCalendar {
+  id           Int        @id @default(autoincrement())
+  restaurantId Int
+  date         DateTime   @db.Date
+  mealType     String     @default("lunch")
+  recipeId     Int
+  recipe       Recipe     @relation(fields: [recipeId], references: [id])
+  category     String?
+  createdAt    DateTime   @default(now())
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@index([restaurantId, date])
+  @@map("menu_calendar")
 }

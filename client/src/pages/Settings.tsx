@@ -47,6 +47,7 @@ import {
   Gift,
   Link,
   UserPlus,
+  Wallet,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useToast } from '../hooks/useToast';
@@ -312,6 +313,7 @@ export default function Settings() {
     restaurant: false,
     coefficients: false,
     notifications: false,
+    budget: false,
     app: false,
     connexions: false,
     security: false,
@@ -357,6 +359,13 @@ export default function Settings() {
 
   // Financial goals
   const [financialGoals, setFinancialGoals] = useState<FinancialGoals>(loadFinancialGoals);
+
+  // Budget config
+  const [budgetDaily, setBudgetDaily] = useState<string>('');
+  const [budgetWeekly, setBudgetWeekly] = useState<string>('');
+  const [budgetMonthly, setBudgetMonthly] = useState<string>('');
+  const [budgetEmailAlert, setBudgetEmailAlert] = useState(false);
+  const [budgetLoading, setBudgetLoading] = useState(false);
 
   // Category coefficients
   const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 4.0, 'Accompagnement': 3.0 };
@@ -452,6 +461,7 @@ export default function Settings() {
   useEffect(() => {
     loadStats();
     loadReferrals();
+    loadBudgetConfig();
   }, []);
 
   useEffect(() => {
@@ -522,6 +532,43 @@ export default function Settings() {
       }
     } catch {}
     setReferralLoading(false);
+  }
+
+  async function loadBudgetConfig() {
+    setBudgetLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/budget/status`, { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setBudgetDaily(data.dailyBudget != null ? String(data.dailyBudget) : '');
+        setBudgetWeekly(data.weeklyBudget != null ? String(data.weeklyBudget) : '');
+        setBudgetMonthly(data.monthlyBudget != null ? String(data.monthlyBudget) : '');
+        setBudgetEmailAlert(data.budgetEmailAlert || false);
+      }
+    } catch {}
+    setBudgetLoading(false);
+  }
+
+  async function saveBudgetConfig() {
+    try {
+      const body: any = {};
+      body.dailyBudget = budgetDaily ? parseFloat(budgetDaily) : null;
+      body.weeklyBudget = budgetWeekly ? parseFloat(budgetWeekly) : null;
+      body.monthlyBudget = budgetMonthly ? parseFloat(budgetMonthly) : null;
+      body.budgetEmailAlert = budgetEmailAlert;
+      const res = await fetch(`${API_BASE}/budget/set`, {
+        method: 'PUT',
+        headers: authHeaders(),
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        showToast('Budget sauvegarde avec succes', 'success');
+      } else {
+        showToast('Erreur sauvegarde budget', 'error');
+      }
+    } catch {
+      showToast('Erreur sauvegarde budget', 'error');
+    }
   }
 
   // ------ Handlers ------
@@ -1346,6 +1393,115 @@ export default function Settings() {
 
             <SectionSaveButton onClick={() => handleSaveSettings('Notifications')} />
           </div>
+        </Section>
+
+        {/* ================================================================
+            3b. BUDGET
+           ================================================================ */}
+        <Section
+          id="budget"
+          icon={<Wallet className="w-5 h-5" />}
+          iconColor="text-emerald-600"
+          title="Budget"
+          badge={
+            budgetDaily ? (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
+                {budgetDaily}€/jour
+              </span>
+            ) : null
+          }
+          open={openSections.budget}
+          onToggle={() => toggleSection('budget')}
+        >
+          {budgetLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <RefreshCw className="w-5 h-5 animate-spin text-[#9CA3AF]" />
+            </div>
+          ) : (
+            <div className="space-y-5">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                Definissez vos objectifs budgetaires pour suivre vos depenses quotidiennes, hebdomadaires et mensuelles.
+              </p>
+
+              {/* Daily budget */}
+              <div>
+                <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1">
+                  Budget quotidien
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={budgetDaily}
+                    onChange={(e) => setBudgetDaily(e.target.value)}
+                    placeholder="Ex: 500"
+                    className="w-full px-3 py-2 pr-8 text-sm bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF]"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#9CA3AF]">€</span>
+                </div>
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                  Montant maximum de depenses par jour (factures + charges)
+                </p>
+              </div>
+
+              {/* Weekly budget */}
+              <div>
+                <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1">
+                  Budget hebdomadaire
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={budgetWeekly}
+                    onChange={(e) => setBudgetWeekly(e.target.value)}
+                    placeholder="Ex: 3000"
+                    className="w-full px-3 py-2 pr-8 text-sm bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF]"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#9CA3AF]">€</span>
+                </div>
+              </div>
+
+              {/* Monthly budget */}
+              <div>
+                <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1">
+                  Budget mensuel
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={budgetMonthly}
+                    onChange={(e) => setBudgetMonthly(e.target.value)}
+                    placeholder="Ex: 12000"
+                    className="w-full px-3 py-2 pr-8 text-sm bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF]"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#9CA3AF]">€</span>
+                </div>
+              </div>
+
+              {/* Email alert toggle */}
+              <div className="flex items-center justify-between py-3 border-t dark:border-[#1A1A1A]">
+                <div className="flex items-start gap-3">
+                  <span className="text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+                    <Mail className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium text-[#111111] dark:text-white">
+                      Alerte email depassement
+                    </p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      Recevoir un email quand le budget quotidien est depasse
+                    </p>
+                  </div>
+                </div>
+                <ToggleSwitch
+                  enabled={budgetEmailAlert}
+                  onChange={(val) => setBudgetEmailAlert(val)}
+                  color="bg-emerald-500"
+                />
+              </div>
+
+              <SectionSaveButton onClick={saveBudgetConfig} label="Sauvegarder le budget" />
+            </div>
+          )}
         </Section>
 
         {/* ================================================================

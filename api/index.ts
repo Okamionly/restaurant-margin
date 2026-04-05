@@ -515,7 +515,7 @@ app.post('/api/recipes', authWithRestaurant, async (req: any, res) => {
     }
     const recipe = await prisma.recipe.create({
       data: {
-        name: safeName, category: safeCategory, sellingPrice: spCheck.value ?? parseFloat(sellingPrice) || 0, nbPortions: parseInt(nbPortions) || 1,
+        name: safeName, category: safeCategory, sellingPrice: spCheck.valid && spCheck.value !== undefined ? spCheck.value : (parseFloat(sellingPrice) || 0), nbPortions: parseInt(nbPortions) || 1,
         description: safeDescription, prepTimeMinutes: prepTimeMinutes != null ? parseInt(prepTimeMinutes) : null,
         cookTimeMinutes: cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null, laborCostPerHour: laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0,
         restaurantId: req.restaurantId,

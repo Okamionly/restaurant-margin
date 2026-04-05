@@ -430,5 +430,23 @@
     "hook_event_name": "Stop",
     "stop_hook_active": true,
     "last_assistant_message": "\u00c3\u20ac la prochaine."
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": false,
+    "last_assistant_message": "**10 vagues compl\u00c3\u00a8tes. Tout est push\u00c3\u00a9 et d\u00c3\u00a9ploy\u00c3\u00a9.** \n\n**~100 commits | 60+ features | 10 vagues | 100K+ lignes**\n\n\u00c3\u20ac la prochaine session !"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "Stop",
+    "stop_hook_active": true,
+    "last_assistant_message": "Tout est d\u00c3\u00a9ploy\u00c3\u00a9. Bonne soir\u00c3\u00a9e !"
   }
 ]

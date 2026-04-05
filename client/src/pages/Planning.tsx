@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback, useEffect, DragEvent } from 'react';
 import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
-  Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical
+  Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical,
+  Timer, LogIn, LogOut, Play, Square
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -28,6 +29,30 @@ interface Shift {
   endTime: string; // HH:mm
   type: string;
   notes?: string;
+}
+
+interface TimeEntry {
+  id: number;
+  employeeId: number;
+  date: string;
+  punchIn: string;
+  punchOut: string | null;
+  totalMinutes: number | null;
+  notes: string | null;
+  employee?: { id: number; name: string; role: string; color: string; hourlyRate: number };
+}
+
+interface TimeclockSummaryEmployee {
+  id: number;
+  name: string;
+  role: string;
+  color: string;
+  hourlyRate: number;
+  totalMinutes: number;
+  totalHours: number;
+  totalCost: number;
+  entryCount: number;
+  days: Record<string, number>;
 }
 
 type EmployeeRole = 'Chef' | 'Commis' | 'Serveur' | 'Serveuse' | 'Plongeur' | 'Plongeuse' | 'Patissier' | 'Patissiere';
@@ -123,9 +148,16 @@ function getAuthHeaders(): Record<string, string> {
 export default function Planning() {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const [planningTab, setPlanningTab] = useState<'planning' | 'pointage'>('planning');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [weekStart, setWeekStart] = useState<Date>(() => getMonday(new Date()));
+
+  // Timeclock state
+  const [todayEntries, setTodayEntries] = useState<TimeEntry[]>([]);
+  const [timeclockSummary, setTimeclockSummary] = useState<TimeclockSummaryEmployee[]>([]);
+  const [timeclockLoading, setTimeclockLoading] = useState(false);
+  const [clockTick, setClockTick] = useState(0);
   const [view, setView] = useState<'semaine' | 'jour'>('semaine');
   const [selectedDayIdx, setSelectedDayIdx] = useState(() => {
     const today = new Date().getDay();
@@ -184,6 +216,113 @@ export default function Planning() {
     const to = formatDate(addDays(weekStart, 6));
     loadShifts(from, to);
   }, [weekStart, loadShifts]);
+
+  // ── Timeclock API ──────────────────────────────────────────────────
+
+  const loadTodayEntries = useCallback(async () => {
+    try {
+      const res = await fetch('/api/timeclock/today', { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load today entries');
+      const data = await res.json();
+      setTodayEntries(Array.isArray(data) ? data : []);
+    } catch {
+      setTodayEntries([]);
+    }
+  }, []);
+
+  const loadTimeclockSummary = useCallback(async () => {
+    try {
+      const from = formatDate(weekStart);
+      const to = formatDate(addDays(weekStart, 6));
+      const res = await fetch(`/api/timeclock/summary?from=${from}&to=${to}`, { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error('Failed to load timeclock summary');
+      const data = await res.json();
+      setTimeclockSummary(Array.isArray(data.employees) ? data.employees : []);
+    } catch {
+      setTimeclockSummary([]);
+    }
+  }, [weekStart]);
+
+  useEffect(() => {
+    if (planningTab === 'pointage') {
+      loadTodayEntries();
+      loadTimeclockSummary();
+    }
+  }, [planningTab, loadTodayEntries, loadTimeclockSummary]);
+
+  // Clock tick for live duration display
+  useEffect(() => {
+    if (planningTab !== 'pointage') return;
+    const interval = setInterval(() => setClockTick(prev => prev + 1), 30000);
+    return () => clearInterval(interval);
+  }, [planningTab]);
+
+  async function handlePunchIn(employeeId: number) {
+    setTimeclockLoading(true);
+    try {
+      const res = await fetch('/api/timeclock/punch-in', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ employeeId }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        showToast(err.error || 'Erreur punch-in', 'error');
+        return;
+      }
+      showToast('Pointage enregistre !', 'success');
+      await loadTodayEntries();
+    } catch {
+      showToast('Erreur punch-in', 'error');
+    } finally {
+      setTimeclockLoading(false);
+    }
+  }
+
+  async function handlePunchOut(employeeId: number) {
+    setTimeclockLoading(true);
+    try {
+      const res = await fetch('/api/timeclock/punch-out', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ employeeId }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        showToast(err.error || 'Erreur punch-out', 'error');
+        return;
+      }
+      showToast('Sortie enregistree !', 'success');
+      await loadTodayEntries();
+      await loadTimeclockSummary();
+    } catch {
+      showToast('Erreur punch-out', 'error');
+    } finally {
+      setTimeclockLoading(false);
+    }
+  }
+
+  function getEmployeePunchStatus(empId: number): { isPunchedIn: boolean; entry: TimeEntry | null } {
+    const openEntry = todayEntries.find(e => e.employeeId === empId && !e.punchOut);
+    return { isPunchedIn: !!openEntry, entry: openEntry || null };
+  }
+
+  function formatDuration(minutes: number): string {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h}h${m.toString().padStart(2, '0')}`;
+  }
+
+  function getElapsedMinutes(punchIn: string): number {
+    const start = new Date(punchIn).getTime();
+    const now = Date.now();
+    return Math.max(0, Math.round((now - start) / 60000));
+  }
+
+  function formatTimeFromISO(iso: string): string {
+    const d = new Date(iso);
+    return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+  }
 
   // ── Week navigation ─────────────────────────────────────────────────
 
@@ -548,6 +687,33 @@ export default function Planning() {
           </button>
         </div>
       </div>
+
+      {/* Tab navigation */}
+      <div className="flex rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] p-1 gap-1">
+        <button
+          onClick={() => setPlanningTab('planning')}
+          className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition ${
+            planningTab === 'planning'
+              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+              : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]'
+          }`}
+        >
+          <CalendarDays className="w-4 h-4" /> Planning
+        </button>
+        <button
+          onClick={() => setPlanningTab('pointage')}
+          className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition ${
+            planningTab === 'pointage'
+              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+              : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]'
+          }`}
+        >
+          <Timer className="w-4 h-4" /> Pointage
+        </button>
+      </div>
+
+      {/* ══════════ PLANNING TAB ══════════ */}
+      {planningTab === 'planning' && (<>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
@@ -935,6 +1101,31 @@ export default function Planning() {
           </table>
         </div>
       </div>
+
+      </>)}
+
+      {/* ══════════ POINTAGE TAB ══════════ */}
+      {planningTab === 'pointage' && (
+        <PointageTab
+          employees={employees}
+          todayEntries={todayEntries}
+          timeclockSummary={timeclockSummary}
+          timeclockLoading={timeclockLoading}
+          weekStart={weekStart}
+          weekDays={weekDays}
+          onPunchIn={handlePunchIn}
+          onPunchOut={handlePunchOut}
+          getEmployeePunchStatus={getEmployeePunchStatus}
+          formatDuration={formatDuration}
+          getElapsedMinutes={getElapsedMinutes}
+          formatTimeFromISO={formatTimeFromISO}
+          clockTick={clockTick}
+          goPrev={goPrev}
+          goNext={goNext}
+          goThisWeek={goThisWeek}
+          weekLabel={weekLabel}
+        />
+      )}
 
       {/* ── Employee Modal ─────────────────────────────────────────────── */}
       <Modal
@@ -1346,6 +1537,317 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
               </div>
             );
           })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Pointage Tab ────────────────────────────────────────────────────
+
+function PointageTab({
+  employees, todayEntries, timeclockSummary, timeclockLoading, weekStart, weekDays,
+  onPunchIn, onPunchOut, getEmployeePunchStatus, formatDuration, getElapsedMinutes, formatTimeFromISO,
+  clockTick, goPrev, goNext, goThisWeek, weekLabel,
+}: {
+  employees: Employee[];
+  todayEntries: TimeEntry[];
+  timeclockSummary: TimeclockSummaryEmployee[];
+  timeclockLoading: boolean;
+  weekStart: Date;
+  weekDays: Date[];
+  onPunchIn: (id: number) => void;
+  onPunchOut: (id: number) => void;
+  getEmployeePunchStatus: (id: number) => { isPunchedIn: boolean; entry: TimeEntry | null };
+  formatDuration: (m: number) => string;
+  getElapsedMinutes: (iso: string) => number;
+  formatTimeFromISO: (iso: string) => string;
+  clockTick: number;
+  goPrev: () => void;
+  goNext: () => void;
+  goThisWeek: () => void;
+  weekLabel: string;
+}) {
+  const { t } = useTranslation();
+  const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  // clockTick triggers re-render for live elapsed time display
+  void clockTick;
+
+  const activePunches = employees.filter(e => getEmployeePunchStatus(e.id).isPunchedIn).length;
+  const completedToday = todayEntries.filter(e => e.punchOut).length;
+  const totalMinutesToday = todayEntries
+    .filter(e => e.punchOut && e.totalMinutes)
+    .reduce((sum, e) => sum + (e.totalMinutes || 0), 0);
+
+  const JOURS_SHORT = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+  return (
+    <div className="space-y-6">
+      {/* Pointage summary cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <Users className="w-5 h-5 text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">En service</div>
+              <div className="text-xl font-bold text-[#111111] dark:text-white">{activePunches}</div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <LogOut className="w-5 h-5 text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Termines aujourd'hui</div>
+              <div className="text-xl font-bold text-[#111111] dark:text-white">{completedToday}</div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <Clock className="w-5 h-5 text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Heures aujourd'hui</div>
+              <div className="text-xl font-bold text-[#111111] dark:text-white">{formatDuration(totalMinutesToday)}</div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <CalendarDays className="w-5 h-5 text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Date</div>
+              <div className="text-sm font-bold text-[#111111] dark:text-white capitalize">{today}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Punch buttons per employee */}
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+            <Timer className="w-4 h-4 text-[#111111] dark:text-white" /> Pointage du jour
+          </h3>
+        </div>
+        <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+          {employees.map(emp => {
+            const { isPunchedIn, entry } = getEmployeePunchStatus(emp.id);
+            const empCompletedEntries = todayEntries.filter(e => e.employeeId === emp.id && e.punchOut);
+            const empTotalMinutes = empCompletedEntries.reduce((sum, e) => sum + (e.totalMinutes || 0), 0);
+            const elapsed = isPunchedIn && entry ? getElapsedMinutes(entry.punchIn) : 0;
+
+            return (
+              <div key={emp.id} className="px-5 py-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                  <div className="min-w-0">
+                    <div className="font-medium text-[#111111] dark:text-white text-sm truncate">{emp.name}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      {ROLE_LABELS[emp.role] || emp.role}
+                      {empTotalMinutes > 0 && ` -- ${formatDuration(empTotalMinutes)} aujourd'hui`}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 flex-shrink-0">
+                  {isPunchedIn && entry && (
+                    <div className="text-right">
+                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                        Arrive {formatTimeFromISO(entry.punchIn)}
+                      </div>
+                      <div className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        {formatDuration(elapsed)}
+                      </div>
+                    </div>
+                  )}
+
+                  {isPunchedIn ? (
+                    <button
+                      onClick={() => onPunchOut(emp.id)}
+                      disabled={timeclockLoading}
+                      className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition text-sm font-medium disabled:opacity-50"
+                    >
+                      <Square className="w-3.5 h-3.5" /> Sortie
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onPunchIn(emp.id)}
+                      disabled={timeclockLoading}
+                      className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium disabled:opacity-50"
+                    >
+                      <Play className="w-3.5 h-3.5" /> Entree
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+          {employees.length === 0 && (
+            <div className="px-5 py-8 text-center text-[#9CA3AF] dark:text-[#737373] text-sm">
+              Aucun employe. Ajoutez des employes dans l'onglet Planning.
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Today's timeline */}
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#111111] dark:text-white" /> Timeline du jour
+          </h3>
+        </div>
+        <div className="px-5 py-4">
+          {todayEntries.length > 0 ? (
+            <div className="space-y-3">
+              {todayEntries.map(entry => {
+                const emp = employees.find(e => e.id === entry.employeeId) || entry.employee;
+                if (!emp) return null;
+                const isOpen = !entry.punchOut;
+                const elapsed = isOpen ? getElapsedMinutes(entry.punchIn) : (entry.totalMinutes || 0);
+                return (
+                  <div key={entry.id} className="flex items-center gap-3">
+                    {/* Time marker */}
+                    <div className="flex flex-col items-center w-16 flex-shrink-0">
+                      <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">{formatTimeFromISO(entry.punchIn)}</span>
+                      <div className={`w-px h-4 ${isOpen ? 'bg-emerald-500' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A]'}`} />
+                      <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">
+                        {entry.punchOut ? formatTimeFromISO(entry.punchOut) : '--:--'}
+                      </span>
+                    </div>
+                    {/* Bar */}
+                    <div className={`flex-1 rounded-xl p-3 border ${isOpen ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                          <span className="font-medium text-[#111111] dark:text-white text-sm">{emp.name}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isOpen && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
+                          <span className={`text-sm font-semibold ${isOpen ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
+                            {formatDuration(elapsed)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-[#9CA3AF] dark:text-[#737373] text-sm py-6">
+              Aucun pointage enregistre aujourd'hui.
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Weekly summary table */}
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+            <Euro className="w-4 h-4 text-[#111111] dark:text-white" /> Recap hebdomadaire (pointages)
+          </h3>
+          <div className="flex items-center gap-2">
+            <button onClick={goPrev} className="p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
+              <ChevronLeft className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+            </button>
+            <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              Cette semaine
+            </button>
+            <span className="text-sm font-medium text-[#111111] dark:text-white px-2">{weekLabel}</span>
+            <button onClick={goNext} className="p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
+              <ChevronRight className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+            </button>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Employe</th>
+                {JOURS_SHORT.map(j => (
+                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{j}</th>
+                ))}
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Total</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Cout</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+              {timeclockSummary.length > 0 ? (
+                <>
+                  {timeclockSummary.map(emp => {
+                    const weekDayStrings = weekDays.map(d => {
+                      if (!d || isNaN(d.getTime())) return '';
+                      return d.toISOString().slice(0, 10);
+                    });
+                    return (
+                      <tr key={emp.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
+                        <td className="px-4 py-2.5 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                            <span className="font-medium text-[#111111] dark:text-white">{emp.name}</span>
+                          </div>
+                        </td>
+                        {weekDayStrings.map((dayStr, i) => {
+                          const dayMinutes = emp.days[dayStr] || 0;
+                          const h = Math.round((dayMinutes / 60) * 10) / 10;
+                          return (
+                            <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-[#6B7280] dark:text-[#A3A3A3] font-medium' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                              {h > 0 ? `${h}h` : '-'}
+                            </td>
+                          );
+                        })}
+                        <td className="px-3 py-2.5 text-center font-bold text-[#111111] dark:text-white">
+                          {emp.totalHours > 0 ? `${emp.totalHours}h` : '-'}
+                        </td>
+                        <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
+                          {emp.totalCost > 0 ? `${emp.totalCost.toFixed(0)} EUR` : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {/* Totals row */}
+                  <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A] font-semibold">
+                    <td className="px-4 py-2.5 text-[#111111] dark:text-white">Total</td>
+                    {weekDays.map((d, i) => {
+                      const dayStr = d && !isNaN(d.getTime()) ? d.toISOString().slice(0, 10) : '';
+                      const dayMinutes = timeclockSummary.reduce((sum, emp) => sum + (emp.days[dayStr] || 0), 0);
+                      const h = Math.round((dayMinutes / 60) * 10) / 10;
+                      return (
+                        <td key={i} className="px-3 py-2.5 text-center text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                          {h > 0 ? `${h}h` : '-'}
+                        </td>
+                      );
+                    })}
+                    <td className="px-3 py-2.5 text-center text-[#111111] dark:text-white">
+                      {timeclockSummary.reduce((s, e) => s + e.totalHours, 0).toFixed(1)}h
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-[#111111] dark:text-white">
+                      {timeclockSummary.reduce((s, e) => s + e.totalCost, 0).toFixed(0)} EUR
+                    </td>
+                  </tr>
+                </>
+              ) : (
+                <tr>
+                  <td colSpan={10} className="px-5 py-8 text-center text-[#9CA3AF] dark:text-[#737373] text-sm">
+                    Aucun pointage enregistre cette semaine.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -1,15 +1,27 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
   ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
-  PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash
+  PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash, ScanBarcode, Camera, XOctagon
 } from 'lucide-react';
 import {
   fetchInventory, fetchInventoryAlerts, fetchInventoryValue, fetchInventorySuggestions,
   addToInventory, updateInventoryItem, restockInventoryItem, deleteInventoryItem,
-  createWasteLog
+  createWasteLog, fetchIngredients
 } from '../services/api';
 import type { InventoryItem, InventoryValue, Ingredient } from '../types';
+
+// ── BarcodeDetector type declaration for Web API ────────
+declare global {
+  interface BarcodeDetectorOptions {
+    formats?: string[];
+  }
+  class BarcodeDetector {
+    constructor(options?: BarcodeDetectorOptions);
+    detect(source: ImageBitmapSource): Promise<{ rawValue: string; format: string }[]>;
+    static getSupportedFormats(): Promise<string[]>;
+  }
+}
 
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
@@ -151,6 +163,16 @@ export default function Inventory() {
 
   // Weigh modal
   const [weighTarget, setWeighTarget] = useState<InventoryItem | null>(null);
+
+  // Barcode scanner
+  const [showScanner, setShowScanner] = useState(false);
+  const [scannerSupported, setScannerSupported] = useState(true);
+  const [scannerError, setScannerError] = useState('');
+  const [lastScannedBarcode, setLastScannedBarcode] = useState('');
+  const [allIngredients, setAllIngredients] = useState<Ingredient[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const scanIntervalRef = useRef<number | null>(null);
 
   // Forms
   const [addForm, setAddForm] = useState({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' as LocationType });
@@ -395,6 +417,119 @@ export default function Inventory() {
     }
   }
 
+  // ── Barcode Scanner ─────────────────────────────────────────────────
+  const stopScanner = useCallback(() => {
+    if (scanIntervalRef.current) {
+      clearInterval(scanIntervalRef.current);
+      scanIntervalRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+  }, []);
+
+  async function startScanner() {
+    setScannerError('');
+    setLastScannedBarcode('');
+
+    // Check BarcodeDetector support
+    if (typeof BarcodeDetector === 'undefined') {
+      setScannerSupported(false);
+      setScannerError('BarcodeDetector non supporté par ce navigateur. Utilisez Chrome 83+ ou Edge 83+.');
+      return;
+    }
+
+    // Load all ingredients for barcode lookup
+    try {
+      const ings = await fetchIngredients();
+      setAllIngredients(ings);
+    } catch {
+      // fallback: use suggestions + items
+    }
+
+    setShowScanner(true);
+
+    // Wait for video element to mount
+    setTimeout(async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+        });
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
+        }
+
+        const detector = new BarcodeDetector({
+          formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39']
+        });
+
+        // Poll for barcodes
+        scanIntervalRef.current = window.setInterval(async () => {
+          if (!videoRef.current || videoRef.current.readyState < 2) return;
+          try {
+            const barcodes = await detector.detect(videoRef.current);
+            if (barcodes.length > 0) {
+              const code = barcodes[0].rawValue;
+              setLastScannedBarcode(code);
+              handleBarcodeDetected(code);
+            }
+          } catch {
+            // detection frame error, continue
+          }
+        }, 300);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Erreur caméra';
+        setScannerError(`Impossible d'accéder à la caméra: ${message}`);
+      }
+    }, 100);
+  }
+
+  function handleBarcodeDetected(barcode: string) {
+    stopScanner();
+    setShowScanner(false);
+
+    // Search in inventory items first
+    const inventoryMatch = items.find(item => item.ingredient?.barcode === barcode);
+    if (inventoryMatch) {
+      openRestock(inventoryMatch);
+      showToast(`Code-barres détecté : ${inventoryMatch.ingredient.name}`, 'success');
+      return;
+    }
+
+    // Search in all ingredients (not yet in inventory)
+    const ingredientMatch = allIngredients.find(ing => ing.barcode === barcode);
+    if (ingredientMatch) {
+      // Pre-fill add form with this ingredient
+      setAddForm({
+        ingredientId: ingredientMatch.id,
+        currentStock: '',
+        minStock: '',
+        unit: ingredientMatch.unit,
+        expirationDate: '',
+        location: '',
+      });
+      setShowAddModal(true);
+      showToast(`Code-barres détecté : ${ingredientMatch.name} (pas encore en inventaire)`, 'info');
+      return;
+    }
+
+    // Not found
+    showToast(`Code-barres ${barcode} non trouvé. Ajoutez-le d'abord dans les ingrédients.`, 'error');
+  }
+
+  function closeScanner() {
+    stopScanner();
+    setShowScanner(false);
+  }
+
+  // Cleanup scanner on unmount
+  useEffect(() => {
+    return () => { stopScanner(); };
+  }, [stopScanner]);
+
   // Waste handler
   async function handleWasteSubmit() {
     const qty = parseFloat(wasteForm.quantity);
@@ -545,6 +680,9 @@ export default function Inventory() {
         <div className="flex flex-wrap gap-2">
           <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
+          </button>
+          <button onClick={startScanner} className="flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+            <ScanBarcode className="w-4 h-4" /> Scanner
           </button>
           {suggestions.length > 0 && (
             <button onClick={handleBulkAdd} disabled={savingBulk} className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50">
@@ -1109,6 +1247,105 @@ export default function Inventory() {
           pricePerUnit={weighTarget.ingredient.pricePerUnit}
           onComplete={handleWeighComplete}
         />
+      )}
+
+      {/* Barcode Scanner Modal */}
+      {showScanner && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border dark:border-[#1A1A1A] w-full max-w-lg mx-4 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b dark:border-[#1A1A1A]">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Camera className="w-5 h-5" /> Scanner un code-barres
+              </h3>
+              <button onClick={closeScanner} className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 space-y-3">
+              {scannerError ? (
+                <div className="flex flex-col items-center gap-3 py-8">
+                  <XOctagon className="w-12 h-12 text-red-500" />
+                  <p className="text-sm text-center text-red-600 dark:text-red-400">{scannerError}</p>
+                  {!scannerSupported && (
+                    <div className="text-center space-y-2">
+                      <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                        Navigateurs compatibles : Chrome 83+, Edge 83+, Opera 69+
+                      </p>
+                      <div className="mt-3">
+                        <label className="block text-sm font-medium mb-1">Saisie manuelle du code-barres</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Ex: 3017620422003"
+                            value={lastScannedBarcode}
+                            onChange={e => setLastScannedBarcode(e.target.value)}
+                            className="flex-1 px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                            autoFocus
+                            onKeyDown={e => { if (e.key === 'Enter' && lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
+                          />
+                          <button
+                            onClick={() => { if (lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
+                            className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                          >
+                            Rechercher
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
+                    <video
+                      ref={videoRef}
+                      className="w-full h-full object-cover"
+                      playsInline
+                      muted
+                    />
+                    {/* Scan overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-64 h-32 border-2 border-white/60 rounded-lg">
+                        <div className="w-full h-0.5 bg-white/80 animate-pulse mt-[50%]" />
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-center text-[#9CA3AF] dark:text-[#737373]">
+                    Placez le code-barres dans le cadre. La detection est automatique.
+                  </p>
+                  {lastScannedBarcode && (
+                    <div className="text-center text-sm font-mono bg-[#F3F4F6] dark:bg-[#171717] rounded-lg px-3 py-2">
+                      Dernier code : {lastScannedBarcode}
+                    </div>
+                  )}
+                  {/* Manual fallback input */}
+                  <div className="border-t dark:border-[#1A1A1A] pt-3 mt-2">
+                    <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Ou saisir manuellement</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="Code-barres..."
+                        value={lastScannedBarcode}
+                        onChange={e => setLastScannedBarcode(e.target.value)}
+                        className="flex-1 px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                        onKeyDown={e => { if (e.key === 'Enter' && lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
+                      />
+                      <button
+                        onClick={() => { if (lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
+                        disabled={!lastScannedBarcode.trim()}
+                        className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Delete Confirm */}

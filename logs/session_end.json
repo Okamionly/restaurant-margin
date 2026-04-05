@@ -1,0 +1,10 @@
+[
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "hook_event_name": "SessionEnd",
+    "reason": "other",
+    "logged_at": "2026-04-05T04:23:55.630477"
+  }
+]

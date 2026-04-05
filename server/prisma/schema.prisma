@@ -130,6 +130,7 @@ model Ingredient {
   supplierRef   Supplier?          @relation(fields: [supplierId], references: [id])
   category      String
   allergens     String[]           @default([])
+  barcode       String?
   restaurantId  Int
   restaurant    Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt     DateTime           @default(now())
@@ -139,6 +140,7 @@ model Ingredient {
   wasteLogs     WasteLog[]
 
   @@index([restaurantId, name])
+  @@index([restaurantId, barcode])
   @@map("ingredients")
 }
 

@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: cd client && npm ci
+
+      - name: TypeScript check
+        run: cd client && npx tsc --noEmit --skipLibCheck
+
+  build:
+    name: Vite Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: cd client && npm ci
+
+      - name: Build
+        run: cd client && npx vite build
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check .env not committed
+        run: |
+          if git ls-files --error-unmatch .env 2>/dev/null; then
+            echo "::error::.env file is tracked by git!"
+            exit 1
+          fi
+          if git ls-files --error-unmatch client/.env 2>/dev/null; then
+            echo "::error::client/.env file is tracked by git!"
+            exit 1
+          fi
+          if git ls-files --error-unmatch server/.env 2>/dev/null; then
+            echo "::error::server/.env file is tracked by git!"
+            exit 1
+          fi
+          echo "No .env files committed."
+
+      - name: Scan for hardcoded secrets
+        run: |
+          PATTERNS=(
+            'sk-[a-zA-Z0-9]{20,}'
+            'SUPABASE_SERVICE_ROLE_KEY\s*=\s*"[^"]*"'
+            'password\s*[:=]\s*"[^"]*"'
+            'secret\s*[:=]\s*"[^"]*"'
+            'api[_-]?key\s*[:=]\s*"[^"]*"'
+          )
+          FOUND=0
+          for pattern in "${PATTERNS[@]}"; do
+            RESULTS=$(grep -rn --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" \
+              -E "$pattern" \
+              --exclude-dir=node_modules \
+              --exclude-dir=dist \
+              --exclude-dir=.git \
+              --exclude="package-lock.json" \
+              . || true)
+            if [ -n "$RESULTS" ]; then
+              echo "::warning::Potential hardcoded secret found matching pattern: $pattern"
+              echo "$RESULTS"
+              FOUND=1
+            fi
+          done
+          if [ "$FOUND" -eq 1 ]; then
+            echo "::warning::Review the above matches for hardcoded secrets."
+          else
+            echo "No hardcoded secrets detected."
+          fi

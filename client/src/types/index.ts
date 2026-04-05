@@ -54,6 +54,7 @@ export interface Ingredient {
   supplierRef?: { id: number; name: string } | null;
   category: string;
   allergens: string[];
+  barcode?: string | null;
   createdAt: string;
   updatedAt: string;
 }

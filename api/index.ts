@@ -394,7 +394,7 @@ app.get('/api/ingredients/usage', authWithRestaurant, async (req: any, res) => {
 
 app.post('/api/ingredients', authWithRestaurant, async (req: any, res) => {
   try {
-    const { name, unit, pricePerUnit, supplier, supplierId, category, allergens } = req.body;
+    const { name, unit, pricePerUnit, supplier, supplierId, category, allergens, barcode } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: 'Erreur création ingrédient', details: 'Le nom est requis' });
     if (!unit?.trim()) return res.status(400).json({ error: 'Erreur création ingrédient', details: 'L\'unité est requise' });
     if (!category?.trim()) return res.status(400).json({ error: 'Erreur création ingrédient', details: 'La catégorie est requise' });
@@ -408,7 +408,7 @@ app.post('/api/ingredients', authWithRestaurant, async (req: any, res) => {
       where: { restaurantId: req.restaurantId, deletedAt: null, name: { equals: safeName, mode: 'insensitive' } },
     });
     if (duplicate) return res.status(409).json({ error: 'Un ingrédient avec ce nom existe déjà', existing: duplicate });
-    const ing = await prisma.ingredient.create({ data: { name: safeName, unit: sanitizeInput(unit), pricePerUnit: p, supplier: safeSupplier, supplierId: supplierId || null, category: sanitizeInput(category), allergens: Array.isArray(allergens) ? allergens : [], restaurantId: req.restaurantId } });
+    const ing = await prisma.ingredient.create({ data: { name: safeName, unit: sanitizeInput(unit), pricePerUnit: p, supplier: safeSupplier, supplierId: supplierId || null, category: sanitizeInput(category), allergens: Array.isArray(allergens) ? allergens : [], barcode: barcode ? sanitizeInput(barcode) : null, restaurantId: req.restaurantId } });
     logAudit(req.user.userId, req.restaurantId, 'CREATE', 'ingredient', ing.id);
     res.status(201).json(ing);
   } catch { res.status(500).json({ error: 'Erreur création ingrédient' }); }
@@ -416,7 +416,7 @@ app.post('/api/ingredients', authWithRestaurant, async (req: any, res) => {
 
 app.put('/api/ingredients/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    const { name, unit, pricePerUnit, supplier, supplierId, category, allergens } = req.body;
+    const { name, unit, pricePerUnit, supplier, supplierId, category, allergens, barcode } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: 'Erreur mise à jour ingrédient', details: 'Le nom est requis' });
     if (!unit?.trim()) return res.status(400).json({ error: 'Erreur mise à jour ingrédient', details: 'L\'unité est requise' });
     if (!category?.trim()) return res.status(400).json({ error: 'Erreur mise à jour ingrédient', details: 'La catégorie est requise' });
@@ -427,7 +427,7 @@ app.put('/api/ingredients/:id', authWithRestaurant, async (req: any, res) => {
     const safeSupplier = supplier ? sanitizeInput(supplier) : null;
     const existing = await prisma.ingredient.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: null } });
     if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé' });
-    const ing = await prisma.ingredient.update({ where: { id: parseInt(req.params.id) }, data: { name: safeName, unit: sanitizeInput(unit), pricePerUnit: p, supplier: safeSupplier, supplierId: supplierId || null, category: sanitizeInput(category), allergens: Array.isArray(allergens) ? allergens : [] } });
+    const ing = await prisma.ingredient.update({ where: { id: parseInt(req.params.id) }, data: { name: safeName, unit: sanitizeInput(unit), pricePerUnit: p, supplier: safeSupplier, supplierId: supplierId || null, category: sanitizeInput(category), allergens: Array.isArray(allergens) ? allergens : [], barcode: barcode !== undefined ? (barcode ? sanitizeInput(barcode) : null) : undefined } });
     // Audit trail: log ingredient update with changes
     const changes: any = {};
     if (existing.name !== name.trim()) changes.name = { old: existing.name, new: name.trim() };
@@ -2713,6 +2713,101 @@ app.get('/api/planning/summary', authWithRestaurant, async (req: any, res) => {
     const totalCost = employees.reduce((sum, e) => sum + e.totalCost, 0);
     res.json({ from, to, employees, totalHours: Math.round(totalHours * 100) / 100, totalCost: Math.round(totalCost * 100) / 100, totalShifts: shifts.length });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé planning' }); }
+});
+
+// ============ TIMECLOCK (Pointage) ============
+
+app.post('/api/timeclock/punch-in', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { employeeId, notes } = req.body;
+    if (!employeeId) return res.status(400).json({ error: 'employeeId requis' });
+    const employee = await prisma.employee.findFirst({ where: { id: employeeId, restaurantId: req.restaurantId, active: true } });
+    if (!employee) return res.status(404).json({ error: 'Employé non trouvé' });
+    // Check if already punched in (open entry with no punchOut)
+    const today = new Date().toISOString().slice(0, 10);
+    const openEntry = await prisma.timeEntry.findFirst({
+      where: { employeeId, restaurantId: req.restaurantId, date: today, punchOut: null },
+    });
+    if (openEntry) return res.status(400).json({ error: 'Employé déjà pointé. Faites un punch-out d\'abord.' });
+    const now = new Date();
+    const entry = await prisma.timeEntry.create({
+      data: { employeeId, date: today, punchIn: now, notes: notes || null, restaurantId: req.restaurantId },
+      include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
+    });
+    res.status(201).json(entry);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur punch-in' }); }
+});
+
+app.post('/api/timeclock/punch-out', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { employeeId, notes } = req.body;
+    if (!employeeId) return res.status(400).json({ error: 'employeeId requis' });
+    const today = new Date().toISOString().slice(0, 10);
+    const openEntry = await prisma.timeEntry.findFirst({
+      where: { employeeId, restaurantId: req.restaurantId, date: today, punchOut: null },
+    });
+    if (!openEntry) return res.status(400).json({ error: 'Aucun pointage en cours pour cet employé.' });
+    const now = new Date();
+    const diffMs = now.getTime() - new Date(openEntry.punchIn).getTime();
+    const totalMinutes = Math.round(diffMs / 60000);
+    const entry = await prisma.timeEntry.update({
+      where: { id: openEntry.id },
+      data: { punchOut: now, totalMinutes, notes: notes || openEntry.notes },
+      include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
+    });
+    res.json(entry);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur punch-out' }); }
+});
+
+app.get('/api/timeclock/today', authWithRestaurant, async (req: any, res) => {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const entries = await prisma.timeEntry.findMany({
+      where: { restaurantId: req.restaurantId, date: today },
+      include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
+      orderBy: { punchIn: 'asc' },
+    });
+    res.json(entries);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération pointages' }); }
+});
+
+app.get('/api/timeclock/summary', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { from, to } = req.query;
+    if (!from || !to) return res.status(400).json({ error: 'Paramètres requis : from, to (YYYY-MM-DD)' });
+    const entries = await prisma.timeEntry.findMany({
+      where: { restaurantId: req.restaurantId, date: { gte: from as string, lte: to as string }, punchOut: { not: null } },
+      include: { employee: { select: { id: true, name: true, role: true, color: true, hourlyRate: true } } },
+      orderBy: [{ date: 'asc' }, { punchIn: 'asc' }],
+    });
+    // Group by employee
+    const employeeMap = new Map<number, { id: number; name: string; role: string; color: string; hourlyRate: number; totalMinutes: number; totalCost: number; entryCount: number; days: Record<string, number> }>();
+    for (const entry of entries) {
+      const existing = employeeMap.get(entry.employeeId) || {
+        id: entry.employee.id, name: entry.employee.name, role: entry.employee.role, color: entry.employee.color,
+        hourlyRate: entry.employee.hourlyRate, totalMinutes: 0, totalCost: 0, entryCount: 0, days: {},
+      };
+      const mins = entry.totalMinutes || 0;
+      existing.totalMinutes += mins;
+      existing.totalCost += (mins / 60) * entry.employee.hourlyRate;
+      existing.entryCount++;
+      existing.days[entry.date] = (existing.days[entry.date] || 0) + mins;
+      employeeMap.set(entry.employeeId, existing);
+    }
+    const employees = Array.from(employeeMap.values()).map(e => ({
+      ...e,
+      totalHours: Math.round((e.totalMinutes / 60) * 100) / 100,
+      totalCost: Math.round(e.totalCost * 100) / 100,
+    }));
+    const totalMinutes = employees.reduce((sum, e) => sum + e.totalMinutes, 0);
+    const totalCost = employees.reduce((sum, e) => sum + e.totalCost, 0);
+    res.json({
+      from, to, employees,
+      totalHours: Math.round((totalMinutes / 60) * 100) / 100,
+      totalCost: Math.round(totalCost * 100) / 100,
+      totalEntries: entries.length,
+    });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé pointages' }); }
 });
 
 // ============ SEMINAIRES ============

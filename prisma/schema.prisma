@@ -69,6 +69,7 @@ model Restaurant {
   haccpCleanings    HaccpCleaning[]
   employees         Employee[]
   shifts            Shift[]
+  timeEntries       TimeEntry[]
   seminaires        Seminaire[]
   marketplaceOrders MarketplaceOrder[]
   newsItems         NewsItem[]
@@ -131,6 +132,7 @@ model Ingredient {
   supplierRef   Supplier?          @relation(fields: [supplierId], references: [id])
   category      String
   allergens     String[]           @default([])
+  barcode       String?
   deletedAt     DateTime?
   restaurantId  Int
   restaurant    Restaurant         @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
@@ -143,6 +145,7 @@ model Ingredient {
 
   @@index([restaurantId, name])
   @@index([restaurantId, category])
+  @@index([restaurantId, barcode])
   @@index([supplierId])
   @@map("ingredients")
 }
@@ -348,18 +351,19 @@ model WasteLog {
 }
 
 model Employee {
-  id           Int        @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   name         String
   role         String // Chef, Commis, Serveur, Plongeur, Barman, Manager
   email        String?
   phone        String?
-  hourlyRate   Float      @default(12)
-  color        String     @default("#3b82f6")
-  active       Boolean    @default(true)
+  hourlyRate   Float       @default(12)
+  color        String      @default("#3b82f6")
+  active       Boolean     @default(true)
   restaurantId Int
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   shifts       Shift[]
-  createdAt    DateTime   @default(now())
+  timeEntries  TimeEntry[]
+  createdAt    DateTime    @default(now())
 
   @@index([restaurantId])
   @@map("employees")
@@ -381,6 +385,24 @@ model Shift {
   @@index([restaurantId, date])
   @@index([employeeId, date])
   @@map("shifts")
+}
+
+model TimeEntry {
+  id           Int        @id @default(autoincrement())
+  employeeId   Int
+  employee     Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date         String // YYYY-MM-DD
+  punchIn      DateTime
+  punchOut     DateTime?
+  totalMinutes Int?
+  notes        String?
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@index([restaurantId, date])
+  @@index([employeeId, date])
+  @@map("time_entries")
 }
 
 model HaccpTemperature {

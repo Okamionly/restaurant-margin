@@ -14,7 +14,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import IngredientAvatar from '../components/IngredientAvatar';
 
-const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[] };
+const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[], barcode: '' };
 
 type SortKey = 'name' | 'category' | 'pricePerUnit' | 'unit' | 'supplier';
 type SortDir = 'asc' | 'desc';
@@ -227,6 +227,7 @@ export default function Ingredients() {
       supplierId: supplierIdVal,
       category: ing.category,
       allergens: ing.allergens || [],
+      barcode: ing.barcode || '',
     });
     setEditingId(ing.id);
     setFormErrors({});
@@ -346,6 +347,7 @@ export default function Ingredients() {
       supplierId: form.supplierId,
       category: form.category,
       allergens: form.allergens,
+      barcode: form.barcode || null,
     };
 
     try {
@@ -1055,6 +1057,20 @@ export default function Ingredients() {
                 </label>
               ))}
             </div>
+          </div>
+
+          {/* Barcode */}
+          <div>
+            <label className="label">Code-barres (EAN/UPC)</label>
+            <input
+              type="text"
+              className="input w-full"
+              value={form.barcode}
+              onChange={(e) => setForm({ ...form, barcode: e.target.value })}
+              placeholder="Ex: 3017620422003"
+              inputMode="numeric"
+            />
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Optionnel. Permet le scan rapide en inventaire.</p>
           </div>
 
           <div className="flex items-center justify-between pt-2">

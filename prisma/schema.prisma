@@ -464,30 +464,36 @@ model Seminaire {
 }
 
 model MarketplaceOrder {
-  id           Int                    @id @default(autoincrement())
-  supplierName String
-  status       String                 @default("draft") // draft, sent, confirmed, received
-  totalHT      Float                  @default(0)
-  notes        String?
-  restaurantId Int
-  restaurant   Restaurant             @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  items        MarketplaceOrderItem[]
-  createdAt    DateTime               @default(now())
-  updatedAt    DateTime               @updatedAt
+  id               Int                    @id @default(autoincrement())
+  supplierName     String
+  supplierId       Int?
+  status           String                 @default("draft") // draft, sent, confirmed, received, cancelled, claimed
+  totalHT          Float                  @default(0)
+  notes            String?
+  expectedDelivery DateTime?
+  receivedAt       DateTime?
+  restaurantId     Int
+  restaurant       Restaurant             @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items            MarketplaceOrderItem[]
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
 
   @@index([restaurantId, status])
+  @@index([restaurantId, createdAt])
   @@map("marketplace_orders")
 }
 
 model MarketplaceOrderItem {
-  id          Int              @id @default(autoincrement())
-  orderId     Int
-  order       MarketplaceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productName String
-  quantity    Float
-  unit        String
-  unitPrice   Float
-  total       Float
+  id               Int              @id @default(autoincrement())
+  orderId          Int
+  order            MarketplaceOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName      String
+  quantity         Float
+  unit             String
+  unitPrice        Float
+  total            Float
+  ingredientId     Int?
+  receivedQuantity Float?
 
   @@index([orderId])
   @@map("marketplace_order_items")

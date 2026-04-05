@@ -5,7 +5,7 @@ import {
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
   Users, Menu, X as XIcon, Shield, Lock, Mail,
   Scale, ChevronDown, Phone, Send, Loader2,
-  XCircle, Brain, Thermometer,
+  XCircle, Brain, Thermometer, Newspaper,
 } from 'lucide-react';
 
 /* ─────────────────────── Hooks ─────────────────────── */
@@ -124,6 +124,16 @@ export default function Landing() {
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterSent, setNewsletterSent] = useState(false);
 
+  // Inline newsletter section state
+  const [inlineNewsletterEmail, setInlineNewsletterEmail] = useState('');
+  const [inlineNewsletterLoading, setInlineNewsletterLoading] = useState(false);
+  const [inlineNewsletterSent, setInlineNewsletterSent] = useState(false);
+  const [inlineNewsletterError, setInlineNewsletterError] = useState('');
+
+  // Floating CTA bar
+  const [showFloatingCTA, setShowFloatingCTA] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+
   // Newsletter slide-in: show after 30s, once only, not if logged in
   useEffect(() => {
     const dismissed = localStorage.getItem('newsletterDismissed');
@@ -137,14 +147,10 @@ export default function Landing() {
     e.preventDefault();
     setNewsletterLoading(true);
     try {
-      await fetch('/api/contact', {
+      await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: newsletterEmail,
-          source: 'newsletter',
-          message: 'Inscription newsletter mercuriale',
-        }),
+        body: JSON.stringify({ email: newsletterEmail }),
       });
       setNewsletterSent(true);
       localStorage.setItem('newsletterDismissed', '1');
@@ -183,6 +189,39 @@ export default function Landing() {
     document.addEventListener('mouseout', handleMouseOut);
     return () => document.removeEventListener('mouseout', handleMouseOut);
   }, []);
+
+  // Floating CTA: appears after scrolling past hero
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setShowFloatingCTA(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const handleInlineNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInlineNewsletterLoading(true);
+    setInlineNewsletterError('');
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inlineNewsletterEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erreur');
+      setInlineNewsletterSent(true);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur. Veuillez reessayer.';
+      setInlineNewsletterError(message);
+    } finally {
+      setInlineNewsletterLoading(false);
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setHeroSlide(s => (s + 1) % 3), 4000);
@@ -282,7 +321,7 @@ export default function Landing() {
       </nav>
 
       {/* ═══════════════════ 1. HERO ═══════════════════ */}
-      <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
+      <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.05] rounded-full blur-[120px] animate-pulse" />
           <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-teal-400/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
@@ -679,59 +718,62 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══════════════════ 6b. COMPARISON TABLE ═══════════════════ */}
+      {/* ═══════════════════ 6b. COMPARISON TABLE — RestauMargin vs Excel vs Inpulse ═══════════════════ */}
       <section className="py-20 sm:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-14">
               <p className="text-sm font-semibold text-teal-600 uppercase tracking-widest mb-3">Comparatif</p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">Pourquoi RestauMargin ?</h2>
-              <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">Le seul outil qui combine IA conversationnelle, commande vocale et prix fournisseurs reels.</p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                RestauMargin vs Excel vs Inpulse
+              </h2>
+              <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">Arretez de bricoler sur Excel. Economisez par rapport aux solutions entreprise.</p>
             </div>
           </FadeIn>
 
           <FadeIn delay={200}>
             <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-              <table className="w-full min-w-[640px] text-sm">
+              <table className="w-full min-w-[520px] text-sm">
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="text-left py-4 px-5 font-semibold text-gray-700 bg-gray-50/80">Fonctionnalite</th>
-                    <th className="py-4 px-5 font-bold text-white bg-teal-600 text-center min-w-[140px]">RestauMargin</th>
-                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[110px]">Inpulse</th>
-                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[110px]">Koust</th>
-                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[110px]">Melba</th>
+                    <th className="py-4 px-5 font-bold text-white bg-teal-600 text-center min-w-[150px]">RestauMargin</th>
+                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[120px]">Excel</th>
+                    <th className="py-4 px-5 font-semibold text-gray-500 text-center bg-gray-50/80 min-w-[120px]">Inpulse</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    { feature: 'Prix / mois', rm: '29\u20AC', inpulse: '~200\u20AC+', koust: '~80\u20AC', melba: '~60\u20AC', highlight: true },
-                    { feature: 'IA conversationnelle', rm: '19 actions', inpulse: null, koust: null, melba: null },
-                    { feature: 'Commande vocale', rm: true, inpulse: null, koust: null, melba: null },
-                    { feature: 'Mercuriale Transgourmet', rm: 'Prix reels', inpulse: null, koust: null, melba: null },
-                    { feature: 'Fiches techniques', rm: 'Auto-IA', inpulse: 'Manuel', koust: 'Manuel', melba: 'Manuel' },
-                    { feature: 'HACCP', rm: true, inpulse: null, koust: true, melba: null },
-                    { feature: 'Menu Engineering', rm: 'Matrice BCG', inpulse: null, koust: true, melba: null },
-                    { feature: 'Essai gratuit', rm: '14 jours', inpulse: null, koust: null, melba: null },
+                    { feature: 'Prix / mois', rm: '29\u20AC', excel: '~12\u20AC', inpulse: '~200\u20AC+' },
+                    { feature: 'Fiches techniques auto', rm: true, excel: false, inpulse: true },
+                    { feature: 'Calcul marge temps reel', rm: true, excel: false, inpulse: true },
+                    { feature: 'IA conversationnelle', rm: true, excel: false, inpulse: false },
+                    { feature: 'Commande vocale', rm: true, excel: false, inpulse: false },
+                    { feature: 'Prix fournisseurs reels', rm: true, excel: false, inpulse: false },
+                    { feature: 'Menu Engineering BCG', rm: true, excel: false, inpulse: false },
+                    { feature: 'HACCP integre', rm: true, excel: false, inpulse: false },
+                    { feature: 'Alertes prix auto', rm: true, excel: false, inpulse: true },
+                    { feature: 'Essai gratuit', rm: '14 jours', excel: false, inpulse: false },
+                    { feature: 'Prise en main', rm: '2 min', excel: 'Des heures', inpulse: 'Formation' },
                   ].map((row, i) => {
-                    const renderCell = (val: string | boolean | null, isTeal: boolean) => {
-                      if (val === null) return <span className="text-gray-300 text-lg">&#10005;</span>;
-                      if (val === true) return <span className="text-emerald-500 text-lg font-bold">&#10003;</span>;
+                    const renderCell = (val: string | boolean, isTeal: boolean) => {
+                      if (val === false) return <span className="text-gray-300 text-lg">&#10005;</span>;
+                      if (val === true) return <CheckCircle2 className={`w-5 h-5 mx-auto ${isTeal ? 'text-teal-500' : 'text-emerald-500'}`} />;
                       return <span className={isTeal ? 'font-bold text-teal-700' : 'text-gray-600'}>{val}</span>;
                     };
                     return (
                       <tr key={i} className={`border-b border-gray-100 last:border-b-0 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'}`}>
                         <td className="py-3.5 px-5 font-medium text-gray-800">{row.feature}</td>
                         <td className="py-3.5 px-5 text-center bg-teal-50/60">{renderCell(row.rm, true)}</td>
+                        <td className="py-3.5 px-5 text-center">{renderCell(row.excel, false)}</td>
                         <td className="py-3.5 px-5 text-center">{renderCell(row.inpulse, false)}</td>
-                        <td className="py-3.5 px-5 text-center">{renderCell(row.koust, false)}</td>
-                        <td className="py-3.5 px-5 text-center">{renderCell(row.melba, false)}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
-            <p className="text-center mt-6 text-xs text-gray-400">Donnees publiques au 01/04/2026. Les prix concurrents sont des estimations basees sur les informations disponibles.</p>
+            <p className="text-center mt-6 text-xs text-gray-400">Donnees publiques au 05/04/2026. Les prix concurrents sont des estimations basees sur les informations disponibles.</p>
           </FadeIn>
         </div>
       </section>
@@ -956,6 +998,65 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ═══════════════════ 10b. NEWSLETTER SIGNUP ═══════════════════ */}
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-teal-600 to-teal-700 relative overflow-hidden">
+        <div className="absolute inset-0 -z-0">
+          <div className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px]" />
+          <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-teal-400/10 rounded-full blur-[80px]" />
+        </div>
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <FadeIn>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/10 mb-6">
+                <Newspaper className="w-7 h-7 text-white" />
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                Restez informe
+              </h2>
+              <p className="text-teal-100 text-lg mb-8 max-w-md mx-auto">
+                Recevez nos conseils marge, actualites fournisseurs et mises a jour produit.
+              </p>
+
+              {inlineNewsletterSent ? (
+                <div className="bg-white/10 border border-white/20 rounded-2xl p-6 max-w-md mx-auto">
+                  <CheckCircle2 className="w-10 h-10 text-white mx-auto mb-3" />
+                  <p className="text-lg font-semibold text-white">Merci !</p>
+                  <p className="text-sm text-teal-100 mt-1">Vous recevrez nos actualites restaurant.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleInlineNewsletterSubmit} className="max-w-md mx-auto">
+                  <div className="flex gap-3">
+                    <input
+                      type="email"
+                      required
+                      value={inlineNewsletterEmail}
+                      onChange={(e) => setInlineNewsletterEmail(e.target.value)}
+                      placeholder="votre@email.com"
+                      className="flex-1 min-w-0 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-teal-200 text-sm focus:outline-none focus:ring-2 focus:ring-white/40 focus:border-transparent backdrop-blur-sm"
+                    />
+                    <button
+                      type="submit"
+                      disabled={inlineNewsletterLoading}
+                      className="px-6 py-3 rounded-xl bg-white text-teal-700 font-semibold text-sm hover:bg-teal-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap shadow-lg"
+                    >
+                      {inlineNewsletterLoading ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        "S'inscrire"
+                      )}
+                    </button>
+                  </div>
+                  {inlineNewsletterError && (
+                    <p className="text-red-200 text-sm mt-2">{inlineNewsletterError}</p>
+                  )}
+                  <p className="text-xs text-teal-200 mt-3">Pas de spam. Desinscription en un clic.</p>
+                </form>
+              )}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* ═══════════════════ 11. FOOTER ═══════════════════ */}
       <footer className="border-t border-gray-200 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1024,6 +1125,41 @@ export default function Landing() {
           </div>
         </div>
       </footer>
+
+      {/* ═══════════════════ FLOATING CTA BAR ═══════════════════ */}
+      <div
+        className={`fixed bottom-0 inset-x-0 z-[80] transition-all duration-500 ease-out ${
+          showFloatingCTA ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+                <ChefHat className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Essai gratuit 14 jours</p>
+                <p className="text-xs text-gray-500">Pas de carte bancaire requise</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <Link
+                to="/login?mode=register"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-sm transition-all shadow-lg"
+              >
+                Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
+              </Link>
+              <button
+                onClick={() => scrollTo('pricing')}
+                className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-medium hover:border-teal-400 transition-colors"
+              >
+                Voir les tarifs
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ═══════════════════ NEWSLETTER SLIDE-IN ═══════════════════ */}
       <div

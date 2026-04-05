@@ -5,16 +5,18 @@ import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
+import OnboardingWizard, { isOnboardingCompleted } from './components/OnboardingWizard';
 import KitchenTimer from './components/KitchenTimer';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
 import CommandPalette from './components/CommandPalette';
 import AlertsBell from './components/AlertsBell';
+import NotificationCenter from './components/NotificationCenter';
 import ShortcutsModal from './components/ShortcutsModal';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
-import { getToken } from './services/api';
+import { getToken, fetchRecipes } from './services/api';
 
 // Auto-retry lazy imports on chunk load failure (stale deploy)
 function lazyRetry(importFn: () => Promise<any>) {
@@ -403,10 +405,25 @@ function AppLayout() {
   const [stockAlerts, setStockAlerts] = useState<{ name: string; quantity: number; unit: string }[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const notifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Check if onboarding wizard should show (first login, no recipes, not completed)
+  useEffect(() => {
+    if (isOnboardingCompleted()) return;
+    let cancelled = false;
+    fetchRecipes().then(recipes => {
+      if (!cancelled && recipes.length === 0) {
+        setShowOnboarding(true);
+      }
+    }).catch(() => {
+      // If fetch fails, don't show onboarding
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   async function handleResendVerification() {
     try {
@@ -732,6 +749,7 @@ function AppLayout() {
         <ChefHat className="w-8 h-8 text-[#111111] dark:text-white flex-shrink-0" />
         {!collapsed && <span className="text-lg font-bold text-[#111111] dark:text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
         <AlertsBell />
+        <NotificationCenter />
         {!collapsed && notificationBell}
       </div>
 
@@ -881,6 +899,7 @@ function AppLayout() {
           <div className="flex items-center gap-1">
               <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
               <AlertsBell />
+              <NotificationCenter />
               {notificationBell}
             </div>
         </header>
@@ -1028,6 +1047,11 @@ function AppLayout() {
       <ChatbotAssistant />
       {/* Kitchen Timer - floating bottom-left */}
       <KitchenTimer />
+
+      {/* Onboarding Wizard for new users */}
+      {showOnboarding && (
+        <OnboardingWizard onComplete={() => setShowOnboarding(false)} />
+      )}
     </div>
   );
 }

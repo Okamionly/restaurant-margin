@@ -141,6 +141,38 @@ export async function deleteRestaurantAPI(id: number): Promise<void> {
   return handleResponse<void>(res);
 }
 
+export interface RestaurantOverviewStat {
+  id: number;
+  name: string;
+  cuisineType: string | null;
+  coversPerDay: number;
+  recipeCount: number;
+  ingredientCount: number;
+  revenue: number;
+  foodCost: number;
+  marginAmount: number;
+  marginPercent: number;
+  foodCostPercent: number;
+}
+
+export interface RestaurantOverview {
+  restaurants: RestaurantOverviewStat[];
+  totals: {
+    totalRecipes: number;
+    totalIngredients: number;
+    totalRevenue: number;
+    totalFoodCost: number;
+    totalMarginAmount: number;
+    avgMarginPercent: number;
+    avgFoodCostPercent: number;
+  };
+}
+
+export async function fetchRestaurantsOverview(): Promise<RestaurantOverview> {
+  const res = await fetch(`${API_BASE}/restaurants/overview`, { headers: authHeaders() });
+  return handleResponse<RestaurantOverview>(res);
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 401) {
     removeToken();

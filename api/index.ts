@@ -319,6 +319,106 @@ app.get('/api/restaurants', authMiddleware, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération restaurants' }); }
 });
 
+// ── Multi-restaurant overview dashboard ──
+app.get('/api/restaurants/overview', authMiddleware, async (req: any, res) => {
+  try {
+    const memberships = await prisma.restaurantMember.findMany({
+      where: { userId: req.user.userId },
+      select: { restaurantId: true, restaurant: { select: { id: true, name: true, cuisineType: true, coversPerDay: true } } },
+    });
+    const restaurantIds = memberships.map((m: any) => m.restaurantId);
+    if (restaurantIds.length === 0) return res.json({ restaurants: [], totals: { totalRecipes: 0, totalIngredients: 0, totalRevenue: 0, avgMarginPercent: 0, avgFoodCostPercent: 0 } });
+
+    // Fetch all recipes with ingredients for each restaurant
+    const allRecipes = await prisma.recipe.findMany({
+      where: { restaurantId: { in: restaurantIds }, deletedAt: null },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+
+    // Group recipes by restaurant
+    const recipesByRestaurant: Record<number, typeof allRecipes> = {};
+    for (const r of allRecipes) {
+      if (!recipesByRestaurant[r.restaurantId]) recipesByRestaurant[r.restaurantId] = [];
+      recipesByRestaurant[r.restaurantId].push(r);
+    }
+
+    // Count ingredients per restaurant
+    const ingredientCounts = await prisma.ingredient.groupBy({
+      by: ['restaurantId'],
+      where: { restaurantId: { in: restaurantIds }, deletedAt: null },
+      _count: { id: true },
+    });
+    const ingredientCountMap: Record<number, number> = {};
+    for (const ic of ingredientCounts) ingredientCountMap[ic.restaurantId] = ic._count.id;
+
+    // Build per-restaurant stats
+    let totalRevenue = 0;
+    let totalFoodCost = 0;
+    let totalRecipes = 0;
+    let totalIngredients = 0;
+
+    const restaurantStats = memberships.map((m: any) => {
+      const rest = m.restaurant;
+      const recipes = recipesByRestaurant[rest.id] || [];
+      const ingCount = ingredientCountMap[rest.id] || 0;
+
+      let revenue = 0;
+      let foodCost = 0;
+      let recipeCount = recipes.length;
+
+      for (const recipe of recipes) {
+        revenue += recipe.sellingPrice * (recipe.nbPortions || 1);
+        const rc = recipe.ingredients.reduce((total: number, ri: any) => {
+          const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
+          const divisor = getUnitDivisor(ri.ingredient.unit);
+          return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
+        }, 0);
+        foodCost += rc;
+      }
+
+      const marginAmount = revenue - foodCost;
+      const marginPercent = revenue > 0 ? (marginAmount / revenue) * 100 : 0;
+      const foodCostPercent = revenue > 0 ? (foodCost / revenue) * 100 : 0;
+
+      totalRevenue += revenue;
+      totalFoodCost += foodCost;
+      totalRecipes += recipeCount;
+      totalIngredients += ingCount;
+
+      return {
+        id: rest.id,
+        name: rest.name,
+        cuisineType: rest.cuisineType,
+        coversPerDay: rest.coversPerDay,
+        recipeCount,
+        ingredientCount: ingCount,
+        revenue: Math.round(revenue * 100) / 100,
+        foodCost: Math.round(foodCost * 100) / 100,
+        marginAmount: Math.round(marginAmount * 100) / 100,
+        marginPercent: Math.round(marginPercent * 10) / 10,
+        foodCostPercent: Math.round(foodCostPercent * 10) / 10,
+      };
+    });
+
+    const totalMarginAmount = totalRevenue - totalFoodCost;
+    const avgMarginPercent = totalRevenue > 0 ? (totalMarginAmount / totalRevenue) * 100 : 0;
+    const avgFoodCostPercent = totalRevenue > 0 ? (totalFoodCost / totalRevenue) * 100 : 0;
+
+    res.json({
+      restaurants: restaurantStats,
+      totals: {
+        totalRecipes,
+        totalIngredients,
+        totalRevenue: Math.round(totalRevenue * 100) / 100,
+        totalFoodCost: Math.round(totalFoodCost * 100) / 100,
+        totalMarginAmount: Math.round(totalMarginAmount * 100) / 100,
+        avgMarginPercent: Math.round(avgMarginPercent * 10) / 10,
+        avgFoodCostPercent: Math.round(avgFoodCostPercent * 10) / 10,
+      },
+    });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération overview' }); }
+});
+
 app.post('/api/restaurants', authMiddleware, async (req: any, res) => {
   try {
     const { name, address, cuisineType, phone, coversPerDay } = req.body;
@@ -3490,6 +3590,243 @@ app.post('/api/newsletter/subscribe', async (req, res) => {
   } catch (e: any) {
     console.error('[NEWSLETTER ERROR]', e.message);
     res.status(500).json({ error: 'Erreur inscription newsletter' });
+  }
+});
+
+// ============ NOTIFICATION CENTER ============
+app.get('/api/notifications', authWithRestaurant, async (req: any, res) => {
+  try {
+    const rid = req.restaurantId;
+    const notifications: { id: string; type: string; title: string; message: string; createdAt: string; read: boolean; severity?: string }[] = [];
+
+    // 1. Stock alerts — low stock & out-of-stock
+    const inventory = await prisma.inventoryItem.findMany({
+      where: { restaurantId: rid },
+      include: { ingredient: { select: { id: true, name: true, unit: true } } },
+    });
+    for (const item of inventory) {
+      if (item.currentStock <= 0) {
+        notifications.push({
+          id: `stock-oos-${item.id}`,
+          type: 'stock',
+          title: `Rupture: ${item.ingredient.name}`,
+          message: `Stock epuise (0 ${item.ingredient.unit})`,
+          createdAt: item.updatedAt.toISOString(),
+          read: false,
+          severity: 'critical',
+        });
+      } else if (item.currentStock < item.minStock) {
+        notifications.push({
+          id: `stock-low-${item.id}`,
+          type: 'stock',
+          title: `Stock bas: ${item.ingredient.name}`,
+          message: `${item.currentStock}/${item.minStock} ${item.ingredient.unit} restant`,
+          createdAt: item.updatedAt.toISOString(),
+          read: false,
+          severity: 'warning',
+        });
+      }
+    }
+
+    // 2. Price changes — significant changes in last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+    const priceHistory = await prisma.priceHistory.findMany({
+      where: { restaurantId: rid, createdAt: { gte: thirtyDaysAgo } },
+      include: { ingredient: { select: { id: true, name: true, unit: true, pricePerUnit: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+    const byIngredient: Record<number, any[]> = {};
+    priceHistory.forEach(h => {
+      if (!byIngredient[h.ingredientId]) byIngredient[h.ingredientId] = [];
+      byIngredient[h.ingredientId].push(h);
+    });
+    for (const [ingId, records] of Object.entries(byIngredient)) {
+      if (records.length < 2) continue;
+      const oldest = records[0];
+      const newest = records[records.length - 1];
+      const change = ((newest.price - oldest.price) / oldest.price) * 100;
+      if (Math.abs(change) >= 5) {
+        const direction = change > 0 ? 'hausse' : 'baisse';
+        notifications.push({
+          id: `price-${ingId}-${newest.id}`,
+          type: 'price',
+          title: `Prix en ${direction}: ${newest.ingredient.name}`,
+          message: `${change > 0 ? '+' : ''}${change.toFixed(1)}% (${oldest.price.toFixed(2)}€ → ${newest.price.toFixed(2)}€/${newest.ingredient.unit})`,
+          createdAt: newest.createdAt.toISOString(),
+          read: false,
+          severity: Math.abs(change) >= 15 ? 'critical' : 'warning',
+        });
+      }
+    }
+
+    // 3. Recipe margin alerts — recipes below 60% margin
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: rid, deletedAt: null },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+    for (const r of recipes) {
+      if (r.sellingPrice <= 0) continue;
+      const cost = r.ingredients.reduce((s, ri) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
+      const margin = ((r.sellingPrice - cost) / r.sellingPrice) * 100;
+      if (margin < 60) {
+        notifications.push({
+          id: `margin-${r.id}`,
+          type: 'margin',
+          title: `Marge faible: ${r.name}`,
+          message: `${margin.toFixed(1)}% de marge (cout ${cost.toFixed(2)}€, vente ${r.sellingPrice.toFixed(2)}€)`,
+          createdAt: r.updatedAt.toISOString(),
+          read: false,
+          severity: margin < 40 ? 'critical' : 'warning',
+        });
+      }
+    }
+
+    // 4. System announcements (static for now — could be DB-driven later)
+    const systemAnnouncements = [
+      {
+        id: 'sys-notif-center-2026',
+        type: 'system',
+        title: 'Centre de notifications',
+        message: 'Retrouvez toutes vos alertes stock, prix et marges au meme endroit.',
+        createdAt: new Date('2026-04-05').toISOString(),
+        read: false,
+        severity: 'info',
+      },
+    ];
+    notifications.push(...systemAnnouncements);
+
+    // Sort: critical first, then by date desc
+    const severityOrder: Record<string, number> = { critical: 0, warning: 1, info: 2 };
+    notifications.sort((a, b) => {
+      const sa = severityOrder[a.severity || 'info'] ?? 2;
+      const sb = severityOrder[b.severity || 'info'] ?? 2;
+      if (sa !== sb) return sa - sb;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+    res.json({ notifications, count: notifications.length });
+  } catch (e: any) {
+    console.error('[NOTIFICATIONS]', e.message);
+    res.status(500).json({ error: 'Erreur chargement notifications' });
+  }
+});
+
+// ── Email Digest ──
+app.post('/api/notifications/send-digest', authWithRestaurant, async (req: any, res) => {
+  try {
+    const rid = req.restaurantId;
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configure' });
+
+    // Fetch the user's email
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { email: true, name: true } });
+    if (!user?.email) return res.status(400).json({ error: 'Email utilisateur introuvable' });
+
+    // Fetch restaurant name
+    const restaurant = await prisma.restaurant.findUnique({ where: { id: rid }, select: { name: true } });
+
+    // Fetch notifications (same logic as GET /api/notifications)
+    const inventory = await prisma.inventoryItem.findMany({
+      where: { restaurantId: rid },
+      include: { ingredient: { select: { name: true, unit: true } } },
+    });
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: rid, deletedAt: null },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+    const priceHistory = await prisma.priceHistory.findMany({
+      where: { restaurantId: rid, createdAt: { gte: thirtyDaysAgo } },
+      include: { ingredient: { select: { name: true, unit: true, pricePerUnit: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const alerts: { type: string; title: string; detail: string }[] = [];
+
+    // Stock alerts
+    for (const item of inventory) {
+      if (item.currentStock <= 0) {
+        alerts.push({ type: 'Stock', title: `Rupture: ${item.ingredient.name}`, detail: `0 ${item.ingredient.unit}` });
+      } else if (item.currentStock < item.minStock) {
+        alerts.push({ type: 'Stock', title: `Stock bas: ${item.ingredient.name}`, detail: `${item.currentStock}/${item.minStock} ${item.ingredient.unit}` });
+      }
+    }
+
+    // Price changes
+    const byIng: Record<number, any[]> = {};
+    priceHistory.forEach(h => {
+      if (!byIng[h.ingredientId]) byIng[h.ingredientId] = [];
+      byIng[h.ingredientId].push(h);
+    });
+    for (const records of Object.values(byIng)) {
+      if (records.length < 2) continue;
+      const oldest = records[0];
+      const newest = records[records.length - 1];
+      const change = ((newest.price - oldest.price) / oldest.price) * 100;
+      if (Math.abs(change) >= 5) {
+        alerts.push({ type: 'Prix', title: `${newest.ingredient.name}`, detail: `${change > 0 ? '+' : ''}${change.toFixed(1)}%` });
+      }
+    }
+
+    // Margin alerts
+    for (const r of recipes) {
+      if (r.sellingPrice <= 0) continue;
+      const cost = r.ingredients.reduce((s, ri) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
+      const margin = ((r.sellingPrice - cost) / r.sellingPrice) * 100;
+      if (margin < 60) {
+        alerts.push({ type: 'Marge', title: r.name, detail: `${margin.toFixed(1)}%` });
+      }
+    }
+
+    if (alerts.length === 0) {
+      return res.json({ success: true, message: 'Aucune alerte — email non envoye' });
+    }
+
+    const restName = restaurant?.name || 'Votre restaurant';
+    const alertRows = alerts.map(a =>
+      `<tr><td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;font-size:13px;color:#6B7280;">${a.type}</td><td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;font-size:13px;font-weight:600;color:#111111;">${a.title}</td><td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;font-size:13px;color:#111111;">${a.detail}</td></tr>`
+    ).join('');
+
+    const resend = new Resend(resendKey);
+    await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to: user.email,
+      subject: `Votre resume RestauMargin — ${alerts.length} alerte${alerts.length > 1 ? 's' : ''} cette semaine`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;background:#ffffff;">
+          <div style="text-align:center;padding:24px 0;border-bottom:1px solid #E5E7EB;">
+            <h1 style="margin:0;font-size:24px;color:#111111;">RestauMargin</h1>
+            <p style="margin:8px 0 0;font-size:14px;color:#6B7280;">${restName}</p>
+          </div>
+          <div style="padding:24px 0;">
+            <h2 style="margin:0 0 16px;font-size:18px;color:#111111;">Resume des alertes</h2>
+            <p style="font-size:14px;color:#6B7280;margin:0 0 16px;">${alerts.length} alerte${alerts.length > 1 ? 's' : ''} necessitant votre attention :</p>
+            <table style="width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:8px;overflow:hidden;">
+              <thead>
+                <tr style="background:#F9FAFB;">
+                  <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #E5E7EB;">Type</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #E5E7EB;">Element</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #E5E7EB;">Detail</th>
+                </tr>
+              </thead>
+              <tbody>${alertRows}</tbody>
+            </table>
+          </div>
+          <div style="padding:24px 0;text-align:center;border-top:1px solid #E5E7EB;">
+            <a href="https://www.restaumargin.fr/dashboard" style="display:inline-block;padding:12px 32px;background:#111111;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;border-radius:8px;">Voir le tableau de bord</a>
+          </div>
+          <div style="padding:16px 0 0;text-align:center;">
+            <p style="font-size:12px;color:#9CA3AF;margin:0;">RestauMargin — contact@restaumargin.fr</p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.log(`[DIGEST] Sent ${alerts.length} alerts to ${user.email} for restaurant ${rid}`);
+    res.json({ success: true, message: `Resume envoye a ${user.email} — ${alerts.length} alertes`, alertCount: alerts.length });
+  } catch (e: any) {
+    console.error('[DIGEST ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur envoi resume email' });
   }
 });
 

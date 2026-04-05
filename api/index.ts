@@ -122,11 +122,14 @@ app.use((req, res, next) => {
 // ── CSRF Protection (Origin/Referer check for state-changing requests) ──
 const CSRF_ALLOWED_ORIGINS = [
   'http://localhost:5173',
+  'http://localhost:3001',
   'https://www.restaumargin.fr',
   'https://restaumargin.fr',
   'https://restaumargin.vercel.app',
 ];
-const CSRF_SKIP_PATHS = ['/api/stripe/webhook', '/api/inbound/email'];
+// Also allow Vercel preview deploys (*.vercel.app)
+const isVercelPreview = (origin: string) => /^https:\/\/.*\.vercel\.app$/.test(origin);
+const CSRF_SKIP_PATHS = ['/api/stripe/webhook', '/api/inbound/email', '/api/auth/'];
 
 app.use((req, res, next) => {
   // Only check state-changing methods
@@ -142,13 +145,13 @@ app.use((req, res, next) => {
   const referer = req.headers.referer || '';
 
   // Allow if Origin header matches
-  if (origin && CSRF_ALLOWED_ORIGINS.some((o) => origin === o)) return next();
+  if (origin && (CSRF_ALLOWED_ORIGINS.some((o) => origin === o) || isVercelPreview(origin))) return next();
 
   // Fallback: check Referer header
   if (referer) {
     try {
       const refOrigin = new URL(referer).origin;
-      if (CSRF_ALLOWED_ORIGINS.some((o) => refOrigin === o)) return next();
+      if (CSRF_ALLOWED_ORIGINS.some((o) => refOrigin === o) || isVercelPreview(refOrigin)) return next();
     } catch {
       // Invalid referer URL, fall through to block
     }

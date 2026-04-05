@@ -739,15 +739,6 @@ export default function Dashboard() {
     };
   }, [recipes, couverts, serviceMode, avgPricePerCouvert, t]);
 
-  // ── Loading ────────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-teal-600 border-t-transparent" />
-      </div>
-    );
-  }
-
   // ── Computed alerts (available even with partial data) ──────────────────
   const quickAlerts = useMemo(() => {
     const alerts: { id: string; icon: React.ComponentType<{ className?: string }>; text: string; color: string; bgColor: string; link: string }[] = [];
@@ -982,6 +973,15 @@ export default function Dashboard() {
   }
 
   const sortedByMargin = [...recipes].sort((a, b) => a.margin.marginPercent - b.margin.marginPercent);
+
+  // ── Loading ────────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-teal-600 border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

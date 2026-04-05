@@ -30,7 +30,7 @@ const ALLERGEN_COLORS: Record<string, string> = {
   Poissons: 'bg-teal-300 text-teal-900 border border-teal-400',
   Arachides: 'bg-red-400 text-white border border-red-500',
   Soja: 'bg-green-300 text-green-900 border border-green-400',
-  Lait: 'bg-white text-slate-800 border-2 border-slate-300',
+  Lait: 'bg-white text-[#111111] border-2 border-[#D1D5DB]',
   'Fruits à coque': 'bg-amber-700 text-white border border-amber-800',
   'Céleri': 'bg-lime-300 text-lime-900 border border-lime-400',
   Moutarde: 'bg-yellow-500 text-yellow-950 border border-yellow-600',
@@ -159,7 +159,7 @@ export default function RecipeDetail() {
     return portions / recipe.nbPortions;
   }, [recipe, portions]);
 
-  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">Chargement...</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
   if (!recipe) return <div className="text-center py-12 text-red-500">Recette non trouvée</div>;
 
   const m = recipe.margin;
@@ -224,7 +224,7 @@ export default function RecipeDetail() {
       </div>
 
       {/* ─── Interactive tools (hidden on print) ─── */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md mb-4 overflow-hidden no-print">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-md mb-4 overflow-hidden no-print">
         {/* Portions calculator */}
         <div className="px-5 py-3 bg-indigo-50 dark:bg-indigo-900/20 border-b border-indigo-200 dark:border-indigo-800">
           <div className="flex items-center gap-3 flex-wrap">
@@ -236,7 +236,7 @@ export default function RecipeDetail() {
               max={500}
               value={portions ?? ''}
               onChange={(e) => setPortions(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-20 px-2 py-1 text-sm border border-indigo-300 dark:border-indigo-600 rounded-lg text-center bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-400 outline-none"
+              className="w-20 px-2 py-1 text-sm border border-indigo-300 dark:border-indigo-600 rounded-lg text-center bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-[#E5E5E5] focus:ring-2 focus:ring-indigo-400 outline-none"
             />
             <span className="text-sm text-indigo-700 dark:text-indigo-300">
               portions {portionMultiplier !== 1 && <span className="text-xs text-indigo-500">(x{portionMultiplier.toFixed(2)})</span>}
@@ -254,8 +254,8 @@ export default function RecipeDetail() {
         {/* Price Simulator */}
         <div className="px-5 py-3">
           <div className="flex items-center gap-3 mb-2">
-            <SlidersHorizontal className="w-4 h-4 text-slate-400 dark:text-slate-400" />
-            <span className="text-sm font-semibold text-slate-400 dark:text-slate-300">Simulateur de prix</span>
+            <SlidersHorizontal className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            <span className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373]">Simulateur de prix</span>
             <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 ml-auto">{(simPrice ?? 0).toFixed(2)} &euro;</span>
           </div>
           <input
@@ -265,9 +265,9 @@ export default function RecipeDetail() {
             step="0.10"
             value={simPrice ?? recipe.sellingPrice}
             onChange={(e) => setSimPrice(parseFloat(e.target.value))}
-            className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+            className="w-full h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-indigo-600"
           />
-          <div className="flex justify-between text-xs text-slate-400 mt-1">
+          <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
             <span>Coût : {m.totalCostPerPortion.toFixed(2)} &euro;</span>
             <span>Actuel : {recipe.sellingPrice.toFixed(2)} &euro;</span>
             <span>Max : {(recipe.sellingPrice * 2.5).toFixed(2)} &euro;</span>
@@ -290,32 +290,32 @@ export default function RecipeDetail() {
       {/* ═══════════════════════════════════════════════════════
            FICHE TECHNIQUE - A4 PRINTABLE SHEET
          ═══════════════════════════════════════════════════════ */}
-      <div id="fiche-technique" className="bg-white dark:bg-slate-800 rounded-xl shadow-xl overflow-hidden print:shadow-none print:rounded-none fiche-container">
+      <div id="fiche-technique" className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden print:shadow-none print:rounded-none fiche-container">
 
         {/* ─── HEADER ─── */}
-        <div className="fiche-header bg-slate-800 text-white px-5 py-3 print:bg-slate-800 print:text-white">
+        <div className="fiche-header bg-[#111111] dark:bg-[#111111] text-white px-5 py-3 print:bg-[#111111] print:text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <ChefHat className="w-6 h-6 opacity-80" />
               <div>
                 <div className="text-sm font-bold uppercase tracking-widest">{getRestaurantName()}</div>
-                <div className="text-[10px] text-slate-300 uppercase tracking-wider">Fiche Technique</div>
+                <div className="text-[10px] text-gray-400 uppercase tracking-wider">Fiche Technique</div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xs text-slate-300">N&deg;<span className="text-white font-bold text-sm">{String(recipe.id).padStart(3, '0')}</span></div>
-              <div className="text-[10px] text-slate-400">{formatDateShort(recipe.updatedAt)}</div>
+              <div className="text-xs text-gray-400">N&deg;<span className="text-white font-bold text-sm">{String(recipe.id).padStart(3, '0')}</span></div>
+              <div className="text-[10px] text-gray-500">{formatDateShort(recipe.updatedAt)}</div>
             </div>
           </div>
         </div>
 
         {/* ─── TITLE BAR ─── */}
-        <div className="px-5 py-2.5 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+        <div className="px-5 py-2.5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
           <div className="flex items-baseline justify-between gap-4 flex-wrap">
             <div>
-              <h1 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">{recipe.name}</h1>
-              <div className="flex items-center gap-3 mt-0.5 text-xs text-slate-400 dark:text-slate-400">
-                <span className="font-medium text-slate-400 dark:text-slate-300 bg-slate-200 dark:bg-slate-600 px-2 py-0.5 rounded">{recipe.category}</span>
+              <h1 className="text-xl font-bold text-[#111111] dark:text-white leading-tight">{recipe.name}</h1>
+              <div className="flex items-center gap-3 mt-0.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <span className="font-medium text-[#9CA3AF] dark:text-[#737373] bg-[#E5E7EB] dark:bg-[#1A1A1A] px-2 py-0.5 rounded">{recipe.category}</span>
                 <span>{portions ?? recipe.nbPortions} portion{(portions ?? recipe.nbPortions) > 1 ? 's' : ''}</span>
                 {totalTime > 0 && (
                   <span className="flex items-center gap-1">
@@ -326,24 +326,24 @@ export default function RecipeDetail() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-black text-slate-900 dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">&euro;</span></div>
-              <div className="text-[10px] text-slate-400 uppercase">Prix de vente</div>
+              <div className="text-2xl font-black text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">&euro;</span></div>
+              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Prix de vente</div>
             </div>
           </div>
           {recipe.description && (
-            <p className="text-xs text-slate-400 dark:text-slate-400 mt-1.5 italic leading-snug">{recipe.description}</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1.5 italic leading-snug">{recipe.description}</p>
           )}
         </div>
 
         {/* ─── BODY: 2-column layout ─── */}
         <div className="flex fiche-body">
           {/* ──── LEFT COLUMN (60%) ──── */}
-          <div className="fiche-left flex-[3] border-r border-slate-200 dark:border-slate-700 p-4">
-            <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2">Composition</h2>
+          <div className="fiche-left flex-[3] border-r border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+            <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Composition</h2>
 
             <table className="w-full text-[11px] border-collapse">
               <thead>
-                <tr className="border-b-2 border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400">
+                <tr className="border-b-2 border-[#D1D5DB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373]">
                   <th className="text-left pb-1.5 font-semibold pl-1">Ingrédient</th>
                   <th className="text-center pb-1.5 font-semibold w-16">Qté</th>
                   <th className="text-center pb-1.5 font-semibold w-12">Unité</th>
@@ -359,29 +359,29 @@ export default function RecipeDetail() {
                   const effectiveQty = baseQty * (1 + waste / 100);
                   const lineTotal = effectiveQty * ri.ingredient.pricePerUnit;
                   const emoji = getCategoryEmoji(ri.ingredient.category);
-                  const rowBg = idx % 2 === 0 ? '' : 'bg-slate-50 dark:bg-slate-800/50';
+                  const rowBg = idx % 2 === 0 ? '' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/50';
                   return (
-                    <tr key={ri.id} className={`${rowBg} border-b border-slate-100 dark:border-slate-700/50 print:even:bg-slate-50`}>
-                      <td className="py-1 pl-1 text-slate-800 dark:text-slate-200 font-medium whitespace-nowrap">
+                    <tr key={ri.id} className={`${rowBg} border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50 print:even:bg-[#FAFAFA]`}>
+                      <td className="py-1 pl-1 text-[#111111] dark:text-[#E5E5E5] font-medium whitespace-nowrap">
                         <span className="mr-1" title={ri.ingredient.category}>{emoji}</span>
                         {ri.ingredient.name}
                         {(ri.ingredient.allergens || []).length > 0 && (
                           <span className="ml-1 text-amber-500 text-[9px] font-bold align-super" title={ri.ingredient.allergens.join(', ')}>*</span>
                         )}
                       </td>
-                      <td className="py-1 text-center font-mono text-slate-400 dark:text-slate-300">
+                      <td className="py-1 text-center font-mono text-[#9CA3AF] dark:text-[#737373]">
                         {portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity}
                       </td>
-                      <td className="py-1 text-center text-slate-400 dark:text-slate-400">{ri.ingredient.unit}</td>
-                      <td className="py-1 text-center font-mono text-slate-400">{waste > 0 ? `${waste}%` : '—'}</td>
-                      <td className="py-1 text-right font-mono text-slate-500 dark:text-slate-400">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
-                      <td className="py-1 text-right font-mono font-bold text-slate-800 dark:text-slate-200 pr-1">{lineTotal.toFixed(2)}</td>
+                      <td className="py-1 text-center text-[#9CA3AF] dark:text-[#737373]">{ri.ingredient.unit}</td>
+                      <td className="py-1 text-center font-mono text-[#9CA3AF] dark:text-[#737373]">{waste > 0 ? `${waste}%` : '—'}</td>
+                      <td className="py-1 text-right font-mono text-[#6B7280] dark:text-[#737373]">{ri.ingredient.pricePerUnit.toFixed(2)}</td>
+                      <td className="py-1 text-right font-mono font-bold text-[#111111] dark:text-[#E5E5E5] pr-1">{lineTotal.toFixed(2)}</td>
                     </tr>
                   );
                 })}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 border-slate-400 dark:border-slate-500 font-bold text-slate-900 dark:text-white">
+                <tr className="border-t-2 border-[#9CA3AF] dark:border-[#6B7280] font-bold text-[#111111] dark:text-white">
                   <td colSpan={5} className="py-2 pl-1 text-xs uppercase tracking-wide">Coût matière total</td>
                   <td className="py-2 text-right font-mono pr-1 text-sm">{(m.foodCost * portionMultiplier).toFixed(2)} &euro;</td>
                 </tr>
@@ -390,12 +390,12 @@ export default function RecipeDetail() {
           </div>
 
           {/* ──── RIGHT COLUMN (40%) ──── */}
-          <div className="fiche-right flex-[2] p-4 space-y-3 bg-slate-50/50 dark:bg-slate-800/30">
+          <div className="fiche-right flex-[2] p-4 space-y-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/30">
 
             {/* Key metrics box */}
             <div>
-              <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-2">Indicateurs clés</h2>
-              <div className="border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden text-[11px]">
+              <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Indicateurs clés</h2>
+              <div className="border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg overflow-hidden text-[11px]">
                 <MetricRow label="Prix de vente" value={`${recipe.sellingPrice.toFixed(2)} €`} />
                 <MetricRow label="Coût matière / portion" value={`${m.costPerPortion.toFixed(2)} €`} sub={`(${foodCostPct.toFixed(1)}%)`} />
                 {m.laborCostPerPortion > 0 && (
@@ -410,7 +410,7 @@ export default function RecipeDetail() {
 
             {/* Donut chart */}
             <div>
-              <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">Répartition du prix</h2>
+              <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1">Répartition du prix</h2>
               <div className="flex items-center gap-2">
                 <div className="w-24 h-24 flex-shrink-0 no-print">
                   <ResponsiveContainer width="100%" height="100%">
@@ -468,8 +468,8 @@ export default function RecipeDetail() {
                   {donutData.map((d, i) => (
                     <div key={i} className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-sm inline-block flex-shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
-                      <span className="text-slate-500 dark:text-slate-400 flex-1">{d.name}</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{d.value.toFixed(2)} &euro;</span>
+                      <span className="text-[#6B7280] dark:text-[#737373] flex-1">{d.name}</span>
+                      <span className="font-mono font-bold text-[#111111] dark:text-[#E5E5E5]">{d.value.toFixed(2)} &euro;</span>
                     </div>
                   ))}
                 </div>
@@ -478,7 +478,7 @@ export default function RecipeDetail() {
 
             {/* Allergens (auto-detected + DB) */}
             <div>
-              <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+              <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1.5 flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3 text-amber-500" />
                 Allergènes
               </h2>
@@ -501,22 +501,22 @@ export default function RecipeDetail() {
             {/* Timing */}
             {totalTime > 0 && (
               <div>
-                <h2 className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1.5">Temps de production</h2>
+                <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1.5">Temps de production</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 text-center text-[10px]">
                   {recipe.prepTimeMinutes > 0 && (
-                    <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded px-2 py-1.5">
-                      <div className="text-slate-400 uppercase text-[8px] font-semibold">Prép.</div>
-                      <div className="font-bold text-slate-800 dark:text-slate-200 text-sm">{recipe.prepTimeMinutes}<span className="text-[9px] font-normal ml-0.5">min</span></div>
+                    <div className="bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded px-2 py-1.5">
+                      <div className="text-[#9CA3AF] dark:text-[#737373] uppercase text-[8px] font-semibold">Prép.</div>
+                      <div className="font-bold text-[#111111] dark:text-[#E5E5E5] text-sm">{recipe.prepTimeMinutes}<span className="text-[9px] font-normal ml-0.5">min</span></div>
                     </div>
                   )}
                   {recipe.cookTimeMinutes > 0 && (
-                    <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded px-2 py-1.5">
-                      <div className="text-slate-400 uppercase text-[8px] font-semibold">Cuisson</div>
-                      <div className="font-bold text-slate-800 dark:text-slate-200 text-sm">{recipe.cookTimeMinutes}<span className="text-[9px] font-normal ml-0.5">min</span></div>
+                    <div className="bg-white dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded px-2 py-1.5">
+                      <div className="text-[#9CA3AF] dark:text-[#737373] uppercase text-[8px] font-semibold">Cuisson</div>
+                      <div className="font-bold text-[#111111] dark:text-[#E5E5E5] text-sm">{recipe.cookTimeMinutes}<span className="text-[9px] font-normal ml-0.5">min</span></div>
                     </div>
                   )}
-                  <div className="bg-slate-800 dark:bg-slate-600 text-white rounded px-2 py-1.5">
-                    <div className="text-slate-300 uppercase text-[8px] font-semibold">Total</div>
+                  <div className="bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded px-2 py-1.5">
+                    <div className="text-gray-300 dark:text-gray-500 uppercase text-[8px] font-semibold">Total</div>
                     <div className="font-bold text-sm">{totalTime}<span className="text-[9px] font-normal ml-0.5">min</span></div>
                   </div>
                 </div>
@@ -526,7 +526,7 @@ export default function RecipeDetail() {
         </div>
 
         {/* ─── FOOTER ─── */}
-        <div className="fiche-footer px-5 py-1.5 border-t border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 flex items-center justify-between text-[9px] text-slate-400">
+        <div className="fiche-footer px-5 py-1.5 border-t border-[#D1D5DB] dark:border-[#1A1A1A] bg-[#F5F5F5] dark:bg-[#0A0A0A] flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-[#737373]">
           <span>Mise à jour le {formatDate(recipe.updatedAt)}</span>
           <span>{getRestaurantName()} &mdash; Fiche Technique N&deg;{String(recipe.id).padStart(3, '0')}</span>
           <span>Page 1/1</span>
@@ -575,7 +575,7 @@ export default function RecipeDetail() {
 
           /* ── Header (dark bar with restaurant name) ── */
           #fiche-technique .fiche-header {
-            background-color: #1e293b !important;
+            background-color: #111111 !important;
             color: white !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -583,15 +583,9 @@ export default function RecipeDetail() {
           #fiche-technique .fiche-header * {
             color: white !important;
           }
-          #fiche-technique .fiche-header .text-slate-300 {
-            color: #cbd5e1 !important;
-          }
-          #fiche-technique .fiche-header .text-slate-400 {
-            color: #94a3b8 !important;
-          }
 
           /* ── Title bar ── */
-          #fiche-technique .bg-slate-50 {
+          #fiche-technique .bg-\[\#FAFAFA\] {
             background-color: #f8fafc !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -638,12 +632,11 @@ export default function RecipeDetail() {
 
           /* ── Force all text colors for readability on white ── */
           #fiche-technique h1,
-          #fiche-technique .text-slate-900,
-          #fiche-technique .text-slate-800 {
+          #fiche-technique .text-\[\#111111\] {
             color: #0f172a !important;
           }
-          #fiche-technique .text-slate-500,
-          #fiche-technique .text-slate-400 {
+          #fiche-technique .text-\[\#6B7280\],
+          #fiche-technique .text-\[\#9CA3AF\] {
             color: #64748b !important;
           }
           #fiche-technique .font-mono.font-bold {
@@ -665,17 +658,14 @@ export default function RecipeDetail() {
           #fiche-technique .bg-white {
             background-color: white !important;
           }
-          #fiche-technique div.bg-slate-800 {
-            background-color: #1e293b !important;
+          #fiche-technique .bg-\[\#111111\] {
+            background-color: #111111 !important;
             color: white !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
-          #fiche-technique div.bg-slate-800 * {
+          #fiche-technique .bg-\[\#111111\] * {
             color: white !important;
-          }
-          #fiche-technique div.bg-slate-800 .text-slate-300 {
-            color: #cbd5e1 !important;
           }
 
           /* ── Metric rows ── */
@@ -684,7 +674,7 @@ export default function RecipeDetail() {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
-          #fiche-technique .metric-row .text-slate-500 {
+          #fiche-technique .metric-row .text-\[\#6B7280\] {
             color: #475569 !important;
           }
           #fiche-technique .metric-row .font-mono {
@@ -692,7 +682,7 @@ export default function RecipeDetail() {
           }
 
           /* ── Category badge ── */
-          #fiche-technique .bg-slate-200 {
+          #fiche-technique .bg-\[\#E5E7EB\] {
             background-color: #e2e8f0 !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -715,8 +705,8 @@ export default function RecipeDetail() {
           }
 
           /* ── Borders ── */
-          #fiche-technique .border-slate-200,
-          #fiche-technique .border-slate-300 {
+          #fiche-technique .border-\[\#E5E7EB\],
+          #fiche-technique .border-\[\#D1D5DB\] {
             border-color: #cbd5e1 !important;
           }
           #fiche-technique .border-r {
@@ -724,7 +714,7 @@ export default function RecipeDetail() {
           }
 
           /* ── Donut legend text ── */
-          #fiche-technique .text-\\[10px\\] .text-slate-500 {
+          #fiche-technique .text-\[10px\] .text-\[\#6B7280\] {
             color: #64748b !important;
           }
 
@@ -740,20 +730,17 @@ export default function RecipeDetail() {
           .dark #fiche-technique .fiche-header * {
             color: white !important;
           }
-          .dark #fiche-technique div.bg-slate-800,
-          .dark #fiche-technique div.bg-slate-800 * {
+          .dark #fiche-technique .bg-\[\#111111\],
+          .dark #fiche-technique .bg-\[\#111111\] * {
             color: white !important;
           }
           .dark #fiche-technique .text-green-600 { color: #16a34a !important; }
           .dark #fiche-technique .text-amber-600 { color: #d97706 !important; }
           .dark #fiche-technique .text-red-600 { color: #dc2626 !important; }
-          .dark #fiche-technique .bg-slate-50,
-          .dark #fiche-technique .bg-slate-800\\/50,
-          .dark #fiche-technique .bg-slate-800\\/30 {
+          .dark #fiche-technique .bg-\[\#FAFAFA\] {
             background-color: #f8fafc !important;
           }
-          .dark #fiche-technique .border-slate-700,
-          .dark #fiche-technique .border-slate-600 {
+          .dark #fiche-technique [class*="border"] {
             border-color: #cbd5e1 !important;
           }
         }
@@ -775,7 +762,7 @@ export default function RecipeDetail() {
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto no-print" role="dialog" aria-modal="true" onClick={() => setShowOptimizer(false)}>
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
           <div
-            className="relative bg-slate-900 rounded-2xl shadow-2xl w-full max-w-3xl my-8 border border-slate-700 overflow-hidden"
+            className="relative bg-white dark:bg-black rounded-2xl shadow-2xl w-full max-w-3xl my-8 border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal header */}
@@ -793,21 +780,21 @@ export default function RecipeDetail() {
             </div>
 
             {/* Cost comparison cards */}
-            <div className="px-6 py-4 bg-slate-800/50 border-b border-slate-700">
+            <div className="px-6 py-4 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-slate-800 rounded-xl p-4 border border-slate-700 text-center">
-                  <div className="text-xs text-slate-400 font-medium mb-1">Cout actuel</div>
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A] text-center">
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium mb-1">Cout actuel</div>
                   <div className="text-2xl font-bold text-red-400">{optimizationResult.optimization.currentTotalCost.toFixed(2)} &euro;</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} &euro;/portion</div>
+                  <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} &euro;/portion</div>
                 </div>
-                <div className="bg-slate-800 rounded-xl p-4 border border-teal-600/50 text-center relative">
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-4 border border-teal-600/50 text-center relative">
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">OPTIMISE</div>
-                  <div className="text-xs text-slate-400 font-medium mb-1">Cout optimise</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium mb-1">Cout optimise</div>
                   <div className="text-2xl font-bold text-teal-400">{optimizationResult.optimization.optimizedTotalCost.toFixed(2)} &euro;</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} &euro;/portion</div>
+                  <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} &euro;/portion</div>
                 </div>
-                <div className="bg-slate-800 rounded-xl p-4 border border-emerald-600/50 text-center">
-                  <div className="text-xs text-slate-400 font-medium mb-1">Economies</div>
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-4 border border-emerald-600/50 text-center">
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium mb-1">Economies</div>
                   <div className="text-2xl font-bold text-emerald-400">-{optimizationResult.optimization.totalSavingsEuros.toFixed(2)} &euro;</div>
                   <div className="text-xs text-emerald-500 mt-0.5 font-semibold">-{optimizationResult.optimization.totalSavingsPercent.toFixed(1)}%</div>
                 </div>
@@ -816,14 +803,14 @@ export default function RecipeDetail() {
 
             {/* Summary */}
             {optimizationResult.optimization.summary && (
-              <div className="px-6 py-3 bg-teal-900/20 border-b border-slate-700">
+              <div className="px-6 py-3 bg-teal-900/20 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                 <p className="text-sm text-teal-200">{optimizationResult.optimization.summary}</p>
               </div>
             )}
 
             {/* Suggestions list */}
             <div className="px-6 py-4 max-h-[50vh] overflow-y-auto">
-              <h4 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+              <h4 className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3] mb-3 flex items-center gap-2">
                 <TrendingDown className="w-4 h-4 text-teal-400" />
                 Suggestions d'optimisation ({optimizationResult.optimization.suggestions.length})
               </h4>
@@ -855,7 +842,7 @@ export default function RecipeDetail() {
                       className={`rounded-xl border p-4 transition-all duration-300 ${
                         isApplied
                           ? 'bg-teal-900/20 border-teal-600/50'
-                          : 'bg-slate-800/80 border-slate-700 hover:border-slate-600'
+                          : 'bg-[#FAFAFA]/80 dark:bg-[#0A0A0A]/80 border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#9CA3AF] dark:hover:border-[#333]'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -867,16 +854,16 @@ export default function RecipeDetail() {
                             </span>
                             <span className={`text-[10px] font-medium ${impactColor}`}>{impactLabel}</span>
                           </div>
-                          <div className="text-sm font-semibold text-white mb-1">{suggestion.ingredientName}</div>
-                          <p className="text-xs text-slate-400 mb-2">{suggestion.suggestion}</p>
+                          <div className="text-sm font-semibold text-[#111111] dark:text-white mb-1">{suggestion.ingredientName}</div>
+                          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">{suggestion.suggestion}</p>
                           <div className="flex items-center gap-3 text-xs">
                             <span className="text-red-400 line-through">{suggestion.currentCost.toFixed(2)} &euro;</span>
-                            <ArrowRight className="w-3 h-3 text-slate-500" />
+                            <ArrowRight className="w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3]" />
                             <span className="text-teal-400 font-semibold">{suggestion.estimatedNewCost.toFixed(2)} &euro;</span>
                             <span className="text-emerald-400 font-bold">-{suggestion.savingsPercent.toFixed(0)}%</span>
                           </div>
                           {suggestion.reasoning && (
-                            <p className="text-[11px] text-slate-500 mt-2 italic">{suggestion.reasoning}</p>
+                            <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] mt-2 italic">{suggestion.reasoning}</p>
                           )}
                         </div>
                         <button
@@ -894,7 +881,7 @@ export default function RecipeDetail() {
                           className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${
                             isApplied
                               ? 'bg-teal-600 text-white'
-                              : 'bg-slate-700 text-slate-300 hover:bg-teal-600 hover:text-white'
+                              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-teal-600 hover:text-white'
                           }`}
                         >
                           {isApplied ? <Check className="w-3.5 h-3.5" /> : null}
@@ -905,7 +892,7 @@ export default function RecipeDetail() {
                   );
                 })}
                 {optimizationResult.optimization.suggestions.length === 0 && (
-                  <div className="text-center py-8 text-slate-500">
+                  <div className="text-center py-8 text-[#6B7280] dark:text-[#A3A3A3]">
                     <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">Cette recette est deja bien optimisee !</p>
                   </div>
@@ -915,8 +902,8 @@ export default function RecipeDetail() {
 
             {/* Modal footer */}
             {appliedSuggestions.size > 0 && (
-              <div className="px-6 py-3 bg-slate-800 border-t border-slate-700 flex items-center justify-between">
-                <span className="text-xs text-slate-400">{appliedSuggestions.size} suggestion{appliedSuggestions.size > 1 ? 's' : ''} selectionnee{appliedSuggestions.size > 1 ? 's' : ''}</span>
+              <div className="px-6 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{appliedSuggestions.size} suggestion{appliedSuggestions.size > 1 ? 's' : ''} selectionnee{appliedSuggestions.size > 1 ? 's' : ''}</span>
                 <button
                   onClick={() => setShowOptimizer(false)}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold transition-colors"
@@ -951,11 +938,11 @@ function MetricRow({
   last?: boolean;
 }) {
   return (
-    <div className={`metric-row flex items-center justify-between px-3 py-1.5 ${!last ? 'border-b border-slate-200 dark:border-slate-700' : ''} ${bold ? 'bg-slate-50 dark:bg-slate-700/50' : ''}`}>
-      <span className={`text-slate-500 dark:text-slate-400 ${bold ? 'font-semibold text-slate-600 dark:text-slate-300' : ''}`}>{label}</span>
+    <div className={`metric-row flex items-center justify-between px-3 py-1.5 ${!last ? 'border-b border-[#E5E7EB] dark:border-[#1A1A1A]' : ''} ${bold ? 'bg-[#FAFAFA] dark:bg-[#171717]/50' : ''}`}>
+      <span className={`text-[#6B7280] dark:text-[#737373] ${bold ? 'font-semibold text-[#4B5563] dark:text-[#A3A3A3]' : ''}`}>{label}</span>
       <div className="text-right">
-        <span className={`font-mono font-bold ${valueClass || 'text-slate-800 dark:text-slate-200'}`}>{value}</span>
-        {sub && <span className="text-slate-400 dark:text-slate-500 ml-1 text-[9px]">{sub}</span>}
+        <span className={`font-mono font-bold ${valueClass || 'text-[#111111] dark:text-[#E5E5E5]'}`}>{value}</span>
+        {sub && <span className="text-[#9CA3AF] dark:text-[#737373] ml-1 text-[9px]">{sub}</span>}
       </div>
     </div>
   );
@@ -966,15 +953,15 @@ function SimCard({ label, value, highlight, warn }: { label: string; value: stri
     ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20'
     : highlight
       ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20'
-      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800';
+      : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A]';
   const textColor = warn
     ? 'text-red-700 dark:text-red-300'
     : highlight
       ? 'text-green-700 dark:text-green-300'
-      : 'text-slate-800 dark:text-slate-100';
+      : 'text-[#111111] dark:text-white';
   return (
     <div className={`rounded-lg border-2 p-2.5 text-center transition-colors ${border}`}>
-      <div className="text-[10px] text-slate-400 dark:text-slate-400 font-medium">{label}</div>
+      <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] font-medium">{label}</div>
       <div className={`text-lg font-bold mt-0.5 ${textColor}`}>{value}</div>
     </div>
   );

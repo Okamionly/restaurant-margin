@@ -162,7 +162,7 @@ function CircularScore({ score, size = 48, strokeWidth = 4 }: { score: number; s
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} className="text-slate-700/30" />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} className="text-[#374151]/30" />
         <circle
           cx={size / 2} cy={size / 2} r={radius} fill="none"
           stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
@@ -186,13 +186,13 @@ function ScoreBar({ label, score, icon }: { label: string; score: number; icon: 
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
-        <span className="flex items-center gap-1.5 text-slate-400">
+        <span className="flex items-center gap-1.5 text-[#9CA3AF] dark:text-[#737373]">
           {icon}
           {label}
         </span>
         <span className={`font-bold ${textColor}`}>{score}/100</span>
       </div>
-      <div className="h-2 bg-slate-700/50 rounded-full overflow-hidden">
+      <div className="h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${color}`}
           style={{ width: `${Math.max(2, score)}%`, transition: 'width 0.8s ease-in-out' }}
@@ -666,19 +666,19 @@ export default function Suppliers() {
 
   // ── render ─────────────────────────────────────────────────────────────────
 
-  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t('suppliers.loading')}</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.loading')}</div>;
 
   return (
     <div>
       {/* Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 w-fit">
+        <div className="flex gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-lg p-1 w-fit">
           <button
             onClick={() => setActiveTab('mes-fournisseurs')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'mes-fournisseurs'
-                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
             }`}
           >
             <Truck className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -688,8 +688,8 @@ export default function Suppliers() {
             onClick={() => setActiveTab('annuaire')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'annuaire'
-                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
             }`}
           >
             <Globe className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -699,8 +699,8 @@ export default function Suppliers() {
             onClick={() => setActiveTab('comparateur')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === 'comparateur'
-                ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm'
-                : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
+                : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'
             }`}
           >
             <Scale className="w-4 h-4 inline-block mr-1.5 -mt-0.5" />
@@ -721,13 +721,13 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('suppliers.title')}</h2>
+            <h2 className="text-2xl font-bold text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
             <div className="flex items-center gap-2">
               {/* Score comparison button */}
               {suppliers.length >= 2 && (
                 <button
                   onClick={() => setShowScoreCompare(true)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-teal-500/50 rounded-lg text-teal-400 hover:bg-teal-900/20 transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-[#D1D5DB] dark:border-[#333] rounded-lg text-[#111111] dark:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
                 >
                   <BarChart3 className="w-4 h-4" />
                   Comparer les fournisseurs
@@ -735,7 +735,7 @@ export default function Suppliers() {
               )}
               {/* Quick-add dropdown */}
               <div className="relative">
-                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-slate-300 dark:border-slate-600 rounded-lg text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-[#D1D5DB] dark:border-[#2A2A2A] rounded-lg text-[#9CA3AF] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
                   <Zap className="w-4 h-4 text-amber-500" />
                   {t('suppliers.quickAdd')}
                   <ChevronDown className="w-3 h-3" />
@@ -743,8 +743,8 @@ export default function Suppliers() {
                 {showQuickAdd && (
                   <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowQuickAdd(false)} />
-                  <div className="absolute right-0 mt-1 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-slate-700 z-50 py-1">
-                    <div className="px-3 py-2 text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider">{t('suppliers.commonSuppliers')}</div>
+                  <div className="absolute right-0 mt-1 w-64 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-lg border dark:border-[#1A1A1A] z-50 py-1">
+                    <div className="px-3 py-2 text-xs font-medium text-[#9CA3AF] dark:text-[#A3A3A3] uppercase tracking-wider">{t('suppliers.commonSuppliers')}</div>
                     {QUICK_ADD_TEMPLATES.map((tpl) => (
                       <button
                         key={tpl.name}
@@ -754,9 +754,9 @@ export default function Suppliers() {
                           setModalOpen(true);
                           setShowQuickAdd(false);
                         }}
-                        className="w-full text-left px-3 py-2 text-sm text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2"
+                        className="w-full text-left px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] flex items-center gap-2"
                       >
-                        <Building2 className="w-4 h-4 text-slate-400" />
+                        <Building2 className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
                         {tpl.name}
                       </button>
                     ))}
@@ -773,54 +773,54 @@ export default function Suppliers() {
 
           {/* Stats cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.totalSuppliers')}</span>
-                <div className="p-2 rounded-lg bg-teal-600"><Truck className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.totalSuppliers')}</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalSuppliers}</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.totalSuppliers}</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.linkedIngredients')}</span>
-                <div className="p-2 rounded-lg bg-green-600"><Package className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.linkedIngredients')}</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.totalLinked}</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.totalLinked}</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.withDelivery')}</span>
-                <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.withDelivery')}</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withDelivery}</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.withDelivery}</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">{t('suppliers.withoutSupplier')}</span>
-                <div className="p-2 rounded-lg bg-amber-500"><Package className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.withoutSupplier')}</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.withoutSupplier}</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.withoutSupplier}</div>
             </div>
           </div>
 
           {/* Comparer les prix bar */}
           {compareSupplierIds.size > 0 && (
-            <div className="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg p-3 mb-4 flex items-center justify-between">
-              <span className="text-sm text-teal-700 dark:text-teal-300">
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 mb-4 flex items-center justify-between">
+              <span className="text-sm text-[#111111] dark:text-white">
                 <ArrowRightLeft className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                 {compareSupplierIds.size} {t('suppliers.suppliersSelected')}
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setCompareSupplierIds(new Set())}
-                  className="text-xs px-3 py-1.5 rounded border border-teal-300 dark:border-teal-700 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-800"
+                  className="text-xs px-3 py-1.5 rounded border border-[#D1D5DB] dark:border-[#333] text-[#111111] dark:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#171717]"
                 >
                   {t('suppliers.deselectAll')}
                 </button>
                 <button
                   onClick={() => setShowSupplierCompare(true)}
                   disabled={compareSupplierIds.size < 2}
-                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
                   {t('suppliers.comparePrices')}
@@ -843,21 +843,21 @@ export default function Suppliers() {
               });
               const ingredientNames = Object.keys(ingredientMap).sort();
               if (ingredientNames.length === 0) {
-                return <p className="text-sm text-slate-400 py-4 text-center">{t('suppliers.noCommonIngredients')}</p>;
+                return <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-4 text-center">{t('suppliers.noCommonIngredients')}</p>;
               }
               return (
                 <div className="overflow-x-auto max-h-[60vh]">
                   <table className="w-full text-sm">
-                    <thead className="sticky top-0 bg-slate-50 dark:bg-slate-700 z-10">
+                    <thead className="sticky top-0 bg-[#FAFAFA] dark:bg-[#171717] z-10">
                       <tr>
-                        <th className="text-left px-3 py-2 text-xs text-slate-400 dark:text-slate-400 font-medium">{t('suppliers.ingredient')}</th>
+                        <th className="text-left px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{t('suppliers.ingredient')}</th>
                         {comparedSuppliers.map(s => (
-                          <th key={s.id} className="text-right px-3 py-2 text-xs text-slate-400 dark:text-slate-400 font-medium">{s.name}</th>
+                          <th key={s.id} className="text-right px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{s.name}</th>
                         ))}
-                        <th className="text-right px-3 py-2 text-xs text-slate-400 dark:text-slate-400 font-medium">{t('suppliers.gapPercent')}</th>
+                        <th className="text-right px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">{t('suppliers.gapPercent')}</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y dark:divide-slate-700">
+                    <tbody className="divide-y dark:divide-[#1A1A1A]">
                       {ingredientNames.map(name => {
                         const prices = comparedSuppliers.map(s => ingredientMap[name][s.name]?.price ?? null);
                         const validPrices = prices.filter((p): p is number => p !== null);
@@ -865,18 +865,18 @@ export default function Suppliers() {
                         const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
                         const diff = minPrice && maxPrice && maxPrice > 0 ? Math.round(((maxPrice - minPrice) / minPrice) * 100) : null;
                         return (
-                          <tr key={name} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                            <td className="px-3 py-2 text-slate-400 dark:text-slate-300 font-medium">{name}</td>
+                          <tr key={name} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30">
+                            <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#A3A3A3] font-medium">{name}</td>
                             {comparedSuppliers.map(s => {
                               const entry = ingredientMap[name][s.name];
                               const isBest = entry && minPrice !== null && entry.price === minPrice && validPrices.length > 1;
                               return (
-                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-slate-300 dark:text-slate-400'}`}>
-                                  {entry ? `${entry.price.toFixed(2)} €/${entry.unit}` : <span className="text-slate-300 dark:text-slate-600">--</span>}
+                                <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-[#6B7280] dark:text-[#737373]'}`}>
+                                  {entry ? `${entry.price.toFixed(2)} €/${entry.unit}` : <span className="text-[#6B7280] dark:text-[#A3A3A3]">--</span>}
                                 </td>
                               );
                             })}
-                            <td className={`px-3 py-2 text-right text-xs font-bold ${diff !== null && diff > 15 ? 'text-red-600' : diff !== null && diff > 0 ? 'text-orange-500' : 'text-slate-400'}`}>
+                            <td className={`px-3 py-2 text-right text-xs font-bold ${diff !== null && diff > 15 ? 'text-red-600' : diff !== null && diff > 0 ? 'text-orange-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
                               {diff !== null ? `${diff}%` : '--'}
                             </td>
                           </tr>
@@ -890,14 +890,14 @@ export default function Suppliers() {
           </Modal>
 
           {/* Search / filter bar */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
-            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-300 dark:text-slate-300">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
                 <input
                   type="text"
                   placeholder={t('suppliers.searchByName')}
@@ -907,7 +907,7 @@ export default function Suppliers() {
                 />
               </div>
               <div className="relative">
-                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 <select
                   value={filterRegion}
                   onChange={(e) => setFilterRegion(e.target.value)}
@@ -920,7 +920,7 @@ export default function Suppliers() {
                 </select>
               </div>
               <div className="relative">
-                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
@@ -941,19 +941,19 @@ export default function Suppliers() {
             <div className="w-full lg:w-80 xl:w-96 shrink-0 flex flex-col gap-2">
               {/* Search bar */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t('suppliers.searchByName')}
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm focus:outline-none focus:ring-1 focus:ring-[#111111] dark:focus:ring-white"
                 />
               </div>
               {/* Supplier slices */}
               <div className="flex-1 overflow-y-auto space-y-1">
                 {filtered.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-slate-400 py-12">
+                  <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] dark:text-[#737373] py-12">
                     <Truck className="w-10 h-10 mb-2 opacity-30" />
                     <p className="text-sm">{t('suppliers.noSupplierFound')}</p>
                   </div>
@@ -967,8 +967,8 @@ export default function Suppliers() {
                       onClick={() => setDetailSupplier(supplier)}
                       className={`cursor-pointer rounded-xl p-3 border transition-all ${
                         detailSupplier?.id === supplier.id
-                          ? 'border-l-4 border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-sm'
-                          : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                          ? 'border-l-4 border-[#111111] dark:border-white bg-[#FAFAFA] dark:bg-[#0A0A0A] shadow-sm'
+                          : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:bg-[#0F0F0F] dark:hover:bg-[#171717]'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
@@ -976,14 +976,14 @@ export default function Suppliers() {
                           <CircularScore score={globalScore} size={38} strokeWidth={3} />
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className="font-semibold text-sm text-slate-800 dark:text-white truncate">{supplier.name}</span>
+                              <span className="font-semibold text-sm text-[#111111] dark:text-white truncate">{supplier.name}</span>
                               {globalScore > 80 && (
                                 <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 font-bold">
                                   <Award className="w-2.5 h-2.5" /> Top
                                 </span>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-400">
+                            <div className="flex items-center gap-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
                               {supplier.city && <span>{supplier.city}</span>}
                               {supplier.delivery && <span className="text-emerald-500">&#10003; Livraison</span>}
                             </div>
@@ -995,7 +995,7 @@ export default function Suppliers() {
                       </div>
                       <div className="flex flex-wrap gap-1 mt-1.5 ml-[50px]">
                         {(supplier.categories || []).slice(0, 3).map(cat => (
-                          <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300">{cat}</span>
+                          <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{cat}</span>
                         ))}
                       </div>
                     </div>
@@ -1006,7 +1006,7 @@ export default function Suppliers() {
             </div>
 
             {/* RIGHT: Detail panel */}
-            <div className="flex-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-y-auto">
+            <div className="flex-1 bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-y-auto">
               {detailSupplier ? (() => {
                 const globalScoreVal = backendScores[detailSupplier.id]?.scores?.global ?? 0;
                 const scoreColor = globalScoreVal > 70 ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300' : globalScoreVal >= 40 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
@@ -1015,7 +1015,7 @@ export default function Suppliers() {
                     {/* Header with name + actions */}
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-xl font-bold text-slate-800 dark:text-white">{detailSupplier.name}</h3>
+                        <h3 className="text-xl font-bold text-[#111111] dark:text-white">{detailSupplier.name}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${scoreColor}`}>{globalScoreVal}/100</span>
                           {detailSupplier.delivery && (
@@ -1028,7 +1028,7 @@ export default function Suppliers() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           onClick={() => navigate(`/fournisseur/${detailSupplier.id}`)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-medium"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-xs font-medium"
                           title="Voir catalogue promotionnel"
                         >
                           <ShoppingBag className="w-3.5 h-3.5" />
@@ -1036,7 +1036,7 @@ export default function Suppliers() {
                         </button>
                         <button
                           onClick={() => openEdit(detailSupplier)}
-                          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-400"
+                          className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]"
                           title={t('suppliers.edit')}
                         >
                           <Edit2 className="w-4 h-4" />
@@ -1060,12 +1060,12 @@ export default function Suppliers() {
                     </div>
 
                     {/* Scoring Dashboard */}
-                    <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                    <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
                       <div className="flex items-center gap-4 mb-4">
                         <CircularScore score={detailScore?.scores?.global ?? 0} size={64} strokeWidth={5} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-white">Score Global</span>
+                            <span className="text-lg font-bold text-[#111111] dark:text-white">Score Global</span>
                             {(detailScore?.scores?.global ?? 0) > 80 && (
                               <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30">
                                 <Award className="w-3 h-3" /> Top fournisseur
@@ -1073,7 +1073,7 @@ export default function Suppliers() {
                             )}
                           </div>
                           {detailScore?.recommendation && (
-                            <p className="text-xs text-slate-400 mt-0.5">{detailScore.recommendation}</p>
+                            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{detailScore.recommendation}</p>
                           )}
                           {detailScore?.note && (
                             <p className="text-[10px] text-amber-400/80 mt-1 flex items-center gap-1">
@@ -1084,7 +1084,7 @@ export default function Suppliers() {
                       </div>
                       {loadingScore ? (
                         <div className="flex items-center justify-center py-4">
-                          <span className="w-5 h-5 border-2 border-teal-500/30 border-t-teal-500 rounded-full animate-spin" />
+                          <span className="w-5 h-5 border-2 border-[#D1D5DB] dark:border-[#333] border-t-[#111111] dark:border-t-white rounded-full animate-spin" />
                         </div>
                       ) : detailScore ? (
                         <div className="space-y-3">
@@ -1094,23 +1094,23 @@ export default function Suppliers() {
                           <ScoreBar label="Historique" score={detailScore.scores.historique} icon={<Clock className="w-3.5 h-3.5" />} />
                         </div>
                       ) : (
-                        <p className="text-xs text-slate-500 text-center py-2">Chargement des scores...</p>
+                        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] text-center py-2">Chargement des scores...</p>
                       )}
                     </div>
 
                     {/* Contact info */}
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      {detailSupplier.contactName && <div className="text-slate-300 dark:text-slate-300"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.contactName}</div>}
-                      {detailSupplier.phone && <div className="text-slate-300 dark:text-slate-300"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.phone}</div>}
-                      {detailSupplier.email && <div className="text-slate-300 dark:text-slate-300"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{detailSupplier.email}</div>}
-                      {detailSupplier.city && <div className="text-slate-300 dark:text-slate-300"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-slate-400" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
+                      {detailSupplier.contactName && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><Building2 className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{detailSupplier.contactName}</div>}
+                      {detailSupplier.phone && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><Phone className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{detailSupplier.phone}</div>}
+                      {detailSupplier.email && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><Mail className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{detailSupplier.email}</div>}
+                      {detailSupplier.city && <div className="text-[#6B7280] dark:text-[#A3A3A3]"><MapPin className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-[#9CA3AF] dark:text-[#737373]" />{[detailSupplier.city, detailSupplier.postalCode].filter(Boolean).join(' ')}</div>}
                       {detailSupplier.website && (
                         <div>
                           <a
                             href={detailSupplier.website.startsWith('http') ? detailSupplier.website : `https://${detailSupplier.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                            className="flex items-center gap-1 text-sm text-[#111111] dark:text-white hover:underline"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                             {t('suppliers.website')}
@@ -1123,7 +1123,7 @@ export default function Suppliers() {
                     {detailSupplier.categories.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {detailSupplier.categories.map((cat) => (
-                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 font-medium">
+                          <span key={cat} className="px-2.5 py-1 rounded-lg text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
                             {cat}
                           </span>
                         ))}
@@ -1135,11 +1135,11 @@ export default function Suppliers() {
                       const catalog = supplierCatalogMap[detailSupplier.id];
                       if (!catalog || catalog.count === 0) return (
                         <div>
-                          <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-200 mb-3 flex items-center gap-2">
+                          <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#E5E5E5] mb-3 flex items-center gap-2">
                             <Layers className="w-4 h-4 text-purple-500" />
                             Catalogue (0 produits)
                           </h4>
-                          <p className="text-sm text-slate-400 italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
+                          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">{t('suppliers.noIngredientLinkedToSupplier')}</p>
                         </div>
                       );
 
@@ -1166,39 +1166,39 @@ export default function Suppliers() {
                         <div>
                           {/* Stats bar */}
                           <div className="grid grid-cols-3 gap-2 mb-3">
-                            <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-center">
-                              <div className="text-lg font-bold text-teal-400">{catalog.count}</div>
-                              <div className="text-[10px] text-slate-400 uppercase tracking-wide">Articles</div>
+                            <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
+                              <div className="text-lg font-bold text-[#111111] dark:text-white">{catalog.count}</div>
+                              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Articles</div>
                             </div>
-                            <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-center">
+                            <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
                               <div className="text-lg font-bold text-purple-400">{sortedCategories.length}</div>
-                              <div className="text-[10px] text-slate-400 uppercase tracking-wide">Categories</div>
+                              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Categories</div>
                             </div>
-                            <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-center">
+                            <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
                               <div className="text-lg font-bold text-emerald-400">{avgPrice.toFixed(2)} EUR</div>
-                              <div className="text-[10px] text-slate-400 uppercase tracking-wide">Prix moyen</div>
+                              <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Prix moyen</div>
                             </div>
                           </div>
 
                           {/* Search bar */}
                           <div className="relative mb-3">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                             <input
                               type="text"
                               placeholder="Rechercher dans le catalogue..."
                               value={catalogDetailSearch}
                               onChange={e => setCatalogDetailSearch(e.target.value)}
-                              className="w-full pl-9 pr-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/30 transition-colors"
+                              className="w-full pl-9 pr-3 py-2 text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-[#E5E5E5] placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111]/30 dark:focus:ring-white/30 transition-colors"
                             />
                             {catalogDetailSearch && (
-                              <button onClick={() => setCatalogDetailSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-700 rounded">
-                                <X className="w-3 h-3 text-slate-400" />
+                              <button onClick={() => setCatalogDetailSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded">
+                                <X className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />
                               </button>
                             )}
                           </div>
 
                           {searchLower && (
-                            <p className="text-xs text-slate-400 mb-2">
+                            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">
                               {filteredCount} resultat{filteredCount !== 1 ? 's' : ''} pour "{catalogDetailSearch}"
                             </p>
                           )}
@@ -1227,17 +1227,17 @@ export default function Suppliers() {
                               const hasSubGroups = !!subCatFn && Object.keys(subGroups).length > 1;
 
                               return (
-                                <div key={cat} className="border border-slate-700/80 rounded-xl overflow-hidden bg-slate-900/50">
+                                <div key={cat} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden bg-[#FAFAFA] dark:bg-[#0A0A0A]">
                                   {/* Category header */}
                                   <button
                                     onClick={() => toggleCatCollapse(catKey)}
-                                    className="w-full flex items-center justify-between px-3 py-3 hover:bg-slate-800/70 transition-all duration-200 text-left group"
+                                    className="w-full flex items-center justify-between px-3 py-3 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/70 transition-all duration-200 text-left group"
                                   >
                                     <div className="flex items-center gap-2.5">
-                                      <ChevronRight className={`w-4 h-4 text-teal-500 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+                                      <ChevronRight className={`w-4 h-4 text-[#111111] dark:text-white transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
                                       <span className="text-base" role="img">{emoji}</span>
-                                      <span className="text-sm font-semibold text-slate-200 group-hover:text-teal-300 transition-colors">{cat}</span>
-                                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-teal-900/40 text-teal-300 font-medium">
+                                      <span className="text-sm font-semibold text-[#111111] dark:text-[#E5E5E5] group-hover:text-[#111111] dark:group-hover:text-white transition-colors">{cat}</span>
+                                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-medium">
                                         {catIngredients.length}
                                       </span>
                                     </div>
@@ -1250,32 +1250,32 @@ export default function Suppliers() {
                                   <div className={`transition-all duration-200 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                     {hasSubGroups ? (
                                       // Render subcategories
-                                      <div className="border-t border-slate-700/50">
+                                      <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
                                         {Object.entries(subGroups).sort(([a], [b]) => a.localeCompare(b)).map(([subCat, subIngs]) => {
                                           const subKey = `${catKey}-${subCat}`;
                                           const isSubExpanded = expandedSubCats.has(subKey);
                                           const subTotal = subIngs.reduce((s, i) => s + i.pricePerUnit, 0);
                                           return (
-                                            <div key={subCat} className="border-b border-slate-800/50 last:border-b-0">
+                                            <div key={subCat} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 last:border-b-0">
                                               <button
                                                 onClick={() => toggleSubCatCollapse(subKey)}
-                                                className="w-full flex items-center justify-between pl-8 pr-3 py-2 hover:bg-slate-800/40 transition-colors text-left"
+                                                className="w-full flex items-center justify-between pl-8 pr-3 py-2 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/40 transition-colors text-left"
                                               >
                                                 <div className="flex items-center gap-2">
-                                                  <ChevronRight className={`w-3 h-3 text-slate-500 transition-transform duration-150 ${isSubExpanded ? 'rotate-90' : ''}`} />
-                                                  <span className="text-xs font-medium text-slate-300">{subCat}</span>
-                                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-700 text-slate-400">
+                                                  <ChevronRight className={`w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3] transition-transform duration-150 ${isSubExpanded ? 'rotate-90' : ''}`} />
+                                                  <span className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">{subCat}</span>
+                                                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
                                                     {subIngs.length}
                                                   </span>
                                                 </div>
-                                                <span className="text-[11px] text-slate-400">{subTotal.toFixed(2)} EUR</span>
+                                                <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{subTotal.toFixed(2)} EUR</span>
                                               </button>
                                               <div className={`transition-all duration-150 ease-in-out overflow-hidden ${isSubExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                                                <div className="divide-y divide-slate-800/30">
+                                                <div className="divide-y divide-[#E5E7EB]/30">
                                                   {subIngs.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
-                                                    <div key={ing.id} className="flex items-center gap-2 pl-12 pr-3 py-1.5 hover:bg-slate-800/30 transition-colors">
-                                                      <span className="flex-1 text-xs text-slate-300 truncate">{ing.name}</span>
-                                                      <span className="text-xs font-medium text-teal-400 whitespace-nowrap">
+                                                    <div key={ing.id} className="flex items-center gap-2 pl-12 pr-3 py-1.5 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 transition-colors">
+                                                      <span className="flex-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                                                      <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
                                                         {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
                                                       </span>
                                                       {priceAlerts[ing.id] && (
@@ -1297,11 +1297,11 @@ export default function Suppliers() {
                                       </div>
                                     ) : (
                                       // Flat list (no subcategories)
-                                      <div className="divide-y divide-slate-800/30 border-t border-slate-700/50">
+                                      <div className="divide-y divide-[#E5E7EB]/30 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
                                         {catIngredients.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
-                                          <div key={ing.id} className="flex items-center gap-2 pl-9 pr-3 py-1.5 hover:bg-slate-800/30 transition-colors">
-                                            <span className="flex-1 text-xs text-slate-300 truncate">{ing.name}</span>
-                                            <span className="text-xs font-medium text-teal-400 whitespace-nowrap">
+                                          <div key={ing.id} className="flex items-center gap-2 pl-9 pr-3 py-1.5 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 transition-colors">
+                                            <span className="flex-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                                            <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
                                               {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
                                             </span>
                                             {priceAlerts[ing.id] && (
@@ -1324,7 +1324,7 @@ export default function Suppliers() {
                           </div>
 
                           {filteredCount === 0 && searchLower && (
-                            <div className="text-center py-6 text-slate-500">
+                            <div className="text-center py-6 text-[#6B7280] dark:text-[#A3A3A3]">
                               <Search className="w-8 h-8 mx-auto mb-2 opacity-30" />
                               <p className="text-sm">Aucun article trouve pour "{catalogDetailSearch}"</p>
                             </div>
@@ -1335,7 +1335,7 @@ export default function Suppliers() {
                   </div>
                 );
               })() : (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400 py-20">
+                <div className="flex flex-col items-center justify-center h-full text-[#9CA3AF] dark:text-[#737373] py-20">
                   <Truck className="w-12 h-12 mb-3 opacity-30" />
                   <p>{t('suppliers.noSupplierFound')}</p>
                 </div>
@@ -1352,7 +1352,7 @@ export default function Suppliers() {
         <>
           {/* Stats bar */}
           <div className="flex flex-wrap gap-3 mb-4 text-sm">
-            <span className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-300 font-medium">
+            <span className="px-3 py-1.5 rounded-full bg-[#F3F4F6] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
               {annuaireStats.total} {t('suppliers.suppliersFound')}
             </span>
             <span className="px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-medium">
@@ -1369,14 +1369,14 @@ export default function Suppliers() {
           </div>
 
           {/* Filters */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-4 mb-6">
-            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-slate-300 dark:text-slate-300">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
                 <input
                   type="text"
                   placeholder={t('suppliers.search')}
@@ -1386,7 +1386,7 @@ export default function Suppliers() {
                 />
               </div>
               <div className="relative">
-                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 <select
                   value={annuaireRegion}
                   onChange={(e) => setAnnuaireRegion(e.target.value)}
@@ -1399,7 +1399,7 @@ export default function Suppliers() {
                 </select>
               </div>
               <div className="relative">
-                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <Tag className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 <select
                   value={annuaireCategory}
                   onChange={(e) => setAnnuaireCategory(e.target.value)}
@@ -1412,7 +1412,7 @@ export default function Suppliers() {
                 </select>
               </div>
               <div className="relative">
-                <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <Building2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 <select
                   value={annuaireType}
                   onChange={(e) => setAnnuaireType(e.target.value as '' | FrenchSupplier['type'])}
@@ -1425,24 +1425,24 @@ export default function Suppliers() {
                   <option value="national">{t('suppliers.typeNational')}</option>
                 </select>
               </div>
-              <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-700/50 cursor-pointer select-none">
+              <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#1A1A1A] cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={deliveryOnly}
                   onChange={(e) => setDeliveryOnly(e.target.checked)}
-                  className="rounded border-slate-300 dark:border-slate-600 text-teal-600 focus:ring-teal-500"
+                  className="rounded border-[#D1D5DB] dark:border-[#2A2A2A] text-[#111111] dark:text-white focus:ring-[#111111] dark:focus:ring-white"
                 />
-                <Truck className="w-4 h-4 text-slate-400 dark:text-slate-400" />
-                <span className="text-sm text-slate-300 dark:text-slate-300">{t('suppliers.deliveryOnly')}</span>
+                <Truck className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{t('suppliers.deliveryOnly')}</span>
               </label>
             </div>
           </div>
 
           {/* Supplier Cards Grid */}
           {annuaireResults.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
-              <Search className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-slate-400 dark:text-slate-500">{t('suppliers.noMatchingSupplier')}</p>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-12 text-center">
+              <Search className="w-12 h-12 mx-auto text-[#6B7280] dark:text-[#A3A3A3] mb-3" />
+              <p className="text-[#9CA3AF] dark:text-[#A3A3A3]">{t('suppliers.noMatchingSupplier')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -1451,22 +1451,22 @@ export default function Suppliers() {
                 return (
                   <div
                     key={supplier.name}
-                    className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow p-5 flex flex-col"
+                    className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-md transition-shadow p-5 flex flex-col"
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-semibold text-slate-800 dark:text-slate-100 leading-tight">
+                      <h3 className="font-semibold text-[#111111] dark:text-white leading-tight">
                         {supplier.name}
                       </h3>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap ${tc.bg} ${tc.text}`}>
                         {({grossiste: t('suppliers.typeWholesaler'), specialiste: t('suppliers.typeSpecialist'), local: t('suppliers.typeLocal'), national: t('suppliers.typeNational')} as Record<string, string>)[supplier.type]}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-400 dark:text-slate-400 mb-3 line-clamp-2">
+                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-3 line-clamp-2">
                       {supplier.description}
                     </p>
                     <div className="flex flex-wrap gap-1 mb-3">
                       {supplier.categories.map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 font-medium">
+                        <span key={cat} className="px-2 py-0.5 rounded text-[10px] bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
                           {cat}
                         </span>
                       ))}
@@ -1476,7 +1476,7 @@ export default function Suppliers() {
                         {supplier.speciality}
                       </p>
                     )}
-                    <div className="text-xs text-slate-400 dark:text-slate-500 mb-3 flex items-start gap-1">
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#A3A3A3] mb-3 flex items-start gap-1">
                       <MapPin className="w-3 h-3 mt-0.5 shrink-0" />
                       <span className="line-clamp-1">
                         {supplier.regions.length === FRENCH_REGIONS.length
@@ -1484,20 +1484,20 @@ export default function Suppliers() {
                           : supplier.regions.join(', ')}
                       </span>
                     </div>
-                    <div className="mt-auto pt-3 border-t dark:border-slate-700 flex flex-wrap items-center gap-3 text-xs">
+                    <div className="mt-auto pt-3 border-t dark:border-[#1A1A1A] flex flex-wrap items-center gap-3 text-xs">
                       <span className={`flex items-center gap-1 ${supplier.delivery ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
                         {supplier.delivery ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
                         Livraison
                       </span>
                       {supplier.minOrder && (
-                        <span className="text-slate-400 dark:text-slate-400">Min: {supplier.minOrder}</span>
+                        <span className="text-[#9CA3AF] dark:text-[#737373]">Min: {supplier.minOrder}</span>
                       )}
                       {supplier.website && (
                         <a
                           href={supplier.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="ml-auto flex items-center gap-1 text-teal-600 dark:text-teal-400 hover:underline"
+                          className="ml-auto flex items-center gap-1 text-[#111111] dark:text-white hover:underline"
                         >
                           <ExternalLink className="w-3 h-3" />
                           Site web
@@ -1515,8 +1515,8 @@ export default function Suppliers() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t('suppliers.catalogTitle')}</h3>
-                <span className="text-xs text-slate-400 ml-2">{catalogData.length} {t('suppliers.availableProducts')}</span>
+                <h3 className="text-lg font-bold text-[#111111] dark:text-white">{t('suppliers.catalogTitle')}</h3>
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">{catalogData.length} {t('suppliers.availableProducts')}</span>
               </div>
               {catalogSelected.size > 0 && (
                 <button
@@ -1541,7 +1541,7 @@ export default function Suppliers() {
                     showToast(`${added} ${t('suppliers.productsAdded')}`, 'success');
                     setAddingCatalog(false);
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-700 text-white rounded-lg disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg disabled:opacity-50"
                 >
                   <Plus className="w-4 h-4" />
                   {addingCatalog ? t('suppliers.addingInProgress') : `${t('suppliers.add')} ${catalogSelected.size} ${t('suppliers.products')}`}
@@ -1551,7 +1551,7 @@ export default function Suppliers() {
             {/* Filters */}
             <div className="flex gap-2 mb-3">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
                 <input
                   type="text" placeholder={t('suppliers.searchProduct')} value={catalogSearch}
                   onChange={e => { setCatalogSearch(e.target.value); setCatalogPage(0); }}
@@ -1580,10 +1580,10 @@ export default function Suppliers() {
               const existingNames = new Set(ingredients.map(i => i.name.toLowerCase()));
               return (
                 <>
-                  <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+                  <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-400 dark:text-slate-400">
+                        <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] text-left text-xs text-[#9CA3AF] dark:text-[#737373]">
                           <th className="px-3 py-2 w-8">
                             <input type="checkbox"
                               checked={page.length > 0 && page.every((_, i) => catalogSelected.has(catalogPage * pageSize + i))}
@@ -1592,7 +1592,7 @@ export default function Suppliers() {
                                 page.forEach((_, i) => e.target.checked ? next.add(catalogPage * pageSize + i) : next.delete(catalogPage * pageSize + i));
                                 setCatalogSelected(next);
                               }}
-                              className="accent-teal-600"
+                              className="accent-neutral-900 dark:accent-white"
                             />
                           </th>
                           <th className="px-3 py-2">{t('suppliers.product')}</th>
@@ -1602,12 +1602,12 @@ export default function Suppliers() {
                           <th className="px-3 py-2 w-20">{t('suppliers.action')}</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y dark:divide-slate-700">
+                      <tbody className="divide-y dark:divide-[#1A1A1A]">
                         {page.map((p, i) => {
                           const globalIdx = catalogPage * pageSize + i;
                           const exists = existingNames.has(p.name.toLowerCase());
                           return (
-                            <tr key={globalIdx} className={`hover:bg-slate-50 dark:hover:bg-slate-700/30 ${exists ? 'opacity-50' : ''}`}>
+                            <tr key={globalIdx} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 ${exists ? 'opacity-50' : ''}`}>
                               <td className="px-3 py-2">
                                 <input type="checkbox" disabled={exists}
                                   checked={catalogSelected.has(globalIdx)}
@@ -1616,13 +1616,13 @@ export default function Suppliers() {
                                     next.has(globalIdx) ? next.delete(globalIdx) : next.add(globalIdx);
                                     return next;
                                   })}
-                                  className="accent-teal-600"
+                                  className="accent-neutral-900 dark:accent-white"
                                 />
                               </td>
-                              <td className="px-3 py-2 text-slate-400 dark:text-slate-300">{p.name}</td>
-                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400">{p.category}</span></td>
-                              <td className="px-3 py-2 font-medium text-teal-600 dark:text-teal-400">{p.prixMoy.toFixed(2)} €</td>
-                              <td className="px-3 py-2 text-slate-400">{p.unit}</td>
+                              <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#A3A3A3]">{p.name}</td>
+                              <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">{p.category}</span></td>
+                              <td className="px-3 py-2 font-medium text-[#111111] dark:text-white">{p.prixMoy.toFixed(2)} €</td>
+                              <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#737373]">{p.unit}</td>
                               <td className="px-3 py-2">
                                 {exists ? (
                                   <span className="text-xs text-green-500">✓ {t('suppliers.added')}</span>
@@ -1635,7 +1635,7 @@ export default function Suppliers() {
                                         showToast(`${p.name} ${t('suppliers.added')}`, 'success');
                                       } catch { showToast(t('suppliers.error'), 'error'); }
                                     }}
-                                    className="text-xs px-2 py-1 rounded bg-teal-600 hover:bg-teal-700 text-white"
+                                    className="text-xs px-2 py-1 rounded bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black"
                                   >
                                     + {t('suppliers.add')}
                                   </button>
@@ -1650,11 +1650,11 @@ export default function Suppliers() {
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-xs text-slate-400">{filtered.length} {t('suppliers.results')}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{filtered.length} {t('suppliers.results')}</span>
                       <div className="flex gap-1">
-                        <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">←</button>
-                        <span className="px-3 py-1 text-xs text-slate-400">{catalogPage + 1}{" / "}{totalPages}</span>
-                        <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-slate-600 disabled:opacity-30 hover:bg-slate-100 dark:hover:bg-slate-700">→</button>
+                        <button disabled={catalogPage === 0} onClick={() => setCatalogPage(p => p - 1)} className="px-3 py-1 text-xs rounded border dark:border-[#2A2A2A] disabled:opacity-30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]">←</button>
+                        <span className="px-3 py-1 text-xs text-[#9CA3AF] dark:text-[#737373]">{catalogPage + 1}{" / "}{totalPages}</span>
+                        <button disabled={catalogPage >= totalPages - 1} onClick={() => setCatalogPage(p => p + 1)} className="px-3 py-1 text-xs rounded border dark:border-[#2A2A2A] disabled:opacity-30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]">→</button>
                       </div>
                     </div>
                   )}
@@ -1672,7 +1672,7 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
               <Scale className="w-6 h-6 text-emerald-500" />
               Comparateur de prix
             </h2>
@@ -1688,52 +1688,52 @@ export default function Suppliers() {
 
           {/* Stats cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">Produits comparables</span>
-                <div className="p-2 rounded-lg bg-teal-600"><Scale className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Produits comparables</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Scale className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{comparatorData.length}</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{comparatorData.length}</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">Fournisseurs actifs</span>
-                <div className="p-2 rounded-lg bg-purple-600"><Truck className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Fournisseurs actifs</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{suppliers.length}</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{suppliers.length}</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">Economie potentielle</span>
-                <div className="p-2 rounded-lg bg-emerald-600"><Euro className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Economie potentielle</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Euro className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{totalPotentialSavings.toFixed(2)} EUR</div>
-              <div className="text-xs text-slate-400">par mois</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">par mois</div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400 dark:text-slate-400">Alertes prix</span>
-                <div className="p-2 rounded-lg bg-red-500"><AlertTriangle className="w-5 h-5 text-white" /></div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Alertes prix</span>
+                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><AlertTriangle className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
-              <div className="text-xs text-slate-400">hausses &gt; 5%</div>
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">hausses &gt; 5%</div>
             </div>
           </div>
 
           {comparatorData.length === 0 ? (
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-12 text-center">
-              <Scale className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" />
-              <p className="text-slate-400 dark:text-slate-500 mb-2">Aucun produit comparable</p>
-              <p className="text-sm text-slate-400 dark:text-slate-500">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-12 text-center">
+              <Scale className="w-12 h-12 mx-auto text-[#6B7280] dark:text-[#A3A3A3] mb-3" />
+              <p className="text-[#9CA3AF] dark:text-[#A3A3A3] mb-2">Aucun produit comparable</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-[#A3A3A3]">
                 Liez le meme ingredient a plusieurs fournisseurs pour activer la comparaison des prix.
               </p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-700/50 text-left text-xs text-slate-400 dark:text-slate-400">
+                    <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] text-left text-xs text-[#9CA3AF] dark:text-[#737373]">
                       <th className="px-4 py-3 font-medium">Ingredient</th>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <th key={s.id} className="px-4 py-3 font-medium text-center whitespace-nowrap">
@@ -1750,26 +1750,26 @@ export default function Suppliers() {
                       <th className="px-4 py-3 font-medium text-right whitespace-nowrap">Economie/mois</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y dark:divide-slate-700">
+                  <tbody className="divide-y dark:divide-[#1A1A1A]">
                     {comparatorData.map((item) => {
                       const allSuppliers = suppliers.filter(s => (s.ingredients || []).length > 0);
                       const entryMap: Record<number, typeof item.entries[0]> = {};
                       item.entries.forEach(e => { entryMap[e.supplierId] = e; });
                       return (
-                        <tr key={item.key} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                        <tr key={item.key} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30">
                           <td className="px-4 py-3">
-                            <div className="font-medium text-slate-400 dark:text-slate-200">{item.displayName}</div>
-                            <div className="text-xs text-slate-400">{item.entries.length} fournisseurs</div>
+                            <div className="font-medium text-[#9CA3AF] dark:text-[#E5E5E5]">{item.displayName}</div>
+                            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.entries.length} fournisseurs</div>
                           </td>
                           {allSuppliers.map(s => {
                             const entry = entryMap[s.id];
                             if (!entry) {
-                              return <td key={s.id} className="px-4 py-3 text-center text-slate-300 dark:text-slate-600">--</td>;
+                              return <td key={s.id} className="px-4 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">--</td>;
                             }
                             const isCheapest = entry.pricePerUnit === item.cheapestPrice;
                             return (
                               <td key={s.id} className={`px-4 py-3 text-center ${isCheapest ? 'bg-green-50 dark:bg-green-900/20' : ''}`}>
-                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-slate-300 dark:text-slate-400'}`}>
+                                <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-[#6B7280] dark:text-[#737373]'}`}>
                                   {entry.pricePerUnit.toFixed(2)} EUR/{entry.unit}
                                 </span>
                                 {isCheapest && item.entries.length > 1 && (
@@ -1789,7 +1789,7 @@ export default function Suppliers() {
                                 {item.savingsPerMonth.toFixed(2)} EUR
                               </span>
                             ) : (
-                              <span className="text-slate-400">--</span>
+                              <span className="text-[#9CA3AF] dark:text-[#737373]">--</span>
                             )}
                           </td>
                         </tr>
@@ -1797,8 +1797,8 @@ export default function Suppliers() {
                     })}
                   </tbody>
                   <tfoot>
-                    <tr className="bg-slate-50 dark:bg-slate-700/50 font-semibold">
-                      <td className="px-4 py-3 text-slate-400 dark:text-slate-200">Total</td>
+                    <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] font-semibold">
+                      <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#E5E5E5]">Total</td>
                       {suppliers.filter(s => (s.ingredients || []).length > 0).map(s => (
                         <td key={s.id} className="px-4 py-3" />
                       ))}
@@ -1815,7 +1815,7 @@ export default function Suppliers() {
           {/* Price alerts section */}
           {Object.keys(priceAlerts).length > 0 && (
             <div className="mt-6">
-              <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
                 Alertes de prix
               </h3>
@@ -1837,8 +1837,8 @@ export default function Suppliers() {
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <span className="font-medium text-sm text-slate-400 dark:text-slate-200">{ing.name}</span>
-                            {supplier && <span className="text-xs text-slate-400 ml-2">({supplier.name})</span>}
+                            <span className="font-medium text-sm text-[#9CA3AF] dark:text-[#E5E5E5]">{ing.name}</span>
+                            {supplier && <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">({supplier.name})</span>}
                           </div>
                           <span className={`text-sm font-bold px-2 py-0.5 rounded-full ${
                             isIncrease
@@ -1848,7 +1848,7 @@ export default function Suppliers() {
                             {isIncrease ? '↑' : '↓'} {isIncrease ? '+' : ''}{alert.pctChange}%
                           </span>
                         </div>
-                        <div className="text-xs text-slate-400 mt-1">
+                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                           Prix actuel : {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
                         </div>
                       </div>
@@ -1871,7 +1871,7 @@ export default function Suppliers() {
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
           {/* Nom */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">
               {t('suppliers.supplierName')} <span className="text-red-500">*</span>
             </label>
             <input
@@ -1885,7 +1885,7 @@ export default function Suppliers() {
 
           {/* Contact name */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.contactName')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.contactName')}</label>
             <input
               type="text"
               value={form.contactName}
@@ -1897,7 +1897,7 @@ export default function Suppliers() {
           {/* Phone + Email */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.phone')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.phone')}</label>
               <input
                 type="tel"
                 value={form.phone}
@@ -1906,7 +1906,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.email')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.email')}</label>
               <input
                 type="email"
                 value={form.email}
@@ -1918,7 +1918,7 @@ export default function Suppliers() {
 
           {/* Address */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.address')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.address')}</label>
             <input
               type="text"
               value={form.address}
@@ -1930,7 +1930,7 @@ export default function Suppliers() {
           {/* Postal code + City */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.postalCode')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.postalCode')}</label>
               <input
                 type="text"
                 value={form.postalCode}
@@ -1939,7 +1939,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.city')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.city')}</label>
               <input
                 type="text"
                 value={form.city}
@@ -1952,7 +1952,7 @@ export default function Suppliers() {
           {/* Region + Country */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.region')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.region')}</label>
               <select
                 value={form.region}
                 onChange={(e) => setField('region', e.target.value)}
@@ -1965,7 +1965,7 @@ export default function Suppliers() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.country')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.country')}</label>
               <input
                 type="text"
                 value={form.country}
@@ -1978,7 +1978,7 @@ export default function Suppliers() {
           {/* SIRET + Website */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.siret')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.siret')}</label>
               <input
                 type="text"
                 value={form.siret}
@@ -1988,7 +1988,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.websiteLabel')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.websiteLabel')}</label>
               <input
                 type="url"
                 value={form.website}
@@ -2001,15 +2001,15 @@ export default function Suppliers() {
 
           {/* Categories multi-select */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-2">{t('suppliers.categories')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-2">{t('suppliers.categories')}</label>
             <div className="flex flex-wrap gap-2">
               {INGREDIENT_CATEGORIES.map((cat) => (
                 <label
                   key={cat}
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm cursor-pointer select-none border transition-colors ${
                     form.categories.includes(cat)
-                      ? 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700 text-teal-700 dark:text-teal-300'
-                      : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-600'
+                      ? 'bg-[#111111] dark:bg-white border-[#111111] dark:border-white text-white dark:text-black'
+                      : 'bg-white dark:bg-[#171717] border-[#E5E7EB] dark:border-[#2A2A2A] text-[#6B7280] dark:text-[#737373] hover:bg-[#FAFAFA] dark:hover:bg-[#171717]'
                   }`}
                 >
                   <input
@@ -2035,16 +2035,16 @@ export default function Suppliers() {
               >
                 {form.delivery
                   ? <ToggleRight className="w-8 h-8 text-green-500" />
-                  : <ToggleLeft className="w-8 h-8 text-slate-400" />}
+                  : <ToggleLeft className="w-8 h-8 text-[#9CA3AF] dark:text-[#737373]" />}
               </button>
-              <span className="text-sm font-medium text-slate-400 dark:text-slate-300">{t('suppliers.deliveryAvailable')}</span>
+              <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3]">{t('suppliers.deliveryAvailable')}</span>
             </label>
           </div>
 
           {/* Min order + Payment terms */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.minimumOrder')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.minimumOrder')}</label>
               <input
                 type="text"
                 value={form.minOrder}
@@ -2054,7 +2054,7 @@ export default function Suppliers() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.paymentTerms')}</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.paymentTerms')}</label>
               <input
                 type="text"
                 value={form.paymentTerms}
@@ -2067,7 +2067,7 @@ export default function Suppliers() {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('suppliers.notes')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.notes')}</label>
             <textarea
               value={form.notes}
               onChange={(e) => setField('notes', e.target.value)}
@@ -2079,10 +2079,10 @@ export default function Suppliers() {
         </div>
 
         {/* Modal footer */}
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-slate-700">
+        <div className="flex justify-end gap-3 mt-6 pt-4 border-t dark:border-[#1A1A1A]">
           <button
             onClick={() => setModalOpen(false)}
-            className="px-4 py-2 rounded-lg font-medium border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="px-4 py-2 rounded-lg font-medium border border-[#D1D5DB] dark:border-[#2A2A2A] text-[#9CA3AF] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
           >
             {t('suppliers.cancel')}
           </button>
@@ -2114,43 +2114,43 @@ export default function Suppliers() {
             .sort((a, b) => (b.score?.scores?.global ?? 0) - (a.score?.scores?.global ?? 0));
 
           if (scoredSuppliers.length === 0) {
-            return <p className="text-sm text-slate-400 py-6 text-center">Aucun score disponible.</p>;
+            return <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-6 text-center">Aucun score disponible.</p>;
           }
 
           return (
             <div className="overflow-x-auto max-h-[70vh]">
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-slate-800 z-10">
+                <thead className="sticky top-0 bg-[#FAFAFA] dark:bg-[#0A0A0A] z-10">
                   <tr>
-                    <th className="text-left px-3 py-2.5 text-xs text-slate-400 font-medium">Fournisseur</th>
-                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                    <th className="text-left px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Fournisseur</th>
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
                       <div className="flex items-center justify-center gap-1"><Star className="w-3 h-3" /> Global</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
                       <div className="flex items-center justify-center gap-1"><Truck className="w-3 h-3" /> Fiabilite</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
                       <div className="flex items-center justify-center gap-1"><TrendingUp className="w-3 h-3" /> Prix</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
                       <div className="flex items-center justify-center gap-1"><Package className="w-3 h-3" /> Catalogue</div>
                     </th>
-                    <th className="text-center px-3 py-2.5 text-xs text-slate-400 font-medium">
+                    <th className="text-center px-3 py-2.5 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
                       <div className="flex items-center justify-center gap-1"><Clock className="w-3 h-3" /> Historique</div>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-700/50">
+                <tbody className="divide-y divide-[#E5E7EB]/50">
                   {scoredSuppliers.map(({ supplier, score }, idx) => {
                     const g = score?.scores?.global ?? 0;
                     const isTop = g > 80;
                     return (
-                      <tr key={supplier.id} className={`hover:bg-slate-700/30 ${idx === 0 ? 'bg-teal-900/10' : ''}`}>
+                      <tr key={supplier.id} className={`hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30 ${idx === 0 ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A]' : ''}`}>
                         <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
                             <CircularScore score={g} size={32} strokeWidth={3} />
                             <div>
-                              <span className="font-medium text-white text-sm">{supplier.name}</span>
+                              <span className="font-medium text-[#111111] dark:text-white text-sm">{supplier.name}</span>
                               {isTop && (
                                 <span className="ml-1.5 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-bold">
                                   <Award className="w-2.5 h-2.5" /> Top
@@ -2169,7 +2169,7 @@ export default function Suppliers() {
                             <td key={i} className="px-3 py-3 text-center">
                               <div className="flex flex-col items-center gap-1">
                                 <span className={`font-semibold text-xs ${c}`}>{v}</span>
-                                <div className="w-12 h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
+                                <div className="w-12 h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
                                   <div className={`h-full rounded-full ${v > 70 ? 'bg-teal-500' : v >= 40 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${Math.max(2, v)}%` }} />
                                 </div>
                               </div>

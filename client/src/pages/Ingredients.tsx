@@ -417,19 +417,19 @@ export default function Ingredients() {
 
   function SortHeader({ label, field }: { label: string; field: SortKey }) {
     return (
-      <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-slate-900 dark:hover:text-slate-200">
+      <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-[#111111] dark:hover:text-white">
         {label}
-        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-teal-600' : 'text-slate-400'}`} />
+        <ArrowUpDown className={`w-3 h-3 ${sortKey === field ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
       </button>
     );
   }
 
-  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t('ingredients.loading')}</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.loading')}</div>;
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t('ingredients.title')}</h2>
+        <h2 className="text-2xl font-bold text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
         <div className="flex gap-2">
           <button onClick={() => window.print()} className="btn-secondary flex items-center gap-2 text-sm no-print" title={t('ingredients.printTooltip')}>
             <Printer className="w-4 h-4" /> {t('ingredients.print')}
@@ -442,47 +442,47 @@ export default function Ingredients() {
 
       {/* KPI Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/30">
-            <Package className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+            <Package className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 dark:text-slate-400">{t('ingredients.totalIngredients')}</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{summaryStats.total}</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.totalIngredients')}</p>
+            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.total}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/30">
-            <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+            <Euro className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 dark:text-slate-400">{t('ingredients.avgPrice')}</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{summaryStats.avgPrice.toFixed(2)} &euro;</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.avgPrice')}</p>
+            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} &euro;</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/30">
-            <Tag className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+            <Tag className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 dark:text-slate-400">{t('ingredients.expensiveCategory')}</p>
-            <p className="text-lg font-bold text-slate-800 dark:text-white truncate">{summaryStats.expensiveCat}</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.expensiveCategory')}</p>
+            <p className="text-lg font-bold text-[#111111] dark:text-white truncate">{summaryStats.expensiveCat}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/30">
-            <Truck className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+            <Truck className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 dark:text-slate-400">{t('ingredients.linkedSuppliers')}</p>
-            <p className="text-xl font-bold text-slate-800 dark:text-white">{summaryStats.uniqueSuppliers}</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.linkedSuppliers')}</p>
+            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.uniqueSuppliers}</p>
           </div>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative mb-3">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
         <input
           type="text"
           placeholder={t('ingredients.searchPlaceholder')}
@@ -498,8 +498,8 @@ export default function Ingredients() {
           onClick={() => setFilterCategory('')}
           className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
             !filterCategory
-              ? 'bg-teal-600 text-white'
-              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
           }`}
         >
           {t('ingredients.allCategories')} ({ingredients.length})
@@ -510,8 +510,8 @@ export default function Ingredients() {
             onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
               filterCategory === cat
-                ? 'bg-teal-600 text-white'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
             }`}
           >
             {cat} ({categoryCounts[cat] || 0})
@@ -520,9 +520,9 @@ export default function Ingredients() {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-x-auto">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-x-auto border border-[#E5E7EB] dark:border-[#1A1A1A]">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-left">
+          <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-left">
             <tr>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.nameColumn')} field="name" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.categoryColumn')} field="category" /></th>
@@ -533,17 +533,17 @@ export default function Ingredients() {
               <th className="px-4 py-3 font-medium w-24">{t('ingredients.actionsColumn')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+          <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-slate-400 dark:text-slate-500">
+                <td colSpan={7} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
                   {ingredients.length === 0 ? t('ingredients.noIngredients') : t('ingredients.noResults')}
                 </td>
               </tr>
             ) : (
               filtered.map((ing) => (
-                <tr key={ing.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
+                <tr key={ing.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]">
+                  <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
                     <div className="flex items-center gap-2.5">
                       <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
                       <span>
@@ -555,14 +555,14 @@ export default function Ingredients() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-1 rounded-full text-xs bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300">{ing.category}</span>
+                    <span className="px-2 py-1 rounded-full text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white">{ing.category}</span>
                   </td>
-                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{ing.pricePerUnit.toFixed(2)} &euro;</td>
-                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{ing.unit}</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{ing.pricePerUnit.toFixed(2)} &euro;</td>
+                  <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{ing.unit}</td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
                       {(ing.allergens || []).map((a) => (
-                        <span key={a} className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium">
+                        <span key={a} className="px-1.5 py-0.5 rounded text-[10px] bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-medium">
                           {a}
                         </span>
                       ))}
@@ -570,12 +570,12 @@ export default function Ingredients() {
                   </td>
                   <td className="px-4 py-3">
                     {ing.supplierRef?.name || ing.supplier ? (
-                      <span className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
-                        <Truck className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400 flex-shrink-0" />
+                      <span className="inline-flex items-center gap-1.5 text-[#6B7280] dark:text-[#A3A3A3]">
+                        <Truck className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3] flex-shrink-0" />
                         {ing.supplierRef?.name || ing.supplier}
                       </span>
                     ) : (
-                      <span className="text-slate-400 dark:text-slate-500 italic text-xs">{t('ingredients.notAssigned')}</span>
+                      <span className="text-[#9CA3AF] dark:text-[#737373] italic text-xs">{t('ingredients.notAssigned')}</span>
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -583,8 +583,8 @@ export default function Ingredients() {
                       <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingrédient">
                         <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       </button>
-                      <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingrédient">
-                        <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                      <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingrédient">
+                        <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                       </button>
                       <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingrédient">
                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -598,15 +598,15 @@ export default function Ingredients() {
         </table>
       </div>
 
-      <p className="text-sm text-slate-400 dark:text-slate-500 mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
+      <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
 
       {/* Form Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t('ingredients.editModalTitle') : t('ingredients.newModalTitle')}>
         {/* Price History Chart (edit mode only) */}
         {editingId && (
-          <div className="mb-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+          <div className="mb-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">
                 Historique des prix (30j)
               </span>
               {priceHistory.length >= 2 && (() => {
@@ -617,7 +617,7 @@ export default function Ingredients() {
                 const isUp = diff > 0;
                 const isDown = diff < 0;
                 return (
-                  <span className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-slate-400'}`}>
+                  <span className={`flex items-center gap-1 text-xs font-semibold ${isUp ? 'text-red-500' : isDown ? 'text-emerald-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
                     {isUp && <TrendingUp className="w-3.5 h-3.5" />}
                     {isDown && <TrendingDown className="w-3.5 h-3.5" />}
                     {isUp ? '+' : ''}{pct}%
@@ -627,10 +627,10 @@ export default function Ingredients() {
             </div>
             {priceHistoryLoading ? (
               <div className="flex items-center justify-center py-4">
-                <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#9CA3AF] dark:text-[#737373]" />
               </div>
             ) : priceHistory.length === 0 ? (
-              <p className="text-xs text-slate-400 dark:text-slate-500 text-center py-3">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-3">
                 Pas d'historique disponible
               </p>
             ) : (
@@ -639,7 +639,7 @@ export default function Ingredients() {
                   <LineChart data={priceHistory} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
                     <XAxis
                       dataKey="date"
-                      tick={{ fontSize: 10, fill: '#94a3b8' }}
+                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
                       tickFormatter={(v: string) => {
                         const d = new Date(v);
                         return `${d.getDate()}/${d.getMonth() + 1}`;
@@ -648,7 +648,7 @@ export default function Ingredients() {
                       tickLine={false}
                     />
                     <YAxis
-                      tick={{ fontSize: 10, fill: '#94a3b8' }}
+                      tick={{ fontSize: 10, fill: '#9CA3AF' }}
                       width={40}
                       tickFormatter={(v: number) => `${v.toFixed(1)}`}
                       axisLine={false}
@@ -657,11 +657,11 @@ export default function Ingredients() {
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#1e293b',
-                        border: '1px solid #334155',
+                        backgroundColor: '#000000',
+                        border: '1px solid #1A1A1A',
                         borderRadius: '8px',
                         fontSize: '12px',
-                        color: '#e2e8f0',
+                        color: '#FFFFFF',
                       }}
                       formatter={(value: unknown) => [`${Number(value).toFixed(2)} \u20AC`, 'Prix']}
                       labelFormatter={(label: unknown) => {
@@ -672,10 +672,10 @@ export default function Ingredients() {
                     <Line
                       type="monotone"
                       dataKey="price"
-                      stroke="#14b8a6"
+                      stroke="#111111"
                       strokeWidth={2}
                       dot={false}
-                      activeDot={{ r: 3, fill: '#14b8a6' }}
+                      activeDot={{ r: 3, fill: '#111111' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -701,10 +701,10 @@ export default function Ingredients() {
             {formErrors.name && <p className="text-xs text-red-500 mt-1">{t('ingredients.nameRequired')}</p>}
             {/* Name suggestions dropdown — existing + catalog */}
             {showNameSuggestions && (nameSuggestions.length > 0 || catalogSuggestions.length > 0) && (
-              <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 rounded-lg shadow-xl border dark:border-slate-600 max-h-64 overflow-y-auto">
+              <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-64 overflow-y-auto">
                 {nameSuggestions.length > 0 && (
                   <>
-                    <div className="px-3 py-1.5 text-xs text-slate-400 border-b dark:border-slate-600 bg-slate-50 dark:bg-slate-800">
+                    <div className="px-3 py-1.5 text-xs text-[#9CA3AF] dark:text-[#737373] border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
                       {t('ingredients.existingIngredients')}
                     </div>
                     {nameSuggestions.map((ing) => (
@@ -712,20 +712,20 @@ export default function Ingredients() {
                         key={ing.id}
                         type="button"
                         onClick={() => selectNameSuggestion(ing)}
-                        className="w-full text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-slate-800 dark:text-slate-200">{ing.name}</span>
-                          <span className="text-xs text-slate-400">{ing.category} - {ing.pricePerUnit.toFixed(2)}&euro;/{ing.unit}</span>
+                          <span className="font-medium text-[#111111] dark:text-white">{ing.name}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.category} - {ing.pricePerUnit.toFixed(2)}&euro;/{ing.unit}</span>
                         </div>
-                        {ing.supplier && <div className="text-xs text-slate-400 mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
+                        {ing.supplier && <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
                       </button>
                     ))}
                   </>
                 )}
                 {catalogSuggestions.length > 0 && (
                   <>
-                    <div className="px-3 py-1.5 text-xs text-teal-500 border-b dark:border-slate-600 bg-teal-50 dark:bg-teal-900/20 flex items-center gap-1.5">
+                    <div className="px-3 py-1.5 text-xs text-[#111111] dark:text-white border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F3F4F6] dark:bg-[#171717] flex items-center gap-1.5">
                       <BookOpen className="w-3 h-3" /> {t('ingredients.catalogTitle')}
                     </div>
                     {catalogSuggestions.map((product, idx) => (
@@ -733,19 +733,19 @@ export default function Ingredients() {
                         key={`cat-${idx}`}
                         type="button"
                         onClick={() => selectCatalogProduct(product)}
-                        className="w-full text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                        className="w-full text-left px-3 py-2 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-slate-800 dark:text-slate-200">{product.name}</span>
-                          <span className="text-xs font-semibold text-teal-600 dark:text-teal-400">{product.prixMoy.toFixed(2)}&euro;/{product.unit}</span>
+                          <span className="font-medium text-[#111111] dark:text-white">{product.name}</span>
+                          <span className="text-xs font-semibold text-[#111111] dark:text-white">{product.prixMoy.toFixed(2)}&euro;/{product.unit}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-xs text-slate-400">{product.category}</span>
-                          <span className="text-xs text-slate-400">|</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{product.category}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">|</span>
                           <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}&euro;</span>
-                          <span className="text-xs text-slate-400">—</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">—</span>
                           <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}&euro;</span>
-                          <span className="text-xs text-slate-400 ml-auto">{product.fournisseurs.join(', ')}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">{product.fournisseurs.join(', ')}</span>
                         </div>
                       </button>
                     ))}
@@ -774,7 +774,7 @@ export default function Ingredients() {
               />
               {formErrors.pricePerUnit && <p className="text-xs text-red-500 mt-1">{t('ingredients.priceRequired')}</p>}
               {editingId && lastPrice !== null && (
-                <p className="text-xs text-teal-500 dark:text-teal-400 mt-1">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">
                   {t('ingredients.lastPrice').replace('{price}', lastPrice.toFixed(2))}
                 </p>
               )}
@@ -811,7 +811,7 @@ export default function Ingredients() {
               <button
                 type="button"
                 onClick={() => setShowNewSupplierForm(!showNewSupplierForm)}
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium"
+                className="text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium"
               >
                 {showNewSupplierForm ? t('ingredients.cancelCreateSupplier') : t('ingredients.createSupplier')}
               </button>
@@ -846,21 +846,21 @@ export default function Ingredients() {
                   placeholder={t('ingredients.supplierSelectPlaceholder')}
                   autoComplete="off"
                 />
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 {form.supplier && (
                   <button
                     type="button"
                     onClick={() => { setForm({ ...form, supplier: '', supplierId: null }); setSupplierQuery(''); }}
                     aria-label="Effacer le fournisseur"
-                    className="absolute right-8 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-600"
+                    className="absolute right-8 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]"
                   >
-                    <X className="w-3 h-3 text-slate-400" />
+                    <X className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373]" />
                   </button>
                 )}
                 {showSupplierDropdown && (
-                  <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 rounded-lg shadow-xl border dark:border-slate-600 max-h-48 overflow-y-auto">
+                  <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-48 overflow-y-auto">
                     {filteredSuppliersList.length === 0 ? (
-                      <div className="px-3 py-2 text-sm text-slate-400">
+                      <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373]">
                         {suppliers.length === 0 ? t('ingredients.noExistingSuppliers') : t('ingredients.noMatch')}
                       </div>
                     ) : (
@@ -869,7 +869,7 @@ export default function Ingredients() {
                           key={s.id}
                           type="button"
                           onClick={() => selectSupplier(s)}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors ${form.supplierId === s.id ? 'bg-teal-50 dark:bg-slate-600 font-medium text-teal-700 dark:text-teal-300' : 'text-slate-400 dark:text-slate-300'}`}
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors ${form.supplierId === s.id ? 'bg-[#F3F4F6] dark:bg-[#171717] font-medium text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}
                         >
                           {s.name}
                         </button>
@@ -885,12 +885,12 @@ export default function Ingredients() {
             <label className="label">{t('ingredients.allergensLabel')}</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
               {ALLERGENS.map((allergen) => (
-                <label key={allergen} className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-300 cursor-pointer">
+                <label key={allergen} className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={form.allergens.includes(allergen)}
                     onChange={() => toggleAllergen(allergen)}
-                    className="rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                    className="rounded border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] focus:ring-[#111111] dark:focus:ring-white"
                   />
                   {allergen}
                 </label>
@@ -900,7 +900,7 @@ export default function Ingredients() {
 
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400">{t('ingredients.saveShortcut')}</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.saveShortcut')}</span>
               {editingId && (
                 <button
                   type="button"
@@ -908,7 +908,7 @@ export default function Ingredients() {
                     const ing = ingredients.find(i => i.id === editingId);
                     if (ing) { setShowForm(false); openWeigh(ing); }
                   }}
-                  className="flex items-center gap-1 px-2 py-1 text-xs bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
+                  className="flex items-center gap-1 px-2 py-1 text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white rounded border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
                 >
                   <Scale className="w-3 h-3" /> {t('ingredients.weigh')}
                 </button>

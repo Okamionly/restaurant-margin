@@ -531,11 +531,11 @@ export default function Planning() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
             <CalendarDays className="w-7 h-7 text-indigo-500" />
             {t('planning.title')}
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
             {t('planning.subtitle')}
           </p>
         </div>
@@ -570,29 +570,29 @@ export default function Planning() {
       </div>
 
       {/* Week navigation + view toggle */}
-      <div className="flex flex-col sm:flex-row items-center justify-between bg-slate-900/50 border border-slate-800 rounded-2xl p-4 gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 gap-3">
         <div className="flex items-center gap-2">
-          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-slate-800 transition">
-            <ChevronLeft className="w-5 h-5 text-slate-300" />
+          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
+            <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
           </button>
           <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-900/40 text-indigo-300 hover:bg-indigo-800/50 transition border border-indigo-700/30">
             {t('planning.today')}
           </button>
-          <h2 className="text-lg font-semibold text-white px-2">{weekLabel}</h2>
-          <button onClick={goNext} className="p-2 rounded-lg hover:bg-slate-800 transition">
-            <ChevronRight className="w-5 h-5 text-slate-300" />
+          <h2 className="text-lg font-semibold text-[#111111] dark:text-white px-2">{weekLabel}</h2>
+          <button onClick={goNext} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
+            <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
           </button>
         </div>
-        <div className="flex rounded-lg bg-slate-800 border border-slate-700 p-0.5">
+        <div className="flex rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] p-0.5">
           <button
             onClick={() => setView('semaine')}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'semaine' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'semaine' ? 'bg-indigo-600 text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
           >
             {t('planning.week')}
           </button>
           <button
             onClick={() => setView('jour')}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'jour' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition ${view === 'jour' ? 'bg-indigo-600 text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
           >
             {t('planning.day')}
           </button>
@@ -600,8 +600,8 @@ export default function Planning() {
       </div>
 
       {/* Employee drag panel */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-        <h3 className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+        <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">
           {t('planning.dragToAssign')}
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -610,12 +610,12 @@ export default function Planning() {
               key={emp.id}
               draggable
               onDragStart={() => handleDragStart(emp)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 cursor-grab active:cursor-grabbing hover:border-slate-600 transition select-none"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-grab active:cursor-grabbing hover:border-[#D1D5DB] dark:hover:border-[#333] transition select-none"
             >
-              <GripVertical className="w-3.5 h-3.5 text-slate-400" />
+              <GripVertical className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
               <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-              <span className="text-sm text-slate-200 font-medium">{emp.name || ''}</span>
-              <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] font-medium">{emp.name || ''}</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
             </div>
           ))}
         </div>
@@ -623,7 +623,7 @@ export default function Planning() {
 
       {/* ── Vue semaine ── */}
       {view === 'semaine' && (
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
           {/* Desktop grid */}
           <div className="hidden lg:block overflow-x-auto">
             <div className="grid grid-cols-7 min-w-[900px]">
@@ -634,14 +634,14 @@ export default function Planning() {
                 const dayCost = dailyCosts[i];
 
                 return (
-                  <div key={i} className={`border-r border-slate-800 last:border-r-0 ${isToday ? 'bg-indigo-950/20' : ''}`}>
+                  <div key={i} className={`border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 ${isToday ? 'bg-indigo-950/20' : ''}`}>
                     {/* Day header */}
-                    <div className={`px-3 py-2.5 border-b border-slate-800 text-center ${isToday ? 'bg-indigo-900/30' : 'bg-slate-800/40'}`}>
-                      <div className="text-xs font-medium text-slate-400 uppercase">{JOURS[i]}</div>
-                      <div className={`text-sm font-bold ${isToday ? 'text-indigo-400' : 'text-slate-200'}`}>
+                    <div className={`px-3 py-2.5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-center ${isToday ? 'bg-indigo-900/30' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+                      <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS[i]}</div>
+                      <div className={`text-sm font-bold ${isToday ? 'text-indigo-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                         {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{(dayCost ?? 0).toFixed(0)} EUR</div>
+                      <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">{(dayCost ?? 0).toFixed(0)} EUR</div>
                     </div>
                     {/* Shift zones */}
                     {SHIFT_TYPES.map(st => {
@@ -651,7 +651,7 @@ export default function Planning() {
                           key={st.key}
                           onDragOver={handleDragOver}
                           onDrop={() => handleDrop(dayStr, st.key)}
-                          className={`border-b border-slate-800/50 last:border-b-0 min-h-[60px] p-1.5 transition ${dragEmployee ? 'bg-slate-800/20 hover:bg-slate-700/30' : ''}`}
+                          className={`border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-b-0 min-h-[60px] p-1.5 transition ${dragEmployee ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:bg-[#171717]/30' : ''}`}
                         >
                           <div className={`text-[9px] font-medium uppercase tracking-wider mb-1 ${st.color}`}>
                             {st.label} ({st.start}-{st.end})
@@ -672,11 +672,11 @@ export default function Planning() {
                                     }}
                                     onClick={() => openEditShift(s)}
                                   >
-                                    <div className="font-semibold text-white truncate">{emp.name || ''}</div>
-                                    <div className="text-[10px] font-mono text-slate-400">{s.startTime}-{s.endTime}</div>
+                                    <div className="font-semibold text-[#111111] dark:text-white truncate">{emp.name || ''}</div>
+                                    <div className="text-[10px] font-mono text-[#9CA3AF] dark:text-[#737373]">{s.startTime}-{s.endTime}</div>
                                     <button
                                       onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
-                                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-slate-900/80 hover:bg-red-900/60 transition"
+                                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-white dark:bg-black hover:bg-red-900/60 transition"
                                     >
                                       <X className="w-3 h-3 text-red-400" />
                                     </button>
@@ -691,7 +691,7 @@ export default function Planning() {
                     <div className="p-1.5">
                       <button
                         onClick={() => openAddShift(dayStr)}
-                        className="w-full py-1.5 border border-dashed border-slate-700 rounded-lg text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+                        className="w-full py-1.5 border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -704,24 +704,24 @@ export default function Planning() {
 
           {/* Mobile: single day view */}
           <div className="lg:hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-800/40">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
               <button
                 onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
-                className="p-2 rounded-lg hover:bg-slate-700 transition"
+                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
               >
-                <ChevronLeft className="w-5 h-5 text-slate-300" />
+                <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
               </button>
               <div className="text-center">
-                <div className="text-xs font-medium text-slate-400 uppercase">{JOURS_FULL[selectedDayIdx]}</div>
-                <div className="text-sm font-semibold text-white">
+                <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[selectedDayIdx]}</div>
+                <div className="text-sm font-semibold text-[#111111] dark:text-white">
                   {weekDays[selectedDayIdx].getDate()}/{(weekDays[selectedDayIdx].getMonth() + 1).toString().padStart(2, '0')}
                 </div>
               </div>
               <button
                 onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
-                className="p-2 rounded-lg hover:bg-slate-700 transition"
+                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
               >
-                <ChevronRight className="w-5 h-5 text-slate-300" />
+                <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
               </button>
             </div>
             <MobileDayContent
@@ -741,25 +741,25 @@ export default function Planning() {
 
       {/* ── Vue jour ── */}
       {view === 'jour' && (
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-800/40">
+        <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
             <button
               onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
-              className="p-2 rounded-lg hover:bg-slate-700 transition"
+              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
             >
-              <ChevronLeft className="w-5 h-5 text-slate-300" />
+              <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
             </button>
             <div className="text-center">
-              <div className="text-xs font-medium text-slate-400 uppercase">{JOURS_FULL[selectedDayIdx]}</div>
+              <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[selectedDayIdx]}</div>
               <div className="text-lg font-bold text-white">
                 {weekDays[selectedDayIdx].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
             </div>
             <button
               onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
-              className="p-2 rounded-lg hover:bg-slate-700 transition"
+              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
             >
-              <ChevronRight className="w-5 h-5 text-slate-300" />
+              <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
             </button>
           </div>
           <DayDetailView
@@ -774,9 +774,9 @@ export default function Planning() {
       )}
 
       {/* Employee list */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
-          <h3 className="font-semibold text-white flex items-center gap-2">
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
             <Users className="w-4 h-4 text-indigo-400" /> {t('planning.team')} ({employees.length})
           </h3>
           <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-400 hover:underline flex items-center gap-1">
@@ -786,27 +786,27 @@ export default function Planning() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">{t('planning.employee')}</th>
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">{t('planning.role')}</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.rate')}</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.contract')}</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.hoursPerWeek')}</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{t('planning.status')}</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{t('planning.actions')}</th>
+              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.employee')}</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.role')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.rate')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.contract')}</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.hoursPerWeek')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.status')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.actions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {employees.map(emp => {
                 const hours = employeeWeeklyHours.get(emp.id) || 0;
                 const isOver35 = hours > 35;
                 const isOver48 = hours > 48;
                 return (
-                  <tr key={emp.id} className="hover:bg-slate-800/30 transition">
+                  <tr key={emp.id} className="hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                        <span className="font-medium text-white">{emp.name || ''}</span>
+                        <span className="font-medium text-[#111111] dark:text-white">{emp.name || ''}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -814,8 +814,8 @@ export default function Planning() {
                         {ROLE_LABELS[emp.role] || emp.role || ''}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-slate-300">{(emp.hourlyRate ?? 0).toFixed(2)} EUR/h</td>
-                    <td className="px-4 py-3 text-right text-slate-300">{emp.hourlyRate ?? 0}h</td>
+                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{(emp.hourlyRate ?? 0).toFixed(2)} EUR/h</td>
+                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{emp.hourlyRate ?? 0}h</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
                         {hours.toFixed(0)}h
@@ -838,8 +838,8 @@ export default function Planning() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-slate-700 transition">
-                          <Edit className="w-3.5 h-3.5 text-slate-400" />
+                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:bg-[#171717] transition">
+                          <Edit className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
                         </button>
                         <button onClick={() => deleteEmployee(emp.id)} className="p-1.5 rounded hover:bg-red-900/20 transition">
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
@@ -855,46 +855,46 @@ export default function Planning() {
       </div>
 
       {/* Weekly summary table */}
-      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-800">
-          <h3 className="font-semibold text-white flex items-center gap-2">
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
             <Clock className="w-4 h-4 text-amber-400" /> {t('planning.weeklySummary')}
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-800/60">
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-400 uppercase">{t('planning.employee')}</th>
+              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.employee')}</th>
                 {JOURS.map(j => (
-                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{j}</th>
+                  <th key={j} className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{j}</th>
                 ))}
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">Total</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-400 uppercase">{t('planning.cost')}</th>
-                <th className="px-3 py-2.5 text-center text-xs font-medium text-slate-400 uppercase">{t('planning.alert')}</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Total</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.cost')}</th>
+                <th className="px-3 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.alert')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {summaryRows.map(row => {
                 const isOver35 = row.total > 35;
                 const isOver48 = row.total > 48;
                 return (
-                  <tr key={row.emp.id} className="hover:bg-slate-800/30 transition">
+                  <tr key={row.emp.id} className="hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.color || '#6366f1' }} />
-                        <span className="font-medium text-white">{row.emp.name || ''}</span>
+                        <span className="font-medium text-[#111111] dark:text-white">{row.emp.name || ''}</span>
                       </div>
                     </td>
                     {row.days.map((h, i) => (
-                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-slate-200 font-medium' : 'text-slate-300'}`}>
+                      <td key={i} className={`px-3 py-2.5 text-center text-xs ${h > 0 ? 'text-[#6B7280] dark:text-[#A3A3A3] font-medium' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                         {h > 0 ? `${h}h` : '-'}
                       </td>
                     ))}
                     <td className={`px-3 py-2.5 text-center font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-white'}`}>
                       {row.total > 0 ? `${row.total}h` : '-'}
                     </td>
-                    <td className="px-4 py-2.5 text-right font-medium text-slate-300">
+                    <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
                       {row.cost > 0 ? `${row.cost.toFixed(0)} EUR` : '-'}
                     </td>
                     <td className="px-3 py-2.5 text-center">
@@ -908,10 +908,10 @@ export default function Planning() {
                 );
               })}
               {/* Totals */}
-              <tr className="bg-slate-800/60 font-semibold">
-                <td className="px-4 py-2.5 text-white">Total</td>
+              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A] font-semibold">
+                <td className="px-4 py-2.5 text-[#111111] dark:text-white">Total</td>
                 {totalRow.days.map((h, i) => (
-                  <td key={i} className="px-3 py-2.5 text-center text-xs text-slate-200">
+                  <td key={i} className="px-3 py-2.5 text-center text-xs text-[#6B7280] dark:text-[#A3A3A3]">
                     {h > 0 ? `${h}h` : '-'}
                   </td>
                 ))}
@@ -920,10 +920,10 @@ export default function Planning() {
                 <td />
               </tr>
               {/* Daily cost row */}
-              <tr className="bg-slate-800/40">
-                <td className="px-4 py-2.5 text-slate-400 text-xs">{t('planning.costPerDay')}</td>
+              <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                <td className="px-4 py-2.5 text-[#9CA3AF] dark:text-[#737373] text-xs">{t('planning.costPerDay')}</td>
                 {dailyCosts.map((c, i) => (
-                  <td key={i} className="px-3 py-2.5 text-center text-xs text-slate-400">
+                  <td key={i} className="px-3 py-2.5 text-center text-xs text-[#9CA3AF] dark:text-[#737373]">
                     {c > 0 ? `${c.toFixed(0)}` : '-'}
                   </td>
                 ))}
@@ -944,21 +944,21 @@ export default function Planning() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.fullName')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.fullName')}</label>
             <input
               type="text"
               value={empForm.name}
               onChange={e => setEmpForm(f => ({ ...f, name: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               placeholder="Ex: Marie Dupont"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.role')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.role')}</label>
             <select
               value={empForm.role}
               onChange={e => setEmpForm(f => ({ ...f, role: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {ROLES.map(r => (
                 <option key={r} value={r}>{ROLE_LABELS[r]}</option>
@@ -967,20 +967,20 @@ export default function Planning() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.hourlyRate')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.hourlyRate')}</label>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 value={empForm.hourlyRate}
                 onChange={e => setEmpForm(f => ({ ...f, hourlyRate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
                 placeholder="Ex: 14.00"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.color')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.color')}</label>
             <div className="flex gap-2 flex-wrap">
               {EMPLOYEE_COLORS.map(c => (
                 <button
@@ -994,7 +994,7 @@ export default function Planning() {
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 rounded-lg transition">
+            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:bg-[#171717] rounded-lg transition">
               {t('common.cancel')}
             </button>
             <button onClick={saveEmployee} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
@@ -1012,11 +1012,11 @@ export default function Planning() {
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.employee')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.employee')}</label>
             <select
               value={shiftForm.employeeId}
               onChange={e => setShiftForm(f => ({ ...f, employeeId: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               <option value="">-- {t('common.select')} --</option>
               {employees.map(emp => (
@@ -1026,7 +1026,7 @@ export default function Planning() {
           </div>
           {/* Quick shift type buttons */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.serviceType')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.serviceType')}</label>
             <div className="flex gap-2">
               {SHIFT_TYPES.map(st => (
                 <button
@@ -1036,7 +1036,7 @@ export default function Planning() {
                   className={`flex-1 py-2 rounded-lg text-xs font-medium border transition ${
                     shiftForm.startTime === st.start && shiftForm.endTime === st.end
                       ? st.bg + ' text-white'
-                      : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
+                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] dark:hover:border-[#333]'
                   }`}
                 >
                   {st.label}<br />{st.start}-{st.end}
@@ -1045,40 +1045,40 @@ export default function Planning() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.date')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.date')}</label>
             <input
               type="date"
               value={shiftForm.date}
               onChange={e => setShiftForm(f => ({ ...f, date: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.startTime')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.startTime')}</label>
               <input
                 type="time"
                 value={shiftForm.startTime}
                 onChange={e => setShiftForm(f => ({ ...f, startTime: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.endTime')}</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.endTime')}</label>
               <input
                 type="time"
                 value={shiftForm.endTime}
                 onChange={e => setShiftForm(f => ({ ...f, endTime: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{t('planning.position')}</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.position')}</label>
             <select
               value={shiftForm.type}
               onChange={e => setShiftForm(f => ({ ...f, type: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             >
               {POSTES.map(p => (
                 <option key={p.value} value={p.value}>{p.label}</option>
@@ -1086,7 +1086,7 @@ export default function Planning() {
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-700 rounded-lg transition">
+            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:bg-[#171717] rounded-lg transition">
               {t('common.cancel')}
             </button>
             {editShift && (
@@ -1117,14 +1117,14 @@ function StatCard({ icon, label, value, alert, subtitle }: {
   subtitle?: string;
 }) {
   return (
-    <div className={`bg-slate-900/50 rounded-2xl p-4 border ${alert ? 'border-red-700/50' : 'border-slate-800'}`}>
+    <div className={`bg-white dark:bg-black rounded-2xl p-4 border ${alert ? 'border-red-700/50' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${alert ? 'bg-red-900/30' : 'bg-slate-800'}`}>
+        <div className={`p-2 rounded-lg ${alert ? 'bg-red-900/30' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
           {icon}
         </div>
         <div>
-          <div className="text-xs text-slate-400">{label}</div>
-          <div className={`text-xl font-bold ${alert ? 'text-red-400' : 'text-white'}`}>{value}</div>
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{label}</div>
+          <div className={`text-xl font-bold ${alert ? 'text-red-400' : 'text-[#111111] dark:text-white'}`}>{value}</div>
           {subtitle && (
             <div className={`text-xs ${alert ? 'text-red-400' : 'text-emerald-400'}`}>{subtitle}</div>
           )}
@@ -1172,17 +1172,17 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                   return (
                     <div
                       key={s.id}
-                      className="rounded-lg p-2.5 bg-slate-900/60 border border-slate-700 cursor-pointer hover:border-slate-600 transition group relative"
+                      className="rounded-lg p-2.5 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative"
                       onClick={() => onEditShift(s)}
                     >
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                        <span className="font-semibold text-white text-sm">{emp.name || ''}</span>
+                        <span className="font-semibold text-[#111111] dark:text-white text-sm">{emp.name || ''}</span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.startTime} a {s.endTime}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.startTime} a {s.endTime}</div>
                       <button
                         onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
-                        className="absolute top-2 right-2 p-1 rounded bg-slate-800 hover:bg-red-900/40 transition"
+                        className="absolute top-2 right-2 p-1 rounded bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-red-900/40 transition"
                       >
                         <X className="w-3.5 h-3.5 text-red-400" />
                       </button>
@@ -1190,12 +1190,12 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                   );
                 })}
               {zoneShifts.length === 0 && (
-                <p className="text-center text-xs text-slate-400 py-2">{t('planning.noShift')}</p>
+                <p className="text-center text-xs text-[#9CA3AF] dark:text-[#737373] py-2">{t('planning.noShift')}</p>
               )}
             </div>
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+              className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
             >
               <Plus className="w-3.5 h-3.5" /> {t('common.add')}
             </button>
@@ -1235,16 +1235,16 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
     <div className="p-5 space-y-5">
       {/* Day stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
-          <div className="text-xs text-slate-400">{t('planning.presentEmployees')}</div>
-          <div className="text-2xl font-bold text-white">{presenceMap.size}</div>
+        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.presentEmployees')}</div>
+          <div className="text-2xl font-bold text-[#111111] dark:text-white">{presenceMap.size}</div>
         </div>
-        <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
-          <div className="text-xs text-slate-400">{t('planning.totalHours')}</div>
-          <div className="text-2xl font-bold text-white">{totalHours.toFixed(0)}h</div>
+        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.totalHours')}</div>
+          <div className="text-2xl font-bold text-[#111111] dark:text-white">{totalHours.toFixed(0)}h</div>
         </div>
-        <div className="bg-slate-800/60 rounded-xl p-3 text-center border border-slate-700">
-          <div className="text-xs text-slate-400">{t('planning.dayCost')}</div>
+        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.dayCost')}</div>
           <div className="text-2xl font-bold text-emerald-400">{totalCost.toFixed(0)} EUR</div>
         </div>
       </div>
@@ -1257,7 +1257,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
             <div className={`flex items-center gap-2 mb-3`}>
               <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-teal-400' : 'bg-purple-400'}`} />
               <h4 className={`font-semibold ${st.color}`}>{st.label} ({st.start} - {st.end})</h4>
-              <span className="text-xs text-slate-400">{zoneShifts.length} creneau(x)</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{zoneShifts.length} creneau(x)</span>
             </div>
             {zoneShifts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -1270,7 +1270,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                     return (
                       <div
                         key={s.id}
-                        className="rounded-xl p-4 border border-slate-700 bg-slate-800/40 cursor-pointer hover:border-slate-600 transition group relative"
+                        className="rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative"
                         onClick={() => onEditShift(s)}
                       >
                         <div className="flex items-center gap-3 mb-2">
@@ -1278,17 +1278,17 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                             {(emp.name || '').charAt(0)}
                           </div>
                           <div>
-                            <div className="font-semibold text-white">{emp.name || ''}</div>
-                            <div className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</div>
+                            <div className="font-semibold text-[#111111] dark:text-white">{emp.name || ''}</div>
+                            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</div>
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-mono text-slate-300">{s.startTime} - {s.endTime}</span>
-                          <span className="text-slate-400">{hours}h -- {(hours * (emp.hourlyRate ?? 0)).toFixed(0)} EUR</span>
+                          <span className="font-mono text-[#6B7280] dark:text-[#A3A3A3]">{s.startTime} - {s.endTime}</span>
+                          <span className="text-[#9CA3AF] dark:text-[#737373]">{hours}h -- {(hours * (emp.hourlyRate ?? 0)).toFixed(0)} EUR</span>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
-                          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-slate-900/80 hover:bg-red-900/40 transition"
+                          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-white dark:bg-black hover:bg-red-900/40 transition"
                         >
                           <Trash2 className="w-3.5 h-3.5 text-red-400" />
                         </button>
@@ -1297,13 +1297,13 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                   })}
               </div>
             ) : (
-              <p className="text-sm text-slate-400 py-3 text-center bg-slate-800/20 rounded-xl border border-dashed border-slate-700">
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-3 text-center bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A]">
                 {t('planning.noShift')}
               </p>
             )}
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="mt-2 w-full py-2 border border-dashed border-slate-700 rounded-xl text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
+              className="mt-2 w-full py-2 border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
             >
               <Plus className="w-4 h-4" /> Ajouter un creneau {st.label.toLowerCase()}
             </button>
@@ -1313,7 +1313,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
 
       {/* Presence summary */}
       <div>
-        <h4 className="font-semibold text-white flex items-center gap-2 mb-3">
+        <h4 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2 mb-3">
           <Eye className="w-4 h-4 text-indigo-400" /> {t('planning.dayPresence')}
         </h4>
         <div className="space-y-2">
@@ -1325,22 +1325,22 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
               <div
                 key={emp.id}
                 className={`flex items-center justify-between px-4 py-2.5 rounded-xl border transition ${
-                  isPresent ? 'border-slate-700 bg-slate-800/40' : 'border-slate-800/50 bg-slate-900/30 opacity-50'
+                  isPresent ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black opacity-50'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-slate-600'}`} />
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-                  <span className={`text-sm font-medium ${isPresent ? 'text-white' : 'text-slate-400'}`}>{emp.name || ''}</span>
-                  <span className="text-xs text-slate-400">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                  <span className={`text-sm font-medium ${isPresent ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{emp.name || ''}</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
                 </div>
                 <div className="text-sm">
                   {isPresent ? (
-                    <span className="text-slate-300">
+                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">
                       {empShifts!.map(s => `${s.startTime}-${s.endTime}`).join(', ')} -- <span className="font-semibold">{empHours}h</span>
                     </span>
                   ) : (
-                    <span className="text-slate-300">{t('planning.absent')}</span>
+                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">{t('planning.absent')}</span>
                   )}
                 </div>
               </div>

@@ -216,13 +216,13 @@ interface ToggleSwitchProps {
   color?: string;
 }
 
-function ToggleSwitch({ enabled, onChange, color = 'bg-teal-600' }: ToggleSwitchProps) {
+function ToggleSwitch({ enabled, onChange, color = 'bg-[#111111] dark:bg-white' }: ToggleSwitchProps) {
   return (
     <button
       type="button"
       onClick={() => onChange(!enabled)}
       className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
-        enabled ? color : 'bg-slate-300 dark:bg-slate-600'
+        enabled ? color : 'bg-slate-300 dark:bg-[#171717]'
       }`}
     >
       <span
@@ -253,22 +253,22 @@ interface SectionProps {
 function Section({ icon, iconColor, title, badge, open, onToggle, children, variant = 'default' }: SectionProps) {
   const borderClass = variant === 'danger' ? 'border border-red-200 dark:border-red-900/50' : '';
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden transition-all ${borderClass}`}>
+    <div className={`bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden transition-all ${borderClass}`}>
       <button
         onClick={onToggle}
-        className="w-full px-5 py-4 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors text-left"
+        className="w-full px-5 py-4 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors text-left"
       >
         <span className={iconColor}>{icon}</span>
-        <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100 flex-1">{title}</h3>
+        <h3 className="font-semibold text-lg text-slate-800 dark:text-white flex-1">{title}</h3>
         {badge}
         {open ? (
-          <ChevronDown className="w-5 h-5 text-slate-400 transition-transform" />
+          <ChevronDown className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373] transition-transform" />
         ) : (
-          <ChevronRight className="w-5 h-5 text-slate-400 transition-transform" />
+          <ChevronRight className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373] transition-transform" />
         )}
       </button>
       {open && (
-        <div className="px-5 pb-5 border-t dark:border-slate-700">
+        <div className="px-5 pb-5 border-t dark:border-[#1A1A1A]">
           <div className="pt-5">{children}</div>
         </div>
       )}
@@ -282,7 +282,7 @@ function Section({ icon, iconColor, title, badge, open, onToggle, children, vari
 
 function SectionSaveButton({ onClick, label = 'Sauvegarder' }: { onClick: () => void; label?: string }) {
   return (
-    <div className="flex justify-end pt-4 mt-4 border-t dark:border-slate-700">
+    <div className="flex justify-end pt-4 mt-4 border-t dark:border-[#1A1A1A]">
       <button onClick={onClick} className="btn-primary flex items-center gap-2 text-sm">
         <Save className="w-4 h-4" />
         {label}
@@ -709,7 +709,7 @@ export default function Settings() {
     <div className="max-w-3xl mx-auto pb-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
           <SettingsIcon className="w-7 h-7" />
           Paramètres
         </h2>
@@ -739,10 +739,10 @@ export default function Settings() {
                 </button>
               </div>
               <div className="flex-1 space-y-1">
-                <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
+                <h4 className="text-lg font-semibold text-slate-800 dark:text-white">
                   {user?.name || 'Utilisateur'}
                 </h4>
-                <p className="text-sm text-slate-400 dark:text-slate-400">{user?.email || '-'}</p>
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{user?.email || '-'}</p>
                 <span className="inline-block text-xs bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 px-2.5 py-0.5 rounded-full font-medium mt-1">
                   {user?.role === 'admin' ? 'Administrateur' : 'Chef de cuisine'}
                 </span>
@@ -775,8 +775,8 @@ export default function Settings() {
             <SectionSaveButton onClick={handleSaveProfile} label="Mettre a jour le profil" />
 
             {/* Change password */}
-            <div className="pt-4 border-t dark:border-slate-700">
-              <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 flex items-center gap-2 mb-4">
+            <div className="pt-4 border-t dark:border-[#1A1A1A]">
+              <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#A3A3A3] flex items-center gap-2 mb-4">
                 <Lock className="w-4 h-4" />
                 Changer le mot de passe
               </h4>
@@ -794,7 +794,7 @@ export default function Settings() {
                     <button
                       type="button"
                       onClick={() => setShowOldPw(!showOldPw)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]"
                     >
                       {showOldPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -814,7 +814,7 @@ export default function Settings() {
                       <button
                         type="button"
                         onClick={() => setShowNewPw(!showNewPw)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]"
                       >
                         {showNewPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -934,18 +934,18 @@ export default function Settings() {
             {/* Logo upload placeholder */}
             <div>
               <label className="label">Logo du restaurant</label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center hover:border-teal-400 dark:hover:border-teal-500 transition-colors cursor-pointer">
-                <Upload className="w-8 h-8 mx-auto text-slate-400 mb-2" />
-                <p className="text-sm text-slate-400 dark:text-slate-400">
+              <div className="border-2 border-dashed border-slate-300 dark:border-[#1A1A1A] rounded-lg p-6 text-center hover:border-teal-400 dark:hover:border-teal-500 transition-colors cursor-pointer">
+                <Upload className="w-8 h-8 mx-auto text-[#9CA3AF] dark:text-[#737373] mb-2" />
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
                   Cliquer ou glisser-deposer pour ajouter un logo
                 </p>
-                <p className="text-xs text-slate-400 mt-1">PNG, JPG, SVG - max 2 Mo</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">PNG, JPG, SVG - max 2 Mo</p>
               </div>
             </div>
 
             {/* Existing financial params (coefficient, TVA, labor) */}
-            <div className="pt-4 border-t dark:border-slate-700">
-              <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 flex items-center gap-2 mb-4">
+            <div className="pt-4 border-t dark:border-[#1A1A1A]">
+              <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#A3A3A3] flex items-center gap-2 mb-4">
                 <Calculator className="w-4 h-4" />
                 Parametres financiers de base
               </h4>
@@ -960,7 +960,7 @@ export default function Settings() {
                     value={settings.coefficientObjective}
                     onChange={(e) => handleChange('coefficientObjective', parseFloat(e.target.value) || 0)}
                   />
-                  <p className="text-xs text-slate-400 mt-1">Recommande : x3.3</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Recommande : x3.3</p>
                 </div>
                 <div>
                   <label className="label">Taux de TVA (%)</label>
@@ -973,7 +973,7 @@ export default function Settings() {
                     value={settings.tvaRate}
                     onChange={(e) => handleChange('tvaRate', parseFloat(e.target.value) || 0)}
                   />
-                  <p className="text-xs text-slate-400 mt-1">Sur place : 10%</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Sur place : 10%</p>
                 </div>
                 <div>
                   <label className="label">Cout main d'oeuvre (EUR/h)</label>
@@ -990,8 +990,8 @@ export default function Settings() {
             </div>
 
             {/* ---- Enhanced financial objectives ---- */}
-            <div className="pt-4 border-t dark:border-slate-700">
-              <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 flex items-center gap-2 mb-4">
+            <div className="pt-4 border-t dark:border-[#1A1A1A]">
+              <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#A3A3A3] flex items-center gap-2 mb-4">
                 <Target className="w-4 h-4 text-emerald-500" />
                 Objectifs financiers
               </h4>
@@ -1016,9 +1016,9 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.margeMatiere}
                     onChange={(e) => handleGoalChange('margeMatiere', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>50%</span>
                     <span>70%</span>
                     <span>90%</span>
@@ -1043,9 +1043,9 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.foodCost}
                     onChange={(e) => handleGoalChange('foodCost', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-orange-500"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>10%</span>
                     <span>30%</span>
                     <span>50%</span>
@@ -1070,9 +1070,9 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.masseSalariale}
                     onChange={(e) => handleGoalChange('masseSalariale', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-violet-500"
+                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-violet-500"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>20%</span>
                     <span>35%</span>
                     <span>50%</span>
@@ -1097,9 +1097,9 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.primeCost}
                     onChange={(e) => handleGoalChange('primeCost', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-teal-500"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 mt-1">
+                  <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>50%</span>
                     <span>65%</span>
                     <span>80%</span>
@@ -1123,7 +1123,7 @@ export default function Settings() {
                       value={financialGoals.ticketMoyen}
                       onChange={(e) => handleGoalChange('ticketMoyen', parseFloat(e.target.value) || 0)}
                     />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">EUR</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] text-sm">EUR</span>
                   </div>
                 </div>
                 <div>
@@ -1172,20 +1172,20 @@ export default function Settings() {
               </div>
 
               {/* Summary card */}
-              <div className="mt-5 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
-                <h5 className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-3">
+              <div className="mt-5 p-4 bg-slate-50 dark:bg-[#171717] rounded-xl border border-slate-200 dark:border-[#1A1A1A]">
+                <h5 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">
                   Estimation CA mensuel
                 </h5>
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(
                     financialGoals.ticketMoyen *
                     financialGoals.couvertsJour *
                     financialGoals.joursOuverture *
                     4.33
                   )}
-                  <span className="text-sm font-normal text-slate-400 ml-1">/mois</span>
+                  <span className="text-sm font-normal text-[#9CA3AF] dark:text-[#737373] ml-1">/mois</span>
                 </div>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                   {financialGoals.ticketMoyen} EUR x {financialGoals.couvertsJour} couverts x {financialGoals.joursOuverture} j/sem x 4.33 sem
                 </p>
               </div>
@@ -1207,23 +1207,23 @@ export default function Settings() {
           onToggle={() => toggleSection('coefficients')}
         >
           <div className="space-y-4">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
               Définissez le coefficient multiplicateur pour chaque catégorie de recette. Le prix de vente suggéré = coût matière x coefficient.
             </p>
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b dark:border-slate-700">
-                    <th className="text-left py-2 px-3 text-slate-400 dark:text-slate-400 font-medium">Catégorie</th>
-                    <th className="text-center py-2 px-3 text-slate-400 dark:text-slate-400 font-medium">Coefficient</th>
-                    <th className="text-right py-2 px-3 text-slate-400 dark:text-slate-400 font-medium">Prix suggéré pour 3&#8364; de coût</th>
+                  <tr className="border-b dark:border-[#1A1A1A]">
+                    <th className="text-left py-2 px-3 text-[#9CA3AF] dark:text-[#737373] font-medium">Catégorie</th>
+                    <th className="text-center py-2 px-3 text-[#9CA3AF] dark:text-[#737373] font-medium">Coefficient</th>
+                    <th className="text-right py-2 px-3 text-[#9CA3AF] dark:text-[#737373] font-medium">Prix suggéré pour 3&#8364; de coût</th>
                   </tr>
                 </thead>
                 <tbody>
                   {Object.entries(coefficients).map(([category, coeff]) => (
-                    <tr key={category} className="border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
-                      <td className="py-2.5 px-3 font-medium text-slate-700 dark:text-slate-200">{category}</td>
+                    <tr key={category} className="border-b dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717]/30 transition-colors">
+                      <td className="py-2.5 px-3 font-medium text-[#374151] dark:text-[#A3A3A3]">{category}</td>
                       <td className="py-2.5 px-3 text-center">
                         <input
                           type="number"
@@ -1300,14 +1300,14 @@ export default function Settings() {
               <div
                 key={item.key}
                 className={`flex items-center justify-between py-3 ${
-                  idx > 0 ? 'border-t dark:border-slate-700' : ''
+                  idx > 0 ? 'border-t dark:border-[#1A1A1A]' : ''
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="text-slate-400 mt-0.5">{item.icon}</span>
+                  <span className="text-[#9CA3AF] dark:text-[#737373] mt-0.5">{item.icon}</span>
                   <div>
-                    <p className="text-sm font-medium text-slate-400 dark:text-slate-200">{item.label}</p>
-                    <p className="text-xs text-slate-400">{item.desc}</p>
+                    <p className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3]">{item.label}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.desc}</p>
                   </div>
                 </div>
                 <ToggleSwitch
@@ -1319,9 +1319,9 @@ export default function Settings() {
             ))}
 
             {/* Email notifications master toggle */}
-            <div className="flex items-center justify-between py-3 mt-2 pt-4 border-t-2 dark:border-slate-600">
+            <div className="flex items-center justify-between py-3 mt-2 pt-4 border-t-2 dark:border-[#1A1A1A]">
               <div className="flex items-start gap-3">
-                <span className="text-slate-400 mt-0.5">
+                <span className="text-[#9CA3AF] dark:text-[#737373] mt-0.5">
                   {settings.emailNotifications ? (
                     <Mail className="w-4 h-4" />
                   ) : (
@@ -1329,10 +1329,10 @@ export default function Settings() {
                   )}
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-slate-400 dark:text-slate-200">
+                  <p className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3]">
                     Notifications par email
                   </p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
                     Recevoir un email pour chaque alerte activée ci-dessus
                   </p>
                 </div>
@@ -1340,7 +1340,7 @@ export default function Settings() {
               <ToggleSwitch
                 enabled={settings.emailNotifications}
                 onChange={(val) => handleChange('emailNotifications', val)}
-                color="bg-teal-600"
+                color="bg-[#111111] dark:bg-white"
               />
             </div>
 
@@ -1375,7 +1375,7 @@ export default function Settings() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
                       settings.theme === opt.value
                         ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 shadow-sm'
-                        : 'border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
+                        : 'border-slate-200 dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
                     }`}
                   >
                     {opt.icon}
@@ -1429,17 +1429,17 @@ export default function Settings() {
             </div>
 
             {/* Version & PWA */}
-            <div className="pt-4 border-t dark:border-slate-700 space-y-3">
+            <div className="pt-4 border-t dark:border-[#1A1A1A] space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-300 dark:text-slate-300">Version</span>
-                <span className="text-sm font-mono bg-slate-100 dark:bg-slate-700 px-2.5 py-0.5 rounded text-slate-400 dark:text-slate-300">
+                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Version</span>
+                <span className="text-sm font-mono bg-slate-100 dark:bg-[#171717] px-2.5 py-0.5 rounded text-[#9CA3AF] dark:text-[#A3A3A3]">
                   v{APP_VERSION}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Monitor className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm text-slate-300 dark:text-slate-300">Application installable</span>
+                  <Monitor className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                  <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Application installable</span>
                 </div>
                 {isInstalled ? (
                   <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2.5 py-1 rounded-full font-medium">
@@ -1450,7 +1450,7 @@ export default function Settings() {
                     Installer
                   </button>
                 ) : (
-                  <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400 px-2.5 py-1 rounded-full">
+                  <span className="text-xs bg-slate-100 dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] px-2.5 py-1 rounded-full">
                     Non disponible
                   </span>
                 )}
@@ -1480,20 +1480,20 @@ export default function Settings() {
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                     tealtoothConnected
                       ? 'bg-cyan-100 dark:bg-cyan-900/30'
-                      : 'bg-slate-100 dark:bg-slate-700'
+                      : 'bg-slate-100 dark:bg-[#171717]'
                   }`}
                 >
                   <Bluetooth
                     className={`w-5 h-5 ${
                       tealtoothConnected
                         ? 'text-cyan-600 dark:text-cyan-400'
-                        : 'text-slate-400'
+                        : 'text-[#9CA3AF] dark:text-[#737373]'
                     }`}
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-400 dark:text-slate-200">Balance Bluetooth</p>
-                  <p className="text-xs text-slate-400 flex items-center gap-1">
+                  <p className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3]">Balance Bluetooth</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
                     {tealtoothConnected ? (
                       <>
                         <Wifi className="w-3 h-3 text-green-500" /> Connectée
@@ -1521,26 +1521,26 @@ export default function Settings() {
             </div>
 
             {/* Printer */}
-            <div className="flex items-center justify-between py-3 border-t dark:border-slate-700">
+            <div className="flex items-center justify-between py-3 border-t dark:border-[#1A1A1A]">
               <div className="flex items-center gap-3">
                 <div
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                     printerConnected
                       ? 'bg-green-100 dark:bg-green-900/30'
-                      : 'bg-slate-100 dark:bg-slate-700'
+                      : 'bg-slate-100 dark:bg-[#171717]'
                   }`}
                 >
                   <Printer
                     className={`w-5 h-5 ${
                       printerConnected
                         ? 'text-green-600 dark:text-green-400'
-                        : 'text-slate-400'
+                        : 'text-[#9CA3AF] dark:text-[#737373]'
                     }`}
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-400 dark:text-slate-200">Imprimante</p>
-                  <p className="text-xs text-slate-400 flex items-center gap-1">
+                  <p className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3]">Imprimante</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
                     {printerConnected ? (
                       <>
                         <Wifi className="w-3 h-3 text-green-500" /> Configuree
@@ -1568,7 +1568,7 @@ export default function Settings() {
             </div>
 
             {/* Export buttons */}
-            <div className="pt-4 border-t dark:border-slate-700">
+            <div className="pt-4 border-t dark:border-[#1A1A1A]">
               <label className="label mb-3">Exporter les donnees</label>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
@@ -1613,7 +1613,7 @@ export default function Settings() {
             <div>
               <label className="label">Abonnement</label>
               <div className="flex items-center gap-2">
-                <div className="input flex-1 bg-slate-50 dark:bg-slate-700 font-mono text-sm tracking-wider select-all">
+                <div className="input flex-1 bg-slate-50 dark:bg-[#171717] font-mono text-sm tracking-wider select-all">
                   {PLAN_LABELS[(user as any)?.plan] || 'Basic — 9€/mois'}
                 </div>
                 <button
@@ -1634,7 +1634,7 @@ export default function Settings() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-slate-400 mt-2 flex items-start gap-1.5">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2 flex items-start gap-1.5">
                 <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
                 Partagez ce code avec vos collaborateurs pour qu'ils puissent s'inscrire.
               </p>
@@ -1661,9 +1661,9 @@ export default function Settings() {
           <div className="space-y-5">
             {/* Referral code + copy */}
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Votre code de parrainage</label>
+              <label className="block text-sm font-medium text-slate-600 dark:text-[#A3A3A3] mb-2">Votre code de parrainage</label>
               <div className="flex items-center gap-2">
-                <div className="flex-1 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-2.5 font-mono text-lg tracking-wider text-slate-800 dark:text-slate-100">
+                <div className="flex-1 bg-slate-100 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-4 py-2.5 font-mono text-lg tracking-wider text-slate-800 dark:text-white">
                   {referralLoading ? '...' : referralCode}
                 </div>
                 <button
@@ -1688,47 +1688,47 @@ export default function Settings() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-slate-400 mt-2">
-                Partagez ce lien : <span className="font-mono text-slate-500 dark:text-slate-400">{referralLink}</span>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
+                Partagez ce lien : <span className="font-mono text-[#6B7280] dark:text-[#A3A3A3]">{referralLink}</span>
               </p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
                 <UserPlus className="w-5 h-5 mx-auto mb-1 text-amber-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{referralStats.total}</div>
-                <div className="text-xs text-slate-400">Parrainages total</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{referralStats.total}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Parrainages total</div>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
                 <Check className="w-5 h-5 mx-auto mb-1 text-green-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{referralStats.active}</div>
-                <div className="text-xs text-slate-400">Actifs</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{referralStats.active}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Actifs</div>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
                 <Gift className="w-5 h-5 mx-auto mb-1 text-purple-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{referralStats.freeMonths}</div>
-                <div className="text-xs text-slate-400">Mois gratuits gagnes</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{referralStats.freeMonths}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Mois gratuits gagnes</div>
               </div>
             </div>
 
             {/* Referral list */}
             {referrals.length > 0 ? (
               <div>
-                <h4 className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Vos filleuls</h4>
+                <h4 className="text-sm font-medium text-slate-600 dark:text-[#A3A3A3] mb-2">Vos filleuls</h4>
                 <div className="space-y-2">
                   {referrals.map((r: any) => (
-                    <div key={r.id} className="flex items-center justify-between bg-slate-50 dark:bg-slate-700 rounded-lg px-4 py-2.5">
+                    <div key={r.id} className="flex items-center justify-between bg-slate-50 dark:bg-[#171717] rounded-lg px-4 py-2.5">
                       <div>
-                        <p className="text-sm font-medium text-slate-800 dark:text-slate-100">{r.referee_name || r.referee_email}</p>
-                        <p className="text-xs text-slate-400">{new Date(r.created_at).toLocaleDateString('fr-FR')}</p>
+                        <p className="text-sm font-medium text-slate-800 dark:text-white">{r.referee_name || r.referee_email}</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{new Date(r.created_at).toLocaleDateString('fr-FR')}</p>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                         r.status === 'active'
                           ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                           : r.status === 'pending'
                           ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-                          : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300'
+                          : 'bg-slate-100 dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'
                       }`}>
                         {r.status === 'active' ? 'Actif' : r.status === 'pending' ? 'En attente' : r.status}
                       </span>
@@ -1737,7 +1737,7 @@ export default function Settings() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-6 text-slate-400">
+              <div className="text-center py-6 text-[#9CA3AF] dark:text-[#737373]">
                 <UserPlus className="w-8 h-8 mx-auto mb-2 opacity-40" />
                 <p className="text-sm">Aucun filleul pour le moment</p>
                 <p className="text-xs mt-1">Partagez votre lien pour commencer !</p>
@@ -1760,20 +1760,20 @@ export default function Settings() {
           <div className="space-y-5">
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
                 <UtensilsCrossed className="w-5 h-5 mx-auto mb-1 text-teal-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.recipes}</div>
-                <div className="text-xs text-slate-400 dark:text-slate-400">Recettes</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.recipes}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Recettes</div>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
                 <ChefHat className="w-5 h-5 mx-auto mb-1 text-green-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.ingredients}</div>
-                <div className="text-xs text-slate-400 dark:text-slate-400">Ingredients</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.ingredients}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ingredients</div>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
                 <Users className="w-5 h-5 mx-auto mb-1 text-purple-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.users}</div>
-                <div className="text-xs text-slate-400 dark:text-slate-400">Utilisateurs</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.users}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Utilisateurs</div>
               </div>
             </div>
 
@@ -1792,34 +1792,34 @@ export default function Settings() {
           onToggle={() => toggleSection('exports')}
         >
           <div className="space-y-5">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
               Exportez vos donnees au format CSV compatible avec les logiciels de comptabilite francais (Pennylane, Sage, QuickBooks). Separateur point-virgule, encodage UTF-8 avec accents.
             </p>
 
             {/* Date range & format selectors */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Date debut</label>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date debut</label>
                 <input
                   type="date"
-                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
+                  className="w-full bg-slate-50 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-white"
                   value={exportDateFrom}
                   onChange={(e) => setExportDateFrom(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Date fin</label>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date fin</label>
                 <input
                   type="date"
-                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
+                  className="w-full bg-slate-50 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-white"
                   value={exportDateTo}
                   onChange={(e) => setExportDateTo(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Format</label>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Format</label>
                 <select
-                  className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-100"
+                  className="w-full bg-slate-50 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-white"
                   value={exportFormat}
                   onChange={(e) => setExportFormat(e.target.value as 'csv' | 'xlsx')}
                 >
@@ -1832,18 +1832,18 @@ export default function Settings() {
             {/* Export cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {/* Card: Ingredients & Couts */}
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <ChefHat className="w-5 h-5 text-green-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Ingredients & Couts</h4>
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Ingredients & Couts</h4>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Liste complete des ingredients avec prix unitaires, fournisseurs et categories.
                 </p>
                 <button
                   onClick={() => handleExport('ingredients-costs', 'Ingredients & Couts')}
                   disabled={exportLoading === 'ingredients-costs'}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {exportLoading === 'ingredients-costs' ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1855,18 +1855,18 @@ export default function Settings() {
               </div>
 
               {/* Card: Recettes & Marges */}
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <UtensilsCrossed className="w-5 h-5 text-teal-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Recettes & Marges</h4>
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Recettes & Marges</h4>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Toutes les recettes avec food cost, prix de vente, marge et coefficient.
                 </p>
                 <button
                   onClick={() => handleExport('recipes-margins', 'Recettes & Marges')}
                   disabled={exportLoading === 'recipes-margins'}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {exportLoading === 'recipes-margins' ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1878,18 +1878,18 @@ export default function Settings() {
               </div>
 
               {/* Card: Historique Commandes */}
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-blue-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Historique Commandes</h4>
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Historique Commandes</h4>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Toutes les factures fournisseurs avec details des lignes, dates et montants.
                 </p>
                 <button
                   onClick={() => handleExport('orders-history', 'Historique Commandes')}
                   disabled={exportLoading === 'orders-history'}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {exportLoading === 'orders-history' ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1901,18 +1901,18 @@ export default function Settings() {
               </div>
 
               {/* Card: Valorisation Stock */}
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <Database className="w-5 h-5 text-purple-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Valorisation Stock</h4>
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Valorisation Stock</h4>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Inventaire complet avec quantites, prix unitaires et valeur totale du stock.
                 </p>
                 <button
                   onClick={() => handleExport('inventory-valuation', 'Valorisation Stock')}
                   disabled={exportLoading === 'inventory-valuation'}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {exportLoading === 'inventory-valuation' ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1924,18 +1924,18 @@ export default function Settings() {
               </div>
 
               {/* Card: Rapport Mensuel */}
-              <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-orange-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-100">Rapport Mensuel P&L</h4>
+                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Rapport Mensuel P&L</h4>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex-1">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Synthese mensuelle : chiffre d'affaires, achats, marge brute, resultat.
                 </p>
                 <button
                   onClick={() => handleExport('monthly-report', 'Rapport Mensuel')}
                   disabled={exportLoading === 'monthly-report'}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {exportLoading === 'monthly-report' ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -1969,7 +1969,7 @@ export default function Settings() {
           variant="danger"
         >
           <div className="space-y-4">
-            <p className="text-sm text-slate-400 dark:text-slate-400">
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
               Ces actions sont irreversibles. Veuillez proceder avec prudence.
             </p>
 

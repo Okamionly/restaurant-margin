@@ -300,28 +300,28 @@ function IngredientCombobox({
         }}
       />
       {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg shadow-lg">
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg shadow-lg">
           {filtered.length > 0 ? (
             filtered.slice(0, 30).map((i) => (
               <button
                 key={i.id}
                 type="button"
-                className="w-full text-left px-3 py-1.5 text-sm hover:bg-teal-50 dark:hover:bg-slate-700 flex justify-between items-center"
+                className="w-full text-left px-3 py-1.5 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] flex justify-between items-center"
                 onClick={() => {
                   onSelect(i.id);
                   setInputValue(i.name);
                   setOpen(false);
                 }}
               >
-                <span className="text-slate-800 dark:text-slate-200">{i.name}</span>
-                <span className="text-xs text-slate-400">{i.pricePerUnit.toFixed(2)}&euro;/{i.unit}</span>
+                <span className="text-[#111111] dark:text-white">{i.name}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{i.pricePerUnit.toFixed(2)}&euro;/{i.unit}</span>
               </button>
             ))
           ) : null}
           {inputValue.trim() && !ingredients.some((i) => i.name.toLowerCase() === inputValue.toLowerCase()) && (
             <button
               type="button"
-              className="w-full text-left px-3 py-2 text-sm bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/50 font-medium border-t border-slate-200 dark:border-slate-700"
+              className="w-full text-left px-3 py-2 text-sm bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] font-medium border-t border-[#E5E7EB] dark:border-[#1A1A1A]"
               onClick={() => {
                 onNewName(inputValue.trim());
                 setOpen(false);
@@ -331,7 +331,7 @@ function IngredientCombobox({
             </button>
           )}
           {!inputValue.trim() && filtered.length === 0 && (
-            <div className="px-3 py-2 text-sm text-slate-400">Tapez un nom d&apos;ingredient</div>
+            <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373]">Tapez un nom d&apos;ingredient</div>
           )}
         </div>
       )}
@@ -341,7 +341,7 @@ function IngredientCombobox({
 
 /** Category-based photo placeholder */
 function RecipePhotoPlaceholder({ category }: { category: string }) {
-  const gradient = CATEGORY_GRADIENTS[category] || 'from-slate-400 to-slate-600';
+  const gradient = CATEGORY_GRADIENTS[category] || 'from-gray-400 to-gray-600';
   return (
     <div className={`relative h-32 rounded-t-lg bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
       <div className="absolute inset-0 opacity-10">
@@ -510,7 +510,7 @@ export default function Recipes() {
   }
 
   function SortIcon({ col }: { col: string }) {
-    if (sortColumn !== col) return <ChevronsUpDown className="w-3.5 h-3.5 text-slate-400" />;
+    if (sortColumn !== col) return <ChevronsUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />;
     return sortDirection === 'asc' ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />;
   }
 
@@ -880,12 +880,12 @@ export default function Recipes() {
     return { estimatedCost, costPerPortion, margin, foundCount };
   }
 
-  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">{t("recipes.loading")}</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t("recipes.loading")}</div>;
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{t("recipes.title")}</h2>
+        <h2 className="text-2xl font-bold text-[#111111] dark:text-white">{t("recipes.title")}</h2>
         <button onClick={openNew} className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" /> {t("recipes.newRecipe")}
         </button>
@@ -894,23 +894,23 @@ export default function Recipes() {
       {/* ── KPI Summary Cards ──────────────────────────────────────────── */}
       {recipes.length > 0 && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("recipes.kpiTotal")}</div>
-            <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{kpis.total}</div>
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("recipes.kpiTotal")}</div>
+            <div className="text-2xl font-bold text-[#111111] dark:text-white">{kpis.total}</div>
           </div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("recipes.kpiAvgMargin")}</div>
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("recipes.kpiAvgMargin")}</div>
             <div className={`text-2xl font-bold ${kpis.avgMargin >= 70 ? 'text-green-600 dark:text-green-400' : kpis.avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{kpis.avgMargin.toFixed(1)}%</div>
           </div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400 mb-1">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+            <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
               <Trophy className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
             </div>
             <div className="text-sm font-bold text-green-600 dark:text-green-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
-            <div className="text-xs text-slate-400 dark:text-slate-400">{kpis.bestMargin.toFixed(1)}%</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{kpis.bestMargin.toFixed(1)}%</div>
           </div>
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-400 mb-1">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+            <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
               <ShieldAlert className="w-3 h-3" /> {t("recipes.kpiDanger")}
             </div>
             <div className={`text-2xl font-bold ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>{kpis.dangerCount}</div>
@@ -921,7 +921,7 @@ export default function Recipes() {
       {/* ── Search bar + View toggle ───────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
           <input
             type="text"
             placeholder={t("recipes.searchPlaceholder")}
@@ -930,10 +930,10 @@ export default function Recipes() {
             className="input pl-10 w-full"
           />
         </div>
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-1">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
             title={t("recipes.gridView")}
             aria-label="Vue grille"
           >
@@ -941,7 +941,7 @@ export default function Recipes() {
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-slate-700 shadow-sm text-teal-600 dark:text-teal-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
             title={t("recipes.tableView")}
             aria-label="Vue tableau"
           >
@@ -955,7 +955,7 @@ export default function Recipes() {
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === 'all' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#171717]'}`}
           >
             {t("recipes.allCategories")} ({recipes.length})
           </button>
@@ -963,7 +963,7 @@ export default function Recipes() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#171717]'}`}
             >
               {cat} ({count})
             </button>
@@ -973,10 +973,10 @@ export default function Recipes() {
 
       {/* ── Table View ─────────────────────────────────────────────────── */}
       {viewMode === 'table' ? (
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-x-auto">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-700">
+              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                 {[
                   { key: 'name', label: t("recipes.colName") },
                   { key: 'category', label: t("recipes.colCategory") },
@@ -988,7 +988,7 @@ export default function Recipes() {
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className="px-4 py-3 text-left text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none"
+                    className="px-4 py-3 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider cursor-pointer hover:text-[#111111] dark:hover:text-white select-none"
                   >
                     <span className="inline-flex items-center gap-1">
                       {col.label}
@@ -996,35 +996,35 @@ export default function Recipes() {
                     </span>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-right text-xs font-medium text-slate-400 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {sortedFiltered.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400 dark:text-slate-500">{recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">{recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}</td></tr>
               ) : sortedFiltered.map((recipe) => (
-                <tr key={recipe.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-slate-800 dark:text-slate-100">{recipe.name}</td>
-                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{recipe.category}</td>
-                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.sellingPrice.toFixed(2)}&euro;</td>
-                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
+                <tr key={recipe.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+                  <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">{recipe.name}</td>
+                  <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{recipe.category}</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.sellingPrice.toFixed(2)}&euro;</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
-                  <td className="px-4 py-3 font-mono text-slate-400 dark:text-slate-300">
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">
                     {recipe.margin.coefficient.toFixed(2)}
-                    <span className="text-[10px] ml-1 text-teal-500" title={`Coeff. catégorie ${recipe.category}`}>
+                    <span className="text-[10px] ml-1 text-[#6B7280] dark:text-[#A3A3A3]" title={`Coeff. catégorie ${recipe.category}`}>
                       (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)})
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1 justify-end">
-                      <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.view")}>
-                        <Eye className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                      <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.view")}>
+                        <Eye className="w-4 h-4 text-[#111111] dark:text-white" />
                       </Link>
-                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                        <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                      <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                        <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                       </button>
-                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
-                        <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
+                        <Copy className="w-4 h-4 text-[#111111] dark:text-white" />
                       </button>
                       <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -1040,14 +1040,14 @@ export default function Recipes() {
       /* ── Grid View (existing cards) ────────────────────────────────── */
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.length === 0 ? (
-          <p className="text-slate-400 dark:text-slate-500 col-span-full text-center py-8">
+          <p className="text-[#9CA3AF] dark:text-[#737373] col-span-full text-center py-8">
             {recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}
           </p>
         ) : (
           filtered.map((recipe) => {
             const allergens = getRecipeAllergens(recipe);
             return (
-            <div key={recipe.id} className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
+            <div key={recipe.id} className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
               {/* Photo placeholder */}
               <RecipePhotoPlaceholder category={recipe.category} />
 
@@ -1055,24 +1055,24 @@ export default function Recipes() {
                 {/* Header: name + category + margin */}
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold text-lg text-slate-800 dark:text-slate-100 leading-tight">{recipe.name}</h3>
-                    <span className="text-xs text-slate-400 dark:text-slate-400">{recipe.category}</span>
+                    <h3 className="font-semibold text-lg text-[#111111] dark:text-white leading-tight">{recipe.name}</h3>
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{recipe.category}</span>
                   </div>
                   <MarginBadge percent={recipe.margin.marginPercent} />
                 </div>
 
                 {/* Key stats row */}
                 <div className="grid grid-cols-3 gap-2 text-center mb-3">
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-slate-400 dark:text-slate-400">{t("recipes.sale")}</div>
-                    <div className="text-sm font-bold text-slate-800 dark:text-slate-200">{recipe.sellingPrice.toFixed(2)}&euro;</div>
+                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.sale")}</div>
+                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}&euro;</div>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-slate-400 dark:text-slate-400">{t("recipes.cost")}</div>
-                    <div className="text-sm font-bold text-slate-800 dark:text-slate-200">{recipe.margin.costPerPortion.toFixed(2)}&euro;</div>
+                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.cost")}</div>
+                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}&euro;</div>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg py-2 px-1">
-                    <div className="text-[11px] text-slate-400 dark:text-slate-400">{t("recipes.margin")}</div>
+                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.margin")}</div>
                     <div className={`text-sm font-bold ${recipe.margin.marginPercent >= 70 ? 'text-green-600 dark:text-green-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                       {recipe.margin.marginPercent.toFixed(1)}%
                     </div>
@@ -1080,7 +1080,7 @@ export default function Recipes() {
                 </div>
 
                 {/* Coefficient info */}
-                <div className="text-[11px] text-teal-500 dark:text-teal-400 font-mono mb-2">
+                <div className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] font-mono mb-2">
                   Coeff. ×{recipe.margin.coefficient.toFixed(2)} (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)} {recipe.category})
                 </div>
 
@@ -1094,15 +1094,15 @@ export default function Recipes() {
                 )}
 
                 {/* Actions */}
-                <div className="flex gap-2 pt-3 border-t dark:border-slate-700">
+                <div className="flex gap-2 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
-                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
-                    <Pencil className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                  <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
+                    <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                   </button>
-                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-teal-100 dark:hover:bg-teal-900/30" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
-                    <Copy className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
+                    <Copy className="w-4 h-4 text-[#111111] dark:text-white" />
                   </button>
                   <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                     <Trash2 className="w-4 h-4 text-red-500" />
@@ -1128,7 +1128,7 @@ export default function Recipes() {
                     type="button"
                     onClick={handleAiSuggest}
                     disabled={aiSuggestionsLoading || form.name.trim().length < 2}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black rounded-lg transition-colors"
                   >
                     {aiSuggestionsLoading ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1150,8 +1150,8 @@ export default function Recipes() {
               />
               {/* Enhanced Suggestions dropdown with preview cards */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 rounded-lg shadow-xl border dark:border-slate-600 max-h-80 overflow-y-auto">
-                  <div className="px-3 py-2 text-xs font-medium text-teal-600 dark:text-teal-400 border-b dark:border-slate-600 flex items-center gap-1">
+                <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#171717] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-80 overflow-y-auto">
+                  <div className="px-3 py-2 text-xs font-medium text-[#111111] dark:text-white border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> {t("recipes.recipeSuggestions")}
                   </div>
                   {suggestions.slice(0, 8).map((tpl, idx) => {
@@ -1161,24 +1161,24 @@ export default function Recipes() {
                         key={idx}
                         type="button"
                         onClick={() => applyTemplate(tpl)}
-                        className="w-full text-left px-3 py-3 hover:bg-teal-50 dark:hover:bg-slate-600 transition-colors border-b dark:border-slate-600 last:border-0"
+                        className="w-full text-left px-3 py-3 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <span className="font-medium text-slate-800 dark:text-slate-200">{tpl.name}</span>
-                            <span className="ml-2 text-xs text-slate-400">{tpl.category}</span>
+                            <span className="font-medium text-[#111111] dark:text-white">{tpl.name}</span>
+                            <span className="ml-2 text-xs text-[#9CA3AF] dark:text-[#737373]">{tpl.category}</span>
                           </div>
-                          <span className="text-sm font-mono text-slate-400">{tpl.suggestedSellingPrice} &euro;</span>
+                          <span className="text-sm font-mono text-[#9CA3AF] dark:text-[#737373]">{tpl.suggestedSellingPrice} &euro;</span>
                         </div>
-                        <div className="text-xs text-slate-400 mt-0.5">{tpl.description}</div>
+                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{tpl.description}</div>
                         {/* Preview card with cost/margin estimates */}
                         <div className="flex items-center gap-3 mt-1.5 text-xs">
-                          <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                          <span className="px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
                             {tpl.suggestedIngredients.length} {t("recipes.ingredients")}
                           </span>
                           {preview.foundCount > 0 && (
                             <>
-                              <span className="text-slate-400">
+                              <span className="text-[#9CA3AF] dark:text-[#737373]">
                                 {t("recipes.estimatedCost")} : {preview.costPerPortion.toFixed(2)}&euro;
                               </span>
                               <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600' : preview.margin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
@@ -1198,7 +1198,7 @@ export default function Recipes() {
                   <button
                     type="button"
                     onClick={() => setShowSuggestions(false)}
-                    className="w-full text-center px-3 py-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    className="w-full text-center px-3 py-2 text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white"
                   >
                     {t("recipes.closeSuggestions")}
                   </button>
@@ -1209,26 +1209,26 @@ export default function Recipes() {
             {/* AI Mercuriale Suggestions Panel */}
             {showAiSuggestions && aiSuggestions.length > 0 && (
               <div className="col-span-2">
-                <div className="bg-slate-800 border border-teal-700/50 rounded-lg overflow-hidden">
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg overflow-hidden">
                   {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 bg-teal-900/40 border-b border-teal-700/50">
+                  <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#171717] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-teal-400" />
-                      <span className="text-sm font-semibold text-teal-300">
+                      <Sparkles className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <span className="text-sm font-semibold text-[#111111] dark:text-white">
                         Ingredients suggeres par l'IA
                       </span>
-                      <span className="text-xs text-teal-500 bg-teal-900/60 px-2 py-0.5 rounded-full">
+                      <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] bg-[#F3F4F6] dark:bg-[#171717] px-2 py-0.5 rounded-full">
                         {aiSuggestionsChecked.filter(Boolean).length}/{aiSuggestions.length} selectionnes
                       </span>
                     </div>
-                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="p-1 text-slate-400 hover:text-white">
+                    <button type="button" onClick={() => setShowAiSuggestions(false)} aria-label="Fermer les suggestions IA" className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                   {/* List */}
-                  <div className="max-h-64 overflow-y-auto divide-y divide-slate-700/50">
+                  <div className="max-h-64 overflow-y-auto divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
                     {aiSuggestions.map((s, idx) => (
-                      <label key={idx} className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-700/50 transition-colors cursor-pointer">
+                      <label key={idx} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors cursor-pointer">
                         <input
                           type="checkbox"
                           checked={aiSuggestionsChecked[idx]}
@@ -1237,27 +1237,27 @@ export default function Recipes() {
                             updated[idx] = !updated[idx];
                             setAiSuggestionsChecked(updated);
                           }}
-                          className="w-4 h-4 rounded border-slate-600 text-teal-500 focus:ring-teal-500"
+                          className="w-4 h-4 rounded border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-[#111111]"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm text-white font-medium">{s.name}</span>
-                            <span className="text-xs text-slate-400">{s.quantity} {s.unit}</span>
+                            <span className="text-sm text-[#111111] dark:text-white font-medium">{s.name}</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{s.quantity} {s.unit}</span>
                           </div>
                           {s.priceMin != null && s.priceMax != null ? (
-                            <span className="text-xs text-teal-400">
+                            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
                               {'📊'} Marche : {s.priceMin.toFixed(2)}-{s.priceMax.toFixed(2)}&euro;/{s.unit}
                               {s.supplier && ` (${s.supplier})`}
                               {s.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {s.trendDetail}</span>}
                               {s.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {s.trendDetail}</span>}
-                              {s.trend === 'stable' && <span className="text-slate-400 ml-1">{'→'} {s.trendDetail}</span>}
+                              {s.trend === 'stable' && <span className="text-[#9CA3AF] dark:text-[#737373] ml-1">{'→'} {s.trendDetail}</span>}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-500">Prix marche non disponible</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Prix marche non disponible</span>
                           )}
                         </div>
                         {s.marketPrice != null && (
-                          <span className="text-sm text-teal-400 font-semibold flex-shrink-0">
+                          <span className="text-sm text-[#111111] dark:text-white font-semibold flex-shrink-0">
                             {s.marketPrice.toFixed(2)}&euro;
                           </span>
                         )}
@@ -1265,14 +1265,14 @@ export default function Recipes() {
                     ))}
                   </div>
                   {/* Footer actions */}
-                  <div className="flex items-center justify-between px-4 py-3 bg-slate-900/50 border-t border-slate-700/50">
+                  <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                     <button
                       type="button"
                       onClick={() => {
                         const allChecked = aiSuggestionsChecked.every(Boolean);
                         setAiSuggestionsChecked(aiSuggestions.map(() => !allChecked));
                       }}
-                      className="text-xs text-teal-400 hover:text-teal-300"
+                      className="text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5]"
                     >
                       {aiSuggestionsChecked.every(Boolean) ? 'Tout decocher' : 'Tout cocher'}
                     </button>
@@ -1280,7 +1280,7 @@ export default function Recipes() {
                       type="button"
                       onClick={applyAiSuggestions}
                       disabled={!aiSuggestionsChecked.some(Boolean)}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black text-sm font-semibold rounded-lg transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       Ajouter ({aiSuggestionsChecked.filter(Boolean).length})
@@ -1310,7 +1310,7 @@ export default function Recipes() {
                             <span className="text-amber-600 dark:text-amber-400 text-xs">{name}</span>
                             <Link
                               to="/ingredients"
-                              className="text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium"
+                              className="text-xs text-[#111111] dark:text-white hover:underline font-medium"
                               onClick={() => setShowForm(false)}
                             >
                               {t("recipes.addMissing")}
@@ -1323,7 +1323,7 @@ export default function Recipes() {
                   <button
                     type="button"
                     onClick={() => setTemplateApplyInfo(null)}
-                    className="ml-auto p-0.5 text-slate-400 hover:text-slate-600 flex-shrink-0"
+                    className="ml-auto p-0.5 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white flex-shrink-0"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -1368,39 +1368,39 @@ export default function Recipes() {
           </div>
 
           {/* Live cost/margin preview - always visible */}
-          <div className="bg-gradient-to-r from-teal-50 to-indigo-50 dark:from-slate-700/50 dark:to-slate-700/30 rounded-lg p-4 border border-teal-100 dark:border-slate-600">
+          <div className="bg-gradient-to-r from-[#FAFAFA] to-[#F3F4F6] dark:from-[#0A0A0A] dark:to-[#0A0A0A] rounded-lg p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <span className="text-sm font-semibold text-teal-800 dark:text-teal-300">{t("recipes.livePreview")}</span>
+              <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
+              <span className="text-sm font-semibold text-[#111111] dark:text-white">{t("recipes.livePreview")}</span>
             </div>
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.materialCost")}</span>
                 <strong className="font-mono">{liveCost.toFixed(2)} &euro;</strong>
               </div>
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.costPerPortion")}</span>
                 <strong className="font-mono">{liveCostPerPortion.toFixed(2)} &euro;</strong>
               </div>
               {liveLaborPerPortion > 0 && (
-                <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                   <span>{t("recipes.laborPerPortion")}</span>
                   <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} &euro;</strong>
                 </div>
               )}
-              <div className="flex justify-between text-slate-600 dark:text-slate-300">
+              <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.totalPerPortion")}</span>
                 <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
               </div>
             </div>
             {/* Suggested price based on coefficient */}
             {liveTotalPerPortion > 0 && (
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-teal-200 dark:border-slate-600">
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm text-slate-400 dark:text-slate-300">Prix suggéré</span>
+                  <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Prix suggéré</span>
                   {editingCoeff ? (
                     <span className="flex items-center gap-1">
-                      <span className="text-xs text-slate-400">×</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">×</span>
                       <input
                         type="number"
                         step="0.1"
@@ -1427,12 +1427,12 @@ export default function Recipes() {
                           }
                         }}
                       />
-                      <span className="text-xs text-slate-400">({form.category})</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">({form.category})</span>
                     </span>
                   ) : (
                     <button
                       type="button"
-                      className="flex items-center gap-1 text-xs text-teal-500 hover:text-teal-400 transition-colors"
+                      className="flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
                       onClick={() => { setTempCoeff(liveCoeff); setEditingCoeff(true); }}
                       title="Modifier le coefficient"
                     >
@@ -1444,7 +1444,7 @@ export default function Recipes() {
                 </div>
                 <button
                   type="button"
-                  className="text-sm font-bold font-mono text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors cursor-pointer"
+                  className="text-sm font-bold font-mono text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors cursor-pointer"
                   onClick={() => setForm(prev => ({ ...prev, sellingPrice: liveSuggestedPrice.toFixed(2) }))}
                   title="Appliquer comme prix de vente"
                 >
@@ -1453,8 +1453,8 @@ export default function Recipes() {
               </div>
             )}
             {liveSellingPrice > 0 && (
-              <div className="flex items-center justify-between mt-2 pt-2 border-t border-teal-200 dark:border-slate-600">
-                <span className="text-sm font-semibold text-slate-400 dark:text-slate-200">{t("recipes.estimatedMarginLabel")}</span>
+              <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <span className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">{t("recipes.estimatedMarginLabel")}</span>
                 <span className={`text-lg font-bold ${liveMargin >= 70 ? 'text-green-600' : liveMargin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                   {liveMargin.toFixed(1)}%
                 </span>
@@ -1466,13 +1466,13 @@ export default function Recipes() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="label mb-0">{t("recipes.ingredientsLabel")}</label>
-              <button type="button" onClick={addIngredientLine} className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium">
+              <button type="button" onClick={addIngredientLine} className="text-sm text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium">
                 {t("recipes.addIngredient")}
               </button>
             </div>
 
             {formIngredients.length === 0 ? (
-              <p className="text-sm text-slate-400 dark:text-slate-500 py-2">{t("recipes.noIngredients")}</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-2">{t("recipes.noIngredients")}</p>
             ) : (
               <div className="space-y-3">
                 {formIngredients.map((fi, idx) => {
@@ -1488,7 +1488,7 @@ export default function Recipes() {
                   const convertedQty = convertToBaseUnit(effectiveQty, inputUnit, priceUnit);
                   const lineTotal = unitPrice * convertedQty;
                   return (
-                    <div key={idx} className="border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-2">
+                    <div key={idx} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 space-y-2">
                       {/* Row 1: Ingredient name combobox */}
                       <div className="flex items-center gap-2">
                         <IngredientCombobox
@@ -1515,7 +1515,7 @@ export default function Recipes() {
                       {isNewIngredient && fi.newName.trim() && (
                         <div className="grid grid-cols-3 gap-2 pl-1">
                           <div>
-                            <label className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Prix unitaire</label>
+                            <label className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Prix unitaire</label>
                             <input
                               type="number"
                               step="0.01"
@@ -1531,7 +1531,7 @@ export default function Recipes() {
                             />
                           </div>
                           <div>
-                            <label className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Unite</label>
+                            <label className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Unite</label>
                             <select
                               className="input w-full text-sm"
                               value={fi.newUnit}
@@ -1545,7 +1545,7 @@ export default function Recipes() {
                             </select>
                           </div>
                           <div>
-                            <label className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Categorie</label>
+                            <label className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Categorie</label>
                             <select
                               className="input w-full text-sm"
                               value={fi.newCategory}
@@ -1576,7 +1576,7 @@ export default function Recipes() {
                             setFormIngredients(updated);
                           }}
                         />
-                        <span className="text-xs text-slate-400 dark:text-slate-400 w-10">{unitLabel}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-10">{unitLabel}</span>
                         <input
                           type="number"
                           step="1"
@@ -1592,27 +1592,27 @@ export default function Recipes() {
                           }}
                           title={t("recipes.wasteTooltip")}
                         />
-                        <span className="text-xs text-slate-400 w-4">%</span>
-                        <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-4">%</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">
                           {unitPrice > 0 && <>{unitPrice.toFixed(2)}&euro;/{unitLabel}</>}
                         </span>
-                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400'}`}>{lineTotal.toFixed(2)} &euro;</span>
+                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{lineTotal.toFixed(2)} &euro;</span>
                       </div>
                     </div>
                   );
                 })}
 
                 {/* Running total of food cost */}
-                <div className="flex items-center justify-end gap-2 pt-2 border-t dark:border-slate-700">
-                  <span className="text-sm text-slate-400 dark:text-slate-400">{t("recipes.materialTotal")}</span>
-                  <span className="text-sm font-bold font-mono text-slate-800 dark:text-slate-200">{liveCost.toFixed(2)} &euro;</span>
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t("recipes.materialTotal")}</span>
+                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{liveCost.toFixed(2)} &euro;</span>
                 </div>
               </div>
             )}
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <span className="text-xs text-slate-400">{t("recipes.ctrlEnterSave")}</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t("recipes.ctrlEnterSave")}</span>
             <div className="flex gap-3">
               <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">{t("recipes.cancel")}</button>
               <button

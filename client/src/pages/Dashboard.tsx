@@ -71,12 +71,12 @@ const TAB_ICONS: Record<TabKey, any> = {
 
 // ── Stat card color configs ────────────────────────────────────────────────
 const STAT_CARD_STYLES: Record<string, { gradient: string; border: string }> = {
-  teal:   { gradient: 'from-teal-50 to-white dark:from-teal-950/20 dark:to-slate-900/40',   border: 'border-t-teal-400' },
-  green:  { gradient: 'from-green-50 to-white dark:from-green-950/20 dark:to-slate-900/40',  border: 'border-t-emerald-400' },
-  amber:  { gradient: 'from-amber-50 to-white dark:from-amber-950/20 dark:to-slate-900/40',  border: 'border-t-amber-400' },
-  purple: { gradient: 'from-purple-50 to-white dark:from-purple-950/20 dark:to-slate-900/40', border: 'border-t-purple-400' },
-  cyan:   { gradient: 'from-cyan-50 to-white dark:from-cyan-950/20 dark:to-slate-900/40',    border: 'border-t-cyan-400' },
-  slate:  { gradient: 'from-slate-50 to-white dark:from-slate-900/30 dark:to-slate-900/40',   border: 'border-t-slate-400' },
+  teal:   { gradient: 'from-[#F0FDFA] to-white dark:from-teal-950/20 dark:to-black/40',   border: 'border-t-teal-400' },
+  green:  { gradient: 'from-[#F0FDF4] to-white dark:from-green-950/20 dark:to-black/40',  border: 'border-t-emerald-400' },
+  amber:  { gradient: 'from-[#FFFBEB] to-white dark:from-amber-950/20 dark:to-black/40',  border: 'border-t-amber-400' },
+  purple: { gradient: 'from-[#FAF5FF] to-white dark:from-purple-950/20 dark:to-black/40', border: 'border-t-purple-400' },
+  cyan:   { gradient: 'from-[#ECFEFF] to-white dark:from-cyan-950/20 dark:to-black/40',    border: 'border-t-cyan-400' },
+  slate:  { gradient: 'from-[#F8FAFC] to-white dark:from-[#0A0A0A]/30 dark:to-black/40',   border: 'border-t-[#9CA3AF]' },
 };
 
 // ── Animated Number Counter ────────────────────────────────────────────────
@@ -112,15 +112,15 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
 }) {
   const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.teal;
   return (
-    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-slate-200 dark:border-slate-700/50 border-t-[3px] ${style.border} p-4 sm:p-5 transition-all duration-300 hover:shadow-lg dark:hover:shadow-teal-900/10 hover:-translate-y-0.5 dark:bg-slate-800/40 dark:backdrop-blur-md`}>
+    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A]/50 border-t-[3px] ${style.border} p-4 sm:p-5 transition-all duration-300 hover:shadow-lg dark:hover:shadow-black/20 hover:-translate-y-0.5 dark:bg-[#0A0A0A]/40 dark:backdrop-blur-md`}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-400 truncate font-general-sans">{title}</span>
+        <span className="text-xs sm:text-sm font-medium text-[#9CA3AF] dark:text-[#737373] truncate font-general-sans">{title}</span>
         <div className={`p-2 rounded-lg ${color} shadow-lg`}>
           <Icon className="w-4 h-4 text-white" />
         </div>
       </div>
       <div className="flex items-end gap-2">
-        <div className="text-2xl sm:text-3xl font-black font-satoshi text-slate-800 dark:text-slate-100 tracking-tight">
+        <div className="text-2xl sm:text-3xl font-black font-satoshi text-[#111111] dark:text-white tracking-tight">
           {numericValue !== undefined
             ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
             : value}
@@ -131,7 +131,7 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
           </div>
         )}
       </div>
-      {subtitle && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate font-general-sans">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 truncate font-general-sans">{subtitle}</p>}
     </div>
   );
 }
@@ -143,17 +143,17 @@ function RankBar({ rank, name, value, maxValue, color, unit = '%', link }: {
   const pct = maxValue > 0 ? (value / maxValue) * 100 : 0;
   const inner = (
     <div className="flex items-center gap-3 group">
-      <span className="text-xs font-bold text-slate-400 dark:text-slate-500 w-5 text-right">{rank}</span>
+      <span className="text-xs font-bold text-[#9CA3AF] dark:text-[#737373] w-5 text-right">{rank}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate pr-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+          <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] truncate pr-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
             {name}
           </span>
           <span className="text-sm font-bold tabular-nums whitespace-nowrap" style={{ color }}>
             {value.toFixed(1)}{unit}
           </span>
         </div>
-        <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-700 ease-out"
             style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: color }}
@@ -184,14 +184,14 @@ interface ChartTooltipProps {
 function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white dark:bg-slate-800/90 dark:backdrop-blur-lg shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600/50 text-sm min-w-[180px]">
-      <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1.5">
+    <div className="bg-white dark:bg-[#0A0A0A]/90 dark:backdrop-blur-lg shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 text-sm min-w-[180px]">
+      <p className="font-semibold text-[#111111] dark:text-white mb-1.5">
         {String(payload[0]?.payload?.fullName || label || payload[0]?.payload?.name || '')}
       </p>
       {payload.map((p: TooltipPayloadEntry, i: number) => (
         <div key={i} className="flex items-center gap-2 mt-0.5">
           <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color || p.fill }} />
-          <span className="text-slate-400 dark:text-slate-400">{p.name}:</span>
+          <span className="text-[#9CA3AF] dark:text-[#737373]">{p.name}:</span>
           <span className="font-semibold ml-auto" style={{ color: p.color || p.fill }}>
             {typeof p.value === 'number'
               ? (p.dataKey === 'margin' || p.dataKey === 'avgMargin' || p.dataKey === 'marginPercent'
@@ -308,7 +308,7 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
   if (dismissed && allDone) return null;
 
   return (
-    <div className="relative rounded-2xl border border-teal-500/30 bg-white/5 dark:bg-slate-800/40 backdrop-blur-xl shadow-xl shadow-teal-900/5 p-6 overflow-hidden stagger-1">
+    <div className="relative rounded-2xl border border-teal-500/30 bg-white/5 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-xl shadow-teal-900/5 p-6 overflow-hidden stagger-1">
       {/* Glassmorphism decorative blobs */}
       <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-teal-400/10 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
@@ -316,17 +316,17 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
       {/* Header */}
       <div className="relative flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 font-satoshi">
+          <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">
             {allDone ? 'Bravo ! Vous êtes prêt 🎉' : 'Premiers pas avec RestauMargin'}
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-sm text-[#6B7280] dark:text-[#737373] mt-0.5">
             {allDone ? 'Toutes les étapes sont complétées.' : `${completedSteps.length}/${ONBOARDING_STEPS.length} étapes complétées`}
           </p>
         </div>
         {allDone && (
           <button
             onClick={() => setDismissed(true)}
-            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="text-xs text-[#9CA3AF] hover:text-[#6B7280] dark:hover:text-[#A3A3A3] transition-colors"
           >
             Masquer
           </button>
@@ -334,12 +334,12 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
       </div>
 
       {/* Progress bar */}
-      <div className="relative h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-6">
+      <div className="relative h-2.5 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden mb-6">
         <div
           className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 transition-all duration-700 ease-out"
           style={{ width: `${progress}%` }}
         />
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#6B7280] dark:text-[#737373]">
           {progress}%
         </span>
       </div>
@@ -364,8 +364,8 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
                   ${done
                     ? 'bg-teal-50/50 dark:bg-teal-900/10 border border-teal-200/50 dark:border-teal-800/30'
                     : isCurrent
-                      ? 'bg-white dark:bg-slate-700/50 border border-teal-400/50 dark:border-teal-500/30 shadow-md shadow-teal-500/10 hover:shadow-lg hover:shadow-teal-500/15'
-                      : 'bg-slate-50 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/30 opacity-60 hover:opacity-80'
+                      ? 'bg-white dark:bg-[#171717]/50 border border-teal-400/50 dark:border-teal-500/30 shadow-md shadow-teal-500/10 hover:shadow-lg hover:shadow-teal-500/15'
+                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 border border-[#E5E7EB]/50 dark:border-[#1A1A1A]/30 opacity-60 hover:opacity-80'
                   }`}
                 style={{ animationDelay: `${i * 80}ms` }}
               >
@@ -375,7 +375,7 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
                     ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30'
                     : isCurrent
                       ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 ring-2 ring-teal-400/50'
-                      : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
+                      : 'bg-[#E5E7EB] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
                   }`}>
                   {done ? (
                     <Check className="w-4 h-4" />
@@ -392,8 +392,8 @@ function OnboardingChecklist({ restaurantName, ingredientCount, recipeCount, nav
                   ${done
                     ? 'text-teal-700 dark:text-teal-300 line-through decoration-teal-400/40'
                     : isCurrent
-                      ? 'text-slate-800 dark:text-slate-100'
-                      : 'text-slate-500 dark:text-slate-400'
+                      ? 'text-[#111111] dark:text-white'
+                      : 'text-[#6B7280] dark:text-[#737373]'
                   }`}>
                   {step.label}
                 </span>
@@ -821,16 +821,16 @@ export default function Dashboard() {
               <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
             </h2>
             {hasAnyData && (
-              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-general-sans">
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">
                 {recipes.length} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
               </p>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link to="/ingredients" className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm">
+            <Link to="/ingredients" className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors shadow-sm">
               <Plus className="w-4 h-4" /> {t("dashboard.addIngredients")}
             </Link>
-            <Link to="/recipes" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm">
+            <Link to="/recipes" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm">
               <ClipboardList className="w-4 h-4" /> {t("dashboard.createRecipe")}
             </Link>
           </div>
@@ -843,7 +843,7 @@ export default function Dashboard() {
             numericValue={recipes.length}
             decimals={0}
             icon={ClipboardList}
-            color="bg-teal-600"
+            color="bg-[#111111] dark:bg-white"
             colorKey="teal"
           />
           <StatCard
@@ -878,11 +878,11 @@ export default function Dashboard() {
 
         {/* Quick Alerts */}
         {quickAlerts.length > 0 && (
-          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 stagger-3">
+          <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 stagger-3">
             <div className="flex items-center gap-2 mb-4">
               <ShieldAlert className="w-5 h-5 text-amber-500" />
-              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">Alertes rapides</h3>
-              <span className="ml-auto text-xs text-slate-400 dark:text-slate-500 font-general-sans">{quickAlerts.length} alerte{quickAlerts.length > 1 ? 's' : ''}</span>
+              <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">Alertes rapides</h3>
+              <span className="ml-auto text-xs text-[#9CA3AF] dark:text-[#737373] font-general-sans">{quickAlerts.length} alerte{quickAlerts.length > 1 ? 's' : ''}</span>
             </div>
             <div className="space-y-2">
               {quickAlerts.map(alert => {
@@ -905,10 +905,10 @@ export default function Dashboard() {
 
         {/* Ingredient category donut (when ingredients exist) */}
         {partialCategoryData.length > 0 && (
-          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 stagger-4">
+          <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 stagger-4">
             <div className="flex items-center gap-2 mb-4">
               <PieChartIcon className="w-5 h-5 text-teal-600" />
-              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">
+              <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">
                 {recipes.length > 0 ? 'Répartition par catégorie' : 'Ingrédients par catégorie'}
               </h3>
             </div>
@@ -931,7 +931,7 @@ export default function Dashboard() {
                     const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
                     if ((percent || 0) < 0.05) return null;
                     return (
-                      <text x={x} y={y} fill="currentColor" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" className="text-xs fill-slate-600 dark:fill-slate-300">
+                      <text x={x} y={y} fill="currentColor" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" className="text-xs fill-[#6B7280] dark:fill-[#A3A3A3]">
                         {String(name || '').slice(0, 15)} ({count})
                       </text>
                     );
@@ -958,10 +958,10 @@ export default function Dashboard() {
 
         {/* CTA if truly empty */}
         {!hasAnyData && (
-          <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <ChefHat className="w-14 h-14 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">{t("dashboard.welcome")}</h3>
-            <p className="text-slate-400 dark:text-slate-500 mb-6">{t("dashboard.emptyStateDesc")}</p>
+          <div className="text-center py-12 bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <ChefHat className="w-14 h-14 mx-auto text-[#9CA3AF] dark:text-[#525252] mb-4" />
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-[#A3A3A3] mb-2">{t("dashboard.welcome")}</h3>
+            <p className="text-[#9CA3AF] dark:text-[#737373] mb-6">{t("dashboard.emptyStateDesc")}</p>
             <div className="flex gap-4 justify-center">
               <Link to="/ingredients" className="btn-primary">{t("dashboard.addIngredients")}</Link>
               <Link to="/recipes" className="btn-secondary">{t("dashboard.createRecipe")}</Link>
@@ -991,38 +991,38 @@ export default function Dashboard() {
           <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight">
             <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
           </h2>
-          <p className="text-sm text-slate-400 dark:text-slate-500 mt-1 font-general-sans">
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">
             {stats.totalRecipes} {t("dashboard.recipesCount")} · {ingredients.length} {t("dashboard.ingredientsCount")}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate('/recipes?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" /> {t("dashboard.newRecipe")}
           </button>
           <button
             onClick={() => navigate('/ingredients?action=new')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm"
           >
             <Package className="w-4 h-4" /> {t("dashboard.addIngredient")}
           </button>
           <Link
             to="/recipes"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm"
           >
             <ClipboardList className="w-4 h-4" /> {t("dashboard.viewRecipes")}
           </Link>
           <Link
             to="/inventory"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm"
           >
             <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
           </Link>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600 shadow-sm no-print"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm no-print"
           >
             <Printer className="w-4 h-4" /> {t("dashboard.print")}
           </button>
@@ -1039,7 +1039,7 @@ export default function Dashboard() {
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 stagger-2">
-        <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-teal-600" colorKey="teal" />
+        <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-[#111111] dark:bg-white" colorKey="teal" />
         <StatCard
           title={t("dashboard.avgMargin")}
           numericValue={stats.avgMargin}
@@ -1074,7 +1074,7 @@ export default function Dashboard() {
           title={t("dashboard.minMax")}
           value={`${stats.worstMargin.toFixed(0)}% / ${stats.bestMargin.toFixed(0)}%`}
           icon={TrendingDown}
-          color="bg-slate-600"
+          color="bg-[#6B7280]"
           colorKey="slate"
         />
       </div>
@@ -1084,21 +1084,21 @@ export default function Dashboard() {
         <div className="stagger-3">
           <Link
             to="/assistant"
-            className="flex items-center gap-4 bg-gradient-to-r from-slate-900/60 to-slate-800/40 border border-slate-700/50 rounded-xl p-4 hover:border-teal-500/30 transition-all duration-300 group"
+            className="flex items-center gap-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 rounded-xl p-4 hover:border-[#111111]/30 dark:hover:border-[#333]/50 transition-all duration-300 group"
           >
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-teal-600 to-cyan-600 shadow-lg shadow-teal-500/20">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white shadow-lg">
+              <Sparkles className="w-5 h-5 text-white dark:text-[#111111]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-sm font-medium text-slate-300">
+                <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
                   IA : {aiUsage.used}/{aiUsage.limit}
                 </span>
                 <span className="text-xs text-teal-400 group-hover:text-teal-300 transition-colors">
                   Voir details →
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-700 ease-out ${
                     aiUsage.percentage > 80
@@ -1124,20 +1124,20 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-3">
         {/* Top 5 recipes by margin — mini table */}
         {top5Margin.length > 0 && (
-          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
+          <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-teal-400/5 blur-3xl pointer-events-none" />
             <div className="relative flex items-center gap-2 mb-4">
               <Trophy className="w-5 h-5 text-amber-500" />
-              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">Top 5 — Meilleures marges</h3>
+              <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">Top 5 — Meilleures marges</h3>
             </div>
             <div className="relative overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-700">
-                    <th className="text-left py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Recette</th>
-                    <th className="text-right py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Coût</th>
-                    <th className="text-right py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Prix</th>
-                    <th className="text-right py-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Marge</th>
+                  <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <th className="text-left py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Recette</th>
+                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Coût</th>
+                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Prix</th>
+                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Marge</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1150,21 +1150,21 @@ export default function Dashboard() {
                     return (
                       <tr
                         key={recipe.id}
-                        className="border-b border-slate-100 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                        className="border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50 hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 transition-colors"
                         style={{ animationDelay: `${i * 60}ms` }}
                       >
                         <td className="py-2.5">
                           <Link to={`/recipes/${recipe.id}`} className="flex items-center gap-2 group">
-                            <span className="text-xs font-bold text-slate-300 dark:text-slate-600 w-4">{i + 1}</span>
-                            <span className="font-medium text-slate-700 dark:text-slate-200 truncate max-w-[160px] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                            <span className="text-xs font-bold text-[#9CA3AF] dark:text-[#525252] w-4">{i + 1}</span>
+                            <span className="font-medium text-[#111111] dark:text-[#E5E5E5] truncate max-w-[160px] group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                               {recipe.name}
                             </span>
                           </Link>
                         </td>
-                        <td className="py-2.5 text-right text-slate-500 dark:text-slate-400 tabular-nums">
+                        <td className="py-2.5 text-right text-[#6B7280] dark:text-[#737373] tabular-nums">
                           {recipe.margin.costPerPortion.toFixed(2)} €
                         </td>
-                        <td className="py-2.5 text-right text-slate-700 dark:text-slate-300 font-medium tabular-nums">
+                        <td className="py-2.5 text-right text-[#111111] dark:text-[#A3A3A3] font-medium tabular-nums">
                           {recipe.sellingPrice.toFixed(2)} €
                         </td>
                         <td className="py-2.5 text-right">
@@ -1186,11 +1186,11 @@ export default function Dashboard() {
 
         {/* Quick Alerts */}
         {quickAlerts.length > 0 && (
-          <div className="relative rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white/80 dark:bg-slate-800/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
+          <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
             <div className="absolute -bottom-8 -left-8 w-28 h-28 rounded-full bg-amber-400/5 blur-3xl pointer-events-none" />
             <div className="relative flex items-center gap-2 mb-4">
               <ShieldAlert className="w-5 h-5 text-amber-500" />
-              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 font-satoshi">Alertes rapides</h3>
+              <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">Alertes rapides</h3>
               <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-medium">
                 {quickAlerts.length}
               </span>
@@ -1205,7 +1205,7 @@ export default function Dashboard() {
                     className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 group ${alert.bgColor}`}
                     style={{ animationDelay: `${i * 80}ms` }}
                   >
-                    <div className={`p-2 rounded-lg bg-white/50 dark:bg-slate-800/50 ${alert.color}`}>
+                    <div className={`p-2 rounded-lg bg-white/50 dark:bg-[#0A0A0A]/50 ${alert.color}`}>
                       <AlertIcon className="w-4 h-4" />
                     </div>
                     <span className={`text-sm font-medium flex-1 ${alert.color}`}>{alert.text}</span>
@@ -1227,28 +1227,28 @@ export default function Dashboard() {
       {/* ── Menu du Marché + Suggestions IA ────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-4">
         {/* Menu du Marché */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
           <div className="flex items-center gap-2 mb-4">
             <Star className="w-5 h-5 text-amber-500" />
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.dailySuggestion")}</h3>
-            <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{t("dashboard.marketMenu")}</span>
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.dailySuggestion")}</h3>
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">{t("dashboard.marketMenu")}</span>
           </div>
-          <p className="text-xs text-slate-400 dark:text-slate-400 mb-3">{t("dashboard.recommendedDishes")}</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-3">{t("dashboard.recommendedDishes")}</p>
           <div className="space-y-3">
             {stats.menuDuMarche.map((dish, i) => (
               <Link
                 key={dish.id}
                 to={`/recipes/${dish.id}`}
-                className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-lg bg-[#FAFAFA] dark:bg-[#171717]/50 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors group"
               >
                 <span className="text-lg font-bold text-amber-500 w-6 text-center">{i + 1}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">{dish.name}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{dish.category}</p>
+                  <p className="text-sm font-medium text-[#111111] dark:text-[#E5E5E5] truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">{dish.name}</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{dish.category}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-sm font-bold text-green-600 dark:text-green-400">{dish.marginPercent.toFixed(1)}%</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{t("dashboard.cost")} {dish.costPerPortion.toFixed(2)}€ · {t("dashboard.sale")} {dish.suggestedPrice.toFixed(2)}€</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t("dashboard.cost")} {dish.costPerPortion.toFixed(2)}€ · {t("dashboard.sale")} {dish.suggestedPrice.toFixed(2)}€</p>
                 </div>
               </Link>
             ))}
@@ -1259,10 +1259,10 @@ export default function Dashboard() {
         </div>
 
         {/* Suggestions IA */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-purple-500" />
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.aiSuggestions")}</h3>
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.aiSuggestions")}</h3>
           </div>
           <div className="space-y-3">
             {stats.aiSuggestions.map(suggestion => {
@@ -1274,7 +1274,7 @@ export default function Dashboard() {
               const btnColorMap = {
                 opportunity: 'bg-green-600 hover:bg-green-700 text-white',
                 warning: 'bg-orange-600 hover:bg-orange-700 text-white',
-                info: 'bg-teal-600 hover:bg-teal-700 text-white',
+                info: 'bg-[#111111] hover:bg-[#333] dark:bg-white dark:hover:bg-[#E5E5E5] text-white dark:text-black',
               };
               const iconMap = {
                 'trending-up': <TrendingUp className="w-4 h-4" />,
@@ -1290,7 +1290,7 @@ export default function Dashboard() {
                   <div className={`flex-shrink-0 ${suggestion.type === 'opportunity' ? 'text-green-600' : suggestion.type === 'warning' ? 'text-orange-600' : 'text-teal-600'}`}>
                     {iconMap[suggestion.icon as keyof typeof iconMap] || <Lightbulb className="w-4 h-4" />}
                   </div>
-                  <p className="text-sm text-slate-400 dark:text-slate-300 flex-1">{suggestion.text}</p>
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#A3A3A3] flex-1">{suggestion.text}</p>
                   <Link
                     to={suggestion.action}
                     className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${btnColorMap[suggestion.type]}`}
@@ -1315,18 +1315,18 @@ export default function Dashboard() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-3 px-5 py-3.5 rounded-xl text-left transition-all whitespace-nowrap flex-shrink-0 min-w-[180px]
                 ${isActive
-                  ? 'bg-white dark:bg-slate-800 border-l-4 border-l-teal-600 border border-slate-200 dark:border-slate-700 shadow-md'
-                  : 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm opacity-75 hover:opacity-100'
+                  ? 'bg-white dark:bg-[#0A0A0A] border-l-4 border-l-[#111111] dark:border-l-white border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-md'
+                  : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-white dark:hover:bg-[#0A0A0A] hover:shadow-sm opacity-75 hover:opacity-100'
                 }`}
             >
-              <div className={`p-2 rounded-lg ${isActive ? 'bg-teal-100 dark:bg-teal-900/30' : 'bg-slate-100 dark:bg-slate-700'}`}>
-                <Icon className={`w-5 h-5 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400 dark:text-slate-500'}`} />
+              <div className={`p-2 rounded-lg ${isActive ? 'bg-[#111111]/10 dark:bg-white/10' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`}>
+                <Icon className={`w-5 h-5 ${isActive ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
               </div>
               <div>
-                <div className={`text-sm font-semibold ${isActive ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-400'}`}>
+                <div className={`text-sm font-semibold ${isActive ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
                   {tab.label}
                 </div>
-                <div className={`text-xs ${isActive ? 'text-slate-400 dark:text-slate-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                <div className={`text-xs ${isActive ? 'text-[#9CA3AF] dark:text-[#737373]' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
                   {tab.desc}
                 </div>
               </div>
@@ -1349,8 +1349,8 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-wrap gap-2">
               {getSeasonalProducts().slice(0, 8).map(p => (
-                <span key={p.name} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 dark:bg-slate-800/70 text-sm border border-emerald-200 dark:border-emerald-700">
-                  <span className="font-medium text-slate-800 dark:text-slate-200">{p.name}</span>
+                <span key={p.name} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 dark:bg-[#0A0A0A]/70 text-sm border border-emerald-200 dark:border-emerald-700">
+                  <span className="font-medium text-[#111111] dark:text-[#E5E5E5]">{p.name}</span>
                   <span className="text-emerald-600 dark:text-emerald-400 text-xs">{p.avgPrice.toFixed(2)}€/{p.unit}</span>
                 </span>
               ))}
@@ -1364,20 +1364,20 @@ export default function Dashboard() {
             {/* LEFT SIDE */}
             <div className="space-y-6">
               {/* Revenue Estimation */}
-              <div className="bg-gradient-to-br from-teal-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
+              <div className="bg-[#111111] dark:bg-[#FAFAFA] rounded-xl shadow-lg p-5 text-white dark:text-[#111111]">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2">
                     <Calculator className="w-5 h-5" />
-                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 text-white">{t("dashboard.revenueEstimation")}</h3>
+                    <h3 className="text-lg font-semibold text-white dark:text-[#111111]">{t("dashboard.revenueEstimation")}</h3>
                   </div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
+                    <div className="flex items-center gap-1 bg-white/10 dark:bg-black/10 rounded-lg p-0.5">
                       {([['all', t("dashboard.serviceAll")], ['lunch', t("dashboard.serviceLunch")], ['dinner', t("dashboard.serviceDinner")]] as [string, string][]).map(([key, label]) => (
                         <button
                           key={key}
                           onClick={() => setServiceMode(key as 'all' | 'lunch' | 'dinner')}
                           className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
-                            serviceMode === key ? 'bg-white/25 text-white' : 'text-teal-200 hover:text-white'
+                            serviceMode === key ? 'bg-white/25 dark:bg-black/15 text-white dark:text-[#111111]' : 'text-white/60 dark:text-[#111111]/60 hover:text-white dark:hover:text-[#111111]'
                           }`}
                         >
                           {label}
@@ -1385,56 +1385,56 @@ export default function Dashboard() {
                       ))}
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-teal-100">{t("dashboard.covers")} :</label>
+                      <label className="text-xs text-white/70 dark:text-[#111111]/70">{t("dashboard.covers")} :</label>
                       <input
                         type="number"
                         min={1}
                         max={500}
                         value={couverts}
                         onChange={e => setCouverts(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                        className="w-16 px-2 py-1 rounded bg-white/20 dark:bg-black/10 border border-white/30 dark:border-black/20 text-white dark:text-[#111111] text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-black/30"
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <label className="text-xs text-teal-100">{t("dashboard.avgTicket")} :</label>
+                      <label className="text-xs text-white/70 dark:text-[#111111]/70">{t("dashboard.avgTicket")} :</label>
                       <input
                         type="number"
                         min={1}
                         max={500}
                         value={avgPricePerCouvert}
                         onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                        className="w-16 px-2 py-1 rounded bg-white/20 dark:bg-black/10 border border-white/30 dark:border-black/20 text-white dark:text-[#111111] text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-black/30"
                       />
-                      <span className="text-xs text-teal-200">€</span>
+                      <span className="text-xs text-white/60 dark:text-[#111111]/60">€</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerDay")}</p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
+                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
                   </div>
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
+                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
                   </div>
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
+                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
                     <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
                   </div>
-                  <div className="bg-white/10 rounded-lg p-3">
-                    <p className="text-xs text-teal-200 mb-1">{t("dashboard.profitPerDay")}</p>
-                    <p className="text-xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
+                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
+                    <p className="text-xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-teal-200">
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-white/60 dark:text-[#111111]/60">
                   <span>{stats.dailyCouverts} {t("dashboard.coversPerDay")} ({serviceMode === 'all' ? t("dashboard.twoServices") : serviceMode === 'lunch' ? t("dashboard.lunch") : t("dashboard.dinner")})</span>
                   <span>{t("dashboard.costRatio")} : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
                   <span>{t("dashboard.profitPerCover")} : {stats.profitPerCouvert.toFixed(2)} €</span>
                   {stats.seuilRentabilite > 0 && (
-                    <span className="text-yellow-300 font-medium">{t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite} {t("dashboard.coversPerDay")}</span>
+                    <span className="text-yellow-300 dark:text-amber-600 font-medium">{t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite} {t("dashboard.coversPerDay")}</span>
                   )}
                 </div>
               </div>
@@ -1442,13 +1442,13 @@ export default function Dashboard() {
               {/* Category cards with colored dots */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {stats.categoryData.map((cat, i) => (
-                  <div key={cat.name} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 hover:shadow-md transition-shadow">
+                  <div key={cat.name} className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="text-sm font-medium text-slate-400 dark:text-slate-300 truncate">{cat.name}</span>
+                      <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] truncate">{cat.name}</span>
                     </div>
-                    <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{cat.count}</div>
-                    <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">
+                    <div className="text-2xl font-bold text-[#111111] dark:text-white">{cat.count}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                       {t("dashboard.margin")} :{' '}
                       <span className={
                         cat.avgMargin >= 70 ? 'text-green-600 font-semibold'
@@ -1466,10 +1466,10 @@ export default function Dashboard() {
             {/* RIGHT SIDE */}
             <div className="space-y-6">
               {/* Donut chart for category distribution */}
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
                 <div className="flex items-center gap-2 mb-4">
                   <Utensils className="w-5 h-5 text-teal-600" />
-                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.distribution")}</h3>
+                  <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.distribution")}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
@@ -1509,8 +1509,8 @@ export default function Dashboard() {
                   {stats.categoryData.map((cat, i) => (
                     <div key={cat.name} className="flex items-center gap-2 text-sm">
                       <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                      <span className="text-slate-400 dark:text-slate-300 flex-1 truncate">{cat.name}</span>
-                      <span className="font-semibold text-slate-800 dark:text-slate-100 tabular-nums">{cat.count}</span>
+                      <span className="text-[#9CA3AF] dark:text-[#A3A3A3] flex-1 truncate">{cat.name}</span>
+                      <span className="font-semibold text-[#111111] dark:text-white tabular-nums">{cat.count}</span>
                     </div>
                   ))}
                 </div>
@@ -1518,10 +1518,10 @@ export default function Dashboard() {
 
               {/* Allergen badges */}
               {stats.allergenSummary.length > 0 && (
-                <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+                <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <ShieldAlert className="w-5 h-5 text-amber-500" />
-                    <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.allergens")}</h3>
+                    <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.allergens")}</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {stats.allergenSummary.map(a => (
@@ -1546,26 +1546,26 @@ export default function Dashboard() {
       {activeTab === 'margins' && (
         <div className="space-y-6">
           {/* Full width horizontal bar chart of ALL recipes sorted by margin */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               <TrendingUp className="w-5 h-5 text-green-600" />
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.allRecipesByMargin")}</h3>
+              <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.allRecipesByMargin")}</h3>
               <div className="flex items-center gap-2 ml-auto">
-                <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+                <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
                   <button
                     onClick={() => setMarginSort('margin')}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'margin' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-400 dark:text-slate-400 hover:text-slate-700'}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'margin' ? 'bg-white dark:bg-[#262626] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111]'}`}
                   >
                     <ArrowDown className="w-3 h-3" /> {t("dashboard.margin")}
                   </button>
                   <button
                     onClick={() => setMarginSort('name')}
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'name' ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-sm' : 'text-slate-400 dark:text-slate-400 hover:text-slate-700'}`}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${marginSort === 'name' ? 'bg-white dark:bg-[#262626] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111]'}`}
                   >
                     <ArrowDown className="w-3 h-3" /> {t("dashboard.name")}
                   </button>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
+                <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-600 inline-block" /> &ge; 70%</span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 50-70%</span>
                   <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> &lt; 50%</span>
@@ -1582,9 +1582,9 @@ export default function Dashboard() {
                     if (!active || !payload?.length) return null;
                     const d = payload[0]?.payload;
                     return (
-                      <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
-                        <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.fullName}</p>
-                        <p className="text-slate-400 dark:text-slate-400">{d?.category}</p>
+                      <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm">
+                        <p className="font-semibold text-[#111111] dark:text-white">{d?.fullName}</p>
+                        <p className="text-[#9CA3AF] dark:text-[#737373]">{d?.category}</p>
                         <p className="font-bold mt-1" style={{ color: d?.fill }}>{d?.margin?.toFixed(1)}%</p>
                       </div>
                     );
@@ -1601,10 +1601,10 @@ export default function Dashboard() {
 
           {/* Top 10 + Bottom 5 side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Trophy className="w-5 h-5 text-yellow-500" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.top10ByMargin")}</h3>
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.top10ByMargin")}</h3>
               </div>
               <div className="space-y-3">
                 {stats.top10Margin.map((r, i) => (
@@ -1621,10 +1621,10 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
               <div className="flex items-center gap-2 mb-4">
                 <ShieldAlert className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.bottom5Margins")}</h3>
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.bottom5Margins")}</h3>
                 <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">{t("dashboard.actionRequired")}</span>
               </div>
               <div className="space-y-3">
@@ -1653,11 +1653,11 @@ export default function Dashboard() {
           {/* Treemap + Stacked bar side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Food Cost Pie Chart with labels inside segments */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <PieChartIcon className="w-5 h-5 text-teal-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.foodCostDistribution")}</h3>
-                <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.foodCostDistribution")}</h3>
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">
                   Total : {stats.totalFoodCostAll.toFixed(2)} €
                 </span>
               </div>
@@ -1705,9 +1705,9 @@ export default function Dashboard() {
                         const d = payload[0]?.payload;
                         const pct = stats.totalFoodCostAll > 0 ? ((d?.value / stats.totalFoodCostAll) * 100).toFixed(1) : '0';
                         return (
-                          <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
-                            <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} € ({pct}%)</p>
+                          <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm">
+                            <p className="font-semibold text-[#111111] dark:text-white">{d?.name}</p>
+                            <p className="text-[#6B7280] dark:text-[#A3A3A3]">{d?.value?.toFixed(2)} € ({pct}%)</p>
                           </div>
                         );
                       }}
@@ -1715,16 +1715,16 @@ export default function Dashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-center text-slate-400 py-12">{t("dashboard.noData")}</p>
+                <p className="text-center text-[#9CA3AF] py-12">{t("dashboard.noData")}</p>
               )}
             </div>
 
             {/* Cost by category bar */}
             {stats.foodCostData.length > 0 && (
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
                 <div className="flex items-center gap-2 mb-4">
                   <BarChart3 className="w-5 h-5 text-orange-600" />
-                  <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.detailByCategory")}</h3>
+                  <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.detailByCategory")}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={Math.max(200, stats.foodCostData.length * 36)}>
                   <BarChart data={stats.foodCostData} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
@@ -1737,10 +1737,10 @@ export default function Dashboard() {
                         const d = payload[0]?.payload;
                         const pct = stats.totalFoodCostAll > 0 ? ((d?.value / stats.totalFoodCostAll) * 100).toFixed(1) : '0';
                         return (
-                          <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm">
-                            <p className="font-semibold text-slate-800 dark:text-slate-100">{d?.name}</p>
-                            <p className="text-slate-600 dark:text-slate-300">{d?.value?.toFixed(2)} €</p>
-                            <p className="text-slate-400 dark:text-slate-400">{pct}% {t("dashboard.ofTotalCost")}</p>
+                          <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm">
+                            <p className="font-semibold text-[#111111] dark:text-white">{d?.name}</p>
+                            <p className="text-[#6B7280] dark:text-[#A3A3A3]">{d?.value?.toFixed(2)} €</p>
+                            <p className="text-[#9CA3AF] dark:text-[#737373]">{pct}% {t("dashboard.ofTotalCost")}</p>
                           </div>
                         );
                       }}
@@ -1758,15 +1758,15 @@ export default function Dashboard() {
 
           {/* Top 10 most expensive ingredients table */}
           {stats.topIngredients.length > 0 && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <ShoppingCart className="w-5 h-5 text-red-500" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.top10ExpensiveIngredients")}</h3>
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.top10ExpensiveIngredients")}</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-slate-400 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="text-left text-[#9CA3AF] dark:text-[#737373] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                       <th className="pb-2 font-medium">#</th>
                       <th className="pb-2 font-medium">{t("dashboard.ingredient")}</th>
                       <th className="pb-2 font-medium">{t("dashboard.category")}</th>
@@ -1774,19 +1774,19 @@ export default function Dashboard() {
                       <th className="pb-2 text-right font-medium">{t("dashboard.percentOfTotal")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                  <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
                     {stats.topIngredients.map((ing, i) => (
-                      <tr key={ing.name} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                        <td className="py-2.5 text-slate-400 font-bold">{i + 1}</td>
-                        <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">{ing.name}</td>
-                        <td className="py-2.5 text-slate-400 dark:text-slate-400">
+                      <tr key={ing.name} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/50">
+                        <td className="py-2.5 text-[#9CA3AF] font-bold">{i + 1}</td>
+                        <td className="py-2.5 font-medium text-[#111111] dark:text-[#E5E5E5]">{ing.name}</td>
+                        <td className="py-2.5 text-[#9CA3AF] dark:text-[#737373]">
                           <span className="inline-flex items-center gap-1">
                             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: FOOD_CATEGORY_COLORS[ing.category] || '#64748b' }} />
                             {ing.category}
                           </span>
                         </td>
-                        <td className="py-2.5 text-right font-mono font-semibold text-slate-400 dark:text-slate-300">{ing.cost.toFixed(2)} €</td>
-                        <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-400">
+                        <td className="py-2.5 text-right font-mono font-semibold text-[#9CA3AF] dark:text-[#A3A3A3]">{ing.cost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">
                           {stats.totalFoodCostAll > 0 ? ((ing.cost / stats.totalFoodCostAll) * 100).toFixed(1) : '0'}%
                         </td>
                       </tr>
@@ -1799,33 +1799,33 @@ export default function Dashboard() {
 
           {/* Category Breakdown Table */}
           {stats.categoryBreakdown.length > 0 && (
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <ClipboardList className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.ingredientCategoryDetail")}</h3>
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.ingredientCategoryDetail")}</h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-slate-400 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="text-left text-[#9CA3AF] dark:text-[#737373] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                       <th className="pb-2 font-medium">{t("dashboard.category")}</th>
                       <th className="pb-2 text-right font-medium">{t("dashboard.totalCost")}</th>
                       <th className="pb-2 text-right font-medium">{t("dashboard.percentOfTotal")}</th>
                       <th className="pb-2 font-medium">{t("dashboard.mainIngredient")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                  <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
                     {stats.categoryBreakdown.map(cat => (
-                      <tr key={cat.name} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                        <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">
+                      <tr key={cat.name} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/50">
+                        <td className="py-2.5 font-medium text-[#111111] dark:text-[#E5E5E5]">
                           <span className="inline-flex items-center gap-2">
                             <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: cat.fill }} />
                             {cat.name}
                           </span>
                         </td>
-                        <td className="py-2.5 text-right font-mono font-semibold text-slate-400 dark:text-slate-300">{cat.totalCost.toFixed(2)} €</td>
-                        <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-400">{cat.pctOfTotal.toFixed(1)}%</td>
-                        <td className="py-2.5 text-slate-400 dark:text-slate-400">{cat.topIngredient}</td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-[#9CA3AF] dark:text-[#A3A3A3]">{cat.totalCost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">{cat.pctOfTotal.toFixed(1)}%</td>
+                        <td className="py-2.5 text-[#9CA3AF] dark:text-[#737373]">{cat.topIngredient}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1842,20 +1842,20 @@ export default function Dashboard() {
       {activeTab === 'profitability' && (
         <div className="space-y-6">
           {/* Revenue projection with service selector */}
-          <div className="bg-gradient-to-br from-teal-600 to-indigo-700 rounded-xl shadow-lg p-5 text-white">
+          <div className="bg-[#111111] dark:bg-[#FAFAFA] rounded-xl shadow-lg p-5 text-white dark:text-[#111111]">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <Calculator className="w-5 h-5" />
-                <h3 className="text-lg font-semibold text-white">{t("dashboard.revenueProjections")}</h3>
+                <h3 className="text-lg font-semibold text-white dark:text-[#111111]">{t("dashboard.revenueProjections")}</h3>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-1 bg-white/10 rounded-lg p-0.5">
+                <div className="flex items-center gap-1 bg-white/10 dark:bg-black/10 rounded-lg p-0.5">
                   {([['all', t("dashboard.serviceAll")], ['lunch', t("dashboard.serviceLunch")], ['dinner', t("dashboard.serviceDinner")]] as [string, string][]).map(([key, label]) => (
                     <button
                       key={key}
                       onClick={() => setServiceMode(key as 'all' | 'lunch' | 'dinner')}
                       className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                        serviceMode === key ? 'bg-white/25 text-white' : 'text-teal-200 hover:text-white'
+                        serviceMode === key ? 'bg-white/25 dark:bg-black/15 text-white dark:text-[#111111]' : 'text-white/60 dark:text-[#111111]/60 hover:text-white dark:hover:text-[#111111]'
                       }`}
                     >
                       {label}
@@ -1863,57 +1863,57 @@ export default function Dashboard() {
                   ))}
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-teal-100">{t("dashboard.covers")} :</label>
+                  <label className="text-xs text-white/70 dark:text-[#111111]/70">{t("dashboard.covers")} :</label>
                   <input
                     type="number"
                     min={1}
                     max={500}
                     value={couverts}
                     onChange={e => setCouverts(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                    className="w-16 px-2 py-1 rounded bg-white/20 dark:bg-black/10 border border-white/30 dark:border-black/20 text-white dark:text-[#111111] text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-black/30"
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-xs text-teal-100">{t("dashboard.avgTicket")} :</label>
+                  <label className="text-xs text-white/70 dark:text-[#111111]/70">{t("dashboard.avgTicket")} :</label>
                   <input
                     type="number"
                     min={1}
                     max={500}
                     value={avgPricePerCouvert}
                     onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1 rounded bg-white/20 border border-white/30 text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50"
+                    className="w-16 px-2 py-1 rounded bg-white/20 dark:bg-black/10 border border-white/30 dark:border-black/20 text-white dark:text-[#111111] text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-black/30"
                   />
-                  <span className="text-xs text-teal-200">€</span>
+                  <span className="text-xs text-white/60 dark:text-[#111111]/60">€</span>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerDay")}</p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
+                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
               </div>
-              <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerWeek")}</p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
+                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
               </div>
-              <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-teal-200 mb-1">{t("dashboard.revenuePerMonth")}</p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
+                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
                 <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
               </div>
-              <div className="bg-white/10 rounded-lg p-4">
-                <p className="text-xs text-teal-200 mb-1">{t("dashboard.profitPerDay")}</p>
-                <p className="text-2xl font-bold text-green-300"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
+                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
+                <p className="text-2xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
               </div>
             </div>
           </div>
 
           {/* Projections Line Chart */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-indigo-600" />
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.projections6Months")}</h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{t("dashboard.revenueVsCosts")}</span>
+              <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.projections6Months")}</h3>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">{t("dashboard.revenueVsCosts")}</span>
             </div>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={stats.projectionData} margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
@@ -1924,12 +1924,12 @@ export default function Dashboard() {
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
                     return (
-                      <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-3 border border-slate-200 dark:border-slate-600 text-sm min-w-[180px]">
-                        <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1.5">{label}</p>
+                      <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm min-w-[180px]">
+                        <p className="font-semibold text-[#111111] dark:text-white mb-1.5">{label}</p>
                         {payload.map((p, i: number) => (
                           <div key={i} className="flex items-center gap-2 mt-0.5">
                             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-                            <span className="text-slate-400 dark:text-slate-400">{p.name}:</span>
+                            <span className="text-[#9CA3AF] dark:text-[#737373]">{p.name}:</span>
                             <span className="font-semibold ml-auto" style={{ color: p.color }}>{p.value?.toLocaleString('fr-FR')} €</span>
                           </div>
                         ))}
@@ -1963,32 +1963,32 @@ export default function Dashboard() {
           {/* Break-even analysis + coefficient distribution side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Break-even analysis */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Target className="w-5 h-5 text-teal-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.profitabilityAnalysis")}</h3>
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.profitabilityAnalysis")}</h3>
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.avgCostRatio")}</p>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                  <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("dashboard.avgCostRatio")}</p>
+                    <p className="text-2xl font-bold text-[#111111] dark:text-white">
                       <AnimatedNumber value={stats.avgCostRatio * 100} decimals={1} suffix="%" />
                     </p>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.profitPerCover")}</p>
+                  <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("dashboard.profitPerCover")}</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                       <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
                     </p>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.coversPerDay")}</p>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">{stats.dailyCouverts}</p>
+                  <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("dashboard.coversPerDay")}</p>
+                    <p className="text-2xl font-bold text-[#111111] dark:text-white">{stats.dailyCouverts}</p>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg p-4">
-                    <p className="text-xs text-slate-400 dark:text-slate-400 mb-1">{t("dashboard.avgFoodCost")}</p>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                  <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("dashboard.avgFoodCost")}</p>
+                    <p className="text-2xl font-bold text-[#111111] dark:text-white">
                       <AnimatedNumber value={stats.avgFoodCost} decimals={2} suffix=" €" />
                     </p>
                   </div>
@@ -2005,10 +2005,10 @@ export default function Dashboard() {
             </div>
 
             {/* Coefficient distribution chart */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="w-5 h-5 text-purple-600" />
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.coefficientDistribution")}</h3>
+                <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.coefficientDistribution")}</h3>
               </div>
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={stats.coeffBuckets}>
@@ -2027,16 +2027,16 @@ export default function Dashboard() {
           </div>
 
           {/* Worst 5 Recipes table */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-red-200 dark:border-red-800/50 p-5">
             <div className="flex items-center gap-2 mb-4">
               <ShieldAlert className="w-5 h-5 text-red-500" />
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.bottom5LeastProfitable")}</h3>
+              <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.bottom5LeastProfitable")}</h3>
               <span className="text-xs text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-2 py-0.5 rounded-full ml-auto">{t("dashboard.actionRequired")}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-400 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+                  <tr className="text-left text-[#9CA3AF] dark:text-[#737373] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                     <th className="pb-2 font-medium">#</th>
                     <th className="pb-2 font-medium">{t("dashboard.recipe")}</th>
                     <th className="pb-2 font-medium">{t("dashboard.category")}</th>
@@ -2047,18 +2047,18 @@ export default function Dashboard() {
                     <th className="pb-2 text-center font-medium">{t("dashboard.action")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
                   {stats.worst5.map((r, i) => (
                     <tr key={r.id} className="hover:bg-red-50/50 dark:hover:bg-red-900/10">
                       <td className="py-2.5 text-red-500 font-bold">{i + 1}</td>
-                      <td className="py-2.5 font-medium text-slate-800 dark:text-slate-200">{r.name}</td>
-                      <td className="py-2.5 text-slate-400 dark:text-slate-400">{r.category}</td>
-                      <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
-                      <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
+                      <td className="py-2.5 font-medium text-[#111111] dark:text-[#E5E5E5]">{r.name}</td>
+                      <td className="py-2.5 text-[#9CA3AF] dark:text-[#737373]">{r.category}</td>
+                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.sellingPrice.toFixed(2)} €</td>
+                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
                       <td className={`py-2.5 text-right font-mono font-bold ${r.margin.marginPercent < 50 ? 'text-red-600' : 'text-amber-600'}`}>
                         {r.margin.marginPercent.toFixed(1)}%
                       </td>
-                      <td className="py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
+                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.coefficient.toFixed(2)}</td>
                       <td className="py-2.5 text-center">
                         <Link to={`/recipes/${r.id}`} className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium">
                           {t("dashboard.edit")} <ArrowRight className="w-3 h-3" />
@@ -2072,14 +2072,14 @@ export default function Dashboard() {
           </div>
 
           {/* Full Recipes Table */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-            <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t("dashboard.detailByDish")}</h3>
-              <span className="text-xs text-slate-400 dark:text-slate-500">{t("dashboard.sortedByMarginAsc")}</span>
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.detailByDish")}</h3>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t("dashboard.sortedByMarginAsc")}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300">
+                <thead className="bg-[#FAFAFA] dark:bg-[#171717]/50 text-[#6B7280] dark:text-[#A3A3A3]">
                   <tr>
                     <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.dish")}</th>
                     <th className="px-4 py-2.5 text-left font-medium">{t("dashboard.cat")}</th>
@@ -2093,24 +2093,24 @@ export default function Dashboard() {
                     <th className="px-4 py-2.5 text-center font-medium">{t("dashboard.sheet")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+                <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
                   {sortedByMargin.map(r => {
                     const mc = r.margin.marginPercent >= 70 ? 'text-green-600' : r.margin.marginPercent >= 60 ? 'text-amber-600' : 'text-red-600';
                     const rowBg = r.margin.marginPercent < 60 ? 'bg-red-50/40 dark:bg-red-900/10' : '';
                     return (
-                      <tr key={r.id} className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 ${rowBg}`}>
-                        <td className="px-4 py-2.5 font-medium text-slate-800 dark:text-slate-200">
+                      <tr key={r.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/50 ${rowBg}`}>
+                        <td className="px-4 py-2.5 font-medium text-[#111111] dark:text-[#E5E5E5]">
                           {r.margin.marginPercent < 50 && <AlertTriangle className="w-3.5 h-3.5 text-red-500 inline mr-1 -mt-0.5" />}
                           {r.name}
                         </td>
-                        <td className="px-4 py-2.5 text-slate-400 dark:text-slate-400">{r.category}</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.sellingPrice.toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.costPerPortion.toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-400">{(r.margin.laborCostPerPortion || 0).toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono font-medium text-slate-800 dark:text-slate-200">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.marginAmount.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-[#9CA3AF] dark:text-[#737373]">{r.category}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.sellingPrice.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.costPerPortion.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">{(r.margin.laborCostPerPortion || 0).toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono font-medium text-[#111111] dark:text-[#E5E5E5]">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.marginAmount.toFixed(2)} €</td>
                         <td className={`px-4 py-2.5 text-right font-mono font-semibold ${mc}`}>{r.margin.marginPercent.toFixed(1)}%</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-400 dark:text-slate-300">{r.margin.coefficient.toFixed(2)}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.coefficient.toFixed(2)}</td>
                         <td className="px-4 py-2.5 text-center">
                           <Link to={`/recipes/${r.id}`} className="text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300">
                             <Eye className="w-4 h-4 inline" />

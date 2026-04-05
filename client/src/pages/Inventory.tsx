@@ -502,12 +502,12 @@ export default function Inventory() {
                 {criticalCount > 0 && (
                   <span className="text-red-700 dark:text-red-400">{criticalCount} article{criticalCount > 1 ? 's' : ''} en rupture</span>
                 )}
-                {criticalCount > 0 && lowCount > 0 && <span className="text-slate-400 dark:text-slate-400">, </span>}
+                {criticalCount > 0 && lowCount > 0 && <span className="text-[#9CA3AF] dark:text-[#737373]">, </span>}
                 {lowCount > 0 && (
                   <span className="text-amber-700 dark:text-amber-400">{lowCount} article{lowCount > 1 ? 's' : ''} en stock bas</span>
                 )}
               </span>
-              <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Cliquez pour filtrer les alertes</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Cliquez pour filtrer les alertes</p>
             </div>
           </div>
           <button
@@ -527,12 +527,12 @@ export default function Inventory() {
             <Package className="w-7 h-7 text-teal-600" />
             Inventaire
           </h1>
-          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
             Gestion des stocks d'ingrédients
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700 transition-colors">
+          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
           </button>
           {suggestions.length > 0 && (
@@ -541,10 +541,10 @@ export default function Inventory() {
               Inventaire complet
             </button>
           )}
-          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors no-print">
+          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors no-print">
             <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
@@ -552,30 +552,30 @@ export default function Inventory() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
             <Package className="w-4 h-4" /> Articles en stock
           </div>
           <div className="text-2xl font-bold">{items.length}</div>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
             <TrendingUp className="w-4 h-4" /> Valeur totale estimée
           </div>
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
             {valueData ? `${valueData.totalValue.toFixed(2)} €` : '---'}
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
             <AlertTriangle className="w-4 h-4" /> Alertes stock bas
           </div>
           <div className={`text-2xl font-bold ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
             {alerts.length}
           </div>
         </div>
-        <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
-          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-400 text-sm mb-1">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
             <RefreshCw className="w-4 h-4" /> Dernière mise à jour
           </div>
           <div className="text-lg font-semibold">
@@ -593,14 +593,14 @@ export default function Inventory() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {alerts.map(item => (
-              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-slate-800 rounded-lg px-3 py-2 border dark:border-slate-700">
+              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-[#0A0A0A] rounded-lg px-3 py-2 border dark:border-[#1A1A1A]">
                 <div>
                   <span className="text-sm font-medium">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'} {item.ingredient.name}</span>
-                  <div className="text-xs text-slate-400 dark:text-slate-400">
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
                     {item.currentStock}{" / "}{item.minStock} {item.unit}
                   </div>
                 </div>
-                <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors">
+                <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-[#111111] dark:bg-white text-white dark:text-black rounded hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                   Réapprovisionner
                 </button>
               </div>
@@ -611,7 +611,7 @@ export default function Inventory() {
 
       {/* Value by category (pie chart representation) */}
       {valueData && valueData.byCategory.length > 0 && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
           <h3 className="font-semibold flex items-center gap-2 mb-3">
             <PieChart className="w-5 h-5 text-teal-600" />
             Valeur par catégorie
@@ -620,13 +620,13 @@ export default function Inventory() {
             {valueData.byCategory.sort((a, b) => b.value - a.value).map(cat => {
               const pct = valueData.totalValue > 0 ? (cat.value / valueData.totalValue * 100) : 0;
               return (
-                <div key={cat.category} className="flex items-center gap-2 bg-slate-50 dark:bg-slate-700 rounded-lg px-3 py-2">
+                <div key={cat.category} className="flex items-center gap-2 bg-slate-50 dark:bg-[#171717] rounded-lg px-3 py-2">
                   <span>{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                   <div>
                     <div className="text-sm font-medium">{cat.category}</div>
-                    <div className="text-xs text-slate-400 dark:text-slate-400">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
                   </div>
-                  <div className="w-16 h-2 bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden">
+                  <div className="w-16 h-2 bg-slate-200 dark:bg-[#171717] rounded-full overflow-hidden">
                     <div className="h-full bg-teal-500 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -639,19 +639,19 @@ export default function Inventory() {
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
           <input
             type="text"
             placeholder="Rechercher un ingrédient..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
           />
         </div>
         <select
           value={filterCategory}
           onChange={e => setFilterCategory(e.target.value)}
-          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+          className="px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
         >
           <option value="">Toutes catégories</option>
           {categories.map(cat => (
@@ -661,7 +661,7 @@ export default function Inventory() {
         <select
           value={filterLocation}
           onChange={e => setFilterLocation(e.target.value as LocationType)}
-          className="px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+          className="px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
         >
           <option value="">Tous emplacements</option>
           {LOCATIONS.map(loc => (
@@ -679,33 +679,33 @@ export default function Inventory() {
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 overflow-hidden">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-700/50 text-left">
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-700" onClick={() => toggleSort('name')}>
+              <tr className="bg-slate-50 dark:bg-[#171717] text-left">
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
                   <span className="flex items-center gap-1">Ingrédient <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-700" onClick={() => toggleSort('currentStock')}>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
                   <span className="flex items-center gap-1">Stock <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
                 <th className="px-4 py-3 font-medium">Unité</th>
                 <th className="px-4 py-3 font-medium">Min</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Max</th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-700 hidden sm:table-cell" onClick={() => toggleSort('value')}>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
                   <span className="flex items-center gap-1">Valeur <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-700" onClick={() => toggleSort('status')}>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
                   <span className="flex items-center gap-1">Statut <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
                 <th className="px-4 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y dark:divide-slate-700">
+            <tbody className="divide-y dark:divide-[#1A1A1A]">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-slate-400">
+                  <td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
                     {items.length === 0 ? 'Aucun article dans l\'inventaire. Ajoutez des ingrédients pour commencer.' : 'Aucun résultat pour cette recherche.'}
                   </td>
                 </tr>
@@ -715,7 +715,7 @@ export default function Inventory() {
                 const meta = parseMeta(item.notes);
                 const expStatus = getExpirationStatus(meta.expirationDate);
                 return (
-                  <tr key={item.id} className={`hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors ${expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
+                  <tr key={item.id} className={`hover:bg-slate-50 dark:hover:bg-[#171717]/30 transition-colors ${expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span>{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
@@ -740,21 +740,21 @@ export default function Inventory() {
                             )}
                             {/* Location tag */}
                             {meta.location && (
-                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-300'}`}>
+                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-slate-100 dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                                 <MapPin className="w-2.5 h-2.5" /> {meta.location}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-slate-400">{item.ingredient.category}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.ingredient.category}</div>
                           {/* Expiration date display */}
                           {meta.expirationDate && (
-                            <div className={`text-[10px] ${expStatus === 'expired' || expStatus === 'soon3' ? 'text-red-500 dark:text-red-400' : expStatus === 'soon7' ? 'text-orange-500 dark:text-orange-400' : 'text-slate-400'}`}>
+                            <div className={`text-[10px] ${expStatus === 'expired' || expStatus === 'soon3' ? 'text-red-500 dark:text-red-400' : expStatus === 'soon7' ? 'text-orange-500 dark:text-orange-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
                               Exp: {new Date(meta.expirationDate).toLocaleDateString('fr-FR')}
                             </div>
                           )}
                           {/* Last restock info */}
                           {item.lastRestockDate && item.lastRestockQuantity && (
-                            <div className="text-[10px] text-slate-400">
+                            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
                               Dernier réappro: {item.lastRestockQuantity}{item.unit} le {new Date(item.lastRestockDate).toLocaleDateString('fr-FR')}
                             </div>
                           )}
@@ -769,14 +769,14 @@ export default function Inventory() {
                             value={inlineStock}
                             onChange={e => setInlineStock(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') handleInlineStockSave(item.id); if (e.key === 'Escape') setEditingStockId(null); }}
-                            className="w-20 px-2 py-1 text-sm border rounded dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-teal-500 outline-none"
+                            className="w-20 px-2 py-1 text-sm border rounded dark:border-[#1A1A1A] dark:bg-[#171717] focus:ring-2 focus:ring-teal-500 outline-none"
                             autoFocus
                             step="0.01"
                           />
                           <button onClick={() => handleInlineStockSave(item.id)} className="text-green-600 hover:text-green-700">
                             <CheckCircle2 className="w-4 h-4" />
                           </button>
-                          <button onClick={() => setEditingStockId(null)} className="text-slate-400 hover:text-slate-600">
+                          <button onClick={() => setEditingStockId(null)} className="text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]">
                             <XCircle className="w-4 h-4" />
                           </button>
                         </div>
@@ -790,9 +790,9 @@ export default function Inventory() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-slate-400 dark:text-slate-400">{item.unit}</td>
-                    <td className="px-4 py-3 text-slate-400 dark:text-slate-400">{item.minStock}</td>
-                    <td className="px-4 py-3 text-slate-400 dark:text-slate-400 hidden md:table-cell">{item.maxStock ?? '---'}</td>
+                    <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373]">{item.unit}</td>
+                    <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373]">{item.minStock}</td>
+                    <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] hidden md:table-cell">{item.maxStock ?? '---'}</td>
                     <td className="px-4 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} €</td>
                     <td className="px-4 py-3">
                       {status === 'ok' && (
@@ -822,7 +822,7 @@ export default function Inventory() {
                         <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Réapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 transition-colors" title="Modifier">
+                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors" title="Modifier">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget(item.id)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Supprimer">
@@ -850,7 +850,7 @@ export default function Inventory() {
                 const ing = suggestions.find(s => s.id === id);
                 setAddForm(f => ({ ...f, ingredientId: id, unit: ing?.unit || '' }));
               }}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               <option value={0}>-- Sélectionner --</option>
               {suggestions.map(ing => (
@@ -858,7 +858,7 @@ export default function Inventory() {
               ))}
             </select>
             {suggestions.length === 0 && (
-              <p className="text-xs text-slate-400 mt-1">Tous les ingrédients sont déjà dans l'inventaire.</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Tous les ingrédients sont déjà dans l'inventaire.</p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -868,7 +868,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.currentStock}
                 onChange={e => setAddForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -879,7 +879,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.minStock}
                 onChange={e => setAddForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -892,7 +892,7 @@ export default function Inventory() {
                 type="date"
                 value={addForm.expirationDate}
                 onChange={e => setAddForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -900,7 +900,7 @@ export default function Inventory() {
               <select
                 value={addForm.location}
                 onChange={e => setAddForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -910,10 +910,10 @@ export default function Inventory() {
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
-            <button onClick={handleAdd} className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+            <button onClick={handleAdd} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
               Ajouter
             </button>
           </div>
@@ -929,17 +929,17 @@ export default function Inventory() {
               type="number"
               value={restockForm.quantity}
               onChange={e => setRestockForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               placeholder="Quantité"
               step="0.01"
               autoFocus
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
-            <button onClick={handleRestock} className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+            <button onClick={handleRestock} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
               Réapprovisionner
             </button>
           </div>
@@ -956,7 +956,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.currentStock}
                 onChange={e => setEditForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -966,7 +966,7 @@ export default function Inventory() {
                 type="text"
                 value={editForm.unit}
                 onChange={e => setEditForm(f => ({ ...f, unit: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
           </div>
@@ -977,7 +977,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.minStock}
                 onChange={e => setEditForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -987,7 +987,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.maxStock}
                 onChange={e => setEditForm(f => ({ ...f, maxStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
                 placeholder="Optionnel"
               />
@@ -1000,7 +1000,7 @@ export default function Inventory() {
                 type="date"
                 value={editForm.expirationDate}
                 onChange={e => setEditForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -1008,7 +1008,7 @@ export default function Inventory() {
               <select
                 value={editForm.location}
                 onChange={e => setEditForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -1022,16 +1022,16 @@ export default function Inventory() {
             <textarea
               value={editForm.notes}
               onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Notes optionnelles..."
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
-            <button onClick={handleEdit} className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors">
+            <button onClick={handleEdit} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
               Enregistrer
             </button>
           </div>
@@ -1047,7 +1047,7 @@ export default function Inventory() {
               type="number"
               value={wasteForm.quantity}
               onChange={e => setWasteForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               placeholder="Quantité"
               step="0.01"
               autoFocus
@@ -1058,7 +1058,7 @@ export default function Inventory() {
             <select
               value={wasteForm.reason}
               onChange={e => setWasteForm(f => ({ ...f, reason: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               {WASTE_REASONS.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
@@ -1070,13 +1070,13 @@ export default function Inventory() {
             <textarea
               value={wasteForm.notes}
               onChange={e => setWasteForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Détails supplémentaires..."
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleWasteSubmit} className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1.5">

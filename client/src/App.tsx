@@ -92,7 +92,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center text-slate-500 dark:text-slate-400">Chargement...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
   }
 
   if (!isAuthenticated) {
@@ -954,7 +954,7 @@ function AppLayout() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white dark:bg-slate-800 border-t dark:border-slate-700 py-3 text-center text-xs text-slate-400 dark:text-slate-500 no-print">
+        <footer className="bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] py-3 text-center text-xs text-[#9CA3AF] dark:text-[#737373] no-print">
           RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
         </footer>
       </div>
@@ -973,7 +973,7 @@ function PublicHome() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center text-slate-500 dark:text-slate-400">Chargement...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
   }
 
   if (isAuthenticated) {

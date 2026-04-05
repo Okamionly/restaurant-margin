@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff, BarChart3, Camera } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff, BarChart3, Camera, Copy, Check, Share2, ThumbsUp, ThumbsDown, History, Plus, Trash2, AlertTriangle, Shield, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { trackEvent } from '../utils/analytics';
+
+// ---- Types ----
 
 interface AIUsage {
   used: number;
@@ -27,16 +29,56 @@ interface Message {
   content: string;
   timestamp: Date;
   actions?: ActionResult[];
-  image?: string; // base64 data URL for photo messages
+  image?: string;
+  feedback?: 'up' | 'down' | null;
 }
 
-const QUICK_SUGGESTIONS = [
-  { label: 'Cree-moi une fiche technique', icon: ChefHat },
-  { label: 'Ajoute un ingredient', icon: Package },
-  { label: 'Prepare une commande fournisseur', icon: ShoppingCart },
-  { label: 'Analyse mes marges', icon: TrendingUp },
-  { label: 'Quel est mon plat star ?', icon: Star },
+interface Conversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: string;
+  mode: AIMode;
+}
+
+interface ContextSuggestion {
+  label: string;
+  prompt: string;
+  icon: typeof ChefHat;
+  priority: number;
+}
+
+type AIMode = 'gestionnaire' | 'chef' | 'haccp';
+
+interface RestaurantContext {
+  lowStockCount: number;
+  lowMarginRecipes: number;
+  recentRecipeCount: number;
+  priceChanges: number;
+  totalRecipes: number;
+  totalIngredients: number;
+  avgMargin: number;
+}
+
+// ---- Constants ----
+
+const AI_MODES: { key: AIMode; label: string; icon: typeof ChefHat; description: string }[] = [
+  { key: 'gestionnaire', label: 'Gestionnaire', icon: TrendingUp, description: 'Couts, marges, efficacite' },
+  { key: 'chef', label: 'Chef', icon: ChefHat, description: 'Recettes, techniques, creativite' },
+  { key: 'haccp', label: 'HACCP', icon: Shield, description: 'Securite alimentaire, conformite' },
 ];
+
+const MODE_PREFIXES: Record<AIMode, string> = {
+  gestionnaire: '[Mode Gestionnaire] Focus sur les couts, marges et optimisation financiere.',
+  chef: '[Mode Chef] Focus sur les recettes, techniques culinaires et creativite.',
+  haccp: '[Mode HACCP] Focus sur la securite alimentaire, temperatures, tracabilite et conformite HACCP.',
+};
+
+const CONVERSATION_STORAGE_KEY = 'rm_ai_conversations';
+const FEEDBACK_STORAGE_KEY = 'rm_ai_feedback';
+const MAX_CONVERSATIONS = 10;
+
+// ---- Helpers ----
 
 function getActionRoute(action: ActionResult): string | null {
   if (!action.id) return null;
@@ -59,15 +101,50 @@ function getActionLabel(type: string): string {
   }
 }
 
-async function getAIResponse(message: string, history: Message[], image?: string): Promise<{ response: string; actions?: ActionResult[] }> {
+function loadConversations(): Conversation[] {
+  try {
+    const raw = localStorage.getItem(CONVERSATION_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return parsed.map((c: any) => ({
+      ...c,
+      messages: c.messages.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) })),
+    }));
+  } catch { return []; }
+}
+
+function saveConversations(convs: Conversation[]) {
+  const trimmed = convs.slice(0, MAX_CONVERSATIONS);
+  localStorage.setItem(CONVERSATION_STORAGE_KEY, JSON.stringify(trimmed));
+}
+
+function saveFeedback(messageId: string, feedback: 'up' | 'down') {
+  try {
+    const raw = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+    const data = raw ? JSON.parse(raw) : {};
+    data[messageId] = { feedback, timestamp: new Date().toISOString() };
+    localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+function generateConversationTitle(messages: Message[]): string {
+  const firstUser = messages.find(m => m.role === 'user');
+  if (!firstUser) return 'Nouvelle conversation';
+  const text = firstUser.content.slice(0, 50);
+  return text.length < firstUser.content.length ? text + '...' : text;
+}
+
+async function getAIResponse(message: string, history: Message[], image?: string, mode?: AIMode): Promise<{ response: string; actions?: ActionResult[] }> {
   const token = localStorage.getItem('token');
   const restaurantId = localStorage.getItem('activeRestaurantId');
-  // Send last 6 messages as history (backend will limit to 5)
   const recentHistory = history.slice(-6).map(m => ({
     role: m.role,
     content: m.content,
   }));
-  const body: any = { message, history: recentHistory };
+
+  const prefixedMessage = mode ? `${MODE_PREFIXES[mode]} ${message}` : message;
+
+  const body: any = { message: prefixedMessage, history: recentHistory };
   if (image) body.image = image;
   const res = await fetch('/api/ai/chat', {
     method: 'POST',
@@ -85,6 +162,71 @@ async function getAIResponse(message: string, history: Message[], image?: string
   return { response: data.response, actions: data.actions };
 }
 
+async function fetchRestaurantContext(): Promise<RestaurantContext> {
+  const token = localStorage.getItem('token');
+  const restaurantId = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token || ''}`,
+    ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+  };
+
+  const defaults: RestaurantContext = {
+    lowStockCount: 0,
+    lowMarginRecipes: 0,
+    recentRecipeCount: 0,
+    priceChanges: 0,
+    totalRecipes: 0,
+    totalIngredients: 0,
+    avgMargin: 75,
+  };
+
+  try {
+    const [ingredientsRes, recipesRes] = await Promise.allSettled([
+      fetch('/api/ingredients', { headers }),
+      fetch('/api/recipes', { headers }),
+    ]);
+
+    let ingredients: any[] = [];
+    let recipes: any[] = [];
+
+    if (ingredientsRes.status === 'fulfilled' && ingredientsRes.value.ok) {
+      ingredients = await ingredientsRes.value.json();
+    }
+    if (recipesRes.status === 'fulfilled' && recipesRes.value.ok) {
+      recipes = await recipesRes.value.json();
+    }
+
+    const lowStock = ingredients.filter((i: any) =>
+      i.currentStock !== undefined && i.minStock !== undefined && i.currentStock <= i.minStock
+    ).length;
+
+    const margins = recipes
+      .map((r: any) => r.marginPercent || r.margin_percent || 0)
+      .filter((m: number) => m > 0);
+    const avgMargin = margins.length > 0 ? margins.reduce((a: number, b: number) => a + b, 0) / margins.length : 75;
+    const lowMarginRecipes = margins.filter((m: number) => m < 60).length;
+
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const recentRecipes = recipes.filter((r: any) => {
+      const created = new Date(r.createdAt || r.created_at || 0);
+      return created > oneWeekAgo;
+    }).length;
+
+    return {
+      lowStockCount: lowStock,
+      lowMarginRecipes,
+      recentRecipeCount: recentRecipes,
+      priceChanges: 0,
+      totalRecipes: recipes.length,
+      totalIngredients: ingredients.length,
+      avgMargin: Math.round(avgMargin),
+    };
+  } catch {
+    return defaults;
+  }
+}
+
 // Web Speech API types
 interface SpeechRecognitionEvent extends Event {
   results: SpeechRecognitionResultList;
@@ -99,9 +241,13 @@ const SpeechRecognitionAPI =
     ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     : null;
 
+// ---- Component ----
+
 export default function AIAssistant() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // Core state
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -115,9 +261,21 @@ export default function AIAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const [aiUsage, setAiUsage] = useState<AIUsage | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
-  const [pendingImage, setPendingImage] = useState<string | null>(null); // base64 data URL
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
+
+  // New feature state
+  const [aiMode, setAiMode] = useState<AIMode>('gestionnaire');
+  const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [conversations, setConversations] = useState<Conversation[]>(() => loadConversations());
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [restaurantContext, setRestaurantContext] = useState<RestaurantContext | null>(null);
+  const [suggestionIndex, setSuggestionIndex] = useState(0);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const modeDropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch AI usage on mount
   const fetchUsage = useCallback(async () => {
@@ -140,6 +298,132 @@ export default function AIAssistant() {
 
   useEffect(() => { fetchUsage(); }, [fetchUsage]);
 
+  // Fetch restaurant context for smart suggestions
+  useEffect(() => {
+    fetchRestaurantContext().then(setRestaurantContext);
+  }, []);
+
+  // Context-aware suggestions
+  const contextSuggestions = useMemo((): ContextSuggestion[] => {
+    const suggestions: ContextSuggestion[] = [];
+    const ctx = restaurantContext;
+
+    if (ctx) {
+      if (ctx.lowStockCount > 0) {
+        suggestions.push({
+          label: `${ctx.lowStockCount} ingredients en rupture`,
+          prompt: 'Commander les ingredients manquants et en rupture de stock',
+          icon: AlertTriangle,
+          priority: 10,
+        });
+      }
+
+      if (ctx.lowMarginRecipes > 0) {
+        suggestions.push({
+          label: `${ctx.lowMarginRecipes} recettes a faible marge`,
+          prompt: 'Optimiser les recettes a faible marge (moins de 60%) avec des alternatives moins cheres',
+          icon: TrendingUp,
+          priority: 9,
+        });
+      }
+
+      if (ctx.recentRecipeCount === 0) {
+        suggestions.push({
+          label: 'Generer le menu de la semaine',
+          prompt: 'Generer le menu de la semaine avec des recettes equilibrees et rentables',
+          icon: ChefHat,
+          priority: 8,
+        });
+      }
+
+      if (ctx.priceChanges > 0) {
+        suggestions.push({
+          label: 'Analyser les hausses de prix',
+          prompt: 'Analyser l\'impact des hausses de prix recentes sur mes marges',
+          icon: BarChart3,
+          priority: 7,
+        });
+      }
+    }
+
+    // Always-available suggestions
+    suggestions.push({
+      label: 'Creer une fiche technique',
+      prompt: 'Cree-moi une fiche technique pour une nouvelle recette',
+      icon: ChefHat,
+      priority: 5,
+    });
+    suggestions.push({
+      label: 'Analyser mes marges',
+      prompt: 'Analyse mes marges globales et identifie les points d\'amelioration',
+      icon: TrendingUp,
+      priority: 4,
+    });
+    suggestions.push({
+      label: 'Preparer une commande',
+      prompt: 'Prepare une commande fournisseur basee sur mes besoins actuels',
+      icon: ShoppingCart,
+      priority: 3,
+    });
+    suggestions.push({
+      label: 'Mon plat star',
+      prompt: 'Quel est mon plat star et pourquoi ?',
+      icon: Star,
+      priority: 2,
+    });
+    suggestions.push({
+      label: 'Ajouter un ingredient',
+      prompt: 'Ajoute un nouvel ingredient a mon inventaire',
+      icon: Package,
+      priority: 1,
+    });
+
+    // Sort by priority descending, take top 4
+    return suggestions.sort((a, b) => b.priority - a.priority).slice(0, 4);
+  }, [restaurantContext]);
+
+  // Rotate suggestions every 30s
+  useEffect(() => {
+    if (contextSuggestions.length <= 4) return;
+    const interval = setInterval(() => {
+      setSuggestionIndex(prev => (prev + 1) % contextSuggestions.length);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [contextSuggestions.length]);
+
+  // Close mode dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (modeDropdownRef.current && !modeDropdownRef.current.contains(e.target as Node)) {
+        setModeDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  // Save conversation whenever messages change
+  useEffect(() => {
+    if (messages.length <= 1) return;
+    const convId = currentConversationId || Date.now().toString();
+    if (!currentConversationId) setCurrentConversationId(convId);
+
+    const conv: Conversation = {
+      id: convId,
+      title: generateConversationTitle(messages),
+      messages,
+      createdAt: new Date().toISOString(),
+      mode: aiMode,
+    };
+
+    setConversations(prev => {
+      const others = prev.filter(c => c.id !== convId);
+      const updated = [conv, ...others].slice(0, MAX_CONVERSATIONS);
+      saveConversations(updated);
+      return updated;
+    });
+  }, [messages, currentConversationId, aiMode]);
+
   // Voice recognition state
   const [isListening, setIsListening] = useState(false);
   const [speechSupported] = useState(() => !!SpeechRecognitionAPI);
@@ -152,7 +436,6 @@ export default function AIAssistant() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Cancel auto-send when user modifies input manually
   const cancelAutoSend = useCallback(() => {
     if (autoSendTimerRef.current) {
       clearTimeout(autoSendTimerRef.current);
@@ -165,7 +448,6 @@ export default function AIAssistant() {
     setAutoSendCountdown(null);
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
@@ -175,7 +457,6 @@ export default function AIAssistant() {
     };
   }, [cancelAutoSend]);
 
-  // Start auto-send countdown after voice recognition ends
   const startAutoSendCountdown = useCallback((transcript: string) => {
     if (transcript.trim().length <= 5) return;
     cancelAutoSend();
@@ -195,12 +476,10 @@ export default function AIAssistant() {
     autoSendTimerRef.current = setTimeout(() => {
       autoSendTimerRef.current = null;
       setAutoSendCountdown(null);
-      // Trigger send via a synthetic call
       handleSendRef.current?.(transcript);
     }, 2000);
   }, [cancelAutoSend]);
 
-  // We use a ref to handleSend so the countdown callback always has the latest version
   const handleSendRef = useRef<((text?: string) => void) | null>(null);
 
   function toggleVoice() {
@@ -250,7 +529,7 @@ export default function AIAssistant() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.capture = 'environment'; // Camera arriere sur mobile
+    input.capture = 'environment';
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
@@ -285,18 +564,17 @@ export default function AIAssistant() {
     trackEvent(currentImage ? 'ai_photo_sent' : 'ai_chat_sent');
 
     try {
-      // Extract base64 data (without data URL prefix) to send to API
       const imageBase64 = currentImage ? currentImage.split(',')[1] : undefined;
-      const { response, actions } = await getAIResponse(messageText, messages, imageBase64);
+      const { response, actions } = await getAIResponse(messageText, messages, imageBase64, aiMode);
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: response,
         timestamp: new Date(),
         actions: actions && actions.length > 0 ? actions : undefined,
+        feedback: null,
       };
       setMessages((prev) => [...prev, assistantMessage]);
-      // Refresh usage after successful message
       fetchUsage();
     } catch (err: any) {
       const errMsg = err?.message || "Desole, une erreur s'est produite. Veuillez reessayer.";
@@ -313,7 +591,6 @@ export default function AIAssistant() {
     }
   }
 
-  // Keep ref in sync for auto-send callback
   handleSendRef.current = handleSend;
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -321,6 +598,64 @@ export default function AIAssistant() {
       e.preventDefault();
       handleSend();
     }
+  }
+
+  function handleNewConversation() {
+    setCurrentConversationId(null);
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'assistant',
+        content:
+          "Bonjour ! Je suis votre **assistant IA RestauMargin**. Je peux analyser vos donnees **ET agir** : creer des fiches techniques, ajouter des ingredients, preparer des commandes fournisseurs. Que voulez-vous faire ?",
+        timestamp: new Date(),
+      },
+    ]);
+    setShowHistory(false);
+    trackEvent('ai_new_conversation');
+  }
+
+  function handleLoadConversation(conv: Conversation) {
+    setCurrentConversationId(conv.id);
+    setMessages(conv.messages);
+    setAiMode(conv.mode);
+    setShowHistory(false);
+    trackEvent('ai_load_conversation');
+  }
+
+  function handleDeleteConversation(convId: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    setConversations(prev => {
+      const updated = prev.filter(c => c.id !== convId);
+      saveConversations(updated);
+      return updated;
+    });
+    if (currentConversationId === convId) {
+      handleNewConversation();
+    }
+  }
+
+  function handleCopyMessage(content: string, messageId: string) {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+      trackEvent('ai_copy_message');
+    });
+  }
+
+  function handleShareMessage(content: string) {
+    const formatted = `--- RestauMargin IA ---\n\n${content}\n\n--- restaumargin.com ---`;
+    navigator.clipboard.writeText(formatted).then(() => {
+      trackEvent('ai_share_message');
+    });
+  }
+
+  function handleFeedback(messageId: string, feedback: 'up' | 'down') {
+    setMessages(prev => prev.map(m =>
+      m.id === messageId ? { ...m, feedback: m.feedback === feedback ? null : feedback } : m
+    ));
+    saveFeedback(messageId, feedback);
+    trackEvent('ai_feedback', { feedback });
   }
 
   function formatContent(content: string) {
@@ -386,22 +721,81 @@ export default function AIAssistant() {
     );
   }
 
+  const currentModeInfo = AI_MODES.find(m => m.key === aiMode)!;
+  const CurrentModeIcon = currentModeInfo.icon;
+
   return (
     <div className="flex flex-col h-[calc(100vh-10rem)] max-h-[900px]">
       {/* Header */}
       <div className="mb-4">
         <div className="flex items-center gap-3 mb-1">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/20">
-            <Sparkles className="w-6 h-6 text-white" />
+          <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white shadow-lg">
+            <Sparkles className="w-6 h-6 text-white dark:text-black" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-[#111111] dark:text-white">Assistant IA RestauMargin</h1>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl font-bold text-[#111111] dark:text-white">Assistant IA</h1>
             <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Analyse vos donnees et agit sur votre restaurant</p>
           </div>
-          <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
-            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-            <span className="text-xs text-teal-400 font-medium">IA Pro</span>
+
+          {/* Mode selector */}
+          <div className="relative" ref={modeDropdownRef}>
+            <button
+              onClick={() => setModeDropdownOpen(!modeDropdownOpen)}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/30 transition-colors"
+            >
+              <CurrentModeIcon className="w-4 h-4 text-[#111111] dark:text-white" />
+              <span className="text-sm font-medium text-[#111111] dark:text-white hidden sm:inline">{currentModeInfo.label}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3] transition-transform ${modeDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {modeDropdownOpen && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl z-50 overflow-hidden">
+                {AI_MODES.map(mode => {
+                  const Icon = mode.icon;
+                  const isActive = aiMode === mode.key;
+                  return (
+                    <button
+                      key={mode.key}
+                      onClick={() => { setAiMode(mode.key); setModeDropdownOpen(false); trackEvent('ai_mode_change', { mode: mode.key }); }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                        isActive
+                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                          : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#111111] dark:text-white'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">{mode.label}</p>
+                        <p className={`text-xs ${isActive ? 'text-white/60 dark:text-black/60' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{mode.description}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
+
+          {/* History button */}
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`p-2.5 rounded-xl border transition-colors ${
+              showHistory
+                ? 'bg-[#111111] dark:bg-white border-[#111111] dark:border-white text-white dark:text-black'
+                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/30 text-[#6B7280] dark:text-[#A3A3A3]'
+            }`}
+            title="Historique"
+          >
+            <History className="w-5 h-5" />
+          </button>
+
+          {/* New conversation button */}
+          <button
+            onClick={handleNewConversation}
+            className="p-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/30 text-[#6B7280] dark:text-[#A3A3A3] transition-colors"
+            title="Nouvelle conversation"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
@@ -410,7 +804,7 @@ export default function AIAssistant() {
         <div className="mb-4 bg-white/50 dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-teal-400" />
+              <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
               <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
                 Quota IA : {aiUsage.used}/{aiUsage.limit} requetes ce mois ({aiUsage.percentage}%)
               </span>
@@ -424,7 +818,7 @@ export default function AIAssistant() {
                   ? 'bg-red-500'
                   : aiUsage.percentage > 50
                   ? 'bg-amber-500'
-                  : 'bg-teal-500'
+                  : 'bg-[#111111] dark:bg-white'
               }`}
               style={{ width: `${Math.min(aiUsage.percentage, 100)}%` }}
             />
@@ -433,6 +827,47 @@ export default function AIAssistant() {
             <p className="text-xs text-red-400 mt-2 font-medium">
               Quota mensuel atteint. Passez au plan Business pour continuer.
             </p>
+          )}
+        </div>
+      )}
+
+      {/* History panel */}
+      {showHistory && (
+        <div className="mb-4 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden max-h-64 overflow-y-auto">
+          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] sticky top-0 bg-white dark:bg-[#0A0A0A] z-10">
+            <p className="text-sm font-semibold text-[#111111] dark:text-white">Historique des conversations</p>
+          </div>
+          {conversations.length === 0 ? (
+            <div className="px-4 py-8 text-center">
+              <MessageSquare className="w-8 h-8 text-[#E5E7EB] dark:text-[#1A1A1A] mx-auto mb-2" />
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune conversation sauvegardee</p>
+            </div>
+          ) : (
+            conversations.map(conv => (
+              <button
+                key={conv.id}
+                onClick={() => handleLoadConversation(conv)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 last:border-b-0 ${
+                  conv.id === currentConversationId ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''
+                }`}
+              >
+                <MessageSquare className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373] flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-[#111111] dark:text-white truncate">{conv.title}</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    {new Date(conv.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    {' '} — {conv.messages.length} msg — {conv.mode}
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => handleDeleteConversation(conv.id, e)}
+                  className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-colors flex-shrink-0"
+                  title="Supprimer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </button>
+            ))
           )}
         </div>
       )}
@@ -449,57 +884,102 @@ export default function AIAssistant() {
               <div
                 className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                   msg.role === 'user'
-                    ? 'bg-blue-600'
-                    : 'bg-gradient-to-br from-blue-500 to-purple-600'
+                    ? 'bg-[#111111] dark:bg-white'
+                    : 'bg-[#111111] dark:bg-white'
                 }`}
               >
                 {msg.role === 'user' ? (
-                  <User className="w-4 h-4 text-white" />
+                  <User className="w-4 h-4 text-white dark:text-black" />
                 ) : (
-                  <Bot className="w-4 h-4 text-white" />
+                  <Bot className="w-4 h-4 text-white dark:text-black" />
                 )}
               </div>
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                  msg.role === 'user'
-                    ? 'bg-blue-600 text-white rounded-br-md'
-                    : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] rounded-bl-md border border-[#E5E7EB] dark:border-[#1A1A1A]/50'
-                }`}
-              >
-                {msg.image && (
-                  <img
-                    src={msg.image}
-                    alt="Photo envoyee"
-                    className="w-40 h-40 object-cover rounded-xl mb-2 border border-white/20"
-                  />
-                )}
-                {formatContent(msg.content)}
-                {msg.actions && msg.actions.length > 0 && renderActions(msg.actions)}
+              <div className="max-w-[80%]">
                 <div
-                  className={`text-[10px] mt-2 ${
-                    msg.role === 'user' ? 'text-blue-200' : 'text-[#9CA3AF] dark:text-[#737373]'
+                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    msg.role === 'user'
+                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black rounded-br-md'
+                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] rounded-bl-md border border-[#E5E7EB] dark:border-[#1A1A1A]/50'
                   }`}
                 >
-                  {msg.timestamp.toLocaleTimeString('fr-FR', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                  {msg.image && (
+                    <img
+                      src={msg.image}
+                      alt="Photo envoyee"
+                      className="w-40 h-40 object-cover rounded-xl mb-2 border border-white/20"
+                    />
+                  )}
+                  {formatContent(msg.content)}
+                  {msg.actions && msg.actions.length > 0 && renderActions(msg.actions)}
+                  <div
+                    className={`text-[10px] mt-2 ${
+                      msg.role === 'user' ? 'text-white/40 dark:text-black/40' : 'text-[#9CA3AF] dark:text-[#737373]'
+                    }`}
+                  >
+                    {msg.timestamp.toLocaleTimeString('fr-FR', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </div>
                 </div>
+
+                {/* Copy / Share / Feedback — assistant messages only */}
+                {msg.role === 'assistant' && msg.id !== 'welcome' && (
+                  <div className="flex items-center gap-1 mt-1.5 ml-1">
+                    <button
+                      onClick={() => handleCopyMessage(msg.content, msg.id)}
+                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                      title="Copier"
+                    >
+                      {copiedMessageId === msg.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                    <button
+                      onClick={() => handleShareMessage(msg.content)}
+                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                      title="Partager"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                    </button>
+                    <div className="w-px h-3 bg-[#E5E7EB] dark:bg-[#1A1A1A] mx-0.5" />
+                    <button
+                      onClick={() => handleFeedback(msg.id, 'up')}
+                      className={`p-1.5 rounded-lg transition-colors ${
+                        msg.feedback === 'up'
+                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                          : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                      }`}
+                      title="Bonne reponse"
+                    >
+                      <ThumbsUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleFeedback(msg.id, 'down')}
+                      className={`p-1.5 rounded-lg transition-colors ${
+                        msg.feedback === 'down'
+                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                          : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                      }`}
+                      title="Mauvaise reponse"
+                    >
+                      <ThumbsDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
 
           {isTyping && (
             <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-                <Bot className="w-4 h-4 text-white" />
+              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-[#111111] dark:bg-white">
+                <Bot className="w-4 h-4 text-white dark:text-black" />
               </div>
               <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 rounded-2xl rounded-bl-md px-4 py-3">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1.5 items-center h-5">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                    <span className="w-2 h-2 bg-[#111111] dark:bg-white rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-2 h-2 bg-[#111111] dark:bg-white rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-2 h-2 bg-[#111111] dark:bg-white rounded-full animate-bounce [animation-delay:300ms]" />
                   </div>
                   <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse en cours...</span>
                 </div>
@@ -510,21 +990,21 @@ export default function AIAssistant() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick suggestions */}
-        {messages.length <= 1 && !isTyping && (
+        {/* Context-aware suggestions bar — always visible when not typing */}
+        {!isTyping && (
           <div className="px-4 pb-2">
             <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Essayez ces actions</span>
+              <Lightbulb className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Suggestions</span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {QUICK_SUGGESTIONS.map((s) => {
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {contextSuggestions.map((s) => {
                 const Icon = s.icon;
                 return (
                   <button
                     key={s.label}
-                    onClick={() => handleSend(s.label)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:hover:border-[#1A1A1A] rounded-full transition-all duration-200"
+                    onClick={() => handleSend(s.prompt)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#111111] dark:hover:bg-white text-[#6B7280] dark:text-[#A3A3A3] hover:text-white dark:hover:text-black border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white rounded-full transition-all duration-200 whitespace-nowrap flex-shrink-0"
                   >
                     <Icon className="w-3 h-3" />
                     {s.label}
@@ -539,12 +1019,12 @@ export default function AIAssistant() {
         <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
           {/* Pending image preview */}
           {pendingImage && (
-            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-teal-500/10 border border-teal-500/20 rounded-xl">
-              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-teal-500/30" />
-              <span className="text-sm text-teal-400 flex-1">Photo prete a envoyer</span>
+            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
+              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]" />
+              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] flex-1">Photo prete a envoyer</span>
               <button
                 onClick={() => setPendingImage(null)}
-                className="text-xs text-teal-300 hover:text-white underline transition-colors"
+                className="text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white underline transition-colors"
               >
                 Supprimer
               </button>
@@ -574,13 +1054,13 @@ export default function AIAssistant() {
 
           {/* Auto-send countdown */}
           {autoSendCountdown !== null && (
-            <div className="flex items-center justify-center gap-2 mb-2 py-1.5 px-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-              <span className="text-xs text-blue-400">
+            <div className="flex items-center justify-center gap-2 mb-2 py-1.5 px-3 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
+              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
                 Envoi dans {autoSendCountdown}s...
               </span>
               <button
                 onClick={cancelAutoSend}
-                className="text-xs text-blue-300 hover:text-white underline transition-colors"
+                className="text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white underline transition-colors"
               >
                 Annuler
               </button>
@@ -600,7 +1080,7 @@ export default function AIAssistant() {
                 disabled={quotaReached}
                 placeholder={quotaReached ? 'Quota IA mensuel atteint' : isListening ? 'Parlez maintenant...' : 'Demandez-moi de creer une recette, ajouter un ingredient...'}
                 rows={1}
-                className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl px-4 py-3 pr-12 text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 resize-none transition-all"
+                className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl px-4 py-3 pr-12 text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111]/20 dark:focus:ring-white/20 focus:border-[#111111] dark:focus:border-white/50 resize-none transition-all"
                 style={{ minHeight: '44px', maxHeight: '120px' }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
@@ -618,7 +1098,7 @@ export default function AIAssistant() {
               onClick={handlePhotoCapture}
               disabled={quotaReached || isTyping}
               title="Prendre une photo d'ingredient"
-              className="flex-shrink-0 p-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#F3F4F6] dark:bg-[#171717] disabled:text-[#6B7280] dark:text-[#A3A3A3] text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+              className="flex-shrink-0 p-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#F3F4F6] dark:disabled:bg-[#171717] disabled:text-[#9CA3AF] dark:disabled:text-[#737373] text-white dark:text-black rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
             >
               <Camera className="w-5 h-5" />
             </button>
@@ -630,9 +1110,9 @@ export default function AIAssistant() {
                 title={isListening ? 'Arreter la dictee' : 'Commande vocale'}
                 className={`flex-shrink-0 p-3 rounded-xl transition-all duration-200 ${
                   isListening
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                    : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5]'
-                } text-white`}
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse text-white'
+                    : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black'
+                }`}
               >
                 {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
@@ -640,7 +1120,7 @@ export default function AIAssistant() {
               <button
                 disabled
                 title="Non supporte par votre navigateur"
-                className="flex-shrink-0 p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] cursor-not-allowed"
+                className="flex-shrink-0 p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed"
               >
                 <MicOff className="w-5 h-5" />
               </button>
@@ -652,13 +1132,13 @@ export default function AIAssistant() {
                 handleSend();
               }}
               disabled={(!input.trim() && !pendingImage) || isTyping || quotaReached}
-              className="flex-shrink-0 p-3 bg-blue-600 hover:bg-blue-700 disabled:bg-[#F3F4F6] dark:bg-[#171717] disabled:text-[#6B7280] dark:text-[#A3A3A3] text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+              className="flex-shrink-0 p-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#F3F4F6] dark:disabled:bg-[#171717] disabled:text-[#9CA3AF] dark:disabled:text-[#737373] text-white dark:text-black rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />
             </button>
           </div>
           <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-center">
-            Assistant IA RestauMargin — Analyse et agit sur votre restaurant
+            Assistant IA RestauMargin — Mode {currentModeInfo.label}
           </p>
         </div>
       </div>

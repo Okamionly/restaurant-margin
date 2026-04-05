@@ -272,6 +272,12 @@ export default function Suppliers() {
   const [importPreview, setImportPreview] = useState<string[][]>([]);
   const [importLoading, setImportLoading] = useState(false);
   const [importResult, setImportResult] = useState<ImportPricesResult | null>(null);
+
+  // AI Negotiation Brief
+  const [showBriefModal, setShowBriefModal] = useState(false);
+  const [briefLoading, setBriefLoading] = useState(false);
+  const [briefData, setBriefData] = useState<any>(null);
+  const [briefCopied, setBriefCopied] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
   // Catalogue Transgourmet
@@ -441,6 +447,46 @@ export default function Suppliers() {
   function openImportModal() {
     resetImportState();
     setShowImportModal(true);
+  }
+
+  // ── AI Negotiation Brief ────────────────���───────────────────────────
+  async function fetchSupplierBrief(supplierId: number) {
+    setBriefLoading(true);
+    setBriefData(null);
+    setBriefCopied(false);
+    setShowBriefModal(true);
+    try {
+      const token = localStorage.getItem('token');
+      const restaurantId = localStorage.getItem('activeRestaurantId');
+      const res = await fetch('/api/ai/supplier-brief', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+        },
+        body: JSON.stringify({ supplierId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBriefData(data);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setBriefData({ error: err.error || 'Erreur lors de la generation du brief' });
+      }
+    } catch {
+      setBriefData({ error: 'Erreur reseau' });
+    } finally {
+      setBriefLoading(false);
+    }
+  }
+
+  function copyBriefEmail() {
+    if (briefData?.emailDraft) {
+      navigator.clipboard.writeText(briefData.emailDraft.replace(/\\n/g, '\n'));
+      setBriefCopied(true);
+      setTimeout(() => setBriefCopied(false), 2000);
+    }
   }
 
   function closeImportModal() {
@@ -1141,6 +1187,14 @@ export default function Suppliers() {
                           title="Importer tarif CSV"
                         >
                           <Upload className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => fetchSupplierBrief(detailSupplier.id)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#111111] dark:text-white text-xs font-medium transition-colors"
+                          title="Brief negociation IA"
+                        >
+                          <Zap className="w-3.5 h-3.5" />
+                          Brief IA
                         </button>
                       </div>
                     </div>
@@ -2483,6 +2537,152 @@ export default function Suppliers() {
           )}
         </div>
       </Modal>
+
+      {/* ── AI Negotiation Brief Modal ──────────────────────────────── */}
+      {showBriefModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowBriefModal(false)} />
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#111111] dark:bg-white rounded-lg">
+                  <Zap className="w-5 h-5 text-white dark:text-black" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#111111] dark:text-white">Brief Negociation IA</h3>
+                  {briefData?.supplierName && (
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{briefData.supplierName}</p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => setShowBriefModal(false)}
+                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              >
+                <X className="w-5 h-5 text-[#9CA3AF]" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+              {briefLoading ? (
+                <div className="flex flex-col items-center justify-center py-16 gap-3">
+                  <div className="w-8 h-8 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm text-[#9CA3AF]">Analyse fournisseur en cours...</p>
+                  <p className="text-xs text-[#D1D5DB] dark:text-[#525252]">Volumes, prix, alternatives...</p>
+                </div>
+              ) : briefData?.error ? (
+                <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 rounded-xl">
+                  <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-700 dark:text-red-300">{briefData.error}</p>
+                </div>
+              ) : briefData ? (
+                <>
+                  {/* Points de negociation */}
+                  {briefData.negotiationPoints?.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                        <Star className="w-4 h-4" />
+                        Points de negociation
+                      </h4>
+                      <ul className="space-y-2">
+                        {briefData.negotiationPoints.map((point: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-[#374151] dark:text-[#D4D4D4]">
+                            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Objectifs de prix */}
+                  {briefData.priceTargets?.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4" />
+                        Objectifs de prix
+                      </h4>
+                      <div className="space-y-2">
+                        {briefData.priceTargets.map((t: any, i: number) => (
+                          <div key={i} className="flex items-center justify-between p-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-[#111111] dark:text-white">{t.product}</p>
+                              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{t.argument}</p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0 ml-3">
+                              <span className="text-xs text-[#9CA3AF] line-through">{t.currentPrice?.toFixed(2)} EUR</span>
+                              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{t.targetPrice?.toFixed(2)} EUR</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Alternatives */}
+                  {briefData.alternatives?.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                        <ArrowRightLeft className="w-4 h-4" />
+                        Alternatives disponibles
+                      </h4>
+                      <div className="space-y-1.5">
+                        {briefData.alternatives.map((a: any, i: number) => (
+                          <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
+                            <span className="text-[#374151] dark:text-[#D4D4D4]">{a.product}</span>
+                            <span className="text-xs text-[#9CA3AF]">{a.alternativeSupplier} - {a.alternativePrice?.toFixed(2)} EUR</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Email Draft */}
+                  {briefData.emailDraft && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Email de negociation
+                      </h4>
+                      <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-4 max-h-60 overflow-y-auto">
+                        <pre className="text-sm text-[#374151] dark:text-[#D4D4D4] whitespace-pre-wrap font-sans leading-relaxed">
+                          {briefData.emailDraft.replace(/\\n/g, '\n')}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : null}
+            </div>
+
+            {/* Footer Actions */}
+            {briefData && !briefLoading && !briefData.error && (
+              <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+                <button
+                  onClick={copyBriefEmail}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors"
+                >
+                  {briefCopied ? <><CheckCircle className="w-4 h-4 text-emerald-500" /> Copie !</> : <><Download className="w-4 h-4" /> Copier l'email</>}
+                </button>
+                {detailSupplier?.email && (
+                  <button
+                    onClick={() => {
+                      const subject = encodeURIComponent('Revision tarifaire');
+                      const body = encodeURIComponent((briefData.emailDraft || '').replace(/\\n/g, '\n'));
+                      window.open(`mailto:${detailSupplier.email}?subject=${subject}&body=${body}`, '_blank');
+                    }}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                  >
+                    <Mail className="w-4 h-4" /> Envoyer
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <ConfirmDialog
         isOpen={!!deleteTarget}

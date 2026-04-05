@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense, useCallback } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles, Newspaper, Bell, AlertTriangle, Keyboard, Search } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, Bell, AlertTriangle, Keyboard, Search } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
@@ -63,6 +63,7 @@ const WeighStation = lazyRetry(() => import('./pages/WeighStation'));
 const InvoiceScanner = lazyRetry(() => import('./pages/InvoiceScanner'));
 const Mercuriale = lazyRetry(() => import('./pages/Mercuriale'));
 const MenuEngineering = lazyRetry(() => import('./pages/MenuEngineering'));
+const AllergenMatrix = lazyRetry(() => import('./pages/AllergenMatrix'));
 const AutoOrders = lazyRetry(() => import('./pages/AutoOrders'));
 const Subscription = lazyRetry(() => import('./pages/Subscription'));
 const Planning = lazyRetry(() => import('./pages/Planning'));
@@ -226,6 +227,7 @@ function GlobalSearch() {
     { id: 'p-scanner', name: 'Factures', category: 'pages', path: '/scanner-factures', icon: Receipt },
     { id: 'p-mercuriale', name: 'Mercuriale', category: 'pages', path: '/mercuriale', icon: TrendingUp },
     { id: 'p-engineering', name: 'Menu Engineering', category: 'pages', path: '/menu-engineering', icon: Target },
+    { id: 'p-allergens', name: 'Matrice allergenes', category: 'pages', path: '/allergen-matrix', icon: Shield },
     { id: 'p-commandes', name: 'Commandes', category: 'pages', path: '/commandes', icon: ShoppingCart },
     { id: 'p-planning', name: 'Planning', category: 'pages', path: '/planning', icon: CalendarDays },
     { id: 'p-messagerie', name: 'Messages', category: 'pages', path: '/messagerie', icon: MessageSquare },
@@ -642,6 +644,7 @@ function AppLayout() {
         { to: '/actualites', icon: Newspaper, label: 'Actualités IA' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
+        { to: '/allergen-matrix', icon: Shield, label: 'Matrice allergenes' },
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
       ],
@@ -1026,6 +1029,7 @@ function AppLayout() {
               <Route path="/actualites" element={<Actualites />} />
               <Route path="/mercuriale" element={<Mercuriale />} />
               <Route path="/menu-engineering" element={<MenuEngineering />} />
+              <Route path="/allergen-matrix" element={<AllergenMatrix />} />
               <Route path="/qr-menu" element={<QRMenu />} />
               <Route path="/commandes" element={<AutoOrders />} />
               <Route path="/planning" element={<Planning />} />

@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight, Camera, Share2, Copy, ChevronLeft, ChevronRight, Trash2, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight, Camera, Share2, Copy, ChevronLeft, ChevronRight, Trash2, ExternalLink, Shield, Apple, Activity } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, getRecipeShareLink } from '../services/api';
+import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, getRecipeShareLink, checkAllergens, estimateNutrition } from '../services/api';
+import type { AllergenCheckResult, NutritionEstimateResult } from '../services/api';
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 
@@ -136,6 +137,13 @@ export default function RecipeDetail() {
   const [shareLoading, setShareLoading] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  // AI Allergen & Nutrition state
+  const [allergenResult, setAllergenResult] = useState<AllergenCheckResult | null>(null);
+  const [allergenLoading, setAllergenLoading] = useState(false);
+  const [allergenError, setAllergenError] = useState<string | null>(null);
+  const [nutritionResult, setNutritionResult] = useState<NutritionEstimateResult | null>(null);
+  const [nutritionLoading, setNutritionLoading] = useState(false);
+  const [nutritionError, setNutritionError] = useState<string | null>(null);
 
   const handlePhotoUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!recipe || !e.target.files?.length) return;
@@ -201,6 +209,34 @@ export default function RecipeDetail() {
       setOptimizeError(err.message || 'Erreur lors de l\'optimisation');
     } finally {
       setOptimizing(false);
+    }
+  }, [recipe]);
+
+  const handleAllergenCheck = useCallback(async () => {
+    if (!recipe) return;
+    setAllergenLoading(true);
+    setAllergenError(null);
+    try {
+      const result = await checkAllergens(recipe.id);
+      setAllergenResult(result);
+    } catch (err: any) {
+      setAllergenError(err.message || 'Erreur lors de l\'analyse des allergenes');
+    } finally {
+      setAllergenLoading(false);
+    }
+  }, [recipe]);
+
+  const handleNutritionEstimate = useCallback(async () => {
+    if (!recipe) return;
+    setNutritionLoading(true);
+    setNutritionError(null);
+    try {
+      const result = await estimateNutrition(recipe.id);
+      setNutritionResult(result);
+    } catch (err: any) {
+      setNutritionError(err.message || 'Erreur lors de l\'estimation nutritionnelle');
+    } finally {
+      setNutritionLoading(false);
     }
   }, [recipe]);
 
@@ -964,6 +1000,310 @@ export default function RecipeDetail() {
         }
       `}</style>
 
+      {/* ═══════════════════════════════════════════════════════
+           AI ALLERGEN ANALYSIS CARD
+         ═══════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-md mt-4 overflow-hidden no-print">
+        <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-[#111111] dark:text-white" />
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Analyse allergenes IA</h3>
+          </div>
+          <button
+            onClick={handleAllergenCheck}
+            disabled={allergenLoading}
+            className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+          >
+            {allergenLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {allergenLoading ? 'Analyse...' : 'Analyser allergenes IA'}
+          </button>
+        </div>
+
+        {allergenError && (
+          <div className="px-5 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
+            <p className="text-xs text-red-600 dark:text-red-400">{allergenError}</p>
+          </div>
+        )}
+
+        {allergenResult && (
+          <div className="p-5 space-y-4">
+            {/* 14 EU Allergens Grid */}
+            <div>
+              <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">14 allergenes majeurs UE</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+                {allergenResult.allergens.map((a) => {
+                  const isPresent = a.status === 'present';
+                  const isTrace = a.status === 'trace';
+                  const isAbsent = a.status === 'absent';
+                  const bgColor = isPresent
+                    ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700'
+                    : isTrace
+                      ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700'
+                      : 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700';
+                  const iconColor = isPresent
+                    ? 'text-red-600 dark:text-red-400'
+                    : isTrace
+                      ? 'text-amber-600 dark:text-amber-400'
+                      : 'text-green-600 dark:text-green-400';
+                  return (
+                    <div
+                      key={a.name}
+                      className={`rounded-lg border p-2 text-center ${bgColor}`}
+                      title={a.source ? `Source: ${a.source}` : undefined}
+                    >
+                      <div className={`text-lg font-bold ${iconColor}`}>
+                        {isPresent ? '\u2717' : isTrace ? '?' : '\u2713'}
+                      </div>
+                      <div className="text-[10px] font-semibold text-[#111111] dark:text-white leading-tight">{a.name}</div>
+                      {a.source && (
+                        <div className="text-[9px] text-[#9CA3AF] dark:text-[#737373] mt-0.5 truncate" title={a.source}>{a.source}</div>
+                      )}
+                      {a.riskLevel && String(a.riskLevel) !== 'null' && (
+                        <div className={`text-[8px] font-medium mt-0.5 ${iconColor}`}>{a.riskLevel}</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Cross-contamination warnings */}
+            {allergenResult.crossContamination.length > 0 && (
+              <div>
+                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2 flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3 text-amber-500" />
+                  Risques de contamination croisee
+                </h4>
+                <div className="space-y-1.5">
+                  {allergenResult.crossContamination.map((cc, i) => (
+                    <div key={i} className="flex items-start gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <span className="text-xs font-semibold text-amber-800 dark:text-amber-300">{cc.allergen}</span>
+                        <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] ml-1">({cc.source})</span>
+                        <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{cc.risk}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Recommendation */}
+            {allergenResult.recommendation && (
+              <div className="px-3 py-2.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{allergenResult.recommendation}</p>
+              </div>
+            )}
+
+            {/* Print-friendly allergen label */}
+            <div>
+              <button
+                onClick={() => {
+                  const printWin = window.open('', '_blank');
+                  if (!printWin) return;
+                  const presentAllergens = allergenResult.allergens.filter(a => a.status === 'present');
+                  const traceAllergens = allergenResult.allergens.filter(a => a.status === 'trace');
+                  printWin.document.write(`
+                    <html><head><title>Etiquette allergenes - ${recipe.name}</title>
+                    <style>
+                      body { font-family: Arial, sans-serif; padding: 20px; max-width: 400px; }
+                      h2 { font-size: 16px; margin-bottom: 8px; border-bottom: 2px solid #000; padding-bottom: 4px; }
+                      h3 { font-size: 12px; margin: 12px 0 4px; color: #666; text-transform: uppercase; }
+                      .allergen { display: inline-block; padding: 2px 8px; margin: 2px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+                      .present { background: #fecaca; color: #991b1b; border: 1px solid #f87171; }
+                      .trace { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+                      .footer { margin-top: 16px; font-size: 9px; color: #999; border-top: 1px solid #ddd; padding-top: 4px; }
+                    </style></head><body>
+                    <h2>${recipe.name}</h2>
+                    ${presentAllergens.length > 0 ? `<h3>Allergenes presents</h3><div>${presentAllergens.map(a => `<span class="allergen present">${a.name}${a.source ? ' (' + a.source + ')' : ''}</span>`).join('')}</div>` : ''}
+                    ${traceAllergens.length > 0 ? `<h3>Traces possibles</h3><div>${traceAllergens.map(a => `<span class="allergen trace">${a.name}${a.source ? ' (' + a.source + ')' : ''}</span>`).join('')}</div>` : ''}
+                    ${presentAllergens.length === 0 && traceAllergens.length === 0 ? '<p style="color: green; font-weight: bold;">Aucun allergene majeur detecte</p>' : ''}
+                    <div class="footer">Analyse IA - ${new Date().toLocaleDateString('fr-FR')} - ${getRestaurantName()}</div>
+                    </body></html>
+                  `);
+                  printWin.document.close();
+                  printWin.print();
+                }}
+                className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                Imprimer etiquette allergenes
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!allergenResult && !allergenLoading && !allergenError && (
+          <div className="px-5 py-6 text-center">
+            <Shield className="w-8 h-8 mx-auto mb-2 text-[#D1D5DB] dark:text-[#333]" />
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+              Lancez l'analyse IA pour detecter les 14 allergenes majeurs UE, les sources et les risques de contamination croisee.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════
+           AI NUTRITION ESTIMATION CARD
+         ═══════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-md mt-4 overflow-hidden no-print">
+        <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Apple className="w-4 h-4 text-[#111111] dark:text-white" />
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Estimation nutritionnelle IA</h3>
+          </div>
+          <button
+            onClick={handleNutritionEstimate}
+            disabled={nutritionLoading}
+            className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+          >
+            {nutritionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+            {nutritionLoading ? 'Estimation...' : 'Estimer nutrition IA'}
+          </button>
+        </div>
+
+        {nutritionError && (
+          <div className="px-5 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
+            <p className="text-xs text-red-600 dark:text-red-400">{nutritionError}</p>
+          </div>
+        )}
+
+        {nutritionResult && (
+          <div className="p-5 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Macros donut */}
+              <div className="md:col-span-1">
+                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Macronutriments / portion</h4>
+                <div className="flex flex-col items-center">
+                  <div className="w-32 h-32">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Proteines', value: nutritionResult.perPortion.protein * 4 },
+                            { name: 'Glucides', value: nutritionResult.perPortion.carbs * 4 },
+                            { name: 'Lipides', value: nutritionResult.perPortion.fat * 9 },
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={30}
+                          outerRadius={55}
+                          paddingAngle={3}
+                          dataKey="value"
+                          strokeWidth={0}
+                        >
+                          <Cell fill="#111111" />
+                          <Cell fill="#9CA3AF" />
+                          <Cell fill="#D1D5DB" />
+                        </Pie>
+                        <Tooltip
+                          formatter={(value: unknown) => `${Math.round(Number(value))} kcal`}
+                          contentStyle={{ borderRadius: '6px', border: '1px solid #E5E7EB', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', fontSize: '11px' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex gap-3 mt-2 text-[10px]">
+                    <div className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#111111] dark:bg-white" />
+                      <span className="text-[#6B7280] dark:text-[#737373]">Prot.</span>
+                      <span className="font-bold text-[#111111] dark:text-white">{nutritionResult.perPortion.protein}g</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#9CA3AF]" />
+                      <span className="text-[#6B7280] dark:text-[#737373]">Gluc.</span>
+                      <span className="font-bold text-[#111111] dark:text-white">{nutritionResult.perPortion.carbs}g</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded-sm bg-[#D1D5DB] dark:bg-[#737373]" />
+                      <span className="text-[#6B7280] dark:text-[#737373]">Lip.</span>
+                      <span className="font-bold text-[#111111] dark:text-white">{nutritionResult.perPortion.fat}g</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Calorie count + detail */}
+              <div className="md:col-span-1">
+                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Calories / portion</h4>
+                <div className="text-center py-3">
+                  <div className="text-4xl font-black text-[#111111] dark:text-white">{nutritionResult.perPortion.calories}</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">kcal</div>
+                </div>
+                <div className="space-y-1.5 mt-2">
+                  <NutritionRow label="Fibres" value={`${nutritionResult.perPortion.fiber}g`} />
+                  <NutritionRow label="Sodium" value={`${nutritionResult.perPortion.sodium}mg`} />
+                </div>
+              </div>
+
+              {/* Health score ring */}
+              <div className="md:col-span-1">
+                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Score sante</h4>
+                <div className="flex flex-col items-center py-2">
+                  <div className="relative w-28 h-28">
+                    <svg viewBox="0 0 120 120" className="w-full h-full">
+                      {/* Background circle */}
+                      <circle cx="60" cy="60" r="50" fill="none" stroke="#E5E7EB" strokeWidth="8" className="dark:stroke-[#1A1A1A]" />
+                      {/* Score arc */}
+                      <circle
+                        cx="60" cy="60" r="50" fill="none"
+                        stroke={nutritionResult.healthScore >= 70 ? '#111111' : nutritionResult.healthScore >= 40 ? '#9CA3AF' : '#EF4444'}
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        strokeDasharray={`${(nutritionResult.healthScore / 100) * 314} 314`}
+                        transform="rotate(-90 60 60)"
+                        className={nutritionResult.healthScore >= 70 ? 'dark:stroke-white' : ''}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-2xl font-black text-[#111111] dark:text-white">{nutritionResult.healthScore}</span>
+                      <span className="text-[9px] text-[#9CA3AF] dark:text-[#737373]">/100</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-medium mt-1 text-[#9CA3AF] dark:text-[#737373]">
+                    {nutritionResult.healthScore >= 70 ? 'Bon equilibre' : nutritionResult.healthScore >= 40 ? 'Acceptable' : 'A ameliorer'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Dietary labels */}
+            {nutritionResult.dietaryLabels.length > 0 && (
+              <div>
+                <h4 className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Labels</h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {nutritionResult.dietaryLabels.map((label, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-0.5 rounded-full text-[10px] font-semibold border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717]"
+                    >
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AI Analysis */}
+            {nutritionResult.analysis && (
+              <div className="px-3 py-2.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{nutritionResult.analysis}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!nutritionResult && !nutritionLoading && !nutritionError && (
+          <div className="px-5 py-6 text-center">
+            <Activity className="w-8 h-8 mx-auto mb-2 text-[#D1D5DB] dark:text-[#333]" />
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+              Lancez l'estimation IA pour obtenir les calories, macronutriments, score sante et labels dietetiques.
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* ─── Optimize error toast ─── */}
       {optimizeError && (
         <div className="fixed bottom-4 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in no-print">
@@ -1181,6 +1521,15 @@ function SimCard({ label, value, highlight, warn }: { label: string; value: stri
     <div className={`rounded-lg border-2 p-2.5 text-center transition-colors ${border}`}>
       <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] font-medium">{label}</div>
       <div className={`text-lg font-bold mt-0.5 ${textColor}`}>{value}</div>
+    </div>
+  );
+}
+
+function NutritionRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between px-2 py-1 rounded bg-[#F3F4F6] dark:bg-[#171717]">
+      <span className="text-[10px] text-[#6B7280] dark:text-[#737373]">{label}</span>
+      <span className="text-[10px] font-bold text-[#111111] dark:text-white">{value}</span>
     </div>
   );
 }

@@ -12,6 +12,35 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' })
 const aiRateLimit = new Map<number, { count: number; resetAt: number }>();
 const aiRateLimitPerRestaurant = new Map<number, { count: number; resetAt: number }>();
 
+// ── AI Response Cache (TTL 5 min, read-only intents only) ──
+const responseCache = new Map<string, { response: any; timestamp: number }>();
+const RESPONSE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function getResponseCacheKey(restaurantId: number, message: string, intent: string): string {
+  return `${restaurantId}:${intent}:${message.toLowerCase().trim().substring(0, 100)}`;
+}
+
+function getCachedResponse(key: string): any | null {
+  const entry = responseCache.get(key);
+  if (entry && Date.now() - entry.timestamp < RESPONSE_CACHE_TTL) return entry.response;
+  responseCache.delete(key);
+  return null;
+}
+
+function setCachedResponse(key: string, data: any): void {
+  responseCache.set(key, { response: data, timestamp: Date.now() });
+  // Evict old entries if cache grows too large
+  if (responseCache.size > 200) {
+    const now = Date.now();
+    for (const [k, v] of responseCache) {
+      if (now - v.timestamp > RESPONSE_CACHE_TTL) responseCache.delete(k);
+    }
+  }
+}
+
+// Intents that modify data should NOT be cached
+const MUTABLE_INTENTS = ['recipe', 'ingredient', 'order', 'planning', 'haccp'];
+
 // ── AI Context Cache (TTL 1h per restaurant) ──
 const contextCache = new Map<number, { data: any; expires: number }>();
 const CACHE_TTL = 3600000; // 1 hour
@@ -295,10 +324,12 @@ RÈGLES : Prix réalistes restauration FR. Catégories recettes: Entrées/Plats/
 DONNÉES DU RESTAURANT :
 ${context}`;
 
-    // ── Step 3: Choose model + max_tokens based on intent & message length ──
+    // ── Step 3: Choose model + max_tokens based on intent ──
+    // Sonnet ONLY for: image analysis & weekly menu generation (expensive tasks that need it)
+    // Haiku for everything else (fast, cheap, good enough)
     const isWeeklyMenu = /menu.*(semaine|hebdo)|semaine.*menu|sugg[eè]re.*menu|fais.*moi.*un.*menu/i.test(message.trim());
     const hasImage = !!image;
-    const useAdvancedModel = intent === 'analysis' || isWeeklyMenu || hasImage || message.trim().length > 200;
+    const useAdvancedModel = isWeeklyMenu || hasImage;
     const aiModel = useAdvancedModel ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
     const maxTokens = isWeeklyMenu ? 4096 : ['analysis', 'recipe', 'planning'].includes(intent) ? 2048 : 1024;
 
@@ -353,14 +384,77 @@ ${context}`;
       sanitizedMessages.shift();
     }
 
-    const response = await anthropic.messages.create({
-      model: aiModel,
-      max_tokens: maxTokens,
-      system: actionSystemPrompt,
-      messages: sanitizedMessages as any,
-    });
+    // ── Response cache check (skip for mutable intents and messages with actions keywords) ──
+    const actionKeywords = /cr[ée]+|ajoute|envoie|supprime|modifie|met.?[àa] jour|commande|planifie|log|oui|ok|confirme/i;
+    const isMutableRequest = MUTABLE_INTENTS.includes(intent) && actionKeywords.test(message.trim());
+    const cacheKey = getResponseCacheKey(restaurantId, message.trim(), intent);
 
-    const fullText = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
+    if (!isMutableRequest && !hasImage) {
+      const cached = getCachedResponse(cacheKey);
+      if (cached) {
+        // Return cached response -- no streaming for cache hits
+        return res.json(cached);
+      }
+    }
+
+    // ── Streaming SSE response ──
+    let fullText = '';
+    let streamingFailed = false;
+    let usageData: any = null;
+
+    // Check if client accepts streaming (fetch with ReadableStream)
+    const acceptsStream = req.headers.accept?.includes('text/event-stream') || req.body.stream === true;
+
+    if (acceptsStream) {
+      try {
+        // Set SSE headers
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+        res.setHeader('X-Accel-Buffering', 'no'); // Disable nginx buffering
+
+        const stream = await anthropic.messages.stream({
+          model: aiModel,
+          max_tokens: maxTokens,
+          system: actionSystemPrompt,
+          messages: sanitizedMessages as any,
+        });
+
+        for await (const event of stream) {
+          if (event.type === 'content_block_delta' && (event.delta as any).type === 'text_delta') {
+            const text = (event.delta as any).text;
+            fullText += text;
+            res.write(`data: ${JSON.stringify({ text, done: false })}\n\n`);
+          }
+        }
+
+        // Get final message for usage tracking
+        const finalMessage = await stream.finalMessage();
+        usageData = finalMessage.usage;
+      } catch (streamErr: any) {
+        console.error('Streaming failed, falling back to non-streaming:', streamErr.message);
+        streamingFailed = true;
+        fullText = '';
+        // If headers already sent, we can't fallback cleanly
+        if (res.headersSent) {
+          res.write(`data: ${JSON.stringify({ text: '', done: true, error: 'Streaming error' })}\n\n`);
+          res.end();
+          return;
+        }
+      }
+    }
+
+    // Non-streaming fallback (or if streaming was not requested)
+    if (!acceptsStream || streamingFailed) {
+      const response = await anthropic.messages.create({
+        model: aiModel,
+        max_tokens: maxTokens,
+        system: actionSystemPrompt,
+        messages: sanitizedMessages as any,
+      });
+      fullText = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
+      usageData = response.usage;
+    }
 
     // Parse action blocks from response
     const actionRegex = /```action\s*\n?([\s\S]*?)```/g;
@@ -1162,8 +1256,8 @@ ${context}`;
     const cleanedText = fullText.replace(/```action\s*\n?[\s\S]*?```/g, '').trim();
 
     // ── Track AI usage ──
-    const inputTokens = response.usage?.input_tokens || 0;
-    const outputTokens = response.usage?.output_tokens || 0;
+    const inputTokens = usageData?.input_tokens || 0;
+    const outputTokens = usageData?.output_tokens || 0;
     const estimatedCost = (inputTokens * 0.00025 + outputTokens * 0.00125) / 1000;
     try {
       await prisma.$executeRaw`
@@ -1180,9 +1274,30 @@ ${context}`;
       console.error('AI usage tracking error:', trackErr.message);
     }
 
-    res.json({ response: cleanedText, actions, usage: response.usage });
+    const responsePayload = { response: cleanedText, actions, usage: usageData };
+
+    // Cache read-only responses
+    if (!isMutableRequest && !hasImage && actions.length === 0) {
+      setCachedResponse(cacheKey, responsePayload);
+    }
+
+    // If we were streaming, send the final SSE event with actions and end
+    if (acceptsStream && !streamingFailed && res.headersSent) {
+      res.write(`data: ${JSON.stringify({ text: '', done: true, actions, usage: usageData })}\n\n`);
+      res.end();
+    } else {
+      res.json(responsePayload);
+    }
   } catch (e: any) {
     console.error('AI error:', e.message);
+    // If streaming headers already sent, send error via SSE and close
+    if (res.headersSent) {
+      try {
+        res.write(`data: ${JSON.stringify({ text: '', done: true, error: e.message || 'Erreur IA' })}\n\n`);
+        res.end();
+      } catch { /* connection may already be closed */ }
+      return;
+    }
     if (e?.status === 400 && e?.message?.includes('credit balance')) {
       return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
     }
@@ -2117,6 +2232,568 @@ Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
   } catch (e: any) {
     console.error('AI waste-analysis error:', e.message);
     res.status(500).json({ error: `Erreur analyse IA: ${e.message}` });
+  }
+});
+
+// ── POST /api/ai/allergen-check — AI-powered allergen detection for a recipe ──
+router.post('/allergen-check', authWithRestaurant, async (req: any, res) => {
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    }
+
+    const restaurantId = req.restaurantId;
+    const { recipeId } = req.body;
+    if (!recipeId) return res.status(400).json({ error: 'recipeId requis' });
+
+    if (!checkAiRateLimit(restaurantId)) {
+      return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+    }
+
+    const recipe = await prisma.recipe.findFirst({
+      where: { id: recipeId, restaurantId },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+
+    if (!recipe) return res.status(404).json({ error: 'Recette non trouvee' });
+
+    const ingredientsList = recipe.ingredients.map((ri: any) => {
+      const d = getUnitDivisor(ri.ingredient.unit);
+      return `- ${ri.ingredient.name} (${ri.quantity} ${ri.ingredient.unit}, categorie: ${ri.ingredient.category})`;
+    }).join('\n');
+
+    const prompt = `Analyse ces ingredients pour les 14 allergenes majeurs EU (gluten, crustaces, oeufs, poisson, arachides, soja, lait, fruits a coque, celeri, moutarde, sesame, sulfites, lupin, mollusques). Pour chaque allergene detecte, indique l'ingredient source et le niveau de risque (certain, probable, trace possible). Identifie aussi les risques de contamination croisee.
+
+Ingredients de la recette "${recipe.name}":
+${ingredientsList}
+
+Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
+{
+  "allergens": [
+    {"name": "Gluten", "status": "present|absent|trace", "source": "ingredient source ou null", "riskLevel": "certain|probable|trace possible"}
+  ],
+  "crossContamination": [
+    {"allergen": "Nom", "risk": "Description du risque", "source": "Ingredient concerne"}
+  ],
+  "recommendation": "Recommandation generale pour l'etiquetage menu"
+}
+
+IMPORTANT: Tu DOIS inclure les 14 allergenes dans la liste, meme ceux absents (status: "absent", source: null, riskLevel: null).`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'Tu es un expert en securite alimentaire et reglementation europeenne sur les allergenes (reglement INCO 1169/2011). Reponds uniquement en JSON valide.',
+    });
+
+    const responseText = response.content
+      .filter((b: any) => b.type === 'text')
+      .map((b: any) => b.text)
+      .join('');
+
+    let aiResult: any = {};
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        aiResult = JSON.parse(jsonMatch[0]);
+      }
+    } catch {
+      aiResult = {
+        allergens: [],
+        crossContamination: [],
+        recommendation: responseText,
+      };
+    }
+
+    // Increment AI usage
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    res.json({
+      recipeName: recipe.name,
+      allergens: aiResult.allergens || [],
+      crossContamination: aiResult.crossContamination || [],
+      recommendation: aiResult.recommendation || '',
+    });
+  } catch (e: any) {
+    console.error('AI allergen-check error:', e.message);
+    res.status(500).json({ error: `Erreur analyse allergenes IA: ${e.message}` });
+  }
+});
+
+// ── POST /api/ai/nutrition-estimate — AI-powered nutrition estimation for a recipe ──
+router.post('/nutrition-estimate', authWithRestaurant, async (req: any, res) => {
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    }
+
+    const restaurantId = req.restaurantId;
+    const { recipeId } = req.body;
+    if (!recipeId) return res.status(400).json({ error: 'recipeId requis' });
+
+    if (!checkAiRateLimit(restaurantId)) {
+      return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+    }
+
+    const recipe = await prisma.recipe.findFirst({
+      where: { id: recipeId, restaurantId },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+
+    if (!recipe) return res.status(404).json({ error: 'Recette non trouvee' });
+
+    const ingredientsList = recipe.ingredients.map((ri: any) => {
+      const d = getUnitDivisor(ri.ingredient.unit);
+      const qtyInBase = ri.quantity / d;
+      return `- ${ri.ingredient.name}: ${ri.quantity} ${ri.ingredient.unit} (soit ${qtyInBase.toFixed(3)} ${ri.ingredient.unit === 'g' || ri.ingredient.unit === 'mg' ? 'kg' : ri.ingredient.unit === 'cl' || ri.ingredient.unit === 'ml' || ri.ingredient.unit === 'dl' ? 'L' : ri.ingredient.unit})`;
+    }).join('\n');
+
+    const prompt = `Estime les valeurs nutritionnelles par portion de cette recette. Base-toi sur les quantites fournies.
+
+Recette: "${recipe.name}" (${recipe.nbPortions} portions)
+Ingredients:
+${ingredientsList}
+
+Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
+{
+  "perPortion": {
+    "calories": number,
+    "protein": number,
+    "carbs": number,
+    "fat": number,
+    "fiber": number,
+    "sodium": number
+  },
+  "healthScore": number,
+  "dietaryLabels": ["label1", "label2"],
+  "analysis": "Courte analyse nutritionnelle en francais"
+}
+
+REGLES:
+- calories en kcal, protein/carbs/fat/fiber en grammes, sodium en mg
+- healthScore de 0 a 100 (100 = tres sain)
+- dietaryLabels: labels pertinents parmi "Riche en proteines", "Sans gluten", "Vegetarien", "Vegan", "Faible en calories", "Riche en fibres", "Pauvre en sodium", "Riche en lipides", "Equilibre", "Source de calcium", "Riche en fer", "Faible en sucres", etc.
+- Divise les quantites totales par ${recipe.nbPortions} portions`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'Tu es un nutritionniste expert. Estime les valeurs nutritionnelles a partir des ingredients et quantites. Reponds uniquement en JSON valide.',
+    });
+
+    const responseText = response.content
+      .filter((b: any) => b.type === 'text')
+      .map((b: any) => b.text)
+      .join('');
+
+    let aiResult: any = {};
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        aiResult = JSON.parse(jsonMatch[0]);
+      }
+    } catch {
+      aiResult = {
+        perPortion: { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sodium: 0 },
+        healthScore: 50,
+        dietaryLabels: [],
+        analysis: responseText,
+      };
+    }
+
+    // Increment AI usage
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    res.json({
+      recipeName: recipe.name,
+      nbPortions: recipe.nbPortions,
+      perPortion: aiResult.perPortion || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, sodium: 0 },
+      healthScore: aiResult.healthScore || 50,
+      dietaryLabels: aiResult.dietaryLabels || [],
+      analysis: aiResult.analysis || '',
+    });
+  } catch (e: any) {
+    console.error('AI nutrition-estimate error:', e.message);
+    res.status(500).json({ error: `Erreur estimation nutrition IA: ${e.message}` });
+  }
+});
+
+// ── GET /api/ai/allergen-matrix — Get allergen matrix for all recipes ──
+router.get('/allergen-matrix', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId },
+      include: { ingredients: { include: { ingredient: true } } },
+      orderBy: { category: 'asc' },
+    });
+
+    const EU_ALLERGENS = [
+      'Gluten', 'Crustaces', 'Oeufs', 'Poisson', 'Arachides', 'Soja',
+      'Lait', 'Fruits a coque', 'Celeri', 'Moutarde', 'Sesame',
+      'Sulfites', 'Lupin', 'Mollusques',
+    ];
+
+    // Keyword-based allergen detection (same logic as frontend)
+    const ALLERGEN_KEYWORDS: Record<string, string[]> = {
+      'Gluten': ['ble', 'blé', 'farine', 'semoule', 'orge', 'seigle', 'avoine', 'epeautre', 'épeautre', 'kamut', 'pain', 'pate', 'pâte', 'chapelure', 'couscous', 'boulgour'],
+      'Crustaces': ['crustace', 'crustacé', 'crevette', 'homard', 'langouste', 'langoustine', 'crabe', 'ecrevisse', 'écrevisse', 'gambas'],
+      'Oeufs': ['oeuf', 'œuf', 'oeufs', 'œufs', 'mayonnaise'],
+      'Poisson': ['poisson', 'saumon', 'cabillaud', 'thon', 'truite', 'sole', 'bar', 'merlu', 'colin', 'anchois', 'sardine', 'dorade', 'lotte', 'lieu', 'fletan', 'flétan', 'maquereau', 'morue'],
+      'Arachides': ['arachide', 'cacahuete', 'cacahuète', 'cacahouete', 'cacahouète'],
+      'Soja': ['soja', 'tofu', 'edamame', 'tempeh', 'miso'],
+      'Lait': ['lait', 'creme', 'crème', 'beurre', 'fromage', 'yaourt', 'yogourt', 'mascarpone', 'ricotta', 'mozzarella', 'parmesan', 'gruyere', 'gruyère', 'emmental', 'comte', 'comté', 'chevre', 'chèvre', 'roquefort', 'camembert', 'brie', 'reblochon', 'raclette', 'lactose'],
+      'Fruits a coque': ['amande', 'noisette', 'noix', 'cajou', 'pistache', 'pecan', 'pécan', 'macadamia', 'pignon', 'pralin'],
+      'Celeri': ['celeri', 'céleri'],
+      'Moutarde': ['moutarde'],
+      'Sesame': ['sesame', 'sésame', 'tahini', 'tahin'],
+      'Sulfites': ['sulfite', 'vin', 'vinaigre', 'porto', 'madere', 'madère', 'xeres', 'xérès'],
+      'Lupin': ['lupin'],
+      'Mollusques': ['mollusque', 'moule', 'huitre', 'huître', 'calamar', 'poulpe', 'seiche', 'escargot', 'palourde', 'coque', 'bulot', 'bigorneau', 'encornet', 'saint-jacques'],
+    };
+
+    const matrix = recipes.map((r: any) => {
+      const ingredientNames = r.ingredients.map((ri: any) => ri.ingredient.name.toLowerCase());
+      const allergenStatus: Record<string, { present: boolean; sources: string[] }> = {};
+
+      for (const allergen of EU_ALLERGENS) {
+        const keywords = ALLERGEN_KEYWORDS[allergen] || [];
+        const sources: string[] = [];
+        for (const ri of r.ingredients) {
+          const name = ri.ingredient.name.toLowerCase();
+          if (keywords.some((kw: string) => name.includes(kw))) {
+            sources.push(ri.ingredient.name);
+          }
+          // Also check DB allergens
+          if (ri.ingredient.allergens?.some((a: string) => a.toLowerCase().includes(allergen.toLowerCase()))) {
+            if (!sources.includes(ri.ingredient.name)) {
+              sources.push(ri.ingredient.name);
+            }
+          }
+        }
+        allergenStatus[allergen] = { present: sources.length > 0, sources };
+      }
+
+      return {
+        id: r.id,
+        name: r.name,
+        category: r.category,
+        allergens: allergenStatus,
+      };
+    });
+
+    res.json({ allergens: EU_ALLERGENS, recipes: matrix });
+  } catch (e: any) {
+    console.error('Allergen matrix error:', e.message);
+    res.status(500).json({ error: `Erreur matrice allergenes: ${e.message}` });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// POST /api/ai/demand-forecast — Demand Forecasting (90 days sales data)
+// ══════════════════════════════════════════════════════════════════════════
+router.post('/demand-forecast', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    if (!checkAiRateLimit(restaurantId)) return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    const salesData = await prisma.menuSale.findMany({
+      where: { restaurantId, date: { gte: ninetyDaysAgo.toISOString().slice(0, 10) } },
+      orderBy: { date: 'asc' },
+    });
+
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId },
+      select: { id: true, name: true, category: true, sellingPrice: true },
+    });
+    const recipeMap = Object.fromEntries(recipes.map(r => [r.id, r]));
+
+    if (salesData.length === 0) {
+      return res.json({
+        predictions: [],
+        insights: 'Aucune donnee de vente sur les 90 derniers jours. Enregistrez des ventes dans le menu engineering pour obtenir des previsions IA.',
+      });
+    }
+
+    const grouped: Record<string, Record<number, number[]>> = {};
+    const dayNames = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    for (const sale of salesData as any[]) {
+      const dayOfWeek = dayNames[new Date(sale.date).getDay()];
+      if (!grouped[dayOfWeek]) grouped[dayOfWeek] = {};
+      if (!grouped[dayOfWeek][sale.recipeId]) grouped[dayOfWeek][sale.recipeId] = [];
+      grouped[dayOfWeek][sale.recipeId].push(sale.quantity);
+    }
+
+    const summary = Object.entries(grouped).map(([day, recipeData]) => {
+      const lines = Object.entries(recipeData).map(([recipeId, quantities]) => {
+        const r = recipeMap[Number(recipeId)];
+        const avg = quantities.reduce((a, b) => a + b, 0) / quantities.length;
+        return `  ${r?.name || `Recette #${recipeId}`} (${r?.category || '?'}): moy ${avg.toFixed(1)} / service, ${quantities.length} donnees`;
+      }).join('\n');
+      return `${day}:\n${lines}`;
+    }).join('\n\n');
+
+    const prompt = `Analyse les ventes des 90 derniers jours de ce restaurant. Predis les quantites a preparer pour chaque plat pour les 7 prochains jours, par jour. Tiens compte des tendances, saisonnalite, et jours de la semaine.
+
+Donnees de ventes (moyennes par jour de semaine):
+${summary}
+
+Liste des recettes: ${recipes.map(r => `${r.name} (${r.category}, ${r.sellingPrice}EUR)`).join(', ')}
+
+Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
+{
+  "predictions": [
+    {
+      "date": "YYYY-MM-DD",
+      "dayOfWeek": "lundi",
+      "recipes": [
+        { "name": "Nom du plat", "predictedQuantity": 12, "confidence": 0.85 }
+      ]
+    }
+  ],
+  "insights": "Texte d'analyse en francais (2-3 paragraphes sur les tendances observees)"
+}
+
+Genere les predictions pour les 7 prochains jours a partir d'aujourd'hui (${new Date().toISOString().slice(0, 10)}).`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'Tu es un expert en prevision de demande pour la restauration. Reponds uniquement en JSON valide.',
+    });
+
+    const responseText = response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+    let aiResult: any = {};
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) aiResult = JSON.parse(jsonMatch[0]);
+    } catch {
+      aiResult = { predictions: [], insights: responseText };
+    }
+
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    res.json({
+      predictions: aiResult.predictions || [],
+      insights: aiResult.insights || 'Analyse non disponible.',
+    });
+  } catch (e: any) {
+    console.error('AI demand-forecast error:', e.message);
+    res.status(500).json({ error: `Erreur prevision IA: ${e.message}` });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// POST /api/ai/pricing-suggestions — Dynamic Pricing Suggestions
+// ══════════════════════════════════════════════════════════════════════════
+router.post('/pricing-suggestions', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    if (!checkAiRateLimit(restaurantId)) return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+
+    if (recipes.length === 0) {
+      return res.json({
+        suggestions: [],
+        summary: 'Aucune recette trouvee. Ajoutez des recettes avec leurs ingredients pour obtenir des suggestions de prix.',
+      });
+    }
+
+    const recipeData = recipes.map((r: any) => {
+      const cost = r.ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
+      const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
+      const coefficient = r.sellingPrice > 0 ? r.sellingPrice / cost : 0;
+      return {
+        id: r.id, name: r.name, category: r.category,
+        sellingPrice: r.sellingPrice, cost: Math.round(cost * 100) / 100,
+        margin: Math.round(margin * 10) / 10, coefficient: Math.round(coefficient * 100) / 100,
+      };
+    });
+
+    const prompt = `Propose des ajustements de prix pour maximiser la marge totale de ce restaurant. Considere l'elasticite prix, la saisonnalite, et les couts matiere actuels.
+
+Recettes et prix actuels:
+${recipeData.map(r => `- ${r.name} (${r.category}): vente ${r.sellingPrice}EUR, cout ${r.cost}EUR, marge ${r.margin}%, coeff ${r.coefficient}`).join('\n')}
+
+Regles metier:
+- Coefficient minimum acceptable: 3.0 pour les plats, 4.0 pour les boissons
+- Food cost cible: 25-35%
+- Les prix doivent rester psychologiquement attractifs (ex: 14.90 plutot que 15.00)
+- Saison actuelle: ${new Date().toLocaleDateString('fr-FR', { month: 'long' })}
+
+Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
+{
+  "suggestions": [
+    { "recipeId": 1, "recipeName": "Nom du plat", "currentPrice": 12.00, "suggestedPrice": 13.90, "reasoning": "Explication courte en francais", "estimatedImpact": "+180 EUR/mois" }
+  ],
+  "summary": "Resume global des recommandations (2-3 phrases)"
+}
+
+Concentre-toi sur les 10 recettes avec le plus de potentiel d'amelioration.`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'Tu es un expert en pricing pour la restauration. Reponds uniquement en JSON valide.',
+    });
+
+    const responseText = response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+    let aiResult: any = {};
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) aiResult = JSON.parse(jsonMatch[0]);
+    } catch {
+      aiResult = { suggestions: [], summary: responseText };
+    }
+
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    res.json({
+      suggestions: aiResult.suggestions || [],
+      summary: aiResult.summary || 'Analyse non disponible.',
+    });
+  } catch (e: any) {
+    console.error('AI pricing-suggestions error:', e.message);
+    res.status(500).json({ error: `Erreur suggestions prix IA: ${e.message}` });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// POST /api/ai/supplier-brief — Supplier Negotiation Brief
+// ══════════════════════════════════════════════════════════════════════════
+router.post('/supplier-brief', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    const { supplierId } = req.body;
+    if (!supplierId) return res.status(400).json({ error: 'supplierId requis' });
+    if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    if (!checkAiRateLimit(restaurantId)) return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+
+    const supplier = await prisma.supplier.findFirst({ where: { id: supplierId, restaurantId } });
+    if (!supplier) return res.status(404).json({ error: 'Fournisseur introuvable' });
+
+    const ingredients = await prisma.ingredient.findMany({
+      where: { restaurantId, supplierId },
+      orderBy: { pricePerUnit: 'desc' },
+    });
+
+    const allIngredients = await prisma.ingredient.findMany({
+      where: { restaurantId },
+      include: { supplierRef: true },
+    });
+
+    const otherSuppliers = await prisma.supplier.findMany({
+      where: { restaurantId, id: { not: supplierId } },
+      select: { id: true, name: true },
+    });
+
+    const totalMonthlySpend = ingredients.reduce((s, i) => s + i.pricePerUnit, 0);
+    const ingredientSummary = ingredients.map(i => `- ${i.name}: ${i.pricePerUnit}EUR/${i.unit} (categorie: ${i.category})`).join('\n');
+
+    const alternatives: string[] = [];
+    for (const ing of ingredients) {
+      const altIng = allIngredients.filter(a => a.name.toLowerCase() === ing.name.toLowerCase() && a.supplierId !== supplierId && a.supplierRef);
+      if (altIng.length > 0) {
+        alternatives.push(`${ing.name}: ${altIng.map(a => `${(a.supplierRef as any)?.name || '?'} a ${a.pricePerUnit}EUR/${a.unit}`).join(', ')} vs ${supplier.name} a ${ing.pricePerUnit}EUR/${ing.unit}`);
+      }
+    }
+
+    const prompt = `Prepare un brief de negociation fournisseur. Points forts: volumes, fidelite, alternatives. Arguments pour obtenir -5 a -15% sur les prix principaux.
+
+Fournisseur: ${supplier.name}
+Contact: ${supplier.contactName || 'Non renseigne'}
+Ville: ${supplier.city || 'Non renseignee'}
+Categories: ${(supplier.categories as string[])?.join(', ') || 'Non renseigne'}
+
+Produits achetes (${ingredients.length} references):
+${ingredientSummary || 'Aucun ingredient lie'}
+
+Depense mensuelle estimee: ${totalMonthlySpend.toFixed(2)} EUR
+Nombre d'autres fournisseurs: ${otherSuppliers.length}
+
+Alternatives trouvees:
+${alternatives.length > 0 ? alternatives.join('\n') : 'Aucune alternative directe identifiee'}
+
+Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
+{
+  "supplierName": "${supplier.name}",
+  "negotiationPoints": ["Point 1", "Point 2"],
+  "priceTargets": [{ "product": "Nom", "currentPrice": 5.00, "targetPrice": 4.25, "argument": "Justification" }],
+  "alternatives": [{ "product": "Nom", "alternativeSupplier": "Fournisseur", "alternativePrice": 4.00 }],
+  "emailDraft": "Objet: Revision tarifaire\\n\\nBonjour [Nom],\\n\\n... email complet de negociation en francais ..."
+}`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'Tu es un expert en achat et negociation fournisseur pour la restauration. Reponds uniquement en JSON valide.',
+    });
+
+    const responseText = response.content.filter((b: any) => b.type === 'text').map((b: any) => b.text).join('');
+    let aiResult: any = {};
+    try {
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) aiResult = JSON.parse(jsonMatch[0]);
+    } catch {
+      aiResult = { supplierName: supplier.name, negotiationPoints: [], priceTargets: [], alternatives: [], emailDraft: responseText };
+    }
+
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    res.json({
+      supplierName: aiResult.supplierName || supplier.name,
+      negotiationPoints: aiResult.negotiationPoints || [],
+      priceTargets: aiResult.priceTargets || [],
+      alternatives: aiResult.alternatives || [],
+      emailDraft: aiResult.emailDraft || '',
+    });
+  } catch (e: any) {
+    console.error('AI supplier-brief error:', e.message);
+    res.status(500).json({ error: `Erreur brief negociation IA: ${e.message}` });
   }
 });
 

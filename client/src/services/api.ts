@@ -361,6 +361,75 @@ export async function optimizeRecipeCost(recipeId: number): Promise<RecipeOptimi
   return handleResponse<RecipeOptimizationResult>(res);
 }
 
+// --- AI Allergen & Nutrition ---
+
+export interface AllergenCheckResult {
+  recipeName: string;
+  allergens: Array<{
+    name: string;
+    status: 'present' | 'absent' | 'trace';
+    source: string | null;
+    riskLevel: 'certain' | 'probable' | 'trace possible' | null;
+  }>;
+  crossContamination: Array<{
+    allergen: string;
+    risk: string;
+    source: string;
+  }>;
+  recommendation: string;
+}
+
+export interface NutritionEstimateResult {
+  recipeName: string;
+  nbPortions: number;
+  perPortion: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    fiber: number;
+    sodium: number;
+  };
+  healthScore: number;
+  dietaryLabels: string[];
+  analysis: string;
+}
+
+export interface AllergenMatrixResult {
+  allergens: string[];
+  recipes: Array<{
+    id: number;
+    name: string;
+    category: string;
+    allergens: Record<string, { present: boolean; sources: string[] }>;
+  }>;
+}
+
+export async function checkAllergens(recipeId: number): Promise<AllergenCheckResult> {
+  const res = await fetch(`${API_BASE}/ai/allergen-check`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ recipeId }),
+  });
+  return handleResponse<AllergenCheckResult>(res);
+}
+
+export async function estimateNutrition(recipeId: number): Promise<NutritionEstimateResult> {
+  const res = await fetch(`${API_BASE}/ai/nutrition-estimate`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ recipeId }),
+  });
+  return handleResponse<NutritionEstimateResult>(res);
+}
+
+export async function fetchAllergenMatrix(): Promise<AllergenMatrixResult> {
+  const res = await fetch(`${API_BASE}/ai/allergen-matrix`, {
+    headers: authHeaders(),
+  });
+  return handleResponse<AllergenMatrixResult>(res);
+}
+
 // --- Recipe Photos & Sharing ---
 
 export async function addRecipePhoto(recipeId: number, photo: string): Promise<Recipe> {

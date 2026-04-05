@@ -658,6 +658,13 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
 
+  // ── AI Predictive state ──────────────────────────────────────────────
+  const [forecastData, setForecastData] = useState<any>(null);
+  const [forecastLoading, setForecastLoading] = useState(false);
+  const [pricingData, setPricingData] = useState<any>(null);
+  const [pricingLoading, setPricingLoading] = useState(false);
+  const [aiPredictiveLoaded, setAiPredictiveLoaded] = useState(false);
+
   // ── Budget fetch ──────────────────────────────────────────────────────
   const fetchBudget = useCallback(async () => {
     try {
@@ -813,6 +820,36 @@ export default function Dashboard() {
       .catch(() => console.error('Erreur chargement P&L'))
       .finally(() => setPnlLoading(false));
   }, [activeTab, pnlPeriod, couverts, avgPricePerCouvert, selectedRestaurant, restaurantLoading]);
+
+  // ── AI Predictive auto-load when P&L tab is active ────────────────────
+  useEffect(() => {
+    if (activeTab !== 'pnl' || restaurantLoading || !selectedRestaurant || aiPredictiveLoaded) return;
+    const token = localStorage.getItem('token');
+    const restaurantId = localStorage.getItem('activeRestaurantId');
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+    };
+
+    // Load demand forecast
+    setForecastLoading(true);
+    fetch('/api/ai/demand-forecast', { method: 'POST', headers, body: '{}' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setForecastData(data); })
+      .catch(() => {})
+      .finally(() => setForecastLoading(false));
+
+    // Load pricing suggestions
+    setPricingLoading(true);
+    fetch('/api/ai/pricing-suggestions', { method: 'POST', headers, body: '{}' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setPricingData(data); })
+      .catch(() => {})
+      .finally(() => setPricingLoading(false));
+
+    setAiPredictiveLoaded(true);
+  }, [activeTab, restaurantLoading, selectedRestaurant, aiPredictiveLoaded]);
 
   // ── Computed stats ─────────────────────────────────────────────────────
   const stats = useMemo(() => {
@@ -2801,6 +2838,130 @@ export default function Dashboard() {
                   </p>
                   <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
                     <div className={`h-full rounded-full ${pnlData.netResult >= 0 ? 'bg-emerald-500' : 'bg-red-500'}`} style={{ width: `${Math.min(Math.abs(pnlData.netMarginPercent), 100)}%` }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* ══════════════════════════════════════════════════════════ */}
+              {/* IA Predictive Section                                     */}
+              {/* ══════════════════════════════════════════════════════════ */}
+              <div className="pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-2 bg-[#111111] dark:bg-white rounded-lg">
+                    <Sparkles className="w-5 h-5 text-white dark:text-black" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">IA Predictive</h2>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Previsions de demande et suggestions de prix generees par IA</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  {/* Card: Previsions de la semaine */}
+                  <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+                    <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-2">
+                      <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <h3 className="text-sm font-semibold text-[#111111] dark:text-white">Previsions de la semaine</h3>
+                    </div>
+                    <div className="p-5">
+                      {forecastLoading ? (
+                        <div className="flex items-center justify-center py-10">
+                          <div className="w-6 h-6 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+                          <span className="ml-3 text-sm text-[#9CA3AF]">Analyse des ventes en cours...</span>
+                        </div>
+                      ) : forecastData?.predictions?.length > 0 ? (
+                        <div className="space-y-3">
+                          {forecastData.predictions.slice(0, 7).map((day: any, i: number) => (
+                            <div key={i} className="group">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-sm font-semibold text-[#111111] dark:text-white capitalize">{day.dayOfWeek}</span>
+                                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{day.date}</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {(day.recipes || []).slice(0, 4).map((r: any, j: number) => (
+                                  <span
+                                    key={j}
+                                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#374151] dark:text-[#D4D4D4]"
+                                  >
+                                    <span className="font-medium">{r.name}</span>
+                                    <span className="font-bold text-[#111111] dark:text-white">x{r.predictedQuantity}</span>
+                                    {r.confidence >= 0.8 && <span className="text-emerald-500 text-[10px]">HQ</span>}
+                                  </span>
+                                ))}
+                                {(day.recipes || []).length > 4 && (
+                                  <span className="px-2 py-1 rounded-md text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF]">
+                                    +{day.recipes.length - 4}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                          {forecastData.insights && (
+                            <div className="mt-4 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+                              <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{forecastData.insights.slice(0, 300)}{forecastData.insights.length > 300 ? '...' : ''}</p>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <BarChart3 className="w-8 h-8 text-[#D1D5DB] dark:text-[#333] mx-auto mb-2" />
+                          <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{forecastData?.insights || 'Enregistrez des ventes pour activer les previsions'}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Card: Suggestions prix */}
+                  <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+                    <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <h3 className="text-sm font-semibold text-[#111111] dark:text-white">Suggestions prix</h3>
+                    </div>
+                    <div className="p-5">
+                      {pricingLoading ? (
+                        <div className="flex items-center justify-center py-10">
+                          <div className="w-6 h-6 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+                          <span className="ml-3 text-sm text-[#9CA3AF]">Analyse des marges en cours...</span>
+                        </div>
+                      ) : pricingData?.suggestions?.length > 0 ? (
+                        <div className="space-y-3">
+                          {pricingData.suggestions.slice(0, 5).map((s: any, i: number) => {
+                            const diff = s.suggestedPrice - s.currentPrice;
+                            const isUp = diff > 0;
+                            return (
+                              <div key={i} className="flex items-center justify-between py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{s.recipeName}</p>
+                                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 truncate">{s.reasoning}</p>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0 ml-3">
+                                  <div className="text-right">
+                                    <p className="text-xs text-[#9CA3AF] line-through">{s.currentPrice?.toFixed(2)} EUR</p>
+                                    <p className="text-sm font-bold text-[#111111] dark:text-white">{s.suggestedPrice?.toFixed(2)} EUR</p>
+                                  </div>
+                                  <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-bold ${
+                                    isUp ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-900/20 text-red-500'
+                                  }`}>
+                                    {isUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                                    {isUp ? '+' : ''}{diff.toFixed(2)}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                          {pricingData.summary && (
+                            <div className="mt-3 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+                              <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{pricingData.summary}</p>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8">
+                          <TrendingUp className="w-8 h-8 text-[#D1D5DB] dark:text-[#333] mx-auto mb-2" />
+                          <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{pricingData?.summary || 'Ajoutez des recettes pour obtenir des suggestions'}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

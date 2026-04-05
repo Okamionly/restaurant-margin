@@ -575,7 +575,7 @@ export default function WeighStation() {
                       {ing.category}
                     </span>
                     <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
-                    <span className="text-[10px] text-teal-400">{(ing.pricePerUnit ?? 0).toFixed(2)} €/{ing.unit}</span>
+                    <span className="text-[10px] text-teal-400">{(ing.pricePerUnit ?? 0).toFixed(2)} €/{ing.unit === 'g' ? 'kg' : ing.unit === 'cl' ? 'L' : ing.unit === 'ml' ? 'L' : ing.unit}</span>
                   </div>
                 </div>
                 {selected?.id === ing.id && (
@@ -608,7 +608,7 @@ export default function WeighStation() {
                     {selected.category}
                   </span>
                   <span className="text-xs text-teal-400 font-medium">
-                    {(selected.pricePerUnit ?? 0).toFixed(2)} €/{selected.unit}
+                    {(selected.pricePerUnit ?? 0).toFixed(2)} €/{selected.unit === 'g' ? 'kg' : selected.unit === 'cl' ? 'L' : selected.unit === 'ml' ? 'L' : selected.unit}
                   </span>
                 </div>
                 {/* Current stock level */}
@@ -708,7 +708,16 @@ export default function WeighStation() {
             <div className="flex items-center gap-2 px-5 py-2.5 bg-emerald-900/30 border border-emerald-500/30 rounded-2xl">
               <Euro className="w-5 h-5 text-emerald-400" />
               <span className="text-2xl font-bold text-emerald-400 tabular-nums">
-                Valeur : {(netConverted * selected.pricePerUnit).toFixed(2)} €
+                Valeur : {(() => {
+                  // pricePerUnit is always stored per the ingredient's unit
+                  // netConverted is in the ingredient's unit (g, kg, L, etc.)
+                  // For g unit: price is €/kg in practice, so divide netConverted(g) by 1000 to get kg, then multiply by price
+                  const unit = selected.unit.toLowerCase();
+                  if (unit === 'g') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
+                  if (unit === 'cl') return (netConverted / 100 * selected.pricePerUnit).toFixed(2);
+                  if (unit === 'ml') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
+                  return (netConverted * selected.pricePerUnit).toFixed(2);
+                })()} €
               </span>
             </div>
           )}

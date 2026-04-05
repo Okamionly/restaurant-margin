@@ -6,6 +6,17 @@ import { fetchRecipe, optimizeRecipeCost } from '../services/api';
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 
 // ─── Category emoji map ───
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ───
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1;
+}
+
 const CATEGORY_EMOJI: Record<string, string> = {
   'Viandes': '\u{1F969}',
   'Poissons & Fruits de mer': '\u{1F41F}',
@@ -357,7 +368,7 @@ export default function RecipeDetail() {
                   const waste = ri.wastePercent || 0;
                   const baseQty = ri.quantity * portionMultiplier;
                   const effectiveQty = baseQty * (1 + waste / 100);
-                  const lineTotal = effectiveQty * ri.ingredient.pricePerUnit;
+                  const lineTotal = (effectiveQty / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit;
                   const emoji = getCategoryEmoji(ri.ingredient.category);
                   const rowBg = idx % 2 === 0 ? '' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/50';
                   return (

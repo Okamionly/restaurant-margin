@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { prisma, authWithRestaurant } from '../middleware';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const router = Router();
 
@@ -126,7 +127,8 @@ router.get('/recipes-margins', authWithRestaurant, async (req: any, res) => {
     const rows = recipes.map((recipe) => {
       const totalCost = recipe.ingredients.reduce((sum, ri) => {
         const wasteMult = 1 + (ri.wastePercent || 0) / 100;
-        return sum + ri.quantity * ri.ingredient.pricePerUnit * wasteMult;
+        const divisor = getUnitDivisor(ri.ingredient.unit);
+        return sum + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMult;
       }, 0);
       const costPerPortion = recipe.nbPortions > 0 ? totalCost / recipe.nbPortions : totalCost;
       const sellingPrice = recipe.sellingPrice;
@@ -275,7 +277,7 @@ router.get('/inventory-valuation', authWithRestaurant, async (req: any, res) => 
 
     let totalValuation = 0;
     const rows = items.map((item) => {
-      const valuation = item.currentStock * item.ingredient.pricePerUnit;
+      const valuation = (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
       totalValuation += valuation;
       const stockStatus =
         item.currentStock <= 0

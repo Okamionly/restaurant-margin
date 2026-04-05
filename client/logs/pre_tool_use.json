@@ -1,0 +1,214 @@
+[
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "if\\s*\\(.*\\)\\s*\\{[\\s\\S]*?use(State|Effect|Memo|Callback|Ref)",
+      "path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/components/CommandPalette.tsx",
+      "output_mode": "content",
+      "multiline": true
+    },
+    "tool_use_id": "toolu_01NpDxRyPrL9JknBe3v7nCnR"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "if\\s*\\(.*\\)\\s*\\{[\\s\\S]*?use(State|Effect|Memo|Callback|Ref)",
+      "path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/components/AlertsBell.tsx",
+      "output_mode": "content",
+      "multiline": true
+    },
+    "tool_use_id": "toolu_017iYRKpkjMnEsCLRWiUBjsS"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "CommandPalette|AlertsBell",
+      "path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/App.tsx",
+      "output_mode": "content",
+      "-C": 5
+    },
+    "tool_use_id": "toolu_01WEjJqG2V6NC7uXTxhxA2uJ"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/App.tsx",
+      "limit": 30
+    },
+    "tool_use_id": "toolu_01SpkZEtrevLh1msy32LxGQu"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "return \\(",
+      "path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/App.tsx",
+      "output_mode": "content",
+      "-C": 3
+    },
+    "tool_use_id": "toolu_01Mkxc5ayLsvoZt6kL6WrVzC"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/App.tsx",
+      "offset": 986,
+      "limit": 30
+    },
+    "tool_use_id": "toolu_018tQYDLtCRFtLdNAEPenqrd"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client\" && npx tsc --noEmit 2>&1 | grep -i \"error\" | head -20",
+      "timeout": 60000,
+      "description": "Check TypeScript errors"
+    },
+    "tool_use_id": "toolu_01TrjeDn4ApMXDYPpdvbhP8D"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/pages/MenuBuilder.tsx",
+      "offset": 40,
+      "limit": 20
+    },
+    "tool_use_id": "toolu_017Q3nHkGLyX3dYQA895oTWy"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/pages/MenuBuilder.tsx",
+      "old_string": "const SECTION_LABELS: Record<string, string> = {\n  'Entree': 'Entrees',\n  'Entree': 'Entrees',",
+      "new_string": "const SECTION_LABELS: Record<string, string> = {\n  'Entree': 'Entrees',",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_0147KGRndaQrqQFRSbCU8cxL"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/components/AlertsBell.tsx",
+      "limit": 40
+    },
+    "tool_use_id": "toolu_018gPJbyPWebHvdivWEBzJ3Q"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "WebSearch",
+    "tool_input": {
+      "query": "React error 310 \"invariant=310\" cause fix 2025"
+    },
+    "tool_use_id": "toolu_014d6Z7QFseFWcstXChpSpi5"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "return.*null|return.*<>|return \\(",
+      "path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/pages/Suppliers.tsx",
+      "output_mode": "content",
+      "-n": true,
+      "head_limit": 30
+    },
+    "tool_use_id": "toolu_01BpQjdsqqqPJFoQ3k5GgXD3"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/pages/Suppliers.tsx",
+      "offset": 90,
+      "limit": 20
+    },
+    "tool_use_id": "toolu_014uXrKmsaYaLG3Fb7bbVDhK"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "export.*getActiveRestaurantId|export.*function getActiveRestaurantId",
+      "path": "/c/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/services/api.ts",
+      "output_mode": "content"
+    },
+    "tool_use_id": "toolu_017sW3hvnyfNhCP1qiWUx2RJ"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"/c/Users/mrgue/CLAUDE CODE/restaurant-margin\" && git add client/src/pages/MenuBuilder.tsx && git commit -m \"$(cat <<'EOF'\nfix: supprime propri\u00c3\u00a9t\u00c3\u00a9 dupliqu\u00c3\u00a9e dans MenuBuilder causant React error #310\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nEOF\n)\" && git push",
+      "description": "Commit and push the fix"
+    },
+    "tool_use_id": "toolu_01HMFf1eYH4rhEWT98NzJEFf"
+  }
+]

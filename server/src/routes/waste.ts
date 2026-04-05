@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 export const wasteRouter = Router();
@@ -137,21 +138,9 @@ wasteRouter.post('/', authWithRestaurant, async (req: AuthRequest, res: Response
       return res.status(404).json({ error: 'Ingrédient non trouvé' });
     }
 
-    // Calculate cost impact: convert to same unit if needed, then multiply by price
-    let costImpact = quantity * ingredient.pricePerUnit;
-
-    // If units differ, attempt basic conversion
-    if (unit !== ingredient.unit) {
-      if (unit === 'g' && ingredient.unit === 'kg') {
-        costImpact = (quantity / 1000) * ingredient.pricePerUnit;
-      } else if (unit === 'kg' && ingredient.unit === 'g') {
-        costImpact = (quantity * 1000) * ingredient.pricePerUnit;
-      } else if (unit === 'mL' && ingredient.unit === 'L') {
-        costImpact = (quantity / 1000) * ingredient.pricePerUnit;
-      } else if (unit === 'L' && ingredient.unit === 'mL') {
-        costImpact = (quantity * 1000) * ingredient.pricePerUnit;
-      }
-    }
+    // Cost = quantity converted to bulk unit * pricePerUnit
+    // The waste form sends quantity in `unit`, price is always per bulk unit (kg/L).
+    const costImpact = (quantity / getUnitDivisor(unit)) * ingredient.pricePerUnit;
 
     const wasteLog = await prisma.wasteLog.create({
       data: {

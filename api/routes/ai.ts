@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { Resend } from 'resend';
 import { prisma, authWithRestaurant } from '../middleware';
 import { buildOrderEmail } from '../utils/emailTemplates';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const router = Router();
 
@@ -143,7 +144,7 @@ router.post('/chat', authWithRestaurant, async (req: any, res) => {
 
     if (recipes.length) {
       const recipesSummary = recipes.map((r: any) => {
-        const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+        const cost = r.ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
         const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
         return `- ${r.name} (id:${r.id}, ${r.category}): vente ${r.sellingPrice}€, coût ${cost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
       }).join('\n');
@@ -540,15 +541,18 @@ ${context}`;
           if (!recipe) {
             actions.push({ type: 'analyze_recipe', success: false, message: `Recette id ${d.recipeId} non trouvée` });
           } else {
-            const ingredientCosts = recipe.ingredients.map((ri: any) => ({
-              name: ri.ingredient.name,
-              quantity: ri.quantity,
-              unit: ri.ingredient.unit,
-              unitPrice: ri.ingredient.pricePerUnit,
-              cost: Math.round(ri.quantity * ri.ingredient.pricePerUnit * 100) / 100,
-              wastePercent: ri.wastePercent || 0,
-              costWithWaste: Math.round(ri.quantity * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100) * 100) / 100,
-            }));
+            const ingredientCosts = recipe.ingredients.map((ri: any) => {
+              const d = getUnitDivisor(ri.ingredient.unit);
+              return {
+                name: ri.ingredient.name,
+                quantity: ri.quantity,
+                unit: ri.ingredient.unit,
+                unitPrice: ri.ingredient.pricePerUnit,
+                cost: Math.round((ri.quantity / d) * ri.ingredient.pricePerUnit * 100) / 100,
+                wastePercent: ri.wastePercent || 0,
+                costWithWaste: Math.round((ri.quantity / d) * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100) * 100) / 100,
+              };
+            });
             const totalCost = ingredientCosts.reduce((s: number, ic: any) => s + ic.costWithWaste, 0);
             const foodCostPercent = recipe.sellingPrice > 0 ? (totalCost / recipe.sellingPrice * 100) : 0;
             const margin = recipe.sellingPrice - totalCost;
@@ -775,7 +779,7 @@ ${context}`;
             include: { ingredients: { include: { ingredient: true } } },
           });
           const analysis = allRecipes.map((r: any) => {
-            const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100), 0);
+            const cost = r.ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100), 0);
             const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
             return { name: r.name, category: r.category, cost: Math.round(cost * 100) / 100, sellingPrice: r.sellingPrice, margin: Math.round(margin * 10) / 10, profit: Math.round((r.sellingPrice - cost) * 100) / 100 };
           }).sort((a: any, b: any) => a.margin - b.margin);
@@ -821,7 +825,7 @@ ${context}`;
           for (const seller of topSellers as any[]) {
             const recipe = recipes.find((r: any) => r.id === seller.recipeId);
             if (recipe) {
-              const cost = recipe.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+              const cost = recipe.ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
               seller.cost = Math.round(cost * 100) / 100;
               seller.margin = recipe.sellingPrice > 0 ? Math.round((recipe.sellingPrice - cost) / recipe.sellingPrice * 1000) / 10 : 0;
               seller.totalProfit = Math.round((seller.totalRevenue - cost * seller.totalQty) * 100) / 100;
@@ -1027,7 +1031,7 @@ ${context}`;
               take: 30,
             });
             const recipeSuggestions = existingRecipes.map((r: any) => {
-              const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+              const cost = r.ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
               const costPerPortion = r.nbPortions > 0 ? cost / r.nbPortions : cost;
               return { name: r.name, id: r.id, category: r.category, costPerPortion: Math.round(costPerPortion * 100) / 100, sellingPrice: r.sellingPrice };
             }).filter((r: any) => r.costPerPortion <= budget * 0.4) // food cost < 40% of budget
@@ -1085,7 +1089,7 @@ ${context}`;
             });
             const recipesByCategory: any = { 'Entrées': [], 'Plats': [], 'Desserts': [] };
             for (const r of existingRecipes) {
-              const cost = (r as any).ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+              const cost = (r as any).ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
               const costPerPortion = r.nbPortions > 0 ? cost / r.nbPortions : cost;
               const category = r.category || 'Plats';
               if (recipesByCategory[category]) {
@@ -1409,20 +1413,23 @@ router.post('/optimize-recipe', authWithRestaurant, async (req: any, res) => {
 
     // Calculate current food cost
     const currentCost = recipe.ingredients.reduce((sum: number, ri: any) => {
-      return sum + ri.quantity * ri.ingredient.pricePerUnit;
+      return sum + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit;
     }, 0);
     const costPerPortion = currentCost / (recipe.nbPortions || 1);
 
     // Build ingredient list for AI analysis
-    const ingredientDetails = recipe.ingredients.map((ri: any) => ({
-      name: ri.ingredient.name,
-      category: ri.ingredient.category,
-      quantity: ri.quantity,
-      unit: ri.ingredient.unit,
-      pricePerUnit: ri.ingredient.pricePerUnit,
-      totalCost: +(ri.quantity * ri.ingredient.pricePerUnit).toFixed(2),
-      supplier: ri.ingredient.supplier || 'Non renseigne',
-    }));
+    const ingredientDetails = recipe.ingredients.map((ri: any) => {
+      const d = getUnitDivisor(ri.ingredient.unit);
+      return {
+        name: ri.ingredient.name,
+        category: ri.ingredient.category,
+        quantity: ri.quantity,
+        unit: ri.ingredient.unit,
+        pricePerUnit: ri.ingredient.pricePerUnit,
+        totalCost: +((ri.quantity / d) * ri.ingredient.pricePerUnit).toFixed(2),
+        supplier: ri.ingredient.supplier || 'Non renseigne',
+      };
+    });
 
     // Get current month for seasonality
     const monthNames = ['janvier', 'fevrier', 'mars', 'avril', 'mai', 'juin', 'juillet', 'aout', 'septembre', 'octobre', 'novembre', 'decembre'];

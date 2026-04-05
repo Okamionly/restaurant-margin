@@ -11,6 +11,17 @@ import Modal from '../components/Modal';
 
 const API = '';
 
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1;
+}
+
 function authHeaders(): Record<string, string> {
   const token = localStorage.getItem('token');
   const rid = localStorage.getItem('activeRestaurantId');
@@ -49,6 +60,7 @@ interface RecipeIngredient {
   ingredient: {
     id: number;
     name: string;
+    unit: string;
     pricePerUnit: number;
     allergens?: string[];
   };
@@ -552,7 +564,8 @@ export default function MenuEngineering() {
         // Calculate food cost from ingredients
         const foodCost = (recipe.ingredients || []).reduce((total, ri) => {
           const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-          return total + ri.quantity * ri.ingredient.pricePerUnit * wasteMultiplier;
+          const divisor = getUnitDivisor(ri.ingredient.unit);
+          return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
         }, 0);
         const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
 

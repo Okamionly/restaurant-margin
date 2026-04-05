@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import Anthropic from '@anthropic-ai/sdk';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 export const aiRouter = Router();
@@ -52,7 +53,7 @@ async function buildRestaurantContext(restaurantId: number): Promise<string> {
   ]);
 
   const recipesSummary = recipes.map(r => {
-    const foodCost = r.ingredients.reduce((sum, ri) => sum + ri.quantity * ri.ingredient.pricePerUnit, 0);
+    const foodCost = r.ingredients.reduce((sum, ri) => sum + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
     const margin = r.sellingPrice > 0 ? ((r.sellingPrice - foodCost) / r.sellingPrice * 100) : 0;
     return `- ${r.name} (${r.category}) : prix vente ${r.sellingPrice}€, coût matière ${foodCost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
   }).join('\n');
@@ -96,7 +97,7 @@ ${stockAlerts}
 ${topSales || 'Aucune vente enregistrée'}
 
 === INVENTAIRE ===
-${inventory.length} articles en stock, valeur totale : ${inventory.reduce((sum, item) => sum + item.currentStock * item.ingredient.pricePerUnit, 0).toFixed(0)}€`;
+${inventory.length} articles en stock, valeur totale : ${inventory.reduce((sum, item) => sum + (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit, 0).toFixed(0)}€`;
 }
 
 const SYSTEM_PROMPT = `Tu es l'assistant IA de RestauMargin, expert en gestion de restaurant et optimisation des marges.

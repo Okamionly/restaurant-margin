@@ -13,43 +13,51 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';
 import { trackEvent } from '../utils/analytics';
 
-// ── Unit conversion: convert quantity to the price unit ─────────────────
-// Price is per priceUnit (e.g., €/kg). Quantity may be in g, cl, etc.
-// Returns the quantity converted to the price unit.
+// ── Unit conversion divisor ─────────────────────────────────────────────
+// pricePerUnit is ALWAYS per the bulk unit (kg for weight, L for volume).
+// If ingredient.unit is "g", quantity is in grams but price is per kg → divide by 1000.
+// If ingredient.unit is "cl", quantity is in cl but price is per L → divide by 100.
+// Returns the divisor to convert quantity to the bulk pricing unit.
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1; // kg, L, pièce, piece, unité, etc.
+}
+
+// Legacy wrapper: convert quantity from inputUnit to priceUnit for form preview.
+// When inputUnit === priceUnit, uses getUnitDivisor to handle sub-unit pricing.
 function convertToBaseUnit(quantity: number, inputUnit: string, priceUnit: string): number {
   const u = inputUnit.toLowerCase().trim();
   const p = priceUnit.toLowerCase().trim();
 
-  // Same unit → no conversion
-  if (u === p) return quantity;
-
-  // Weight conversions → to kg
-  if (p === 'kg') {
-    if (u === 'g') return quantity / 1000;
-    if (u === 'mg') return quantity / 1000000;
-  }
-  if (p === 'g') {
-    if (u === 'kg') return quantity * 1000;
-  }
-
-  // Volume conversions → to L
-  if (p === 'l' || p === 'litre' || p === 'litres') {
-    if (u === 'cl') return quantity / 100;
-    if (u === 'ml') return quantity / 1000;
-    if (u === 'dl') return quantity / 10;
-  }
-  if (p === 'cl') {
-    if (u === 'l' || u === 'litre') return quantity * 100;
-    if (u === 'ml') return quantity / 10;
-  }
-
-  // Piece/unité → no conversion needed
-  if (['pièce', 'piece', 'pièces', 'pieces', 'unité', 'unite', 'botte', 'bouteille', 'sachet', 'boîte', 'barquette'].includes(u)) {
-    return quantity;
+  // If units differ, do explicit cross-unit conversion
+  if (u !== p) {
+    // Weight conversions → to kg
+    if (p === 'kg') {
+      if (u === 'g') return quantity / 1000;
+      if (u === 'mg') return quantity / 1000000;
+    }
+    if (p === 'g') {
+      if (u === 'kg') return quantity * 1000;
+    }
+    // Volume conversions → to L
+    if (p === 'l' || p === 'litre' || p === 'litres') {
+      if (u === 'cl') return quantity / 100;
+      if (u === 'ml') return quantity / 1000;
+      if (u === 'dl') return quantity / 10;
+    }
+    if (p === 'cl') {
+      if (u === 'l' || u === 'litre') return quantity * 100;
+      if (u === 'ml') return quantity / 10;
+    }
   }
 
-  // Default: assume same unit
-  return quantity;
+  // Same unit or piece units: apply divisor (price is per bulk unit)
+  return quantity / getUnitDivisor(u);
 }
 
 function MarginBadge({ percent }: { percent: number }) {
@@ -357,7 +365,7 @@ function RecipePhotoPlaceholder({ category }: { category: string }) {
 }
 
 // ── Category coefficients (shared with Settings) ──────────────────────
-const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 5.0, 'Accompagnement': 2.5 };
+const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 4.0, 'Accompagnement': 3.0 };
 
 function loadCoefficients(): Record<string, number> {
   try {

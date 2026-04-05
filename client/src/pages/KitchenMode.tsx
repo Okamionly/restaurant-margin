@@ -4,25 +4,15 @@ import { ArrowLeft, Search, Clock, Scale, ChefHat, X, Play, Pause, RotateCcw, Ti
 import { fetchRecipes } from '../services/api';
 import type { Recipe } from '../types';
 
-// ── Unit conversion helper ─────────────────────────────────────────────
-function convertToBaseUnit(quantity: number, inputUnit: string, priceUnit: string): number {
-  const u = inputUnit.toLowerCase().trim();
-  const p = priceUnit.toLowerCase().trim();
-  if (u === p) return quantity;
-  if (p === 'kg') {
-    if (u === 'g') return quantity / 1000;
-    if (u === 'mg') return quantity / 1000000;
-  }
-  if (p === 'g' && u === 'kg') return quantity * 1000;
-  if (p === 'l' || p === 'litre' || p === 'litres') {
-    if (u === 'cl') return quantity / 100;
-    if (u === 'ml') return quantity / 1000;
-  }
-  if (p === 'cl') {
-    if (u === 'l' || u === 'litre') return quantity * 100;
-    if (u === 'ml') return quantity / 10;
-  }
-  return quantity;
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1;
 }
 
 // ── Kitchen Timer Component ────────────────────────────────────────────
@@ -119,8 +109,8 @@ function KitchenTimer() {
 // ── Recipe Detail Full-Screen View ─────────────────────────────────────
 function RecipeFullScreen({ recipe, onBack }: { recipe: Recipe; onBack: () => void }) {
   const totalCost = recipe.ingredients.reduce((sum, ri) => {
-    const converted = convertToBaseUnit(ri.quantity, ri.ingredient.unit, ri.ingredient.unit);
-    return sum + converted * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100);
+    const divisor = getUnitDivisor(ri.ingredient.unit);
+    return sum + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100);
   }, 0);
   const costPerPortion = recipe.nbPortions > 0 ? totalCost / recipe.nbPortions : 0;
 
@@ -203,7 +193,7 @@ function RecipeFullScreen({ recipe, onBack }: { recipe: Recipe; onBack: () => vo
             </thead>
             <tbody>
               {recipe.ingredients.map((ri, idx) => {
-                const cost = convertToBaseUnit(ri.quantity, ri.ingredient.unit, ri.ingredient.unit)
+                const cost = (ri.quantity / getUnitDivisor(ri.ingredient.unit))
                   * ri.ingredient.pricePerUnit * (1 + (ri.wastePercent || 0) / 100);
                 return (
                   <tr key={ri.id} className={`border-b border-[#E5E7EB] dark:border-[#1A1A1A] ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/50'}`}>

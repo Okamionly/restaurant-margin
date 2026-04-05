@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 export const menuEngineeringRouter = Router();
@@ -60,7 +61,8 @@ menuEngineeringRouter.get('/', authWithRestaurant, async (req: AuthRequest, res:
     // Build engineering items
     const engineering = recipes.map((recipe) => {
       const totalCost = recipe.ingredients.reduce((sum, ri) => {
-        const ingredientCost = (ri.ingredient?.pricePerUnit || 0) * ri.quantity * (1 + (ri.wastePercent || 0) / 100);
+        const divisor = getUnitDivisor(ri.ingredient?.unit || 'kg');
+        const ingredientCost = (ri.ingredient?.pricePerUnit || 0) * (ri.quantity / divisor) * (1 + (ri.wastePercent || 0) / 100);
         return sum + ingredientCost;
       }, 0);
 

@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
 import { validate, createRecipeSchema } from '../utils/validation';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 export const recipesRouter = Router();
@@ -46,7 +47,8 @@ function calculateMargin(recipe: RecipeWithIngredients) {
   // Food cost accounting for waste
   const foodCost = recipe.ingredients.reduce((total, ri) => {
     const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-    return total + ri.quantity * ri.ingredient.pricePerUnit * wasteMultiplier;
+    const divisor = getUnitDivisor(ri.ingredient.unit);
+    return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
   }, 0);
 
   const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;

@@ -13,6 +13,17 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 import { fetchIngredients } from '../services/api';
+
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1;
+}
 import type { Ingredient } from '../types';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -386,7 +397,7 @@ export default function WasteTracker() {
       }
       setForm({ ingredientId: '', quantity: '', reason: 'expired', notes: '' });
       setShowAddModal(false);
-      showToast(`Perte déclarée : ${qty} ${ing.unit} de ${ing.name} (${formatEuro(qty * ing.pricePerUnit)})`, 'success');
+      showToast(`Perte déclarée : ${qty} ${ing.unit} de ${ing.name} (${formatEuro((qty / getUnitDivisor(ing.unit)) * ing.pricePerUnit)})`, 'success');
       await loadEntries();
     } catch (err: unknown) {
       showToast(err instanceof Error ? err.message : 'Erreur déclaration', 'error');
@@ -825,7 +836,7 @@ export default function WasteTracker() {
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg p-3 text-sm">
                 <span className="text-[#6B7280] dark:text-[#A3A3A3]">{t('wasteTracker.estimatedCost')} : </span>
                 <span className="font-bold text-red-600 dark:text-red-400">
-                  {formatEuro(parseFloat(form.quantity || '0') * ing.pricePerUnit)}
+                  {formatEuro((parseFloat(form.quantity || '0') / getUnitDivisor(ing.unit)) * ing.pricePerUnit)}
                 </span>
               </div>
             ) : null;

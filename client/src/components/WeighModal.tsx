@@ -3,6 +3,17 @@ import { Bluetooth, BluetoothOff, Plus, Minus, RotateCcw, Check, Wifi, AlertTria
 import { useScale } from '../hooks/useScale';
 import Modal from './Modal';
 
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
+function getUnitDivisor(u: string): number {
+  const unit = (u || '').toLowerCase().trim();
+  if (unit === 'g') return 1000;
+  if (unit === 'mg') return 1000000;
+  if (unit === 'cl') return 100;
+  if (unit === 'ml') return 1000;
+  if (unit === 'dl') return 10;
+  return 1;
+}
+
 type DisplayUnit = 'g' | 'kg' | 'L' | 'pièce';
 
 interface WeighModalProps {
@@ -194,7 +205,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
             <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-              Valeur estimée : {(weightInUnit * pricePerUnit).toFixed(2)} €
+              Valeur estimée : {((weightInUnit / getUnitDivisor(unit)) * pricePerUnit).toFixed(2)} €
             </span>
           </div>
         )}

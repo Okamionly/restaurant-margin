@@ -2,6 +2,7 @@ import { Router, Response, Request } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { Resend } from 'resend';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -52,7 +53,7 @@ async function checkRestaurantAlerts(restaurantId: number): Promise<AlertItem[]>
   for (const recipe of recipes) {
     if (recipe.sellingPrice <= 0) continue;
     const foodCost = recipe.ingredients.reduce(
-      (sum, ri) => sum + ri.quantity * ri.ingredient.pricePerUnit, 0
+      (sum, ri) => sum + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0
     );
     const margin = (recipe.sellingPrice - foodCost) / recipe.sellingPrice * 100;
     if (margin < 60) {

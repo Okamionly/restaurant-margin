@@ -359,7 +359,7 @@ export default function Settings() {
   const [financialGoals, setFinancialGoals] = useState<FinancialGoals>(loadFinancialGoals);
 
   // Category coefficients
-  const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 5.0, 'Accompagnement': 2.5 };
+  const DEFAULT_COEFFICIENTS: Record<string, number> = { 'Entrée': 3.0, 'Plat': 3.5, 'Dessert': 4.0, 'Boisson': 4.0, 'Accompagnement': 3.0 };
   const [coefficients, setCoefficients] = useState<Record<string, number>>(() => {
     try {
       const stored = localStorage.getItem('coefficients');

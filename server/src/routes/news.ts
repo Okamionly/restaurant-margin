@@ -4,6 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import * as fs from 'fs';
 import * as path from 'path';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 export const newsRouter = Router();
@@ -64,7 +65,7 @@ async function buildRestaurantIngredientContext(restaurantId: number): Promise<s
   ).join('\n');
 
   const recipesList = recipes.map(r => {
-    const foodCost = r.ingredients.reduce((sum, ri) => sum + ri.quantity * ri.ingredient.pricePerUnit, 0);
+    const foodCost = r.ingredients.reduce((sum, ri) => sum + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
     const margin = r.sellingPrice > 0 ? ((r.sellingPrice - foodCost) / r.sellingPrice * 100) : 0;
     return `- ${r.name}: vente ${r.sellingPrice}€, coût ${foodCost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
   }).join('\n');

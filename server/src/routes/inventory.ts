@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authWithRestaurant, AuthRequest } from '../middleware/auth';
+import { getUnitDivisor } from '../utils/unitConversion';
 
 const prisma = new PrismaClient();
 export const inventoryRouter = Router();
@@ -105,12 +106,12 @@ inventoryRouter.get('/value', authWithRestaurant, async (req: AuthRequest, res: 
       include: { ingredient: true },
     });
     const totalValue = items.reduce((sum, item) => {
-      return sum + item.currentStock * item.ingredient.pricePerUnit;
+      return sum + (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
     }, 0);
     const byCategory: Record<string, number> = {};
     for (const item of items) {
       const cat = item.ingredient.category;
-      const val = item.currentStock * item.ingredient.pricePerUnit;
+      const val = (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
       byCategory[cat] = (byCategory[cat] || 0) + val;
     }
     res.json({

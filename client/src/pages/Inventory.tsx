@@ -18,6 +18,17 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import { useTranslation } from '../hooks/useTranslation';
 
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1;
+}
+
 const CATEGORY_EMOJIS: Record<string, string> = {
   'Viandes': '🥩',
   'Poissons & Fruits de mer': '🐟',
@@ -222,7 +233,7 @@ export default function Inventory() {
           cmp = a.currentStock - b.currentStock;
           break;
         case 'value':
-          cmp = (a.currentStock * a.ingredient.pricePerUnit) - (b.currentStock * b.ingredient.pricePerUnit);
+          cmp = ((a.currentStock / getUnitDivisor(a.ingredient.unit)) * a.ingredient.pricePerUnit) - ((b.currentStock / getUnitDivisor(b.ingredient.unit)) * b.ingredient.pricePerUnit);
           break;
         case 'status':
           cmp = getStatusOrder(getStatus(a)) - getStatusOrder(getStatus(b));
@@ -367,7 +378,7 @@ export default function Inventory() {
     if (!weighTarget) return;
     try {
       const valueStr = weighTarget.ingredient.pricePerUnit > 0
-        ? ` (${(data.weight * weighTarget.ingredient.pricePerUnit).toFixed(2)} €)`
+        ? ` (${((data.weight / getUnitDivisor(weighTarget.ingredient.unit)) * weighTarget.ingredient.pricePerUnit).toFixed(2)} €)`
         : '';
       if (data.mode === 'set') {
         await updateInventoryItem(weighTarget.id, { currentStock: data.weight });
@@ -429,7 +440,7 @@ export default function Inventory() {
   function handleExportCSV() {
     const header = 'Ingrédient,Catégorie,Stock actuel,Unité,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
     const rows = filteredItems.map(item => {
-      const val = (item.currentStock * item.ingredient.pricePerUnit).toFixed(2);
+      const val = ((item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit).toFixed(2);
       const status = getStatus(item) === 'ok' ? 'OK' : getStatus(item) === 'low' ? 'Bas' : 'Critique';
       const meta = parseMeta(item.notes);
       return `"${item.ingredient.name}","${item.ingredient.category}",${item.currentStock},"${item.unit}",${item.minStock},${item.maxStock || ''},${val},${status},"${meta.location || ''}","${meta.expirationDate || ''}"`;
@@ -711,7 +722,7 @@ export default function Inventory() {
                 </tr>
               ) : filteredItems.map(item => {
                 const status = getStatus(item);
-                const value = item.currentStock * item.ingredient.pricePerUnit;
+                const value = (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
                 const meta = parseMeta(item.notes);
                 const expStatus = getExpirationStatus(meta.expirationDate);
                 return (

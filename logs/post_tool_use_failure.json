@@ -1,0 +1,157 @@
+[
+  {
+    "timestamp": "2026-04-05T02:57:08.377052",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01UWvx5cbQtpGbPTh652wtTb",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx"
+    },
+    "error": "File content (25797 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "ae30dfba18bfe29f8",
+      "agent_type": "debugger",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx"
+      },
+      "tool_use_id": "toolu_01UWvx5cbQtpGbPTh652wtTb",
+      "error": "File content (25797 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T02:57:08.377052"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T02:57:08.511761",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01W7N99c8NwG1nUyQvfPiM8D",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\RecipeDetail.tsx"
+    },
+    "error": "File content (16530 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "ae30dfba18bfe29f8",
+      "agent_type": "debugger",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\RecipeDetail.tsx"
+      },
+      "tool_use_id": "toolu_01W7N99c8NwG1nUyQvfPiM8D",
+      "error": "File content (16530 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T02:57:08.511761"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T02:57:09.303349",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01S4rmVBW5UvztNVwoKNjpV8",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Dashboard.tsx"
+    },
+    "error": "File content (39462 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "ae30dfba18bfe29f8",
+      "agent_type": "debugger",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Dashboard.tsx"
+      },
+      "tool_use_id": "toolu_01S4rmVBW5UvztNVwoKNjpV8",
+      "error": "File content (39462 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T02:57:09.303349"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T02:57:09.449755",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01S1tF1orExCx6nBKFnExpeD",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts"
+    },
+    "error": "File content (47839 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "ae30dfba18bfe29f8",
+      "agent_type": "debugger",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts"
+      },
+      "tool_use_id": "toolu_01S1tF1orExCx6nBKFnExpeD",
+      "error": "File content (47839 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T02:57:09.449755"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T02:57:09.489322",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_016Rvy5bYAzMfeph8eEcaLLv",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Settings.tsx"
+    },
+    "error": "File content (26209 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "ae30dfba18bfe29f8",
+      "agent_type": "debugger",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Settings.tsx"
+      },
+      "tool_use_id": "toolu_016Rvy5bYAzMfeph8eEcaLLv",
+      "error": "File content (26209 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T02:57:09.489322"
+    }
+  }
+]

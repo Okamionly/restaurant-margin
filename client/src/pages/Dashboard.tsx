@@ -20,6 +20,17 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import { getCurrentSeason, getCurrentSeasonLabel, getSeasonalProducts, getSeasonIcon } from '../data/seasons';
 import { trackEvent } from '../utils/analytics';
 
+// ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
+function getUnitDivisor(unit: string): number {
+  const u = (unit || '').toLowerCase().trim();
+  if (u === 'g') return 1000;
+  if (u === 'mg') return 1000000;
+  if (u === 'cl') return 100;
+  if (u === 'ml') return 1000;
+  if (u === 'dl') return 10;
+  return 1;
+}
+
 // ── Color Palette ──────────────────────────────────────────────────────────
 const COLORS = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#0891b2', '#e11d48', '#4f46e5'];
 const FOOD_CATEGORY_COLORS: Record<string, string> = {
@@ -572,7 +583,7 @@ export default function Dashboard() {
       (r.ingredients || []).forEach(ri => {
         if (!ri.ingredient) return;
         const cat = ri.ingredient.category || 'Autres';
-        const cost = ri.ingredient.pricePerUnit * ri.quantity * (1 + ri.wastePercent / 100);
+        const cost = (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit * (1 + ri.wastePercent / 100);
         foodCostMap.set(cat, (foodCostMap.get(cat) || 0) + cost);
         // Track individual ingredient costs
         const key = ri.ingredient.name;

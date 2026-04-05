@@ -186,5 +186,164 @@
       "is_interrupt": false,
       "logged_at": "2026-04-05T03:27:57.431602"
     }
+  },
+  {
+    "timestamp": "2026-04-05T03:46:26.647677",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01GFNVgerp2h5VhgFSujGCye",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts"
+    },
+    "error": "File content (54818 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "a7a25e00df15e1d40",
+      "agent_type": "builder",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts"
+      },
+      "tool_use_id": "toolu_01GFNVgerp2h5VhgFSujGCye",
+      "error": "File content (54818 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T03:46:26.647677"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T03:46:35.070469",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01UWcKHfcqaHqtxuBjnB7LTQ",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Ingredients.tsx"
+    },
+    "error": "File content (14130 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "a1a5de98bd72cb1cf",
+      "agent_type": "builder",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Ingredients.tsx"
+      },
+      "tool_use_id": "toolu_01UWcKHfcqaHqtxuBjnB7LTQ",
+      "error": "File content (14130 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T03:46:35.070469"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T03:46:35.423793",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01KkBqd9rJzc4eXSrFusa7Ks",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx"
+    },
+    "error": "File content (25959 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "a1a5de98bd72cb1cf",
+      "agent_type": "builder",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx"
+      },
+      "tool_use_id": "toolu_01KkBqd9rJzc4eXSrFusa7Ks",
+      "error": "File content (25959 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T03:46:35.423793"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T03:46:45.980695",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Read",
+    "tool_use_id": "toolu_01V9fNZBtyyDiuALMcJaePJY",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts"
+    },
+    "error": "File content (54818 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "a2f07f0026c8a5b3f",
+      "agent_type": "builder",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Read",
+      "tool_input": {
+        "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts"
+      },
+      "tool_use_id": "toolu_01V9fNZBtyyDiuALMcJaePJY",
+      "error": "File content (54818 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T03:46:45.980695"
+    }
+  },
+  {
+    "timestamp": "2026-04-05T03:52:39.408578",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Bash",
+    "tool_use_id": "toolu_01C2qLm1Veki2qTuFcocdf2A",
+    "tool_input": {
+      "command": "cd \"C:/Users/mrgue/CLAUDE CODE/restaurant-margin\" && npx prisma validate 2>&1",
+      "timeout": 30000,
+      "description": "Validate Prisma schema"
+    },
+    "error": "Exit code 1\nPrisma schema loaded from prisma\\schema.prisma\nError: Prisma schema validation - (get-config wasm)\nError code: P1012\nerror: Environment variable not found: DIRECT_URL.\n  -->  prisma\\schema.prisma:8\n   | \n 7 |   url       = env(\"DATABASE_URL\")\r\n 8 |   directUrl = env(\"DIRECT_URL\")\r\n   | \n\nValidation Error Count: 1\n[Context: getConfig]\n\nPrisma CLI Version : 5.22.0",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "a2f07f0026c8a5b3f",
+      "agent_type": "builder",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "cd \"C:/Users/mrgue/CLAUDE CODE/restaurant-margin\" && npx prisma validate 2>&1",
+        "timeout": 30000,
+        "description": "Validate Prisma schema"
+      },
+      "tool_use_id": "toolu_01C2qLm1Veki2qTuFcocdf2A",
+      "error": "Exit code 1\nPrisma schema loaded from prisma\\schema.prisma\nError: Prisma schema validation - (get-config wasm)\nError code: P1012\nerror: Environment variable not found: DIRECT_URL.\n  -->  prisma\\schema.prisma:8\n   | \n 7 |   url       = env(\"DATABASE_URL\")\r\n 8 |   directUrl = env(\"DIRECT_URL\")\r\n   | \n\nValidation Error Count: 1\n[Context: getConfig]\n\nPrisma CLI Version : 5.22.0",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T03:52:39.408578"
+    }
   }
 ]

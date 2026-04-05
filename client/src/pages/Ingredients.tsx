@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
@@ -34,6 +34,11 @@ export default function Ingredients() {
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [bulkCategoryOpen, setBulkCategoryOpen] = useState(false);
+  const [bulkSupplierOpen, setBulkSupplierOpen] = useState(false);
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
@@ -415,6 +420,61 @@ export default function Ingredients() {
     }
   }
 
+  // ── Bulk selection helpers ───────────────────────────────────────────
+  function toggleSelectOne(id: number) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === filtered.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filtered.map((i) => i.id)));
+    }
+  }
+
+  async function bulkDelete() {
+    const ids = Array.from(selectedIds);
+    try {
+      await Promise.all(ids.map((id) => deleteIngredient(id)));
+      showToast(`${ids.length} ingredient(s) supprime(s)`, 'success');
+      setSelectedIds(new Set());
+      loadIngredients();
+    } catch {
+      showToast(t('ingredients.deleteError'), 'error');
+    }
+  }
+
+  async function bulkChangeCategory(category: string) {
+    const ids = Array.from(selectedIds);
+    try {
+      await Promise.all(ids.map((id) => updateIngredient(id, { category })));
+      showToast(`Categorie changee pour ${ids.length} ingredient(s)`, 'success');
+      setSelectedIds(new Set());
+      setBulkCategoryOpen(false);
+      loadIngredients();
+    } catch {
+      showToast(t('ingredients.saveError'), 'error');
+    }
+  }
+
+  async function bulkChangeSupplier(supplierId: number, supplierName: string) {
+    const ids = Array.from(selectedIds);
+    try {
+      await Promise.all(ids.map((id) => updateIngredient(id, { supplierId, supplier: supplierName })));
+      showToast(`Fournisseur assigne pour ${ids.length} ingredient(s)`, 'success');
+      setSelectedIds(new Set());
+      setBulkSupplierOpen(false);
+      loadIngredients();
+    } catch {
+      showToast(t('ingredients.saveError'), 'error');
+    }
+  }
+
   function SortHeader({ label, field }: { label: string; field: SortKey }) {
     return (
       <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-[#111111] dark:hover:text-white">
@@ -524,6 +584,15 @@ export default function Ingredients() {
         <table className="w-full text-sm">
           <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-left">
             <tr>
+              <th className="px-4 py-3 w-10">
+                <input
+                  type="checkbox"
+                  checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                  onChange={toggleSelectAll}
+                  className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                  aria-label="Tout selectionner"
+                />
+              </th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.nameColumn')} field="name" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.categoryColumn')} field="category" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.unitPriceColumn')} field="pricePerUnit" /></th>
@@ -536,13 +605,22 @@ export default function Ingredients() {
           <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
+                <td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
                   {ingredients.length === 0 ? t('ingredients.noIngredients') : t('ingredients.noResults')}
                 </td>
               </tr>
             ) : (
               filtered.map((ing) => (
-                <tr key={ing.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]">
+                <tr key={ing.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] ${selectedIds.has(ing.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(ing.id)}
+                      onChange={() => toggleSelectOne(ing.id)}
+                      className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                      aria-label={`Selectionner ${ing.name}`}
+                    />
+                  </td>
                   <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
                     <div className="flex items-center gap-2.5">
                       <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
@@ -599,6 +677,87 @@ export default function Ingredients() {
       </div>
 
       <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
+
+      {/* ── Bulk Actions Floating Bar ──────────────────────────────────── */}
+      {selectedIds.size > 0 && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-6 py-3 flex items-center gap-4 animate-in slide-in-from-bottom-4">
+          <span className="text-sm font-medium flex items-center gap-2">
+            <CheckSquare className="w-4 h-4" />
+            {selectedIds.size} selectionne{selectedIds.size > 1 ? 's' : ''}
+          </span>
+          <div className="w-px h-6 bg-white/20 dark:bg-black/20" />
+
+          {/* Bulk delete */}
+          <button
+            onClick={bulkDelete}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            Supprimer ({selectedIds.size})
+          </button>
+
+          {/* Bulk change category */}
+          <div className="relative">
+            <button
+              onClick={() => { setBulkCategoryOpen(!bulkCategoryOpen); setBulkSupplierOpen(false); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+            >
+              <Tag className="w-4 h-4" />
+              Changer categorie
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            {bulkCategoryOpen && (
+              <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-56 overflow-y-auto">
+                {INGREDIENT_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => bulkChangeCategory(cat)}
+                    className="w-full text-left px-3 py-2 text-sm text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Bulk change supplier */}
+          <div className="relative">
+            <button
+              onClick={() => { setBulkSupplierOpen(!bulkSupplierOpen); setBulkCategoryOpen(false); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+            >
+              <Truck className="w-4 h-4" />
+              Changer fournisseur
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            {bulkSupplierOpen && (
+              <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-56 overflow-y-auto">
+                {suppliers.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373]">Aucun fournisseur</div>
+                ) : suppliers.map((sup) => (
+                  <button
+                    key={sup.id}
+                    onClick={() => bulkChangeSupplier(sup.id, sup.name)}
+                    className="w-full text-left px-3 py-2 text-sm text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                  >
+                    {sup.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Close selection */}
+          <button
+            onClick={() => { setSelectedIds(new Set()); setBulkCategoryOpen(false); setBulkSupplierOpen(false); }}
+            className="p-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10 transition-colors ml-1"
+            aria-label="Fermer la selection"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Form Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t('ingredients.editModalTitle') : t('ingredients.newModalTitle')}>

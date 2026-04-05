@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag } from 'lucide-react';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
 import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -432,6 +432,10 @@ export default function Recipes() {
   const [showAiSuggestions, setShowAiSuggestions] = useState(false);
   const [aiSuggestionsChecked, setAiSuggestionsChecked] = useState<boolean[]>([]);
 
+  // Bulk selection
+  const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<number>>(new Set());
+  const [bulkRecipeCategoryOpen, setBulkRecipeCategoryOpen] = useState(false);
+
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [variantTarget, setVariantTarget] = useState<Recipe | null>(null);
@@ -481,7 +485,13 @@ export default function Recipes() {
   }, [recipes]);
 
   const filtered = recipes.filter((r) => {
-    const matchesSearch = r.name.toLowerCase().includes(search.toLowerCase());
+    const q = search.toLowerCase();
+    const matchesName = r.name.toLowerCase().includes(q);
+    const matchesCat = r.category.toLowerCase().includes(q);
+    const matchesIngredient = r.ingredients?.some(
+      (ri) => ri.ingredient?.name?.toLowerCase().includes(q)
+    );
+    const matchesSearch = !q || matchesName || matchesCat || matchesIngredient;
     const matchesCategory = selectedCategory === 'all' || r.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -507,6 +517,67 @@ export default function Recipes() {
     });
     return sorted;
   }, [filtered, sortColumn, sortDirection, viewMode]);
+
+  // ── Bulk selection helpers (recipes) ────────────────────────────────
+  function toggleSelectRecipe(id: number) {
+    setSelectedRecipeIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAllRecipes() {
+    if (selectedRecipeIds.size === filtered.length) {
+      setSelectedRecipeIds(new Set());
+    } else {
+      setSelectedRecipeIds(new Set(filtered.map((r) => r.id)));
+    }
+  }
+
+  async function bulkDeleteRecipes() {
+    const ids = Array.from(selectedRecipeIds);
+    try {
+      await Promise.all(ids.map((id) => deleteRecipe(id)));
+      showToast(`${ids.length} recette(s) supprimee(s)`, 'success');
+      setSelectedRecipeIds(new Set());
+      loadData();
+    } catch {
+      showToast(t("recipes.errorDeleting"), 'error');
+    }
+  }
+
+  async function bulkChangeRecipeCategory(category: string) {
+    const ids = Array.from(selectedRecipeIds);
+    try {
+      for (const id of ids) {
+        const recipe = recipes.find((r) => r.id === id);
+        if (recipe) {
+          await updateRecipe(id, {
+            name: recipe.name,
+            category,
+            sellingPrice: recipe.sellingPrice,
+            nbPortions: recipe.nbPortions,
+            description: recipe.description || undefined,
+            prepTimeMinutes: recipe.prepTimeMinutes ?? undefined,
+            cookTimeMinutes: recipe.cookTimeMinutes ?? undefined,
+            laborCostPerHour: recipe.laborCostPerHour ?? undefined,
+            ingredients: recipe.ingredients.map((ri) => ({
+              ingredientId: ri.ingredientId,
+              quantity: ri.quantity,
+              wastePercent: ri.wastePercent,
+            })),
+          });
+        }
+      }
+      showToast(`Categorie changee pour ${ids.length} recette(s)`, 'success');
+      setSelectedRecipeIds(new Set());
+      setBulkRecipeCategoryOpen(false);
+      loadData();
+    } catch {
+      showToast(t("recipes.errorSaving"), 'error');
+    }
+  }
 
   function handleSort(col: string) {
     if (sortColumn === col) {
@@ -985,6 +1056,15 @@ export default function Recipes() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <th className="px-4 py-3 w-10">
+                  <input
+                    type="checkbox"
+                    checked={filtered.length > 0 && selectedRecipeIds.size === filtered.length}
+                    onChange={toggleSelectAllRecipes}
+                    className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                    aria-label="Tout selectionner"
+                  />
+                </th>
                 {[
                   { key: 'name', label: t("recipes.colName") },
                   { key: 'category', label: t("recipes.colCategory") },
@@ -1009,9 +1089,18 @@ export default function Recipes() {
             </thead>
             <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {sortedFiltered.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">{recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}</td></tr>
+                <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">{recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}</td></tr>
               ) : sortedFiltered.map((recipe) => (
-                <tr key={recipe.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+                <tr key={recipe.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors ${selectedRecipeIds.has(recipe.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedRecipeIds.has(recipe.id)}
+                      onChange={() => toggleSelectRecipe(recipe.id)}
+                      className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                      aria-label={`Selectionner ${recipe.name}`}
+                    />
+                  </td>
                   <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">{recipe.name}</td>
                   <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{recipe.category}</td>
                   <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.sellingPrice.toFixed(2)}&euro;</td>
@@ -1055,7 +1144,18 @@ export default function Recipes() {
           filtered.map((recipe) => {
             const allergens = getRecipeAllergens(recipe);
             return (
-            <div key={recipe.id} className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden group">
+            <div key={recipe.id} className={`bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}>
+              {/* Bulk select checkbox */}
+              <div className="absolute top-2 left-2 z-10">
+                <input
+                  type="checkbox"
+                  checked={selectedRecipeIds.has(recipe.id)}
+                  onChange={() => toggleSelectRecipe(recipe.id)}
+                  className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity data-[checked]:opacity-100"
+                  style={selectedRecipeIds.has(recipe.id) ? { opacity: 1 } : undefined}
+                  aria-label={`Selectionner ${recipe.name}`}
+                />
+              </div>
               {/* Photo placeholder */}
               <RecipePhotoPlaceholder category={recipe.category} />
 
@@ -1122,6 +1222,60 @@ export default function Recipes() {
           })
         )}
       </div>
+      )}
+
+      {/* ── Bulk Actions Floating Bar (Recipes) ──────────────────────── */}
+      {selectedRecipeIds.size > 0 && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-6 py-3 flex items-center gap-4">
+          <span className="text-sm font-medium flex items-center gap-2">
+            <CheckSquare className="w-4 h-4" />
+            {selectedRecipeIds.size} selectionne{selectedRecipeIds.size > 1 ? 's' : ''}
+          </span>
+          <div className="w-px h-6 bg-white/20 dark:bg-black/20" />
+
+          {/* Bulk delete */}
+          <button
+            onClick={bulkDeleteRecipes}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            Supprimer ({selectedRecipeIds.size})
+          </button>
+
+          {/* Bulk change category */}
+          <div className="relative">
+            <button
+              onClick={() => setBulkRecipeCategoryOpen(!bulkRecipeCategoryOpen)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+            >
+              <Tag className="w-4 h-4" />
+              Changer categorie
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            {bulkRecipeCategoryOpen && (
+              <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-56 overflow-y-auto">
+                {RECIPE_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => bulkChangeRecipeCategory(cat)}
+                    className="w-full text-left px-3 py-2 text-sm text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Close selection */}
+          <button
+            onClick={() => { setSelectedRecipeIds(new Set()); setBulkRecipeCategoryOpen(false); }}
+            className="p-1.5 rounded-lg hover:bg-white/10 dark:hover:bg-black/10 transition-colors ml-1"
+            aria-label="Fermer la selection"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       )}
 
       {/* Recipe Form Modal */}

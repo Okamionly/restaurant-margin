@@ -13,6 +13,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import IngredientAvatar from '../components/IngredientAvatar';
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 
 // ── Price alert helpers (localStorage) ─────────────────────────────────
 interface PriceAlert {
@@ -504,7 +505,7 @@ export default function Ingredients() {
     if (!weighTarget) return;
     try {
       const valueStr = weighTarget.pricePerUnit > 0
-        ? ` (${(data.weight * weighTarget.pricePerUnit).toFixed(2)} €)`
+        ? ` (${formatCurrency(data.weight * weighTarget.pricePerUnit)})`
         : '';
       // Find existing inventory item for this ingredient
       const invItem = inventoryItems.find(i => i.ingredientId === weighTarget.id);
@@ -631,7 +632,7 @@ export default function Ingredients() {
           </div>
           <div>
             <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.avgPrice')}</p>
-            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} &euro;</p>
+            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
@@ -755,7 +756,7 @@ export default function Ingredients() {
                       className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors group"
                       title="Voir l'historique des prix"
                     >
-                      {ing.pricePerUnit.toFixed(2)} &euro;
+                      {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
                       <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                       {getAlertForIngredient(ing.id) !== null && (
                         <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
@@ -1001,7 +1002,7 @@ export default function Ingredients() {
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-[#111111] dark:text-white">{ing.name}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.category} - {ing.pricePerUnit.toFixed(2)}&euro;/{ing.unit}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.category} - {ing.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ing.unit}</span>
                         </div>
                         {ing.supplier && <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{t('ingredients.supplierPrefix')}{ing.supplier}</div>}
                       </button>
@@ -1022,14 +1023,14 @@ export default function Ingredients() {
                       >
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-[#111111] dark:text-white">{product.name}</span>
-                          <span className="text-xs font-semibold text-[#111111] dark:text-white">{product.prixMoy.toFixed(2)}&euro;/{product.unit}</span>
+                          <span className="text-xs font-semibold text-[#111111] dark:text-white">{product.prixMoy.toFixed(2)}{getCurrencySymbol()}/{product.unit}</span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{product.category}</span>
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">|</span>
-                          <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}&euro;</span>
+                          <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}{getCurrencySymbol()}</span>
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">—</span>
-                          <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}&euro;</span>
+                          <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}{getCurrencySymbol()}</span>
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">{product.fournisseurs.join(', ')}</span>
                         </div>
                       </button>
@@ -1341,20 +1342,20 @@ export default function Ingredients() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
                   <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Min</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.minPrice.toFixed(2)} &euro;</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.minPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
                   <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Max</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.maxPrice.toFixed(2)} &euro;</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.maxPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
                   <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Moyenne</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.avgPrice.toFixed(2)} &euro;</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
                 </div>
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
                   <p className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] font-semibold">Actuel</p>
                   <div className="flex items-center gap-1.5">
-                    <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.currentPrice.toFixed(2)} &euro;</p>
+                    <p className="text-lg font-bold text-[#111111] dark:text-white">{trackerData.currentPrice.toFixed(2)} {getCurrencySymbol()}</p>
                     {trackerData.trend === 'up' && <TrendingUp className="w-4 h-4 text-red-500" />}
                     {trackerData.trend === 'down' && <TrendingDown className="w-4 h-4 text-emerald-500" />}
                     {trackerData.trend === 'stable' && <Minus className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
@@ -1416,7 +1417,7 @@ export default function Ingredients() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className={`text-sm font-mono ${isCheapest ? 'font-bold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
-                              {sp.price.toFixed(2)} &euro;
+                              {sp.price.toFixed(2)} {getCurrencySymbol()}
                             </span>
                             {!isCheapest && pctDiff > 0 && (
                               <span className="text-[10px] text-red-500 font-semibold">+{pctDiff.toFixed(1)}%</span>
@@ -1447,7 +1448,7 @@ export default function Ingredients() {
                   onChange={(e) => setAlertInput(e.target.value)}
                   placeholder={`Ex: ${(trackerIngredient.pricePerUnit * 1.1).toFixed(2)} \u20AC`}
                 />
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">&euro;/{trackerIngredient.unit}</span>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{getCurrencySymbol()}/{trackerIngredient.unit}</span>
                 <button
                   onClick={saveAlertThreshold}
                   className="btn-primary text-sm px-4"

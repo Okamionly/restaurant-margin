@@ -550,6 +550,43 @@ export async function deleteInventoryItem(id: number): Promise<void> {
   });
 }
 
+// --- Auto-Reorder ---
+
+export interface AutoReorderItem {
+  ingredientId: number;
+  ingredient: string;
+  currentStock: number;
+  minQuantity: number;
+  unit: string;
+  suggestedQty: number;
+  estimatedCost: number;
+}
+
+export interface AutoReorderGroup {
+  supplierId: number | null;
+  supplier: string;
+  items: AutoReorderItem[];
+  totalCost: number;
+}
+
+export async function fetchAutoReorderSuggestions(): Promise<AutoReorderGroup[]> {
+  const res = await fetch(`${API_BASE}/inventory/auto-reorder`, { headers: authHeaders() });
+  return handleResponse<AutoReorderGroup[]>(res);
+}
+
+export async function confirmAutoReorder(orders: {
+  supplier: string;
+  supplierId?: number | null;
+  items: { ingredientId: number; productName: string; quantity: number; unit: string; unitPrice: number }[];
+}[]): Promise<{ orderIds: number[]; count: number }> {
+  const res = await fetch(`${API_BASE}/inventory/auto-reorder/confirm`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ orders }),
+  });
+  return handleResponse<{ orderIds: number[]; count: number }>(res);
+}
+
 // --- Waste ---
 
 export async function createWasteLog(data: {

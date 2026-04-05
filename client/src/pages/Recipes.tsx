@@ -12,6 +12,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type RecipeTemplate } from '../data/recipeTemplates';
 import { trackEvent } from '../utils/analytics';
+import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 
 // ── Unit conversion divisor ─────────────────────────────────────────────
 // pricePerUnit is ALWAYS per the bulk unit (kg for weight, L for volume).
@@ -322,7 +323,7 @@ function IngredientCombobox({
                 }}
               >
                 <span className="text-[#111111] dark:text-white">{i.name}</span>
-                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{i.pricePerUnit.toFixed(2)}&euro;/{i.unit}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{i.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{i.unit}</span>
               </button>
             ))
           ) : null}
@@ -1164,8 +1165,8 @@ export default function Recipes() {
                   </td>
                   <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">{recipe.name}</td>
                   <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{recipe.category}</td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.sellingPrice.toFixed(2)}&euro;</td>
-                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.margin.costPerPortion.toFixed(2)}&euro;</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</td>
+                  <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</td>
                   <td className="px-4 py-3"><MarginBadge percent={recipe.margin.marginPercent} /></td>
                   <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">
                     {recipe.margin.coefficient.toFixed(2)}
@@ -1234,11 +1235,11 @@ export default function Recipes() {
                 <div className="grid grid-cols-3 gap-2 text-center mb-3">
                   <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
                     <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.sale")}</div>
-                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}&euro;</div>
+                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
                   </div>
                   <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
                     <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.cost")}</div>
-                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}&euro;</div>
+                    <div className="text-sm font-bold text-[#111111] dark:text-white">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
                   </div>
                   <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
                     <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.margin")}</div>
@@ -1405,7 +1406,7 @@ export default function Recipes() {
                         </span>
                       </div>
                       <span className="text-lg font-bold font-mono text-[#111111] dark:text-white ml-2 flex-shrink-0">
-                        {tpl.suggestedSellingPrice}&euro;
+                        {tpl.suggestedSellingPrice}{getCurrencySymbol()}
                       </span>
                     </div>
                     <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2">{tpl.description}</p>
@@ -1429,7 +1430,7 @@ export default function Recipes() {
                     {preview.foundCount > 0 && (
                       <div className="flex items-center gap-3 mt-2 text-xs">
                         <span className="text-[#6B7280] dark:text-[#A3A3A3]">
-                          Cout estime : <strong className="font-mono">{preview.costPerPortion.toFixed(2)}&euro;</strong>
+                          Cout estime : <strong className="font-mono">{preview.costPerPortion.toFixed(2)}{getCurrencySymbol()}</strong>
                         </span>
                         <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600 dark:text-green-400' : preview.margin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                           Marge : {preview.margin.toFixed(0)}%
@@ -1527,7 +1528,7 @@ export default function Recipes() {
                             <span className="font-medium text-[#111111] dark:text-white">{tpl.name}</span>
                             <span className="ml-2 text-xs text-[#9CA3AF] dark:text-[#737373]">{tpl.category}</span>
                           </div>
-                          <span className="text-sm font-mono text-[#9CA3AF] dark:text-[#737373]">{tpl.suggestedSellingPrice} &euro;</span>
+                          <span className="text-sm font-mono text-[#9CA3AF] dark:text-[#737373]">{tpl.suggestedSellingPrice} {getCurrencySymbol()}</span>
                         </div>
                         <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{tpl.description}</div>
                         {/* Preview card with cost/margin estimates */}
@@ -1538,7 +1539,7 @@ export default function Recipes() {
                           {preview.foundCount > 0 && (
                             <>
                               <span className="text-[#9CA3AF] dark:text-[#737373]">
-                                {t("recipes.estimatedCost")} : {preview.costPerPortion.toFixed(2)}&euro;
+                                {t("recipes.estimatedCost")} : {preview.costPerPortion.toFixed(2)}{getCurrencySymbol()}
                               </span>
                               <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600' : preview.margin >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                                 {t("recipes.estimatedMargin")} : {preview.margin.toFixed(0)}%
@@ -1605,7 +1606,7 @@ export default function Recipes() {
                           </div>
                           {s.priceMin != null && s.priceMax != null ? (
                             <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-                              {'📊'} Marche : {s.priceMin.toFixed(2)}-{s.priceMax.toFixed(2)}&euro;/{s.unit}
+                              {'📊'} Marche : {s.priceMin.toFixed(2)}-{s.priceMax.toFixed(2)}{getCurrencySymbol()}/{s.unit}
                               {s.supplier && ` (${s.supplier})`}
                               {s.trend === 'baisse' && <span className="text-emerald-400 ml-1">{'↘'} {s.trendDetail}</span>}
                               {s.trend === 'hausse' && <span className="text-red-400 ml-1">{'↗'} {s.trendDetail}</span>}
@@ -1617,7 +1618,7 @@ export default function Recipes() {
                         </div>
                         {s.marketPrice != null && (
                           <span className="text-sm text-[#111111] dark:text-white font-semibold flex-shrink-0">
-                            {s.marketPrice.toFixed(2)}&euro;
+                            {s.marketPrice.toFixed(2)}{getCurrencySymbol()}
                           </span>
                         )}
                       </label>
@@ -1735,21 +1736,21 @@ export default function Recipes() {
             <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
               <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.materialCost")}</span>
-                <strong className="font-mono">{liveCost.toFixed(2)} &euro;</strong>
+                <strong className="font-mono">{liveCost.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
               <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.costPerPortion")}</span>
-                <strong className="font-mono">{liveCostPerPortion.toFixed(2)} &euro;</strong>
+                <strong className="font-mono">{liveCostPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
               {liveLaborPerPortion > 0 && (
                 <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                   <span>{t("recipes.laborPerPortion")}</span>
-                  <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} &euro;</strong>
+                  <strong className="font-mono">{liveLaborPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
                 </div>
               )}
               <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.totalPerPortion")}</span>
-                <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} &euro;</strong>
+                <strong className="font-mono">{liveTotalPerPortion.toFixed(2)} {getCurrencySymbol()}</strong>
               </div>
             </div>
             {/* Suggested price based on coefficient */}
@@ -1807,7 +1808,7 @@ export default function Recipes() {
                   onClick={() => setForm(prev => ({ ...prev, sellingPrice: liveSuggestedPrice.toFixed(2) }))}
                   title="Appliquer comme prix de vente"
                 >
-                  {liveSuggestedPrice.toFixed(2)} &euro;
+                  {liveSuggestedPrice.toFixed(2)} {getCurrencySymbol()}
                 </button>
               </div>
             )}
@@ -1953,9 +1954,9 @@ export default function Recipes() {
                         />
                         <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-4">%</span>
                         <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">
-                          {unitPrice > 0 && <>{unitPrice.toFixed(2)}&euro;/{unitLabel}</>}
+                          {unitPrice > 0 && <>{unitPrice.toFixed(2)}{getCurrencySymbol()}/{unitLabel}</>}
                         </span>
-                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{lineTotal.toFixed(2)} &euro;</span>
+                        <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
                       </div>
                     </div>
                   );
@@ -1964,7 +1965,7 @@ export default function Recipes() {
                 {/* Running total of food cost */}
                 <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                   <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t("recipes.materialTotal")}</span>
-                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{liveCost.toFixed(2)} &euro;</span>
+                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{liveCost.toFixed(2)} {getCurrencySymbol()}</span>
                 </div>
               </div>
             )}

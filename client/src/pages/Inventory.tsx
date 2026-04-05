@@ -2,13 +2,15 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
   ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
-  PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash, ScanBarcode, Camera, XOctagon
+  PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash, ScanBarcode, Camera, XOctagon,
+  ShoppingCart, ChevronDown, ChevronUp
 } from 'lucide-react';
 import {
   fetchInventory, fetchInventoryAlerts, fetchInventoryValue, fetchInventorySuggestions,
   addToInventory, updateInventoryItem, restockInventoryItem, deleteInventoryItem,
-  createWasteLog, fetchIngredients
+  createWasteLog, fetchIngredients, fetchAutoReorderSuggestions, confirmAutoReorder
 } from '../services/api';
+import type { AutoReorderGroup } from '../services/api';
 import type { InventoryItem, InventoryValue, Ingredient } from '../types';
 
 // ── BarcodeDetector type declaration for Web API ────────
@@ -174,6 +176,15 @@ export default function Inventory() {
   const streamRef = useRef<MediaStream | null>(null);
   const scanIntervalRef = useRef<number | null>(null);
 
+  // Auto-reorder
+  const [showReorderModal, setShowReorderModal] = useState(false);
+  const [reorderGroups, setReorderGroups] = useState<AutoReorderGroup[]>([]);
+  const [reorderLoading, setReorderLoading] = useState(false);
+  const [reorderConfirming, setReorderConfirming] = useState(false);
+  const [editedQuantities, setEditedQuantities] = useState<Record<string, number>>({});
+  const [expandedSuppliers, setExpandedSuppliers] = useState<Set<string>>(new Set());
+  const [reorderBelowCount, setReorderBelowCount] = useState(0);
+
   // Forms
   const [addForm, setAddForm] = useState({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' as LocationType });
   const [restockForm, setRestockForm] = useState({ id: 0, name: '', quantity: '' });
@@ -214,6 +225,12 @@ export default function Inventory() {
   // Compute alert counts
   const criticalCount = useMemo(() => items.filter(i => i.currentStock <= 0).length, [items]);
   const lowCount = useMemo(() => items.filter(i => i.currentStock > 0 && i.currentStock < i.minStock).length, [items]);
+
+  // Compute below-minimum count for auto-reorder badge
+  useEffect(() => {
+    const belowMin = items.filter(i => i.currentStock < i.minStock && i.minStock > 0).length;
+    setReorderBelowCount(belowMin);
+  }, [items]);
 
   // Filtered and sorted items
   const filteredItems = useMemo(() => {
@@ -414,6 +431,110 @@ export default function Inventory() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour';
       showToast(message, 'error');
+    }
+  }
+
+  // ── Auto-Reorder ─────────────────────────────────────────────────
+  async function openReorderModal() {
+    setShowReorderModal(true);
+    setReorderLoading(true);
+    setEditedQuantities({});
+    setExpandedSuppliers(new Set());
+    try {
+      const groups = await fetchAutoReorderSuggestions();
+      setReorderGroups(groups);
+      // Expand all suppliers by default
+      setExpandedSuppliers(new Set(groups.map(g => g.supplier)));
+      // Initialize edited quantities from suggestions
+      const qtyMap: Record<string, number> = {};
+      for (const group of groups) {
+        for (const item of group.items) {
+          qtyMap[`${group.supplier}-${item.ingredientId}`] = item.suggestedQty;
+        }
+      }
+      setEditedQuantities(qtyMap);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
+    } finally {
+      setReorderLoading(false);
+    }
+  }
+
+  function getEditedQty(supplier: string, ingredientId: number): number {
+    const key = `${supplier}-${ingredientId}`;
+    return editedQuantities[key] ?? 0;
+  }
+
+  function setEditedQty(supplier: string, ingredientId: number, qty: number) {
+    const key = `${supplier}-${ingredientId}`;
+    setEditedQuantities(prev => ({ ...prev, [key]: Math.max(0, qty) }));
+  }
+
+  function getGroupEstimatedCost(group: AutoReorderGroup): number {
+    let total = 0;
+    for (const item of group.items) {
+      const qty = getEditedQty(group.supplier, item.ingredientId);
+      const ratio = item.suggestedQty > 0 ? qty / item.suggestedQty : 0;
+      total += item.estimatedCost * ratio;
+    }
+    return Math.round(total * 100) / 100;
+  }
+
+  function toggleSupplier(supplier: string) {
+    setExpandedSuppliers(prev => {
+      const next = new Set(prev);
+      if (next.has(supplier)) next.delete(supplier);
+      else next.add(supplier);
+      return next;
+    });
+  }
+
+  async function handleConfirmReorder(supplierFilter?: string) {
+    setReorderConfirming(true);
+    try {
+      const groupsToOrder = supplierFilter
+        ? reorderGroups.filter(g => g.supplier === supplierFilter)
+        : reorderGroups;
+
+      const orders = groupsToOrder.map(group => ({
+        supplier: group.supplier,
+        supplierId: group.supplierId,
+        items: group.items
+          .filter(item => getEditedQty(group.supplier, item.ingredientId) > 0)
+          .map(item => {
+            const qty = getEditedQty(group.supplier, item.ingredientId);
+            const unitPrice = item.suggestedQty > 0 ? (item.estimatedCost / item.suggestedQty) : 0;
+            return {
+              ingredientId: item.ingredientId,
+              productName: item.ingredient,
+              quantity: qty,
+              unit: item.unit,
+              unitPrice: Math.round(unitPrice * 100) / 100,
+            };
+          }),
+      })).filter(o => o.items.length > 0);
+
+      if (orders.length === 0) {
+        showToast('Aucun article avec une quantité > 0', 'error');
+        setReorderConfirming(false);
+        return;
+      }
+
+      const result = await confirmAutoReorder(orders);
+      showToast(`${result.count} commande${result.count > 1 ? 's' : ''} créée${result.count > 1 ? 's' : ''}`, 'success');
+
+      if (supplierFilter) {
+        // Remove ordered supplier from the list
+        setReorderGroups(prev => prev.filter(g => g.supplier !== supplierFilter));
+      } else {
+        setShowReorderModal(false);
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
+    } finally {
+      setReorderConfirming(false);
     }
   }
 
@@ -678,6 +799,14 @@ export default function Inventory() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button onClick={openReorderModal} className="relative flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+            <ShoppingCart className="w-4 h-4" /> Réappro auto
+            {reorderBelowCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center px-1 text-[11px] font-bold rounded-full bg-red-600 text-white">
+                {reorderBelowCount}
+              </span>
+            )}
+          </button>
           <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
           </button>
@@ -1347,6 +1476,136 @@ export default function Inventory() {
           </div>
         </div>
       )}
+
+      {/* Auto-Reorder Modal */}
+      <Modal isOpen={showReorderModal} onClose={() => setShowReorderModal(false)} title="Réapprovisionnement automatique" className="max-w-3xl">
+        {reorderLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
+          </div>
+        ) : reorderGroups.length === 0 ? (
+          <div className="text-center py-12">
+            <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-green-600 dark:text-green-400" />
+            <p className="text-lg font-semibold">Tous les stocks sont suffisants</p>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">Aucun article en dessous du seuil minimum</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Summary */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl">
+              <div>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Total estimé</span>
+                <p className="text-xl font-bold">
+                  {reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0).toFixed(2)} EUR
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{reorderGroups.length} fournisseur{reorderGroups.length > 1 ? 's' : ''}</span>
+                <p className="text-sm font-medium">{reorderGroups.reduce((sum, g) => sum + g.items.length, 0)} article{reorderGroups.reduce((sum, g) => sum + g.items.length, 0) > 1 ? 's' : ''}</p>
+              </div>
+            </div>
+
+            {/* Per-supplier groups */}
+            {reorderGroups.map(group => (
+              <div key={group.supplier} className="border dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+                {/* Supplier header */}
+                <button
+                  onClick={() => toggleSupplier(group.supplier)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-[#0A0A0A] hover:bg-[#F9FAFB] dark:hover:bg-[#111111] transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#111111] dark:bg-white text-white dark:text-black flex items-center justify-center text-sm font-bold">
+                      {group.supplier.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-sm">{group.supplier}</p>
+                      <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{group.items.length} article{group.items.length > 1 ? 's' : ''}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold">{getGroupEstimatedCost(group).toFixed(2)} EUR</span>
+                    {expandedSuppliers.has(group.supplier) ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+                  </div>
+                </button>
+
+                {/* Items table */}
+                {expandedSuppliers.has(group.supplier) && (
+                  <div className="border-t dark:border-[#1A1A1A]">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-[#9CA3AF] dark:text-[#737373] text-xs border-b dark:border-[#1A1A1A]">
+                          <th className="text-left px-4 py-2 font-medium">Ingredient</th>
+                          <th className="text-right px-2 py-2 font-medium">Stock</th>
+                          <th className="text-right px-2 py-2 font-medium">Min</th>
+                          <th className="text-center px-2 py-2 font-medium">Qte commande</th>
+                          <th className="text-right px-4 py-2 font-medium">Cout est.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.items.map(item => {
+                          const editedQty = getEditedQty(group.supplier, item.ingredientId);
+                          const ratio = item.suggestedQty > 0 ? editedQty / item.suggestedQty : 0;
+                          const cost = item.estimatedCost * ratio;
+                          return (
+                            <tr key={item.ingredientId} className="border-b dark:border-[#1A1A1A] last:border-b-0">
+                              <td className="px-4 py-2.5">
+                                <span className="font-medium">{item.ingredient}</span>
+                                <span className="text-[#9CA3AF] dark:text-[#737373] ml-1 text-xs">({item.unit})</span>
+                              </td>
+                              <td className="text-right px-2 py-2.5">
+                                <span className={item.currentStock <= 0 ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-amber-600 dark:text-amber-400'}>
+                                  {item.currentStock}
+                                </span>
+                              </td>
+                              <td className="text-right px-2 py-2.5 text-[#9CA3AF] dark:text-[#737373]">{item.minQuantity}</td>
+                              <td className="text-center px-2 py-2.5">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  step="0.1"
+                                  value={editedQty}
+                                  onChange={e => setEditedQty(group.supplier, item.ingredientId, parseFloat(e.target.value) || 0)}
+                                  className="w-20 text-center px-2 py-1 rounded-lg border dark:border-[#333333] bg-white dark:bg-[#171717] text-sm font-medium focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                                />
+                              </td>
+                              <td className="text-right px-4 py-2.5 font-medium">{cost.toFixed(2)} EUR</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+
+                    {/* Per-supplier order button */}
+                    <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t dark:border-[#1A1A1A] flex items-center justify-between">
+                      <span className="text-sm font-semibold">Sous-total : {getGroupEstimatedCost(group).toFixed(2)} EUR</span>
+                      <button
+                        onClick={() => handleConfirmReorder(group.supplier)}
+                        disabled={reorderConfirming}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+                      >
+                        {reorderConfirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
+                        Commander
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Global order all button */}
+            <div className="pt-2 border-t dark:border-[#1A1A1A]">
+              <button
+                onClick={() => handleConfirmReorder()}
+                disabled={reorderConfirming}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
+              >
+                {reorderConfirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
+                Commander tout ({reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0).toFixed(2)} EUR)
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {/* Delete Confirm */}
       <ConfirmDialog

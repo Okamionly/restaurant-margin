@@ -302,7 +302,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function Settings() {
-  const { t } = useTranslation();
+  const { t, locale, setLocale } = useTranslation();
   const { user } = useAuth();
   const { showToast } = useToast();
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
@@ -1541,46 +1541,68 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Language, Currency, Date format */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="label flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5" />
-                  Langue
-                </label>
-                <select
-                  className="input w-full"
-                  value={settings.language}
-                  onChange={(e) => handleChange('language', e.target.value)}
-                >
-                  <option value="fr">Francais</option>
-                </select>
-              </div>
-              <div>
-                <label className="label">Devise</label>
-                <select
-                  className="input w-full"
-                  value={settings.currency}
-                  onChange={(e) => handleChange('currency', e.target.value)}
-                >
-                  <option value="EUR">Euro (EUR)</option>
-                  <option value="USD">Dollar ($)</option>
-                  <option value="GBP">Livre (GBP)</option>
-                  <option value="CHF">Franc suisse (CHF)</option>
-                  <option value="MAD">Dirham (MAD)</option>
-                </select>
-              </div>
-              <div>
-                <label className="label">Format de date</label>
-                <select
-                  className="input w-full"
-                  value={settings.dateFormat}
-                  onChange={(e) => handleChange('dateFormat', e.target.value)}
-                >
-                  <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                  <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                  <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                </select>
+            {/* ── Langue & Devise ── */}
+            <div className="pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                Langue & Devise
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Language */}
+                <div>
+                  <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">
+                    Langue
+                  </label>
+                  <select
+                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                    value={settings.language}
+                    onChange={(e) => {
+                      handleChange('language', e.target.value);
+                      setLocale(e.target.value);
+                    }}
+                  >
+                    <option value="fr">Fran\u00e7ais</option>
+                    <option value="en">English</option>
+                    <option value="es">Espa\u00f1ol</option>
+                    <option value="de">Deutsch</option>
+                    <option value="ar">\u0627\u0644\u0639\u0631\u0628\u064a\u0629</option>
+                  </select>
+                </div>
+
+                {/* Currency */}
+                <div>
+                  <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">
+                    Devise
+                  </label>
+                  <select
+                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                    value={settings.currency}
+                    onChange={(e) => handleChange('currency', e.target.value)}
+                  >
+                    <option value="EUR">EUR (\u20ac)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="GBP">GBP (\u00a3)</option>
+                    <option value="MAD">MAD (DH)</option>
+                    <option value="CHF">CHF (CHF)</option>
+                  </select>
+                </div>
+
+                {/* Date format */}
+                <div>
+                  <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5 block">
+                    Format de date
+                  </label>
+                  <select
+                    className="w-full px-3 py-2.5 text-sm bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white focus:border-[#111111] dark:focus:border-white focus:ring-1 focus:ring-[#111111] dark:focus:ring-white outline-none transition-colors"
+                    value={settings.dateFormat}
+                    onChange={(e) => handleChange('dateFormat', e.target.value)}
+                  >
+                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                  </select>
+                </div>
               </div>
             </div>
 

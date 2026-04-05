@@ -4,6 +4,7 @@ import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, U
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, getRecipeShareLink } from '../services/api';
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
+import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 
 // ─── Category emoji map ───
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ───
@@ -473,7 +474,7 @@ export default function RecipeDetail() {
           <div className="flex items-center gap-3 mb-2">
             <SlidersHorizontal className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
             <span className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373]">Simulateur de prix</span>
-            <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 ml-auto">{(simPrice ?? 0).toFixed(2)} &euro;</span>
+            <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 ml-auto">{(simPrice ?? 0).toFixed(2)} {getCurrencySymbol()}</span>
           </div>
           <input
             type="range"
@@ -485,13 +486,13 @@ export default function RecipeDetail() {
             className="w-full h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-indigo-600"
           />
           <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
-            <span>Coût : {m.totalCostPerPortion.toFixed(2)} &euro;</span>
-            <span>Actuel : {recipe.sellingPrice.toFixed(2)} &euro;</span>
-            <span>Max : {(recipe.sellingPrice * 2.5).toFixed(2)} &euro;</span>
+            <span>Coût : {m.totalCostPerPortion.toFixed(2)} {getCurrencySymbol()}</span>
+            <span>Actuel : {recipe.sellingPrice.toFixed(2)} {getCurrencySymbol()}</span>
+            <span>Max : {(recipe.sellingPrice * 2.5).toFixed(2)} {getCurrencySymbol()}</span>
           </div>
           {simData && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
-              <SimCard label="Marge" value={`${simData.margin.toFixed(2)} €`} highlight={simData.margin >= m.marginAmount} />
+              <SimCard label="Marge" value={formatCurrency(simData.margin)} highlight={simData.margin >= m.marginAmount} />
               <SimCard label="Marge %" value={`${simData.marginPct.toFixed(1)}%`} highlight={simData.marginPct >= 70} warn={simData.marginPct < 60} />
               <SimCard label="Coefficient" value={simData.coeff.toFixed(2)} highlight={simData.coeff >= m.coefficient} />
             </div>
@@ -543,7 +544,7 @@ export default function RecipeDetail() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-black text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">&euro;</span></div>
+              <div className="text-2xl font-black text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">{getCurrencySymbol()}</span></div>
               <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Prix de vente</div>
             </div>
           </div>
@@ -600,7 +601,7 @@ export default function RecipeDetail() {
               <tfoot>
                 <tr className="border-t-2 border-[#9CA3AF] dark:border-[#6B7280] font-bold text-[#111111] dark:text-white">
                   <td colSpan={5} className="py-2 pl-1 text-xs uppercase tracking-wide">Coût matière total</td>
-                  <td className="py-2 text-right font-mono pr-1 text-sm">{(m.foodCost * portionMultiplier).toFixed(2)} &euro;</td>
+                  <td className="py-2 text-right font-mono pr-1 text-sm">{(m.foodCost * portionMultiplier).toFixed(2)} {getCurrencySymbol()}</td>
                 </tr>
               </tfoot>
             </table>
@@ -613,13 +614,13 @@ export default function RecipeDetail() {
             <div>
               <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Indicateurs clés</h2>
               <div className="border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg overflow-hidden text-[11px]">
-                <MetricRow label="Prix de vente" value={`${recipe.sellingPrice.toFixed(2)} €`} />
-                <MetricRow label="Coût matière / portion" value={`${m.costPerPortion.toFixed(2)} €`} sub={`(${foodCostPct.toFixed(1)}%)`} />
+                <MetricRow label="Prix de vente" value={formatCurrency(recipe.sellingPrice)} />
+                <MetricRow label="Coût matière / portion" value={`${m.costPerPortion.toFixed(2)} ${getCurrencySymbol()}`} sub={`(${foodCostPct.toFixed(1)}%)`} />
                 {m.laborCostPerPortion > 0 && (
-                  <MetricRow label="Coût M.O. / portion" value={`${m.laborCostPerPortion.toFixed(2)} €`} />
+                  <MetricRow label="Coût M.O. / portion" value={`${m.laborCostPerPortion.toFixed(2)} ${getCurrencySymbol()}`} />
                 )}
-                <MetricRow label="Coût total / portion" value={`${m.totalCostPerPortion.toFixed(2)} €`} bold />
-                <MetricRow label="Marge brute" value={`${m.marginAmount.toFixed(2)} €`} valueClass={marginColor} />
+                <MetricRow label="Coût total / portion" value={`${m.totalCostPerPortion.toFixed(2)} ${getCurrencySymbol()}`} bold />
+                <MetricRow label="Marge brute" value={`${m.marginAmount.toFixed(2)} ${getCurrencySymbol()}`} valueClass={marginColor} />
                 <MetricRow label="Marge %" value={`${m.marginPercent.toFixed(1)}%`} valueClass={marginColor} bold />
                 <MetricRow label="Coefficient" value={m.coefficient.toFixed(2)} last />
               </div>
@@ -647,7 +648,7 @@ export default function RecipeDetail() {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(value: unknown) => `${Number(value).toFixed(2)} €`}
+                        formatter={(value: unknown) => `${Number(value).toFixed(2)} ${getCurrencySymbol()}`}
                         contentStyle={{ borderRadius: '6px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', fontSize: '11px' }}
                       />
                     </PieChart>
@@ -686,7 +687,7 @@ export default function RecipeDetail() {
                     <div key={i} className="flex items-center gap-1.5">
                       <span className="w-2.5 h-2.5 rounded-sm inline-block flex-shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
                       <span className="text-[#6B7280] dark:text-[#737373] flex-1">{d.name}</span>
-                      <span className="font-mono font-bold text-[#111111] dark:text-[#E5E5E5]">{d.value.toFixed(2)} &euro;</span>
+                      <span className="font-mono font-bold text-[#111111] dark:text-[#E5E5E5]">{d.value.toFixed(2)} {getCurrencySymbol()}</span>
                     </div>
                   ))}
                 </div>
@@ -1001,18 +1002,18 @@ export default function RecipeDetail() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A] text-center">
                   <div className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium mb-1">Cout actuel</div>
-                  <div className="text-2xl font-bold text-red-400">{optimizationResult.optimization.currentTotalCost.toFixed(2)} &euro;</div>
-                  <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} &euro;/portion</div>
+                  <div className="text-2xl font-bold text-red-400">{optimizationResult.optimization.currentTotalCost.toFixed(2)} {getCurrencySymbol()}</div>
+                  <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{optimizationResult.costPerPortion.toFixed(2)} {getCurrencySymbol()}/portion</div>
                 </div>
                 <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-4 border border-teal-600/50 text-center relative">
                   <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">OPTIMISE</div>
                   <div className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium mb-1">Cout optimise</div>
-                  <div className="text-2xl font-bold text-teal-400">{optimizationResult.optimization.optimizedTotalCost.toFixed(2)} &euro;</div>
-                  <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} &euro;/portion</div>
+                  <div className="text-2xl font-bold text-teal-400">{optimizationResult.optimization.optimizedTotalCost.toFixed(2)} {getCurrencySymbol()}</div>
+                  <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{(optimizationResult.optimization.optimizedTotalCost / (optimizationResult.recipe.nbPortions || 1)).toFixed(2)} {getCurrencySymbol()}/portion</div>
                 </div>
                 <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-4 border border-emerald-600/50 text-center">
                   <div className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium mb-1">Economies</div>
-                  <div className="text-2xl font-bold text-emerald-400">-{optimizationResult.optimization.totalSavingsEuros.toFixed(2)} &euro;</div>
+                  <div className="text-2xl font-bold text-emerald-400">-{optimizationResult.optimization.totalSavingsEuros.toFixed(2)} {getCurrencySymbol()}</div>
                   <div className="text-xs text-emerald-500 mt-0.5 font-semibold">-{optimizationResult.optimization.totalSavingsPercent.toFixed(1)}%</div>
                 </div>
               </div>
@@ -1074,9 +1075,9 @@ export default function RecipeDetail() {
                           <div className="text-sm font-semibold text-[#111111] dark:text-white mb-1">{suggestion.ingredientName}</div>
                           <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">{suggestion.suggestion}</p>
                           <div className="flex items-center gap-3 text-xs">
-                            <span className="text-red-400 line-through">{suggestion.currentCost.toFixed(2)} &euro;</span>
+                            <span className="text-red-400 line-through">{suggestion.currentCost.toFixed(2)} {getCurrencySymbol()}</span>
                             <ArrowRight className="w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3]" />
-                            <span className="text-teal-400 font-semibold">{suggestion.estimatedNewCost.toFixed(2)} &euro;</span>
+                            <span className="text-teal-400 font-semibold">{suggestion.estimatedNewCost.toFixed(2)} {getCurrencySymbol()}</span>
                             <span className="text-emerald-400 font-bold">-{suggestion.savingsPercent.toFixed(0)}%</span>
                           </div>
                           {suggestion.reasoning && (

@@ -1527,6 +1527,154 @@ Propose des optimisations concretes et realistes pour reduire le cout de cette r
   }
 });
 
+// ── AI Menu Optimizer (BCG Matrix) ────────────────────────────────────────
+router.post('/optimize-menu', authWithRestaurant, async (req: any, res) => {
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(503).json({ error: 'Service IA non configuré. Ajoutez ANTHROPIC_API_KEY.' });
+    }
+    if (!checkAiRateLimit(req.restaurantId)) {
+      return res.status(429).json({ error: 'Limite IA atteinte (10 requêtes/min). Réessayez dans 1 minute.' });
+    }
+
+    const restaurantId = req.restaurantId;
+
+    // Fetch all recipes with ingredients
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId, deletedAt: null },
+      include: { ingredients: { include: { ingredient: true } } },
+    });
+
+    if (!recipes.length) {
+      return res.status(400).json({ error: 'Aucune recette trouvée. Ajoutez des recettes d\'abord.' });
+    }
+
+    // Fetch sales data (last 30 days)
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+    const sales = await prisma.menuSale.findMany({
+      where: { restaurantId, date: { gte: thirtyDaysAgo } },
+    });
+
+    // Aggregate sales by recipe
+    const salesByRecipe: Record<number, { qty: number; revenue: number }> = {};
+    sales.forEach((s: any) => {
+      if (!salesByRecipe[s.recipeId]) salesByRecipe[s.recipeId] = { qty: 0, revenue: 0 };
+      salesByRecipe[s.recipeId].qty += s.quantity;
+      salesByRecipe[s.recipeId].revenue += s.revenue || 0;
+    });
+
+    const totalSalesQty = Object.values(salesByRecipe).reduce((sum, s) => sum + s.qty, 0);
+
+    // Build recipe data for AI
+    const recipeData = recipes.map((r: any) => {
+      const cost = r.ingredients.reduce((s: number, ri: any) => {
+        return s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit;
+      }, 0);
+      const costPerPortion = cost / (r.nbPortions || 1);
+      const margin = r.sellingPrice - costPerPortion;
+      const marginPercent = r.sellingPrice > 0 ? (margin / r.sellingPrice) * 100 : 0;
+      const salesData = salesByRecipe[r.id] || { qty: 0, revenue: 0 };
+      const popularity = totalSalesQty > 0 ? (salesData.qty / totalSalesQty) * 100 : 0;
+
+      return {
+        id: r.id,
+        name: r.name,
+        category: r.category || 'Non classé',
+        sellingPrice: r.sellingPrice,
+        costPerPortion: +costPerPortion.toFixed(2),
+        margin: +margin.toFixed(2),
+        marginPercent: +marginPercent.toFixed(1),
+        salesQty: salesData.qty,
+        popularity: +popularity.toFixed(1),
+      };
+    });
+
+    const avgMargin = recipeData.reduce((s, r) => s + r.marginPercent, 0) / recipeData.length;
+    const avgPopularity = recipeData.reduce((s, r) => s + r.popularity, 0) / recipeData.length;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 4000,
+      system: `Tu es un expert en ingénierie de menu et optimisation de carte pour la restauration en France. Tu utilises la matrice BCG (Boston Consulting Group) adaptée à la restauration pour classifier les plats.
+
+Les 4 quadrants :
+- STARS (Vedettes) : haute marge + haute popularité → Garder et mettre en avant
+- PUZZLES (Énigmes) : haute marge + faible popularité → Promouvoir (marketing, repositionnement menu)
+- PLOWHORSES (Valeurs sûres) : faible marge + haute popularité → Augmenter les prix ou réduire les coûts
+- DOGS (Poids morts) : faible marge + faible popularité → Retirer ou reformuler complètement
+
+Seuils actuels : marge moyenne = ${avgMargin.toFixed(1)}%, popularité moyenne = ${avgPopularity.toFixed(1)}%
+
+Réponds UNIQUEMENT en JSON valide avec cette structure :
+{
+  "stars": [{"id": number, "name": string, "action": string}],
+  "puzzles": [{"id": number, "name": string, "action": string, "marketingSuggestion": string}],
+  "plowhorses": [{"id": number, "name": string, "action": string, "suggestedPrice": number, "reasoning": string}],
+  "dogs": [{"id": number, "name": string, "action": string, "alternative": string}],
+  "priceAdjustments": [{"id": number, "name": string, "currentPrice": number, "suggestedPrice": number, "reasoning": string}],
+  "menuComposition": {
+    "currentCount": number,
+    "suggestedCount": number,
+    "recommendation": string
+  },
+  "revenueImpact": {
+    "currentMonthlyRevenue": number,
+    "estimatedMonthlyRevenue": number,
+    "percentChange": number,
+    "explanation": string
+  },
+  "summary": string
+}`,
+      messages: [{
+        role: 'user',
+        content: `Voici les données de mon menu (30 derniers jours) :
+
+${recipeData.map(r => `- ${r.name} (id:${r.id}, ${r.category}): prix ${r.sellingPrice}€, coût ${r.costPerPortion}€, marge ${r.marginPercent}%, ${r.salesQty} ventes, popularité ${r.popularity}%`).join('\n')}
+
+Total ventes: ${totalSalesQty}
+Marge moyenne: ${avgMargin.toFixed(1)}%
+Popularité moyenne: ${avgPopularity.toFixed(1)}%
+
+Analyse mon menu et donne-moi des recommandations concrètes d'optimisation avec la matrice BCG.`,
+      }],
+    });
+
+    const text = response.content.filter(b => b.type === 'text').map(b => b.type === 'text' ? b.text : '').join('');
+
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(text);
+      res.json({
+        recipes: recipeData,
+        optimization: parsed,
+        avgMargin: +avgMargin.toFixed(1),
+        avgPopularity: +avgPopularity.toFixed(1),
+        totalSales: totalSalesQty,
+      });
+    } catch {
+      res.json({
+        recipes: recipeData,
+        optimization: {
+          stars: [],
+          puzzles: [],
+          plowhorses: [],
+          dogs: [],
+          priceAdjustments: [],
+          menuComposition: { currentCount: recipes.length, suggestedCount: recipes.length, recommendation: text },
+          revenueImpact: { currentMonthlyRevenue: 0, estimatedMonthlyRevenue: 0, percentChange: 0, explanation: text },
+          summary: text,
+        },
+        avgMargin: +avgMargin.toFixed(1),
+        avgPopularity: +avgPopularity.toFixed(1),
+        totalSales: totalSalesQty,
+      });
+    }
+  } catch (e: any) {
+    console.error('AI optimize-menu error:', e.message);
+    res.status(500).json({ error: 'Service IA temporairement indisponible.' });
+  }
+});
+
 // ── Weekly AI Report ──────────────────────────────────────────────────────
 router.post('/weekly-report', authWithRestaurant, async (req: any, res) => {
   try {

@@ -5122,5 +5122,18 @@
       "limit": 12
     },
     "tool_use_id": "toolu_017eMYAxz15sdN4h8HqKDt72"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "mcp__b9330123-b138-435e-bf59-830456397ec3__execute_sql",
+    "tool_input": {
+      "project_id": "wsrzcgbfekifalgtwmyy",
+      "query": "CREATE TABLE IF NOT EXISTS \"menu_calendar\" (\n  \"id\" SERIAL PRIMARY KEY,\n  \"restaurantId\" INTEGER NOT NULL,\n  \"date\" DATE NOT NULL,\n  \"mealType\" TEXT NOT NULL DEFAULT 'lunch',\n  \"recipeId\" INTEGER NOT NULL REFERENCES \"recipes\"(\"id\"),\n  \"category\" TEXT,\n  \"createdAt\" TIMESTAMP NOT NULL DEFAULT NOW()\n);\nCREATE INDEX IF NOT EXISTS \"idx_menu_calendar\" ON \"menu_calendar\" (\"restaurantId\", \"date\");\nALTER TABLE \"recipes\" ADD COLUMN IF NOT EXISTS \"photos\" TEXT[] DEFAULT '{}';\nALTER TABLE \"recipes\" ADD COLUMN IF NOT EXISTS \"shareToken\" TEXT UNIQUE;\nALTER TABLE \"restaurants\" ADD COLUMN IF NOT EXISTS \"dailyBudget\" DOUBLE PRECISION;\nALTER TABLE \"restaurants\" ADD COLUMN IF NOT EXISTS \"weeklyBudget\" DOUBLE PRECISION;\nALTER TABLE \"restaurants\" ADD COLUMN IF NOT EXISTS \"monthlyBudget\" DOUBLE PRECISION;\nALTER TABLE \"restaurants\" ADD COLUMN IF NOT EXISTS \"budgetEmailAlert\" BOOLEAN NOT NULL DEFAULT false;"
+    },
+    "tool_use_id": "toolu_013XyAmFRioQNDNaRgm4Mqbd"
   }
 ]

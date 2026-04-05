@@ -4,6 +4,7 @@ import {
   Calendar, Award, ArrowUpDown, ArrowUp, ArrowDown, Printer, Upload,
   Loader2, ShoppingBag, DollarSign, Percent, ChefHat,
   RefreshCw, SlidersHorizontal, AlertTriangle, Lightbulb, Shield,
+  Sparkles, TrendingUp, X, Check, Star, Zap,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -520,6 +521,13 @@ export default function MenuEngineering() {
   const [whatIfRecipeId, setWhatIfRecipeId] = useState<number | ''>('');
   const [whatIfPriceAdjust, setWhatIfPriceAdjust] = useState(0); // percentage -30 to +30
 
+  // AI Menu Optimizer
+  const [aiOptimizing, setAiOptimizing] = useState(false);
+  const [aiResult, setAiResult] = useState<any>(null);
+  const [showAiPanel, setShowAiPanel] = useState(false);
+  const [applyingPrices, setApplyingPrices] = useState(false);
+  const matrixRef = useRef<HTMLDivElement>(null);
+
   // ── Fetch data ─────────────────────────────────────────────────────────────
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -699,6 +707,56 @@ export default function MenuEngineering() {
     }
   };
 
+  // ── AI Menu Optimizer ───────────────────────────────────────────────────────
+  const handleOptimizeMenu = async () => {
+    setAiOptimizing(true);
+    try {
+      const res = await fetch(`${API}/api/ai/optimize-menu`, {
+        method: 'POST',
+        headers: authHeaders(),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Erreur IA' }));
+        throw new Error(err.error || 'Erreur IA');
+      }
+      const result = await res.json();
+      setAiResult(result);
+      setShowAiPanel(true);
+      showToast('Analyse IA terminée', 'success');
+      // Scroll to matrix
+      setTimeout(() => matrixRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur IA';
+      showToast(message, 'error');
+    } finally {
+      setAiOptimizing(false);
+    }
+  };
+
+  const handleApplyPrices = async () => {
+    if (!aiResult?.optimization?.priceAdjustments?.length) return;
+    setApplyingPrices(true);
+    let applied = 0;
+    try {
+      for (const adj of aiResult.optimization.priceAdjustments) {
+        if (!adj.suggestedPrice || adj.suggestedPrice === adj.currentPrice) continue;
+        const res = await fetch(`${API}/api/recipes/${adj.id}`, {
+          method: 'PUT',
+          headers: authHeaders(),
+          body: JSON.stringify({ sellingPrice: adj.suggestedPrice }),
+        });
+        if (res.ok) applied++;
+      }
+      showToast(`${applied} prix mis à jour avec succès`, 'success');
+      fetchData(); // Refresh data
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur mise à jour';
+      showToast(message, 'error');
+    } finally {
+      setApplyingPrices(false);
+    }
+  };
+
   // ── Derived data ───────────────────────────────────────────────────────────
   const items = data?.engineering || [];
 
@@ -796,6 +854,14 @@ export default function MenuEngineering() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              onClick={handleOptimizeMenu}
+              disabled={aiOptimizing || !data?.engineering?.length}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {aiOptimizing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              Optimiser avec IA
+            </button>
+            <button
               onClick={() => setShowSalesModal(true)}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl font-medium text-sm shadow-lg shadow-violet-500/25 transition-all"
             >
@@ -862,6 +928,315 @@ export default function MenuEngineering() {
             </div>
           )}
         </div>
+
+        {/* ── AI BCG Matrix & Recommendations ─────────────────────────────── */}
+        {showAiPanel && aiResult && (
+          <div ref={matrixRef} className="space-y-6">
+            {/* Close bar */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#111111] dark:bg-white rounded-xl">
+                  <Sparkles className="w-5 h-5 text-white dark:text-black" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-[#111111] dark:text-white">Matrice BCG — Optimisation IA</h2>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    Basé sur {aiResult.totalSales} ventes · Marge moy. {aiResult.avgMargin}% · Popularité moy. {aiResult.avgPopularity}%
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowAiPanel(false)}
+                className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#171717] rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-[#9CA3AF]" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* ── BCG Matrix Visualization ── */}
+              <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 shadow-sm">
+                <div className="relative w-full" style={{ paddingBottom: '80%' }}>
+                  <div className="absolute inset-0">
+                    {/* Axes */}
+                    <div className="absolute left-8 top-0 bottom-8 w-px bg-[#E5E7EB] dark:bg-[#333333]" />
+                    <div className="absolute left-8 bottom-8 right-0 h-px bg-[#E5E7EB] dark:bg-[#333333]" />
+                    {/* Mid lines (dashed) */}
+                    <div className="absolute left-8 right-0 border-t border-dashed border-[#E5E7EB] dark:border-[#333333]" style={{ top: 'calc(50% - 16px)' }} />
+                    <div className="absolute top-0 bottom-8 border-l border-dashed border-[#E5E7EB] dark:border-[#333333]" style={{ left: 'calc(50% + 16px)' }} />
+
+                    {/* Quadrant labels */}
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ top: '8px', left: 'calc(25% + 16px)', transform: 'translateX(-50%)' }}>
+                      Puzzles
+                    </div>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ top: '8px', left: 'calc(75% + 16px)', transform: 'translateX(-50%)' }}>
+                      Stars
+                    </div>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ bottom: 'calc(50% - 38px)', left: 'calc(25% + 16px)', transform: 'translateX(-50%)' }}>
+                      Dogs
+                    </div>
+                    <div className="absolute text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF] dark:text-[#525252]" style={{ bottom: 'calc(50% - 38px)', left: 'calc(75% + 16px)', transform: 'translateX(-50%)' }}>
+                      Plowhorses
+                    </div>
+
+                    {/* Quadrant backgrounds */}
+                    <div className="absolute bg-blue-50/50 dark:bg-blue-950/10" style={{ top: 0, left: '32px', width: 'calc(50% - 16px)', height: 'calc(50% - 16px)' }} />
+                    <div className="absolute bg-emerald-50/50 dark:bg-emerald-950/10" style={{ top: 0, right: 0, width: 'calc(50% - 16px)', height: 'calc(50% - 16px)' }} />
+                    <div className="absolute bg-red-50/50 dark:bg-red-950/10" style={{ bottom: '32px', left: '32px', width: 'calc(50% - 16px)', height: 'calc(50% - 16px)' }} />
+                    <div className="absolute bg-amber-50/50 dark:bg-amber-950/10" style={{ bottom: '32px', right: 0, width: 'calc(50% - 16px)', height: 'calc(50% - 16px)' }} />
+
+                    {/* Axis labels */}
+                    <div className="absolute text-[9px] font-medium text-[#9CA3AF] dark:text-[#525252] -rotate-90" style={{ left: '-4px', top: '50%', transform: 'rotate(-90deg) translateX(50%)' }}>
+                      MARGE %
+                    </div>
+                    <div className="absolute text-[9px] font-medium text-[#9CA3AF] dark:text-[#525252]" style={{ bottom: '8px', left: '50%', transform: 'translateX(-50%)' }}>
+                      POPULARITE
+                    </div>
+
+                    {/* Recipe dots */}
+                    {(() => {
+                      const recs = aiResult.recipes || [];
+                      const maxMargin = Math.max(...recs.map((r: any) => r.marginPercent), 1);
+                      const maxPop = Math.max(...recs.map((r: any) => r.popularity), 1);
+                      return recs.map((recipe: any) => {
+                        // Normalize to 0-1 range with padding
+                        const xPct = Math.min(Math.max(recipe.popularity / maxPop, 0.05), 0.95);
+                        const yPct = Math.min(Math.max(recipe.marginPercent / maxMargin, 0.05), 0.95);
+
+                        // Chart area: left starts at 32px, bottom starts at 32px
+                        // Use percentage within the drawable area (5% to 95% range)
+                        const leftPct = 5 + xPct * 90; // 5% to 95% of the container
+                        const bottomPct = 5 + yPct * 90;
+
+                        // Determine quadrant color
+                        const isHighMargin = recipe.marginPercent >= aiResult.avgMargin;
+                        const isHighPop = recipe.popularity >= aiResult.avgPopularity;
+                        let dotColor = '#EF4444'; // dogs - red
+                        if (isHighMargin && isHighPop) dotColor = '#10B981'; // stars - green
+                        else if (isHighMargin && !isHighPop) dotColor = '#3B82F6'; // puzzles - blue
+                        else if (!isHighMargin && isHighPop) dotColor = '#F59E0B'; // plowhorses - amber
+
+                        return (
+                          <div
+                            key={recipe.id}
+                            className="absolute group cursor-pointer z-10"
+                            style={{
+                              left: `${leftPct}%`,
+                              bottom: `${bottomPct}%`,
+                              transform: 'translate(-50%, 50%)',
+                            }}
+                          >
+                            <div
+                              className="w-3 h-3 rounded-full border-2 border-white dark:border-[#0A0A0A] shadow-md transition-transform group-hover:scale-150"
+                              style={{ backgroundColor: dotColor }}
+                            />
+                            {/* Tooltip */}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-20">
+                              <div className="font-semibold">{recipe.name}</div>
+                              <div>Marge: {recipe.marginPercent}% · Pop: {recipe.popularity}%</div>
+                              <div>Prix: {recipe.sellingPrice}€</div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+
+                {/* Legend */}
+                <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  {[
+                    { color: '#10B981', label: 'Stars — Garder' },
+                    { color: '#3B82F6', label: 'Puzzles — Promouvoir' },
+                    { color: '#F59E0B', label: 'Plowhorses — Repriser' },
+                    { color: '#EF4444', label: 'Dogs — Retirer' },
+                  ].map(item => (
+                    <div key={item.label} className="flex items-center gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                      <span className="text-[10px] font-medium text-[#6B7280] dark:text-[#A3A3A3]">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── AI Recommendations Panel ── */}
+              <div className="space-y-4">
+                {/* Summary */}
+                {aiResult.optimization?.summary && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Lightbulb className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Synthèse IA</span>
+                    </div>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+                      {aiResult.optimization.summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Stars */}
+                {aiResult.optimization?.stars?.length > 0 && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Stars ({aiResult.optimization.stars.length})</span>
+                    </div>
+                    <div className="space-y-2">
+                      {aiResult.optimization.stars.map((item: any) => (
+                        <div key={item.id} className="flex items-start gap-2">
+                          <Star className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Puzzles */}
+                {aiResult.optimization?.puzzles?.length > 0 && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Puzzles ({aiResult.optimization.puzzles.length})</span>
+                    </div>
+                    <div className="space-y-2">
+                      {aiResult.optimization.puzzles.map((item: any) => (
+                        <div key={item.id} className="flex items-start gap-2">
+                          <Zap className="w-3.5 h-3.5 text-blue-500 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            {item.marketingSuggestion && (
+                              <p className="text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">{item.marketingSuggestion}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Plowhorses */}
+                {aiResult.optimization?.plowhorses?.length > 0 && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-amber-500" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Plowhorses ({aiResult.optimization.plowhorses.length})</span>
+                    </div>
+                    <div className="space-y-2">
+                      {aiResult.optimization.plowhorses.map((item: any) => (
+                        <div key={item.id} className="flex items-start gap-2">
+                          <TrendingUp className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            {item.suggestedPrice && (
+                              <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">
+                                Prix suggéré: {item.suggestedPrice}€
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Dogs */}
+                {aiResult.optimization?.dogs?.length > 0 && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 rounded-full bg-red-500" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Dogs ({aiResult.optimization.dogs.length})</span>
+                    </div>
+                    <div className="space-y-2">
+                      {aiResult.optimization.dogs.map((item: any) => (
+                        <div key={item.id} className="flex items-start gap-2">
+                          <X className="w-3.5 h-3.5 text-red-500 mt-0.5 shrink-0" />
+                          <div>
+                            <span className="text-xs font-semibold text-[#111111] dark:text-white">{item.name}</span>
+                            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
+                            {item.alternative && (
+                              <p className="text-[10px] text-red-600 dark:text-red-400 mt-0.5">Alternative: {item.alternative}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Revenue Impact */}
+                {aiResult.optimization?.revenueImpact && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Impact estimé</span>
+                    </div>
+                    {aiResult.optimization.revenueImpact.estimatedMonthlyRevenue > 0 && (
+                      <div className="flex items-baseline gap-2 mb-2">
+                        <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                          +{aiResult.optimization.revenueImpact.percentChange}%
+                        </span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">revenu mensuel</span>
+                      </div>
+                    )}
+                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+                      {aiResult.optimization.revenueImpact.explanation}
+                    </p>
+                  </div>
+                )}
+
+                {/* Price Adjustments Table + Apply Button */}
+                {aiResult.optimization?.priceAdjustments?.length > 0 && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-[#111111] dark:text-white" />
+                        <span className="text-sm font-bold text-[#111111] dark:text-white">Ajustements de prix</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2 mb-4">
+                      {aiResult.optimization.priceAdjustments.map((adj: any) => (
+                        <div key={adj.id} className="flex items-center justify-between py-1.5 border-b border-[#F5F5F5] dark:border-[#1A1A1A] last:border-0">
+                          <span className="text-xs font-medium text-[#111111] dark:text-white">{adj.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{adj.currentPrice}€</span>
+                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{adj.suggestedPrice}€</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleApplyPrices}
+                      disabled={applyingPrices}
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm transition-all disabled:opacity-50"
+                    >
+                      {applyingPrices ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                      Appliquer les suggestions
+                    </button>
+                  </div>
+                )}
+
+                {/* Menu Composition */}
+                {aiResult.optimization?.menuComposition?.recommendation && (
+                  <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ChefHat className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <span className="text-sm font-bold text-[#111111] dark:text-white">Composition du menu</span>
+                    </div>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">
+                      {aiResult.optimization.menuComposition.recommendation}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Loading ──────────────────────────────────────────────────────── */}
         {loading && (

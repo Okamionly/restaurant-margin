@@ -1305,6 +1305,106 @@ app.delete('/api/inventory/:id', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression inventaire' }); }
 });
 
+// ============ INVENTORY AUTO-REORDER ============
+
+// GET /api/inventory/auto-reorder — Analyze inventory and suggest reorders
+app.get('/api/inventory/auto-reorder', authWithRestaurant, async (req: any, res) => {
+  try {
+    const items = await prisma.inventoryItem.findMany({
+      where: { restaurantId: req.restaurantId },
+      include: { ingredient: { include: { supplierRef: true } } },
+    });
+
+    // Filter items where currentStock < minStock (using minStock as the reorder threshold)
+    const lowStockItems = items.filter((item: any) => item.currentStock < item.minStock && item.minStock > 0);
+
+    // Group by supplier
+    const bySupplier: Record<string, {
+      supplierId: number | null;
+      supplier: string;
+      items: { ingredientId: number; ingredient: string; currentStock: number; minQuantity: number; unit: string; suggestedQty: number; estimatedCost: number }[];
+      totalCost: number;
+    }> = {};
+
+    for (const item of lowStockItems) {
+      const supplierName = (item as any).ingredient.supplierRef?.name || (item as any).ingredient.supplier || 'Sans fournisseur';
+      const supplierId = (item as any).ingredient.supplierId || null;
+      const key = supplierName;
+
+      if (!bySupplier[key]) {
+        bySupplier[key] = { supplierId, supplier: supplierName, items: [], totalCost: 0 };
+      }
+
+      const minQty = item.minStock;
+      const suggestedQty = Math.max(minQty * 2 - item.currentStock, 0);
+      const unitDivisor = getUnitDivisor((item as any).ingredient.unit);
+      const estimatedCost = (suggestedQty / unitDivisor) * (item as any).ingredient.pricePerUnit;
+
+      bySupplier[key].items.push({
+        ingredientId: (item as any).ingredient.id,
+        ingredient: (item as any).ingredient.name,
+        currentStock: item.currentStock,
+        minQuantity: minQty,
+        unit: item.unit || (item as any).ingredient.unit,
+        suggestedQty: Math.round(suggestedQty * 100) / 100,
+        estimatedCost: Math.round(estimatedCost * 100) / 100,
+      });
+      bySupplier[key].totalCost += estimatedCost;
+    }
+
+    // Round totals
+    const result = Object.values(bySupplier).map(group => ({
+      ...group,
+      totalCost: Math.round(group.totalCost * 100) / 100,
+    }));
+
+    res.json(result);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur analyse réapprovisionnement auto' }); }
+});
+
+// POST /api/inventory/auto-reorder/confirm — Create marketplace orders from suggestions
+app.post('/api/inventory/auto-reorder/confirm', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { orders } = req.body;
+    // orders: [{ supplier, supplierId?, items: [{ ingredientId, productName, quantity, unit, unitPrice }] }]
+    if (!orders || !Array.isArray(orders) || orders.length === 0) {
+      return res.status(400).json({ error: 'Aucune commande à créer' });
+    }
+
+    const createdIds: number[] = [];
+
+    for (const order of orders) {
+      const orderItems = order.items.map((item: any) => ({
+        productName: item.productName || item.ingredient || '',
+        quantity: item.quantity || 1,
+        unit: item.unit || '',
+        unitPrice: item.unitPrice || 0,
+        total: (item.quantity || 1) * (item.unitPrice || 0),
+        ingredientId: item.ingredientId || null,
+      }));
+
+      const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);
+
+      const created = await prisma.marketplaceOrder.create({
+        data: {
+          supplierName: order.supplier,
+          supplierId: order.supplierId || null,
+          totalHT,
+          notes: 'Commande auto-réapprovisionnement',
+          restaurantId: req.restaurantId,
+          items: { create: orderItems },
+        },
+        include: { items: true },
+      });
+
+      createdIds.push(created.id);
+    }
+
+    logAudit(req.user.userId, req.restaurantId, 'CREATE', 'auto-reorder', 0, { orderIds: createdIds, count: createdIds.length });
+    res.status(201).json({ orderIds: createdIds, count: createdIds.length });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création commandes auto-réapprovisionnement' }); }
+});
+
 // ============ RFQ (APPELS D'OFFRES) — DISABLED: models not in Prisma schema ============
 // TODO: Add RFQ, RFQItem, RFQQuote models to schema.prisma before enabling
 const rfqInclude = {} as any;

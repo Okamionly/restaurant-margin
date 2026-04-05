@@ -18,6 +18,7 @@ import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 import { getCurrentSeason, getCurrentSeasonLabel, getSeasonalProducts, getSeasonIcon } from '../data/seasons';
 import { trackEvent } from '../utils/analytics';
 
@@ -211,7 +212,7 @@ function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
                 ? `${p.value.toFixed(1)}%`
                 : p.dataKey === 'count'
                   ? p.value
-                  : `${p.value.toFixed(2)} €`)
+                  : formatCurrency(p.value))
               : p.value}
           </span>
         </div>
@@ -288,7 +289,7 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
         <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50">
           <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
           <span className="text-xs font-medium text-red-700 dark:text-red-300">
-            Attention : depassement de budget de {overAmount.toFixed(2)}€
+            Attention : depassement de budget de {formatCurrency(overAmount)}
           </span>
         </div>
       )}
@@ -354,7 +355,7 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
                 autoFocus
                 onKeyDown={(e) => { if (e.key === 'Enter') handleSaveBudget(); }}
               />
-              <span className="text-sm text-[#9CA3AF]">€</span>
+              <span className="text-sm text-[#9CA3AF]">{getCurrencySymbol()}</span>
               <button
                 onClick={handleSaveBudget}
                 className="px-2.5 py-1.5 text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
@@ -368,9 +369,9 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
                 <span className="font-semibold text-[#111111] dark:text-white">
-                  {data.todaySpending.toFixed(2)}€
+                  {formatCurrency(data.todaySpending)}
                   {hasBudget && (
-                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {data.dailyBudget}€</span>
+                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {formatCurrency(data.dailyBudget ?? 0)}</span>
                   )}
                 </span>
               </div>
@@ -378,9 +379,9 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[#9CA3AF] dark:text-[#737373]">Semaine</span>
                 <span className="font-semibold text-[#111111] dark:text-white">
-                  {data.weekSpending.toFixed(2)}€
+                  {formatCurrency(data.weekSpending)}
                   {data.weeklyBudget && data.weeklyBudget > 0 && (
-                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {data.weeklyBudget}€</span>
+                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {formatCurrency(data.weeklyBudget)}</span>
                   )}
                 </span>
               </div>
@@ -388,9 +389,9 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
               <div className="flex items-center justify-between text-xs">
                 <span className="text-[#9CA3AF] dark:text-[#737373]">Mois</span>
                 <span className="font-semibold text-[#111111] dark:text-white">
-                  {data.monthSpending.toFixed(2)}€
+                  {formatCurrency(data.monthSpending)}
                   {data.monthlyBudget && data.monthlyBudget > 0 && (
-                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {data.monthlyBudget}€</span>
+                    <span className="text-[#9CA3AF] dark:text-[#737373] font-normal"> / {formatCurrency(data.monthlyBudget)}</span>
                   )}
                 </span>
               </div>
@@ -400,7 +401,7 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
                   <span className="text-[#9CA3AF] dark:text-[#737373]">
                     Prevision fin de mois
                   </span>
-                  <span className="font-semibold text-[#111111] dark:text-white">{data.forecast.toFixed(0)}€</span>
+                  <span className="font-semibold text-[#111111] dark:text-white">{data.forecast.toFixed(0)}{currencySuffix()}</span>
                 </div>
               )}
               {data.daysOverBudget > 0 && (
@@ -1001,7 +1002,7 @@ export default function Dashboard() {
         id: 'price-increase',
         type: 'opportunity',
         icon: 'trending-up',
-        text: `${t("dashboard.aiIncreasePriceOf")} ${w.name} ${t("dashboard.aiBy")} ${suggestedIncrease}€ (+${((suggestedIncrease / w.sellingPrice) * 100).toFixed(0)}% ${t("dashboard.margin")})`,
+        text: `${t("dashboard.aiIncreasePriceOf")} ${w.name} ${t("dashboard.aiBy")} ${formatCurrency(suggestedIncrease)} (+${((suggestedIncrease / w.sellingPrice) * 100).toFixed(0)}% ${t("dashboard.margin")})`,
         action: `/recipes/${w.id}`,
         actionLabel: t("dashboard.aiApply"),
       });
@@ -1414,8 +1415,8 @@ export default function Dashboard() {
           title={t("dashboard.avgTotalCost")}
           numericValue={stats.avgTotalCost}
           decimals={2}
-          suffix=" €"
-          subtitle={stats.avgLaborCost > 0 ? `${t("dashboard.material")} ${stats.avgFoodCost.toFixed(2)}€ + ${t("dashboard.labor")} ${stats.avgLaborCost.toFixed(2)}€` : t("dashboard.materialOnly")}
+          suffix={currencySuffix()}
+          subtitle={stats.avgLaborCost > 0 ? `${t("dashboard.material")} ${formatCurrency(stats.avgFoodCost)} + ${t("dashboard.labor")} ${formatCurrency(stats.avgLaborCost)}` : t("dashboard.materialOnly")}
           icon={Briefcase}
           color="bg-cyan-600"
           colorKey="cyan"
@@ -1517,10 +1518,10 @@ export default function Dashboard() {
                           </Link>
                         </td>
                         <td className="py-2.5 text-right text-[#6B7280] dark:text-[#737373] tabular-nums">
-                          {recipe.margin.costPerPortion.toFixed(2)} €
+                          {recipe.margin.costPerPortion.toFixed(2)}{currencySuffix()}
                         </td>
                         <td className="py-2.5 text-right text-[#111111] dark:text-[#A3A3A3] font-medium tabular-nums">
-                          {recipe.sellingPrice.toFixed(2)} €
+                          {recipe.sellingPrice.toFixed(2)}{currencySuffix()}
                         </td>
                         <td className="py-2.5 text-right">
                           <span className={`inline-block px-2 py-0.5 rounded-md text-xs font-bold tabular-nums ${marginColor}`}>
@@ -1603,7 +1604,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-sm font-bold text-green-600 dark:text-green-400">{dish.marginPercent.toFixed(1)}%</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t("dashboard.cost")} {dish.costPerPortion.toFixed(2)}€ · {t("dashboard.sale")} {dish.suggestedPrice.toFixed(2)}€</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t("dashboard.cost")} {formatCurrency(dish.costPerPortion)} · {t("dashboard.sale")} {formatCurrency(dish.suggestedPrice)}</p>
                 </div>
               </Link>
             ))}
@@ -1706,7 +1707,7 @@ export default function Dashboard() {
               {getSeasonalProducts().slice(0, 8).map(p => (
                 <span key={p.name} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 dark:bg-[#0A0A0A]/70 text-sm border border-emerald-200 dark:border-emerald-700">
                   <span className="font-medium text-[#111111] dark:text-[#E5E5E5]">{p.name}</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 text-xs">{p.avgPrice.toFixed(2)}€/{p.unit}</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 text-xs">{formatCurrency(p.avgPrice)}/{p.unit}</span>
                 </span>
               ))}
             </div>
@@ -1760,7 +1761,7 @@ export default function Dashboard() {
                         onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
                         className="w-16 px-2 py-1 rounded bg-white/20 dark:bg-black/10 border border-white/30 dark:border-black/20 text-white dark:text-[#111111] text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-black/30"
                       />
-                      <span className="text-xs text-white/60 dark:text-[#111111]/60">€</span>
+                      <span className="text-xs text-white/60 dark:text-[#111111]/60">{getCurrencySymbol()}</span>
                     </div>
                   </div>
                 </div>
@@ -1768,26 +1769,26 @@ export default function Dashboard() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                   <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
                     <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
-                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
+                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
                   <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
                     <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
-                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
+                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
                   <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
                     <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
-                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
+                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
                   <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
                     <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
-                    <p className="text-xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+                    <p className="text-xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-white/60 dark:text-[#111111]/60">
                   <span>{stats.dailyCouverts} {t("dashboard.coversPerDay")} ({serviceMode === 'all' ? t("dashboard.twoServices") : serviceMode === 'lunch' ? t("dashboard.lunch") : t("dashboard.dinner")})</span>
                   <span>{t("dashboard.costRatio")} : {(stats.avgCostRatio * 100).toFixed(1)}%</span>
-                  <span>{t("dashboard.profitPerCover")} : {stats.profitPerCouvert.toFixed(2)} €</span>
+                  <span>{t("dashboard.profitPerCover")} : {formatCurrency(stats.profitPerCouvert)}</span>
                   {stats.seuilRentabilite > 0 && (
                     <span className="text-yellow-300 dark:text-amber-600 font-medium">{t("dashboard.breakEvenPoint")} : {stats.seuilRentabilite} {t("dashboard.coversPerDay")}</span>
                   )}
@@ -2013,7 +2014,7 @@ export default function Dashboard() {
                 <PieChartIcon className="w-5 h-5 text-teal-600" />
                 <h3 className="text-lg font-semibold text-[#111111] dark:text-white">{t("dashboard.foodCostDistribution")}</h3>
                 <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">
-                  Total : {stats.totalFoodCostAll.toFixed(2)} €
+                  Total : {formatCurrency(stats.totalFoodCostAll)}
                 </span>
               </div>
               {stats.foodCostData.length > 0 ? (
@@ -2062,7 +2063,7 @@ export default function Dashboard() {
                         return (
                           <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm">
                             <p className="font-semibold text-[#111111] dark:text-white">{d?.name}</p>
-                            <p className="text-[#6B7280] dark:text-[#A3A3A3]">{d?.value?.toFixed(2)} € ({pct}%)</p>
+                            <p className="text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(d?.value ?? 0)} ({pct}%)</p>
                           </div>
                         );
                       }}
@@ -2084,7 +2085,7 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height={Math.max(200, stats.foodCostData.length * 36)}>
                   <BarChart data={stats.foodCostData} layout="vertical" margin={{ top: 5, right: 30, bottom: 5, left: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" className="opacity-30" horizontal={false} />
-                    <XAxis type="number" tick={{ fontSize: 11 }} unit=" €" />
+                    <XAxis type="number" tick={{ fontSize: 11 }} unit={currencySuffix()} />
                     <YAxis type="category" dataKey="name" width={150} tick={{ fontSize: 11 }} />
                     <Tooltip
                       content={({ active, payload }) => {
@@ -2094,7 +2095,7 @@ export default function Dashboard() {
                         return (
                           <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm">
                             <p className="font-semibold text-[#111111] dark:text-white">{d?.name}</p>
-                            <p className="text-[#6B7280] dark:text-[#A3A3A3]">{d?.value?.toFixed(2)} €</p>
+                            <p className="text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(d?.value ?? 0)}</p>
                             <p className="text-[#9CA3AF] dark:text-[#737373]">{pct}% {t("dashboard.ofTotalCost")}</p>
                           </div>
                         );
@@ -2140,7 +2141,7 @@ export default function Dashboard() {
                             {ing.category}
                           </span>
                         </td>
-                        <td className="py-2.5 text-right font-mono font-semibold text-[#9CA3AF] dark:text-[#A3A3A3]">{ing.cost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-[#9CA3AF] dark:text-[#A3A3A3]">{formatCurrency(ing.cost)}</td>
                         <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">
                           {stats.totalFoodCostAll > 0 ? ((ing.cost / stats.totalFoodCostAll) * 100).toFixed(1) : '0'}%
                         </td>
@@ -2178,7 +2179,7 @@ export default function Dashboard() {
                             {cat.name}
                           </span>
                         </td>
-                        <td className="py-2.5 text-right font-mono font-semibold text-[#9CA3AF] dark:text-[#A3A3A3]">{cat.totalCost.toFixed(2)} €</td>
+                        <td className="py-2.5 text-right font-mono font-semibold text-[#9CA3AF] dark:text-[#A3A3A3]">{formatCurrency(cat.totalCost)}</td>
                         <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">{cat.pctOfTotal.toFixed(1)}%</td>
                         <td className="py-2.5 text-[#9CA3AF] dark:text-[#737373]">{cat.topIngredient}</td>
                       </tr>
@@ -2238,7 +2239,7 @@ export default function Dashboard() {
                     onChange={e => setAvgPricePerCouvert(Math.max(1, parseInt(e.target.value) || 1))}
                     className="w-16 px-2 py-1 rounded bg-white/20 dark:bg-black/10 border border-white/30 dark:border-black/20 text-white dark:text-[#111111] text-sm text-center focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-black/30"
                   />
-                  <span className="text-xs text-white/60 dark:text-[#111111]/60">€</span>
+                  <span className="text-xs text-white/60 dark:text-[#111111]/60">{getCurrencySymbol()}</span>
                 </div>
               </div>
             </div>
@@ -2246,19 +2247,19 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
                 <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
-                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix=" €" /></p>
+                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix={currencySuffix()} /></p>
               </div>
               <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
                 <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
-                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix=" €" /></p>
+                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix={currencySuffix()} /></p>
               </div>
               <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
                 <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
-                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix=" €" /></p>
+                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix={currencySuffix()} /></p>
               </div>
               <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
                 <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
-                <p className="text-2xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix=" €" /></p>
+                <p className="text-2xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix={currencySuffix()} /></p>
               </div>
             </div>
           </div>
@@ -2274,7 +2275,7 @@ export default function Dashboard() {
               <LineChart data={stats.projectionData} margin={{ top: 5, right: 30, bottom: 5, left: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k€`} />
+                <YAxis tick={{ fontSize: 12 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k${getCurrencySymbol()}`} />
                 <Tooltip
                   content={({ active, payload, label }) => {
                     if (!active || !payload?.length) return null;
@@ -2285,7 +2286,7 @@ export default function Dashboard() {
                           <div key={i} className="flex items-center gap-2 mt-0.5">
                             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                             <span className="text-[#9CA3AF] dark:text-[#737373]">{p.name}:</span>
-                            <span className="font-semibold ml-auto" style={{ color: p.color }}>{p.value?.toLocaleString('fr-FR')} €</span>
+                            <span className="font-semibold ml-auto" style={{ color: p.color }}>{p.value?.toLocaleString('fr-FR')}{currencySuffix()}</span>
                           </div>
                         ))}
                       </div>
@@ -2309,7 +2310,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg px-3 py-2">
                 <DollarSign className="w-4 h-4 text-green-600" />
                 <span className="text-sm text-green-800 dark:text-green-300 font-medium">
-                  {t("dashboard.estimatedMonthlyProfit")} : {(stats.dailyProfit * 26).toLocaleString('fr-FR')} €
+                  {t("dashboard.estimatedMonthlyProfit")} : {(stats.dailyProfit * 26).toLocaleString('fr-FR')}{currencySuffix()}
                 </span>
               </div>
             </div>
@@ -2334,7 +2335,7 @@ export default function Dashboard() {
                   <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
                     <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("dashboard.profitPerCover")}</p>
                     <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                      <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix=" €" />
+                      <AnimatedNumber value={stats.profitPerCouvert} decimals={2} suffix={currencySuffix()} />
                     </p>
                   </div>
                   <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
@@ -2344,7 +2345,7 @@ export default function Dashboard() {
                   <div className="bg-[#FAFAFA] dark:bg-[#171717]/50 rounded-lg p-4">
                     <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("dashboard.avgFoodCost")}</p>
                     <p className="text-2xl font-bold text-[#111111] dark:text-white">
-                      <AnimatedNumber value={stats.avgFoodCost} decimals={2} suffix=" €" />
+                      <AnimatedNumber value={stats.avgFoodCost} decimals={2} suffix={currencySuffix()} />
                     </p>
                   </div>
                 </div>
@@ -2408,8 +2409,8 @@ export default function Dashboard() {
                       <td className="py-2.5 text-red-500 font-bold">{i + 1}</td>
                       <td className="py-2.5 font-medium text-[#111111] dark:text-[#E5E5E5]">{r.name}</td>
                       <td className="py-2.5 text-[#9CA3AF] dark:text-[#737373]">{r.category}</td>
-                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.sellingPrice.toFixed(2)} €</td>
-                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
+                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.sellingPrice.toFixed(2)}{currencySuffix()}</td>
+                      <td className="py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{formatCurrency(r.margin.totalCostPerPortion || r.margin.costPerPortion)}</td>
                       <td className={`py-2.5 text-right font-mono font-bold ${r.margin.marginPercent < 50 ? 'text-red-600' : 'text-amber-600'}`}>
                         {r.margin.marginPercent.toFixed(1)}%
                       </td>
@@ -2459,11 +2460,11 @@ export default function Dashboard() {
                           {r.name}
                         </td>
                         <td className="px-4 py-2.5 text-[#9CA3AF] dark:text-[#737373]">{r.category}</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.sellingPrice.toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.costPerPortion.toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">{(r.margin.laborCostPerPortion || 0).toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono font-medium text-[#111111] dark:text-[#E5E5E5]">{(r.margin.totalCostPerPortion || r.margin.costPerPortion).toFixed(2)} €</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.marginAmount.toFixed(2)} €</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.sellingPrice.toFixed(2)}{currencySuffix()}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.costPerPortion.toFixed(2)}{currencySuffix()}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(r.margin.laborCostPerPortion || 0)}</td>
+                        <td className="px-4 py-2.5 text-right font-mono font-medium text-[#111111] dark:text-[#E5E5E5]">{formatCurrency(r.margin.totalCostPerPortion || r.margin.costPerPortion)}</td>
+                        <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{formatCurrency(r.margin.marginAmount)}</td>
                         <td className={`px-4 py-2.5 text-right font-mono font-semibold ${mc}`}>{r.margin.marginPercent.toFixed(1)}%</td>
                         <td className="px-4 py-2.5 text-right font-mono text-[#9CA3AF] dark:text-[#A3A3A3]">{r.margin.coefficient.toFixed(2)}</td>
                         <td className="px-4 py-2.5 text-center">
@@ -2858,11 +2859,11 @@ export default function Dashboard() {
                         <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Marge moy.</p>
                       </div>
                       <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
-                        <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.totalRevenue}{"€"}</p>
+                        <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.totalRevenue}{getCurrencySymbol()}</p>
                         <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">CA semaine</p>
                       </div>
                       <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
-                        <p className={`text-2xl font-black font-satoshi ${(reportData.keyMetrics.totalWasteCost || 0) > 50 ? 'text-red-500' : 'text-[#111111] dark:text-white'}`}>{reportData.keyMetrics.totalWasteCost}{"€"}</p>
+                        <p className={`text-2xl font-black font-satoshi ${(reportData.keyMetrics.totalWasteCost || 0) > 50 ? 'text-red-500' : 'text-[#111111] dark:text-white'}`}>{reportData.keyMetrics.totalWasteCost}{getCurrencySymbol()}</p>
                         <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Pertes</p>
                       </div>
                       <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">

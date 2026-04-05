@@ -424,7 +424,7 @@ export default function Messagerie() {
           <MessageSquare className="w-6 h-6 text-teal-400" />
           <h1 className="text-2xl font-bold">{t('messagerie.title')}</h1>
           {totalUnread > 0 && (
-            <span className="px-2.5 py-0.5 text-xs font-bold bg-teal-600 text-white rounded-full animate-pulse">
+            <span className="px-2.5 py-0.5 text-xs font-bold bg-[#111111] dark:bg-white text-white rounded-full animate-pulse">
               {totalUnread}
             </span>
           )}
@@ -437,14 +437,14 @@ export default function Messagerie() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => fetchConversations(true)}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg transition-colors"
             title={t('messagerie.refresh')}
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={() => setShowCompose(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white text-white rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors text-sm font-medium"
           >
             <Plus className="w-4 h-4" />
             {t('messagerie.newMessage')}
@@ -453,27 +453,27 @@ export default function Messagerie() {
       </div>
 
       {/* Main layout */}
-      <div className="flex flex-1 min-h-0 bg-slate-900/50 rounded-2xl border border-slate-800 overflow-hidden">
+      <div className="flex flex-1 min-h-0 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
 
         {/* ── Left: Conversation list ─────────────────────────────────── */}
-        <div className={`w-full md:w-[340px] border-r border-slate-800 flex flex-col flex-shrink-0 ${mobileShowChat ? 'hidden md:flex' : 'flex'}`}>
+        <div className={`w-full md:w-[340px] border-r border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col flex-shrink-0 ${mobileShowChat ? 'hidden md:flex' : 'flex'}`}>
 
           {/* Search */}
-          <div className="p-3 border-b border-slate-800">
+          <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
               <input
                 type="text"
                 placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-800 text-sm border border-slate-700 focus:ring-2 focus:ring-teal-500 text-slate-200 placeholder:text-slate-400"
+                className="w-full pl-9 pr-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-sm border border-[#E5E7EB] dark:border-[#1A1A1A] focus:ring-2 focus:ring-[#111111] dark:ring-white text-[#111111] dark:text-white placeholder:text-[#9CA3AF] dark:text-[#737373]"
               />
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex border-b border-slate-800 px-1 pt-1 gap-0.5 overflow-x-auto">
+          <div className="flex border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-1 pt-1 gap-0.5 overflow-x-auto">
             {([
               { key: 'all', label: t('messagerie.tabAll') },
               { key: 'fournisseur', label: t('messagerie.tabSuppliers') },
@@ -485,13 +485,13 @@ export default function Messagerie() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-t-lg whitespace-nowrap transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-slate-800 text-white border-b-2 border-teal-500'
-                    : 'text-slate-400 hover:text-slate-300'
+                    ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white border-b-2 border-teal-500'
+                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#6B7280] dark:text-[#A3A3A3]'
                 }`}
               >
                 {tab.label}
                 {tab.key === 'all' && totalUnread > 0 && (
-                  <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded-full">
+                  <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-bold bg-[#111111] dark:bg-white text-white rounded-full">
                     {totalUnread}
                   </span>
                 )}
@@ -508,20 +508,20 @@ export default function Messagerie() {
             )}
             {!loading && filtered.length === 0 && (
               <div className="p-8 text-center">
-                <Inbox className="w-12 h-12 mx-auto mb-3 text-slate-600" />
-                <p className="text-sm text-slate-400">{t('messagerie.noConversation')}</p>
+                <Inbox className="w-12 h-12 mx-auto mb-3 text-[#6B7280] dark:text-[#A3A3A3]" />
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('messagerie.noConversation')}</p>
               </div>
             )}
             {filtered.map((conv) => (
               <button
                 key={conv.id}
                 onClick={() => selectConversation(conv.id)}
-                className={`w-full text-left px-3 py-3 border-b border-slate-800/50 transition-all duration-150 ${
+                className={`w-full text-left px-3 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all duration-150 ${
                   activeId === conv.id
-                    ? 'bg-teal-600/10 border-l-2 border-l-teal-500'
+                    ? 'bg-[#111111] dark:bg-white/10 border-l-2 border-l-teal-500'
                     : conv.unread > 0
-                    ? 'bg-slate-800/40 hover:bg-slate-800/70'
-                    : 'hover:bg-slate-800/30'
+                    ? 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/70'
+                    : 'hover:bg-[#FAFAFA]/30 dark:bg-[#0A0A0A]/30'
                 }`}
               >
                 <div className="flex items-start gap-2.5">
@@ -531,10 +531,10 @@ export default function Messagerie() {
                       {conv.avatar}
                     </div>
                     {/* Online dot */}
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-slate-900 ${conv.online ? 'bg-emerald-400' : 'bg-slate-600'}`} />
+                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#E5E7EB] dark:border-[#1A1A1A] ${conv.online ? 'bg-emerald-400' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`} />
                     {/* Unread badge */}
                     {conv.unread > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-teal-600 text-white rounded-full shadow-lg">
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold bg-[#111111] dark:bg-white text-white rounded-full shadow-lg">
                         {conv.unread}
                       </span>
                     )}
@@ -544,23 +544,23 @@ export default function Messagerie() {
                     {/* Name + date */}
                     <div className="flex items-center justify-between gap-1">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <span className={`text-sm truncate ${conv.unread > 0 ? 'font-bold text-white' : 'font-medium text-slate-300'}`}>
+                        <span className={`text-sm truncate ${conv.unread > 0 ? 'font-bold text-[#111111] dark:text-white' : 'font-medium text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                           {conv.name}
                         </span>
-                        <span className="text-slate-500 flex-shrink-0">
+                        <span className="text-[#6B7280] dark:text-[#A3A3A3] flex-shrink-0">
                           {getCategoryIcon(conv.category, conv.isGroup)}
                         </span>
                       </div>
                       <div className="flex items-center gap-1 flex-shrink-0">
                         {conv.starred && <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />}
-                        <span className="text-[10px] text-slate-500">
+                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
                           {formatDate(conv.updatedAt || '')}
                         </span>
                       </div>
                     </div>
 
                     {/* Last message preview */}
-                    <p className={`text-xs mt-0.5 truncate ${conv.unread > 0 ? 'text-slate-300' : 'text-slate-500'}`}>
+                    <p className={`text-xs mt-0.5 truncate ${conv.unread > 0 ? 'text-[#6B7280] dark:text-[#A3A3A3]' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                       {conv.lastMessage || conv.subject}
                     </p>
                   </div>
@@ -575,12 +575,12 @@ export default function Messagerie() {
           {activeConv ? (
             <>
               {/* Chat header */}
-              <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between gap-3 flex-shrink-0">
+              <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA]/60 dark:bg-[#0A0A0A]/60 flex items-center justify-between gap-3 flex-shrink-0">
                 <div className="flex items-center gap-3 min-w-0">
                   {/* Mobile back */}
                   <button
                     onClick={() => { setMobileShowChat(false); setActiveId(null); }}
-                    className="md:hidden p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 flex-shrink-0"
+                    className="md:hidden p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] flex-shrink-0"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
@@ -590,22 +590,22 @@ export default function Messagerie() {
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white ${getCategoryColor(activeConv.category, activeConv.isGroup)}`}>
                       {activeConv.avatar}
                     </div>
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-slate-900 ${activeConv.online ? 'bg-emerald-400' : 'bg-slate-600'}`} />
+                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#E5E7EB] dark:border-[#1A1A1A] ${activeConv.online ? 'bg-emerald-400' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`} />
                   </div>
 
                   {/* Name + status */}
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h2 className="text-sm font-semibold text-white truncate">{activeConv.name}</h2>
+                      <h2 className="text-sm font-semibold text-[#111111] dark:text-white truncate">{activeConv.name}</h2>
                       {activeConv.isGroup && (
-                        <span className="text-[10px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] bg-[#FAFAFA] dark:bg-[#0A0A0A] px-1.5 py-0.5 rounded-full">
                           {activeConv.members.length} {t('messagerie.members')}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-1 mt-0.5">
-                      <Circle className={`w-2 h-2 fill-current ${activeConv.online ? 'text-emerald-400' : 'text-slate-600'}`} />
-                      <span className="text-[11px] text-slate-400">
+                      <Circle className={`w-2 h-2 fill-current ${activeConv.online ? 'text-emerald-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`} />
+                      <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
                         {activeConv.online ? t('messagerie.online') : t('messagerie.offline')}
                         {activeConv.email && ` · ${activeConv.email}`}
                       </span>
@@ -617,7 +617,7 @@ export default function Messagerie() {
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button
                     onClick={() => handleToggleStar(activeConv.id)}
-                    className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-yellow-400 transition-colors"
+                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-yellow-400 transition-colors"
                     title={t('messagerie.tabFavorites')}
                   >
                     {activeConv.starred
@@ -626,7 +626,7 @@ export default function Messagerie() {
                   </button>
                   <button
                     onClick={() => handleDelete(activeConv.id)}
-                    className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors"
+                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-colors"
                     title={t('common.delete')}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -637,7 +637,7 @@ export default function Messagerie() {
               {/* Messages bubbles */}
               <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
                 {activeConv.messages.length === 0 && (
-                  <div className="flex flex-col items-center justify-center h-full text-slate-500">
+                  <div className="flex flex-col items-center justify-center h-full text-[#6B7280] dark:text-[#A3A3A3]">
                     <MessageSquare className="w-10 h-10 mb-2 opacity-30" />
                     <p className="text-sm">{t('messagerie.noMessages')}</p>
                     <p className="text-xs mt-1">{t('messagerie.sendFirstMessage')}</p>
@@ -655,11 +655,11 @@ export default function Messagerie() {
                       {/* Date separator */}
                       {showDateSep && (
                         <div className="flex items-center gap-3 my-3">
-                          <div className="flex-1 h-px bg-slate-800" />
-                          <span className="text-[10px] text-slate-500 px-2 py-0.5 bg-slate-800/80 rounded-full">
+                          <div className="flex-1 h-px bg-[#FAFAFA] dark:bg-[#0A0A0A]" />
+                          <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] px-2 py-0.5 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-full">
                             {formatFullDate(msg.timestamp).split('à')[0].trim()}
                           </span>
-                          <div className="flex-1 h-px bg-slate-800" />
+                          <div className="flex-1 h-px bg-[#FAFAFA] dark:bg-[#0A0A0A]" />
                         </div>
                       )}
 
@@ -679,15 +679,15 @@ export default function Messagerie() {
                         <div className={`max-w-[72%] ${isMine ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                           {/* Sender name (groupe seulement) */}
                           {!isMine && activeConv.isGroup && msg.senderName && (
-                            <span className="text-[10px] text-slate-400 pl-1">{msg.senderName}</span>
+                            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] pl-1">{msg.senderName}</span>
                           )}
 
                           {/* Bubble */}
                           <div
                             className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap break-words transition-all duration-300 ${
                               isMine
-                                ? 'bg-teal-600 text-white rounded-br-md shadow-lg shadow-teal-900/20'
-                                : 'bg-slate-800 text-slate-200 rounded-bl-md'
+                                ? 'bg-[#111111] dark:bg-white text-white rounded-br-md shadow-lg shadow-teal-900/20'
+                                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white rounded-bl-md'
                             } ${isAnimated ? 'scale-95 opacity-80' : 'scale-100 opacity-100'}`}
                           >
                             {msg.text}
@@ -695,9 +695,9 @@ export default function Messagerie() {
 
                           {/* Timestamp + read status */}
                           <div className={`flex items-center gap-1 px-1 ${isMine ? 'flex-row-reverse' : ''}`}>
-                            <span className="text-[10px] text-slate-600">{formatTime(msg.timestamp)}</span>
+                            <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{formatTime(msg.timestamp)}</span>
                             {isMine && (
-                              <span className="text-[10px] text-slate-600">
+                              <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
                                 {msg.read ? '✓✓' : '✓'}
                               </span>
                             )}
@@ -711,9 +711,9 @@ export default function Messagerie() {
               </div>
 
               {/* Input area */}
-              <div className="border-t border-slate-800 bg-slate-900/80 p-3 flex-shrink-0">
+              <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/80 p-3 flex-shrink-0">
                 <div className="flex items-end gap-2">
-                  <button className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-colors flex-shrink-0 mb-0.5">
+                  <button className="p-2 rounded-lg text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition-colors flex-shrink-0 mb-0.5">
                     <Paperclip className="w-4 h-4" />
                   </button>
                   <div className="flex-1 relative">
@@ -724,7 +724,7 @@ export default function Messagerie() {
                       onKeyDown={handleKeyDown}
                       placeholder={`${t('messagerie.messageTo')} ${activeConv.name}...`}
                       rows={1}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm text-slate-200 placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none max-h-32 overflow-y-auto transition-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-transparent resize-none max-h-32 overflow-y-auto transition-all"
                       style={{ minHeight: '42px' }}
                       onInput={(e) => {
                         const t = e.currentTarget;
@@ -736,7 +736,7 @@ export default function Messagerie() {
                   <button
                     onClick={handleSend}
                     disabled={!inputText.trim() || sending}
-                    className="p-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex-shrink-0 mb-0.5 hover:scale-105 active:scale-95"
+                    className="p-2.5 bg-[#111111] dark:bg-white text-white rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 flex-shrink-0 mb-0.5 hover:scale-105 active:scale-95"
                     title={t('messagerie.sendEnter')}
                   >
                     {sending
@@ -744,22 +744,22 @@ export default function Messagerie() {
                       : <Send className="w-4 h-4" />}
                   </button>
                 </div>
-                <p className="text-[10px] text-slate-600 mt-1.5 pl-10">{t('messagerie.shiftEnterNewLine')}</p>
+                <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] mt-1.5 pl-10">{t('messagerie.shiftEnterNewLine')}</p>
               </div>
             </>
           ) : (
             /* Empty state */
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-500 gap-3">
-              <div className="w-16 h-16 rounded-2xl bg-slate-800/50 flex items-center justify-center mb-1">
+            <div className="flex-1 flex flex-col items-center justify-center text-[#6B7280] dark:text-[#A3A3A3] gap-3">
+              <div className="w-16 h-16 rounded-2xl bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 flex items-center justify-center mb-1">
                 <MessageSquare className="w-8 h-8 opacity-30" />
               </div>
               <div className="text-center">
-                <p className="text-base font-medium text-slate-400">{t('messagerie.selectConversation')}</p>
+                <p className="text-base font-medium text-[#9CA3AF] dark:text-[#737373]">{t('messagerie.selectConversation')}</p>
                 <p className="text-sm mt-1">{t('messagerie.chooseContact')}</p>
               </div>
               <button
                 onClick={() => setShowCompose(true)}
-                className="mt-2 flex items-center gap-2 px-4 py-2 bg-teal-600/20 text-teal-400 border border-teal-500/30 rounded-lg hover:bg-teal-600/30 transition-colors text-sm"
+                className="mt-2 flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white/20 text-teal-400 border border-teal-500/30 rounded-lg hover:bg-[#111111] dark:bg-white/30 transition-colors text-sm"
               >
                 <Reply className="w-4 h-4" />
                 {t('messagerie.startConversation')}
@@ -776,41 +776,41 @@ export default function Messagerie() {
           onClick={() => setShowCompose(false)}
         >
           <div
-            className="bg-slate-900 border border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg mx-0 sm:mx-4 flex flex-col max-h-[80vh]"
+            className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-lg mx-0 sm:mx-4 flex flex-col max-h-[80vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-teal-400" />
-                <h2 className="text-sm font-semibold text-slate-200">{t('messagerie.newMessage')}</h2>
+                <h2 className="text-sm font-semibold text-[#111111] dark:text-white">{t('messagerie.newMessage')}</h2>
               </div>
-              <button onClick={() => setShowCompose(false)} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400">
+              <button onClick={() => setShowCompose(false)} className="p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373]">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Fields */}
             <div className="px-4 py-2 space-y-0">
-              <div className="flex items-center border-b border-slate-800 py-2.5 gap-2">
-                <span className="text-xs text-slate-500 w-12 flex-shrink-0">{t('messagerie.to')} :</span>
+              <div className="flex items-center border-b border-[#E5E7EB] dark:border-[#1A1A1A] py-2.5 gap-2">
+                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-12 flex-shrink-0">{t('messagerie.to')} :</span>
                 <input
                   type="email"
                   value={composeTo}
                   onChange={(e) => setComposeTo(e.target.value)}
                   placeholder="email@fournisseur.com"
                   autoFocus
-                  className="flex-1 bg-transparent text-sm text-slate-200 border-0 focus:ring-0 placeholder:text-slate-600 p-0 outline-none"
+                  className="flex-1 bg-transparent text-sm text-[#111111] dark:text-white border-0 focus:ring-0 placeholder:text-[#6B7280] dark:text-[#A3A3A3] p-0 outline-none"
                 />
               </div>
-              <div className="flex items-center border-b border-slate-800 py-2.5 gap-2">
-                <span className="text-xs text-slate-500 w-12 flex-shrink-0">{t('messagerie.subject')} :</span>
+              <div className="flex items-center border-b border-[#E5E7EB] dark:border-[#1A1A1A] py-2.5 gap-2">
+                <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-12 flex-shrink-0">{t('messagerie.subject')} :</span>
                 <input
                   type="text"
                   value={composeSubject}
                   onChange={(e) => setComposeSubject(e.target.value)}
                   placeholder={t('messagerie.subjectPlaceholder')}
-                  className="flex-1 bg-transparent text-sm text-slate-200 border-0 focus:ring-0 placeholder:text-slate-600 p-0 outline-none"
+                  className="flex-1 bg-transparent text-sm text-[#111111] dark:text-white border-0 focus:ring-0 placeholder:text-[#6B7280] dark:text-[#A3A3A3] p-0 outline-none"
                 />
               </div>
             </div>
@@ -822,19 +822,19 @@ export default function Messagerie() {
                 onChange={(e) => setComposeBody(e.target.value)}
                 placeholder={t('messagerie.composePlaceholder')}
                 rows={8}
-                className="w-full bg-transparent text-sm text-slate-200 border-0 focus:ring-0 placeholder:text-slate-600 resize-none outline-none"
+                className="w-full bg-transparent text-sm text-[#111111] dark:text-white border-0 focus:ring-0 placeholder:text-[#6B7280] dark:text-[#A3A3A3] resize-none outline-none"
               />
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-between px-4 py-3 border-t border-slate-700">
-              <button className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-300 transition-colors">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <button className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-[#6B7280] dark:text-[#A3A3A3] transition-colors">
                 <Paperclip className="w-4 h-4" />
               </button>
               <button
                 onClick={handleComposeSend}
                 disabled={!composeTo.trim() || !composeBody.trim() || sending}
-                className="flex items-center gap-2 px-5 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-5 py-2 bg-[#111111] dark:bg-white text-white rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-sm font-medium"
               >
                 {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 {t('common.send')}

@@ -541,10 +541,10 @@ export default function Inventory() {
               Inventaire complet
             </button>
           )}
-          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors no-print">
+          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors no-print">
             <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
@@ -620,13 +620,13 @@ export default function Inventory() {
             {valueData.byCategory.sort((a, b) => b.value - a.value).map(cat => {
               const pct = valueData.totalValue > 0 ? (cat.value / valueData.totalValue * 100) : 0;
               return (
-                <div key={cat.category} className="flex items-center gap-2 bg-slate-50 dark:bg-[#171717] rounded-lg px-3 py-2">
+                <div key={cat.category} className="flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#171717] rounded-lg px-3 py-2">
                   <span>{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                   <div>
                     <div className="text-sm font-medium">{cat.category}</div>
                     <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
                   </div>
-                  <div className="w-16 h-2 bg-slate-200 dark:bg-[#171717] rounded-full overflow-hidden">
+                  <div className="w-16 h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden">
                     <div className="h-full bg-teal-500 rounded-full" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -683,20 +683,20 @@ export default function Inventory() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-50 dark:bg-[#171717] text-left">
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
+              <tr className="bg-[#FAFAFA] dark:bg-[#171717] text-left">
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
                   <span className="flex items-center gap-1">Ingrédient <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
                   <span className="flex items-center gap-1">Stock <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
                 <th className="px-4 py-3 font-medium">Unité</th>
                 <th className="px-4 py-3 font-medium">Min</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Max</th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
                   <span className="flex items-center gap-1">Valeur <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
+                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
                   <span className="flex items-center gap-1">Statut <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
                 <th className="px-4 py-3 font-medium text-right">Actions</th>
@@ -715,7 +715,7 @@ export default function Inventory() {
                 const meta = parseMeta(item.notes);
                 const expStatus = getExpirationStatus(meta.expirationDate);
                 return (
-                  <tr key={item.id} className={`hover:bg-slate-50 dark:hover:bg-[#171717]/30 transition-colors ${expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
+                  <tr key={item.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 transition-colors ${expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span>{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
@@ -740,7 +740,7 @@ export default function Inventory() {
                             )}
                             {/* Location tag */}
                             {meta.location && (
-                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-slate-100 dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                                 <MapPin className="w-2.5 h-2.5" /> {meta.location}
                               </span>
                             )}
@@ -822,7 +822,7 @@ export default function Inventory() {
                         <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Réapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors" title="Modifier">
+                        <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors" title="Modifier">
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button onClick={() => setDeleteTarget(item.id)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-500 transition-colors" title="Supprimer">
@@ -910,7 +910,7 @@ export default function Inventory() {
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleAdd} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
@@ -936,7 +936,7 @@ export default function Inventory() {
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleRestock} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
@@ -1028,7 +1028,7 @@ export default function Inventory() {
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleEdit} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
@@ -1076,7 +1076,7 @@ export default function Inventory() {
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleWasteSubmit} className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1.5">

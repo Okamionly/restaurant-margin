@@ -61,20 +61,20 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
           <ChefHat className="w-10 h-10 text-blue-400" />
-          <span className="text-2xl font-bold text-white">RestauMargin</span>
+          <span className="text-2xl font-bold text-[#111111] dark:text-white">RestauMargin</span>
         </div>
 
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8">
+        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8">
           {status === 'success' ? (
             <div className="text-center space-y-4">
               <CheckCircle className="w-16 h-16 text-emerald-400 mx-auto" />
-              <h2 className="text-xl font-bold text-white">Mot de passe modifié</h2>
-              <p className="text-slate-400">
+              <h2 className="text-xl font-bold text-[#111111] dark:text-white">Mot de passe modifié</h2>
+              <p className="text-[#9CA3AF] dark:text-[#737373]">
                 Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.
               </p>
               <Link
@@ -87,8 +87,8 @@ export default function ResetPassword() {
           ) : status === 'error' && !token ? (
             <div className="text-center space-y-4">
               <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
-              <h2 className="text-xl font-bold text-white">Lien invalide</h2>
-              <p className="text-slate-400">{errorMessage}</p>
+              <h2 className="text-xl font-bold text-[#111111] dark:text-white">Lien invalide</h2>
+              <p className="text-[#9CA3AF] dark:text-[#737373]">{errorMessage}</p>
               <Link
                 to="/login"
                 className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
@@ -100,8 +100,8 @@ export default function ResetPassword() {
             <>
               <div className="text-center mb-6">
                 <Lock className="w-12 h-12 text-blue-400 mx-auto mb-3" />
-                <h2 className="text-xl font-bold text-white">Nouveau mot de passe</h2>
-                <p className="text-slate-400 text-sm mt-1">Choisissez un nouveau mot de passe pour votre compte.</p>
+                <h2 className="text-xl font-bold text-[#111111] dark:text-white">Nouveau mot de passe</h2>
+                <p className="text-[#9CA3AF] dark:text-[#737373] text-sm mt-1">Choisissez un nouveau mot de passe pour votre compte.</p>
               </div>
 
               {errorMessage && status === 'error' && (
@@ -120,7 +120,7 @@ export default function ResetPassword() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Nouveau mot de passe</label>
+                  <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">Nouveau mot de passe</label>
                   <input
                     type="password"
                     value={newPassword}
@@ -128,12 +128,12 @@ export default function ResetPassword() {
                     placeholder="Min. 6 caractères"
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1.5">Confirmer le mot de passe</label>
+                  <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">Confirmer le mot de passe</label>
                   <input
                     type="password"
                     value={confirmPassword}
@@ -141,7 +141,7 @@ export default function ResetPassword() {
                     placeholder="Retapez le mot de passe"
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 

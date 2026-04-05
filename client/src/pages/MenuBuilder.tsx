@@ -412,22 +412,22 @@ export default function MenuBuilder() {
       <div className="flex items-center justify-center h-96">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-slate-400 text-sm">Chargement des recettes...</span>
+          <span className="text-[#9CA3AF] dark:text-[#737373] text-sm">Chargement des recettes...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col bg-slate-950 -m-4 sm:-m-6">
+    <div className="h-[calc(100vh-80px)] flex flex-col bg-white dark:bg-black -m-4 sm:-m-6">
       {/* ── Header ── */}
-      <div className="flex-none px-4 py-3 bg-slate-900 border-b border-slate-800 flex items-center gap-4">
+      <div className="flex-none px-4 py-3 bg-white dark:bg-black border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-4">
         <div className="flex items-center gap-2">
           <ChefHat className="w-6 h-6 text-teal-400" />
-          <h1 className="text-lg font-bold text-white tracking-tight">Compositeur de Menu</h1>
+          <h1 className="text-lg font-bold text-[#111111] dark:text-white tracking-tight">Compositeur de Menu</h1>
         </div>
         <div className="flex-1" />
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
           <span>{stats.totalItems} plat{stats.totalItems !== 1 ? 's' : ''} sur le menu</span>
         </div>
       </div>
@@ -435,28 +435,28 @@ export default function MenuBuilder() {
       {/* ── Main 3-panel layout ── */}
       <div className="flex-1 flex overflow-hidden">
         {/* ═══════ LEFT SIDEBAR — Recipe Pool ═══════ */}
-        <div className="w-72 xl:w-80 flex-none bg-slate-900 border-r border-slate-800 flex flex-col overflow-hidden">
+        <div className="w-72 xl:w-80 flex-none bg-white dark:bg-black border-r border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col overflow-hidden">
           {/* Search */}
-          <div className="flex-none p-3 border-b border-slate-800">
+          <div className="flex-none p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher une recette..."
-                className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-all"
+                className="w-full pl-9 pr-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white/50 focus:border-teal-500 outline-none transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#6B7280] dark:text-[#A3A3A3]"
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-            <p className="text-[11px] text-slate-600 mt-2 pl-1">
+            <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] mt-2 pl-1">
               Glissez les recettes vers le menu
             </p>
           </div>
@@ -466,12 +466,12 @@ export default function MenuBuilder() {
             {Array.from(poolRecipes.entries()).map(([category, categoryRecipes]) => {
               if (categoryRecipes.length === 0) return null;
               return (
-                <div key={category} className="border-b border-slate-800/50">
-                  <div className="px-3 py-2 sticky top-0 bg-slate-900/95 backdrop-blur-sm z-10">
+                <div key={category} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                  <div className="px-3 py-2 sticky top-0 bg-white dark:bg-black/95 backdrop-blur-sm z-10">
                     <h3 className="text-[11px] font-semibold text-teal-400 uppercase tracking-wider flex items-center gap-1.5">
                       <span>{getSectionIcon(category)}</span>
                       {getSectionLabel(category)}
-                      <span className="text-slate-600 font-normal ml-auto">{categoryRecipes.length}</span>
+                      <span className="text-[#6B7280] dark:text-[#A3A3A3] font-normal ml-auto">{categoryRecipes.length}</span>
                     </h3>
                   </div>
                   <div className="px-2 pb-2 space-y-1">
@@ -481,20 +481,20 @@ export default function MenuBuilder() {
                         draggable
                         onDragStart={(e) => handleDragStart(e, recipe.id, 'pool')}
                         onDragEnd={handleDragEnd}
-                        className={`group bg-slate-800 border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-teal-500/50 hover:bg-slate-800/80 ${
+                        className={`group bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-teal-500/50 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/80 ${
                           draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
                         }`}
                       >
                         <div className="flex items-start gap-2">
-                          <GripVertical className="w-4 h-4 text-slate-600 mt-0.5 shrink-0 group-hover:text-slate-400 transition-colors" />
+                          <GripVertical className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] mt-0.5 shrink-0 group-hover:text-[#9CA3AF] dark:text-[#737373] transition-colors" />
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-white truncate">{recipe.name}</div>
+                            <div className="text-sm font-medium text-[#111111] dark:text-white truncate">{recipe.name}</div>
                             <div className="flex items-center gap-3 mt-1">
-                              <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                              <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
                                 <DollarSign className="w-3 h-3" />
                                 {(100 - recipe.margin.marginPercent).toFixed(1)}% cout
                               </span>
-                              <span className="text-[11px] text-slate-400">
+                              <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
                                 {recipe.sellingPrice.toFixed(2)} EUR
                               </span>
                               <span className={`text-[11px] font-semibold ${marginColor(recipe.margin.marginPercent)}`}>
@@ -504,7 +504,7 @@ export default function MenuBuilder() {
                           </div>
                           <button
                             onClick={() => addRecipeToSection(recipe.id, normalizeCategory(recipe.category))}
-                            className="shrink-0 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-teal-500/20 text-teal-400 transition-all"
+                            className="shrink-0 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-[#333] dark:hover:bg-[#E5E5E5]/20 text-teal-400 transition-all"
                             title="Ajouter au menu"
                           >
                             <Plus className="w-4 h-4" />
@@ -520,7 +520,7 @@ export default function MenuBuilder() {
             {Array.from(poolRecipes.values()).every((arr) => arr.length === 0) && (
               <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                 <CheckCircle2 className="w-10 h-10 text-teal-500/50 mb-3" />
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
                   {searchQuery ? 'Aucune recette trouvee' : 'Toutes les recettes sont sur le menu'}
                 </p>
               </div>
@@ -529,17 +529,17 @@ export default function MenuBuilder() {
         </div>
 
         {/* ═══════ CENTER — Menu Canvas ═══════ */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-slate-950">
+        <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-black">
           {/* Canvas header */}
-          <div className="flex-none px-6 py-3 border-b border-slate-800 flex items-center gap-3">
+          <div className="flex-none px-6 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-3">
             <Utensils className="w-5 h-5 text-teal-400" />
-            <span className="text-sm font-semibold text-white">Composition du menu</span>
+            <span className="text-sm font-semibold text-[#111111] dark:text-white">Composition du menu</span>
             <div className="flex-1" />
-            <div className="flex items-center gap-4 text-[11px] text-slate-500">
+            <div className="flex items-center gap-4 text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
               <span>{stats.totalItems} plats</span>
-              <span className="w-px h-3 bg-slate-700" />
+              <span className="w-px h-3 bg-[#F3F4F6] dark:bg-[#171717]" />
               <span>Food cost moy. {stats.avgFoodCostPercent.toFixed(1)}%</span>
-              <span className="w-px h-3 bg-slate-700" />
+              <span className="w-px h-3 bg-[#F3F4F6] dark:bg-[#171717]" />
               <span className={marginColor(stats.avgMarginPercent)}>
                 Marge moy. {stats.avgMarginPercent.toFixed(1)}%
               </span>
@@ -563,8 +563,8 @@ export default function MenuBuilder() {
                       isDragOver
                         ? 'border-teal-500 bg-teal-500/10 shadow-lg shadow-teal-500/5'
                         : isEmpty
-                        ? 'border-slate-800 bg-slate-900/30'
-                        : 'border-slate-800 bg-slate-900/50'
+                        ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/30'
+                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/50'
                     }`}
                   >
                     {/* Section header */}
@@ -573,7 +573,7 @@ export default function MenuBuilder() {
                       <h3 className="text-sm font-semibold text-teal-400 uppercase tracking-wider">
                         {getSectionLabel(section.category)}
                       </h3>
-                      <span className="text-[11px] text-slate-600 ml-1">
+                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] ml-1">
                         {section.recipes.length} plat{section.recipes.length !== 1 ? 's' : ''}
                       </span>
                       {isDragOver && (
@@ -598,34 +598,34 @@ export default function MenuBuilder() {
                               e.stopPropagation();
                               handleDrop(e, section.category, idx);
                             }}
-                            className={`group flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-slate-600 ${
+                            className={`group flex items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-[#E5E7EB] dark:border-[#1A1A1A] ${
                               draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
                             } ${
                               dragOverCategory === section.category && dragOverIndex === idx
-                                ? 'ring-2 ring-teal-500/50 bg-teal-500/10 border-teal-500/30'
+                                ? 'ring-2 ring-[#111111] dark:ring-white/50 bg-teal-500/10 border-teal-500/30'
                                 : ''
                             }`}
                           >
-                            <GripVertical className="w-4 h-4 text-slate-600 shrink-0 group-hover:text-slate-400" />
+                            <GripVertical className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] shrink-0 group-hover:text-[#9CA3AF] dark:text-[#737373]" />
                             <div className="flex-1 min-w-0 flex items-center gap-3">
                               <div className="flex-1 min-w-0">
-                                <span className="text-sm font-medium text-white truncate block">
+                                <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
                                   {recipe.name}
                                 </span>
                                 {recipe.description && (
-                                  <span className="text-[11px] text-slate-500 truncate block mt-0.5">
+                                  <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] truncate block mt-0.5">
                                     {recipe.description}
                                   </span>
                                 )}
                               </div>
                               <div className="flex items-center gap-3 shrink-0">
-                                <span className="text-xs text-slate-400">
+                                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
                                   {recipe.sellingPrice.toFixed(2)} EUR
                                 </span>
                                 <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${marginBg(recipe.margin.marginPercent)}`}>
                                   {recipe.margin.marginPercent.toFixed(0)}%
                                 </span>
-                                <span className="text-[11px] text-slate-600">
+                                <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
                                   FC {(100 - recipe.margin.marginPercent).toFixed(0)}%
                                 </span>
                               </div>
@@ -646,10 +646,10 @@ export default function MenuBuilder() {
                           className={`flex items-center justify-center py-6 rounded-lg border border-dashed transition-all ${
                             isDragOver
                               ? 'border-teal-500/50 bg-teal-500/5'
-                              : 'border-slate-800 bg-slate-900/20'
+                              : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/20'
                           }`}
                         >
-                          <span className={`text-xs ${isDragOver ? 'text-teal-400' : 'text-slate-600'}`}>
+                          <span className={`text-xs ${isDragOver ? 'text-teal-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                             {isDragOver ? 'Deposer pour ajouter' : 'Glissez des recettes ici'}
                           </span>
                         </div>
@@ -663,9 +663,9 @@ export default function MenuBuilder() {
         </div>
 
         {/* ═══════ RIGHT SIDEBAR — Stats ═══════ */}
-        <div className="w-72 xl:w-80 flex-none bg-slate-900 border-l border-slate-800 flex flex-col overflow-hidden">
-          <div className="flex-none px-4 py-3 border-b border-slate-800">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+        <div className="w-72 xl:w-80 flex-none bg-white dark:bg-black border-l border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col overflow-hidden">
+          <div className="flex-none px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <h3 className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-teal-400" />
               Statistiques du menu
             </h3>
@@ -701,8 +701,8 @@ export default function MenuBuilder() {
             </div>
 
             {/* Covers estimate */}
-            <div className="bg-slate-800/50 backdrop-blur rounded-lg p-3">
-              <label className="text-[11px] text-slate-500 uppercase tracking-wider block mb-2">
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-3">
+              <label className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider block mb-2">
                 Couverts estimes / service
               </label>
               <div className="flex items-center gap-2">
@@ -713,16 +713,16 @@ export default function MenuBuilder() {
                   step="5"
                   value={coversEstimate}
                   onChange={(e) => setCoversEstimate(Number(e.target.value))}
-                  className="flex-1 h-1.5 bg-slate-700 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal-400 [&::-webkit-slider-thumb]:cursor-pointer"
+                  className="flex-1 h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal-400 [&::-webkit-slider-thumb]:cursor-pointer"
                 />
-                <span className="text-sm font-semibold text-white w-10 text-right">{coversEstimate}</span>
+                <span className="text-sm font-semibold text-[#111111] dark:text-white w-10 text-right">{coversEstimate}</span>
               </div>
             </div>
 
             {/* Food Cost Distribution - CSS Donut */}
             {stats.categoryDistribution.length > 0 && (
-              <div className="bg-slate-800/50 backdrop-blur rounded-lg p-4">
-                <h4 className="text-[11px] text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-4">
+                <h4 className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3 flex items-center gap-1.5">
                   <PieChart className="w-3.5 h-3.5" />
                   Repartition Food Cost
                 </h4>
@@ -731,8 +731,8 @@ export default function MenuBuilder() {
             )}
 
             {/* Menu Balance Indicator */}
-            <div className="bg-slate-800/50 backdrop-blur rounded-lg p-4">
-              <h4 className="text-[11px] text-slate-500 uppercase tracking-wider mb-3">
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-4">
+              <h4 className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3">
                 Equilibre du menu
               </h4>
               <MenuBalanceIndicator balance={stats.menuBalance} />
@@ -740,15 +740,15 @@ export default function MenuBuilder() {
 
             {/* Per-category breakdown */}
             {stats.categoryDistribution.length > 0 && (
-              <div className="bg-slate-800/50 backdrop-blur rounded-lg p-4">
-                <h4 className="text-[11px] text-slate-500 uppercase tracking-wider mb-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 backdrop-blur rounded-lg p-4">
+                <h4 className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-3">
                   Par categorie
                 </h4>
                 <div className="space-y-2">
                   {stats.categoryDistribution.map((d) => (
                     <div key={d.category} className="flex items-center gap-2">
                       <span className="text-xs">{getSectionIcon(d.category)}</span>
-                      <span className="text-xs text-slate-400 flex-1">{getSectionLabel(d.category)}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex-1">{getSectionLabel(d.category)}</span>
                       <span className="text-xs text-white font-medium">{d.count}</span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded ${marginBg(100 - d.foodCost)}`}>
                         FC {d.foodCost.toFixed(0)}%
@@ -763,24 +763,24 @@ export default function MenuBuilder() {
       </div>
 
       {/* ── Bottom Bar ── */}
-      <div className="flex-none px-4 py-3 bg-slate-900 border-t border-slate-800 flex items-center gap-3">
+      <div className="flex-none px-4 py-3 bg-white dark:bg-black border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-3">
         <input
           type="text"
           value={menuName}
           onChange={(e) => setMenuName(e.target.value)}
           placeholder="Nom du menu..."
-          className="w-64 px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 outline-none transition-all"
+          className="w-64 px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white/50 focus:border-teal-500 outline-none transition-all"
         />
         <div className="flex-1" />
         <button
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700 text-slate-400 text-sm hover:bg-slate-800 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors"
           title="Bientot disponible"
         >
           <Share2 className="w-4 h-4" />
           Partager
         </button>
         <button
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-700 text-slate-400 text-sm hover:bg-slate-800 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors"
           title="Bientot disponible"
         >
           <FileDown className="w-4 h-4" />
@@ -789,7 +789,7 @@ export default function MenuBuilder() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-sm font-medium transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-sm font-medium transition-colors disabled:opacity-50"
         >
           <Save className="w-4 h-4" />
           {saving ? 'Enregistrement...' : 'Enregistrer le menu'}
@@ -841,7 +841,7 @@ function StatCard({
   return (
     <div className={`${c.bg} backdrop-blur rounded-lg p-3`}>
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[10px] text-slate-500 uppercase tracking-wider leading-tight">{label}</span>
+        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider leading-tight">{label}</span>
         <span className={c.icon}>{icon}</span>
       </div>
       <div className={`text-lg font-bold ${c.value}`}>{value}</div>
@@ -890,9 +890,9 @@ function DonutChart({
         }}
       >
         {/* Inner circle for donut effect */}
-        <div className="absolute inset-2.5 rounded-full bg-slate-800" />
+        <div className="absolute inset-2.5 rounded-full bg-[#FAFAFA] dark:bg-[#0A0A0A]" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-bold text-white">{total}</span>
+          <span className="text-xs font-bold text-[#111111] dark:text-white">{total}</span>
         </div>
       </div>
       <div className="space-y-1.5 flex-1 min-w-0">
@@ -902,7 +902,7 @@ function DonutChart({
               className="w-2.5 h-2.5 rounded-full shrink-0"
               style={{ backgroundColor: s.color }}
             />
-            <span className="text-[11px] text-slate-400 truncate flex-1">
+            <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] truncate flex-1">
               {getSectionLabel(s.category)}
             </span>
             <span className="text-[11px] text-white font-medium">{s.pct.toFixed(0)}%</span>
@@ -919,7 +919,7 @@ function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' 
   const config: Record<string, { label: string; color: string; icon: React.ReactNode; description: string; width: string }> = {
     empty: {
       label: 'Vide',
-      color: 'text-slate-500',
+      color: 'text-[#6B7280] dark:text-[#A3A3A3]',
       icon: <AlertCircle className="w-4 h-4" />,
       description: 'Ajoutez des plats pour commencer',
       width: 'w-0',
@@ -962,7 +962,7 @@ function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' 
         <span className={c.color}>{c.icon}</span>
         <span className={`text-sm font-semibold ${c.color}`}>{c.label}</span>
       </div>
-      <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden mb-2">
+      <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden mb-2">
         <div
           className={`h-full rounded-full transition-all duration-500 ${c.width} ${
             balance === 'excellent'
@@ -973,11 +973,11 @@ function MenuBalanceIndicator({ balance }: { balance: 'empty' | 'poor' | 'fair' 
               ? 'bg-amber-400'
               : balance === 'poor'
               ? 'bg-red-400'
-              : 'bg-slate-600'
+              : 'bg-[#F3F4F6] dark:bg-[#171717]'
           }`}
         />
       </div>
-      <p className="text-[11px] text-slate-500">{c.description}</p>
+      <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">{c.description}</p>
     </div>
   );
 }

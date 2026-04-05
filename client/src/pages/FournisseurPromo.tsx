@@ -199,7 +199,7 @@ export default function FournisseurPromo() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 text-slate-400">
+      <div className="flex flex-col items-center justify-center h-96 text-[#9CA3AF] dark:text-[#737373]">
         <Loader2 className="w-8 h-8 animate-spin mb-4" />
         <p>Chargement des promotions...</p>
       </div>
@@ -211,15 +211,15 @@ export default function FournisseurPromo() {
       <div className="space-y-6">
         <button
           onClick={() => navigate('/suppliers')}
-          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+          className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour aux fournisseurs
         </button>
-        <div className="flex flex-col items-center justify-center h-64 bg-slate-900/50 border border-slate-800 rounded-2xl">
-          <Package className="w-12 h-12 text-slate-300 mb-4 opacity-40" />
-          <p className="text-slate-400 font-medium mb-2">Aucune promotion disponible</p>
-          <p className="text-slate-500 text-sm">{error || 'Ce fournisseur n\'a pas de promotions en cours.'}</p>
+        <div className="flex flex-col items-center justify-center h-64 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl">
+          <Package className="w-12 h-12 text-[#6B7280] dark:text-[#A3A3A3] mb-4 opacity-40" />
+          <p className="text-[#9CA3AF] dark:text-[#737373] font-medium mb-2">Aucune promotion disponible</p>
+          <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm">{error || 'Ce fournisseur n\'a pas de promotions en cours.'}</p>
         </div>
       </div>
     );
@@ -230,7 +230,7 @@ export default function FournisseurPromo() {
       {/* Back button */}
       <button
         onClick={() => navigate('/suppliers')}
-        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+        className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors text-sm"
       >
         <ArrowLeft className="w-4 h-4" />
         Retour aux fournisseurs
@@ -251,7 +251,7 @@ export default function FournisseurPromo() {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-3.5 h-3.5 ${i < Math.floor(supplier.rating) ? 'fill-amber-400 text-amber-400' : 'text-white/30'}`}
+                      className={`w-3.5 h-3.5 ${i < Math.floor(supplier.rating) ? 'fill-amber-400 text-amber-400' : 'text-[#111111] dark:text-white/30'}`}
                     />
                   ))}
                   <span className="text-xs text-teal-200 ml-1">{supplier.rating}</span>
@@ -299,10 +299,10 @@ export default function FournisseurPromo() {
           { label: 'Produits au catalogue', value: `${supplier.products.length}`, icon: Package, color: 'text-teal-400' },
           { label: 'Catégories', value: `${supplier.categories.length}`, icon: Filter, color: 'text-emerald-400' },
         ].map(stat => (
-          <div key={stat.label} className="bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-center">
+          <div key={stat.label} className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
             <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
-            <p className="text-xl font-bold text-white">{stat.value}</p>
-            <p className="text-[11px] text-slate-400">{stat.label}</p>
+            <p className="text-xl font-bold text-[#111111] dark:text-white">{stat.value}</p>
+            <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -311,21 +311,21 @@ export default function FournisseurPromo() {
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Rechercher un produit..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:outline-none"
             />
           </div>
           <div className="relative">
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as any)}
-              className="appearance-none pl-4 pr-10 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-teal-500 focus:outline-none cursor-pointer"
+              className="appearance-none pl-4 pr-10 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:outline-none cursor-pointer"
             >
               <option value="discount">Meilleure réduction</option>
               <option value="price">Prix croissant</option>
@@ -341,8 +341,8 @@ export default function FournisseurPromo() {
               onClick={() => setSelectedCat(cat)}
               className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                 selectedCat === cat
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  ? 'bg-[#111111] dark:bg-white text-white'
+                  : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
               }`}
             >
               {CATEGORY_ICONS[cat] || ''} {cat}
@@ -361,23 +361,23 @@ export default function FournisseurPromo() {
           return (
             <div
               key={product.id}
-              className={`bg-slate-900/50 border rounded-xl p-4 transition-all flex flex-col justify-between ${
+              className={`bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border rounded-xl p-4 transition-all flex flex-col justify-between ${
                 inCart > 0
-                  ? 'border-teal-500/50 ring-1 ring-teal-500/20'
+                  ? 'border-teal-500/50 ring-1 ring-[#111111] dark:ring-white/20'
                   : product.stock === 'rupture'
-                  ? 'border-slate-800 opacity-50'
-                  : 'border-slate-800 hover:border-slate-700'
+                  ? 'border-[#E5E7EB] dark:border-[#1A1A1A] opacity-50'
+                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:border-[#1A1A1A]'
               }`}
             >
               {/* Top: name, badge, origin */}
               <div>
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-white text-sm truncate">{product.name}</p>
+                    <p className="font-medium text-[#111111] dark:text-white text-sm truncate">{product.name}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-slate-400">{CATEGORY_ICONS[product.category] || ''} {product.category}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{CATEGORY_ICONS[product.category] || ''} {product.category}</span>
                       {product.origin && (
-                        <span className="text-[10px] text-slate-500">· {product.origin}</span>
+                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">· {product.origin}</span>
                       )}
                     </div>
                   </div>
@@ -395,7 +395,7 @@ export default function FournisseurPromo() {
                     <Percent className="w-3 h-3" />
                     -{product.discount}%
                   </span>
-                  <div className="flex items-center gap-1 text-[11px] text-slate-400">
+                  <div className="flex items-center gap-1 text-[11px] text-[#9CA3AF] dark:text-[#737373]">
                     <Calendar className="w-3 h-3" />
                     Jusqu'au {formatDate(product.endDate)}
                     {days <= 3 && days > 0 && (
@@ -419,10 +419,10 @@ export default function FournisseurPromo() {
               {/* Bottom: prices + cart */}
               <div className="flex items-end justify-between mt-2">
                 <div>
-                  <span className="text-xs text-slate-400 line-through">{product.normalPrice.toFixed(2)} €</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{product.normalPrice.toFixed(2)} €</span>
                   <p className="text-lg font-bold text-emerald-400">
                     {product.promoPrice.toFixed(2)} €
-                    <span className="text-xs text-slate-400 font-normal">/{product.unit}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-normal">/{product.unit}</span>
                   </p>
                 </div>
                 {product.stock !== 'rupture' && (
@@ -430,14 +430,14 @@ export default function FournisseurPromo() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => removeFromCart(product.id)}
-                        className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300"
+                        className="w-8 h-8 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] flex items-center justify-center text-[#6B7280] dark:text-[#A3A3A3]"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="text-sm font-bold text-white w-6 text-center">{inCart}</span>
+                      <span className="text-sm font-bold text-[#111111] dark:text-white w-6 text-center">{inCart}</span>
                       <button
                         onClick={() => addToCart(product.id)}
-                        className="w-8 h-8 rounded-lg bg-teal-600 hover:bg-teal-500 flex items-center justify-center text-white"
+                        className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] flex items-center justify-center text-white"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -445,7 +445,7 @@ export default function FournisseurPromo() {
                   ) : (
                     <button
                       onClick={() => addToCart(product.id)}
-                      className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
+                      className="px-3 py-1.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
                     >
                       <Plus className="w-3.5 h-3.5" />Ajouter
                     </button>
@@ -458,7 +458,7 @@ export default function FournisseurPromo() {
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-slate-400">
+        <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
           <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
           <p>Aucun produit trouvé</p>
         </div>
@@ -466,13 +466,13 @@ export default function FournisseurPromo() {
 
       {/* ── Floating Cart ────────────────────────────────────────────── */}
       {cartCount > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl px-6 py-4 flex items-center gap-6 max-w-lg w-[calc(100%-2rem)]">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl px-6 py-4 flex items-center gap-6 max-w-lg w-[calc(100%-2rem)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center">
-              <ShoppingCart className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
+              <ShoppingCart className="w-5 h-5 text-[#111111] dark:text-white" />
             </div>
             <div>
-              <p className="text-white font-bold">{cartCount} article{cartCount > 1 ? 's' : ''}</p>
+              <p className="text-[#111111] dark:text-white font-bold">{cartCount} article{cartCount > 1 ? 's' : ''}</p>
               <p className="text-teal-400 text-sm font-semibold">{cartTotal.toFixed(2)} € HT</p>
               {cartSavings > 0 && (
                 <p className="text-emerald-400 text-[11px]">Économie : {cartSavings.toFixed(2)} €</p>

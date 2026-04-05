@@ -44,7 +44,7 @@ const INITIAL_RFQS: MockRFQ[] = [];
 const STATUS_CONFIG: Record<RFQStatus, { label: string; color: string; dot: string }> = {
   ouvert:   { label: 'Ouvert',   color: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30', dot: 'bg-emerald-400' },
   en_cours: { label: 'En cours', color: 'bg-blue-500/15 text-blue-400 border border-blue-500/30',          dot: 'bg-blue-400' },
-  ferme:    { label: 'Fermé',    color: 'bg-slate-700 text-slate-400 border border-slate-600',             dot: 'bg-slate-500' },
+  ferme:    { label: 'Fermé',    color: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] border border-[#E5E7EB] dark:border-[#1A1A1A]',             dot: 'bg-[#F3F4F6] dark:bg-[#171717]' },
 };
 
 function getBestPrice(item: MockItem): number | null {
@@ -113,11 +113,11 @@ function CreateModal({ isOpen, onClose, onCreate }: {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl">
+      <div className="relative w-full max-w-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h2 className="text-lg font-bold text-white">Nouvel appel d'offres</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 transition-colors">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <h2 className="text-lg font-bold text-[#111111] dark:text-white">Nouvel appel d'offres</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -132,32 +132,32 @@ function CreateModal({ isOpen, onClose, onCreate }: {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Titre <span className="text-red-400">*</span></label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">Titre <span className="text-red-400">*</span></label>
             <input
               type="text"
               value={form.title}
               onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
               placeholder="Ex : Commande légumes — Semaine 16"
-              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                <Calendar className="inline w-3.5 h-3.5 mr-1 text-slate-400" />
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">
+                <Calendar className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-[#737373]" />
                 Date limite
               </label>
               <input
                 type="date"
                 value={form.dueDate}
                 onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
-                className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
-                <Users className="inline w-3.5 h-3.5 mr-1 text-slate-400" />
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">
+                <Users className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-[#737373]" />
                 Fournisseurs <span className="text-red-400">*</span>
               </label>
               <input
@@ -165,14 +165,14 @@ function CreateModal({ isOpen, onClose, onCreate }: {
                 value={form.suppliers}
                 onChange={e => setForm(f => ({ ...f, suppliers: e.target.value }))}
                 placeholder="Metro, Pomona, ..."
-                className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-              <Package className="inline w-3.5 h-3.5 mr-1 text-slate-400" />
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">
+              <Package className="inline w-3.5 h-3.5 mr-1 text-[#9CA3AF] dark:text-[#737373]" />
               Produits <span className="text-red-400">*</span>
             </label>
             <textarea
@@ -180,27 +180,27 @@ function CreateModal({ isOpen, onClose, onCreate }: {
               onChange={e => setForm(f => ({ ...f, products: e.target.value }))}
               rows={3}
               placeholder="Ex : Tomates 20kg, Courgettes 15kg, ..."
-              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Notes</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1.5">Notes</label>
             <textarea
               value={form.notes}
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={2}
               placeholder="Instructions pour les fournisseurs..."
-              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 px-6 py-4 border-t border-slate-800">
+        <div className="flex gap-3 px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 border border-slate-700 text-slate-400 rounded-xl text-sm font-medium hover:bg-slate-800 transition-colors"
+            className="flex-1 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] rounded-xl text-sm font-medium hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition-colors"
           >
             Annuler
           </button>
@@ -228,17 +228,17 @@ function RFQCard({ rfq, onDelete, onStatusChange }: {
   const totalItems = rfq.items.length;
 
   return (
-    <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+    <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
       {/* En-tête cliquable */}
       <div
-        className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-slate-800/40 transition-colors"
+        className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
         <div className="flex items-center gap-3 min-w-0">
           <StatusBadge status={rfq.status} />
           <div className="min-w-0">
-            <p className="font-semibold text-white truncate">{rfq.title}</p>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="font-semibold text-[#111111] dark:text-white truncate">{rfq.title}</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">
               {rfq.suppliers.join(', ')} &bull; {totalItems} produit{totalItems > 1 ? 's' : ''}
               {rfq.dueDate && (
                 <span className="ml-1.5 inline-flex items-center gap-1">
@@ -261,13 +261,13 @@ function RFQCard({ rfq, onDelete, onStatusChange }: {
 
           {/* Barre de progression */}
           <div className="hidden sm:flex items-center gap-2">
-            <div className="w-16 h-1.5 rounded-full bg-slate-700 overflow-hidden">
+            <div className="w-16 h-1.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
               <div
                 className="h-full rounded-full bg-blue-500 transition-all"
                 style={{ width: totalItems > 0 ? `${(quotedItems / totalItems) * 100}%` : '0%' }}
               />
             </div>
-            <span className="text-xs text-slate-500 tabular-nums">{quotedItems}/{totalItems}</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] tabular-nums">{quotedItems}/{totalItems}</span>
           </div>
 
           {/* Actions */}
@@ -299,36 +299,36 @@ function RFQCard({ rfq, onDelete, onStatusChange }: {
           </div>
 
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-slate-500" />
+            <ChevronUp className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-slate-500" />
+            <ChevronDown className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
           )}
         </div>
       </div>
 
       {/* Contenu déplié */}
       {expanded && (
-        <div className="border-t border-slate-800 px-5 py-4 space-y-4">
+        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] px-5 py-4 space-y-4">
           {rfq.notes && (
-            <p className="text-sm text-slate-400 italic">{rfq.notes}</p>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">{rfq.notes}</p>
           )}
 
           {rfq.items.map(item => {
             const bestPrice = getBestPrice(item);
             return (
-              <div key={item.id} className="border border-slate-800 rounded-xl overflow-hidden">
+              <div key={item.id} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
                 {/* En-tête produit */}
-                <div className="flex items-center justify-between px-4 py-2.5 bg-slate-800/50">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50">
                   <div className="flex items-center gap-2">
-                    <Tag className="w-3.5 h-3.5 text-slate-500" />
-                    <span className="font-medium text-white text-sm">{item.product}</span>
-                    <span className="text-slate-500 text-xs">— {item.quantity} {item.unit}</span>
+                    <Tag className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3]" />
+                    <span className="font-medium text-[#111111] dark:text-white text-sm">{item.product}</span>
+                    <span className="text-[#6B7280] dark:text-[#A3A3A3] text-xs">— {item.quantity} {item.unit}</span>
                   </div>
-                  <span className="text-[11px] text-slate-600 uppercase tracking-wide">{item.category}</span>
+                  <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{item.category}</span>
                 </div>
 
                 {/* Lignes de devis */}
-                <div className="divide-y divide-slate-800/60">
+                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/60">
                   {item.quotes.map(quote => {
                     const isBest = quote.unitPrice !== null && quote.unitPrice === bestPrice;
                     return (
@@ -344,7 +344,7 @@ function RFQCard({ rfq, onDelete, onStatusChange }: {
                       >
                         {/* Fournisseur */}
                         <div className="w-32 shrink-0">
-                          <p className="text-sm font-medium text-slate-300">{quote.supplier}</p>
+                          <p className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">{quote.supplier}</p>
                           {isBest && !quote.selected && (
                             <span className="text-[10px] text-amber-400 font-medium">Meilleur prix</span>
                           )}
@@ -359,24 +359,24 @@ function RFQCard({ rfq, onDelete, onStatusChange }: {
                         <div className="flex-1">
                           {quote.unitPrice !== null ? (
                             <span className={`text-sm font-semibold ${
-                              isBest ? 'text-amber-400' : quote.selected ? 'text-emerald-400' : 'text-slate-300'
+                              isBest ? 'text-amber-400' : quote.selected ? 'text-emerald-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'
                             }`}>
                               <Euro className="inline w-3.5 h-3.5 mr-0.5" />
                               {quote.unitPrice.toFixed(2)} / {item.unit}
                             </span>
                           ) : (
-                            <span className="text-sm text-slate-600 italic">En attente de devis</span>
+                            <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] italic">En attente de devis</span>
                           )}
                           {quote.notes && (
-                            <span className="ml-3 text-xs text-slate-500">{quote.notes}</span>
+                            <span className="ml-3 text-xs text-[#6B7280] dark:text-[#A3A3A3]">{quote.notes}</span>
                           )}
                         </div>
 
                         {/* Total estimé */}
                         {quote.unitPrice !== null && (
                           <div className="text-right hidden sm:block">
-                            <p className="text-xs text-slate-500">Total estimé</p>
-                            <p className="text-sm font-semibold text-slate-300">
+                            <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Total estimé</p>
+                            <p className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">
                               {(quote.unitPrice * item.quantity).toFixed(2)} €
                             </p>
                           </div>
@@ -451,7 +451,7 @@ export default function RFQPage() {
   const filtered = filterStatus === 'tous' ? rfqs : rfqs.filter(r => r.status === filterStatus);
 
   return (
-    <div className="min-h-screen bg-slate-950 p-4 sm:p-6 space-y-6">
+    <div className="min-h-screen bg-white dark:bg-black p-4 sm:p-6 space-y-6">
       {/* Toast notification */}
       {toast && (
         <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-xl text-sm font-medium transition-all ${
@@ -467,8 +467,8 @@ export default function RFQPage() {
       {/* ── En-tête ──────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Appels d'offres</h1>
-          <p className="text-sm text-slate-400 mt-0.5">
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-white">Appels d'offres</h1>
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
             Comparez les prix fournisseurs et optimisez vos achats
           </p>
         </div>
@@ -483,48 +483,48 @@ export default function RFQPage() {
 
       {/* ── Stats ─────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-emerald-500/10">
               <FileText className="w-4 h-4 text-emerald-400" />
             </div>
-            <span className="text-xs text-slate-500 uppercase tracking-wide font-medium">Ouverts</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide font-medium">Ouverts</span>
           </div>
-          <p className="text-3xl font-bold text-white">{nbOuverts}</p>
-          <p className="text-xs text-slate-500 mt-1">appels actifs</p>
+          <p className="text-3xl font-bold text-[#111111] dark:text-white">{nbOuverts}</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">appels actifs</p>
         </div>
 
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-blue-500/10">
               <Send className="w-4 h-4 text-blue-400" />
             </div>
-            <span className="text-xs text-slate-500 uppercase tracking-wide font-medium">En cours</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide font-medium">En cours</span>
           </div>
-          <p className="text-3xl font-bold text-white">{nbEnCours}</p>
-          <p className="text-xs text-slate-500 mt-1">en négociation</p>
+          <p className="text-3xl font-bold text-[#111111] dark:text-white">{nbEnCours}</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">en négociation</p>
         </div>
 
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-purple-500/10">
               <BarChart3 className="w-4 h-4 text-purple-400" />
             </div>
-            <span className="text-xs text-slate-500 uppercase tracking-wide font-medium">Devis reçus</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide font-medium">Devis reçus</span>
           </div>
-          <p className="text-3xl font-bold text-white">{nbSoumissions}</p>
-          <p className="text-xs text-slate-500 mt-1">soumissions totales</p>
+          <p className="text-3xl font-bold text-[#111111] dark:text-white">{nbSoumissions}</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">soumissions totales</p>
         </div>
 
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-amber-500/10">
               <TrendingDown className="w-4 h-4 text-amber-400" />
             </div>
-            <span className="text-xs text-slate-500 uppercase tracking-wide font-medium">Économies</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide font-medium">Économies</span>
           </div>
           <p className="text-3xl font-bold text-emerald-400">{totalSavings.toFixed(0)} €</p>
-          <p className="text-xs text-slate-500 mt-1">estimées vs. prix max</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">estimées vs. prix max</p>
         </div>
       </div>
 
@@ -537,7 +537,7 @@ export default function RFQPage() {
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               filterStatus === f
                 ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white'
             }`}
           >
             {f === 'tous' ? 'Tous' : STATUS_CONFIG[f].label}
@@ -551,11 +551,11 @@ export default function RFQPage() {
       {/* ── Liste des appels d'offres ─────────────────────────────────────── */}
       {filtered.length === 0 ? (
         <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-4">
-            <FileText className="w-8 h-8 text-slate-600" />
+          <div className="w-16 h-16 rounded-2xl bg-[#FAFAFA] dark:bg-[#0A0A0A] flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-8 h-8 text-[#6B7280] dark:text-[#A3A3A3]" />
           </div>
-          <p className="text-slate-400 font-medium">Aucun appel d'offres</p>
-          <p className="text-slate-600 text-sm mt-1">
+          <p className="text-[#9CA3AF] dark:text-[#737373] font-medium">Aucun appel d'offres</p>
+          <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm mt-1">
             {filterStatus !== 'tous' ? 'Aucun résultat pour ce filtre.' : 'Créez votre premier appel d\'offres pour comparer les prix.'}
           </p>
           {filterStatus === 'tous' && (

@@ -87,7 +87,7 @@ export default function Restaurants() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-slate-400">Chargement...</div>
+        <div className="text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>
       </div>
     );
   }
@@ -97,8 +97,8 @@ export default function Restaurants() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Mes Restaurants</h2>
-          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
+          <h2 className="text-2xl font-bold text-[#111111] dark:text-white">Mes Restaurants</h2>
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
             Gérez vos établissements et basculez entre eux
           </p>
         </div>
@@ -119,10 +119,10 @@ export default function Restaurants() {
             <div
               key={r.id}
               onClick={() => switchRestaurant(r.id)}
-              className={`relative bg-white dark:bg-slate-800 rounded-xl shadow-sm border-2 transition-all cursor-pointer hover:shadow-md ${
+              className={`relative bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border-2 transition-all cursor-pointer hover:shadow-md ${
                 isSelected
                   ? 'border-blue-500 dark:border-blue-400 ring-2 ring-blue-200 dark:ring-blue-800'
-                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:border-[#1A1A1A] dark:hover:border-[#1A1A1A]'
               }`}
             >
               {/* Selected badge */}
@@ -137,12 +137,12 @@ export default function Restaurants() {
                 {/* Top row: name + actions */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2.5 rounded-lg ${isSelected ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-slate-100 dark:bg-slate-700'}`}>
-                      <Building2 className={`w-5 h-5 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-400'}`} />
+                    <div className={`p-2.5 rounded-lg ${isSelected ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`}>
+                      <Building2 className={`w-5 h-5 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">{r.name}</h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300">
+                      <h3 className="font-semibold text-[#111111] dark:text-white">{r.name}</h3>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
                         {r.cuisineType || '—'}
                       </span>
                     </div>
@@ -150,14 +150,14 @@ export default function Restaurants() {
                   <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => openEdit(r)}
-                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       title="Modifier"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(r.id, r.name)}
-                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-red-600 dark:hover:text-red-400 transition-colors"
                       title="Supprimer"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -167,42 +167,42 @@ export default function Restaurants() {
 
                 {/* Info rows */}
                 <div className="space-y-1.5 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373]">
                     <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                     {r.address || '—'}
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373]">
                     <Phone className="w-3.5 h-3.5 flex-shrink-0" />
                     {r.phone || '—'}
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-slate-400 dark:text-slate-400">
+                  <div className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373]">
                     <Users className="w-3.5 h-3.5 flex-shrink-0" />
                     {r.coversPerDay} couverts/jour
                   </div>
                 </div>
 
                 {/* Stats row */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
+                    <div className="flex items-center justify-center gap-1 text-[#9CA3AF] dark:text-[#737373] mb-0.5">
                       <ClipboardList className="w-3.5 h-3.5" />
                     </div>
-                    <div className="text-lg font-bold text-slate-800 dark:text-slate-100">{r._count?.recipes ?? 0}</div>
-                    <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide">Recettes</div>
+                    <div className="text-lg font-bold text-[#111111] dark:text-white">{r._count?.recipes ?? 0}</div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Recettes</div>
                   </div>
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
+                    <div className="flex items-center justify-center gap-1 text-[#9CA3AF] dark:text-[#737373] mb-0.5">
                       <Package className="w-3.5 h-3.5" />
                     </div>
                     <div className="text-lg font-bold text-green-600 dark:text-green-400">{r._count?.ingredients ?? 0}</div>
-                    <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide">Ingrédients</div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Ingrédients</div>
                   </div>
                   <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-slate-400 dark:text-slate-500 mb-0.5">
+                    <div className="flex items-center justify-center gap-1 text-[#9CA3AF] dark:text-[#737373] mb-0.5">
                       <Truck className="w-3.5 h-3.5" />
                     </div>
                     <div className="text-lg font-bold text-blue-600 dark:text-blue-400">{r._count?.suppliers ?? 0}</div>
-                    <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wide">Fournisseurs</div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Fournisseurs</div>
                   </div>
                 </div>
               </div>
@@ -215,28 +215,28 @@ export default function Restaurants() {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingId ? 'Modifier le restaurant' : 'Ajouter un restaurant'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Nom du restaurant *</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nom du restaurant *</label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
               <input
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 placeholder="Ex: Le Bistrot de Youssef"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Adresse</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Adresse</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
               <input
                 type="text"
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 placeholder="25 rue de la Paix, Paris"
               />
             </div>
@@ -244,27 +244,27 @@ export default function Restaurants() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Type de cuisine</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Type de cuisine</label>
               <div className="relative">
-                <ChefHat className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <ChefHat className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
                 <input
                   type="text"
                   value={form.cuisineType}
                   onChange={(e) => setForm({ ...form, cuisineType: e.target.value })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   placeholder="Cuisine française"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Téléphone</label>
+              <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Téléphone</label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
                 <input
                   type="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   placeholder="01 42 00 00 00"
                 />
               </div>
@@ -272,15 +272,15 @@ export default function Restaurants() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">Couverts par jour</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Couverts par jour</label>
             <div className="relative">
-              <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
               <input
                 type="number"
                 min={0}
                 value={form.coversPerDay || ''}
                 onChange={(e) => setForm({ ...form, coversPerDay: parseInt(e.target.value) || 0 })}
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 placeholder="80"
               />
             </div>
@@ -290,7 +290,7 @@ export default function Restaurants() {
             <button
               type="button"
               onClick={() => setShowModal(false)}
-              className="px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-colors"
+              className="px-4 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:hover:bg-[#171717] text-sm font-medium transition-colors"
             >
               Annuler
             </button>

@@ -328,7 +328,7 @@ export default function AIAssistant() {
       const parts = line.split(/(\*\*[^*]+\*\*)/).map((part, j) => {
         if (part.startsWith('**') && part.endsWith('**')) {
           return (
-            <strong key={j} className="font-semibold text-white">
+            <strong key={j} className="font-semibold text-[#111111] dark:text-white">
               {part.slice(2, -2)}
             </strong>
           );
@@ -368,12 +368,12 @@ export default function AIAssistant() {
                 <p className={`text-sm font-medium ${action.success ? 'text-emerald-300' : 'text-red-300'}`}>
                   {getActionLabel(action.type)}
                 </p>
-                <p className="text-xs text-slate-400 truncate">{action.message}</p>
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{action.message}</p>
               </div>
               {action.success && route && (
                 <button
                   onClick={() => navigate(route)}
-                  className="flex items-center gap-1 px-2.5 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex-shrink-0"
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#111111] dark:text-white rounded-lg transition-colors flex-shrink-0"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Voir
@@ -395,8 +395,8 @@ export default function AIAssistant() {
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Assistant IA RestauMargin</h1>
-            <p className="text-sm text-slate-400">Analyse vos donnees et agit sur votre restaurant</p>
+            <h1 className="text-2xl font-bold text-[#111111] dark:text-white">Assistant IA RestauMargin</h1>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Analyse vos donnees et agit sur votre restaurant</p>
           </div>
           <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
             <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
@@ -407,17 +407,17 @@ export default function AIAssistant() {
 
       {/* AI Quota Bar */}
       {aiUsage && (
-        <div className="mb-4 bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+        <div className="mb-4 bg-white/50 dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-teal-400" />
-              <span className="text-sm font-medium text-slate-300">
+              <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
                 Quota IA : {aiUsage.used}/{aiUsage.limit} requetes ce mois ({aiUsage.percentage}%)
               </span>
             </div>
-            <span className="text-xs text-slate-500">{aiUsage.month}</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{aiUsage.month}</span>
           </div>
-          <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+          <div className="w-full h-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 ease-out ${
                 aiUsage.percentage > 80
@@ -438,7 +438,7 @@ export default function AIAssistant() {
       )}
 
       {/* Chat container */}
-      <div className="flex-1 flex flex-col bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+      <div className="flex-1 flex flex-col bg-white/50 dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
         {/* Messages area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((msg) => (
@@ -463,7 +463,7 @@ export default function AIAssistant() {
                 className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   msg.role === 'user'
                     ? 'bg-blue-600 text-white rounded-br-md'
-                    : 'bg-slate-800 text-slate-300 rounded-bl-md border border-slate-700/50'
+                    : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] rounded-bl-md border border-[#E5E7EB] dark:border-[#1A1A1A]/50'
                 }`}
               >
                 {msg.image && (
@@ -477,7 +477,7 @@ export default function AIAssistant() {
                 {msg.actions && msg.actions.length > 0 && renderActions(msg.actions)}
                 <div
                   className={`text-[10px] mt-2 ${
-                    msg.role === 'user' ? 'text-blue-200' : 'text-slate-400'
+                    msg.role === 'user' ? 'text-blue-200' : 'text-[#9CA3AF] dark:text-[#737373]'
                   }`}
                 >
                   {msg.timestamp.toLocaleTimeString('fr-FR', {
@@ -494,14 +494,14 @@ export default function AIAssistant() {
               <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
                 <Bot className="w-4 h-4 text-white" />
               </div>
-              <div className="bg-slate-800 border border-slate-700/50 rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 rounded-2xl rounded-bl-md px-4 py-3">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1.5 items-center h-5">
                     <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0ms]" />
                     <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:150ms]" />
                     <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:300ms]" />
                   </div>
-                  <span className="text-xs text-slate-400">Analyse en cours...</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse en cours...</span>
                 </div>
               </div>
             </div>
@@ -515,7 +515,7 @@ export default function AIAssistant() {
           <div className="px-4 pb-2">
             <div className="flex items-center gap-2 mb-2">
               <Lightbulb className="w-3.5 h-3.5 text-yellow-400" />
-              <span className="text-xs text-slate-400 font-medium">Essayez ces actions</span>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Essayez ces actions</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {QUICK_SUGGESTIONS.map((s) => {
@@ -524,7 +524,7 @@ export default function AIAssistant() {
                   <button
                     key={s.label}
                     onClick={() => handleSend(s.label)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-600 rounded-full transition-all duration-200"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:hover:border-[#1A1A1A] rounded-full transition-all duration-200"
                   >
                     <Icon className="w-3 h-3" />
                     {s.label}
@@ -536,7 +536,7 @@ export default function AIAssistant() {
         )}
 
         {/* Input bar */}
-        <div className="border-t border-slate-800 p-3">
+        <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
           {/* Pending image preview */}
           {pendingImage && (
             <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-teal-500/10 border border-teal-500/20 rounded-xl">
@@ -600,7 +600,7 @@ export default function AIAssistant() {
                 disabled={quotaReached}
                 placeholder={quotaReached ? 'Quota IA mensuel atteint' : isListening ? 'Parlez maintenant...' : 'Demandez-moi de creer une recette, ajouter un ingredient...'}
                 rows={1}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pr-12 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 resize-none transition-all"
+                className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl px-4 py-3 pr-12 text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 resize-none transition-all"
                 style={{ minHeight: '44px', maxHeight: '120px' }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
@@ -609,7 +609,7 @@ export default function AIAssistant() {
                 }}
               />
               <div className="absolute right-2 bottom-1.5 flex items-center gap-1">
-                <MessageSquare className="w-3.5 h-3.5 text-slate-300" />
+                <MessageSquare className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3]" />
               </div>
             </div>
 
@@ -618,7 +618,7 @@ export default function AIAssistant() {
               onClick={handlePhotoCapture}
               disabled={quotaReached || isTyping}
               title="Prendre une photo d'ingredient"
-              className="flex-shrink-0 p-3 bg-teal-600 hover:bg-teal-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+              className="flex-shrink-0 p-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#F3F4F6] dark:bg-[#171717] disabled:text-[#6B7280] dark:text-[#A3A3A3] text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
             >
               <Camera className="w-5 h-5" />
             </button>
@@ -631,7 +631,7 @@ export default function AIAssistant() {
                 className={`flex-shrink-0 p-3 rounded-xl transition-all duration-200 ${
                   isListening
                     ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                    : 'bg-teal-600 hover:bg-teal-500'
+                    : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5]'
                 } text-white`}
               >
                 {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
@@ -640,7 +640,7 @@ export default function AIAssistant() {
               <button
                 disabled
                 title="Non supporte par votre navigateur"
-                className="flex-shrink-0 p-3 rounded-xl bg-slate-700 text-slate-500 cursor-not-allowed"
+                className="flex-shrink-0 p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] cursor-not-allowed"
               >
                 <MicOff className="w-5 h-5" />
               </button>
@@ -652,12 +652,12 @@ export default function AIAssistant() {
                 handleSend();
               }}
               disabled={(!input.trim() && !pendingImage) || isTyping || quotaReached}
-              className="flex-shrink-0 p-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+              className="flex-shrink-0 p-3 bg-blue-600 hover:bg-blue-700 disabled:bg-[#F3F4F6] dark:bg-[#171717] disabled:text-[#6B7280] dark:text-[#A3A3A3] text-white rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-[10px] text-slate-300 mt-2 text-center">
+          <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-center">
             Assistant IA RestauMargin — Analyse et agit sur votre restaurant
           </p>
         </div>

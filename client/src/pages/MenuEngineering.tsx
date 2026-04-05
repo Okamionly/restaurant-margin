@@ -171,7 +171,7 @@ const ALLERGEN_COLORS: Record<string, string> = {
 
 function getAllergenColor(allergen: string): string {
   const key = allergen.toLowerCase().trim();
-  return ALLERGEN_COLORS[key] || 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300';
+  return ALLERGEN_COLORS[key] || 'bg-[#F5F5F5] text-[#111111] dark:bg-[#171717] dark:text-[#A3A3A3]';
 }
 
 function getRecipeAllergens(recipe: Recipe): string[] {
@@ -347,17 +347,17 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
         {[0.25, 0.5, 0.75, 1].map(t => (
           <g key={`grid-${t}`}>
             <line x1={padding.left} y1={padding.top + plotH * (1 - t)} x2={padding.left + plotW} y2={padding.top + plotH * (1 - t)}
-              stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth={0.5} strokeDasharray="4,4" />
+              stroke="currentColor" className="text-[#111111] dark:text-white dark:text-[#1A1A1A]" strokeWidth={0.5} strokeDasharray="4,4" />
             <line x1={padding.left + plotW * t} y1={padding.top} x2={padding.left + plotW * t} y2={padding.top + plotH}
-              stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth={0.5} strokeDasharray="4,4" />
+              stroke="currentColor" className="text-[#111111] dark:text-white dark:text-[#1A1A1A]" strokeWidth={0.5} strokeDasharray="4,4" />
           </g>
         ))}
 
         {/* Average lines */}
         <line x1={avgPopX} y1={padding.top} x2={avgPopX} y2={padding.top + plotH}
-          stroke="currentColor" className="text-slate-400 dark:text-slate-500" strokeWidth={1.5} strokeDasharray="6,4" />
+          stroke="currentColor" className="text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]" strokeWidth={1.5} strokeDasharray="6,4" />
         <line x1={padding.left} y1={avgMarginY} x2={padding.left + plotW} y2={avgMarginY}
-          stroke="currentColor" className="text-slate-400 dark:text-slate-500" strokeWidth={1.5} strokeDasharray="6,4" />
+          stroke="currentColor" className="text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]" strokeWidth={1.5} strokeDasharray="6,4" />
 
         {/* Quadrant labels */}
         <text x={padding.left + 8} y={padding.top + 18} className="fill-teal-400 dark:fill-teal-500" fontSize={11} fontWeight={600}>
@@ -375,15 +375,15 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
         {/* Axes */}
         <line x1={padding.left} y1={padding.top + plotH} x2={padding.left + plotW} y2={padding.top + plotH}
-          stroke="currentColor" className="text-slate-300 dark:text-slate-600" strokeWidth={1} />
+          stroke="currentColor" className="text-[#6B7280] dark:text-[#A3A3A3] dark:text-[#1A1A1A]" strokeWidth={1} />
         <line x1={padding.left} y1={padding.top} x2={padding.left} y2={padding.top + plotH}
-          stroke="currentColor" className="text-slate-300 dark:text-slate-600" strokeWidth={1} />
+          stroke="currentColor" className="text-[#6B7280] dark:text-[#A3A3A3] dark:text-[#1A1A1A]" strokeWidth={1} />
 
         {/* Axis labels */}
-        <text x={padding.left + plotW / 2} y={height - 8} className="fill-slate-500 dark:fill-slate-400" fontSize={12} textAnchor="middle" fontWeight={500}>
+        <text x={padding.left + plotW / 2} y={height - 8} className="fill-[#6B7280] dark:fill-[#9CA3AF]" fontSize={12} textAnchor="middle" fontWeight={500}>
           Popularité (ventes)
         </text>
-        <text x={14} y={padding.top + plotH / 2} className="fill-slate-500 dark:fill-slate-400" fontSize={12}
+        <text x={14} y={padding.top + plotH / 2} className="fill-[#6B7280] dark:fill-[#9CA3AF]" fontSize={12}
           textAnchor="middle" fontWeight={500} transform={`rotate(-90, 14, ${padding.top + plotH / 2})`}>
           Marge (%)
         </text>
@@ -391,7 +391,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
         {/* Y-axis ticks */}
         {[0, 0.25, 0.5, 0.75, 1].map(t => (
           <text key={`y-${t}`} x={padding.left - 8} y={padding.top + plotH * (1 - t) + 4}
-            className="fill-slate-400 dark:fill-slate-500" fontSize={10} textAnchor="end">
+            className="fill-[#9CA3AF] dark:fill-[#6B7280]" fontSize={10} textAnchor="end">
             {fmt(maxMargin * t, 0)}%
           </text>
         ))}
@@ -399,7 +399,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
         {/* X-axis ticks */}
         {[0, 0.25, 0.5, 0.75, 1].map(t => (
           <text key={`x-${t}`} x={padding.left + plotW * t} y={padding.top + plotH + 18}
-            className="fill-slate-400 dark:fill-slate-500" fontSize={10} textAnchor="middle">
+            className="fill-[#9CA3AF] dark:fill-[#6B7280]" fontSize={10} textAnchor="middle">
             {fmt(maxPop * t, 0)}
           </text>
         ))}
@@ -424,7 +424,7 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
                 className="transition-all duration-150" />
               {isHovered && (
                 <text x={cx} y={cy - r - 6} textAnchor="middle"
-                  className="fill-slate-800 dark:fill-slate-100" fontSize={11} fontWeight={600}>
+                  className="fill-[#111111] dark:fill-white" fontSize={11} fontWeight={600}>
                   {item.name}
                 </text>
               )}
@@ -434,33 +434,33 @@ function BCGMatrix({ items }: { items: EngineeringItem[] }) {
 
         {/* Border */}
         <rect x={padding.left} y={padding.top} width={plotW} height={plotH}
-          fill="none" stroke="currentColor" className="text-slate-200 dark:text-slate-700" strokeWidth={1} />
+          fill="none" stroke="currentColor" className="text-[#111111] dark:text-white dark:text-[#1A1A1A]" strokeWidth={1} />
       </svg>
 
       {/* Floating tooltip */}
       {hovered && (
         <div
-          className="absolute z-50 pointer-events-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl px-4 py-3 text-sm max-w-xs"
+          className="absolute z-50 pointer-events-none bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl px-4 py-3 text-sm max-w-xs"
           style={{
             left: Math.min(tooltipPos.x + 16, 500),
             top: tooltipPos.y - 10,
           }}
         >
-          <div className="font-bold text-slate-900 dark:text-white mb-1">{hovered.name}</div>
-          <div className="text-slate-400 dark:text-slate-400 text-xs mb-2">{hovered.category}</div>
+          <div className="font-bold text-[#111111] dark:text-white mb-1">{hovered.name}</div>
+          <div className="text-[#9CA3AF] dark:text-[#737373] text-xs mb-2">{hovered.category}</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-            <span className="text-slate-400 dark:text-slate-400">Prix vente:</span>
-            <span className="font-medium text-slate-400 dark:text-slate-200">{fmtEur(hovered.sellingPrice)}</span>
-            <span className="text-slate-400 dark:text-slate-400">Coût:</span>
-            <span className="font-medium text-slate-400 dark:text-slate-200">{fmtEur(hovered.costPerPortion)}</span>
-            <span className="text-slate-400 dark:text-slate-400">Marge:</span>
-            <span className="font-medium text-slate-400 dark:text-slate-200">{fmt(hovered.marginPercent, 1)}%</span>
-            <span className="text-slate-400 dark:text-slate-400">Ventes:</span>
-            <span className="font-medium text-slate-400 dark:text-slate-200">{hovered.salesQty}</span>
-            <span className="text-slate-400 dark:text-slate-400">CA:</span>
-            <span className="font-medium text-slate-400 dark:text-slate-200">{fmtEur(hovered.salesRevenue)}</span>
+            <span className="text-[#9CA3AF] dark:text-[#737373]">Prix vente:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(hovered.sellingPrice)}</span>
+            <span className="text-[#9CA3AF] dark:text-[#737373]">Coût:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(hovered.costPerPortion)}</span>
+            <span className="text-[#9CA3AF] dark:text-[#737373]">Marge:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmt(hovered.marginPercent, 1)}%</span>
+            <span className="text-[#9CA3AF] dark:text-[#737373]">Ventes:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{hovered.salesQty}</span>
+            <span className="text-[#9CA3AF] dark:text-[#737373]">CA:</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(hovered.salesRevenue)}</span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+          <div className="mt-2 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).badge}`}>
               {(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).emoji} {(QUADRANT_CONFIG[hovered.quadrant] || QUADRANT_CONFIG['star']).action}
             </span>
@@ -757,7 +757,7 @@ export default function MenuEngineering() {
   }, [recipes]);
 
   const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />;
+    if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />;
     return sortDir === 'asc'
       ? <ArrowUp className="w-3.5 h-3.5 text-teal-500" />
       : <ArrowDown className="w-3.5 h-3.5 text-teal-500" />;
@@ -765,19 +765,19 @@ export default function MenuEngineering() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-[#FAFAFA] via-white to-[#F5F5F5] dark:from-black dark:via-black dark:to-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
         {/* ── Header ───────────────────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
               <div className="p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl text-white shadow-lg">
                 <BarChart3 className="w-6 h-6" />
               </div>
               {t('menuEngineering.title')}
             </h1>
-            <p className="text-slate-400 dark:text-slate-400 mt-1">
+            <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">
               {t('menuEngineering.subtitle')}
             </p>
           </div>
@@ -790,7 +790,7 @@ export default function MenuEngineering() {
             </button>
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-400 dark:text-slate-200 rounded-xl font-medium text-sm transition-all no-print"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] dark:text-white rounded-xl font-medium text-sm transition-all no-print"
             >
               <Printer className="w-4 h-4" /> {t('menuEngineering.print')}
             </button>
@@ -799,7 +799,7 @@ export default function MenuEngineering() {
 
         {/* ── Period selector ──────────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 shadow-sm">
+          <div className="flex items-center gap-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-1 shadow-sm">
             {(['7', '30', '90'] as Period[]).map(p => (
               <button
                 key={p}
@@ -807,7 +807,7 @@ export default function MenuEngineering() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   period === p
                     ? 'bg-violet-600 text-white shadow-md'
-                    : 'text-slate-300 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'
                 }`}
               >
                 {p}j
@@ -818,7 +818,7 @@ export default function MenuEngineering() {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
                 period === 'custom'
                   ? 'bg-violet-600 text-white shadow-md'
-                  : 'text-slate-300 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'
               }`}
             >
               <Calendar className="w-3.5 h-3.5" /> {t('menuEngineering.custom')}
@@ -831,14 +831,14 @@ export default function MenuEngineering() {
                 type="date"
                 value={customFrom}
                 onChange={e => setCustomFrom(e.target.value)}
-                className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200 text-sm"
+                className="px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white text-sm"
               />
-              <span className="text-slate-400">→</span>
+              <span className="text-[#9CA3AF] dark:text-[#737373]">→</span>
               <input
                 type="date"
                 value={customTo}
                 onChange={e => setCustomTo(e.target.value)}
-                className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200 text-sm"
+                className="px-3 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white text-sm"
               />
               <button
                 onClick={fetchData}
@@ -854,7 +854,7 @@ export default function MenuEngineering() {
         {loading && (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
-            <span className="ml-3 text-slate-400 dark:text-slate-400">{t('menuEngineering.loadingAnalysis')}</span>
+            <span className="ml-3 text-[#9CA3AF] dark:text-[#737373]">{t('menuEngineering.loadingAnalysis')}</span>
           </div>
         )}
 
@@ -903,15 +903,15 @@ export default function MenuEngineering() {
                     className={`text-left p-4 rounded-xl border-2 transition-all ${
                       filterQuadrant === q
                         ? `${cfg.border} ${cfg.bg} ring-2 ring-offset-1 ring-${cfg.color}-400/50`
-                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
+                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:border-[#E5E7EB] dark:hover:border-[#1A1A1A]'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xl">{cfg.emoji}</span>
                       <span className={`text-2xl font-bold ${cfg.text}`}>{quadrantCounts[q]}</span>
                     </div>
-                    <div className="font-semibold text-sm text-slate-800 dark:text-slate-200">{cfg.label}</div>
-                    <div className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">{cfg.desc}</div>
+                    <div className="font-semibold text-sm text-[#111111] dark:text-white">{cfg.label}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{cfg.desc}</div>
                     <div className={`mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${cfg.badge}`}>
                       {cfg.action}
                     </div>
@@ -921,18 +921,18 @@ export default function MenuEngineering() {
             </div>
 
             {/* ── BCG Matrix ──────────────────────────────────────────────── */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
                     <Target className="w-5 h-5 text-violet-500" />
                     {t('menuEngineering.bcgMatrix')}
                   </h2>
-                  <p className="text-sm text-slate-400 dark:text-slate-400 mt-0.5">
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
                     {t('menuEngineering.bcgDescription')}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-slate-400 dark:text-slate-400">
+                <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Vedettes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-teal-500" /> Énigmes</span>
                   <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Valeurs sûres</span>
@@ -943,7 +943,7 @@ export default function MenuEngineering() {
               {items.length > 0 ? (
                 <BCGMatrix items={items} />
               ) : (
-                <div className="text-center py-16 text-slate-400 dark:text-slate-500">
+                <div className="text-center py-16 text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]">
                   <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p className="font-medium">{t('menuEngineering.addRecipesAndSales')}</p>
                   <p className="text-sm mt-1">{t('menuEngineering.createRecipesHint')}</p>
@@ -952,9 +952,9 @@ export default function MenuEngineering() {
             </div>
 
             {/* ── Detailed table ───────────────────────────────────────────── */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
                   <Award className="w-5 h-5 text-violet-500" />
                   {t('menuEngineering.detailByRecipe')}
                 </h2>
@@ -962,7 +962,7 @@ export default function MenuEngineering() {
                   <select
                     value={filterQuadrant}
                     onChange={e => setFilterQuadrant(e.target.value as Quadrant | 'all')}
-                    className="px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-sm text-slate-400 dark:text-slate-200"
+                    className="px-3 py-1.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-sm text-[#9CA3AF] dark:text-[#737373] dark:text-white"
                   >
                     <option value="all">{t('menuEngineering.allQuadrants')}</option>
                     {(Object.keys(QUADRANT_CONFIG) as Quadrant[]).map(q => (
@@ -975,7 +975,7 @@ export default function MenuEngineering() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-900/50">
+                    <tr className="bg-[#FAFAFA] dark:bg-black/50">
                       {[
                         { field: 'name' as SortField, label: 'Nom' },
                         { field: 'category' as SortField, label: 'Catégorie' },
@@ -990,7 +990,7 @@ export default function MenuEngineering() {
                         <th
                           key={col.field}
                           onClick={() => handleSort(col.field)}
-                          className="px-4 py-3 text-left text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 transition-colors select-none"
+                          className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider cursor-pointer hover:text-[#111111] dark:hover:text-[#111111] dark:text-white transition-colors select-none"
                         >
                           <span className="inline-flex items-center gap-1">
                             {col.label}
@@ -998,21 +998,21 @@ export default function MenuEngineering() {
                           </span>
                         </th>
                       ))}
-                      <th className="px-4 py-3 text-center text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
                         Score
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
                         Allergènes
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
                         Action
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                  <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
                     {sortedItems.length === 0 ? (
                       <tr>
-                        <td colSpan={12} className="px-4 py-12 text-center text-slate-400 dark:text-slate-500">
+                        <td colSpan={12} className="px-4 py-12 text-center text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3]">
                           {t('menuEngineering.noDishFound')}
                         </td>
                       </tr>
@@ -1022,29 +1022,29 @@ export default function MenuEngineering() {
                         const score = computeProfitabilityScore(item, maxSalesQty);
                         const allergens = recipeAllergens[item.id] || [];
                         return (
-                          <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="px-4 py-3 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                          <tr key={item.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/50 transition-colors">
+                            <td className="px-4 py-3 font-medium text-[#111111] dark:text-white whitespace-nowrap">
                               {item.name}
                             </td>
-                            <td className="px-4 py-3 text-slate-300 dark:text-slate-300">
+                            <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">
                               {item.category}
                             </td>
-                            <td className="px-4 py-3 text-slate-400 dark:text-slate-200 font-mono text-right">
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-right">
                               {fmtEur(item.sellingPrice)}
                             </td>
-                            <td className="px-4 py-3 text-slate-400 dark:text-slate-200 font-mono text-right">
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-right">
                               {fmtEur(item.costPerPortion)}
                             </td>
-                            <td className="px-4 py-3 font-mono text-right font-medium text-slate-900 dark:text-white">
+                            <td className="px-4 py-3 font-mono text-right font-medium text-[#111111] dark:text-white">
                               {fmtEur(item.margin)}
                             </td>
                             <td className="px-4 py-3 text-right">
                               <MarginBadge percent={item.marginPercent} />
                             </td>
-                            <td className="px-4 py-3 text-slate-400 dark:text-slate-200 font-mono text-right">
+                            <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-right">
                               {item.salesQty}
                             </td>
-                            <td className="px-4 py-3 font-mono text-right font-medium text-slate-900 dark:text-white">
+                            <td className="px-4 py-3 font-mono text-right font-medium text-[#111111] dark:text-white">
                               {fmtEur(item.salesRevenue)}
                             </td>
                             <td className="px-4 py-3">
@@ -1071,7 +1071,7 @@ export default function MenuEngineering() {
                                     ))}
                                   </>
                                 ) : (
-                                  <span className="text-xs text-slate-400">-</span>
+                                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">-</span>
                                 )}
                               </div>
                             </td>
@@ -1095,16 +1095,16 @@ export default function MenuEngineering() {
 
             {/* ── AI Recommendations ─────────────────────────────────────────── */}
             {recommendations.length > 0 && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="p-2.5 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl text-white shadow-lg">
                     <Lightbulb className="w-5 h-5" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">
                       {t('menuEngineering.aiRecommendations')}
                     </h2>
-                    <p className="text-sm text-slate-400 dark:text-slate-400">
+                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
                       {t('menuEngineering.aiRecommendationsDesc')}
                     </p>
                   </div>
@@ -1124,7 +1124,7 @@ export default function MenuEngineering() {
                         className={`flex items-start gap-3 p-4 rounded-xl border-l-4 ${borderColors[tip.type]}`}
                       >
                         <span className="text-xl flex-shrink-0 mt-0.5">{tip.icon}</span>
-                        <p className="text-sm text-slate-400 dark:text-slate-200 leading-relaxed">
+                        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] dark:text-white leading-relaxed">
                           {tip.text}
                         </p>
                       </div>
@@ -1135,16 +1135,16 @@ export default function MenuEngineering() {
             )}
 
             {/* ── Score Legend ────────────────────────────────────────────────── */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2.5 bg-gradient-to-br from-teal-500 to-indigo-600 rounded-xl text-white shadow-lg">
                   <Shield className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                  <h2 className="text-lg font-bold text-[#111111] dark:text-white">
                     {t('menuEngineering.scoreLegend')}
                   </h2>
-                  <p className="text-sm text-slate-400 dark:text-slate-400">
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
                     {t('menuEngineering.scoreLegendDesc')}
                   </p>
                 </div>
@@ -1182,11 +1182,11 @@ export default function MenuEngineering() {
         <div className="space-y-5">
           {/* Recipe selector */}
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.recipe')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.recipe')}</label>
             <select
               value={whatIfRecipeId}
               onChange={e => { setWhatIfRecipeId(e.target.value ? Number(e.target.value) : ''); setWhatIfPriceAdjust(0); }}
-              className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200"
+              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
             >
               <option value="">{t('menuEngineering.selectRecipe')}</option>
               {items.map(r => (
@@ -1199,8 +1199,8 @@ export default function MenuEngineering() {
           {whatIfRecipeId && whatIfData && (
             <>
               <div>
-                <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-2">
-                  Ajustement du prix: <span className={`font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600' : whatIfPriceAdjust < 0 ? 'text-red-600' : 'text-slate-300'}`}>
+                <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-2">
+                  Ajustement du prix: <span className={`font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600' : whatIfPriceAdjust < 0 ? 'text-red-600' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                     {whatIfPriceAdjust > 0 ? '+' : ''}{whatIfPriceAdjust}%
                   </span>
                 </label>
@@ -1211,9 +1211,9 @@ export default function MenuEngineering() {
                   step={1}
                   value={whatIfPriceAdjust}
                   onChange={e => setWhatIfPriceAdjust(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                  className="w-full h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-violet-600"
                 />
-                <div className="flex justify-between text-xs text-slate-400 mt-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                   <span>-30%</span>
                   <span>0%</span>
                   <span>+30%</span>
@@ -1221,49 +1221,49 @@ export default function MenuEngineering() {
               </div>
 
               {/* Results */}
-              <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 space-y-3">
+              <div className="bg-[#FAFAFA] dark:bg-black/50 rounded-xl p-4 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
                   {/* Price comparison */}
                   <div className="space-y-1">
-                    <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold">Prix actuel</div>
-                    <div className="text-lg font-bold text-slate-400 dark:text-slate-200">{fmtEur(whatIfData.originalPrice)}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Prix actuel</div>
+                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmtEur(whatIfData.originalPrice)}</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold">Nouveau prix</div>
-                    <div className={`text-lg font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfPriceAdjust < 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-400 dark:text-slate-200'}`}>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Nouveau prix</div>
+                    <div className={`text-lg font-bold ${whatIfPriceAdjust > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfPriceAdjust < 0 ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373] dark:text-white'}`}>
                       {fmtEur(whatIfData.newPrice)}
                     </div>
                   </div>
 
                   {/* Margin comparison */}
                   <div className="space-y-1">
-                    <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold">Marge actuelle</div>
-                    <div className="text-lg font-bold text-slate-400 dark:text-slate-200">{fmt(whatIfData.originalMarginPercent, 1)}%</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Marge actuelle</div>
+                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmt(whatIfData.originalMarginPercent, 1)}%</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold">Nouvelle marge</div>
-                    <div className={`text-lg font-bold ${whatIfData.newMarginPercent > whatIfData.originalMarginPercent ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newMarginPercent < whatIfData.originalMarginPercent ? 'text-red-600 dark:text-red-400' : 'text-slate-400 dark:text-slate-200'}`}>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Nouvelle marge</div>
+                    <div className={`text-lg font-bold ${whatIfData.newMarginPercent > whatIfData.originalMarginPercent ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newMarginPercent < whatIfData.originalMarginPercent ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373] dark:text-white'}`}>
                       {fmt(whatIfData.newMarginPercent, 1)}%
                     </div>
                   </div>
 
                   {/* Food cost ratio */}
                   <div className="space-y-1">
-                    <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold">Ratio coût matière</div>
-                    <div className="text-lg font-bold text-slate-400 dark:text-slate-200">{fmt(whatIfData.originalFoodCostRatio, 1)}%</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Ratio coût matière</div>
+                    <div className="text-lg font-bold text-[#9CA3AF] dark:text-[#737373] dark:text-white">{fmt(whatIfData.originalFoodCostRatio, 1)}%</div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold">Nouveau ratio</div>
-                    <div className={`text-lg font-bold ${whatIfData.newFoodCostRatio < whatIfData.originalFoodCostRatio ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newFoodCostRatio > whatIfData.originalFoodCostRatio ? 'text-red-600 dark:text-red-400' : 'text-slate-400 dark:text-slate-200'}`}>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold">Nouveau ratio</div>
+                    <div className={`text-lg font-bold ${whatIfData.newFoodCostRatio < whatIfData.originalFoodCostRatio ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.newFoodCostRatio > whatIfData.originalFoodCostRatio ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373] dark:text-white'}`}>
                       {fmt(whatIfData.newFoodCostRatio, 1)}%
                     </div>
                   </div>
                 </div>
 
                 {/* Revenue impact */}
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
-                  <div className="text-xs text-slate-400 dark:text-slate-400 uppercase font-semibold mb-1">Impact CA estimé (sur {whatIfData.item.salesQty} ventes)</div>
-                  <div className={`text-xl font-bold ${whatIfData.revenueImpact > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.revenueImpact < 0 ? 'text-red-600 dark:text-red-400' : 'text-slate-300'}`}>
+                <div className="pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-semibold mb-1">Impact CA estimé (sur {whatIfData.item.salesQty} ventes)</div>
+                  <div className={`text-xl font-bold ${whatIfData.revenueImpact > 0 ? 'text-emerald-600 dark:text-emerald-400' : whatIfData.revenueImpact < 0 ? 'text-red-600 dark:text-red-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                     {whatIfData.revenueImpact > 0 ? '+' : ''}{fmtEur(whatIfData.revenueImpact)}
                   </div>
                 </div>
@@ -1281,7 +1281,7 @@ export default function MenuEngineering() {
           <div className="flex justify-end pt-2">
             <button
               onClick={() => setShowWhatIf(false)}
-              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
             >
               {t('menuEngineering.close')}
             </button>
@@ -1293,11 +1293,11 @@ export default function MenuEngineering() {
       <Modal isOpen={showSalesModal} onClose={() => setShowSalesModal(false)} title={t('menuEngineering.addSaleTitle')}>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.recipe')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.recipe')}</label>
             <select
               value={saleRecipeId}
               onChange={e => setSaleRecipeId(e.target.value ? Number(e.target.value) : '')}
-              className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200"
+              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
             >
               <option value="">{t('menuEngineering.selectRecipe')}</option>
               {recipes.map(r => (
@@ -1307,31 +1307,31 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.qtySold')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.qtySold')}</label>
             <input
               type="number"
               min="1"
               value={saleQty}
               onChange={e => setSaleQty(e.target.value)}
               placeholder="Ex: 12"
-              className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200"
+              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('menuEngineering.date')}</label>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">{t('menuEngineering.date')}</label>
             <input
               type="date"
               value={saleDate}
               onChange={e => setSaleDate(e.target.value)}
-              className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200"
+              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setShowSalesModal(false)}
-              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
             >
               {t('menuEngineering.cancel')}
             </button>
@@ -1361,7 +1361,7 @@ export default function MenuEngineering() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] dark:text-[#A3A3A3] mb-1">
               {t('menuEngineering.csvData')}
             </label>
             <textarea
@@ -1369,14 +1369,14 @@ export default function MenuEngineering() {
               value={bulkCsv}
               onChange={e => setBulkCsv(e.target.value)}
               placeholder={t('menuEngineering.pasteDataHere')}
-              className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-200 font-mono text-sm resize-y"
+              className="w-full px-3 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] dark:text-white font-mono text-sm resize-y"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button
               onClick={() => setShowBulkModal(false)}
-              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-300 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
             >
               {t('menuEngineering.cancel')}
             </button>
@@ -1406,22 +1406,22 @@ function SummaryCard({ icon, label, value, sub, color }: {
 }) {
   const colorMap: Record<string, { bg: string; icon: string; border: string }> = {
     violet: {
-      bg: 'from-violet-50 to-white dark:from-violet-950/30 dark:to-slate-800',
+      bg: 'from-violet-50 to-white dark:from-violet-950/30 dark:to-[#0A0A0A]',
       icon: 'bg-violet-100 text-violet-600 dark:bg-violet-900/50 dark:text-violet-400',
       border: 'border-t-violet-500',
     },
     emerald: {
-      bg: 'from-emerald-50 to-white dark:from-emerald-950/30 dark:to-slate-800',
+      bg: 'from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#0A0A0A]',
       icon: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400',
       border: 'border-t-emerald-500',
     },
     teal: {
-      bg: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-slate-800',
+      bg: 'from-teal-50 to-white dark:from-teal-950/30 dark:to-[#0A0A0A]',
       icon: 'bg-teal-100 text-teal-600 dark:bg-teal-900/50 dark:text-teal-400',
       border: 'border-t-teal-500',
     },
     amber: {
-      bg: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-800',
+      bg: 'from-amber-50 to-white dark:from-amber-950/30 dark:to-[#0A0A0A]',
       icon: 'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400',
       border: 'border-t-amber-500',
     },
@@ -1429,13 +1429,13 @@ function SummaryCard({ icon, label, value, sub, color }: {
   const c = colorMap[color] || colorMap.violet;
 
   return (
-    <div className={`bg-gradient-to-br ${c.bg} rounded-2xl border border-slate-200 dark:border-slate-700 border-t-4 ${c.border} p-5 shadow-sm`}>
+    <div className={`bg-gradient-to-br ${c.bg} rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] border-t-4 ${c.border} p-5 shadow-sm`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{label}</span>
         <div className={`p-2 rounded-lg ${c.icon}`}>{icon}</div>
       </div>
-      <div className="text-2xl font-bold text-slate-900 dark:text-white">{value}</div>
-      <div className="text-xs text-slate-400 dark:text-slate-400 mt-1">{sub}</div>
+      <div className="text-2xl font-bold text-[#111111] dark:text-white">{value}</div>
+      <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{sub}</div>
     </div>
   );
 }

@@ -325,21 +325,21 @@ function GlobalSearch() {
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={() => setOpen(false)}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative w-full max-w-lg mx-4 rounded-2xl border border-white/10 bg-slate-900/80 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
+        className="relative w-full max-w-lg mx-4 rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
-          <Search className="w-5 h-5 text-slate-400 flex-shrink-0" />
+          <Search className="w-5 h-5 text-[#94a3b8] flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Rechercher recettes, ingredients, fournisseurs, pages..."
-            className="flex-1 bg-transparent text-white placeholder-slate-500 text-sm outline-none"
+            className="flex-1 bg-transparent text-white placeholder-[#64748b] text-sm outline-none"
             autoComplete="off"
           />
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 bg-slate-800 border border-slate-700 rounded">ESC</kbd>
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#64748b] bg-[#1e293b] border border-[#334155] rounded">ESC</kbd>
         </div>
         <div className="max-h-[50vh] overflow-y-auto py-2">
           {loading && (
@@ -348,14 +348,14 @@ function GlobalSearch() {
             </div>
           )}
           {!loading && query && results.length === 0 && (
-            <div className="text-center py-8 text-sm text-slate-500">Aucun resultat pour &laquo; {query} &raquo;</div>
+            <div className="text-center py-8 text-sm text-[#64748b]">Aucun resultat pour &laquo; {query} &raquo;</div>
           )}
           {!loading && !query && (
-            <div className="text-center py-8 text-sm text-slate-500">Tapez pour rechercher...</div>
+            <div className="text-center py-8 text-sm text-[#64748b]">Tapez pour rechercher...</div>
           )}
           {!loading && Object.keys(grouped).map(cat => (
             <div key={cat}>
-              <div className="px-4 py-1.5 text-[10px] font-semibold tracking-wider text-slate-500 uppercase">{categoryLabels[cat] || cat}</div>
+              <div className="px-4 py-1.5 text-[10px] font-semibold tracking-wider text-[#64748b] uppercase">{categoryLabels[cat] || cat}</div>
               {grouped[cat].map(result => {
                 flatIndex++;
                 const idx = flatIndex;
@@ -367,22 +367,22 @@ function GlobalSearch() {
                     className={`w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
                       idx === activeIndex
                         ? 'bg-teal-500/10 text-teal-300'
-                        : 'text-slate-300 hover:bg-white/5'
+                        : 'text-[#cbd5e1] hover:bg-white/5'
                     }`}
                   >
-                    <result.icon className="w-4 h-4 flex-shrink-0 text-slate-500" />
+                    <result.icon className="w-4 h-4 flex-shrink-0 text-[#64748b]" />
                     <span className="truncate">{result.name}</span>
-                    <span className="ml-auto text-[10px] text-slate-600">{categoryLabels[result.category]}</span>
+                    <span className="ml-auto text-[10px] text-[#475569]">{categoryLabels[result.category]}</span>
                   </button>
                 );
               })}
             </div>
           ))}
         </div>
-        <div className="flex items-center gap-4 px-4 py-2 border-t border-white/5 text-[10px] text-slate-600">
-          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-500">{"\u2191\u2193"}</kbd> naviguer</span>
-          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-500">{"\u23CE"}</kbd> ouvrir</span>
-          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-500">esc</kbd> fermer</span>
+        <div className="flex items-center gap-4 px-4 py-2 border-t border-white/5 text-[10px] text-[#475569]">
+          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-[#1e293b] border border-[#334155] rounded text-[#64748b]">{"\u2191\u2193"}</kbd> naviguer</span>
+          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-[#1e293b] border border-[#334155] rounded text-[#64748b]">{"\u23CE"}</kbd> ouvrir</span>
+          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-[#1e293b] border border-[#334155] rounded text-[#64748b]">esc</kbd> fermer</span>
         </div>
       </div>
     </div>
@@ -529,7 +529,7 @@ function AppLayout() {
     <div ref={notifRef} className="relative">
       <button
         onClick={() => setShowNotifications(!showNotifications)}
-        className="relative p-2 rounded-lg hover:bg-slate-700/50 text-slate-400 hover:text-white transition-colors"
+        className="relative p-2 rounded-lg hover:bg-[#334155]/50 text-[#94a3b8] hover:text-white transition-colors"
         aria-label={`Notifications${stockAlerts.length > 0 ? ` (${stockAlerts.length} alertes)` : ''}`}
       >
         <Bell className="w-5 h-5" />
@@ -540,8 +540,8 @@ function AppLayout() {
         )}
       </button>
       {showNotifications && stockAlerts.length > 0 && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-700/50 flex items-center gap-2">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-[#0f172a] border border-[#334155] rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#334155]/50 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-400" />
             <span className="text-sm font-semibold text-white">Alertes stock</span>
             <span className="ml-auto text-[10px] font-bold bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">
@@ -552,14 +552,14 @@ function AppLayout() {
             {stockAlerts.map((alert, i) => (
               <div
                 key={i}
-                className="px-4 py-3 flex items-start gap-3 hover:bg-slate-800/50 transition-colors border-b border-slate-800/50 last:border-b-0"
+                className="px-4 py-3 flex items-start gap-3 hover:bg-[#1e293b]/50 transition-colors border-b border-[#1e293b]/50 last:border-b-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Package className="w-4 h-4 text-amber-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-white font-medium">Stock bas: {alert.name}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-[#94a3b8] mt-0.5">
                     {alert.quantity}{alert.unit} restant{alert.quantity > 1 ? 's' : ''}
                   </p>
                 </div>
@@ -995,13 +995,13 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/menu-public" element={<PublicMenu />} />
           <Route path="/station-produit" element={<StationLanding />} />
-          <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
-          <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
-          <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
-          <Route path="/cgu" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGU /></Suspense>} />
-          <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
-          <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
-          <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
+          <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
+          <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
+          <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
+          <Route path="/cgu" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGU /></Suspense>} />
+          <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
+          <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
+          <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />

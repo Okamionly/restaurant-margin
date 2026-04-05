@@ -103,19 +103,19 @@ export default function UserManagement() {
   if (user?.role !== 'admin') {
     return (
       <div className="text-center py-16">
-        <Shield className="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4" />
-        <h3 className="text-xl font-semibold text-slate-300 dark:text-slate-300 mb-2">Accès réservé</h3>
-        <p className="text-slate-400">Seuls les administrateurs peuvent gérer les utilisateurs.</p>
+        <Shield className="w-16 h-16 mx-auto text-[#6B7280] dark:text-[#A3A3A3] mb-4" />
+        <h3 className="text-xl font-semibold text-[#6B7280] dark:text-[#A3A3A3] mb-2">Accès réservé</h3>
+        <p className="text-[#9CA3AF] dark:text-[#737373]">Seuls les administrateurs peuvent gérer les utilisateurs.</p>
       </div>
     );
   }
 
-  if (loading) return <div className="text-center py-12 text-slate-400 dark:text-slate-400">Chargement...</div>;
+  if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
 
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
           <Users className="w-7 h-7" />
           Gestion des utilisateurs
         </h2>
@@ -124,10 +124,10 @@ export default function UserManagement() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-700 text-slate-300 dark:text-slate-300">
+            <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3]">
               <tr>
                 <th className="px-5 py-3 text-left font-medium">Nom</th>
                 <th className="px-5 py-3 text-left font-medium">Email</th>
@@ -136,11 +136,11 @@ export default function UserManagement() {
                 <th className="px-5 py-3 text-center font-medium w-20">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {users.map((u) => (
-                <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                  <td className="px-5 py-3 font-medium text-slate-800 dark:text-slate-200">{u.name}</td>
-                  <td className="px-5 py-3 text-slate-300 dark:text-slate-400">{u.email}</td>
+                <tr key={u.id} className="hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:hover:bg-[#171717]/50">
+                  <td className="px-5 py-3 font-medium text-[#111111] dark:text-white">{u.name}</td>
+                  <td className="px-5 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{u.email}</td>
                   <td className="px-5 py-3 text-center">
                     {u.role === 'admin' ? (
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
@@ -152,7 +152,7 @@ export default function UserManagement() {
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-3 text-slate-400 dark:text-slate-400">
+                  <td className="px-5 py-3 text-[#9CA3AF] dark:text-[#737373]">
                     {new Date(u.createdAt).toLocaleDateString('fr-FR')}
                   </td>
                   <td className="px-5 py-3 text-center">
@@ -173,7 +173,7 @@ export default function UserManagement() {
         </div>
       </div>
 
-      <p className="text-sm text-slate-400 dark:text-slate-500 mt-3">{users.length} utilisateur{users.length > 1 ? 's' : ''}</p>
+      <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-3">{users.length} utilisateur{users.length > 1 ? 's' : ''}</p>
 
       {/* Create User Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Nouvel utilisateur">

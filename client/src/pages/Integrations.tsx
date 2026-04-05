@@ -268,18 +268,18 @@ export default function Integrations() {
   // ── Integration Card ──────────────────────────────────────────────────────
 
   const IntegrationCard = ({ integ, category }: { integ: Integration; category: keyof typeof integrations }) => (
-    <div className={`bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-5 flex flex-col gap-3 transition-all hover:shadow-md ${integ.comingSoon ? 'opacity-75' : ''}`}>
+    <div className={`bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-5 flex flex-col gap-3 transition-all hover:shadow-md ${integ.comingSoon ? 'opacity-75' : ''}`}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md"
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-[#111111] dark:text-white font-bold text-sm shadow-md"
             style={{ backgroundColor: integ.color }}
           >
             {integ.logo}
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900 dark:text-white">{integ.name}</h4>
-            <p className="text-sm text-slate-400 dark:text-slate-400">{integ.description}</p>
+            <h4 className="font-semibold text-[#111111] dark:text-white dark:text-white">{integ.name}</h4>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{integ.description}</p>
           </div>
         </div>
         {integ.comingSoon ? (
@@ -291,7 +291,7 @@ export default function Integrations() {
             <Check className="w-3 h-3" /> Connecte
           </span>
         ) : (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400">
+          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
             Non connecte
           </span>
         )}
@@ -299,7 +299,7 @@ export default function Integrations() {
 
       <ul className="space-y-1">
         {integ.features.map((f, i) => (
-          <li key={i} className="flex items-center gap-2 text-sm text-slate-300 dark:text-slate-300">
+          <li key={i} className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
             <Zap className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
             {f}
           </li>
@@ -307,14 +307,14 @@ export default function Integrations() {
       </ul>
 
       {integ.connected && integ.lastSync && (
-        <p className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
+        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
           <Clock className="w-3 h-3" /> Derniere synchro : {integ.lastSync}
         </p>
       )}
 
       <div className="mt-auto pt-2">
         {integ.comingSoon ? (
-          <button disabled className="w-full px-4 py-2 text-sm font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed">
+          <button disabled className="w-full px-4 py-2 text-sm font-medium rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed">
             Bientot disponible
           </button>
         ) : integ.connected ? (
@@ -352,7 +352,7 @@ export default function Integrations() {
     <section>
       <div className="flex items-center gap-2 mb-4">
         <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{title}</h3>
+        <h3 className="text-lg font-semibold text-[#111111] dark:text-white dark:text-white">{title}</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {items.map(integ => (
@@ -368,31 +368,31 @@ export default function Integrations() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-[#111111] dark:text-white dark:text-white flex items-center gap-3">
           <Plug className="w-7 h-7 text-blue-600 dark:text-blue-400" />
           API & Intégrations
         </h1>
-        <p className="text-slate-400 dark:text-slate-400 mt-1">
+        <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">
           Connectez RestauMargin à vos outils
         </p>
       </div>
 
       {/* ── API Key Section ─────────────────────────────────────────────────── */}
-      <section className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-6 space-y-5">
+      <section className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-6 space-y-5">
         <div className="flex items-center gap-2">
           <Key className="w-5 h-5 text-amber-500" />
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Cle API</h2>
+          <h2 className="text-lg font-semibold text-[#111111] dark:text-white dark:text-white">Cle API</h2>
         </div>
 
         {/* Key display */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded-lg font-mono text-sm">
-            <span className="flex-1 truncate text-slate-400 dark:text-slate-300">
+          <div className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:bg-black border dark:border-[#1A1A1A] rounded-lg font-mono text-sm">
+            <span className="flex-1 truncate text-[#9CA3AF] dark:text-[#737373]">
               {apiKeyVisible ? MOCK_API_KEY : '\u2022'.repeat(40)}
             </span>
             <button
               onClick={() => setApiKeyVisible(!apiKeyVisible)}
-              className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-400 transition-colors"
+              className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors"
               title={apiKeyVisible ? 'Masquer' : 'Afficher'}
             >
               {apiKeyVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -401,7 +401,7 @@ export default function Integrations() {
           <div className="flex gap-2">
             <button
               onClick={copyApiKey}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] transition-colors"
             >
               <Copy className="w-4 h-4" /> Copier
             </button>
@@ -410,7 +410,7 @@ export default function Integrations() {
               className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                 confirmRegenerate
                   ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717]'
               }`}
             >
               <RefreshCw className="w-4 h-4" />
@@ -422,13 +422,13 @@ export default function Integrations() {
         {/* Usage stats */}
         <div>
           <div className="flex items-center justify-between text-sm mb-1.5">
-            <span className="text-slate-300 dark:text-slate-400">Utilisation ce mois</span>
-            <span className="font-medium text-slate-400 dark:text-slate-300">1 247 / 10 000 requetes</span>
+            <span className="text-[#6B7280] dark:text-[#A3A3A3]">Utilisation ce mois</span>
+            <span className="font-medium text-[#9CA3AF] dark:text-[#737373]">1 247 / 10 000 requetes</span>
           </div>
-          <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div className="w-full h-2.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
             <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: '12.47%' }} />
           </div>
-          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">1 247 requetes ce mois</p>
+          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">1 247 requetes ce mois</p>
         </div>
 
         {/* Doc link */}
@@ -442,11 +442,11 @@ export default function Integrations() {
       </section>
 
       {/* ── Webhooks Section ────────────────────────────────────────────────── */}
-      <section className="bg-white dark:bg-slate-800 rounded-xl border dark:border-slate-700 p-6 space-y-5">
+      <section className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-6 space-y-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Webhook className="w-5 h-5 text-purple-500" />
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Webhooks</h2>
+            <h2 className="text-lg font-semibold text-[#111111] dark:text-white dark:text-white">Webhooks</h2>
           </div>
           <button
             onClick={addWebhook}
@@ -460,12 +460,12 @@ export default function Integrations() {
           {webhooks.map(wh => (
             <div
               key={wh.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg border dark:border-slate-700"
+              className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:bg-black rounded-lg border dark:border-[#1A1A1A]"
             >
               <div className="sm:w-40 flex-shrink-0">
-                <span className="text-sm font-medium text-slate-400 dark:text-slate-300">{wh.name}</span>
+                <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{wh.name}</span>
                 {wh.lastTriggered && (
-                  <p className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1 mt-0.5">
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1 mt-0.5">
                     <Clock className="w-3 h-3" /> {wh.lastTriggered}
                   </p>
                 )}
@@ -475,14 +475,14 @@ export default function Integrations() {
                 placeholder="https://votre-endpoint.com/webhook"
                 value={wh.url}
                 onChange={e => updateWebhookUrl(wh.id, e.target.value)}
-                className="flex-1 px-3 py-2 text-sm border dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="flex-1 px-3 py-2 text-sm border dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
               <div className="flex items-center gap-2">
                 {/* Toggle */}
                 <button
                   onClick={() => toggleWebhook(wh.id)}
                   className={`relative w-10 h-6 rounded-full transition-colors ${
-                    wh.active ? 'bg-green-500' : 'bg-slate-300 dark:bg-slate-600'
+                    wh.active ? 'bg-green-500' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A] dark:bg-[#171717]'
                   }`}
                 >
                   <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
@@ -492,7 +492,7 @@ export default function Integrations() {
                 {/* Test */}
                 <button
                   onClick={() => testWebhook(wh)}
-                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] transition-colors"
                   title="Tester"
                 >
                   <Send className="w-3.5 h-3.5" /> Test

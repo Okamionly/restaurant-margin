@@ -57,8 +57,8 @@ const TYPE_CONFIG = {
 
 const PRIORITY_CONFIG = {
   high: { label: 'Urgent', class: 'bg-red-600 text-white' },
-  normal: { label: 'Cette semaine', class: 'bg-slate-600 text-slate-300' },
-  low: { label: 'Info', class: 'bg-slate-700 text-slate-400' },
+  normal: { label: 'Cette semaine', class: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]' },
+  low: { label: 'Info', class: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]' },
 };
 
 interface MercurialeSummary {
@@ -161,17 +161,17 @@ export default function Actualites() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Newspaper className="w-6 h-6 text-teal-400" />
-            <h1 className="text-2xl font-bold text-white">Actualités</h1>
+            <h1 className="text-2xl font-bold text-[#111111] dark:text-white">Actualités</h1>
             {highCount > 0 && (
               <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white animate-pulse">
                 {highCount} urgent{highCount > 1 ? 's' : ''}
               </span>
             )}
           </div>
-          <p className="text-slate-400 text-sm">
+          <p className="text-[#9CA3AF] dark:text-[#737373] text-sm">
             Veille marché & recommandations personnalisées
             {latestMercurialeRef && (
-              <span className="ml-2 text-slate-400">
+              <span className="ml-2 text-[#9CA3AF] dark:text-[#737373]">
                 — Mercuriale du {latestMercurialeRef}
               </span>
             )}
@@ -180,7 +180,7 @@ export default function Actualites() {
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white rounded-xl font-medium transition-colors text-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-60 text-white rounded-xl font-medium transition-colors text-sm"
         >
           <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
           {generating ? 'Analyse en cours...' : 'Actualiser'}
@@ -201,14 +201,14 @@ export default function Actualites() {
             onClick={() => setActiveFilter(f.key)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               activeFilter === f.key
-                ? 'bg-teal-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                ? 'bg-[#111111] dark:bg-white text-white'
+                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white'
             }`}
           >
             {f.label}
             {f.count > 0 && (
               <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                activeFilter === f.key ? 'bg-teal-500 text-white' : 'bg-slate-700 text-slate-300'
+                activeFilter === f.key ? 'bg-teal-500 text-white' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'
               }`}>
                 {f.count}
               </span>
@@ -219,11 +219,11 @@ export default function Actualites() {
 
       {/* Mercuriale Summary Widget */}
       {mercurialeSummary && (
-        <div className="bg-slate-900/60 border border-teal-500/20 rounded-2xl p-5">
+        <div className="bg-[#FAFAFA]/60 dark:bg-[#0A0A0A]/60 border border-teal-500/20 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <CalendarDays className="w-5 h-5 text-teal-400" />
-              <h2 className="text-white font-bold">Mercuriale de la semaine</h2>
+              <h2 className="text-[#111111] dark:text-white font-bold">Mercuriale de la semaine</h2>
             </div>
             <button
               onClick={() => navigate('/mercuriale')}
@@ -242,7 +242,7 @@ export default function Actualites() {
                 </div>
                 {mercurialeSummary.topHausses.map((h, i) => (
                   <div key={i} className="flex items-center justify-between bg-red-500/5 border border-red-500/10 rounded-lg px-3 py-2">
-                    <span className="text-sm text-white">{h.ingredient_name}</span>
+                    <span className="text-sm text-[#111111] dark:text-white">{h.ingredient_name}</span>
                     <span className="text-xs font-semibold text-red-400">{h.trend_detail || 'Hausse'}</span>
                   </div>
                 ))}
@@ -256,7 +256,7 @@ export default function Actualites() {
                 </div>
                 {mercurialeSummary.topBaisses.map((b, i) => (
                   <div key={i} className="flex items-center justify-between bg-emerald-500/5 border border-emerald-500/10 rounded-lg px-3 py-2">
-                    <span className="text-sm text-white">{b.ingredient_name}</span>
+                    <span className="text-sm text-[#111111] dark:text-white">{b.ingredient_name}</span>
                     <span className="text-xs font-semibold text-emerald-400">{b.trend_detail || 'Baisse'}</span>
                   </div>
                 ))}
@@ -268,21 +268,21 @@ export default function Actualites() {
 
       {/* Content */}
       {loading ? (
-        <div className="flex items-center justify-center h-48 text-slate-400">
+        <div className="flex items-center justify-center h-48 text-[#9CA3AF] dark:text-[#737373]">
           <RefreshCw className="w-6 h-6 animate-spin mr-2" />
           Chargement...
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 text-center bg-slate-900/50 border border-slate-800 rounded-2xl">
-          <Newspaper className="w-12 h-12 text-slate-300 mb-4" />
-          <p className="text-slate-400 font-medium mb-2">Aucune actualité disponible</p>
-          <p className="text-slate-400 text-sm mb-4">
+        <div className="flex flex-col items-center justify-center h-64 text-center bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl">
+          <Newspaper className="w-12 h-12 text-[#6B7280] dark:text-[#A3A3A3] mb-4" />
+          <p className="text-[#9CA3AF] dark:text-[#737373] font-medium mb-2">Aucune actualité disponible</p>
+          <p className="text-[#9CA3AF] dark:text-[#737373] text-sm mb-4">
             Cliquez sur "Actualiser" pour charger les dernières recommandations
           </p>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
           >
             <RefreshCw className="w-4 h-4" />
             Actualiser maintenant
@@ -298,12 +298,12 @@ export default function Actualites() {
             return (
               <div
                 key={item.id}
-                className={`relative bg-slate-900/60 border rounded-2xl p-5 hover:bg-slate-900/80 transition-colors group ${typeConf.bg}`}
+                className={`relative bg-[#FAFAFA]/60 dark:bg-[#0A0A0A]/60 border rounded-2xl p-5 hover:bg-white dark:bg-black/80 transition-colors group ${typeConf.bg}`}
               >
                 {/* Dismiss button */}
                 <button
                   onClick={() => handleDismiss(item.id)}
-                  className="absolute top-3 right-3 p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-700 text-slate-400 hover:text-white transition-all"
+                  className="absolute top-3 right-3 p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-all"
                   title="Masquer"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -321,21 +321,21 @@ export default function Actualites() {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-white font-semibold text-sm mb-2 pr-6 leading-snug">
+                <h3 className="text-[#111111] dark:text-white font-semibold text-sm mb-2 pr-6 leading-snug">
                   {item.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-[#9CA3AF] dark:text-[#737373] text-sm leading-relaxed">
                   {item.content}
                 </p>
 
                 {/* Footer */}
-                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-700/50">
-                  <Clock className="w-3 h-3 text-slate-300" />
-                  <span className="text-[11px] text-slate-300">
+                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                  <Clock className="w-3 h-3 text-[#6B7280] dark:text-[#A3A3A3]" />
+                  <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
                     {new Date(item.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}
                     {item.mercurialeRef && ` · Mercuriale ${item.mercurialeRef}`}
                   </span>
-                  <span className="ml-auto flex items-center gap-1 text-[11px] text-slate-300">
+                  <span className="ml-auto flex items-center gap-1 text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
                     Veille sectorielle
                   </span>
                 </div>
@@ -347,19 +347,19 @@ export default function Actualites() {
 
       {/* Explication section */}
       {news.length > 0 && (
-        <div className="bg-slate-900/30 border border-slate-800 rounded-2xl p-5">
+        <div className="bg-[#FAFAFA]/30 dark:bg-[#0A0A0A]/30 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-teal-600/20 rounded-lg flex-shrink-0">
+            <div className="p-2 bg-[#111111] dark:bg-white/20 rounded-lg flex-shrink-0">
               <Newspaper className="w-4 h-4 text-teal-400" />
             </div>
             <div>
-              <h4 className="text-white text-sm font-semibold mb-1">Comment fonctionne cette section ?</h4>
-              <p className="text-slate-400 text-sm leading-relaxed">
-                Les actualités sont basées sur la <strong className="text-slate-300">mercuriale des prix fournisseurs</strong> (Metro, Transgourmet, Rungis)
-                croisée avec <strong className="text-slate-300">vos ingrédients et fiches techniques</strong> pour vous proposer
+              <h4 className="text-[#111111] dark:text-white text-sm font-semibold mb-1">Comment fonctionne cette section ?</h4>
+              <p className="text-[#9CA3AF] dark:text-[#737373] text-sm leading-relaxed">
+                Les actualités sont basées sur la <strong className="text-[#6B7280] dark:text-[#A3A3A3]">mercuriale des prix fournisseurs</strong> (Metro, Transgourmet, Rungis)
+                croisée avec <strong className="text-[#6B7280] dark:text-[#A3A3A3]">vos ingrédients et fiches techniques</strong> pour vous proposer
                 des recommandations personnalisées : alertes de hausse, opportunités d'économies, et conseils pour protéger vos marges.
               </p>
-              <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-400">
+              <div className="flex flex-wrap gap-3 mt-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-red-400" /> Alertes prix : hausses &gt;5% impactant vos recettes</span>
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-emerald-400" /> Opportunités : produits en baisse ou alternatives économiques</span>
                 <span className="flex items-center gap-1"><ChevronRight className="w-3 h-3 text-teal-400" /> Tendances : évolutions du marché à surveiller</span>

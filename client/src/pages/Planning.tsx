@@ -751,7 +751,7 @@ export default function Planning() {
             </button>
             <div className="text-center">
               <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[selectedDayIdx]}</div>
-              <div className="text-lg font-bold text-white">
+              <div className="text-lg font-bold text-[#111111] dark:text-white">
                 {weekDays[selectedDayIdx].toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </div>
             </div>
@@ -891,7 +891,7 @@ export default function Planning() {
                         {h > 0 ? `${h}h` : '-'}
                       </td>
                     ))}
-                    <td className={`px-3 py-2.5 text-center font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-white'}`}>
+                    <td className={`px-3 py-2.5 text-center font-bold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-[#111111] dark:text-white'}`}>
                       {row.total > 0 ? `${row.total}h` : '-'}
                     </td>
                     <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
@@ -1195,7 +1195,7 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
             </div>
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="w-full mt-2 py-2 border border-dashed border-slate-600 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
+              className="w-full mt-2 py-2 border border-dashed border-[#D1D5DB] dark:border-[#475569] rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
             >
               <Plus className="w-3.5 h-3.5" /> {t('common.add')}
             </button>
@@ -1329,7 +1329,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-slate-600'}`} />
+                  <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-[#D1D5DB] dark:bg-[#475569]'}`} />
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
                   <span className={`text-sm font-medium ${isPresent ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{emp.name || ''}</span>
                   <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>

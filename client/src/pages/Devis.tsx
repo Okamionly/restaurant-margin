@@ -109,8 +109,8 @@ const STATUS_KEYS: Record<DocStatus, string> = {
 };
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string; icon: React.ComponentType<{ className?: string }> }> = {
-  brouillon: { label: 'Brouillon', bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-300 dark:text-slate-300', icon: Edit2 },
-  envoye: { label: 'Envoyé', bg: 'bg-teal-100 dark:bg-teal-900/40', text: 'text-teal-700 dark:text-teal-300', icon: Send },
+  brouillon: { label: 'Brouillon', bg: 'bg-[#F3F4F6] dark:bg-[#171717]', text: 'text-[#6B7280] dark:text-[#A3A3A3]', icon: Edit2 },
+  envoye: { label: 'Envoyé', bg: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40', text: 'text-[#111111] dark:text-[#737373]', icon: Send },
   accepte: { label: 'Accepté', bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', icon: CheckCircle },
   refuse: { label: 'Refusé', bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', icon: XCircle },
   paye: { label: 'Payé', bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', icon: CreditCard },
@@ -290,13 +290,13 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
   const typeLabel = doc.type === 'devis' ? 'DEVIS' : doc.type === 'facture' ? 'FACTURE' : 'AVOIR';
 
   return (
-    <div className="bg-white text-slate-900 p-8 rounded-lg shadow-inner border border-slate-200 text-sm leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
+    <div className="bg-white text-[#111111] dark:text-white p-8 rounded-lg shadow-inner border border-[#E5E7EB] text-sm leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
       {/* Header bar */}
-      <div className="flex items-start justify-between mb-6 pb-4 border-b-4 border-teal-600">
+      <div className="flex items-start justify-between mb-6 pb-4 border-b-4 border-[#111111]">
         <div>
-          <div className="w-16 h-16 bg-gradient-to-br from-teal-600 to-teal-800 rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
+          <div className="w-16 h-16 bg-gradient-to-br from-[#111111] to-[#333] rounded-xl flex items-center justify-center text-white font-bold text-xl mb-2">RM</div>
           <div className="font-bold text-base">{entreprise.nom}</div>
-          <div className="text-xs text-slate-400 space-y-0.5 mt-1">
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] space-y-0.5 mt-1">
             <div>{entreprise.adresse}</div>
             <div>{entreprise.codePostal} {entreprise.ville}</div>
             <div>Tél : {entreprise.telephone}</div>
@@ -304,9 +304,9 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-teal-700">{typeLabel}</div>
+          <div className="text-2xl font-bold text-[#111111] dark:text-white">{typeLabel}</div>
           <div className="text-lg font-semibold mt-1">{doc.numero}</div>
-          <div className="text-xs text-slate-400 mt-2">
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
             <div>Date : {formatDate(doc.dateCreation)}</div>
             {doc.type === 'devis' && <div>Valide jusqu'au : {formatDate(doc.dateValidite)}</div>}
             {doc.refDevis && <div>Réf. devis : {doc.refDevis}</div>}
@@ -316,10 +316,10 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       </div>
 
       {/* Client info */}
-      <div className="bg-slate-50 rounded-lg p-4 mb-6">
-        <div className="text-xs text-slate-400 mb-1 uppercase tracking-wider font-semibold">Destinataire</div>
+      <div className="bg-[#F9FAFB] rounded-lg p-4 mb-6">
+        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase tracking-wider font-semibold">Destinataire</div>
         <div className="font-bold">{doc.client.raisonSociale || doc.client.nom}</div>
-        <div className="text-xs text-slate-300 space-y-0.5">
+        <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] space-y-0.5">
           {doc.client.nom !== doc.client.raisonSociale && <div>{doc.client.nom}</div>}
           <div>{doc.client.adresse}</div>
           <div>{doc.client.codePostal} {doc.client.ville}</div>
@@ -330,7 +330,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       {/* Lines table */}
       <table className="w-full mb-6 text-xs">
         <thead>
-          <tr className="bg-teal-600 text-white">
+          <tr className="bg-[#111111] dark:bg-white text-white dark:text-black">
             <th className="text-left py-2 px-3 rounded-tl-lg">Description</th>
             <th className="text-center py-2 px-2">Qté</th>
             <th className="text-center py-2 px-2">Unité</th>
@@ -341,7 +341,7 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
         </thead>
         <tbody>
           {doc.lignes.map((l, i) => (
-            <tr key={l.id} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+            <tr key={l.id} className={i % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB]'}>
               <td className="py-2 px-3">{l.description}</td>
               <td className="text-center py-2 px-2">{l.quantite}</td>
               <td className="text-center py-2 px-2">{l.unite}</td>
@@ -361,12 +361,12 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
             <span className="font-semibold">{formatEuro(doc.totalHT)}</span>
           </div>
           {Object.entries(doc.tvaVentilee).map(([rate, amount]) => (
-            <div key={rate} className="flex justify-between py-1 text-slate-400">
+            <div key={rate} className="flex justify-between py-1 text-[#9CA3AF] dark:text-[#737373]">
               <span>TVA {rate}</span>
               <span>{formatEuro(amount)}</span>
             </div>
           ))}
-          <div className="flex justify-between py-2 border-t-2 border-teal-600 font-bold text-base text-teal-700">
+          <div className="flex justify-between py-2 border-t-2 border-[#111111] font-bold text-base text-[#111111] dark:text-white">
             <span>Total TTC</span>
             <span>{formatEuro(doc.totalTTC)}</span>
           </div>
@@ -374,31 +374,31 @@ function PDFPreview({ doc, entreprise }: { doc: DocumentDevis; entreprise: Entre
       </div>
 
       {/* Conditions */}
-      <div className="border-t border-slate-200 pt-4 space-y-2 text-xs text-slate-400">
-        <div><span className="font-semibold text-slate-400">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
+      <div className="border-t border-[#E5E7EB] pt-4 space-y-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
+        <div><span className="font-semibold text-[#9CA3AF] dark:text-[#737373]">Conditions de paiement :</span> {doc.conditionsPaiement}</div>
         {doc.type === 'devis' && (
-          <div><span className="font-semibold text-slate-400">Durée de validité :</span> {doc.dureeValidite} jours</div>
+          <div><span className="font-semibold text-[#9CA3AF] dark:text-[#737373]">Durée de validité :</span> {doc.dureeValidite} jours</div>
         )}
-        {doc.notes && <div><span className="font-semibold text-slate-400">Notes :</span> {doc.notes}</div>}
+        {doc.notes && <div><span className="font-semibold text-[#9CA3AF] dark:text-[#737373]">Notes :</span> {doc.notes}</div>}
       </div>
 
       {/* Mentions légales */}
-      <div className="mt-6 pt-4 border-t border-slate-200 text-[10px] text-slate-400 whitespace-pre-line">
+      <div className="mt-6 pt-4 border-t border-[#E5E7EB] text-[10px] text-[#9CA3AF] dark:text-[#737373] whitespace-pre-line">
         {doc.mentionsLegales}
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-slate-300 text-[9px] text-slate-400 text-center">
+      <div className="mt-4 pt-3 border-t border-[#D1D5DB] text-[9px] text-[#9CA3AF] dark:text-[#737373] text-center">
         {entreprise.nom} - {entreprise.rcs} - Capital social : {entreprise.capitalSocial}€ - SIRET : {entreprise.siret} - TVA : {entreprise.tvaIntracommunautaire}
       </div>
 
       {/* Signature zone for devis */}
       {doc.type === 'devis' && (
-        <div className="mt-6 pt-4 border-t border-dashed border-slate-300">
-          <div className="text-xs text-slate-400 italic">
+        <div className="mt-6 pt-4 border-t border-dashed border-[#D1D5DB]">
+          <div className="text-xs text-[#9CA3AF] dark:text-[#737373] italic">
             Bon pour accord - Date et signature du client :
           </div>
-          <div className="h-16 mt-2 border border-dashed border-slate-300 rounded-lg" />
+          <div className="h-16 mt-2 border border-dashed border-[#D1D5DB] rounded-lg" />
         </div>
       )}
     </div>
@@ -417,14 +417,14 @@ function LigneRow({
 }) {
   const totalHT = calcLigneTotalHT(ligne);
   return (
-    <div className="grid grid-cols-12 gap-2 items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-700/30 group">
+    <div className="grid grid-cols-12 gap-2 items-center p-2 rounded-lg bg-[#F9FAFB] dark:bg-[#171717]/30 group">
       <div className="col-span-12 sm:col-span-4">
         <input
           type="text"
           value={ligne.description}
           onChange={e => onUpdate(ligne.id, 'description', e.target.value)}
           placeholder="Description..."
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
         />
       </div>
       <div className="col-span-3 sm:col-span-1">
@@ -433,14 +433,14 @@ function LigneRow({
           value={ligne.quantite}
           min={1}
           onChange={e => onUpdate(ligne.id, 'quantite', Number(e.target.value))}
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-center"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none text-center"
         />
       </div>
       <div className="col-span-3 sm:col-span-2">
         <select
           value={ligne.unite}
           onChange={e => onUpdate(ligne.id, 'unite', e.target.value)}
-          className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+          className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
         >
           {UNITES.map(u => <option key={u} value={u}>{u}</option>)}
         </select>
@@ -453,30 +453,30 @@ function LigneRow({
             min={0}
             step={0.01}
             onChange={e => onUpdate(ligne.id, 'prixUnitaireHT', Number(e.target.value))}
-            className="w-full px-2 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-right pr-7"
+            className="w-full px-2 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none text-right pr-7"
           />
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400">€</span>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-[#9CA3AF] dark:text-[#737373]">€</span>
         </div>
       </div>
       <div className="col-span-3 sm:col-span-1">
         <select
           value={ligne.tauxTVA}
           onChange={e => onUpdate(ligne.id, 'tauxTVA', Number(e.target.value) as TVARate)}
-          className="w-full px-1 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none text-center"
+          className="w-full px-1 py-1.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none text-center"
         >
           <option value={5.5}>5,5%</option>
           <option value={10}>10%</option>
           <option value={20}>20%</option>
         </select>
       </div>
-      <div className="col-span-9 sm:col-span-1 text-right text-sm font-semibold text-slate-400 dark:text-slate-200">
+      <div className="col-span-9 sm:col-span-1 text-right text-sm font-semibold text-[#9CA3AF] dark:text-white">
         {formatEuro(totalHT)}
       </div>
       <div className="col-span-3 sm:col-span-1 text-right">
         {canRemove && (
           <button
             onClick={() => onRemove(ligne.id)}
-            className="p-1 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            className="p-1 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -500,20 +500,20 @@ function PaymentModal({ isOpen, onClose, onConfirm, t }: {
     <Modal isOpen={isOpen} onClose={onClose} title={t('devis.registerPayment')}>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('devis.paymentDate')}</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.paymentDate')}</label>
           <input
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-400 dark:text-slate-300 mb-1">{t('devis.paymentMode')}</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.paymentMode')}</label>
           <select
             value={mode}
             onChange={e => setMode(e.target.value as PaymentMode)}
-            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+            className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
           >
             <option value="virement">{t('devis.bankTransfer')}</option>
             <option value="cb">{t('devis.creditCard')}</option>
@@ -522,7 +522,7 @@ function PaymentModal({ isOpen, onClose, onConfirm, t }: {
           </select>
         </div>
         <div className="flex justify-end gap-3 pt-2">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
             {t('common.cancel')}
           </button>
           <button
@@ -902,19 +902,19 @@ export default function Devis() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <div className="p-2 bg-teal-100 dark:bg-teal-900/40 rounded-xl">
-              <FileText className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+            <div className="p-2 bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 rounded-xl">
+              <FileText className="w-6 h-6 text-[#111111] dark:text-[#A3A3A3]" />
             </div>
             {t('devis.title')}
           </h1>
-          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1">
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
             {t('devis.subtitle')}
           </p>
         </div>
         <button
           onClick={() => handleOpenCreate(activeTab === 'avoirs' ? 'avoir' : activeTab === 'factures' ? 'facture' : 'devis')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-semibold transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
           {activeTab === 'avoirs' ? t('devis.newCreditNote') : activeTab === 'factures' ? t('devis.newInvoice') : t('devis.newQuote')}
@@ -924,8 +924,8 @@ export default function Devis() {
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
-          <span className="ml-3 text-slate-400 dark:text-slate-400">{t('devis.loadingDocuments')}</span>
+          <Loader2 className="w-8 h-8 animate-spin text-[#374151] dark:text-[#D4D4D4]" />
+          <span className="ml-3 text-[#9CA3AF] dark:text-[#737373]">{t('devis.loadingDocuments')}</span>
         </div>
       )}
 
@@ -933,15 +933,15 @@ export default function Devis() {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-900/20' },
+          { label: t('devis.pendingQuotes'), value: formatEuro(stats.enAttente), icon: Clock, color: 'text-[#111111] dark:text-[#A3A3A3]', bg: 'bg-[#F9FAFB] dark:bg-[#0A0A0A]/20' },
           { label: t('devis.invoicedRevenue'), value: formatEuro(stats.caFacture), icon: Euro, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
           { label: t('devis.unpaid'), value: formatEuro(stats.impaye), icon: AlertTriangle, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
           { label: t('devis.conversionRate'), value: `${stats.tauxConversion}%`, icon: Receipt, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
         ].map(stat => (
-          <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-slate-200/50 dark:border-slate-700/50`}>
+          <div key={stat.label} className={`${stat.bg} rounded-xl p-4 border border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50`}>
             <div className="flex items-center gap-2 mb-2">
               <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              <span className="text-xs font-medium text-slate-400 dark:text-slate-400">{stat.label}</span>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{stat.label}</span>
             </div>
             <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
           </div>
@@ -949,8 +949,8 @@ export default function Devis() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div className="flex border-b border-slate-200 dark:border-slate-700">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+        <div className="flex border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           {([
             { id: 'devis' as TabId, label: t('devis.tabQuotes'), count: tabCounts.devis },
             { id: 'factures' as TabId, label: t('devis.tabInvoices'), count: tabCounts.factures },
@@ -961,15 +961,15 @@ export default function Devis() {
               onClick={() => { setActiveTab(tab.id); setStatusFilter('all'); }}
               className={`flex-1 sm:flex-none px-6 py-3 text-sm font-semibold transition-colors relative ${
                 activeTab === tab.id
-                  ? 'text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 dark:border-teal-400 bg-teal-50/50 dark:bg-teal-900/10'
-                  : 'text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                  ? 'text-[#111111] dark:text-[#A3A3A3] border-b-2 border-[#111111] dark:border-[#333] bg-[#F9FAFB]/50 dark:bg-[#0A0A0A]/10'
+                  : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:text-[#D4D4D4] dark:hover:text-[#111111] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/50'
               }`}
             >
               {tab.label}
               <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                 activeTab === tab.id
-                  ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400'
+                  ? 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#A3A3A3]'
+                  : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
               }`}>
                 {tab.count}
               </span>
@@ -978,24 +978,24 @@ export default function Devis() {
         </div>
 
         {/* Search & Filters */}
-        <div className="p-4 border-b border-slate-100 dark:border-slate-700/50">
+        <div className="p-4 border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder={t('devis.searchPlaceholder')}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
               />
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
                 showFilters
-                  ? 'border-teal-300 dark:border-teal-600 text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/20'
-                  : 'border-slate-200 dark:border-slate-600 text-slate-300 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+                  ? 'border-[#D1D5DB] dark:border-[#1A1A1A] text-[#111111] dark:text-[#A3A3A3] bg-[#F9FAFB] dark:bg-[#0A0A0A]/20'
+                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]'
               }`}
             >
               <Filter className="w-4 h-4" />
@@ -1004,16 +1004,16 @@ export default function Devis() {
           </div>
 
           {showFilters && (
-            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
-              <span className="text-xs text-slate-400 dark:text-slate-400 self-center mr-1">{t('devis.status')} :</span>
+            <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50">
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] self-center mr-1">{t('devis.status')} :</span>
               {['all', 'brouillon', 'envoye', 'accepte', 'refuse', 'paye', 'en_retard'].map(s => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s as DocStatus | 'all')}
                   className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                     statusFilter === s
-                      ? 'bg-teal-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                      : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563]'
                   }`}
                 >
                   {s === 'all' ? t('common.all') : t(STATUS_KEYS[s as DocStatus] || STATUS_KEYS['brouillon'])}
@@ -1027,52 +1027,52 @@ export default function Devis() {
         <div className="overflow-x-auto">
           {filteredDocs.length === 0 ? (
             <div className="text-center py-16">
-              <FileText className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-400 dark:text-slate-400 font-medium">{t('devis.noDocuments')}</p>
-              <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">{t('devis.createFirstDocument')}</p>
+              <FileText className="w-12 h-12 text-[#6B7280] dark:text-[#A3A3A3] mx-auto mb-3" />
+              <p className="text-[#9CA3AF] dark:text-[#737373] font-medium">{t('devis.noDocuments')}</p>
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">{t('devis.createFirstDocument')}</p>
             </div>
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-700/50">
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colNumber')}</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colClient')}</th>
-                  <th className="text-left py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden md:table-cell">{t('devis.colDate')}</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colAmountHT')}</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider hidden sm:table-cell">{t('devis.colAmountTTC')}</th>
-                  <th className="text-center py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.status')}</th>
-                  <th className="text-right py-3 px-4 text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{t('devis.colActions')}</th>
+                <tr className="bg-[#F9FAFB] dark:bg-[#171717]/50">
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colNumber')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colClient')}</th>
+                  <th className="text-left py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider hidden md:table-cell">{t('devis.colDate')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colAmountHT')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider hidden sm:table-cell">{t('devis.colAmountTTC')}</th>
+                  <th className="text-center py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.status')}</th>
+                  <th className="text-right py-3 px-4 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">{t('devis.colActions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+              <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]/50">
                 {filteredDocs.map(doc => (
                   <tr
                     key={doc.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors group"
+                    className="hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 transition-colors group"
                   >
                     <td className="py-3 px-4">
-                      <span className="font-mono font-semibold text-slate-900 dark:text-white">{doc.numero}</span>
+                      <span className="font-mono font-semibold text-[#111111] dark:text-white">{doc.numero}</span>
                       {doc.refDevis && (
-                        <div className="text-xs text-slate-400 dark:text-slate-500">Réf: {doc.refDevis}</div>
+                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Réf: {doc.refDevis}</div>
                       )}
                       {doc.refFacture && (
-                        <div className="text-xs text-slate-400 dark:text-slate-500">Réf: {doc.refFacture}</div>
+                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Réf: {doc.refFacture}</div>
                       )}
                     </td>
                     <td className="py-3 px-4">
-                      <div className="font-medium text-slate-800 dark:text-slate-200">{doc.client.raisonSociale || doc.client.nom}</div>
-                      <div className="text-xs text-slate-400 dark:text-slate-500">{doc.client.nom}</div>
+                      <div className="font-medium text-[#1F2937] dark:text-white">{doc.client.raisonSociale || doc.client.nom}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{doc.client.nom}</div>
                     </td>
-                    <td className="py-3 px-4 text-slate-300 dark:text-slate-400 hidden md:table-cell">
+                    <td className="py-3 px-4 text-[#6B7280] dark:text-[#A3A3A3] hidden md:table-cell">
                       {formatDate(doc.dateCreation)}
                       {doc.datePaiement && (
                         <div className="text-xs text-emerald-500">Payé le {formatDate(doc.datePaiement)}</div>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-right font-semibold text-slate-900 dark:text-white">
+                    <td className="py-3 px-4 text-right font-semibold text-[#111111] dark:text-white">
                       {formatEuro(doc.totalHT)}
                     </td>
-                    <td className="py-3 px-4 text-right text-slate-300 dark:text-slate-300 hidden sm:table-cell">
+                    <td className="py-3 px-4 text-right text-[#6B7280] dark:text-[#A3A3A3] hidden sm:table-cell">
                       {formatEuro(doc.totalTTC)}
                     </td>
                     <td className="py-3 px-4 text-center">
@@ -1080,19 +1080,19 @@ export default function Devis() {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors">
+                        <button onClick={() => handlePreview(doc)} title={t('devis.preview')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/20 transition-colors">
                           <Eye className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleEdit(doc)} title={t('devis.edit')} className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
+                          <button onClick={() => handleEdit(doc)} title={t('devis.edit')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors">
                             <Edit2 className="w-4 h-4" />
                           </button>
                         )}
-                        <button onClick={() => handleDuplicate(doc)} title={t('devis.duplicate')} className="p-1.5 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+                        <button onClick={() => handleDuplicate(doc)} title={t('devis.duplicate')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
                           <Copy className="w-4 h-4" />
                         </button>
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors disabled:opacity-50">
+                          <button onClick={() => handleSendEmail(doc)} disabled={sendingEmailId === doc.id} title={t('devis.sendByEmail')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/20 transition-colors disabled:opacity-50">
                             {sendingEmailId === doc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                           </button>
                         )}
@@ -1107,7 +1107,7 @@ export default function Devis() {
                           </button>
                         )}
                         {doc.type === 'devis' && doc.statut === 'envoye' && (
-                          <button onClick={() => handleConvertToFacture(doc)} title={t('devis.convertToInvoice')} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
+                          <button onClick={() => handleConvertToFacture(doc)} title={t('devis.convertToInvoice')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors">
                             <ArrowRight className="w-4 h-4" />
                           </button>
                         )}
@@ -1124,18 +1124,18 @@ export default function Devis() {
                         {doc.type === 'facture' && doc.statut !== 'paye' && (
                           <button
                             onClick={() => { setPaymentDocId(doc.id); setShowPaymentModal(true); }}
-                            title={t('devis.markAsPaid')} className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                            title={t('devis.markAsPaid')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
                           >
                             <CreditCard className="w-4 h-4" />
                           </button>
                         )}
                         {doc.type === 'facture' && (
-                          <button onClick={() => handleCreateAvoir(doc)} title={t('devis.createCreditNote')} className="p-1.5 rounded-lg text-slate-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                          <button onClick={() => handleCreateAvoir(doc)} title={t('devis.createCreditNote')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                             <RotateCcw className="w-4 h-4" />
                           </button>
                         )}
                         {doc.statut === 'brouillon' && (
-                          <button onClick={() => handleDelete(doc.id)} title={t('devis.delete')} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                          <button onClick={() => handleDelete(doc.id)} title={t('devis.delete')} className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         )}
@@ -1160,12 +1160,12 @@ export default function Devis() {
       >
         <div className="space-y-6">
           {/* Entreprise info (auto-filled, read-only summary) */}
-          <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-4 border border-teal-200 dark:border-teal-800">
+          <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A]/20 rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-2 mb-2">
-              <Building2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <span className="text-sm font-semibold text-teal-700 dark:text-teal-300">{t('devis.sender')}</span>
+              <Building2 className="w-4 h-4 text-[#111111] dark:text-[#A3A3A3]" />
+              <span className="text-sm font-semibold text-[#111111] dark:text-[#737373]">{t('devis.sender')}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs text-teal-600 dark:text-teal-300">
+            <div className="grid grid-cols-2 gap-2 text-xs text-[#111111] dark:text-[#737373]">
               <div><span className="font-medium">{ENTREPRISE.nom}</span></div>
               <div>SIRET : {ENTREPRISE.siret}</div>
               <div>{ENTREPRISE.adresse}, {ENTREPRISE.codePostal} {ENTREPRISE.ville}</div>
@@ -1175,7 +1175,7 @@ export default function Devis() {
 
           {/* Client section */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
               <Building2 className="w-4 h-4" />
               {t('devis.clientInfo')}
             </h4>
@@ -1191,13 +1191,13 @@ export default function Devis() {
                 { key: 'siret', label: 'SIRET (B2B)', placeholder: '123 456 789 00012' },
               ].map(field => (
                 <div key={field.key}>
-                  <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{field.label}</label>
+                  <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{field.label}</label>
                   <input
                     type="text"
                     value={(client as any)[field.key]}
                     onChange={e => setClient(prev => ({ ...prev, [field.key]: e.target.value }))}
                     placeholder={field.placeholder}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
                   />
                 </div>
               ))}
@@ -1206,17 +1206,17 @@ export default function Devis() {
 
           {/* Lignes de devis */}
           <div>
-            <h4 className="text-sm font-semibold text-slate-400 dark:text-slate-300 mb-3 flex items-center gap-2">
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
               <FileText className="w-4 h-4" />
               {t('devis.documentLines')}
             </h4>
             <div className="hidden sm:grid grid-cols-12 gap-2 px-2 mb-1">
-              <div className="col-span-4 text-xs text-slate-400 font-medium">Description</div>
-              <div className="col-span-1 text-xs text-slate-400 font-medium text-center">Qté</div>
-              <div className="col-span-2 text-xs text-slate-400 font-medium text-center">Unité</div>
-              <div className="col-span-2 text-xs text-slate-400 font-medium text-right">P.U. HT</div>
-              <div className="col-span-1 text-xs text-slate-400 font-medium text-center">TVA</div>
-              <div className="col-span-1 text-xs text-slate-400 font-medium text-right">Total HT</div>
+              <div className="col-span-4 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Description</div>
+              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-center">Qté</div>
+              <div className="col-span-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-center">Unité</div>
+              <div className="col-span-2 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-right">P.U. HT</div>
+              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-center">TVA</div>
+              <div className="col-span-1 text-xs text-[#9CA3AF] dark:text-[#737373] font-medium text-right">Total HT</div>
               <div className="col-span-1" />
             </div>
             <div className="space-y-2">
@@ -1233,7 +1233,7 @@ export default function Devis() {
             </div>
             <button
               onClick={addLigne}
-              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-400 dark:text-slate-400 hover:border-teal-400 hover:text-teal-500 dark:hover:border-teal-500 dark:hover:text-teal-400 transition-colors text-sm font-medium w-full justify-center"
+              className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-dashed border-[#D1D5DB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] hover:text-[#333] dark:hover:text-[#E5E5E5] dark:hover:border-[#333] dark:hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors text-sm font-medium w-full justify-center"
             >
               <Plus className="w-4 h-4" />
               {t('devis.addLine')}
@@ -1242,20 +1242,20 @@ export default function Devis() {
 
           {/* Totals */}
           <div className="flex justify-end">
-            <div className="w-72 space-y-2 bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4">
+            <div className="w-72 space-y-2 bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 dark:text-slate-400">Total HT</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{formatEuro(formTotals.totalHT)}</span>
+                <span className="text-[#9CA3AF] dark:text-[#737373]">Total HT</span>
+                <span className="font-semibold text-[#111111] dark:text-white">{formatEuro(formTotals.totalHT)}</span>
               </div>
               {Object.entries(formTotals.tvaVentilee).map(([rate, amount]) => (
                 <div key={rate} className="flex justify-between text-sm">
-                  <span className="text-slate-400">TVA {rate}</span>
-                  <span className="text-slate-300 dark:text-slate-300">{formatEuro(amount)}</span>
+                  <span className="text-[#9CA3AF] dark:text-[#737373]">TVA {rate}</span>
+                  <span className="text-[#6B7280] dark:text-[#A3A3A3]">{formatEuro(amount)}</span>
                 </div>
               ))}
-              <div className="flex justify-between text-base font-bold pt-2 border-t border-slate-200 dark:border-slate-600">
-                <span className="text-slate-400 dark:text-slate-200">Total TTC</span>
-                <span className="text-teal-600 dark:text-teal-400">{formatEuro(formTotals.totalTTC)}</span>
+              <div className="flex justify-between text-base font-bold pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <span className="text-[#9CA3AF] dark:text-white">Total TTC</span>
+                <span className="text-[#111111] dark:text-[#A3A3A3]">{formatEuro(formTotals.totalTTC)}</span>
               </div>
             </div>
           </div>
@@ -1264,22 +1264,22 @@ export default function Devis() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {createType === 'devis' && (
               <div>
-                <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('devis.validityDuration')}</label>
+                <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.validityDuration')}</label>
                 <input
                   type="number"
                   value={dureeValidite}
                   min={1}
                   onChange={e => setDureeValidite(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
                 />
               </div>
             )}
             <div>
-              <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('devis.paymentTerms')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.paymentTerms')}</label>
               <select
                 value={conditionsPaiement}
                 onChange={e => setConditionsPaiement(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
               >
                 {CONDITIONS_PAIEMENT.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -1288,36 +1288,36 @@ export default function Devis() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 dark:text-slate-400 mb-1">{t('devis.notes')}</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('devis.notes')}</label>
             <textarea
               value={notes}
               onChange={e => setNotes(e.target.value)}
               rows={3}
               placeholder={t('devis.notesPlaceholder')}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none resize-none"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-none"
             />
           </div>
 
           {/* Mentions légales (read-only) */}
-          <div className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4">
-            <div className="text-xs font-semibold text-slate-400 dark:text-slate-400 mb-2">{t('devis.legalNotices')}</div>
-            <div className="text-xs text-slate-400 dark:text-slate-500 whitespace-pre-line">
+          <div className="bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4">
+            <div className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-2">{t('devis.legalNotices')}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] whitespace-pre-line">
               {createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE}
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+          <div className="flex justify-end gap-3 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
             <button
               onClick={() => { setShowCreateModal(false); resetForm(); }}
-              className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-300 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              className="px-4 py-2.5 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
             >
               {t('common.cancel')}
             </button>
             <button
               onClick={handleSaveDocument}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-teal-600 hover:bg-teal-500 text-white transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingDoc ? t('devis.update') : t('devis.save')}
@@ -1336,11 +1336,11 @@ export default function Devis() {
         {previewDoc && (
           <div className="space-y-4">
             <PDFPreview doc={previewDoc} entreprise={ENTREPRISE} />
-            <div className="flex flex-wrap justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap justify-end gap-3 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
               {previewDoc.statut === 'brouillon' && (
                 <button
                   onClick={() => { handleSendEmail(previewDoc); setShowPreviewModal(false); }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-teal-600 hover:bg-teal-500 text-white transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors"
                 >
                   <Send className="w-4 h-4" />
                   {t('devis.sendByEmail')}
@@ -1348,7 +1348,7 @@ export default function Devis() {
               )}
               <button
                 onClick={() => handleDownloadPDF(previewDoc)}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] transition-colors"
               >
                 <Download className="w-4 h-4" />
                 {t('devis.downloadPDF')}

@@ -222,7 +222,7 @@ function ToggleSwitch({ enabled, onChange, color = 'bg-[#111111] dark:bg-white' 
       type="button"
       onClick={() => onChange(!enabled)}
       className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
-        enabled ? color : 'bg-slate-300 dark:bg-[#171717]'
+        enabled ? color : 'bg-[#D1D5DB] dark:bg-[#171717]'
       }`}
     >
       <span
@@ -256,10 +256,10 @@ function Section({ icon, iconColor, title, badge, open, onToggle, children, vari
     <div className={`bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden transition-all ${borderClass}`}>
       <button
         onClick={onToggle}
-        className="w-full px-5 py-4 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-[#171717] transition-colors text-left"
+        className="w-full px-5 py-4 flex items-center gap-3 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors text-left"
       >
         <span className={iconColor}>{icon}</span>
-        <h3 className="font-semibold text-lg text-slate-800 dark:text-white flex-1">{title}</h3>
+        <h3 className="font-semibold text-lg text-[#111111] dark:text-white flex-1">{title}</h3>
         {badge}
         {open ? (
           <ChevronDown className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373] transition-transform" />
@@ -709,7 +709,7 @@ export default function Settings() {
     <div className="max-w-3xl mx-auto pb-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
           <SettingsIcon className="w-7 h-7" />
           Paramètres
         </h2>
@@ -739,7 +739,7 @@ export default function Settings() {
                 </button>
               </div>
               <div className="flex-1 space-y-1">
-                <h4 className="text-lg font-semibold text-slate-800 dark:text-white">
+                <h4 className="text-lg font-semibold text-[#111111] dark:text-white">
                   {user?.name || 'Utilisateur'}
                 </h4>
                 <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{user?.email || '-'}</p>
@@ -934,7 +934,7 @@ export default function Settings() {
             {/* Logo upload placeholder */}
             <div>
               <label className="label">Logo du restaurant</label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-[#1A1A1A] rounded-lg p-6 text-center hover:border-teal-400 dark:hover:border-teal-500 transition-colors cursor-pointer">
+              <div className="border-2 border-dashed border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg p-6 text-center hover:border-teal-400 dark:hover:border-teal-500 transition-colors cursor-pointer">
                 <Upload className="w-8 h-8 mx-auto text-[#9CA3AF] dark:text-[#737373] mb-2" />
                 <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
                   Cliquer ou glisser-deposer pour ajouter un logo
@@ -1016,7 +1016,7 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.margeMatiere}
                     onChange={(e) => handleGoalChange('margeMatiere', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    className="w-full h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-emerald-500"
                   />
                   <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>50%</span>
@@ -1043,7 +1043,7 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.foodCost}
                     onChange={(e) => handleGoalChange('foodCost', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-orange-500"
+                    className="w-full h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-orange-500"
                   />
                   <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>10%</span>
@@ -1070,7 +1070,7 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.masseSalariale}
                     onChange={(e) => handleGoalChange('masseSalariale', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-violet-500"
+                    className="w-full h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-violet-500"
                   />
                   <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>20%</span>
@@ -1097,7 +1097,7 @@ export default function Settings() {
                     step="1"
                     value={financialGoals.primeCost}
                     onChange={(e) => handleGoalChange('primeCost', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-teal-500"
+                    className="w-full h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-lg appearance-none cursor-pointer accent-teal-500"
                   />
                   <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
                     <span>50%</span>
@@ -1172,11 +1172,11 @@ export default function Settings() {
               </div>
 
               {/* Summary card */}
-              <div className="mt-5 p-4 bg-slate-50 dark:bg-[#171717] rounded-xl border border-slate-200 dark:border-[#1A1A1A]">
+              <div className="mt-5 p-4 bg-[#FAFAFA] dark:bg-[#171717] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
                 <h5 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">
                   Estimation CA mensuel
                 </h5>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">
                   {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(
                     financialGoals.ticketMoyen *
                     financialGoals.couvertsJour *
@@ -1222,7 +1222,7 @@ export default function Settings() {
                 </thead>
                 <tbody>
                   {Object.entries(coefficients).map(([category, coeff]) => (
-                    <tr key={category} className="border-b dark:border-[#1A1A1A] hover:bg-slate-50 dark:hover:bg-[#171717]/30 transition-colors">
+                    <tr key={category} className="border-b dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 transition-colors">
                       <td className="py-2.5 px-3 font-medium text-[#374151] dark:text-[#A3A3A3]">{category}</td>
                       <td className="py-2.5 px-3 text-center">
                         <input
@@ -1375,7 +1375,7 @@ export default function Settings() {
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all ${
                       settings.theme === opt.value
                         ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 shadow-sm'
-                        : 'border-slate-200 dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
                     }`}
                   >
                     {opt.icon}
@@ -1432,7 +1432,7 @@ export default function Settings() {
             <div className="pt-4 border-t dark:border-[#1A1A1A] space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Version</span>
-                <span className="text-sm font-mono bg-slate-100 dark:bg-[#171717] px-2.5 py-0.5 rounded text-[#9CA3AF] dark:text-[#A3A3A3]">
+                <span className="text-sm font-mono bg-[#F3F4F6] dark:bg-[#171717] px-2.5 py-0.5 rounded text-[#9CA3AF] dark:text-[#A3A3A3]">
                   v{APP_VERSION}
                 </span>
               </div>
@@ -1450,7 +1450,7 @@ export default function Settings() {
                     Installer
                   </button>
                 ) : (
-                  <span className="text-xs bg-slate-100 dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] px-2.5 py-1 rounded-full">
+                  <span className="text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] px-2.5 py-1 rounded-full">
                     Non disponible
                   </span>
                 )}
@@ -1480,7 +1480,7 @@ export default function Settings() {
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                     tealtoothConnected
                       ? 'bg-cyan-100 dark:bg-cyan-900/30'
-                      : 'bg-slate-100 dark:bg-[#171717]'
+                      : 'bg-[#F3F4F6] dark:bg-[#171717]'
                   }`}
                 >
                   <Bluetooth
@@ -1527,7 +1527,7 @@ export default function Settings() {
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                     printerConnected
                       ? 'bg-green-100 dark:bg-green-900/30'
-                      : 'bg-slate-100 dark:bg-[#171717]'
+                      : 'bg-[#F3F4F6] dark:bg-[#171717]'
                   }`}
                 >
                   <Printer
@@ -1613,7 +1613,7 @@ export default function Settings() {
             <div>
               <label className="label">Abonnement</label>
               <div className="flex items-center gap-2">
-                <div className="input flex-1 bg-slate-50 dark:bg-[#171717] font-mono text-sm tracking-wider select-all">
+                <div className="input flex-1 bg-[#FAFAFA] dark:bg-[#171717] font-mono text-sm tracking-wider select-all">
                   {PLAN_LABELS[(user as any)?.plan] || 'Basic — 9€/mois'}
                 </div>
                 <button
@@ -1661,9 +1661,9 @@ export default function Settings() {
           <div className="space-y-5">
             {/* Referral code + copy */}
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-[#A3A3A3] mb-2">Votre code de parrainage</label>
+              <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2">Votre code de parrainage</label>
               <div className="flex items-center gap-2">
-                <div className="flex-1 bg-slate-100 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-4 py-2.5 font-mono text-lg tracking-wider text-slate-800 dark:text-white">
+                <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-4 py-2.5 font-mono text-lg tracking-wider text-[#111111] dark:text-white">
                   {referralLoading ? '...' : referralCode}
                 </div>
                 <button
@@ -1695,19 +1695,19 @@ export default function Settings() {
 
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
+              <div className="bg-[#FAFAFA] dark:bg-[#171717] rounded-lg p-3 text-center">
                 <UserPlus className="w-5 h-5 mx-auto mb-1 text-amber-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{referralStats.total}</div>
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">{referralStats.total}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Parrainages total</div>
               </div>
-              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
+              <div className="bg-[#FAFAFA] dark:bg-[#171717] rounded-lg p-3 text-center">
                 <Check className="w-5 h-5 mx-auto mb-1 text-green-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{referralStats.active}</div>
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">{referralStats.active}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Actifs</div>
               </div>
-              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
+              <div className="bg-[#FAFAFA] dark:bg-[#171717] rounded-lg p-3 text-center">
                 <Gift className="w-5 h-5 mx-auto mb-1 text-purple-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{referralStats.freeMonths}</div>
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">{referralStats.freeMonths}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Mois gratuits gagnes</div>
               </div>
             </div>
@@ -1715,12 +1715,12 @@ export default function Settings() {
             {/* Referral list */}
             {referrals.length > 0 ? (
               <div>
-                <h4 className="text-sm font-medium text-slate-600 dark:text-[#A3A3A3] mb-2">Vos filleuls</h4>
+                <h4 className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2">Vos filleuls</h4>
                 <div className="space-y-2">
                   {referrals.map((r: any) => (
-                    <div key={r.id} className="flex items-center justify-between bg-slate-50 dark:bg-[#171717] rounded-lg px-4 py-2.5">
+                    <div key={r.id} className="flex items-center justify-between bg-[#FAFAFA] dark:bg-[#171717] rounded-lg px-4 py-2.5">
                       <div>
-                        <p className="text-sm font-medium text-slate-800 dark:text-white">{r.referee_name || r.referee_email}</p>
+                        <p className="text-sm font-medium text-[#111111] dark:text-white">{r.referee_name || r.referee_email}</p>
                         <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{new Date(r.created_at).toLocaleDateString('fr-FR')}</p>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -1728,7 +1728,7 @@ export default function Settings() {
                           ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                           : r.status === 'pending'
                           ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300'
-                          : 'bg-slate-100 dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'
+                          : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'
                       }`}>
                         {r.status === 'active' ? 'Actif' : r.status === 'pending' ? 'En attente' : r.status}
                       </span>
@@ -1760,19 +1760,19 @@ export default function Settings() {
           <div className="space-y-5">
             {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
+              <div className="bg-[#FAFAFA] dark:bg-[#171717] rounded-lg p-3 text-center">
                 <UtensilsCrossed className="w-5 h-5 mx-auto mb-1 text-teal-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.recipes}</div>
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.recipes}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Recettes</div>
               </div>
-              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
+              <div className="bg-[#FAFAFA] dark:bg-[#171717] rounded-lg p-3 text-center">
                 <ChefHat className="w-5 h-5 mx-auto mb-1 text-green-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.ingredients}</div>
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.ingredients}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ingredients</div>
               </div>
-              <div className="bg-slate-50 dark:bg-[#171717] rounded-lg p-3 text-center">
+              <div className="bg-[#FAFAFA] dark:bg-[#171717] rounded-lg p-3 text-center">
                 <Users className="w-5 h-5 mx-auto mb-1 text-purple-500" />
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.users}</div>
+                <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.users}</div>
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Utilisateurs</div>
               </div>
             </div>
@@ -1802,7 +1802,7 @@ export default function Settings() {
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date debut</label>
                 <input
                   type="date"
-                  className="w-full bg-slate-50 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-white"
+                  className="w-full bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white"
                   value={exportDateFrom}
                   onChange={(e) => setExportDateFrom(e.target.value)}
                 />
@@ -1811,7 +1811,7 @@ export default function Settings() {
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date fin</label>
                 <input
                   type="date"
-                  className="w-full bg-slate-50 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-white"
+                  className="w-full bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white"
                   value={exportDateTo}
                   onChange={(e) => setExportDateTo(e.target.value)}
                 />
@@ -1819,7 +1819,7 @@ export default function Settings() {
               <div>
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Format</label>
                 <select
-                  className="w-full bg-slate-50 dark:bg-[#171717] border border-slate-200 dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-white"
+                  className="w-full bg-[#FAFAFA] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white"
                   value={exportFormat}
                   onChange={(e) => setExportFormat(e.target.value as 'csv' | 'xlsx')}
                 >
@@ -1832,10 +1832,10 @@ export default function Settings() {
             {/* Export cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {/* Card: Ingredients & Couts */}
-              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <ChefHat className="w-5 h-5 text-green-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Ingredients & Couts</h4>
+                  <h4 className="font-semibold text-sm text-[#111111] dark:text-white">Ingredients & Couts</h4>
                 </div>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Liste complete des ingredients avec prix unitaires, fournisseurs et categories.
@@ -1855,10 +1855,10 @@ export default function Settings() {
               </div>
 
               {/* Card: Recettes & Marges */}
-              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <UtensilsCrossed className="w-5 h-5 text-teal-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Recettes & Marges</h4>
+                  <h4 className="font-semibold text-sm text-[#111111] dark:text-white">Recettes & Marges</h4>
                 </div>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Toutes les recettes avec food cost, prix de vente, marge et coefficient.
@@ -1878,10 +1878,10 @@ export default function Settings() {
               </div>
 
               {/* Card: Historique Commandes */}
-              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-blue-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Historique Commandes</h4>
+                  <h4 className="font-semibold text-sm text-[#111111] dark:text-white">Historique Commandes</h4>
                 </div>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Toutes les factures fournisseurs avec details des lignes, dates et montants.
@@ -1901,10 +1901,10 @@ export default function Settings() {
               </div>
 
               {/* Card: Valorisation Stock */}
-              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <Database className="w-5 h-5 text-purple-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Valorisation Stock</h4>
+                  <h4 className="font-semibold text-sm text-[#111111] dark:text-white">Valorisation Stock</h4>
                 </div>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Inventaire complet avec quantites, prix unitaires et valeur totale du stock.
@@ -1924,10 +1924,10 @@ export default function Settings() {
               </div>
 
               {/* Card: Rapport Mensuel */}
-              <div className="bg-slate-50 dark:bg-[#0A0A0A] border border-slate-200 dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-orange-500" />
-                  <h4 className="font-semibold text-sm text-slate-800 dark:text-white">Rapport Mensuel P&L</h4>
+                  <h4 className="font-semibold text-sm text-[#111111] dark:text-white">Rapport Mensuel P&L</h4>
                 </div>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex-1">
                   Synthese mensuelle : chiffre d'affaires, achats, marge brute, resultat.

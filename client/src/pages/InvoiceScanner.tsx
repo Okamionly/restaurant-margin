@@ -644,7 +644,7 @@ export default function InvoiceScanner() {
         <p className="text-gray-400 dark:text-gray-500 text-sm my-2">{t('invoiceScanner.or')}</p>
         <button
           type="button"
-          className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-medium"
+          className="px-4 py-2 bg-[#111111] dark:bg-white text-white rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-sm font-medium"
           onClick={(e) => {
             e.stopPropagation();
             fileInputRef.current?.click();
@@ -679,7 +679,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-teal-500"
             />
           </div>
 
@@ -708,7 +708,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setFilterFournisseur(e.target.value)}
               className="pl-8 pr-8 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500 appearance-none"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white appearance-none"
             >
               <option value="">{t('invoiceScanner.allSuppliers')}</option>
               {allFournisseurs.map((f) => (
@@ -727,7 +727,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
               className="pl-8 pr-8 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500 appearance-none"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white appearance-none"
             >
               <option value="date">{t('invoiceScanner.sortDate')}</option>
               <option value="nom">{t('invoiceScanner.sortName')}</option>
@@ -965,13 +965,13 @@ export default function InvoiceScanner() {
               placeholder={`Exemple :\nTomates grappe  5  kg  2.50  12.50\nSaumon frais  3  kg  15.00  45.00\nHuile olive  2  L  8.99  17.98`}
               className="w-full px-4 py-3 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono
-                         focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-y"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-teal-500 resize-y"
             />
             <div className="flex items-center gap-3 mt-4">
               <button
                 onClick={handleParseOcr}
                 disabled={!ocrText.trim()}
-                className="px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm font-medium
+                className="px-5 py-2.5 bg-[#111111] dark:bg-white text-white rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-sm font-medium
                            disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <ScanLine className="w-4 h-4" />
@@ -1006,8 +1006,8 @@ export default function InvoiceScanner() {
                   </button>
                   <button
                     onClick={handleAddToInvoice}
-                    className="px-3 py-1.5 text-xs font-medium bg-teal-600 text-white rounded-lg
-                               hover:bg-teal-700 flex items-center gap-1"
+                    className="px-3 py-1.5 text-xs font-medium bg-[#111111] dark:bg-white text-white rounded-lg
+                               hover:bg-[#333] dark:hover:bg-[#E5E5E5] flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Ajouter a la facture
@@ -1049,7 +1049,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'name', e.target.value)}
                             className="w-full px-2 py-1 text-sm rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-teal-500"
+                                       focus:ring-1 focus:ring-[#111111] dark:ring-white"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1060,7 +1060,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'qty', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-teal-500"
+                                       focus:ring-1 focus:ring-[#111111] dark:ring-white"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1070,7 +1070,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'unit', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-teal-500"
+                                       focus:ring-1 focus:ring-[#111111] dark:ring-white"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1081,7 +1081,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'prixUnitaire', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-teal-500"
+                                       focus:ring-1 focus:ring-[#111111] dark:ring-white"
                           />
                         </td>
                         <td className="px-4 py-2">
@@ -1092,7 +1092,7 @@ export default function InvoiceScanner() {
                             onChange={(e) => handleOcrItemChange(item.id, 'total', e.target.value)}
                             className="w-full px-2 py-1 text-sm text-center rounded border border-gray-200 dark:border-gray-600
                                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                       focus:ring-1 focus:ring-teal-500"
+                                       focus:ring-1 focus:ring-[#111111] dark:ring-white"
                           />
                         </td>
                         <td className="px-2 py-2">
@@ -1301,7 +1301,7 @@ export default function InvoiceScanner() {
               placeholder={t('invoiceScanner.supplierPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white"
             />
             <datalist id="fournisseurs-list">
               {allFournisseurs.map((f) => (
@@ -1327,7 +1327,7 @@ export default function InvoiceScanner() {
               placeholder={t('invoiceScanner.invoiceNumberPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white"
             />
           </div>
 
@@ -1347,7 +1347,7 @@ export default function InvoiceScanner() {
               onChange={(e) => setMetaForm((f) => ({ ...f, dateFacture: e.target.value }))}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white"
             />
           </div>
 
@@ -1370,7 +1370,7 @@ export default function InvoiceScanner() {
                 placeholder="0.00"
                 className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:ring-2 focus:ring-teal-500"
+                           focus:ring-2 focus:ring-[#111111] dark:ring-white"
               />
             </div>
             <div>
@@ -1390,7 +1390,7 @@ export default function InvoiceScanner() {
                 placeholder="0.00"
                 className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:ring-2 focus:ring-teal-500"
+                           focus:ring-2 focus:ring-[#111111] dark:ring-white"
               />
             </div>
           </div>
@@ -1407,7 +1407,7 @@ export default function InvoiceScanner() {
               placeholder={t('invoiceScanner.notesPlaceholder')}
               className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-teal-500 resize-none"
+                         focus:ring-2 focus:ring-[#111111] dark:ring-white resize-none"
             />
           </div>
 
@@ -1428,7 +1428,7 @@ export default function InvoiceScanner() {
             <button
               onClick={saveCurrentFile}
               disabled={savingInvoice || scanLoading}
-              className="px-4 py-2 text-sm bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium
+              className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] font-medium
                          flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {savingInvoice ? (

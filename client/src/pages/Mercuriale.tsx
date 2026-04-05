@@ -71,7 +71,7 @@ function TrendBadge({ trend, detail }: { trend: string; detail: string | null })
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-[#F3F4F6]/20 dark:bg-[#171717]/20 text-[#9CA3AF] dark:text-[#737373]">
       <Minus className="w-3 h-3" />
       Stable
     </span>
@@ -137,7 +137,7 @@ export default function Mercuriale() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-center h-64 text-slate-400">
+      <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-center h-64 text-[#9CA3AF] dark:text-[#737373]">
         <RefreshCw className="w-6 h-6 animate-spin mr-2" />
         Chargement de la mercuriale...
       </div>
@@ -147,10 +147,10 @@ export default function Mercuriale() {
   if (error || !data?.publication) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-col items-center justify-center h-64 text-center bg-slate-900/50 border border-slate-800 rounded-2xl">
-          <CalendarDays className="w-12 h-12 text-slate-600 mb-4" />
-          <p className="text-slate-400 font-medium mb-2">{error || 'Aucune mercuriale disponible'}</p>
-          <p className="text-slate-500 text-sm">Les prix du march&eacute; seront publi&eacute;s prochainement par l'&eacute;quipe RestauMargin.</p>
+        <div className="flex flex-col items-center justify-center h-64 text-center bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl">
+          <CalendarDays className="w-12 h-12 text-[#6B7280] dark:text-[#A3A3A3] mb-4" />
+          <p className="text-[#9CA3AF] dark:text-[#737373] font-medium mb-2">{error || 'Aucune mercuriale disponible'}</p>
+          <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm">Les prix du march&eacute; seront publi&eacute;s prochainement par l'&eacute;quipe RestauMargin.</p>
         </div>
       </div>
     );
@@ -168,52 +168,52 @@ export default function Mercuriale() {
             <CalendarDays className="w-6 h-6 text-blue-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">{pub.title}</h1>
-            <p className="text-sm text-slate-400">
+            <h1 className="text-2xl font-bold text-[#111111] dark:text-white">{pub.title}</h1>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
               Semaine du {weekDate}
             </p>
           </div>
         </div>
-        <div className="text-xs text-slate-500 max-w-md text-right">
+        <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] max-w-md text-right">
           Sources : {pub.sources}
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-          <div className="text-sm text-slate-400 mb-1">Produits suivis</div>
-          <div className="text-2xl font-bold text-white">{totalProducts}</div>
+        <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">Produits suivis</div>
+          <div className="text-2xl font-bold text-[#111111] dark:text-white">{totalProducts}</div>
         </div>
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-          <div className="text-sm text-slate-400 mb-1 flex items-center gap-1">
+        <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1 flex items-center gap-1">
             <TrendingUp className="w-3.5 h-3.5 text-red-400" /> En hausse
           </div>
           <div className="text-2xl font-bold text-red-400">{hausses}</div>
         </div>
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-          <div className="text-sm text-slate-400 mb-1 flex items-center gap-1">
+        <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1 flex items-center gap-1">
             <TrendingDown className="w-3.5 h-3.5 text-emerald-400" /> En baisse
           </div>
           <div className="text-2xl font-bold text-emerald-400">{baisses}</div>
         </div>
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
-          <div className="text-sm text-slate-400 mb-1 flex items-center gap-1">
-            <Minus className="w-3.5 h-3.5 text-slate-400" /> Stables
+        <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+          <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1 flex items-center gap-1">
+            <Minus className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" /> Stables
           </div>
-          <div className="text-2xl font-bold text-slate-300">{stables}</div>
+          <div className="text-2xl font-bold text-[#6B7280] dark:text-[#A3A3A3]">{stables}</div>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher un produit..."
-          className="w-full pl-9 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full pl-9 pr-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -226,14 +226,14 @@ export default function Mercuriale() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {alertItems.map((a) => (
-              <div key={a.id} className="bg-slate-900/60 border border-red-500/20 rounded-xl p-4">
+              <div key={a.id} className="bg-white dark:bg-black/60 border border-red-500/20 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-white">{a.ingredient_name}</span>
+                  <span className="font-semibold text-[#111111] dark:text-white">{a.ingredient_name}</span>
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-400">
                     {a.variation}
                   </span>
                 </div>
-                <p className="text-sm text-slate-400 flex items-start gap-1.5">
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] flex items-start gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-red-400 mt-0.5 flex-shrink-0" />
                   {a.action_text}
                 </p>
@@ -252,14 +252,14 @@ export default function Mercuriale() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {opportunityItems.map((a) => (
-              <div key={a.id} className="bg-slate-900/60 border border-emerald-500/20 rounded-xl p-4">
+              <div key={a.id} className="bg-white dark:bg-black/60 border border-emerald-500/20 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-white">{a.ingredient_name}</span>
+                  <span className="font-semibold text-[#111111] dark:text-white">{a.ingredient_name}</span>
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">
                     {a.variation}
                   </span>
                 </div>
-                <p className="text-sm text-slate-400 flex items-start gap-1.5">
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] flex items-start gap-1.5">
                   <ArrowRight className="w-3.5 h-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />
                   {a.action_text}
                 </p>
@@ -276,43 +276,43 @@ export default function Mercuriale() {
 
       {/* Price Tables by Category */}
       {Object.entries(filteredCategories).map(([category, prices]) => {
-        const config = CATEGORY_CONFIG[category] || { emoji: '\uD83D\uDCE6', color: 'text-slate-400', bg: 'bg-slate-500/10 border-slate-500/30' };
+        const config = CATEGORY_CONFIG[category] || { emoji: '\uD83D\uDCE6', color: 'text-[#9CA3AF] dark:text-[#737373]', bg: 'bg-[#F3F4F6]/10 dark:bg-[#171717]/10 border-[#E5E7EB]/30 dark:border-[#1A1A1A]/30' };
         return (
           <div key={category} className={`border rounded-2xl overflow-hidden ${config.bg}`}>
-            <div className="px-5 py-3 border-b border-slate-800/50">
+            <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50">
               <h2 className={`text-lg font-bold ${config.color} flex items-center gap-2`}>
                 <span className="text-xl">{config.emoji}</span>
                 {category}
-                <span className="text-xs font-normal text-slate-500 ml-2">({prices.length} produit{prices.length > 1 ? 's' : ''})</span>
+                <span className="text-xs font-normal text-[#6B7280] dark:text-[#A3A3A3] ml-2">({prices.length} produit{prices.length > 1 ? 's' : ''})</span>
               </h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left border-b border-slate-800/50 bg-slate-900/40">
-                    <th className="px-5 py-2.5 font-semibold text-slate-300">Produit</th>
-                    <th className="px-5 py-2.5 font-semibold text-slate-300 text-right">Prix min</th>
-                    <th className="px-5 py-2.5 font-semibold text-slate-300 text-right">Prix max</th>
-                    <th className="px-5 py-2.5 font-semibold text-slate-300">Unit&eacute;</th>
-                    <th className="px-5 py-2.5 font-semibold text-slate-300 text-center">Tendance</th>
-                    <th className="px-5 py-2.5 font-semibold text-slate-300 hidden md:table-cell">Fournisseurs</th>
+                  <tr className="text-left border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white dark:bg-black/40">
+                    <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Produit</th>
+                    <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3] text-right">Prix min</th>
+                    <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3] text-right">Prix max</th>
+                    <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Unit&eacute;</th>
+                    <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3] text-center">Tendance</th>
+                    <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3] hidden md:table-cell">Fournisseurs</th>
                   </tr>
                 </thead>
                 <tbody>
                   {prices.map((p) => (
-                    <tr key={p.id} className="border-b border-slate-800/30 hover:bg-slate-800/20 transition-colors">
-                      <td className="px-5 py-3 font-medium text-white">{p.ingredient_name}</td>
-                      <td className="px-5 py-3 text-right font-semibold text-white">
+                    <tr key={p.id} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/20 transition-colors">
+                      <td className="px-5 py-3 font-medium text-[#111111] dark:text-white">{p.ingredient_name}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-[#111111] dark:text-white">
                         {Number(p.price_min).toFixed(2)}&euro;
                       </td>
-                      <td className="px-5 py-3 text-right font-semibold text-white">
+                      <td className="px-5 py-3 text-right font-semibold text-[#111111] dark:text-white">
                         {Number(p.price_max).toFixed(2)}&euro;
                       </td>
-                      <td className="px-5 py-3 text-slate-400">/{p.unit}</td>
+                      <td className="px-5 py-3 text-[#9CA3AF] dark:text-[#737373]">/{p.unit}</td>
                       <td className="px-5 py-3 text-center">
                         <TrendBadge trend={p.trend} detail={p.trend_detail} />
                       </td>
-                      <td className="px-5 py-3 text-slate-500 text-xs hidden md:table-cell">{p.supplier}</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-[#A3A3A3] text-xs hidden md:table-cell">{p.supplier}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -324,8 +324,8 @@ export default function Mercuriale() {
 
       {/* Alternatives Section */}
       {(data.alternatives?.length || 0) > 0 && (
-        <div className="bg-slate-900/50 border border-blue-500/20 rounded-2xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-800/50">
+        <div className="bg-white dark:bg-black/50 border border-blue-500/20 rounded-2xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50">
             <h2 className="text-lg font-bold text-blue-400 flex items-center gap-2">
               <ExternalLink className="w-5 h-5" />
               Alternatives &eacute;conomiques
@@ -334,20 +334,20 @@ export default function Mercuriale() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left border-b border-slate-800/50 bg-slate-900/40">
-                  <th className="px-5 py-2.5 font-semibold text-slate-300">Produit co&ucirc;teux</th>
-                  <th className="px-5 py-2.5 font-semibold text-slate-300 text-center">
+                <tr className="text-left border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white dark:bg-black/40">
+                  <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Produit co&ucirc;teux</th>
+                  <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3] text-center">
                     <ArrowRight className="w-4 h-4 inline" />
                   </th>
-                  <th className="px-5 py-2.5 font-semibold text-slate-300">Alternative</th>
+                  <th className="px-5 py-2.5 font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Alternative</th>
                   <th className="px-5 py-2.5 font-semibold text-emerald-400 text-right">&Eacute;conomie</th>
                 </tr>
               </thead>
               <tbody>
                 {data.alternatives.map((alt) => (
-                  <tr key={alt.id} className="border-b border-slate-800/30 hover:bg-slate-800/20 transition-colors">
+                  <tr key={alt.id} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]/30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/20 transition-colors">
                     <td className="px-5 py-3 text-white font-medium">{alt.product}</td>
-                    <td className="px-5 py-3 text-center text-slate-500">
+                    <td className="px-5 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">
                       <ArrowRight className="w-4 h-4 inline" />
                     </td>
                     <td className="px-5 py-3 text-emerald-400 font-medium">{alt.alternative}</td>
@@ -365,7 +365,7 @@ export default function Mercuriale() {
       )}
 
       {/* Footer */}
-      <div className="text-center text-xs text-slate-600 pb-4">
+      <div className="text-center text-xs text-[#6B7280] dark:text-[#A3A3A3] pb-4">
         Donn&eacute;es publi&eacute;es par l'&eacute;quipe RestauMargin &mdash; Prix HT indicatifs &mdash; Sources : {pub.sources}
       </div>
     </div>

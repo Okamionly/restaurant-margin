@@ -4115,5 +4115,39 @@
       "replace_all": false
     },
     "tool_use_id": "toolu_01E6gpjGYuwTRNbGAPRapJJT"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a16695a2da6c25425",
+    "agent_type": "builder",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "activeTab === 'pnl'",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Dashboard.tsx",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_012NmLveF5fV3x5h2TLMKsyo"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a16695a2da6c25425",
+    "agent_type": "builder",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "/api/analytics/pnl",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_01Fvazmu68JoWWC3eTt4anmZ"
   }
 ]

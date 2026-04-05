@@ -471,5 +471,38 @@
       "is_interrupt": false,
       "logged_at": "2026-04-05T17:14:09.178541"
     }
+  },
+  {
+    "timestamp": "2026-04-05T19:02:52.646336",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Bash",
+    "tool_use_id": "toolu_01WLaXx9JY8FAW7S7huwE1wd",
+    "tool_input": {
+      "command": "cd \"C:/Users/mrgue/CLAUDE CODE/restaurant-margin\" && ls api/tsconfig.json 2>/dev/null; ls api/node_modules/.bin/tsc* 2>/dev/null; ls node_modules/.bin/tsc* 2>/dev/null",
+      "description": "Check backend TypeScript setup"
+    },
+    "error": "Exit code 2",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "agent_id": "ad2d2c5e6385d6215",
+      "agent_type": "general-purpose",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "cd \"C:/Users/mrgue/CLAUDE CODE/restaurant-margin\" && ls api/tsconfig.json 2>/dev/null; ls api/node_modules/.bin/tsc* 2>/dev/null; ls node_modules/.bin/tsc* 2>/dev/null",
+        "description": "Check backend TypeScript setup"
+      },
+      "tool_use_id": "toolu_01WLaXx9JY8FAW7S7huwE1wd",
+      "error": "Exit code 2",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T19:02:52.646336"
+    }
   }
 ]

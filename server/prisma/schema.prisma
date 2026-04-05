@@ -64,8 +64,9 @@ model Restaurant {
   conversations    Conversation[]
   financialEntries FinancialEntry[]
   wasteLogs        WasteLog[]
-  haccpTemperatures HaccpTemperature[]
-  haccpCleanings   HaccpCleaning[]
+  haccpTemperatures      HaccpTemperature[]
+  haccpCleanings         HaccpCleaning[]
+  haccpCorrectiveActions HaccpCorrectiveAction[]
   employees        Employee[]
   shifts           Shift[]
   seminaires       Seminaire[]
@@ -412,6 +413,23 @@ model HaccpCleaning {
 
   @@index([restaurantId, date])
   @@map("haccp_cleanings")
+}
+
+model HaccpCorrectiveAction {
+  id                Int        @id @default(autoincrement())
+  type              String // temperature, cleaning, traceability, other
+  description       String
+  responsiblePerson String
+  deadline          String // YYYY-MM-DD
+  status            String     @default("ouvert") // ouvert, en_cours, resolu
+  resolution        String?
+  restaurantId      Int
+  restaurant        Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([restaurantId, status])
+  @@map("haccp_corrective_actions")
 }
 
 model Seminaire {

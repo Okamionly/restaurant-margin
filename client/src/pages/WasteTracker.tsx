@@ -2,11 +2,12 @@ import { useState, useMemo, useEffect } from 'react';
 import {
   Trash2, Plus, TrendingDown, AlertTriangle, Lightbulb,
   Target, PieChart as PieChartIcon, BarChart3, Leaf, Search,
-  ChevronDown, ChevronUp, Calendar, ArrowDown, Loader2
+  ChevronDown, ChevronUp, Calendar, ArrowDown, Loader2,
+  Brain, Zap, Clock, TrendingUp, CalendarDays, Sparkles
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer
+  Tooltip, ResponsiveContainer, LineChart, Line, ReferenceLine
 } from 'recharts';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
@@ -92,6 +93,37 @@ const REASON_BADGE: Record<WasteReason, string> = {
   other: 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300',
 };
 
+// ─── AI Analysis Types ──────────────────────────────────────────────────────
+
+interface AiRecommendation {
+  action: string;
+  impact: string;
+  priority: 'haute' | 'moyenne' | 'basse';
+  timeline: string;
+}
+
+interface WastePrediction {
+  day: string;
+  predictedCost: number;
+  highRisk: boolean;
+  confidence: 'haute' | 'moyenne' | 'basse';
+}
+
+interface AiWasteAnalysis {
+  analysis: string;
+  topWasteItems: { name: string; totalCost: number; totalQuantity: number; unit: string; incidents: number }[];
+  patterns: {
+    byDayOfWeek: Record<string, number>;
+    byReason: Record<string, number>;
+    byCategory: Record<string, number>;
+  };
+  recommendations: AiRecommendation[];
+  estimatedSavings: number;
+  trend: { date: string; cost: number }[];
+  targetDailyCost: number;
+  prediction: WastePrediction[];
+}
+
 // (ingredients are loaded from the API — no static catalog needed)
 
 // ─── AI Suggestions ──────────────────────────────────────────────────────────
@@ -163,6 +195,11 @@ export default function WasteTracker() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showTips, setShowTips] = useState(true);
 
+  // AI Analysis state
+  const [aiAnalysis, setAiAnalysis] = useState<AiWasteAnalysis | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showAiPanel, setShowAiPanel] = useState(false);
+
   // Form state
   const [form, setForm] = useState({
     ingredientId: '',
@@ -196,6 +233,28 @@ export default function WasteTracker() {
       }
     } catch {
       // non-blocking — summary enrichment is optional
+    }
+  }
+
+  async function loadAiAnalysis() {
+    setAiLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/ai/waste-analysis`, {
+        method: 'POST',
+        headers: authHeaders(),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(body.error || 'Erreur analyse IA');
+      }
+      const data: AiWasteAnalysis = await res.json();
+      setAiAnalysis(data);
+      setShowAiPanel(true);
+      showToast('Analyse IA terminee', 'success');
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : 'Erreur analyse IA', 'error');
+    } finally {
+      setAiLoading(false);
     }
   }
 
@@ -455,6 +514,14 @@ export default function WasteTracker() {
             ))}
           </div>
           <button
+            onClick={loadAiAnalysis}
+            disabled={aiLoading}
+            className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"
+          >
+            {aiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Brain className="w-4 h-4" />}
+            Analyse IA
+          </button>
+          <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
           >
@@ -675,6 +742,346 @@ export default function WasteTracker() {
           )}
         </div>
       </div>
+
+      {/* ── AI Analysis Panel ── */}
+      {showAiPanel && aiAnalysis && (
+        <div className="space-y-6">
+          {/* AI Analysis Header */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white">
+                  <Brain className="w-5 h-5 text-white dark:text-black" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-[#111111] dark:text-white">Analyse IA du gaspillage</h2>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">30 derniers jours -- Claude Haiku</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowAiPanel(false)}
+                className="p-2 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* AI Analysis Text */}
+            <div className="prose prose-sm max-w-none">
+              <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-lg p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <p className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed whitespace-pre-line">
+                  {aiAnalysis.analysis}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* AI Top Waste Items + Pattern Detection Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Top 5 AI-identified waste items */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-5 h-5 text-[#111111] dark:text-white" />
+                <h3 className="font-semibold text-[#1F2937] dark:text-white">Top 5 ingredients gaspilles</h3>
+              </div>
+              <div className="space-y-3">
+                {aiAnalysis.topWasteItems.map((item, i) => {
+                  const maxCost = aiAnalysis.topWasteItems[0]?.totalCost || 1;
+                  const pct = (item.totalCost / maxCost) * 100;
+                  return (
+                    <div key={item.name}>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-medium text-[#374151] dark:text-white">
+                          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] font-bold mr-2">
+                            {i + 1}
+                          </span>
+                          {item.name}
+                        </span>
+                        <span className="font-bold text-[#111111] dark:text-white">{formatEuro(item.totalCost)}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#111111] dark:bg-white rounded-full transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-24 text-right">
+                          {item.totalQuantity} {item.unit} ({item.incidents}x)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+                {aiAnalysis.topWasteItems.length === 0 && (
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune donnee disponible</p>
+                )}
+              </div>
+            </div>
+
+            {/* Pattern Detection */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-[#111111] dark:text-white" />
+                <h3 className="font-semibold text-[#1F2937] dark:text-white">Patterns detectes</h3>
+              </div>
+              <div className="space-y-4">
+                {/* By Day of Week */}
+                <div>
+                  <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase mb-2">Par jour de la semaine</h4>
+                  <div className="grid grid-cols-7 gap-1">
+                    {['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'].map(day => {
+                      const val = aiAnalysis.patterns.byDayOfWeek[day] || 0;
+                      const maxVal = Math.max(...Object.values(aiAnalysis.patterns.byDayOfWeek), 1);
+                      const intensity = Math.round((val / maxVal) * 4);
+                      const bgClasses = [
+                        'bg-[#F3F4F6] dark:bg-[#171717]',
+                        'bg-[#D1D5DB] dark:bg-[#404040]',
+                        'bg-[#9CA3AF] dark:bg-[#737373]',
+                        'bg-[#6B7280] dark:bg-[#A3A3A3]',
+                        'bg-[#111111] dark:bg-white',
+                      ];
+                      return (
+                        <div key={day} className="text-center">
+                          <div
+                            className={`h-8 rounded ${bgClasses[intensity]} transition-colors`}
+                            title={`${day}: ${formatEuro(val)}`}
+                          />
+                          <span className="text-[9px] text-[#9CA3AF] dark:text-[#737373] mt-0.5 block">
+                            {day.slice(0, 3)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* By Reason */}
+                <div>
+                  <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase mb-2">Par cause</h4>
+                  <div className="space-y-1.5">
+                    {Object.entries(aiAnalysis.patterns.byReason)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([reason, cost]) => {
+                        const totalPatternCost = Object.values(aiAnalysis.patterns.byReason).reduce((a, b) => a + b, 0);
+                        const pct = totalPatternCost > 0 ? (cost / totalPatternCost) * 100 : 0;
+                        return (
+                          <div key={reason} className="flex items-center gap-2 text-xs">
+                            <span className="w-24 text-[#6B7280] dark:text-[#A3A3A3] capitalize">{REASON_LABELS[reason as WasteReason] || reason}</span>
+                            <div className="flex-1 h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                              <div className="h-full bg-[#111111] dark:bg-white rounded-full" style={{ width: `${pct}%` }} />
+                            </div>
+                            <span className="w-12 text-right font-medium text-[#374151] dark:text-[#D4D4D4]">{pct.toFixed(0)}%</span>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+
+                {/* By Category */}
+                <div>
+                  <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase mb-2">Par categorie</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(aiAnalysis.patterns.byCategory)
+                      .sort((a, b) => b[1] - a[1])
+                      .slice(0, 6)
+                      .map(([cat, cost]) => (
+                        <span
+                          key={cat}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#374151] dark:text-[#D4D4D4] border border-[#E5E7EB] dark:border-[#1A1A1A]"
+                        >
+                          {cat}
+                          <span className="text-[#9CA3AF] dark:text-[#737373]">{formatEuro(cost)}</span>
+                        </span>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recommendations */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="w-5 h-5 text-[#111111] dark:text-white" />
+                <h3 className="font-semibold text-[#1F2937] dark:text-white">5 actions recommandees</h3>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#111111] dark:bg-white">
+                <TrendingDown className="w-3.5 h-3.5 text-white dark:text-black" />
+                <span className="text-xs font-bold text-white dark:text-black">
+                  Economie estimee: {formatEuro(aiAnalysis.estimatedSavings)}/mois
+                </span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {aiAnalysis.recommendations.map((rec, i) => {
+                const priorityStyles: Record<string, string> = {
+                  haute: 'bg-[#111111] dark:bg-white text-white dark:text-black',
+                  moyenne: 'bg-[#6B7280] dark:bg-[#A3A3A3] text-white dark:text-black',
+                  basse: 'bg-[#E5E7EB] dark:bg-[#404040] text-[#374151] dark:text-[#D4D4D4]',
+                };
+                return (
+                  <div
+                    key={i}
+                    className="flex gap-4 p-4 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+                  >
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center">
+                      <span className="text-sm font-bold text-white dark:text-black">{i + 1}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <p className="text-sm font-medium text-[#1F2937] dark:text-white">{rec.action}</p>
+                        <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${priorityStyles[rec.priority] || priorityStyles.basse}`}>
+                          {rec.priority}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                        <span className="flex items-center gap-1">
+                          <TrendingDown className="w-3 h-3" />
+                          {rec.impact}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {rec.timeline}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              {aiAnalysis.recommendations.length === 0 && (
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-4">
+                  Pas assez de donnees pour generer des recommandations
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Trend Chart with Target Line + Prediction Card Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Trend Chart (2 cols) */}
+            <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="w-5 h-5 text-[#111111] dark:text-white" />
+                <h3 className="font-semibold text-[#1F2937] dark:text-white">Tendance du gaspillage (30j)</h3>
+              </div>
+              {aiAnalysis.trend.length > 0 ? (
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={aiAnalysis.trend}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" strokeOpacity={0.5} />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10 }}
+                      tickFormatter={(d: string) => {
+                        const parts = d.split('-');
+                        return `${parts[2]}/${parts[1]}`;
+                      }}
+                      interval={4}
+                    />
+                    <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}`} />
+                    <Tooltip
+                      formatter={(val: unknown) => [formatEuro(Number(val)), 'Pertes']}
+                      labelFormatter={(l: unknown) => {
+                        const str = String(l);
+                        const parts = str.split('-');
+                        return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : str;
+                      }}
+                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '12px' }}
+                    />
+                    <ReferenceLine
+                      y={aiAnalysis.targetDailyCost}
+                      stroke="#111111"
+                      strokeDasharray="8 4"
+                      strokeWidth={2}
+                      label={{
+                        value: `Objectif: ${formatEuro(aiAnalysis.targetDailyCost)}/j`,
+                        position: 'insideTopRight',
+                        fill: '#111111',
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="cost"
+                      stroke="#111111"
+                      strokeWidth={2}
+                      dot={{ fill: '#111111', r: 2 }}
+                      activeDot={{ r: 4, fill: '#111111' }}
+                      name="Pertes"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[280px] flex items-center justify-center text-[#9CA3AF] dark:text-[#737373]">
+                  Pas assez de donnees pour afficher la tendance
+                </div>
+              )}
+            </div>
+
+            {/* Prediction Card (1 col) */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <CalendarDays className="w-5 h-5 text-[#111111] dark:text-white" />
+                <h3 className="font-semibold text-[#1F2937] dark:text-white">Prediction semaine prochaine</h3>
+              </div>
+              <div className="space-y-2">
+                {aiAnalysis.prediction.map((pred) => (
+                  <div
+                    key={pred.day}
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                      pred.highRisk
+                        ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#171717]'
+                        : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {pred.highRisk && (
+                        <AlertTriangle className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
+                      )}
+                      <span className={`text-sm capitalize ${
+                        pred.highRisk
+                          ? 'font-bold text-[#111111] dark:text-white'
+                          : 'text-[#6B7280] dark:text-[#A3A3A3]'
+                      }`}>
+                        {pred.day}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm font-medium ${
+                        pred.highRisk ? 'text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'
+                      }`}>
+                        {formatEuro(pred.predictedCost)}
+                      </span>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
+                        pred.confidence === 'haute'
+                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                          : pred.confidence === 'moyenne'
+                          ? 'bg-[#9CA3AF] dark:bg-[#737373] text-white dark:text-black'
+                          : 'bg-[#E5E7EB] dark:bg-[#404040] text-[#6B7280] dark:text-[#A3A3A3]'
+                      }`}>
+                        {pred.confidence}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-[#9CA3AF] dark:text-[#737373]">Total predit</span>
+                  <span className="font-bold text-[#111111] dark:text-white">
+                    {formatEuro(aiAnalysis.prediction.reduce((s, p) => s + p.predictedCost, 0))}
+                  </span>
+                </div>
+                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+                  Base sur les patterns des 30 derniers jours. Les jours en gras presentent un risque eleve de gaspillage.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Recent waste entries table */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">

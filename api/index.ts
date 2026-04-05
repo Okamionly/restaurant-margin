@@ -3030,6 +3030,187 @@ app.get('/api/haccp/summary', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé HACCP' }); }
 });
 
+// ─── HACCP Compliance Report ────────────────────────────────────────────────
+app.get('/api/haccp/report', authWithRestaurant, async (req: any, res) => {
+  try {
+    const restaurantId = req.restaurantId;
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+
+    // Week boundaries (Monday to Sunday)
+    const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1;
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - dayOfWeek);
+    const weekStartStr = weekStart.toISOString().split('T')[0];
+
+    // Month boundaries
+    const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+
+    // Temperature checks this week
+    const weekTemps = await prisma.haccpTemperature.findMany({
+      where: { restaurantId, date: { gte: weekStartStr, lte: today } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Temperature checks this month
+    const monthTemps = await prisma.haccpTemperature.findMany({
+      where: { restaurantId, date: { gte: monthStart, lte: today } },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Cleaning tasks this week
+    const weekCleanings = await prisma.haccpCleaning.findMany({
+      where: { restaurantId, date: { gte: weekStartStr, lte: today } },
+    });
+    const weekCleaningsDone = weekCleanings.filter((c: any) => c.status === 'fait').length;
+
+    // Month cleanings
+    const monthCleanings = await prisma.haccpCleaning.findMany({
+      where: { restaurantId, date: { gte: monthStart, lte: today } },
+    });
+    const monthCleaningsDone = monthCleanings.filter((c: any) => c.status === 'fait').length;
+
+    // Non-conformities (temperatures out of range)
+    const weekNonConformes = weekTemps.filter((t: any) => t.status === 'non_conforme');
+    const monthNonConformes = monthTemps.filter((t: any) => t.status === 'non_conforme');
+
+    // Missing checks: find days in the week with no temperature log
+    const daysInWeek: string[] = [];
+    for (let i = 0; i <= dayOfWeek; i++) {
+      const d = new Date(weekStart);
+      d.setDate(weekStart.getDate() + i);
+      daysInWeek.push(d.toISOString().split('T')[0]);
+    }
+    const daysWithTemps = new Set(weekTemps.map((t: any) => t.date));
+    const missingTempDays = daysInWeek.filter(d => !daysWithTemps.has(d));
+
+    // Days in month with/without checks (for calendar heatmap)
+    const daysInMonth: string[] = [];
+    const monthStartDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    for (let d = new Date(monthStartDate); d <= now; d.setDate(d.getDate() + 1)) {
+      daysInMonth.push(d.toISOString().split('T')[0]);
+    }
+    const daysWithMonthTemps = new Set(monthTemps.map((t: any) => t.date));
+    const daysWithMonthCleanings = new Set(monthCleanings.filter((c: any) => c.status === 'fait').map((c: any) => c.date));
+    const calendarHeatmap = daysInMonth.map(day => ({
+      date: day,
+      hasTemp: daysWithMonthTemps.has(day),
+      hasCleaning: daysWithMonthCleanings.has(day),
+      complete: daysWithMonthTemps.has(day) && daysWithMonthCleanings.has(day),
+    }));
+
+    // Required checks: 4 zones x days passed this week for temps
+    const requiredTempChecks = daysInWeek.length * 4;
+    const completedTempChecks = weekTemps.length;
+    const requiredCleaningChecks = weekCleanings.length || daysInWeek.length;
+    const completedCleaningChecks = weekCleaningsDone;
+
+    const totalRequired = requiredTempChecks + requiredCleaningChecks;
+    const totalCompleted = completedTempChecks + completedCleaningChecks;
+    const complianceScore = totalRequired > 0 ? Math.round((totalCompleted / totalRequired) * 100) : 0;
+
+    // Corrective actions summary
+    const correctiveActions = await prisma.haccpCorrectiveAction.findMany({
+      where: { restaurantId },
+      orderBy: { createdAt: 'desc' },
+    });
+    const openActions = correctiveActions.filter((a: any) => a.status === 'ouvert').length;
+    const inProgressActions = correctiveActions.filter((a: any) => a.status === 'en_cours').length;
+    const resolvedActions = correctiveActions.filter((a: any) => a.status === 'resolu').length;
+
+    res.json({
+      generatedAt: now.toISOString(),
+      period: { weekStart: weekStartStr, monthStart, today },
+      temperatures: {
+        weekCount: weekTemps.length,
+        monthCount: monthTemps.length,
+        weekNonConformes: weekNonConformes.length,
+        monthNonConformes: monthNonConformes.length,
+        nonConformitiesList: weekNonConformes.map((t: any) => ({
+          id: t.id, zone: t.zone, temperature: t.temperature, date: t.date, time: t.time,
+        })),
+      },
+      cleanings: {
+        weekTotal: weekCleanings.length,
+        weekDone: weekCleaningsDone,
+        monthTotal: monthCleanings.length,
+        monthDone: monthCleaningsDone,
+      },
+      compliance: {
+        score: Math.min(complianceScore, 100),
+        requiredChecks: totalRequired,
+        completedChecks: totalCompleted,
+        missingTempDays,
+      },
+      calendarHeatmap,
+      correctiveActions: {
+        total: correctiveActions.length,
+        open: openActions,
+        inProgress: inProgressActions,
+        resolved: resolvedActions,
+      },
+    });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur generation rapport HACCP' }); }
+});
+
+// ─── HACCP Corrective Actions CRUD ──────────────────────────────────────────
+app.get('/api/haccp/corrective-actions', authWithRestaurant, async (req: any, res) => {
+  try {
+    const actions = await prisma.haccpCorrectiveAction.findMany({
+      where: { restaurantId: req.restaurantId },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(actions);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur recuperation actions correctives' }); }
+});
+
+app.post('/api/haccp/corrective-action', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { type, description, responsiblePerson, deadline, status } = req.body;
+    if (!type || !description || !responsiblePerson || !deadline) {
+      return res.status(400).json({ error: 'Champs requis : type, description, responsiblePerson, deadline' });
+    }
+    const validTypes = ['temperature', 'cleaning', 'traceability', 'other'];
+    if (!validTypes.includes(type)) return res.status(400).json({ error: `Type invalide. Valeurs acceptees : ${validTypes.join(', ')}` });
+    const validStatuses = ['ouvert', 'en_cours', 'resolu'];
+    if (status && !validStatuses.includes(status)) return res.status(400).json({ error: `Statut invalide. Valeurs acceptees : ${validStatuses.join(', ')}` });
+    const action = await prisma.haccpCorrectiveAction.create({
+      data: {
+        type: sanitizeInput(type),
+        description: sanitizeInput(description),
+        responsiblePerson: sanitizeInput(responsiblePerson),
+        deadline,
+        status: status || 'ouvert',
+        restaurantId: req.restaurantId,
+      },
+    });
+    res.status(201).json(action);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur creation action corrective' }); }
+});
+
+app.put('/api/haccp/corrective-action/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'ID invalide' });
+    const existing = await prisma.haccpCorrectiveAction.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Action corrective non trouvee' });
+    const { status, resolution, description, responsiblePerson, deadline } = req.body;
+    const validStatuses = ['ouvert', 'en_cours', 'resolu'];
+    if (status && !validStatuses.includes(status)) return res.status(400).json({ error: `Statut invalide. Valeurs acceptees : ${validStatuses.join(', ')}` });
+    const updated = await prisma.haccpCorrectiveAction.update({
+      where: { id },
+      data: {
+        ...(status && { status }),
+        ...(resolution !== undefined && { resolution: resolution ? sanitizeInput(resolution) : null }),
+        ...(description && { description: sanitizeInput(description) }),
+        ...(responsiblePerson && { responsiblePerson: sanitizeInput(responsiblePerson) }),
+        ...(deadline && { deadline }),
+      },
+    });
+    res.json(updated);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise a jour action corrective' }); }
+});
+
 // ============ PLANNING ============
 app.get('/api/planning/employees', authWithRestaurant, async (req: any, res) => {
   try {
@@ -4961,6 +5142,195 @@ app.delete('/api/menu-calendar/:id', authWithRestaurant, async (req: any, res) =
   } catch (e: any) {
     console.error('[MENU-CALENDAR DELETE]', e.message);
     res.status(500).json({ error: 'Erreur suppression menu calendrier' });
+  }
+});
+
+// ============ CRM — CLIENT SEGMENTS ============
+// Segments are computed from localStorage data sent by frontend.
+// Since clients are stored in localStorage (no DB model yet), the frontend
+// sends its client list and the backend computes segments + sends campaign emails.
+
+app.post('/api/clients/segments', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { clients } = req.body;
+    if (!Array.isArray(clients)) return res.status(400).json({ error: 'clients array requis' });
+
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Sort by caTotal descending for VIP calculation
+    const sorted = [...clients].sort((a: any, b: any) => (b.caTotal || 0) - (a.caTotal || 0));
+    const top10pctCount = Math.max(1, Math.ceil(sorted.length * 0.1));
+    const vipThreshold = sorted.length > 0 ? (sorted[top10pctCount - 1]?.caTotal || 0) : 0;
+
+    const vipClients: any[] = [];
+    const regulierClients: any[] = [];
+    const nouveauxClients: any[] = [];
+    const inactifsClients: any[] = [];
+
+    for (const c of clients) {
+      const lastVisit = c.derniereVisite ? new Date(c.derniereVisite) : null;
+      const createdDate = c.dateCreation ? new Date(c.dateCreation) : null;
+
+      // VIP: top 10% by revenue
+      if (c.caTotal >= vipThreshold && c.caTotal > 0) {
+        vipClients.push(c);
+      }
+      // Reguliers: 3+ orders
+      if ((c.nbCommandes || 0) >= 3) {
+        regulierClients.push(c);
+      }
+      // Nouveaux: first visit (creation) this month
+      if (createdDate && createdDate >= startOfMonth) {
+        nouveauxClients.push(c);
+      }
+      // Inactifs: no visit in 30+ days
+      if (lastVisit && lastVisit < thirtyDaysAgo) {
+        inactifsClients.push(c);
+      } else if (!lastVisit && createdDate && createdDate < thirtyDaysAgo) {
+        inactifsClients.push(c);
+      }
+    }
+
+    function segmentStats(arr: any[]) {
+      const count = arr.length;
+      const totalRevenue = arr.reduce((s: number, c: any) => s + (c.caTotal || 0), 0);
+      const avgTicket = count > 0 ? totalRevenue / arr.reduce((s: number, c: any) => s + (c.nbCommandes || 1), 0) : 0;
+      return {
+        count,
+        totalRevenue: Math.round(totalRevenue * 100) / 100,
+        avgTicket: Math.round(avgTicket * 100) / 100,
+        clientIds: arr.map((c: any) => c.id),
+      };
+    }
+
+    res.json({
+      vip: segmentStats(vipClients),
+      reguliers: segmentStats(regulierClients),
+      nouveaux: segmentStats(nouveauxClients),
+      inactifs: segmentStats(inactifsClients),
+      total: clients.length,
+    });
+  } catch (e: any) {
+    console.error('[CRM SEGMENTS ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur calcul segments' });
+  }
+});
+
+// ============ CRM — CLIENT HISTORY ============
+app.post('/api/clients/history', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { client } = req.body;
+    if (!client) return res.status(400).json({ error: 'client object requis' });
+
+    const totalSpent = client.caTotal || 0;
+    const nbCommandes = client.nbCommandes || 0;
+    const avgTicket = nbCommandes > 0 ? totalSpent / nbCommandes : 0;
+
+    res.json({
+      client: {
+        id: client.id,
+        nom: client.nom,
+        prenom: client.prenom,
+        email: client.email,
+      },
+      totalSpent: Math.round(totalSpent * 100) / 100,
+      avgTicket: Math.round(avgTicket * 100) / 100,
+      nbVisits: nbCommandes,
+      favoriteDishes: client.platsFavoris || [],
+      historique: client.historique || [],
+      tags: client.tags || [],
+      allergenes: client.allergenes || [],
+      regime: client.regime || [],
+    });
+  } catch (e: any) {
+    console.error('[CRM HISTORY ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur historique client' });
+  }
+});
+
+// ============ CRM — ADD TAG TO CLIENT ============
+app.post('/api/clients/tag', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { clientId, tag, action } = req.body;
+    if (!clientId || !tag) return res.status(400).json({ error: 'clientId et tag requis' });
+    // Since clients are in localStorage, this endpoint validates and returns the tag
+    const allowedTags = ['VIP', 'Régulier', 'Nouveau', 'Inactif', 'Allergie', 'Preference', 'Fidèle', 'Premium', 'Anniversaire', 'Professionnel'];
+    if (!allowedTags.includes(tag)) {
+      return res.status(400).json({ error: `Tag non autorisé. Tags valides: ${allowedTags.join(', ')}` });
+    }
+    res.json({ success: true, clientId, tag, action: action || 'add' });
+  } catch (e: any) {
+    console.error('[CRM TAG ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur ajout tag' });
+  }
+});
+
+// ============ CRM — SEGMENT CAMPAIGN EMAIL ============
+app.post('/api/crm/campaign', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { recipients, subject, message, segmentName } = req.body;
+    if (!Array.isArray(recipients) || recipients.length === 0) {
+      return res.status(400).json({ error: 'Aucun destinataire' });
+    }
+    if (!subject?.trim() || !message?.trim()) {
+      return res.status(400).json({ error: 'Sujet et message requis' });
+    }
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configuré' });
+
+    const resend = new Resend(resendKey);
+    const safeSubject = sanitizeInput(subject);
+    let sent = 0;
+    let failed = 0;
+
+    for (const r of recipients) {
+      if (!r.email) { failed++; continue; }
+      try {
+        const personalizedMessage = message
+          .replace(/\[nom\]/gi, r.nom || '')
+          .replace(/\[prenom\]/gi, r.prenom || '')
+          .replace(/\[entreprise\]/gi, r.entreprise || '');
+
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: r.email,
+          replyTo: 'contact@restaumargin.fr',
+          subject: safeSubject,
+          html: `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+              <div style="background:#000;color:#fff;padding:16px 24px;border-radius:12px 12px 0 0;">
+                <h2 style="margin:0;font-size:18px;">${safeSubject}</h2>
+                ${segmentName ? `<p style="margin:4px 0 0;font-size:12px;opacity:0.7;">Campagne: ${sanitizeInput(segmentName)}</p>` : ''}
+              </div>
+              <div style="padding:24px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;">
+                <div style="white-space:pre-wrap;line-height:1.6;">${personalizedMessage}</div>
+                <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
+                <p style="color:#9ca3af;font-size:12px;">RestauMargin &mdash; www.restaumargin.fr</p>
+              </div>
+            </div>`,
+        });
+        sent++;
+
+        // Log to conversation
+        try {
+          const conv = await findOrCreateConversation(req.restaurantId, r.email, `${r.prenom || ''} ${r.nom || ''}`.trim());
+          await prisma.message.create({
+            data: { conversationId: conv.id, senderId: 'restaurant', senderName: 'RestauMargin', content: `[Campagne ${segmentName || ''}] ${message.substring(0, 200)}`, timestamp: new Date().toISOString(), read: true },
+          });
+          await prisma.conversation.update({ where: { id: conv.id }, data: { lastMessage: `[Campagne] ${subject.substring(0, 100)}`, updatedAt: new Date() } });
+        } catch { /* non-blocking */ }
+      } catch (emailErr) {
+        console.error(`[CAMPAIGN EMAIL FAIL] ${r.email}:`, emailErr);
+        failed++;
+      }
+    }
+
+    res.json({ success: true, sent, failed, total: recipients.length });
+  } catch (e: any) {
+    console.error('[CRM CAMPAIGN ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur envoi campagne' });
   }
 });
 

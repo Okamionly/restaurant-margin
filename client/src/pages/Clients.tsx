@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
   Tag, Filter, LayoutGrid, List, ChevronDown, ChevronUp, Eye, FileText,
   Download, Shield, Clock, BarChart3, PieChart, TrendingUp, X, AlertTriangle,
   Upload, Copy, ExternalLink, Heart, UserPlus, Send, Loader2,
+  Crown, Repeat, Sparkles, UserMinus, MessageSquare, Megaphone, Zap,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -20,10 +21,11 @@ function authHeaders() {
 // ── Types ──────────────────────────────────────────────────────────────
 
 type ClientType = 'Particulier' | 'Entreprise' | 'Association';
-type ClientTag = 'VIP' | 'Régulier' | 'Nouveau';
+type ClientTag = 'VIP' | 'Régulier' | 'Nouveau' | 'Inactif' | 'Allergie' | 'Preference' | 'Fidèle' | 'Premium' | 'Anniversaire' | 'Professionnel';
 type ViewMode = 'cards' | 'table';
 type SortField = 'nom' | 'caTotal' | 'derniereVisite';
 type TabId = 'infos' | 'preferences' | 'historique' | 'documents' | 'rgpd';
+type SegmentId = 'tous' | 'vip' | 'reguliers' | 'nouveaux' | 'inactifs';
 
 interface Allergene {
   id: string;
@@ -71,31 +73,53 @@ interface Client {
   consentementRGPD: string;
 }
 
+interface SegmentData {
+  count: number;
+  totalRevenue: number;
+  avgTicket: number;
+  clientIds: string[];
+}
+
+interface SegmentsResponse {
+  vip: SegmentData;
+  reguliers: SegmentData;
+  nouveaux: SegmentData;
+  inactifs: SegmentData;
+  total: number;
+}
+
 // ── Constants ──────────────────────────────────────────────────────────
 
 const EU_ALLERGENES: Allergene[] = [
   { id: 'gluten', nom: 'Gluten' },
-  { id: 'crustaces', nom: 'Crustacés' },
+  { id: 'crustaces', nom: 'Crustaces' },
   { id: 'oeufs', nom: 'Oeufs' },
   { id: 'poisson', nom: 'Poisson' },
   { id: 'arachides', nom: 'Arachides' },
   { id: 'soja', nom: 'Soja' },
   { id: 'lait', nom: 'Lait' },
-  { id: 'fruits_coques', nom: 'Fruits à coques' },
-  { id: 'celeri', nom: 'Céleri' },
+  { id: 'fruits_coques', nom: 'Fruits a coques' },
+  { id: 'celeri', nom: 'Celeri' },
   { id: 'moutarde', nom: 'Moutarde' },
-  { id: 'sesame', nom: 'Sésame' },
+  { id: 'sesame', nom: 'Sesame' },
   { id: 'sulfites', nom: 'Sulfites' },
   { id: 'lupin', nom: 'Lupin' },
   { id: 'mollusques', nom: 'Mollusques' },
 ];
 
-const REGIMES = ['Végétarien', 'Vegan', 'Halal', 'Casher', 'Sans gluten'];
+const REGIMES = ['Vegetarien', 'Vegan', 'Halal', 'Casher', 'Sans gluten'];
 
-const TAG_COLORS: Record<ClientTag, { bg: string; text: string; border: string }> = {
+const BASIC_TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   VIP: { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700' },
-  Régulier: { bg: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40', text: 'text-[#111111] dark:text-[#737373]', border: 'border-[#D1D5DB] dark:border-[#1A1A1A]' },
+  'Régulier': { bg: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40', text: 'text-[#111111] dark:text-[#737373]', border: 'border-[#D1D5DB] dark:border-[#1A1A1A]' },
   Nouveau: { bg: 'bg-green-100 dark:bg-green-900/40', text: 'text-green-700 dark:text-green-300', border: 'border-green-300 dark:border-green-700' },
+  Inactif: { bg: 'bg-red-100 dark:bg-red-900/40', text: 'text-red-700 dark:text-red-300', border: 'border-red-300 dark:border-red-700' },
+  Allergie: { bg: 'bg-orange-100 dark:bg-orange-900/40', text: 'text-orange-700 dark:text-orange-300', border: 'border-orange-300 dark:border-orange-700' },
+  Preference: { bg: 'bg-purple-100 dark:bg-purple-900/40', text: 'text-purple-700 dark:text-purple-300', border: 'border-purple-300 dark:border-purple-700' },
+  'Fidèle': { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-300 dark:border-blue-700' },
+  Premium: { bg: 'bg-yellow-100 dark:bg-yellow-900/40', text: 'text-yellow-700 dark:text-yellow-300', border: 'border-yellow-300 dark:border-yellow-700' },
+  Anniversaire: { bg: 'bg-pink-100 dark:bg-pink-900/40', text: 'text-pink-700 dark:text-pink-300', border: 'border-pink-300 dark:border-pink-700' },
+  Professionnel: { bg: 'bg-indigo-100 dark:bg-indigo-900/40', text: 'text-indigo-700 dark:text-indigo-300', border: 'border-indigo-300 dark:border-indigo-700' },
 };
 
 const TYPE_COLORS: Record<ClientType, { bg: string; text: string }> = {
@@ -105,14 +129,22 @@ const TYPE_COLORS: Record<ClientType, { bg: string; text: string }> = {
 };
 
 const EMAIL_TEMPLATES = [
-  { id: 'confirmation', label: 'Confirmation de réservation', subject: 'Confirmation de votre réservation', body: 'Bonjour,\n\nNous avons le plaisir de confirmer votre réservation pour le [DATE].\n\nCordialement,' },
-  { id: 'rappel', label: 'Rappel événement J-3', subject: 'Rappel : votre événement dans 3 jours', body: 'Bonjour,\n\nNous vous rappelons que votre événement est prévu dans 3 jours.\n\nCordialement,' },
-  { id: 'remerciement', label: 'Remerciement post-événement', subject: 'Merci pour votre confiance !', body: 'Bonjour,\n\nNous tenions à vous remercier pour votre confiance lors de votre dernier événement.\n\nCordialement,' },
+  { id: 'confirmation', label: 'Confirmation de reservation', subject: 'Confirmation de votre reservation', body: 'Bonjour,\n\nNous avons le plaisir de confirmer votre reservation pour le [DATE].\n\nCordialement,' },
+  { id: 'rappel', label: 'Rappel evenement J-3', subject: 'Rappel : votre evenement dans 3 jours', body: 'Bonjour,\n\nNous vous rappelons que votre evenement est prevu dans 3 jours.\n\nCordialement,' },
+  { id: 'remerciement', label: 'Remerciement post-evenement', subject: 'Merci pour votre confiance !', body: 'Bonjour,\n\nNous tenions a vous remercier pour votre confiance lors de votre dernier evenement.\n\nCordialement,' },
   { id: 'relance', label: 'Relance devis en attente', subject: 'Votre devis en attente', body: 'Bonjour,\n\nNous revenons vers vous concernant le devis que nous vous avons transmis.\n\nCordialement,' },
-  { id: 'promo', label: 'Offre spéciale / promotion', subject: 'Offre spéciale pour vous !', body: 'Bonjour,\n\nNous avons le plaisir de vous faire parvenir une offre exclusive.\n\nCordialement,' },
+  { id: 'promo', label: 'Offre speciale / promotion', subject: 'Offre speciale pour vous !', body: 'Bonjour,\n\nNous avons le plaisir de vous faire parvenir une offre exclusive.\n\nCordialement,' },
 ];
 
-// ── Local Storage Persistence (no backend Client model yet) ───────────
+const CAMPAIGN_TEMPLATES: Record<SegmentId, { subject: string; body: string }> = {
+  tous: { subject: 'Nouvelles de votre restaurant', body: 'Cher [prenom] [nom],\n\nNous avons une nouvelle passionnante a partager avec vous !\n\nCordialement,\nVotre restaurant' },
+  vip: { subject: 'Offre exclusive pour nos clients VIP', body: 'Cher [prenom] [nom],\n\nEn tant que client VIP, nous avons le plaisir de vous offrir une experience exclusive.\n\nNous vous invitons a une soiree degustation privee.\n\nCordialement,\nVotre restaurant' },
+  reguliers: { subject: 'Merci pour votre fidelite !', body: 'Cher [prenom] [nom],\n\nMerci de nous faire confiance regulierement. Pour vous remercier, beneficiez de -10% sur votre prochaine visite.\n\nCordialement,\nVotre restaurant' },
+  nouveaux: { subject: 'Bienvenue parmi nous !', body: 'Cher [prenom] [nom],\n\nNous sommes ravis de vous compter parmi nos nouveaux clients !\n\nPour celebrer votre arrivee, voici un code promo : BIENVENUE10\n\nCordialement,\nVotre restaurant' },
+  inactifs: { subject: 'Vous nous manquez !', body: 'Cher [prenom] [nom],\n\nCela fait un moment que nous ne vous avons pas vu et vous nous manquez !\n\nRevenez nous voir, une surprise vous attend.\n\nCordialement,\nVotre restaurant' },
+};
+
+// ── Local Storage Persistence ───────────
 
 const CLIENTS_STORAGE_KEY = 'restaumargin_clients';
 
@@ -129,8 +161,7 @@ function saveClientsToStorage(clients: Client[]) {
 }
 
 function initClients(): Client[] {
-  const stored = loadClientsFromStorage();
-  return stored;
+  return loadClientsFromStorage();
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────
@@ -140,7 +171,7 @@ function fmt(n: number) {
 }
 
 function fmtDate(d: string) {
-  if (!d) return '—';
+  if (!d) return '--';
   return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
@@ -149,11 +180,11 @@ function getInitials(nom: string, prenom: string) {
 }
 
 const interactionIcons: Record<string, { icon: string; color: string }> = {
-  devis: { icon: '📋', color: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#737373]' },
-  evenement: { icon: '🎉', color: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' },
-  facture: { icon: '📄', color: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' },
-  email: { icon: '✉️', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
-  appel: { icon: '📞', color: 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300' },
+  devis: { icon: 'D', color: 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#737373]' },
+  evenement: { icon: 'E', color: 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' },
+  facture: { icon: 'F', color: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' },
+  email: { icon: 'M', color: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
+  appel: { icon: 'A', color: 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300' },
 };
 
 // ── Component ──────────────────────────────────────────────────────────
@@ -162,21 +193,26 @@ export default function Clients() {
   const { showToast } = useToast();
   const { t } = useTranslation();
 
-  // State (persisted to localStorage — no backend Client model yet)
+  // State
   const [clients, setClients] = useState<Client[]>(initClients);
   useEffect(() => { saveClientsToStorage(clients); }, [clients]);
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<ClientType | ''>('');
-  const [filterTag, setFilterTag] = useState<ClientTag | ''>('');
   const [sortField, setSortField] = useState<SortField>('nom');
   const [sortAsc, setSortAsc] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [activeSegment, setActiveSegment] = useState<SegmentId>('tous');
+
+  // Segment data
+  const [segments, setSegments] = useState<SegmentsResponse | null>(null);
+  const [loadingSegments, setLoadingSegments] = useState(false);
 
   // Modals
   const [showDetail, setShowDetail] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [showCampaign, setShowCampaign] = useState(false);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [detailTab, setDetailTab] = useState<TabId>('infos');
@@ -196,10 +232,54 @@ export default function Clients() {
   const [emailMessage, setEmailMessage] = useState('');
   const [sendingClientEmail, setSendingClientEmail] = useState(false);
 
+  // Campaign state
+  const [campaignSegment, setCampaignSegment] = useState<SegmentId>('tous');
+  const [campaignSubject, setCampaignSubject] = useState('');
+  const [campaignMessage, setCampaignMessage] = useState('');
+  const [sendingCampaign, setSendingCampaign] = useState(false);
+
+  // Tag editing
+  const [editingTags, setEditingTags] = useState(false);
+  const [clientNotes, setClientNotes] = useState('');
+
+  // ── Load segments ──────────────────────────────────────────────────────
+
+  const loadSegments = useCallback(async () => {
+    if (clients.length === 0) {
+      setSegments(null);
+      return;
+    }
+    setLoadingSegments(true);
+    try {
+      const res = await fetch(`${API}/api/clients/segments`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ clients }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSegments(data);
+      }
+    } catch { /* silent */ }
+    setLoadingSegments(false);
+  }, [clients]);
+
+  useEffect(() => { loadSegments(); }, [loadSegments]);
+
   // ── Filtering & sorting ───────────────────────────────────────────────
 
   const filtered = useMemo(() => {
     let result = [...clients];
+
+    // Segment filter
+    if (activeSegment !== 'tous' && segments) {
+      const segData = segments[activeSegment as keyof Omit<SegmentsResponse, 'total'>];
+      if (segData && segData.clientIds) {
+        const ids = new Set(segData.clientIds);
+        result = result.filter(c => ids.has(c.id));
+      }
+    }
+
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(c =>
@@ -210,7 +290,6 @@ export default function Clients() {
       );
     }
     if (filterType) result = result.filter(c => c.type === filterType);
-    if (filterTag) result = result.filter(c => c.tags.includes(filterTag));
 
     result.sort((a, b) => {
       let cmp = 0;
@@ -220,13 +299,15 @@ export default function Clients() {
       return sortAsc ? cmp : -cmp;
     });
     return result;
-  }, [clients, search, filterType, filterTag, sortField, sortAsc]);
+  }, [clients, search, filterType, sortField, sortAsc, activeSegment, segments]);
 
   // ── Actions ───────────────────────────────────────────────────────────
 
   function openDetail(c: Client) {
     setSelectedClient(c);
     setDetailTab('infos');
+    setClientNotes(c.notes || '');
+    setEditingTags(false);
     setShowDetail(true);
   }
 
@@ -251,7 +332,7 @@ export default function Clients() {
        c.nom.toLowerCase() === nom.toLowerCase())
     );
     if (existing) {
-      setDuplicateWarning(t('clients.duplicateFound').replace('{name}', `${existing.prenom} ${existing.nom}`).replace('{email}', existing.email));
+      setDuplicateWarning(`Doublon potentiel : ${existing.prenom} ${existing.nom} (${existing.email})`);
     } else {
       setDuplicateWarning('');
     }
@@ -259,15 +340,15 @@ export default function Clients() {
 
   function handleSave() {
     if (!form.nom || !form.email) {
-      showToast(t('clients.nameAndEmailRequired'), 'error');
+      showToast(t('clients.nameAndEmailRequired') || 'Nom et email requis', 'error');
       return;
     }
     if (editingClient) {
       setClients(prev => prev.map(c => c.id === form.id ? form : c));
-      showToast(t('clients.clientUpdated'), 'success');
+      showToast(t('clients.clientUpdated') || 'Client mis a jour', 'success');
     } else {
       setClients(prev => [...prev, form]);
-      showToast(t('clients.newClientAdded'), 'success');
+      showToast(t('clients.newClientAdded') || 'Nouveau client ajoute', 'success');
     }
     setShowForm(false);
   }
@@ -275,7 +356,7 @@ export default function Clients() {
   function handleDelete(id: string) {
     setClients(prev => prev.filter(c => c.id !== id));
     setShowDetail(false);
-    showToast(t('clients.clientDeleted'), 'success');
+    showToast(t('clients.clientDeleted') || 'Client supprime', 'success');
   }
 
   function openEmailModal(c: Client) {
@@ -295,7 +376,7 @@ export default function Clients() {
   async function handleSendClientEmail() {
     if (!selectedClient) return;
     if (!emailSubject.trim() || !emailMessage.trim()) {
-      showToast(t('clients.fillSubjectAndMessage'), 'error');
+      showToast(t('clients.fillSubjectAndMessage') || 'Remplissez sujet et message', 'error');
       return;
     }
     setSendingClientEmail(true);
@@ -311,13 +392,13 @@ export default function Clients() {
         }),
       });
       if (!res.ok) throw new Error('Erreur envoi');
-      showToast(t('clients.emailSent').replace('{name}', `${selectedClient.prenom} ${selectedClient.nom}`), 'success');
+      showToast(`Email envoye a ${selectedClient.prenom} ${selectedClient.nom}`, 'success');
       setShowEmail(false);
       setEmailSubject('');
       setEmailMessage('');
       setSelectedTemplate('');
     } catch {
-      showToast(t('clients.emailSendError'), 'error');
+      showToast('Erreur envoi email', 'error');
     } finally {
       setSendingClientEmail(false);
     }
@@ -332,17 +413,98 @@ export default function Clients() {
     a.download = `client_${c.nom}_${c.prenom}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast(t('clients.dataExported'), 'success');
+    showToast(t('clients.dataExported') || 'Donnees exportees', 'success');
   }
 
   function handleRGPDForget(c: Client) {
     setClients(prev => prev.filter(cl => cl.id !== c.id));
     setShowDetail(false);
-    showToast(t('clients.rgpdForget').replace('{name}', `${c.prenom} ${c.nom}`), 'success');
+    showToast(`Donnees de ${c.prenom} ${c.nom} supprimees (RGPD)`, 'success');
   }
 
   function handleCSVImport() {
-    showToast(t('clients.csvImportSoon'), 'info');
+    showToast(t('clients.csvImportSoon') || 'Import CSV bientot disponible', 'info');
+  }
+
+  function toggleClientTag(clientId: string, tag: ClientTag) {
+    setClients(prev => prev.map(c => {
+      if (c.id !== clientId) return c;
+      const has = c.tags.includes(tag);
+      return { ...c, tags: has ? c.tags.filter(t => t !== tag) : [...c.tags, tag] };
+    }));
+    // Update selected client too
+    if (selectedClient && selectedClient.id === clientId) {
+      setSelectedClient(prev => {
+        if (!prev) return prev;
+        const has = prev.tags.includes(tag);
+        return { ...prev, tags: has ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag] };
+      });
+    }
+  }
+
+  function saveClientNotes(clientId: string, notes: string) {
+    setClients(prev => prev.map(c => c.id === clientId ? { ...c, notes } : c));
+    if (selectedClient && selectedClient.id === clientId) {
+      setSelectedClient(prev => prev ? { ...prev, notes } : prev);
+    }
+    showToast('Notes sauvegardees', 'success');
+  }
+
+  function openWhatsApp(phone: string) {
+    const cleaned = phone.replace(/\s+/g, '').replace(/^0/, '33');
+    window.open(`https://wa.me/${cleaned}`, '_blank');
+  }
+
+  // ── Campaign ──────────────────────────────────────────────────────────
+
+  function openCampaign(segment: SegmentId) {
+    setCampaignSegment(segment);
+    const template = CAMPAIGN_TEMPLATES[segment];
+    setCampaignSubject(template.subject);
+    setCampaignMessage(template.body);
+    setShowCampaign(true);
+  }
+
+  async function handleSendCampaign() {
+    const recipients = getSegmentClients(campaignSegment);
+    if (recipients.length === 0) {
+      showToast('Aucun destinataire dans ce segment', 'error');
+      return;
+    }
+    if (!campaignSubject.trim() || !campaignMessage.trim()) {
+      showToast('Sujet et message requis', 'error');
+      return;
+    }
+    setSendingCampaign(true);
+    try {
+      const res = await fetch(`${API}/api/crm/campaign`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          recipients: recipients.map(c => ({ email: c.email, nom: c.nom, prenom: c.prenom, entreprise: c.entreprise })),
+          subject: campaignSubject,
+          message: campaignMessage,
+          segmentName: segmentLabels[campaignSegment],
+        }),
+      });
+      if (!res.ok) throw new Error('Erreur');
+      const data = await res.json();
+      showToast(`Campagne envoyee : ${data.sent} envoyes, ${data.failed} echoues`, 'success');
+      setShowCampaign(false);
+    } catch {
+      showToast('Erreur envoi campagne', 'error');
+    } finally {
+      setSendingCampaign(false);
+    }
+  }
+
+  function getSegmentClients(segment: SegmentId): Client[] {
+    if (segment === 'tous') return clients;
+    if (!segments) return [];
+    const segData = segments[segment as keyof Omit<SegmentsResponse, 'total'>];
+    if (!segData) return [];
+    const ids = new Set(segData.clientIds);
+    return clients.filter(c => ids.has(c.id));
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────
@@ -350,25 +512,50 @@ export default function Clients() {
   const stats = useMemo(() => {
     const top10 = [...clients].sort((a, b) => b.caTotal - a.caTotal).slice(0, 10);
     const byType = { Particulier: 0, Entreprise: 0, Association: 0 };
-    const byTag = { VIP: 0, Régulier: 0, Nouveau: 0 };
-    clients.forEach(c => {
-      byType[c.type]++;
-      c.tags.forEach(t => byTag[t]++);
-    });
+    clients.forEach(c => { byType[c.type]++; });
     const totalCA = clients.reduce((s, c) => s + c.caTotal, 0);
     const avgCA = clients.length ? totalCA / clients.length : 0;
-    return { top10, byType, byTag, totalCA, avgCA };
+    return { top10, byType, totalCA, avgCA };
   }, [clients]);
+
+  // ── Segment labels & icons ────────────────────────────────────────────
+
+  const segmentLabels: Record<SegmentId, string> = {
+    tous: 'Tous',
+    vip: 'VIP',
+    reguliers: 'Reguliers',
+    nouveaux: 'Nouveaux',
+    inactifs: 'Inactifs',
+  };
+
+  const segmentIcons: Record<SegmentId, React.ReactNode> = {
+    tous: <Users className="w-4 h-4" />,
+    vip: <Crown className="w-4 h-4" />,
+    reguliers: <Repeat className="w-4 h-4" />,
+    nouveaux: <Sparkles className="w-4 h-4" />,
+    inactifs: <UserMinus className="w-4 h-4" />,
+  };
+
+  const segmentColors: Record<SegmentId, string> = {
+    tous: 'text-[#111111] dark:text-white',
+    vip: 'text-amber-600 dark:text-amber-400',
+    reguliers: 'text-blue-600 dark:text-blue-400',
+    nouveaux: 'text-green-600 dark:text-green-400',
+    inactifs: 'text-red-600 dark:text-red-400',
+  };
 
   // ── Render helpers ────────────────────────────────────────────────────
 
   function renderTags(tags: ClientTag[]) {
-    return tags.map(t => (
-      <span key={t} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${(TAG_COLORS[t] || TAG_COLORS['VIP']).bg} ${(TAG_COLORS[t] || TAG_COLORS['VIP']).text} ${(TAG_COLORS[t] || TAG_COLORS['VIP']).border}`}>
-        {t === 'VIP' && <Star className="w-3 h-3" />}
-        {t}
-      </span>
-    ));
+    return tags.map(tg => {
+      const colors = BASIC_TAG_COLORS[tg] || BASIC_TAG_COLORS['VIP'];
+      return (
+        <span key={tg} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${colors.bg} ${colors.text} ${colors.border}`}>
+          {tg === 'VIP' && <Star className="w-3 h-3" />}
+          {tg}
+        </span>
+      );
+    });
   }
 
   function renderAvatar(c: Client, size = 'w-10 h-10 text-sm') {
@@ -415,30 +602,30 @@ export default function Clients() {
         <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
           <div className="text-center">
             <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(c.caTotal)}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('clients.caTotal')}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">CA Total</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-[#111111] dark:text-white">{c.nbCommandes}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('clients.orders')}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Commandes</div>
           </div>
           <div className="text-center">
             <div className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{fmtDate(c.derniereVisite)}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('clients.lastVisit')}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Derniere visite</div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
-            <Mail className="w-3.5 h-3.5" /> {t('clients.email')}
+            <Mail className="w-3.5 h-3.5" /> Email
           </button>
-          <a href={`tel:${c.telephone}`} onClick={(e) => e.stopPropagation()}
+          <button onClick={(e) => { e.stopPropagation(); openWhatsApp(c.telephone); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
-            <Phone className="w-3.5 h-3.5" /> {t('clients.call')}
-          </a>
+            <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
+          </button>
           <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F9FAFB] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#4B5563] transition-colors">
-            <FileText className="w-3.5 h-3.5" /> {t('clients.quote')}
+            <Edit2 className="w-3.5 h-3.5" /> Modifier
           </button>
         </div>
       </div>
@@ -447,7 +634,7 @@ export default function Clients() {
 
   // ── Simple Bar Chart ──────────────────────────────────────────────────
 
-  function BarChartSimple({ data }: { data: { label: string; value: number }[] }) {
+  function BarChartSimple({ data, color = 'from-[#111111] to-[#333]' }: { data: { label: string; value: number }[]; color?: string }) {
     const max = Math.max(...data.map(d => d.value), 1);
     return (
       <div className="space-y-2">
@@ -455,9 +642,9 @@ export default function Clients() {
           <div key={i} className="flex items-center gap-3">
             <div className="w-28 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate text-right">{d.label}</div>
             <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-full h-5 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-[#111111] to-[#333] rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+              <div className={`h-full bg-gradient-to-r ${color} rounded-full transition-all duration-500 flex items-center justify-end pr-2`}
                 style={{ width: `${(d.value / max) * 100}%` }}>
-                {d.value > 0 && <span className="text-[10px] text-[#111111] dark:text-white font-medium">{fmt(d.value)}</span>}
+                {d.value > 0 && <span className="text-[10px] text-white font-medium">{fmt(d.value)}</span>}
               </div>
             </div>
           </div>
@@ -471,12 +658,12 @@ export default function Clients() {
   function PieChartSimple({ data }: { data: { label: string; value: number; color: string }[] }) {
     const total = data.reduce((s, d) => s + d.value, 0) || 1;
     let acc = 0;
-    const segments = data.map(d => {
+    const segs = data.map(d => {
       const start = acc;
       acc += (d.value / total) * 360;
       return { ...d, start, end: acc };
     });
-    const gradient = segments.map(s => `${s.color} ${s.start}deg ${s.end}deg`).join(', ');
+    const gradient = segs.map(s => `${s.color} ${s.start}deg ${s.end}deg`).join(', ');
     return (
       <div className="flex items-center gap-6">
         <div className="w-32 h-32 rounded-full flex-shrink-0"
@@ -485,9 +672,50 @@ export default function Clients() {
           {data.map((d, i) => (
             <div key={i} className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{d.label}: <strong>{d.value}</strong></span>
+              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{d.label}: <strong>{d.value}</strong> ({total > 0 ? Math.round(d.value / total * 100) : 0}%)</span>
             </div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Segment Card ──────────────────────────────────────────────────────
+
+  function SegmentCard({ id, label, icon, count, revenue, avgTicket, color, borderColor }: {
+    id: SegmentId; label: string; icon: React.ReactNode; count: number; revenue: number; avgTicket: number; color: string; borderColor: string;
+  }) {
+    return (
+      <div
+        onClick={() => setActiveSegment(id)}
+        className={`bg-white dark:bg-[#0A0A0A] rounded-xl border-2 p-4 cursor-pointer transition-all hover:shadow-md ${
+          activeSegment === id ? borderColor : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+        }`}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <div className={`flex items-center gap-2 ${color}`}>
+            {icon}
+            <span className="text-sm font-semibold">{label}</span>
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); openCampaign(id); }}
+            className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            title="Campagne email"
+          >
+            <Megaphone className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+          </button>
+        </div>
+        <div className="text-3xl font-bold text-[#111111] dark:text-white">{count}</div>
+        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">clients</div>
+        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+          <div>
+            <div className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(revenue)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">CA total</div>
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(avgTicket)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
+          </div>
         </div>
       </div>
     );
@@ -502,25 +730,99 @@ export default function Clients() {
         <div>
           <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
             <Users className="w-7 h-7 text-[#111111] dark:text-[#A3A3A3]" />
-            {t('clients.title')}
+            CRM Clients
           </h1>
           <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
-            {t('clients.subtitle').replace('{count}', String(clients.length)).replace('{ca}', fmt(stats.totalCA))}
+            {clients.length} clients &middot; {fmt(stats.totalCA)} CA total
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button onClick={() => setShowStats(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] text-sm font-medium transition-colors">
-            <BarChart3 className="w-4 h-4" /> {t('clients.statistics')}
+            <BarChart3 className="w-4 h-4" /> Statistiques
           </button>
           <button onClick={handleCSVImport}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] text-sm font-medium transition-colors">
-            <Upload className="w-4 h-4" /> {t('clients.importCSV')}
+            <Upload className="w-4 h-4" /> Import CSV
           </button>
           <button onClick={openAdd}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors shadow-sm">
-            <Plus className="w-4 h-4" /> {t('clients.newClient')}
+            <Plus className="w-4 h-4" /> Nouveau client
           </button>
+        </div>
+      </div>
+
+      {/* ── Segment Dashboard ──────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <SegmentCard
+          id="vip" label="VIP" icon={<Crown className="w-4 h-4" />}
+          count={segments?.vip.count || 0}
+          revenue={segments?.vip.totalRevenue || 0}
+          avgTicket={segments?.vip.avgTicket || 0}
+          color="text-amber-600 dark:text-amber-400"
+          borderColor="border-amber-400 dark:border-amber-600"
+        />
+        <SegmentCard
+          id="reguliers" label="Reguliers" icon={<Repeat className="w-4 h-4" />}
+          count={segments?.reguliers.count || 0}
+          revenue={segments?.reguliers.totalRevenue || 0}
+          avgTicket={segments?.reguliers.avgTicket || 0}
+          color="text-blue-600 dark:text-blue-400"
+          borderColor="border-blue-400 dark:border-blue-600"
+        />
+        <SegmentCard
+          id="nouveaux" label="Nouveaux" icon={<Sparkles className="w-4 h-4" />}
+          count={segments?.nouveaux.count || 0}
+          revenue={segments?.nouveaux.totalRevenue || 0}
+          avgTicket={segments?.nouveaux.avgTicket || 0}
+          color="text-green-600 dark:text-green-400"
+          borderColor="border-green-400 dark:border-green-600"
+        />
+        <SegmentCard
+          id="inactifs" label="Inactifs" icon={<UserMinus className="w-4 h-4" />}
+          count={segments?.inactifs.count || 0}
+          revenue={segments?.inactifs.totalRevenue || 0}
+          avgTicket={segments?.inactifs.avgTicket || 0}
+          color="text-red-600 dark:text-red-400"
+          borderColor="border-red-400 dark:border-red-600"
+        />
+      </div>
+
+      {/* ── Segment Tabs ──────────────────────────────────────────────── */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-1">
+        <div className="flex gap-1 overflow-x-auto">
+          {(['tous', 'vip', 'reguliers', 'nouveaux', 'inactifs'] as SegmentId[]).map(seg => (
+            <button
+              key={seg}
+              onClick={() => setActiveSegment(seg)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                activeSegment === seg
+                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                  : 'text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+              }`}
+            >
+              {segmentIcons[seg]}
+              {segmentLabels[seg]}
+              {seg !== 'tous' && segments && (
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  activeSegment === seg
+                    ? 'bg-white/20 dark:bg-black/20'
+                    : 'bg-[#F3F4F6] dark:bg-[#171717]'
+                }`}>
+                  {segments[seg as keyof Omit<SegmentsResponse, 'total'>]?.count || 0}
+                </span>
+              )}
+              {seg === 'tous' && (
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  activeSegment === seg
+                    ? 'bg-white/20 dark:bg-black/20'
+                    : 'bg-[#F3F4F6] dark:bg-[#171717]'
+                }`}>
+                  {clients.length}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -530,7 +832,7 @@ export default function Clients() {
           {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-            <input type="text" placeholder={t('clients.searchPlaceholder')}
+            <input type="text" placeholder="Rechercher un client..."
               value={search} onChange={e => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-transparent" />
           </div>
@@ -538,28 +840,19 @@ export default function Clients() {
           {/* Type filter */}
           <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
             className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
-            <option value="">{t('clients.allTypes')}</option>
-            <option value="Particulier">{t('clients.individual')}</option>
-            <option value="Entreprise">{t('clients.company')}</option>
-            <option value="Association">{t('clients.association')}</option>
-          </select>
-
-          {/* Tag filter */}
-          <select value={filterTag} onChange={e => setFilterTag(e.target.value as ClientTag | '')}
-            className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
-            <option value="">{t('clients.allTags')}</option>
-            <option value="VIP">VIP</option>
-            <option value="Régulier">{t('clients.regular')}</option>
-            <option value="Nouveau">{t('clients.newTag')}</option>
+            <option value="">Tous les types</option>
+            <option value="Particulier">Particulier</option>
+            <option value="Entreprise">Entreprise</option>
+            <option value="Association">Association</option>
           </select>
 
           {/* Sort */}
           <div className="flex items-center gap-1">
             <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
               className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
-              <option value="nom">{t('clients.sortByName')}</option>
-              <option value="caTotal">{t('clients.sortByCA')}</option>
-              <option value="derniereVisite">{t('clients.sortByVisit')}</option>
+              <option value="nom">Tri par nom</option>
+              <option value="caTotal">Tri par CA</option>
+              <option value="derniereVisite">Tri par visite</option>
             </select>
             <button onClick={() => setSortAsc(!sortAsc)}
               className="p-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
@@ -567,14 +860,22 @@ export default function Clients() {
             </button>
           </div>
 
+          {/* Campaign for current segment */}
+          {activeSegment !== 'tous' && (
+            <button onClick={() => openCampaign(activeSegment)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+              <Megaphone className="w-4 h-4" /> Campagne email
+            </button>
+          )}
+
           {/* View toggle */}
           <div className="flex items-center bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
             <button onClick={() => setViewMode('cards')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-[#4B5563] shadow-sm text-[#111111] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563] dark:text-[#A3A3A3] dark:hover:text-[#6B7280]'}`}>
+              className={`p-2 rounded-md transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-[#4B5563] shadow-sm text-[#111111] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button onClick={() => setViewMode('table')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#4B5563] shadow-sm text-[#111111] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563] dark:text-[#A3A3A3] dark:hover:text-[#6B7280]'}`}>
+              className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#4B5563] shadow-sm text-[#111111] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
               <List className="w-4 h-4" />
             </button>
           </div>
@@ -584,30 +885,43 @@ export default function Clients() {
       {/* Results count */}
       {filtered.length !== clients.length && (
         <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
-          {t('clients.resultsCount').replace('{count}', String(filtered.length)).replace('{total}', String(clients.length))}
+          {filtered.length} resultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
         </p>
       )}
 
+      {/* Empty state */}
+      {clients.length === 0 && (
+        <div className="text-center py-16">
+          <Users className="w-16 h-16 mx-auto mb-4 text-[#D1D5DB] dark:text-[#333]" />
+          <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">Aucun client</h3>
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-6">Commencez par ajouter votre premier client pour activer le CRM.</p>
+          <button onClick={openAdd}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors">
+            <Plus className="w-4 h-4" /> Ajouter un client
+          </button>
+        </div>
+      )}
+
       {/* Card view */}
-      {viewMode === 'cards' && (
+      {viewMode === 'cards' && clients.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map(c => <ClientCard key={c.id} c={c} />)}
         </div>
       )}
 
       {/* Table view */}
-      {viewMode === 'table' && (
+      {viewMode === 'table' && clients.length > 0 && (
         <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black/50">
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.client')}</th>
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.typCol')}</th>
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.tagsCol')}</th>
-                <th className="text-right px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.caTotal')}</th>
-                <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.orders')}</th>
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.lastVisit')}</th>
-                <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.actions')}</th>
+                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Client</th>
+                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Type</th>
+                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Tags</th>
+                <th className="text-right px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">CA Total</th>
+                <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Commandes</th>
+                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Derniere visite</th>
+                <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
@@ -635,11 +949,15 @@ export default function Clients() {
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
                       <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-                        className="p-1.5 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/30 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white dark:hover:text-[#333] dark:hover:text-[#E5E5E5] transition-colors" title="Envoyer un email">
+                        className="p-1.5 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/30 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors" title="Email">
                         <Mail className="w-4 h-4" />
                       </button>
+                      <button onClick={(e) => { e.stopPropagation(); openWhatsApp(c.telephone); }}
+                        className="p-1.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/30 text-[#9CA3AF] dark:text-[#737373] hover:text-green-600 dark:hover:text-green-400 transition-colors" title="WhatsApp">
+                        <MessageSquare className="w-4 h-4" />
+                      </button>
                       <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
-                        className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:text-[#D4D4D4] dark:hover:text-[#111111] transition-colors" title={t('clients.edit')}>
+                        className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors" title="Modifier">
                         <Edit2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -651,7 +969,7 @@ export default function Clients() {
           {filtered.length === 0 && (
             <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
               <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>{t('clients.noClientFound')}</p>
+              <p>Aucun client trouve</p>
             </div>
           )}
         </div>
@@ -683,74 +1001,147 @@ export default function Clients() {
                 <div className="flex items-center gap-3 mt-3">
                   <button onClick={() => openEmailModal(selectedClient)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-                    <Mail className="w-3.5 h-3.5" /> Email
+                    <Mail className="w-3.5 h-3.5" /> Envoyer email
                   </button>
-                  <a href={`tel:${selectedClient.telephone}`}
+                  <button onClick={() => openWhatsApp(selectedClient.telephone)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
-                    <Phone className="w-3.5 h-3.5" /> {t('clients.call')}
-                  </a>
+                    <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
+                  </button>
                   <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] transition-colors">
-                    <Edit2 className="w-3.5 h-3.5" /> {t('clients.edit')}
+                    <Edit2 className="w-3.5 h-3.5" /> Modifier
+                  </button>
+                  <button onClick={() => handleDelete(selectedClient.id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" /> Supprimer
                   </button>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-[#111111] dark:text-white">{fmt(selectedClient.caTotal)}</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('clients.caTotal')}</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">CA Total</div>
+                <div className="text-lg font-semibold text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                  {selectedClient.nbCommandes > 0 ? fmt(selectedClient.caTotal / selectedClient.nbCommandes) : '--'}
+                </div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
               </div>
             </div>
 
             {/* Tabs */}
             <div className="flex gap-1 border-b border-[#E5E7EB] dark:border-[#1A1A1A] mb-4 overflow-x-auto">
               {([
-                { id: 'infos' as TabId, label: t('clients.infos') },
-                { id: 'preferences' as TabId, label: t('clients.preferences') },
-                { id: 'historique' as TabId, label: t('clients.history') },
-                { id: 'documents' as TabId, label: t('clients.documents') },
-                { id: 'rgpd' as TabId, label: t('clients.rgpd') },
+                { id: 'infos' as TabId, label: 'Informations' },
+                { id: 'preferences' as TabId, label: 'Preferences' },
+                { id: 'historique' as TabId, label: 'Historique' },
+                { id: 'documents' as TabId, label: 'Documents' },
+                { id: 'rgpd' as TabId, label: 'RGPD' },
               ]).map(tab => (
                 <button key={tab.id} onClick={() => setDetailTab(tab.id)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     detailTab === tab.id
                       ? 'border-[#111111] text-[#111111] dark:text-[#A3A3A3] dark:border-[#333]'
-                      : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:text-[#D4D4D4] dark:hover:text-[#111111]'
+                      : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151]'
                   }`}>
                   {tab.label}
                 </button>
               ))}
             </div>
 
-            {/* Tab: Infos */}
+            {/* Tab: Infos + Tags + Notes */}
             {detailTab === 'infos' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.fullName')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.companyLabel')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.entreprise || '—'}</p></div>
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.siret')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.siret || '—'}</p></div>
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.address')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.adresse || '—'}</p></div>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Nom complet</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.prenom} {selectedClient.nom}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Entreprise</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.entreprise || '--'}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">SIRET</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.siret || '--'}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Adresse</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.adresse || '--'}</p></div>
+                  </div>
+                  <div className="space-y-3">
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Email</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.email}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Telephone</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.telephone}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Client depuis</label><p className="text-sm text-[#111111] dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Commandes</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.nbCommandes}</p></div>
+                  </div>
                 </div>
-                <div className="space-y-3">
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.email')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.email}</p></div>
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.phone')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.telephone}</p></div>
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.clientSince')}</label><p className="text-sm text-[#111111] dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
-                  <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.ordersEvents')}</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.nbCommandes}</p></div>
+
+                {/* Editable Tags */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5" /> Tags
+                    </label>
+                    <button onClick={() => setEditingTags(!editingTags)}
+                      className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+                      {editingTags ? 'Terminer' : 'Modifier'}
+                    </button>
+                  </div>
+                  {editingTags ? (
+                    <div className="flex flex-wrap gap-2">
+                      {Object.keys(BASIC_TAG_COLORS).map(tag => {
+                        const active = selectedClient.tags.includes(tag as ClientTag);
+                        const colors = BASIC_TAG_COLORS[tag];
+                        return (
+                          <button key={tag}
+                            onClick={() => toggleClientTag(selectedClient.id, tag as ClientTag)}
+                            className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                              active ? `${colors.bg} ${colors.text} ${colors.border}` : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A]'
+                            }`}>
+                            {active ? 'x ' : '+ '}{tag}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedClient.tags.length > 0 ? renderTags(selectedClient.tags) : (
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Aucun tag</span>
+                      )}
+                    </div>
+                  )}
                 </div>
-                {selectedClient.notes && (
-                  <div className="col-span-full">
-                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">{t('clients.notes')}</label>
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373] bg-[#F9FAFB] dark:bg-black rounded-lg p-3 mt-1">{selectedClient.notes}</p>
+
+                {/* Editable Notes */}
+                <div>
+                  <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1 block">Notes</label>
+                  <textarea
+                    value={clientNotes}
+                    onChange={e => setClientNotes(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white resize-none"
+                    placeholder="Notes internes sur ce client..."
+                  />
+                  {clientNotes !== (selectedClient.notes || '') && (
+                    <button
+                      onClick={() => saveClientNotes(selectedClient.id, clientNotes)}
+                      className="mt-2 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                      Sauvegarder notes
+                    </button>
+                  )}
+                </div>
+
+                {/* Favorite dishes */}
+                {selectedClient.platsFavoris.length > 0 && (
+                  <div>
+                    <label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2 block flex items-center gap-1.5">
+                      <Star className="w-3.5 h-3.5 text-amber-500" /> Plats favoris
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedClient.platsFavoris.map(p => (
+                        <span key={p} className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700">{p}</span>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Tab: Préférences alimentaires */}
+            {/* Tab: Preferences alimentaires */}
             {detailTab === 'preferences' && (
               <div className="space-y-6">
                 <div>
                   <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-500" /> {t('clients.allergens')}
+                    <AlertTriangle className="w-4 h-4 text-amber-500" /> Allergenes
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {EU_ALLERGENES.map(a => {
@@ -761,7 +1152,7 @@ export default function Clients() {
                             ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
                             : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A]'
                         }`}>
-                          {active && '⚠ '}{a.nom}
+                          {active && '! '}{a.nom}
                         </span>
                       );
                     })}
@@ -769,7 +1160,7 @@ export default function Clients() {
                 </div>
                 <div>
                   <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-                    <Heart className="w-4 h-4 text-green-500" /> {t('clients.diet')}
+                    <Heart className="w-4 h-4 text-green-500" /> Regime
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {REGIMES.map(r => {
@@ -786,36 +1177,42 @@ export default function Clients() {
                     })}
                   </div>
                 </div>
-                {selectedClient.platsFavoris.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-                      <Star className="w-4 h-4 text-amber-500" /> {t('clients.favoriteDishes')}
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedClient.platsFavoris.map(p => (
-                        <span key={p} className="px-3 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700">{p}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
-            {/* Tab: Historique */}
+            {/* Tab: Historique (timeline) */}
             {detailTab === 'historique' && (
               <div className="space-y-3">
+                {/* Summary bar */}
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(selectedClient.caTotal)}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Total depense</div>
+                  </div>
+                  <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold text-[#111111] dark:text-white">
+                      {selectedClient.nbCommandes > 0 ? fmt(selectedClient.caTotal / selectedClient.nbCommandes) : '--'}
+                    </div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
+                  </div>
+                  <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3 text-center">
+                    <div className="text-lg font-bold text-[#111111] dark:text-white">{selectedClient.nbCommandes}</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Visites</div>
+                  </div>
+                </div>
+
                 {selectedClient.historique.length === 0 ? (
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">{t('clients.noInteraction')}</p>
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucune interaction enregistree</p>
                 ) : (
                   <div className="relative pl-6 border-l-2 border-[#E5E7EB] dark:border-[#1A1A1A] space-y-4">
                     {selectedClient.historique.map(h => (
                       <div key={h.id} className="relative">
-                        <div className="absolute -left-[29px] w-4 h-4 rounded-full bg-white dark:bg-[#0A0A0A] border-2 border-[#D1D5DB] dark:border-[#1A1A1A] flex items-center justify-center text-[8px]">
-                          {interactionIcons[h.type]?.icon}
+                        <div className="absolute -left-[29px] w-4 h-4 rounded-full bg-white dark:bg-[#0A0A0A] border-2 border-[#D1D5DB] dark:border-[#1A1A1A] flex items-center justify-center text-[8px] font-bold">
+                          {interactionIcons[h.type]?.icon || '?'}
                         </div>
                         <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3">
                           <div className="flex items-center justify-between">
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${interactionIcons[h.type]?.color}`}>
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${interactionIcons[h.type]?.color || ''}`}>
                               {h.type.charAt(0).toUpperCase() + h.type.slice(1)}
                             </span>
                             <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{fmtDate(h.date)}</span>
@@ -834,7 +1231,7 @@ export default function Clients() {
             {detailTab === 'documents' && (
               <div className="space-y-3">
                 {selectedClient.documents.length === 0 ? (
-                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">{t('clients.noDocument')}</p>
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucun document</p>
                 ) : (
                   selectedClient.documents.map(d => (
                     <div key={d.id} className="flex items-center justify-between bg-[#F9FAFB] dark:bg-black rounded-lg p-3">
@@ -848,9 +1245,9 @@ export default function Clients() {
                       <div className="text-right">
                         <div className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(d.montant)}</div>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          d.statut === 'Payée' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' :
-                          d.statut === 'Accepté' ? 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#737373]' :
-                          d.statut === 'Refusé' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' :
+                          d.statut === 'Payee' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' :
+                          d.statut === 'Accepte' ? 'bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 text-[#111111] dark:text-[#737373]' :
+                          d.statut === 'Refuse' ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300' :
                           'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
                         }`}>{d.statut}</span>
                       </div>
@@ -866,25 +1263,25 @@ export default function Clients() {
                 <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-5 h-5 text-[#374151] dark:text-[#D4D4D4]" />
-                    <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373]">{t('clients.dataProtection')}</h4>
+                    <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373]">Protection des donnees</h4>
                   </div>
                   <div className="space-y-2 text-sm">
                     <p className="text-[#6B7280] dark:text-[#A3A3A3]">
                       Date de consentement RGPD : <strong className="text-[#111111] dark:text-white">{fmtDate(selectedClient.consentementRGPD)}</strong>
                     </p>
                     <p className="text-[#6B7280] dark:text-[#A3A3A3]">
-                      Données collectées : nom, coordonnées, préférences alimentaires, historique commercial
+                      Donnees collectees : nom, coordonnees, preferences alimentaires, historique commercial
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <button onClick={() => exportClientData(selectedClient)}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 text-sm font-medium transition-colors">
-                    <Download className="w-4 h-4" /> {t('clients.exportData')}
+                    <Download className="w-4 h-4" /> Exporter donnees
                   </button>
                   <button onClick={() => handleRGPDForget(selectedClient)}
                     className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-sm font-medium transition-colors">
-                    <Trash2 className="w-4 h-4" /> {t('clients.rightToForget')}
+                    <Trash2 className="w-4 h-4" /> Droit a l'oubli
                   </button>
                 </div>
               </div>
@@ -895,10 +1292,9 @@ export default function Clients() {
 
       {/* ── Add/Edit Modal ───────────────────────────────────────────── */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)}
-        title={editingClient ? t('clients.editClient') : t('clients.newClient')}
+        title={editingClient ? 'Modifier le client' : 'Nouveau client'}
         className="max-w-3xl">
         <div className="space-y-5">
-          {/* Duplicate warning */}
           {duplicateWarning && (
             <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg text-sm text-amber-700 dark:text-amber-300">
               <AlertTriangle className="w-4 h-4 flex-shrink-0" />
@@ -908,44 +1304,44 @@ export default function Clients() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.firstName')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Prenom</label>
               <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.lastName')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nom</label>
               <input type="text" value={form.nom}
                 onChange={e => { setForm({ ...form, nom: e.target.value }); checkDuplicate(e.target.value, form.email); }}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.emailLabel')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Email</label>
               <input type="email" value={form.email}
                 onChange={e => { setForm({ ...form, email: e.target.value }); checkDuplicate(form.nom, e.target.value); }}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.phoneLabel')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Telephone</label>
               <input type="tel" value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.companyField')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Entreprise</label>
               <input type="text" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.siretField')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">SIRET</label>
               <input type="text" value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div className="col-span-full">
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.addressField')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Adresse</label>
               <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.type')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Type</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as ClientType })}
                 className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white">
                 <option value="Particulier">Particulier</option>
@@ -954,19 +1350,19 @@ export default function Clients() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.tags')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Tags</label>
               <div className="flex gap-2 flex-wrap">
-                {(['VIP', 'Régulier', 'Nouveau'] as ClientTag[]).map(tag => (
+                {Object.keys(BASIC_TAG_COLORS).map(tag => (
                   <button key={tag} type="button"
                     onClick={() => {
                       setForm(f => ({
                         ...f,
-                        tags: f.tags.includes(tag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag],
+                        tags: f.tags.includes(tag as ClientTag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag as ClientTag],
                       }));
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                      form.tags.includes(tag)
-                        ? `${(TAG_COLORS[tag] || TAG_COLORS['VIP']).bg} ${(TAG_COLORS[tag] || TAG_COLORS['VIP']).text} ${(TAG_COLORS[tag] || TAG_COLORS['VIP']).border}`
+                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                      form.tags.includes(tag as ClientTag)
+                        ? `${BASIC_TAG_COLORS[tag].bg} ${BASIC_TAG_COLORS[tag].text} ${BASIC_TAG_COLORS[tag].border}`
                         : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A]'
                     }`}>
                     {tag}
@@ -976,9 +1372,28 @@ export default function Clients() {
             </div>
           </div>
 
-          {/* Allergènes */}
+          {/* CA & Commandes (manual entry since localStorage) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">CA Total (EUR)</label>
+              <input type="number" value={form.caTotal} onChange={e => setForm({ ...form, caTotal: parseFloat(e.target.value) || 0 })}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nb commandes</label>
+              <input type="number" value={form.nbCommandes} onChange={e => setForm({ ...form, nbCommandes: parseInt(e.target.value) || 0 })}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Derniere visite</label>
+              <input type="date" value={form.derniereVisite} onChange={e => setForm({ ...form, derniereVisite: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+            </div>
+          </div>
+
+          {/* Allergenes */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">{t('clients.allergensEU')}</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Allergenes (14 allergenes UE)</label>
             <div className="flex flex-wrap gap-2">
               {EU_ALLERGENES.map(a => (
                 <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
@@ -1000,9 +1415,9 @@ export default function Clients() {
             </div>
           </div>
 
-          {/* Régime */}
+          {/* Regime */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">{t('clients.dietLabel')}</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Regime alimentaire</label>
             <div className="flex flex-wrap gap-2">
               {REGIMES.map(r => (
                 <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
@@ -1026,7 +1441,7 @@ export default function Clients() {
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.notes')}</label>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Notes</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
               rows={3}
               className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white resize-none" />
@@ -1035,17 +1450,17 @@ export default function Clients() {
           {/* Actions */}
           <div className="flex items-center justify-between pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
             <button onClick={handleCSVImport}
-              className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:text-[#D4D4D4] dark:hover:text-[#111111] transition-colors">
+              className="flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors">
               <Upload className="w-4 h-4" /> Import CSV
             </button>
             <div className="flex gap-3">
               <button onClick={() => setShowForm(false)}
                 className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-                {t('clients.cancel')}
+                Annuler
               </button>
               <button onClick={handleSave}
                 className="px-6 py-2 rounded-lg text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
-                {editingClient ? t('clients.save') : t('clients.add')}
+                {editingClient ? 'Sauvegarder' : 'Ajouter'}
               </button>
             </div>
           </div>
@@ -1054,118 +1469,211 @@ export default function Clients() {
 
       {/* ── Email Modal ──────────────────────────────────────────────── */}
       <Modal isOpen={showEmail} onClose={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
-        title={selectedClient ? t('clients.sendEmailTo').replace('{name}', `${selectedClient.prenom} ${selectedClient.nom}`) : 'Email'}>
+        title={selectedClient ? `Email a ${selectedClient.prenom} ${selectedClient.nom}` : 'Email'}>
         {selectedClient && (
           <div className="space-y-4">
-            {/* Template shortcuts */}
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">{t('clients.quickTemplates')}</label>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Templates rapides</label>
               <div className="flex flex-wrap gap-2">
-                {EMAIL_TEMPLATES.map(t => (
-                  <button key={t.id}
-                    onClick={() => applyTemplate(t)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === t.id ? 'border-[#111111] bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#737373]' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'}`}>
-                    {t.label}
+                {EMAIL_TEMPLATES.map(tpl => (
+                  <button key={tpl.id}
+                    onClick={() => applyTemplate(tpl)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === tpl.id ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-white' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'}`}>
+                    {tpl.label}
                   </button>
                 ))}
               </div>
             </div>
-            {/* Subject */}
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.subject')}</label>
-              <input
-                type="text"
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-                placeholder={t('clients.subjectPlaceholder')}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none"
-              />
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Sujet</label>
+              <input type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Sujet de l'email..."
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none" />
             </div>
-            {/* Message body */}
             <div>
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('clients.message')}</label>
-              <textarea
-                value={emailMessage}
-                onChange={(e) => setEmailMessage(e.target.value)}
-                placeholder={t('clients.messagePlaceholder')}
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Message</label>
+              <textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)}
+                placeholder="Votre message..."
                 rows={6}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-vertical"
-              />
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-vertical" />
             </div>
-            {/* Send button */}
             <div className="flex justify-end gap-3 pt-2">
-              <button
-                onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
-              >
-                {t('clients.cancel')}
+              <button onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                Annuler
               </button>
-              <button
-                onClick={handleSendClientEmail}
+              <button onClick={handleSendClientEmail}
                 disabled={sendingClientEmail || !emailSubject.trim() || !emailMessage.trim()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50"
-              >
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
                 {sendingClientEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                {t('clients.send')}
+                Envoyer
               </button>
             </div>
           </div>
         )}
       </Modal>
 
+      {/* ── Campaign Email Modal ─────────────────────────────────────── */}
+      <Modal isOpen={showCampaign} onClose={() => setShowCampaign(false)}
+        title={`Campagne email - ${segmentLabels[campaignSegment]}`}
+        className="max-w-2xl">
+        <div className="space-y-5">
+          {/* Segment info */}
+          <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] ${segmentColors[campaignSegment]}`}>
+                  {segmentIcons[campaignSegment]}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-[#111111] dark:text-white">{segmentLabels[campaignSegment]}</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    {getSegmentClients(campaignSegment).length} destinataires
+                  </div>
+                </div>
+              </div>
+              <Megaphone className={`w-6 h-6 ${segmentColors[campaignSegment]}`} />
+            </div>
+          </div>
+
+          {/* Segment selector */}
+          <div>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Segment cible</label>
+            <div className="flex flex-wrap gap-2">
+              {(['tous', 'vip', 'reguliers', 'nouveaux', 'inactifs'] as SegmentId[]).map(seg => (
+                <button key={seg}
+                  onClick={() => {
+                    setCampaignSegment(seg);
+                    const tpl = CAMPAIGN_TEMPLATES[seg];
+                    setCampaignSubject(tpl.subject);
+                    setCampaignMessage(tpl.body);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                    campaignSegment === seg
+                      ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-black'
+                      : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                  }`}>
+                  {segmentIcons[seg]}
+                  {segmentLabels[seg]}
+                  <span className="text-[10px] opacity-70">({getSegmentClients(seg).length})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Subject */}
+          <div>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Sujet</label>
+            <input type="text" value={campaignSubject} onChange={e => setCampaignSubject(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none" />
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">
+              Message <span className="text-[10px] opacity-60">(variables : [nom], [prenom], [entreprise])</span>
+            </label>
+            <textarea value={campaignMessage} onChange={e => setCampaignMessage(e.target.value)}
+              rows={8}
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none resize-vertical" />
+          </div>
+
+          {/* Preview */}
+          <div>
+            <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Apercu</label>
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-4 text-sm text-[#6B7280] dark:text-[#A3A3A3] whitespace-pre-wrap border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              {campaignMessage.replace(/\[nom\]/gi, 'Dupont').replace(/\[prenom\]/gi, 'Jean').replace(/\[entreprise\]/gi, 'SARL Example')}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-between items-center pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+              {getSegmentClients(campaignSegment).length} email{getSegmentClients(campaignSegment).length > 1 ? 's' : ''} seront envoye{getSegmentClients(campaignSegment).length > 1 ? 's' : ''}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowCampaign(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                Annuler
+              </button>
+              <button onClick={handleSendCampaign}
+                disabled={sendingCampaign || !campaignSubject.trim() || !campaignMessage.trim() || getSegmentClients(campaignSegment).length === 0}
+                className="flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
+                {sendingCampaign ? <Loader2 className="w-4 h-4 animate-spin" /> : <Megaphone className="w-4 h-4" />}
+                Envoyer la campagne
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
       {/* ── Stats Modal ──────────────────────────────────────────────── */}
-      <Modal isOpen={showStats} onClose={() => setShowStats(false)} title={t('clients.statsTitle')} className="max-w-3xl">
+      <Modal isOpen={showStats} onClose={() => setShowStats(false)} title="Statistiques CRM" className="max-w-3xl">
         <div className="space-y-8">
           {/* KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-[#111111] dark:text-white">{clients.length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{t('clients.totalClients')}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Total clients</div>
             </div>
             <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-[#111111] dark:text-[#A3A3A3]">{fmt(stats.totalCA)}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{t('clients.caTotal')}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">CA Total</div>
             </div>
             <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">{fmt(stats.avgCA)}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{t('clients.avgCA')}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">CA moyen/client</div>
             </div>
             <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{stats.byTag.VIP}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">{t('clients.vipClients')}</div>
+              <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{segments?.vip.count || 0}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Clients VIP</div>
             </div>
+          </div>
+
+          {/* Segment distribution pie chart */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+              <PieChart className="w-4 h-4 text-purple-500" /> Distribution par segment
+            </h4>
+            <PieChartSimple data={[
+              { label: 'VIP', value: segments?.vip.count || 0, color: '#f59e0b' },
+              { label: 'Reguliers', value: segments?.reguliers.count || 0, color: '#3b82f6' },
+              { label: 'Nouveaux', value: segments?.nouveaux.count || 0, color: '#22c55e' },
+              { label: 'Inactifs', value: segments?.inactifs.count || 0, color: '#ef4444' },
+            ]} />
+          </div>
+
+          {/* Revenue by segment bar chart */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-[#374151] dark:text-[#D4D4D4]" /> CA par segment
+            </h4>
+            <BarChartSimple data={[
+              { label: 'VIP', value: segments?.vip.totalRevenue || 0 },
+              { label: 'Reguliers', value: segments?.reguliers.totalRevenue || 0 },
+              { label: 'Nouveaux', value: segments?.nouveaux.totalRevenue || 0 },
+              { label: 'Inactifs', value: segments?.inactifs.totalRevenue || 0 },
+            ]} />
           </div>
 
           {/* Top 10 by CA */}
           <div>
             <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#374151] dark:text-[#D4D4D4]" /> {t('clients.top10ByCA')}
+              <TrendingUp className="w-4 h-4 text-green-500" /> Top 10 clients par CA
             </h4>
             <BarChartSimple data={stats.top10.map(c => ({ label: `${c.prenom} ${c.nom}`, value: c.caTotal }))} />
           </div>
 
           {/* Type distribution */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-                <PieChart className="w-4 h-4 text-purple-500" /> {t('clients.distributionByType')}
-              </h4>
-              <PieChartSimple data={[
-                { label: 'Particulier', value: stats.byType.Particulier, color: '#64748b' },
-                { label: 'Entreprise', value: stats.byType.Entreprise, color: '#6366f1' },
-                { label: 'Association', value: stats.byType.Association, color: '#f43f5e' },
-              ]} />
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-green-500" /> {t('clients.distributionByTag')}
-              </h4>
-              <PieChartSimple data={[
-                { label: 'VIP', value: stats.byTag.VIP, color: '#f59e0b' },
-                { label: 'Régulier', value: stats.byTag.Régulier, color: '#3b82f6' },
-                { label: 'Nouveau', value: stats.byTag.Nouveau, color: '#22c55e' },
-              ]} />
-            </div>
+          <div>
+            <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+              <PieChart className="w-4 h-4 text-indigo-500" /> Distribution par type
+            </h4>
+            <PieChartSimple data={[
+              { label: 'Particulier', value: stats.byType.Particulier, color: '#6b7280' },
+              { label: 'Entreprise', value: stats.byType.Entreprise, color: '#6366f1' },
+              { label: 'Association', value: stats.byType.Association, color: '#f43f5e' },
+            ]} />
           </div>
         </div>
       </Modal>

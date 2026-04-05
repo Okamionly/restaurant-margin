@@ -1919,4 +1919,205 @@ router.post('/weekly-report/send-email', authWithRestaurant, async (req: any, re
   }
 });
 
+// ── POST /api/ai/waste-analysis — AI-powered waste analysis ──
+router.post('/waste-analysis', authWithRestaurant, async (req: any, res) => {
+  try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(503).json({ error: 'Service IA non configure. Ajoutez ANTHROPIC_API_KEY.' });
+    }
+
+    const restaurantId = req.restaurantId;
+
+    // Rate limit check
+    if (!checkAiRateLimit(restaurantId)) {
+      return res.status(429).json({ error: 'Limite de requetes atteinte. Reessayez dans 1 minute.' });
+    }
+
+    // Collect last 30 days of waste logs
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const dateThreshold = thirtyDaysAgo.toISOString().slice(0, 10);
+
+    const wasteLogs = await prisma.wasteLog.findMany({
+      where: {
+        restaurantId,
+        date: { gte: dateThreshold },
+      },
+      include: { ingredient: true },
+      orderBy: { date: 'desc' },
+    });
+
+    if (wasteLogs.length === 0) {
+      return res.json({
+        analysis: 'Aucune donnee de gaspillage enregistree sur les 30 derniers jours. Commencez par declarer vos pertes pour obtenir une analyse IA.',
+        topWasteItems: [],
+        patterns: { byDayOfWeek: {}, byReason: {}, byCategory: {} },
+        recommendations: [],
+        estimatedSavings: 0,
+        prediction: [],
+      });
+    }
+
+    // Pre-compute data for Claude
+    const wasteData = wasteLogs.map((w: any) => ({
+      date: w.date,
+      dayOfWeek: new Date(w.date).toLocaleDateString('fr-FR', { weekday: 'long' }),
+      ingredient: w.ingredient.name,
+      category: w.ingredient.category,
+      quantity: w.quantity,
+      unit: w.unit,
+      reason: w.reason,
+      costImpact: w.costImpact,
+    }));
+
+    // Aggregate stats for pre-computation (for structured response)
+    const byIngredient: Record<string, { cost: number; qty: number; unit: string; count: number }> = {};
+    const byDayOfWeek: Record<string, number> = {};
+    const byReason: Record<string, number> = {};
+    const byCategory: Record<string, number> = {};
+    const byDate: Record<string, number> = {};
+    let totalCost = 0;
+
+    for (const w of wasteLogs as any[]) {
+      const name = w.ingredient.name;
+      if (!byIngredient[name]) byIngredient[name] = { cost: 0, qty: 0, unit: w.unit, count: 0 };
+      byIngredient[name].cost += w.costImpact;
+      byIngredient[name].qty += w.quantity;
+      byIngredient[name].count += 1;
+
+      const day = new Date(w.date).toLocaleDateString('fr-FR', { weekday: 'long' });
+      byDayOfWeek[day] = (byDayOfWeek[day] || 0) + w.costImpact;
+
+      byReason[w.reason] = (byReason[w.reason] || 0) + w.costImpact;
+
+      const cat = w.ingredient.category || 'Autre';
+      byCategory[cat] = (byCategory[cat] || 0) + w.costImpact;
+
+      byDate[w.date] = (byDate[w.date] || 0) + w.costImpact;
+
+      totalCost += w.costImpact;
+    }
+
+    // Top waste items
+    const topWasteItems = Object.entries(byIngredient)
+      .sort((a, b) => b[1].cost - a[1].cost)
+      .slice(0, 5)
+      .map(([name, data]) => ({
+        name,
+        totalCost: Math.round(data.cost * 100) / 100,
+        totalQuantity: Math.round(data.qty * 100) / 100,
+        unit: data.unit,
+        incidents: data.count,
+      }));
+
+    // Trend data (waste cost per day, sorted)
+    const trendData = Object.entries(byDate)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([date, cost]) => ({ date, cost: Math.round(cost * 100) / 100 }));
+
+    // Compute daily target line (20% reduction from average)
+    const avgDailyCost = totalCost / 30;
+    const targetDailyCost = Math.round(avgDailyCost * 0.8 * 100) / 100;
+
+    // Weekly prediction based on day-of-week patterns
+    const dayOrder = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+    const daysWithData: Record<string, number[]> = {};
+    for (const w of wasteLogs as any[]) {
+      const day = new Date(w.date).toLocaleDateString('fr-FR', { weekday: 'long' });
+      if (!daysWithData[day]) daysWithData[day] = [];
+      daysWithData[day].push(w.costImpact);
+    }
+
+    const prediction = dayOrder.map(day => {
+      const costs = daysWithData[day] || [];
+      const avgCost = costs.length > 0 ? costs.reduce((a, b) => a + b, 0) / costs.length : 0;
+      const highRisk = avgCost > avgDailyCost * 1.3;
+      return {
+        day,
+        predictedCost: Math.round(avgCost * 100) / 100,
+        highRisk,
+        confidence: costs.length >= 3 ? 'haute' : costs.length >= 1 ? 'moyenne' : 'basse',
+      };
+    });
+
+    // Send to Claude for qualitative analysis
+    const prompt = `Analyse les donnees de gaspillage de ce restaurant. Identifie les patterns, les causes principales, et propose 5 actions concretes pour reduire le gaspillage de 20%. Donnees: ${JSON.stringify(wasteData)}
+
+Contexte additionnel:
+- Total gaspillage 30 jours: ${totalCost.toFixed(2)} EUR
+- Top ingredients gaspilles: ${topWasteItems.map(i => `${i.name} (${i.totalCost}EUR)`).join(', ')}
+- Repartition par cause: ${Object.entries(byReason).map(([r, c]) => `${r}: ${(c as number).toFixed(2)}EUR`).join(', ')}
+- Jours les plus couteux: ${Object.entries(byDayOfWeek).sort((a, b) => (b[1] as number) - (a[1] as number)).slice(0, 3).map(([d, c]) => `${d}: ${(c as number).toFixed(2)}EUR`).join(', ')}
+
+Reponds en JSON STRICTEMENT dans ce format (pas de texte avant/apres):
+{
+  "analysis": "Texte d'analyse detaillee en francais (3-5 paragraphes)",
+  "recommendations": [
+    {"action": "Description de l'action", "impact": "Economie estimee en EUR/mois", "priority": "haute|moyenne|basse", "timeline": "Delai de mise en oeuvre"}
+  ],
+  "estimatedMonthlySavings": number
+}`;
+
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }],
+      system: 'Tu es un expert en gestion de restaurant et reduction du gaspillage alimentaire. Reponds uniquement en JSON valide.',
+    });
+
+    const responseText = response.content
+      .filter((b: any) => b.type === 'text')
+      .map((b: any) => b.text)
+      .join('');
+
+    let aiResult: any = {};
+    try {
+      // Extract JSON from response (handle potential markdown wrapping)
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        aiResult = JSON.parse(jsonMatch[0]);
+      }
+    } catch {
+      aiResult = {
+        analysis: responseText,
+        recommendations: [],
+        estimatedMonthlySavings: 0,
+      };
+    }
+
+    // Increment AI usage
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.$executeRaw`
+      INSERT INTO ai_usage (restaurant_id, month, requests_count)
+      VALUES (${restaurantId}, ${month}, 1)
+      ON CONFLICT (restaurant_id, month)
+      DO UPDATE SET requests_count = ai_usage.requests_count + 1
+    `;
+
+    res.json({
+      analysis: aiResult.analysis || 'Analyse non disponible.',
+      topWasteItems,
+      patterns: {
+        byDayOfWeek: Object.fromEntries(
+          Object.entries(byDayOfWeek).map(([k, v]) => [k, Math.round((v as number) * 100) / 100])
+        ),
+        byReason: Object.fromEntries(
+          Object.entries(byReason).map(([k, v]) => [k, Math.round((v as number) * 100) / 100])
+        ),
+        byCategory: Object.fromEntries(
+          Object.entries(byCategory).map(([k, v]) => [k, Math.round((v as number) * 100) / 100])
+        ),
+      },
+      recommendations: (aiResult.recommendations || []).slice(0, 5),
+      estimatedSavings: aiResult.estimatedMonthlySavings || Math.round(totalCost * 0.2 * 100) / 100,
+      trend: trendData,
+      targetDailyCost,
+      prediction,
+    });
+  } catch (e: any) {
+    console.error('AI waste-analysis error:', e.message);
+    res.status(500).json({ error: `Erreur analyse IA: ${e.message}` });
+  }
+});
+
 export default router;

@@ -3,6 +3,7 @@ import {
   FileText, Upload, Image, Grid, List, Search, Filter,
   Download, Trash2, Eye, Plus, FolderOpen, Euro, Calendar,
   X, File, SortAsc, ScanLine, Check, Link2, Pencil, AlertCircle, Loader2,
+  Camera, Zap, ArrowUpDown, RefreshCw, Save,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -111,6 +112,64 @@ function matchIngredients(items: OcrItem[], ingredients: Ingredient[]): Ingredie
   });
 }
 
+/* ─── AI Scan Types ─── */
+
+interface AiScanItem {
+  name: string;
+  quantity: number | null;
+  unit: string;
+  unitPrice: number | null;
+  totalPrice: number | null;
+}
+
+interface AiScanResult {
+  fournisseur: string | null;
+  dateFacture: string | null;
+  numeroFacture: string | null;
+  items: AiScanItem[];
+  totalHT: number | null;
+  totalTTC: number | null;
+  tva: number | null;
+}
+
+interface AiScanMatch {
+  scanItem: AiScanItem;
+  ingredient: Ingredient | null;
+  score: number;
+  oldPrice: number | null;
+  newPrice: number | null;
+  priceDiff: number | null;
+  priceDiffPct: number | null;
+}
+
+function matchScanItems(items: AiScanItem[], ingredients: Ingredient[]): AiScanMatch[] {
+  return items.map((scanItem) => {
+    let best: Ingredient | null = null;
+    let bestScore = 0;
+    for (const ing of ingredients) {
+      const s = fuzzyScore(scanItem.name, ing.name);
+      if (s > bestScore) {
+        bestScore = s;
+        best = ing;
+      }
+    }
+    const matched = bestScore >= 0.4 ? best : null;
+    const newPrice = scanItem.unitPrice;
+    const oldPrice = matched ? matched.pricePerUnit : null;
+    const diff = (newPrice != null && oldPrice != null) ? newPrice - oldPrice : null;
+    const diffPct = (diff != null && oldPrice != null && oldPrice > 0) ? (diff / oldPrice) * 100 : null;
+    return {
+      scanItem,
+      ingredient: matched,
+      score: bestScore,
+      oldPrice,
+      newPrice,
+      priceDiff: diff,
+      priceDiffPct: diffPct,
+    };
+  });
+}
+
 function parseOcrText(text: string): OcrItem[] {
   const lines = text.split('\n').filter((l) => l.trim());
   const items: OcrItem[] = [];
@@ -176,7 +235,20 @@ export default function InvoiceScanner() {
   const [aiDetected, setAiDetected] = useState(false);
 
   /* Active tab */
-  const [activeTab, setActiveTab] = useState<'fichiers' | 'ocr'>('fichiers');
+  const [activeTab, setActiveTab] = useState<'fichiers' | 'scanner' | 'ocr'>('fichiers');
+
+  /* AI Scanner state */
+  const [scanFile, setScanFile] = useState<File | null>(null);
+  const [scanPreviewUrl, setScanPreviewUrl] = useState<string | null>(null);
+  const [scanResult, setScanResult] = useState<AiScanResult | null>(null);
+  const [scanMatches, setScanMatches] = useState<AiScanMatch[]>([]);
+  const [scanProcessing, setScanProcessing] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [scanImporting, setScanImporting] = useState(false);
+  const [scanImported, setScanImported] = useState(false);
+  const scanFileInputRef = useRef<HTMLInputElement>(null);
+  const scanCameraInputRef = useRef<HTMLInputElement>(null);
+  const scanDropRef = useRef<HTMLDivElement>(null);
 
   /* OCR state */
   const [ocrText, setOcrText] = useState('');
@@ -559,6 +631,209 @@ export default function InvoiceScanner() {
     setShowMatchPanel(false);
   };
 
+  /* ─── AI Scanner handlers ─── */
+
+  const handleScanFile = useCallback((file: File) => {
+    // Cleanup previous preview
+    if (scanPreviewUrl) URL.revokeObjectURL(scanPreviewUrl);
+    setScanFile(file);
+    setScanPreviewUrl(URL.createObjectURL(file));
+    setScanResult(null);
+    setScanMatches([]);
+    setScanError(null);
+    setScanImported(false);
+  }, [scanPreviewUrl]);
+
+  const handleScanDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    scanDropRef.current?.classList.remove('border-black', 'dark:border-white', 'bg-gray-50', 'dark:bg-gray-900');
+    const files = Array.from(e.dataTransfer.files);
+    const valid = files.find((f) => f.type.startsWith('image/') || f.type === 'application/pdf');
+    if (valid) handleScanFile(valid);
+    else showToast('Format non supporte. Utilisez JPG, PNG ou PDF.', 'error');
+  }, [handleScanFile, showToast]);
+
+  const handleScanDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    scanDropRef.current?.classList.add('border-black', 'dark:border-white', 'bg-gray-50', 'dark:bg-gray-900');
+  }, []);
+
+  const handleScanDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    scanDropRef.current?.classList.remove('border-black', 'dark:border-white', 'bg-gray-50', 'dark:bg-gray-900');
+  }, []);
+
+  const handleRunScan = async () => {
+    if (!scanFile) return;
+    setScanProcessing(true);
+    setScanError(null);
+    setScanResult(null);
+    setScanMatches([]);
+    setScanImported(false);
+
+    try {
+      const reader = new FileReader();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(scanFile);
+      });
+
+      const commaIdx = dataUrl.indexOf(',');
+      const imageBase64 = dataUrl.slice(commaIdx + 1);
+      const mimeType = scanFile.type || 'image/jpeg';
+
+      const res = await fetch('/api/invoices/scan', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ imageBase64, mimeType }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setScanError(data.error || 'Erreur lors du scan');
+        return;
+      }
+
+      // Normalize the response
+      const result: AiScanResult = {
+        fournisseur: data.fournisseur || data.supplier || null,
+        dateFacture: data.dateFacture || data.date || null,
+        numeroFacture: data.numeroFacture || data.invoiceNumber || null,
+        items: (data.items || []).map((item: any) => ({
+          name: item.name || item.designation || item.productName || '',
+          quantity: item.quantity ?? item.quantite ?? null,
+          unit: item.unit || item.unite || '',
+          unitPrice: item.unitPrice ?? item.prixUnitaire ?? null,
+          totalPrice: item.totalPrice ?? item.total ?? null,
+        })),
+        totalHT: data.totalHT ?? null,
+        totalTTC: data.totalTTC ?? null,
+        tva: data.tva ?? null,
+      };
+
+      setScanResult(result);
+
+      // Auto-match with ingredients
+      if (ingredientsList.length > 0 && result.items.length > 0) {
+        const matches = matchScanItems(result.items, ingredientsList);
+        setScanMatches(matches);
+      }
+    } catch (err: any) {
+      setScanError(err?.message || 'Erreur reseau');
+    } finally {
+      setScanProcessing(false);
+    }
+  };
+
+  const handleScanImport = async () => {
+    if (!scanResult) return;
+    setScanImporting(true);
+
+    try {
+      // 1. Create invoice record with items
+      const invoiceRes = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          supplierName: scanResult.fournisseur || 'Inconnu',
+          invoiceNumber: scanResult.numeroFacture || '',
+          invoiceDate: scanResult.dateFacture || new Date().toISOString().slice(0, 10),
+          totalHT: scanResult.totalHT,
+          totalTTC: scanResult.totalTTC,
+          totalAmount: scanResult.totalTTC || scanResult.totalHT || 0,
+          items: scanResult.items.map((item) => ({
+            productName: item.name,
+            quantity: item.quantity || 0,
+            unit: item.unit || '',
+            unitPrice: item.unitPrice || 0,
+            total: item.totalPrice || 0,
+          })),
+        }),
+      });
+
+      let invoiceId: number | null = null;
+      if (invoiceRes.ok) {
+        const created = await invoiceRes.json();
+        invoiceId = created.id;
+      }
+
+      // 2. Update ingredient prices for matched items
+      const matchedItems = scanMatches.filter((m) => m.ingredient && m.newPrice != null);
+      let pricesUpdated = 0;
+      const applyMatches: Array<{ itemId: number; ingredientId: number }> = [];
+
+      for (const m of matchedItems) {
+        if (!m.ingredient || m.newPrice == null) continue;
+        try {
+          await updateIngredient(m.ingredient.id, { pricePerUnit: m.newPrice });
+          pricesUpdated++;
+        } catch {
+          /* skip individual failures */
+        }
+      }
+
+      // 3. Apply matches if we have an invoice ID
+      if (invoiceId && invoiceRes.ok) {
+        const invoiceData = await invoiceRes.json().catch(() => null);
+        // Try to apply matches via the apply endpoint
+        if (applyMatches.length > 0) {
+          await fetch(`/api/invoices/${invoiceId}/apply`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({ matches: applyMatches }),
+          }).catch(() => {});
+        }
+      }
+
+      // 4. Refresh ingredients list
+      try {
+        const fresh = await fetchIngredients();
+        setIngredientsList(fresh);
+      } catch { /* */ }
+
+      // 5. Add to local invoices list
+      const newInv: InvoiceFile = {
+        id: invoiceId ? `db-${invoiceId}` : generateId(),
+        dbId: invoiceId ?? undefined,
+        file: scanFile,
+        name: scanFile?.name || `Facture_${scanResult.fournisseur || 'scan'}_${today()}`,
+        type: 'image',
+        fournisseur: scanResult.fournisseur || 'Import Scanner IA',
+        invoiceNumber: scanResult.numeroFacture || '',
+        dateFacture: scanResult.dateFacture || today(),
+        dateAjout: today(),
+        montantHT: scanResult.totalHT,
+        montantTTC: scanResult.totalTTC,
+        notes: `Scanner IA - ${scanResult.items.length} lignes`,
+        size: scanFile?.size || 0,
+        previewUrl: scanPreviewUrl,
+      };
+      setInvoices((prev) => [newInv, ...prev]);
+
+      setScanImported(true);
+      showToast(
+        `Facture importee ! ${pricesUpdated} prix mis a jour.`,
+        'success'
+      );
+    } catch (err: any) {
+      showToast(err?.message || 'Erreur import', 'error');
+    } finally {
+      setScanImporting(false);
+    }
+  };
+
+  const handleScanReset = () => {
+    if (scanPreviewUrl) URL.revokeObjectURL(scanPreviewUrl);
+    setScanFile(null);
+    setScanPreviewUrl(null);
+    setScanResult(null);
+    setScanMatches([]);
+    setScanError(null);
+    setScanImported(false);
+  };
+
   /* ─── Render ─── */
 
   return (
@@ -588,6 +863,17 @@ export default function InvoiceScanner() {
           Fichiers
         </button>
         <button
+          onClick={() => setActiveTab('scanner')}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            activeTab === 'scanner'
+              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+          }`}
+        >
+          <Zap className="w-4 h-4" />
+          Scanner IA
+        </button>
+        <button
           onClick={() => setActiveTab('ocr')}
           className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
             activeTab === 'ocr'
@@ -596,7 +882,7 @@ export default function InvoiceScanner() {
           }`}
         >
           <ScanLine className="w-4 h-4" />
-          Scanner OCR
+          OCR Manuel
         </button>
       </div>
 
@@ -942,6 +1228,460 @@ export default function InvoiceScanner() {
       )}
 
       </>)}
+
+      {/* ─── Scanner IA Tab ─── */}
+      {activeTab === 'scanner' && (
+        <div className="space-y-6">
+
+          {/* Upload / Camera zone */}
+          {!scanFile && (
+            <div
+              ref={scanDropRef}
+              onDrop={handleScanDrop}
+              onDragOver={handleScanDragOver}
+              onDragLeave={handleScanDragLeave}
+              className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-10 text-center
+                         hover:border-black dark:hover:border-white transition-colors"
+            >
+              <Zap className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+              <p className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
+                Scanner une facture avec l'IA
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                Photographiez ou deposez une facture / bon de livraison. L'IA extraira automatiquement les lignes produits, prix et totaux.
+              </p>
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                {/* Camera button (mobile) */}
+                <button
+                  type="button"
+                  onClick={() => scanCameraInputRef.current?.click()}
+                  className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-lg
+                             hover:bg-gray-800 dark:hover:bg-gray-200 text-sm font-medium
+                             flex items-center gap-2"
+                >
+                  <Camera className="w-4 h-4" />
+                  Prendre en photo
+                </button>
+                {/* File browse button */}
+                <button
+                  type="button"
+                  onClick={() => scanFileInputRef.current?.click()}
+                  className="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200
+                             rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium
+                             flex items-center gap-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  Parcourir les fichiers
+                </button>
+              </div>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-4">JPG, PNG, PDF - Glissez-deposez ou cliquez</p>
+              {/* Hidden file inputs */}
+              <input
+                ref={scanCameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleScanFile(f);
+                  e.target.value = '';
+                }}
+              />
+              <input
+                ref={scanFileInputRef}
+                type="file"
+                accept=".jpg,.jpeg,.png,.pdf,image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleScanFile(f);
+                  e.target.value = '';
+                }}
+              />
+            </div>
+          )}
+
+          {/* Preview + Actions when file is selected */}
+          {scanFile && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Image className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{scanFile.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{formatSize(scanFile.size)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {!scanProcessing && !scanResult && (
+                    <button
+                      onClick={handleRunScan}
+                      className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded-lg
+                                 hover:bg-gray-800 dark:hover:bg-gray-200 text-sm font-medium
+                                 flex items-center gap-2"
+                    >
+                      <Zap className="w-4 h-4" />
+                      Analyser avec l'IA
+                    </button>
+                  )}
+                  <button
+                    onClick={handleScanReset}
+                    className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100
+                               dark:hover:bg-gray-700 rounded-lg flex items-center gap-1"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Nouveau scan
+                  </button>
+                </div>
+              </div>
+
+              {/* Image preview */}
+              {scanPreviewUrl && scanFile.type.startsWith('image/') && (
+                <div className="p-4 bg-gray-50 dark:bg-gray-900/50 flex justify-center">
+                  <img
+                    src={scanPreviewUrl}
+                    alt="Apercu facture"
+                    className="max-h-64 rounded-lg border border-gray-200 dark:border-gray-700 object-contain"
+                  />
+                </div>
+              )}
+
+              {/* Processing state */}
+              {scanProcessing && (
+                <div className="p-8 flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-gray-400 dark:text-gray-500" />
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Analyse en cours par l'IA...</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">Cela peut prendre quelques secondes</p>
+                </div>
+              )}
+
+              {/* Error state */}
+              {scanError && (
+                <div className="p-4 m-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-red-700 dark:text-red-300">Erreur de scan</p>
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">{scanError}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Scan Results */}
+          {scanResult && (
+            <>
+              {/* Invoice header info */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+                  <FileText className="w-4 h-4 text-gray-500" />
+                  Informations extraites
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Fournisseur</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {scanResult.fournisseur || '—'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">N. Facture</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {scanResult.numeroFacture || '—'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Date</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {scanResult.dateFacture || '—'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Totaux</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {scanResult.totalHT != null
+                        ? `${scanResult.totalHT.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} HT`
+                        : '—'}
+                      {scanResult.totalTTC != null && (
+                        <span className="text-gray-500 dark:text-gray-400 ml-2">
+                          / {scanResult.totalTTC.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} TTC
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Extracted line items table */}
+              {scanResult.items.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <ScanLine className="w-4 h-4 text-gray-500" />
+                      {scanResult.items.length} ligne(s) detectee(s)
+                    </h3>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+                          <th className="text-left px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Produit
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20">
+                            Qte
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-20">
+                            Unite
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-28">
+                            Prix unitaire
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase w-28">
+                            Total HT
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scanResult.items.map((item, idx) => (
+                          <tr
+                            key={idx}
+                            className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-700/30"
+                          >
+                            <td className="px-4 py-2.5 text-gray-900 dark:text-white font-medium">
+                              {item.name}
+                            </td>
+                            <td className="px-4 py-2.5 text-center text-gray-600 dark:text-gray-300">
+                              {item.quantity != null ? item.quantity : '—'}
+                            </td>
+                            <td className="px-4 py-2.5 text-center text-gray-600 dark:text-gray-300">
+                              {item.unit || '—'}
+                            </td>
+                            <td className="px-4 py-2.5 text-center text-gray-600 dark:text-gray-300">
+                              {item.unitPrice != null
+                                ? `${item.unitPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} \u20AC`
+                                : '—'}
+                            </td>
+                            <td className="px-4 py-2.5 text-center font-medium text-gray-900 dark:text-white">
+                              {item.totalPrice != null
+                                ? `${item.totalPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} \u20AC`
+                                : '—'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr className="bg-gray-50 dark:bg-gray-900/30">
+                          <td colSpan={4} className="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 text-right">
+                            Total HT :
+                          </td>
+                          <td className="px-4 py-2.5 text-sm font-bold text-gray-900 dark:text-white text-center">
+                            {(scanResult.totalHT ?? scanResult.items.reduce((s, i) => s + (i.totalPrice || 0), 0)).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} {'\u20AC'}
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Price comparison / matching panel */}
+              {scanMatches.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <ArrowUpDown className="w-4 h-4 text-gray-500" />
+                      Comparaison des prix
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Les produits de la facture sont compares a vos ingredients existants
+                    </p>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+                          <th className="text-left px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Produit facture
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Match
+                          </th>
+                          <th className="text-left px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Ingredient en base
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Prix actuel
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Nouveau prix
+                          </th>
+                          <th className="text-center px-4 py-2.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                            Ecart
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scanMatches.map((m, idx) => (
+                          <tr
+                            key={idx}
+                            className="border-b border-gray-100 dark:border-gray-700/50"
+                          >
+                            <td className="px-4 py-2.5 text-gray-900 dark:text-white font-medium">
+                              {m.scanItem.name}
+                            </td>
+                            <td className="px-4 py-2.5 text-center">
+                              {m.ingredient ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                  <Check className="w-3 h-3" />
+                                  {Math.round(m.score * 100)}%
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+                                  <AlertCircle className="w-3 h-3" />
+                                  Aucun
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-2.5 text-gray-600 dark:text-gray-300">
+                              {m.ingredient ? m.ingredient.name : '—'}
+                            </td>
+                            <td className="px-4 py-2.5 text-center text-gray-600 dark:text-gray-300">
+                              {m.oldPrice != null
+                                ? `${m.oldPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} \u20AC`
+                                : '—'}
+                            </td>
+                            <td className="px-4 py-2.5 text-center font-medium text-gray-900 dark:text-white">
+                              {m.newPrice != null
+                                ? `${m.newPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} \u20AC`
+                                : '—'}
+                            </td>
+                            <td className="px-4 py-2.5 text-center">
+                              {m.priceDiff != null ? (
+                                <span
+                                  className={`text-xs font-medium ${
+                                    m.priceDiff > 0
+                                      ? 'text-red-600 dark:text-red-400'
+                                      : m.priceDiff < 0
+                                      ? 'text-green-600 dark:text-green-400'
+                                      : 'text-gray-400'
+                                  }`}
+                                >
+                                  {m.priceDiff > 0 ? '+' : ''}
+                                  {m.priceDiff.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} {'\u20AC'}
+                                  {m.priceDiffPct != null && (
+                                    <> ({m.priceDiffPct > 0 ? '+' : ''}{m.priceDiffPct.toFixed(1)}%)</>
+                                  )}
+                                </span>
+                              ) : (
+                                '—'
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Import button */}
+              {!scanImported && (
+                <div className="flex items-center justify-end gap-3">
+                  <button
+                    onClick={handleScanReset}
+                    className="px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100
+                               dark:hover:bg-gray-700 rounded-lg"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleScanImport}
+                    disabled={scanImporting}
+                    className="px-6 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-lg
+                               hover:bg-gray-800 dark:hover:bg-gray-200 text-sm font-medium
+                               flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {scanImporting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    Valider et importer
+                  </button>
+                </div>
+              )}
+
+              {/* Success state */}
+              {scanImported && (
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 text-center">
+                  <Check className="w-10 h-10 mx-auto text-green-500 mb-3" />
+                  <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                    Facture importee avec succes !
+                  </p>
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                    Les prix des ingredients ont ete mis a jour.
+                  </p>
+                  <button
+                    onClick={handleScanReset}
+                    className="mt-4 px-4 py-2 text-sm border border-green-300 dark:border-green-700 text-green-700 dark:text-green-300
+                               rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 flex items-center gap-2 mx-auto"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Scanner une autre facture
+                  </button>
+                </div>
+              )}
+
+              {/* Empty items state */}
+              {scanResult.items.length === 0 && !scanError && (
+                <div className="text-center py-8 text-gray-400 dark:text-gray-500">
+                  <AlertCircle className="w-10 h-10 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm">Aucune ligne produit detectee dans cette facture.</p>
+                  <p className="text-xs mt-1">Essayez avec une photo plus nette ou un angle different.</p>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Empty state when no file selected */}
+          {!scanFile && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Comment ca marche ?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                    <Camera className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">1. Photographiez</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Prenez en photo votre facture ou bon de livraison</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">2. L'IA analyse</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Extraction automatique des produits, prix et totaux</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                    <ArrowUpDown className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">3. Comparez et importez</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Comparez avec vos prix actuels et importez en un clic</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ─── OCR Tab ─── */}
       {activeTab === 'ocr' && (

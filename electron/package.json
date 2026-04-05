@@ -1,0 +1,55 @@
+{
+  "name": "restaumargin",
+  "version": "1.0.0",
+  "description": "RestauMargin — Gestion de marge pour restaurants",
+  "main": "main.js",
+  "author": "RestauMargin <contact@restaumargin.fr>",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:all": "electron-builder --win --mac --linux"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "fr.restaumargin.app",
+    "productName": "RestauMargin",
+    "copyright": "Copyright 2025 RestauMargin",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": ["nsis"],
+      "icon": "icon.ico",
+      "artifactName": "RestauMargin-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "RestauMargin"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "icon.icns",
+      "category": "public.app-category.business",
+      "artifactName": "RestauMargin-${version}.${ext}"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "icon": "icon.png",
+      "category": "Office",
+      "artifactName": "RestauMargin-${version}.${ext}"
+    }
+  }
+}

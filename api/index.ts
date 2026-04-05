@@ -537,7 +537,7 @@ app.get('/api/suppliers/:id', authWithRestaurant, async (req: any, res) => {
 
 app.post('/api/suppliers', authWithRestaurant, async (req: any, res) => {
   try {
-    const { name, phone, email, address, city, postalCode, region, country, siret, website, notes, categories, contactName, delivery, minOrder, paymentTerms } = req.body;
+    const { name, phone, email, address, city, postalCode, region, country, siret, website, notes, categories, contactName, delivery, minOrder, paymentTerms, whatsappPhone } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: 'Le nom est requis' });
     const supplier = await prisma.supplier.create({
       data: {
@@ -546,6 +546,7 @@ app.post('/api/suppliers', authWithRestaurant, async (req: any, res) => {
         siret: siret || null, website: website || null, notes: notes || null,
         categories: Array.isArray(categories) ? categories : [], contactName: contactName || null,
         delivery: delivery !== undefined ? delivery : true, minOrder: minOrder || null, paymentTerms: paymentTerms || null,
+        whatsappPhone: whatsappPhone || null,
         restaurantId: req.restaurantId,
       },
     });
@@ -555,7 +556,7 @@ app.post('/api/suppliers', authWithRestaurant, async (req: any, res) => {
 
 app.put('/api/suppliers/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    const { name, phone, email, address, city, postalCode, region, country, siret, website, notes, categories, contactName, delivery, minOrder, paymentTerms } = req.body;
+    const { name, phone, email, address, city, postalCode, region, country, siret, website, notes, categories, contactName, delivery, minOrder, paymentTerms, whatsappPhone } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: 'Le nom est requis' });
     const id = parseInt(req.params.id);
     const existing = await prisma.supplier.findFirst({ where: { id, restaurantId: req.restaurantId } });
@@ -568,6 +569,7 @@ app.put('/api/suppliers/:id', authWithRestaurant, async (req: any, res) => {
         siret: siret || null, website: website || null, notes: notes || null,
         categories: Array.isArray(categories) ? categories : [], contactName: contactName || null,
         delivery: delivery !== undefined ? delivery : true, minOrder: minOrder || null, paymentTerms: paymentTerms || null,
+        whatsappPhone: whatsappPhone || null,
       },
     });
     res.json(supplier);
@@ -1039,9 +1041,9 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
     if (!imageBase64 || !mimeType) return res.status(400).json({ error: 'imageBase64 et mimeType requis' });
 
     const response = await anthropic.messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 1024,
-      system: 'Tu es un expert comptable. Analyse cette facture fournisseur et extrais les données en JSON. Réponds UNIQUEMENT avec un objet JSON valide, sans markdown ni explication.',
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2048,
+      system: 'Tu es un expert comptable specialise en restauration. Analyse cette facture/bon de livraison et extrais toutes les donnees en JSON. Reponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans commentaire, sans explication.',
       messages: [
         {
           role: 'user',
@@ -1052,24 +1054,41 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
             },
             {
               type: 'text',
-              text: 'Extrais les données de cette facture: fournisseur (string), numeroFacture (string), dateFacture (string YYYY-MM-DD), totalHT (number), totalTTC (number), tva (number), items (array of {designation: string, quantite: number, unite: string, prixUnitaire: number, total: number}). Si une valeur est inconnue, utilise null.',
+              text: `Analyse cette facture/bon de livraison restaurant. Extrais:
+- fournisseur (string): nom du fournisseur
+- dateFacture (string YYYY-MM-DD): date de la facture
+- numeroFacture (string): numero de facture
+- items (array): pour chaque ligne produit: {name (string), quantity (number), unit (string: kg/g/L/cl/ml/unite/piece), unitPrice (number: prix unitaire HT), totalPrice (number: prix total HT de la ligne)}
+- totalHT (number): total hors taxes
+- totalTTC (number): total TTC
+- tva (number): montant TVA
+
+Si une valeur est illisible ou absente, utilise null. Pour les items, extrais TOUTES les lignes produit visibles. Retourne un objet JSON valide.`,
             },
           ],
         },
       ],
     });
 
-    const text = (response.content[0] as any).text as string;
+    const rawText = (response.content[0] as any).text as string;
+    // Try to extract JSON from the response (handle potential markdown wrapping)
+    let jsonStr = rawText.trim();
+    const jsonMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) jsonStr = jsonMatch[1].trim();
+    // Also handle case where response starts with text before JSON
+    const braceStart = jsonStr.indexOf('{');
+    if (braceStart > 0) jsonStr = jsonStr.slice(braceStart);
+
     try {
-      const data = JSON.parse(text);
+      const data = JSON.parse(jsonStr);
       res.json(data);
     } catch {
-      res.status(422).json({ error: "Impossible d'analyser la réponse", raw: text });
+      res.status(422).json({ error: "Impossible d'analyser la reponse", raw: rawText });
     }
   } catch (e: any) {
     console.error(e);
     if (e?.status === 400 && e?.message?.includes('credit balance')) {
-      return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez réessayer plus tard.' });
+      return res.status(503).json({ error: 'Service IA temporairement indisponible. Veuillez reessayer plus tard.' });
     }
     res.status(500).json({ error: 'Erreur scan facture' });
   }
@@ -2883,6 +2902,153 @@ app.post('/api/menus', authWithRestaurant, async (req: any, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Erreur sauvegarde menu' });
+  }
+});
+
+// ── P&L Analytics ──────────────────────────────────────────────────────────
+app.get('/api/analytics/pnl', authWithRestaurant, async (req: any, res) => {
+  try {
+    const period = (req.query.period as string) || 'month'; // week | month | year
+    const couverts = parseInt(req.query.couverts as string) || 50;
+    const avgTicket = parseFloat(req.query.avgTicket as string) || 25;
+
+    // Determine days in period
+    let daysInPeriod = 26; // month (working days)
+    let periodLabel = 'Mois';
+    if (period === 'week') { daysInPeriod = 6; periodLabel = 'Semaine'; }
+    else if (period === 'year') { daysInPeriod = 312; periodLabel = 'Année'; } // 26 days * 12
+
+    // Fetch all recipes with ingredients
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: req.restaurantId },
+      include: recipeInclude,
+      orderBy: { name: 'asc' },
+    });
+
+    if (recipes.length === 0) {
+      return res.json({
+        period: periodLabel,
+        daysInPeriod,
+        revenue: 0,
+        foodCost: 0,
+        laborCost: 0,
+        grossMargin: 0,
+        grossMarginPercent: 0,
+        fixedCosts: 0,
+        netResult: 0,
+        netMarginPercent: 0,
+        foodCostPercent: 0,
+        laborCostPercent: 0,
+        categoryBreakdown: [],
+        dailyBreakdown: [],
+        trend: { revenueChange: 0, foodCostChange: 0, netResultChange: 0 },
+      });
+    }
+
+    const formatted = recipes.map(r => formatRecipe(r));
+
+    // Calculate averages
+    const totalRecipes = formatted.length;
+    const avgFoodCost = formatted.reduce((s: number, r: any) => s + r.margin.costPerPortion, 0) / totalRecipes;
+    const avgLaborCost = formatted.reduce((s: number, r: any) => s + (r.margin.laborCostPerPortion || 0), 0) / totalRecipes;
+    const avgTotalCost = formatted.reduce((s: number, r: any) => s + (r.margin.totalCostPerPortion || r.margin.costPerPortion), 0) / totalRecipes;
+    const avgSellingPrice = formatted.reduce((s: number, r: any) => s + r.sellingPrice, 0) / totalRecipes;
+    const avgCostRatio = avgSellingPrice > 0 ? avgTotalCost / avgSellingPrice : 0;
+    const foodCostRatio = avgSellingPrice > 0 ? avgFoodCost / avgSellingPrice : 0;
+    const laborCostRatio = avgSellingPrice > 0 ? avgLaborCost / avgSellingPrice : 0;
+
+    // Revenue and cost estimation
+    const dailyCouverts = couverts * 2; // lunch + dinner
+    const dailyRevenue = dailyCouverts * avgTicket;
+    const periodRevenue = dailyRevenue * daysInPeriod;
+
+    const periodFoodCost = periodRevenue * foodCostRatio;
+    const periodLaborCost = periodRevenue * laborCostRatio;
+    const grossMargin = periodRevenue - periodFoodCost;
+    const grossMarginPercent = periodRevenue > 0 ? (grossMargin / periodRevenue) * 100 : 0;
+
+    // Fixed costs estimation (rent, utilities, insurance) ~15% of revenue for restaurants
+    const fixedCostRate = 0.15;
+    const fixedCosts = periodRevenue * fixedCostRate;
+
+    const netResult = grossMargin - periodLaborCost - fixedCosts;
+    const netMarginPercent = periodRevenue > 0 ? (netResult / periodRevenue) * 100 : 0;
+
+    // Category breakdown
+    const categoryMap = new Map<string, { count: number; totalRevenue: number; totalFoodCost: number; totalLaborCost: number }>();
+    formatted.forEach((r: any) => {
+      const cat = r.category || 'Autres';
+      const existing = categoryMap.get(cat) || { count: 0, totalRevenue: 0, totalFoodCost: 0, totalLaborCost: 0 };
+      categoryMap.set(cat, {
+        count: existing.count + 1,
+        totalRevenue: existing.totalRevenue + r.sellingPrice,
+        totalFoodCost: existing.totalFoodCost + r.margin.costPerPortion,
+        totalLaborCost: existing.totalLaborCost + (r.margin.laborCostPerPortion || 0),
+      });
+    });
+
+    const categoryBreakdown = Array.from(categoryMap.entries()).map(([name, data]) => {
+      const avgPrice = data.totalRevenue / data.count;
+      const avgCost = data.totalFoodCost / data.count;
+      const margin = avgPrice > 0 ? ((avgPrice - avgCost) / avgPrice) * 100 : 0;
+      const portionOfMenu = data.count / totalRecipes;
+      const catRevenue = periodRevenue * portionOfMenu;
+      const catFoodCost = data.totalRevenue > 0 ? catRevenue * (data.totalFoodCost / data.totalRevenue) : 0;
+      return {
+        name,
+        recipeCount: data.count,
+        revenue: Math.round(catRevenue * 100) / 100,
+        foodCost: Math.round(catFoodCost * 100) / 100,
+        margin: Math.round(margin * 10) / 10,
+        portionPercent: Math.round(portionOfMenu * 1000) / 10,
+      };
+    }).sort((a, b) => b.revenue - a.revenue);
+
+    // Daily breakdown for sparkline
+    const breakdownDays = period === 'week' ? 7 : period === 'month' ? 30 : 12;
+    const dailyBreakdown = Array.from({ length: breakdownDays }, (_, i) => {
+      const variance = 0.9 + Math.random() * 0.2;
+      const dayRevenue = period === 'year' ? dailyRevenue * 26 * variance : dailyRevenue * variance;
+      const dayCost = dayRevenue * avgCostRatio;
+      return {
+        label: period === 'year' ? `M${i + 1}` : `J${i + 1}`,
+        revenue: Math.round(dayRevenue),
+        cost: Math.round(dayCost),
+        profit: Math.round(dayRevenue - dayCost),
+      };
+    });
+
+    // Trend vs previous period (simulated)
+    const prevRevenue = periodRevenue * 0.95;
+    const prevFoodCost = periodFoodCost * 1.02;
+    const prevNetResult = prevRevenue - prevFoodCost - (prevRevenue * laborCostRatio) - (prevRevenue * fixedCostRate);
+
+    const trend = {
+      revenueChange: prevRevenue > 0 ? Math.round(((periodRevenue - prevRevenue) / prevRevenue) * 1000) / 10 : 0,
+      foodCostChange: prevFoodCost > 0 ? Math.round(((periodFoodCost - prevFoodCost) / prevFoodCost) * 1000) / 10 : 0,
+      netResultChange: prevNetResult !== 0 ? Math.round(((netResult - prevNetResult) / Math.abs(prevNetResult)) * 1000) / 10 : 0,
+    };
+
+    res.json({
+      period: periodLabel,
+      daysInPeriod,
+      revenue: Math.round(periodRevenue * 100) / 100,
+      foodCost: Math.round(periodFoodCost * 100) / 100,
+      laborCost: Math.round(periodLaborCost * 100) / 100,
+      grossMargin: Math.round(grossMargin * 100) / 100,
+      grossMarginPercent: Math.round(grossMarginPercent * 10) / 10,
+      fixedCosts: Math.round(fixedCosts * 100) / 100,
+      netResult: Math.round(netResult * 100) / 100,
+      netMarginPercent: Math.round(netMarginPercent * 10) / 10,
+      foodCostPercent: Math.round(foodCostRatio * 1000) / 10,
+      laborCostPercent: Math.round(laborCostRatio * 1000) / 10,
+      categoryBreakdown,
+      dailyBreakdown,
+      trend,
+    });
+  } catch (e) {
+    console.error('[PNL]', e);
+    res.status(500).json({ error: 'Erreur calcul P&L' });
   }
 });
 

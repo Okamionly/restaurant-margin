@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend, LineChart, Line,
+  Tooltip, ResponsiveContainer, Legend, LineChart, Line, AreaChart, Area,
 } from 'recharts';
 import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -72,12 +72,13 @@ const ALLERGEN_COLORS: Record<string, string> = {
 };
 
 // ── Tab definitions with descriptions ──────────────────────────────────────
-type TabKey = 'overview' | 'margins' | 'costs' | 'profitability';
+type TabKey = 'overview' | 'margins' | 'costs' | 'profitability' | 'pnl';
 const TAB_ICONS: Record<TabKey, any> = {
   overview: BarChart3,
   margins: TrendingUp,
   costs: ShoppingCart,
   profitability: DollarSign,
+  pnl: ClipboardList,
 };
 
 // ── Stat card color configs ────────────────────────────────────────────────
@@ -447,6 +448,9 @@ export default function Dashboard() {
   const [avgPricePerCouvert, setAvgPricePerCouvert] = useState(25);
   const [marginSort, setMarginSort] = useState<'margin' | 'name'>('margin');
   const [aiUsage, setAiUsage] = useState<{ used: number; limit: number; percentage: number } | null>(null);
+  const [pnlPeriod, setPnlPeriod] = useState<'week' | 'month' | 'year'>('month');
+  const [pnlData, setPnlData] = useState<any>(null);
+  const [pnlLoading, setPnlLoading] = useState(false);
   const navigate = useNavigate();
 
   const TABS: { key: TabKey; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
@@ -454,6 +458,7 @@ export default function Dashboard() {
     { key: 'margins', label: t("dashboard.tabMargins"), desc: t("dashboard.tabMarginsDesc"), icon: TAB_ICONS.margins },
     { key: 'costs', label: t("dashboard.tabCosts"), desc: t("dashboard.tabCostsDesc"), icon: TAB_ICONS.costs },
     { key: 'profitability', label: t("dashboard.tabProfitability"), desc: t("dashboard.tabProfitabilityDesc"), icon: TAB_ICONS.profitability },
+    { key: 'pnl', label: t("dashboard.tabPnl"), desc: t("dashboard.tabPnlDesc"), icon: TAB_ICONS.pnl },
   ];
 
   useEffect(() => {
@@ -479,6 +484,24 @@ export default function Dashboard() {
       .catch(() => console.error('Erreur chargement'))
       .finally(() => setLoading(false));
   }, [selectedRestaurant, restaurantLoading]);
+
+  // ── P&L data fetch ──────────────────────────────────────────────────────
+  useEffect(() => {
+    if (activeTab !== 'pnl' || restaurantLoading || !selectedRestaurant) return;
+    setPnlLoading(true);
+    const token = localStorage.getItem('token');
+    const restaurantId = localStorage.getItem('activeRestaurantId');
+    fetch(`/api/analytics/pnl?period=${pnlPeriod}&couverts=${couverts}&avgTicket=${avgPricePerCouvert}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(restaurantId ? { 'X-Restaurant-Id': restaurantId } : {}),
+      },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data) setPnlData(data); })
+      .catch(() => console.error('Erreur chargement P&L'))
+      .finally(() => setPnlLoading(false));
+  }, [activeTab, pnlPeriod, couverts, avgPricePerCouvert, selectedRestaurant, restaurantLoading]);
 
   // ── Computed stats ─────────────────────────────────────────────────────
   const stats = useMemo(() => {

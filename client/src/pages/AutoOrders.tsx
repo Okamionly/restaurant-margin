@@ -4,6 +4,7 @@ import {
   Plus, Loader2, Euro, ChevronDown, ChevronUp,
   Clock, X, Mail, Copy, CopyPlus, Filter, Edit3,
   AlertTriangle, Zap, History, RefreshCw, CheckCircle2, CircleDot,
+  MessageCircle,
 } from 'lucide-react';
 import { fetchIngredients, fetchSuppliers, fetchInventoryAlerts } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
@@ -743,6 +744,39 @@ export default function AutoOrders() {
     }
   }
 
+  function handleWhatsAppOrder(order: Order) {
+    const supplier = suppliers.find((s) => s.id === order.supplierId);
+    const phone = supplier?.whatsappPhone || supplier?.phone;
+    const cleanPhone = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+    const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    const lines = order.lines
+      .filter((l) => l.name.trim())
+      .map((l) => `- ${l.name} : ${l.quantity} ${l.unit}`)
+      .join('\n');
+
+    const message = [
+      `Bonjour ${order.supplierName},`,
+      '',
+      `Commande RestauMargin - ${restaurantName}`,
+      `Date: ${today}`,
+      '',
+      'Articles:',
+      lines,
+      '',
+      'Merci de confirmer la réception.',
+      `Cordialement, ${restaurantName}`,
+    ].join('\n');
+
+    const encoded = encodeURIComponent(message);
+    if (cleanPhone) {
+      window.open(`https://wa.me/${cleanPhone}?text=${encoded}`, '_blank');
+    } else {
+      window.open(`https://web.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
+  }
+
   const historyOrders = useMemo(() => {
     return [...orders]
       .filter((o) => o.status === 'envoyé' || o.status === 'reçu')
@@ -908,6 +942,7 @@ export default function AutoOrders() {
                   onDelete={() => setDeleteTarget(order.id)}
                   onDuplicate={() => duplicateOrder(order)}
                   onDirectSend={() => handleSendOrderEmail(order)}
+                  onWhatsApp={() => handleWhatsAppOrder(order)}
                   onRelance={() => handleRelanceFournisseur(order)}
                   isSending={sendingEmail === order.id}
                   isRelancing={relancingId === order.id}
@@ -1312,6 +1347,7 @@ function OrderRow({
   onDelete,
   onDuplicate,
   onDirectSend,
+  onWhatsApp,
   onRelance,
   isSending,
   isRelancing,
@@ -1325,6 +1361,7 @@ function OrderRow({
   onDelete: () => void;
   onDuplicate: () => void;
   onDirectSend?: () => void;
+  onWhatsApp?: () => void;
   onRelance?: () => void;
   isSending?: boolean;
   isRelancing?: boolean;
@@ -1369,6 +1406,11 @@ function OrderRow({
           <button onClick={onSend} title="Préparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
             <Mail className="w-3.5 h-3.5" /> Email
           </button>
+          {onWhatsApp && (
+            <button onClick={onWhatsApp} title="Commander via WhatsApp" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#25D366] hover:bg-[#25D366]/10 rounded-lg transition">
+              <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+            </button>
+          )}
           {order.status === 'brouillon' && onDirectSend && (
             <button
               onClick={onDirectSend}

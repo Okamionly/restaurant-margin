@@ -3,6 +3,7 @@ import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'reac
 import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Sparkles, Newspaper, Bell, AlertTriangle, Keyboard, Search } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
+import OfflineSyncBar from './components/OfflineSyncBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import KitchenTimer from './components/KitchenTimer';
 import CookieBanner from './components/CookieBanner';
@@ -775,11 +776,11 @@ function AppLayout() {
         {installPrompt && !isInstalled && (
           <button
             onClick={handleInstall}
-            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium bg-green-600 hover:bg-green-500 text-white transition-colors w-full animate-pulse ${collapsed ? 'justify-center' : ''}`}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
             title="Installer l'application"
           >
             <Download className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span className="sidebar-label">Installer</span>}
+            {!collapsed && <span className="sidebar-label">Installer l'app</span>}
           </button>
         )}
 
@@ -871,30 +872,75 @@ function AppLayout() {
         {/* Connectivity status bar */}
         <ConnectivityBar />
 
-        {/* PWA Install banner */}
-        {showInstallBanner && !isInstalled && (
-          <div className="bg-teal-600/15 border-b border-teal-500/30 text-teal-300 px-4 py-2.5 flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2">
-              <Download className="w-4 h-4 flex-shrink-0" />
-              <span>Installez RestauMargin sur votre appareil pour un acces rapide</span>
+        {/* Offline sync bar — shows pending actions & sync status */}
+        <OfflineSyncBar />
+
+        {/* PWA Install banner — platform-specific */}
+        {showInstallBanner && !isInstalled && (() => {
+          const ua = navigator.userAgent;
+          const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+          const isAndroid = /Android/.test(ua);
+          const isMac = /Macintosh/.test(ua) && navigator.maxTouchPoints <= 1;
+          const isWindows = /Windows/.test(ua);
+
+          let message = 'Installez RestauMargin sur votre appareil';
+          let buttonText = 'Installer';
+          let showButton = true;
+          let subMessage = '';
+
+          if (isIOS) {
+            message = 'Installer RestauMargin sur votre iPhone/iPad';
+            subMessage = 'Appuyez sur le bouton Partager puis "Sur l\'ecran d\'accueil"';
+            showButton = false;
+          } else if (isAndroid) {
+            message = 'Installer l\'app RestauMargin';
+            buttonText = 'Installer l\'app';
+          } else if (isWindows) {
+            message = 'Installer RestauMargin pour Windows';
+            buttonText = 'Installer pour Windows';
+          } else if (isMac) {
+            message = 'Installer RestauMargin pour Mac';
+            buttonText = 'Installer pour Mac';
+          }
+
+          return (
+            <div className="bg-[#111111] dark:bg-[#0A0A0A] border-b border-[#333333] dark:border-[#1A1A1A] text-white px-4 py-3 text-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                    <Download className="w-4 h-4 text-black" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold truncate">{message}</div>
+                    {subMessage && (
+                      <div className="text-xs text-[#A3A3A3] mt-0.5">{subMessage}</div>
+                    )}
+                    {!subMessage && (
+                      <div className="text-xs text-[#A3A3A3] mt-0.5">Acces rapide, fonctionne hors connexion</div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+                  {showButton && (
+                    <button
+                      onClick={handleInstall}
+                      className="px-4 py-1.5 bg-white hover:bg-[#E5E5E5] text-black rounded-lg font-semibold text-xs whitespace-nowrap transition-colors"
+                    >
+                      {buttonText}
+                    </button>
+                  )}
+                  <button
+                    onClick={dismissInstallBanner}
+                    className="p-1.5 hover:bg-[#333333] rounded-lg transition-colors"
+                    aria-label="Fermer"
+                  >
+                    <X className="w-4 h-4 text-[#A3A3A3]" />
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2 ml-4">
-              <button
-                onClick={handleInstall}
-                className="px-3 py-1 bg-teal-600 hover:bg-teal-500 text-white rounded-lg font-medium text-xs whitespace-nowrap transition-colors"
-              >
-                Installer
-              </button>
-              <button
-                onClick={dismissInstallBanner}
-                className="p-1 hover:bg-teal-500/20 rounded-lg transition-colors"
-                aria-label="Fermer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Email verification banner */}
         {user && user.emailVerified === false && (

@@ -153,5 +153,38 @@
       "is_interrupt": false,
       "logged_at": "2026-04-05T02:57:09.489322"
     }
+  },
+  {
+    "timestamp": "2026-04-05T03:27:57.431602",
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "hook_event_name": "PostToolUseFailure",
+    "tool_name": "Bash",
+    "tool_use_id": "toolu_018wnwA8s1xBXoyLrJcdZ5y7",
+    "tool_input": {
+      "command": "cd \"/c/Users/mrgue/CLAUDE CODE/restaurant-margin\" && npx prisma db execute --file prisma/migrations/add_whatsapp_phone.sql 2>&1",
+      "timeout": 30000,
+      "description": "Run migration on production DB"
+    },
+    "error": "Exit code 1\nError: Prisma schema validation - (get-config wasm)\nError code: P1012\nerror: Environment variable not found: DIRECT_URL.\n  -->  prisma\\schema.prisma:8\n   | \n 7 |   url       = env(\"DATABASE_URL\")\n 8 |   directUrl = env(\"DIRECT_URL\")\n   | \n\nValidation Error Count: 1\n[Context: getConfig]\n\nPrisma CLI Version : 5.22.0",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "raw_input": {
+      "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+      "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+      "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+      "permission_mode": "bypassPermissions",
+      "hook_event_name": "PostToolUseFailure",
+      "tool_name": "Bash",
+      "tool_input": {
+        "command": "cd \"/c/Users/mrgue/CLAUDE CODE/restaurant-margin\" && npx prisma db execute --file prisma/migrations/add_whatsapp_phone.sql 2>&1",
+        "timeout": 30000,
+        "description": "Run migration on production DB"
+      },
+      "tool_use_id": "toolu_018wnwA8s1xBXoyLrJcdZ5y7",
+      "error": "Exit code 1\nError: Prisma schema validation - (get-config wasm)\nError code: P1012\nerror: Environment variable not found: DIRECT_URL.\n  -->  prisma\\schema.prisma:8\n   | \n 7 |   url       = env(\"DATABASE_URL\")\n 8 |   directUrl = env(\"DIRECT_URL\")\n   | \n\nValidation Error Count: 1\n[Context: getConfig]\n\nPrisma CLI Version : 5.22.0",
+      "is_interrupt": false,
+      "logged_at": "2026-04-05T03:27:57.431602"
+    }
   }
 ]

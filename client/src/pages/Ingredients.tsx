@@ -293,7 +293,7 @@ export default function Ingredients() {
   async function addNewSupplier() {
     if (!newSupplierName.trim()) return;
     try {
-      const newSup = await createSupplier({ name: newSupplierName.trim(), phone: null, email: null, address: null, city: null, postalCode: null, region: null, country: 'France', siret: null, website: null, notes: null, categories: [], contactName: null, delivery: false, minOrder: null, paymentTerms: null });
+      const newSup = await createSupplier({ name: newSupplierName.trim(), phone: null, email: null, address: null, city: null, postalCode: null, region: null, country: 'France', siret: null, website: null, notes: null, categories: [], contactName: null, delivery: false, minOrder: null, paymentTerms: null, whatsappPhone: null });
       setSuppliers([...suppliers, newSup]);
       setForm({ ...form, supplier: newSup.name, supplierId: newSup.id });
       setSupplierQuery(newSup.name);

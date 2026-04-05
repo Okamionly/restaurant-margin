@@ -1,6 +1,59 @@
 import type { Ingredient, Recipe, Supplier, User, LoginCredentials, RegisterData, InventoryItem, InventoryValue, RecipeOptimizationResult } from '../types';
+import { saveToOffline, getFromOffline, addPendingAction, isOffline, type OfflineStoreName } from './offlineStore';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
+
+// --- Offline-aware helpers ---
+
+/** Map URL paths to IndexedDB store names for caching */
+function urlToStore(url: string): OfflineStoreName | null {
+  if (url.includes('/ingredients')) return 'ingredients';
+  if (url.includes('/recipes')) return 'recipes';
+  if (url.includes('/suppliers')) return 'suppliers';
+  if (url.includes('/inventory')) return 'inventory';
+  return null;
+}
+
+/** Wrap a GET fetch: cache on success, return cache on network error */
+async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T> {
+  const store = urlToStore(url);
+  try {
+    const res = await fetch(url, options);
+    const data = await handleResponse<T>(res);
+    // Cache list responses (arrays only) in IndexedDB
+    if (store && Array.isArray(data)) {
+      saveToOffline(store, data).catch(() => {});
+    }
+    return data;
+  } catch (err) {
+    // Network error — try to return cached data
+    if (store) {
+      const cached = await getFromOffline(store);
+      if (cached.length > 0) {
+        return cached as unknown as T;
+      }
+    }
+    throw err;
+  }
+}
+
+/** Wrap a write fetch (POST/PUT/DELETE): queue if offline */
+async function offlineAwareWrite<T>(url: string, options: RequestInit): Promise<T> {
+  if (isOffline()) {
+    // Queue the action for later sync
+    await addPendingAction({
+      timestamp: Date.now(),
+      method: (options.method || 'POST') as 'POST' | 'PUT' | 'DELETE',
+      url,
+      body: options.body as string | undefined,
+      headers: options.headers as Record<string, string> | undefined,
+    });
+    // Return a placeholder so the UI can continue
+    throw new Error('Action enregistrée hors-ligne. Elle sera synchronisée automatiquement.');
+  }
+  const res = await fetch(url, options);
+  return handleResponse<T>(res);
+}
 
 // --- Token Management ---
 
@@ -179,46 +232,36 @@ export async function sendAlertEmail(): Promise<{ sent: boolean; alertCount?: nu
 // --- Ingredients ---
 
 export async function fetchIngredients(): Promise<Ingredient[]> {
-  const res = await fetch(`${API_BASE}/ingredients`, { headers: authHeaders() });
-  return handleResponse<Ingredient[]>(res);
+  return offlineAwareGet<Ingredient[]>(`${API_BASE}/ingredients`, { headers: authHeaders() });
 }
 
 export async function createIngredient(data: Omit<Ingredient, 'id' | 'createdAt' | 'updatedAt'>): Promise<Ingredient> {
-  const res = await fetch(`${API_BASE}/ingredients`, {
+  return offlineAwareWrite<Ingredient>(`${API_BASE}/ingredients`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<Ingredient>(res);
 }
 
 export async function updateIngredient(id: number, data: Partial<Ingredient>): Promise<Ingredient> {
-  const res = await fetch(`${API_BASE}/ingredients/${id}`, {
+  return offlineAwareWrite<Ingredient>(`${API_BASE}/ingredients/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<Ingredient>(res);
 }
 
 export async function deleteIngredient(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/ingredients/${id}`, {
+  return offlineAwareWrite<void>(`${API_BASE}/ingredients/${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (res.status === 401) {
-    removeToken();
-    window.location.href = '/login';
-    throw new Error('Non authentifié');
-  }
-  if (!res.ok) throw new Error('Erreur suppression ingrédient');
 }
 
 // --- Recipes ---
 
 export async function fetchRecipes(): Promise<Recipe[]> {
-  const res = await fetch(`${API_BASE}/recipes`, { headers: authHeaders() });
-  return handleResponse<Recipe[]>(res);
+  return offlineAwareGet<Recipe[]>(`${API_BASE}/recipes`, { headers: authHeaders() });
 }
 
 export async function fetchRecipe(id: number): Promise<Recipe> {
@@ -237,12 +280,11 @@ export async function createRecipe(data: {
   laborCostPerHour?: number;
   ingredients: { ingredientId: number; quantity: number; wastePercent?: number }[];
 }): Promise<Recipe> {
-  const res = await fetch(`${API_BASE}/recipes`, {
+  return offlineAwareWrite<Recipe>(`${API_BASE}/recipes`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<Recipe>(res);
 }
 
 export async function updateRecipe(id: number, data: {
@@ -256,25 +298,18 @@ export async function updateRecipe(id: number, data: {
   laborCostPerHour?: number;
   ingredients: { ingredientId: number; quantity: number; wastePercent?: number }[];
 }): Promise<Recipe> {
-  const res = await fetch(`${API_BASE}/recipes/${id}`, {
+  return offlineAwareWrite<Recipe>(`${API_BASE}/recipes/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<Recipe>(res);
 }
 
 export async function deleteRecipe(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/recipes/${id}`, {
+  return offlineAwareWrite<void>(`${API_BASE}/recipes/${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (res.status === 401) {
-    removeToken();
-    window.location.href = '/login';
-    throw new Error('Non authentifié');
-  }
-  if (!res.ok) throw new Error('Erreur suppression recette');
 }
 
 export async function cloneRecipe(id: number): Promise<Recipe> {
@@ -297,8 +332,7 @@ export async function optimizeRecipeCost(recipeId: number): Promise<RecipeOptimi
 // --- Suppliers ---
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
-  const res = await fetch(`${API_BASE}/suppliers`, { headers: authHeaders() });
-  return handleResponse<Supplier[]>(res);
+  return offlineAwareGet<Supplier[]>(`${API_BASE}/suppliers`, { headers: authHeaders() });
 }
 
 export async function fetchSupplier(id: number): Promise<Supplier> {
@@ -307,37 +341,26 @@ export async function fetchSupplier(id: number): Promise<Supplier> {
 }
 
 export async function createSupplier(data: Omit<Supplier, 'id' | 'createdAt' | 'updatedAt' | '_count' | 'ingredients'>): Promise<Supplier> {
-  const res = await fetch(`${API_BASE}/suppliers`, {
+  return offlineAwareWrite<Supplier>(`${API_BASE}/suppliers`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<Supplier>(res);
 }
 
 export async function updateSupplier(id: number, data: Partial<Supplier>): Promise<Supplier> {
-  const res = await fetch(`${API_BASE}/suppliers/${id}`, {
+  return offlineAwareWrite<Supplier>(`${API_BASE}/suppliers/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<Supplier>(res);
 }
 
 export async function deleteSupplier(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/suppliers/${id}`, {
+  return offlineAwareWrite<void>(`${API_BASE}/suppliers/${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (res.status === 401) {
-    removeToken();
-    window.location.href = '/login';
-    throw new Error('Non authentifié');
-  }
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || 'Erreur suppression fournisseur');
-  }
 }
 
 export async function linkSupplierIngredients(id: number): Promise<{ linked: number; supplierName: string }> {
@@ -385,8 +408,7 @@ export async function fetchAllSupplierScores(): Promise<SupplierScoreBreakdown[]
 // --- Inventory ---
 
 export async function fetchInventory(): Promise<InventoryItem[]> {
-  const res = await fetch(`${API_BASE}/inventory`, { headers: authHeaders() });
-  return handleResponse<InventoryItem[]>(res);
+  return offlineAwareGet<InventoryItem[]>(`${API_BASE}/inventory`, { headers: authHeaders() });
 }
 
 export async function fetchInventoryAlerts(): Promise<InventoryItem[]> {
@@ -415,12 +437,11 @@ export async function addToInventory(data: {
   maxStock?: number | null;
   notes?: string;
 }): Promise<InventoryItem> {
-  const res = await fetch(`${API_BASE}/inventory`, {
+  return offlineAwareWrite<InventoryItem>(`${API_BASE}/inventory`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<InventoryItem>(res);
 }
 
 export async function updateInventoryItem(id: number, data: Partial<{
@@ -430,34 +451,26 @@ export async function updateInventoryItem(id: number, data: Partial<{
   unit: string;
   notes: string;
 }>): Promise<InventoryItem> {
-  const res = await fetch(`${API_BASE}/inventory/${id}`, {
+  return offlineAwareWrite<InventoryItem>(`${API_BASE}/inventory/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<InventoryItem>(res);
 }
 
 export async function restockInventoryItem(id: number, quantity: number): Promise<InventoryItem> {
-  const res = await fetch(`${API_BASE}/inventory/${id}/restock`, {
+  return offlineAwareWrite<InventoryItem>(`${API_BASE}/inventory/${id}/restock`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify({ quantity }),
   });
-  return handleResponse<InventoryItem>(res);
 }
 
 export async function deleteInventoryItem(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/inventory/${id}`, {
+  return offlineAwareWrite<void>(`${API_BASE}/inventory/${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  if (res.status === 401) {
-    removeToken();
-    window.location.href = '/login';
-    throw new Error('Non authentifié');
-  }
-  if (!res.ok) throw new Error('Erreur suppression inventaire');
 }
 
 // --- Waste ---

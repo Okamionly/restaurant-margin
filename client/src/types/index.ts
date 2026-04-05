@@ -37,6 +37,7 @@ export interface Supplier {
   delivery: boolean;
   minOrder: string | null;
   paymentTerms: string | null;
+  whatsappPhone: string | null;
   createdAt: string;
   updatedAt: string;
   _count?: { ingredients: number };

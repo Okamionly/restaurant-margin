@@ -5,6 +5,7 @@ import {
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown, ShoppingBag,
   ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
   Star, Clock, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers, TrendingUp,
+  MessageCircle,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
@@ -45,6 +46,7 @@ interface SupplierFormData {
   contactName: string;
   phone: string;
   email: string;
+  whatsappPhone: string;
   address: string;
   postalCode: string;
   city: string;
@@ -64,6 +66,7 @@ const emptyForm: SupplierFormData = {
   contactName: '',
   phone: '',
   email: '',
+  whatsappPhone: '',
   address: '',
   postalCode: '',
   city: '',
@@ -134,6 +137,7 @@ function supplierToForm(s: Supplier): SupplierFormData {
     contactName: s.contactName || '',
     phone: s.phone || '',
     email: s.email || '',
+    whatsappPhone: s.whatsappPhone || '',
     address: s.address || '',
     postalCode: s.postalCode || '',
     city: s.city || '',
@@ -360,6 +364,7 @@ export default function Suppliers() {
         contactName: form.contactName || null,
         phone: form.phone || null,
         email: form.email || null,
+        whatsappPhone: form.whatsappPhone || null,
         address: form.address || null,
         postalCode: form.postalCode || null,
         city: form.city || null,
@@ -1118,6 +1123,24 @@ export default function Suppliers() {
                         </div>
                       )}
                     </div>
+
+                    {/* WhatsApp quick action */}
+                    <button
+                      onClick={() => {
+                        const phone = detailSupplier.whatsappPhone || detailSupplier.phone;
+                        const cleanPhone = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                        const message = encodeURIComponent(`Bonjour ${detailSupplier.name},\n\n`);
+                        if (cleanPhone) {
+                          window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+                        } else {
+                          window.open(`https://web.whatsapp.com/send?text=${message}`, '_blank');
+                        }
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-lg text-sm font-medium transition w-fit"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      WhatsApp
+                    </button>
 
                     {/* Categories */}
                     {detailSupplier.categories.length > 0 && (
@@ -1914,6 +1937,24 @@ export default function Suppliers() {
                 className="input w-full"
               />
             </div>
+          </div>
+
+          {/* WhatsApp Phone */}
+          <div>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">
+              <span className="flex items-center gap-1.5">
+                <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
+                {t('suppliers.whatsappPhone')}
+              </span>
+            </label>
+            <input
+              type="tel"
+              value={form.whatsappPhone}
+              onChange={(e) => setField('whatsappPhone', e.target.value)}
+              className="input w-full"
+              placeholder="+33612345678"
+            />
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Format international : +33612345678</p>
           </div>
 
           {/* Address */}

@@ -8,8 +8,9 @@ import ChatbotAssistant from './components/ChatbotAssistant';
 import KitchenTimer from './components/KitchenTimer';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
-// import CommandPalette from './components/CommandPalette';
-// import AlertsBell from './components/AlertsBell';
+import CommandPalette from './components/CommandPalette';
+import AlertsBell from './components/AlertsBell';
+import ShortcutsModal from './components/ShortcutsModal';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
@@ -525,6 +526,21 @@ function AppLayout() {
     };
   }, [showNotifications, stockAlerts.length]);
 
+  // "?" key opens shortcuts modal (only when no input is focused)
+  useEffect(() => {
+    function handleShortcutKey(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if ((e.target as HTMLElement)?.isContentEditable) return;
+      if (e.key === '?') {
+        e.preventDefault();
+        setShowShortcutsModal(prev => !prev);
+      }
+    }
+    window.addEventListener('keydown', handleShortcutKey);
+    return () => window.removeEventListener('keydown', handleShortcutKey);
+  }, []);
+
   // Notification bell component (reusable for mobile & desktop)
   const notificationBell = (
     <div ref={notifRef} className="relative">
@@ -715,7 +731,7 @@ function AppLayout() {
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] ${collapsed ? 'justify-center px-2' : ''}`}>
         <ChefHat className="w-8 h-8 text-[#111111] dark:text-white flex-shrink-0" />
         {!collapsed && <span className="text-lg font-bold text-[#111111] dark:text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
-        {/* AlertsBell disabled - component not yet created */}
+        <AlertsBell />
         {!collapsed && notificationBell}
       </div>
 
@@ -864,7 +880,7 @@ function AppLayout() {
           </div>
           <div className="flex items-center gap-1">
               <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
-              {/* <AlertsBell /> */}
+              <AlertsBell />
               {notificationBell}
             </div>
         </header>
@@ -1006,8 +1022,9 @@ function AppLayout() {
       </div>
 
       {/* Command Palette (Ctrl+K) & Global Search (Ctrl+Shift+K) */}
-      {/* <CommandPalette /> */}
+      <CommandPalette />
       <GlobalSearch />
+      <ShortcutsModal open={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
       <ChatbotAssistant />
       {/* Kitchen Timer - floating bottom-left */}
       <KitchenTimer />

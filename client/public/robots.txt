@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /dashboard
+Disallow: /recipes
 Disallow: /ingredients
 Disallow: /recettes
 Disallow: /planning

@@ -1113,6 +1113,25 @@ export default function Landing() {
         </div>
       )}
 
+      {/* ═══════════════════ JSON-LD FAQPage Schema ═══════════════════ */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqItems.map((item) => ({
+              '@type': 'Question',
+              name: item.q,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.a,
+              },
+            })),
+          }),
+        }}
+      />
+
     </div>
   );
 }

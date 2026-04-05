@@ -2159,6 +2159,333 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* ═══���══════════════════════════════════════════════════════════════ */}
+      {/* TAB: P&L (Profit & Loss)                                         */}
+      {/* ══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'pnl' && (
+        <div className="space-y-6">
+          {/* Period Selector */}
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-3">
+              <ClipboardList className="w-6 h-6 text-[#111111] dark:text-white" />
+              <h2 className="text-xl font-bold text-[#111111] dark:text-white">Compte de Resultat</h2>
+            </div>
+            <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-1">
+              {([['week', 'Semaine'], ['month', 'Mois'], ['year', 'Annee']] as ['week' | 'month' | 'year', string][]).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setPnlPeriod(key)}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                    pnlPeriod === key
+                      ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {pnlLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-8 h-8 border-2 border-[#111111] dark:border-white border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : !pnlData || pnlData.revenue === 0 ? (
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-12 text-center">
+              <ClipboardList className="w-12 h-12 text-[#9CA3AF] mx-auto mb-4" />
+              <p className="text-[#9CA3AF] dark:text-[#737373] text-lg">Ajoutez des recettes pour voir votre P&L</p>
+            </div>
+          ) : (
+            <>
+              {/* Revenue Sparkline + Key Figure */}
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+                <div className="flex items-center justify-between mb-1">
+                  <div>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-medium">Chiffre d'affaires</p>
+                    <div className="flex items-baseline gap-3 mt-1">
+                      <span className="text-3xl font-bold text-[#111111] dark:text-white">
+                        {pnlData.revenue.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                      </span>
+                      {pnlData.trend.revenueChange !== 0 && (
+                        <span className={`inline-flex items-center gap-1 text-sm font-semibold px-2 py-0.5 rounded-full ${
+                          pnlData.trend.revenueChange > 0
+                            ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
+                            : 'bg-red-50 dark:bg-red-900/20 text-red-500'
+                        }`}>
+                          {pnlData.trend.revenueChange > 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+                          {pnlData.trend.revenueChange > 0 ? '+' : ''}{pnlData.trend.revenueChange}%
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">vs periode precedente</p>
+                  </div>
+                </div>
+                <div className="mt-3 -mx-2">
+                  <ResponsiveContainer width="100%" height={80}>
+                    <AreaChart data={pnlData.dailyBreakdown}>
+                      <defs>
+                        <linearGradient id="pnlRevenueGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#111111" stopOpacity={0.15} />
+                          <stop offset="95%" stopColor="#111111" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <Area type="monotone" dataKey="revenue" stroke="#111111" strokeWidth={2} fill="url(#pnlRevenueGrad)" dot={false} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* P&L Lines */}
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+                <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <h3 className="text-base font-semibold text-[#111111] dark:text-white">Detail du compte de resultat</h3>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Estimation basee sur {couverts} couverts/service, ticket moyen {avgPricePerCouvert} EUR</p>
+                </div>
+
+                <div className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+                  {/* Revenue */}
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 rounded-full bg-[#111111] dark:bg-white" />
+                      <div>
+                        <p className="text-sm font-semibold text-[#111111] dark:text-white">Chiffre d'affaires</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{pnlData.daysInPeriod} jours</p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-[#111111] dark:text-white font-mono">
+                      {pnlData.revenue.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                    </span>
+                  </div>
+
+                  {/* Food Cost */}
+                  <div className="flex items-center justify-between px-5 py-4 bg-red-50/30 dark:bg-red-900/5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 rounded-full bg-red-500" />
+                      <div>
+                        <p className="text-sm font-semibold text-red-500">Cout matiere</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{pnlData.foodCostPercent}% du CA</p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-red-500 font-mono">
+                      - {pnlData.foodCost.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                    </span>
+                  </div>
+
+                  {/* Gross Margin */}
+                  <div className="flex items-center justify-between px-5 py-4 bg-[#FAFAFA] dark:bg-[#171717]/30">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 rounded-full bg-emerald-500" />
+                      <div>
+                        <p className="text-sm font-bold text-[#111111] dark:text-white">= Marge brute</p>
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{pnlData.grossMarginPercent}% du CA</p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-emerald-500 font-mono">
+                      {pnlData.grossMargin.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                    </span>
+                  </div>
+
+                  {/* Labor Cost */}
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 rounded-full bg-red-400" />
+                      <div>
+                        <p className="text-sm font-semibold text-red-500">Cout main d'oeuvre</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{pnlData.laborCostPercent}% du CA</p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-red-500 font-mono">
+                      - {pnlData.laborCost.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                    </span>
+                  </div>
+
+                  {/* Fixed Costs */}
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-8 rounded-full bg-red-300" />
+                      <div>
+                        <p className="text-sm font-semibold text-red-500">Charges fixes estimees</p>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">~15% du CA (loyer, assurances, energie)</p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-red-500 font-mono">
+                      - {pnlData.fixedCosts.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                    </span>
+                  </div>
+
+                  {/* Net Result */}
+                  <div className={`flex items-center justify-between px-5 py-5 ${
+                    pnlData.netResult >= 0
+                      ? 'bg-emerald-50 dark:bg-emerald-900/10'
+                      : 'bg-red-50 dark:bg-red-900/10'
+                  }`}>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-10 rounded-full ${pnlData.netResult >= 0 ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                      <div>
+                        <p className="text-base font-bold text-[#111111] dark:text-white">= Resultat net</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className={`text-xs font-semibold ${pnlData.netResult >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}`}>
+                            {pnlData.netMarginPercent}% du CA
+                          </span>
+                          {pnlData.trend.netResultChange !== 0 && (
+                            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold px-1.5 py-0.5 rounded-full ${
+                              pnlData.trend.netResultChange > 0
+                                ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                                : 'bg-red-100 dark:bg-red-900/30 text-red-500'
+                            }`}>
+                              {pnlData.trend.netResultChange > 0 ? '+' : ''}{pnlData.trend.netResultChange}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <span className={`text-2xl font-bold font-mono ${pnlData.netResult >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                      {pnlData.netResult >= 0 ? '+' : ''}{pnlData.netResult.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Category Breakdown */}
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <BarChart3 className="w-5 h-5 text-[#111111] dark:text-white" />
+                  <h3 className="text-base font-semibold text-[#111111] dark:text-white">Ventilation par categorie</h3>
+                </div>
+                <div className="space-y-3">
+                  {pnlData.categoryBreakdown.map((cat: any) => {
+                    const maxRevenue = Math.max(...pnlData.categoryBreakdown.map((c: any) => c.revenue));
+                    const barWidth = maxRevenue > 0 ? (cat.revenue / maxRevenue) * 100 : 0;
+                    return (
+                      <div key={cat.name} className="group">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-[#111111] dark:text-white">{cat.name}</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.recipeCount} recettes</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Marge {cat.margin}%</span>
+                            <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">
+                              {cat.revenue.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} EUR
+                            </span>
+                          </div>
+                        </div>
+                        <div className="h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                          <div className="h-full rounded-full relative" style={{ width: `${barWidth}%` }}>
+                            <div
+                              className="absolute inset-0 rounded-full bg-[#111111] dark:bg-white"
+                              style={{ width: `${cat.revenue > 0 ? 100 - (cat.foodCost / cat.revenue) * 100 : 0}%` }}
+                            />
+                            <div
+                              className="absolute inset-0 rounded-full bg-red-400/40 dark:bg-red-400/30"
+                              style={{ left: `${cat.revenue > 0 ? 100 - (cat.foodCost / cat.revenue) * 100 : 0}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center gap-4 mt-4 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-[#111111] dark:bg-white" />
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Marge</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-400/40 dark:bg-red-400/30" />
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Cout matiere</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Revenue vs Costs Chart */}
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <TrendingUp className="w-5 h-5 text-[#111111] dark:text-white" />
+                  <h3 className="text-base font-semibold text-[#111111] dark:text-white">Evolution CA vs Couts</h3>
+                </div>
+                <ResponsiveContainer width="100%" height={260}>
+                  <AreaChart data={pnlData.dailyBreakdown} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
+                    <defs>
+                      <linearGradient id="pnlRevArea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#111111" stopOpacity={0.1} />
+                        <stop offset="95%" stopColor="#111111" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="pnlCostArea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.1} />
+                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" className="opacity-20" />
+                    <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#9CA3AF' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        return (
+                          <div className="bg-white dark:bg-[#0A0A0A] shadow-xl rounded-lg p-3 border border-[#E5E7EB] dark:border-[#1A1A1A] text-sm">
+                            <p className="font-semibold text-[#111111] dark:text-white mb-1.5">{label}</p>
+                            {payload.map((p: any, i: number) => (
+                              <div key={i} className="flex items-center gap-2 mt-0.5">
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+                                <span className="text-[#9CA3AF]">{p.name} :</span>
+                                <span className="font-semibold ml-auto" style={{ color: p.color }}>{p.value?.toLocaleString('fr-FR')} EUR</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      }}
+                    />
+                    <Area type="monotone" dataKey="revenue" name="CA" stroke="#111111" strokeWidth={2} fill="url(#pnlRevArea)" />
+                    <Area type="monotone" dataKey="cost" name="Couts" stroke="#ef4444" strokeWidth={2} fill="url(#pnlCostArea)" />
+                    <Line type="monotone" dataKey="profit" name="Profit" stroke="#10b981" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Summary Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Food Cost %</p>
+                  <p className="text-2xl font-bold text-red-500 font-mono">{pnlData.foodCostPercent}%</p>
+                  <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
+                    <div className="h-full bg-red-500 rounded-full" style={{ width: `${Math.min(pnlData.foodCostPercent * 2.5, 100)}%` }} />
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Labor Cost %</p>
+                  <p className="text-2xl font-bold text-red-500 font-mono">{pnlData.laborCostPercent}%</p>
+                  <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
+                    <div className="h-full bg-red-400 rounded-full" style={{ width: `${Math.min(pnlData.laborCostPercent * 2.5, 100)}%` }} />
+                  </div>
+                </div>
+                <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Marge brute %</p>
+                  <p className="text-2xl font-bold text-emerald-500 font-mono">{pnlData.grossMarginPercent}%</p>
+                  <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
+                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(pnlData.grossMarginPercent, 100)}%` }} />
+                  </div>
+                </div>
+                <div className={`rounded-xl border p-4 ${
+                  pnlData.netResult >= 0
+                    ? 'bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/50'
+                    : 'bg-red-50/50 dark:bg-red-900/10 border-red-200 dark:border-red-800/50'
+                }`}>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Marge nette %</p>
+                  <p className={`text-2xl font-bold font-mono ${pnlData.netResult >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                    {pnlData.netMarginPercent}%
+                  </p>
+                  <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
+                    <div className={`h-full rounded-full ${pnlData.netResult >= 0 ? 'bg-emerald-500' : 'bg-red-500'}`} style={{ width: `${Math.min(Math.abs(pnlData.netMarginPercent), 100)}%` }} />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

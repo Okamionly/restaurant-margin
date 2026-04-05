@@ -1549,6 +1549,8 @@
   "dashboard.tabOverview": "Overview",
   "dashboard.tabOverviewDesc": "Global summary and categories",
   "dashboard.tabProfitability": "Profitability",
+  "dashboard.tabPnl": "P&L",
+  "dashboard.tabPnlDesc": "Estimated income statement",
   "dashboard.tabProfitabilityDesc": "Projections and thresholds",
   "dashboard.title": "Dashboard",
   "dashboard.top10ByMargin": "Top 10 by margin",

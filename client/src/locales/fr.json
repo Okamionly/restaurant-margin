@@ -1549,6 +1549,8 @@
   "dashboard.tabOverview": "Vue d'ensemble",
   "dashboard.tabOverviewDesc": "Résumé global et catégories",
   "dashboard.tabProfitability": "Rentabilité",
+  "dashboard.tabPnl": "P&L",
+  "dashboard.tabPnlDesc": "Compte de résultat estimé",
   "dashboard.tabProfitabilityDesc": "Projections et seuils",
   "dashboard.title": "Tableau de bord",
   "dashboard.top10ByMargin": "Top 10 par marge",

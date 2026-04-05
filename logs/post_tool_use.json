@@ -918,5 +918,25 @@
       "numLines": 1
     },
     "tool_use_id": "toolu_01Fvazmu68JoWWC3eTt4anmZ"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"/c/Users/mrgue/CLAUDE CODE/restaurant-margin\" && git add -A && git commit -m \"$(cat <<'EOF'\nfeat: Dashboard P&L temps r\u00c3\u00a9el \u00e2\u20ac\u201d onglet Profit & Loss complet\n\n- Endpoint GET /api/analytics/pnl avec revenue, food cost, labor, marge\n- Onglet P&L dans Dashboard : sparklines, breakdown cat\u00c3\u00a9gories, comparaison\n- S\u00c3\u00a9lecteur p\u00c3\u00a9riode (Semaine/Mois/Ann\u00c3\u00a9e)\n- Theme monochrome W&B appliqu\u00c3\u00a9\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nEOF\n)\" && git push",
+      "description": "Push P&L dashboard"
+    },
+    "tool_response": {
+      "stdout": "[main 48ea5d6] feat: Dashboard P&L temps r\u00c3\u00a9el \u00e2\u20ac\u201d onglet Profit & Loss complet\n 3 files changed, 111 insertions(+)\nTo https://github.com/Okamionly/restaurant-margin.git\n   824641b..48ea5d6  main -> main",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_01KsRMn6QzNNaER1F23fw7Bp"
   }
 ]

@@ -100,6 +100,73 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 
 app.use(express.json());
 
+// ── HSTS Header (enforce HTTPS) ──
+app.use((_req, res, next) => {
+  res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  next();
+});
+
+// ── CSRF Protection (Origin/Referer check for state-changing requests) ──
+const CSRF_ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  'https://www.restaumargin.fr',
+  'https://restaumargin.fr',
+  'https://restaumargin.vercel.app',
+];
+const CSRF_SKIP_PATHS = ['/api/stripe/webhook', '/api/inbound/email'];
+
+app.use((req, res, next) => {
+  // Only check state-changing methods
+  if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) return next();
+
+  // Skip CSRF for webhook/inbound endpoints (they use their own auth)
+  if (CSRF_SKIP_PATHS.some((p) => req.path.startsWith(p))) return next();
+
+  // Skip CSRF for requests authenticated via ACTIVATION_SECRET (API key auth)
+  if (req.body?.secret || req.query?.secret) return next();
+
+  const origin = req.headers.origin || '';
+  const referer = req.headers.referer || '';
+
+  // Allow if Origin header matches
+  if (origin && CSRF_ALLOWED_ORIGINS.some((o) => origin === o)) return next();
+
+  // Fallback: check Referer header
+  if (referer) {
+    try {
+      const refOrigin = new URL(referer).origin;
+      if (CSRF_ALLOWED_ORIGINS.some((o) => refOrigin === o)) return next();
+    } catch {
+      // Invalid referer URL, fall through to block
+    }
+  }
+
+  // Allow requests with no Origin AND no Referer (same-origin non-browser clients, curl, etc.)
+  // Browsers always send Origin on cross-origin requests, so missing = same-origin or non-browser
+  if (!origin && !referer) return next();
+
+  return res.status(403).json({ error: 'CSRF protection: origin not allowed' });
+});
+
+// ── Rate Limiting: Password Reset (3 per email per hour) ──
+const passwordResetLimits = new Map<string, { count: number; resetAt: number }>();
+app.use('/api/auth/forgot-password', (req, _res, next) => {
+  if (req.method !== 'POST') return next();
+  const email = (req.body?.email || '').toLowerCase().trim();
+  if (!email) return next();
+  const now = Date.now();
+  const entry = passwordResetLimits.get(email);
+  if (entry && now < entry.resetAt) {
+    if (entry.count >= 3) {
+      return _res.status(429).json({ error: 'Trop de demandes de réinitialisation. Réessayez dans 1 heure.' });
+    }
+    entry.count++;
+  } else {
+    passwordResetLimits.set(email, { count: 1, resetAt: now + 3600000 });
+  }
+  next();
+});
+
 // --- Health Check Endpoint (monitoring) ---
 app.get('/api/health', async (_req, res) => {
   const start = Date.now();
@@ -319,12 +386,24 @@ app.delete('/api/restaurants/:id', authMiddleware, async (req: any, res) => {
 
 // ============ INGREDIENTS ============
 app.get('/api/ingredients', authWithRestaurant, async (req: any, res) => {
-  try { res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { name: 'asc' }, include: { supplierRef: { select: { id: true, name: true } } } })); } catch { res.status(500).json({ error: 'Erreur' }); }
+  try {
+    const { limit, offset } = req.query;
+    if (limit !== undefined || offset !== undefined) {
+      const take = Math.min(parseInt(limit) || 100, 500);
+      const skip = parseInt(offset) || 0;
+      const [data, total] = await Promise.all([
+        prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, orderBy: { name: 'asc' }, include: { supplierRef: { select: { id: true, name: true } } }, take, skip }),
+        prisma.ingredient.count({ where: { restaurantId: req.restaurantId, deletedAt: null } }),
+      ]);
+      return res.json({ data, total, limit: take, offset: skip });
+    }
+    res.json(await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, orderBy: { name: 'asc' }, include: { supplierRef: { select: { id: true, name: true } } } }));
+  } catch { res.status(500).json({ error: 'Erreur' }); }
 });
 
 app.get('/api/ingredients/usage', authWithRestaurant, async (req: any, res) => {
   try {
-    const ings = await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { name: 'asc' }, include: { _count: { select: { recipes: true } } } });
+    const ings = await prisma.ingredient.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, orderBy: { name: 'asc' }, include: { _count: { select: { recipes: true } } } });
     res.json(ings.map((i: any) => ({ id: i.id, name: i.name, category: i.category, usageCount: i._count.recipes })));
   } catch { res.status(500).json({ error: 'Erreur' }); }
 });
@@ -334,6 +413,11 @@ app.post('/api/ingredients', authWithRestaurant, async (req: any, res) => {
     const { name, unit, pricePerUnit, supplier, supplierId, category, allergens } = req.body;
     if (!name?.trim() || !unit?.trim() || !category?.trim()) return res.status(400).json({ error: 'Champs requis' });
     const p = parseFloat(pricePerUnit); if (isNaN(p) || p <= 0) return res.status(400).json({ error: 'Prix invalide' });
+    // FIX 3: Check for duplicate ingredient (case-insensitive) before creating
+    const duplicate = await prisma.ingredient.findFirst({
+      where: { restaurantId: req.restaurantId, deletedAt: null, name: { equals: name.trim(), mode: 'insensitive' } },
+    });
+    if (duplicate) return res.status(409).json({ error: 'Un ingrédient avec ce nom existe déjà', existing: duplicate });
     const ing = await prisma.ingredient.create({ data: { name: name.trim(), unit: unit.trim(), pricePerUnit: p, supplier: supplier || null, supplierId: supplierId || null, category: category.trim(), allergens: Array.isArray(allergens) ? allergens : [], restaurantId: req.restaurantId } });
     res.status(201).json(ing);
   } catch { res.status(500).json({ error: 'Erreur création' }); }
@@ -344,32 +428,66 @@ app.put('/api/ingredients/:id', authWithRestaurant, async (req: any, res) => {
     const { name, unit, pricePerUnit, supplier, supplierId, category, allergens } = req.body;
     if (!name?.trim() || !unit?.trim() || !category?.trim()) return res.status(400).json({ error: 'Champs requis' });
     const p = parseFloat(pricePerUnit); if (isNaN(p) || p <= 0) return res.status(400).json({ error: 'Prix invalide' });
-    const existing = await prisma.ingredient.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
+    const existing = await prisma.ingredient.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: null } });
     if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé' });
     const ing = await prisma.ingredient.update({ where: { id: parseInt(req.params.id) }, data: { name: name.trim(), unit: unit.trim(), pricePerUnit: p, supplier: supplier || null, supplierId: supplierId || null, category: category.trim(), allergens: Array.isArray(allergens) ? allergens : [] } });
+    // FIX 2: Auto-recalculate food cost for affected recipes when price changes
+    if (existing.pricePerUnit !== p) {
+      try {
+        const affectedRecipes = await prisma.recipeIngredient.findMany({ where: { ingredientId: ing.id }, select: { recipeId: true } });
+        const recipeIds = [...new Set(affectedRecipes.map(ar => ar.recipeId))];
+        for (const recipeId of recipeIds) {
+          const recipe = await prisma.recipe.findUnique({ where: { id: recipeId }, include: recipeInclude });
+          if (recipe && !recipe.deletedAt) {
+            const margin = calculateMargin(recipe);
+            // Touch updatedAt so frontend knows margins changed
+            await prisma.recipe.update({ where: { id: recipeId }, data: { updatedAt: new Date() } });
+          }
+        }
+      } catch (e) { console.error('Auto-recalc error:', e); }
+    }
     res.json(ing);
   } catch { res.status(500).json({ error: 'Erreur mise à jour' }); }
 });
 
 app.delete('/api/ingredients/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    const existing = await prisma.ingredient.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
+    const existing = await prisma.ingredient.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: null } });
     if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé' });
-    await prisma.ingredient.delete({ where: { id: parseInt(req.params.id) } }); res.status(204).send();
+    await prisma.ingredient.update({ where: { id: parseInt(req.params.id) }, data: { deletedAt: new Date() } }); res.status(204).send();
   } catch { res.status(500).json({ error: 'Erreur suppression' }); }
+});
+
+app.put('/api/ingredients/:id/restore', authWithRestaurant, async (req: any, res) => {
+  try {
+    const existing = await prisma.ingredient.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: { not: null } } });
+    if (!existing) return res.status(404).json({ error: 'Ingrédient non trouvé ou non supprimé' });
+    const restored = await prisma.ingredient.update({ where: { id: parseInt(req.params.id) }, data: { deletedAt: null } });
+    res.json(restored);
+  } catch { res.status(500).json({ error: 'Erreur restauration' }); }
 });
 
 // ============ RECIPES ============
 app.get('/api/recipes', authWithRestaurant, async (req: any, res) => {
   try {
-    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: recipeInclude, orderBy: { name: 'asc' } });
+    const { limit, offset } = req.query;
+    if (limit !== undefined || offset !== undefined) {
+      const take = Math.min(parseInt(limit) || 100, 500);
+      const skip = parseInt(offset) || 0;
+      const [recipes, total] = await Promise.all([
+        prisma.recipe.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, include: recipeInclude, orderBy: { name: 'asc' }, take, skip }),
+        prisma.recipe.count({ where: { restaurantId: req.restaurantId, deletedAt: null } }),
+      ]);
+      return res.json({ data: recipes.map(r => formatRecipe(r)), total, limit: take, offset: skip });
+    }
+    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, include: recipeInclude, orderBy: { name: 'asc' } });
     res.json(recipes.map(r => formatRecipe(r)));
   } catch { res.status(500).json({ error: 'Erreur' }); }
 });
 
 app.get('/api/recipes/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    const recipe = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId }, include: recipeInclude });
+    const recipe = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: null }, include: recipeInclude });
     if (!recipe) return res.status(404).json({ error: 'Non trouvée' });
     res.json(formatRecipe(recipe));
   } catch { res.status(500).json({ error: 'Erreur' }); }
@@ -396,18 +514,20 @@ app.put('/api/recipes/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const { name, category, sellingPrice, nbPortions, description, prepTimeMinutes, cookTimeMinutes, laborCostPerHour, ingredients } = req.body;
     const recipeId = parseInt(req.params.id);
-    const existing = await prisma.recipe.findFirst({ where: { id: recipeId, restaurantId: req.restaurantId } });
+    const existing = await prisma.recipe.findFirst({ where: { id: recipeId, restaurantId: req.restaurantId, deletedAt: null } });
     if (!existing) return res.status(404).json({ error: 'Non trouvée' });
-    await prisma.recipe.update({ where: { id: recipeId }, data: {
-      name: name.trim(), category: category || '', sellingPrice: parseFloat(sellingPrice), nbPortions: parseInt(nbPortions) || 1,
-      description: description || null, prepTimeMinutes: prepTimeMinutes != null ? parseInt(prepTimeMinutes) : null,
-      cookTimeMinutes: cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null, laborCostPerHour: laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0,
-    }});
-    if (ingredients) {
-      await prisma.recipeIngredient.deleteMany({ where: { recipeId } });
-      await prisma.recipeIngredient.createMany({ data: ingredients.map((i: any) => ({ recipeId, ingredientId: i.ingredientId, quantity: i.quantity, wastePercent: i.wastePercent ?? 0 })) });
-    }
-    const updated = await prisma.recipe.findUnique({ where: { id: recipeId }, include: recipeInclude });
+    const updated = await prisma.$transaction(async (tx) => {
+      await tx.recipe.update({ where: { id: recipeId }, data: {
+        name: name.trim(), category: category || '', sellingPrice: parseFloat(sellingPrice), nbPortions: parseInt(nbPortions) || 1,
+        description: description || null, prepTimeMinutes: prepTimeMinutes != null ? parseInt(prepTimeMinutes) : null,
+        cookTimeMinutes: cookTimeMinutes != null ? parseInt(cookTimeMinutes) : null, laborCostPerHour: laborCostPerHour != null ? parseFloat(laborCostPerHour) : 0,
+      }});
+      if (ingredients) {
+        await tx.recipeIngredient.deleteMany({ where: { recipeId } });
+        await tx.recipeIngredient.createMany({ data: ingredients.map((i: any) => ({ recipeId, ingredientId: i.ingredientId, quantity: i.quantity, wastePercent: i.wastePercent ?? 0 })) });
+      }
+      return tx.recipe.findUnique({ where: { id: recipeId }, include: recipeInclude });
+    });
     if (!updated) return res.status(404).json({ error: 'Non trouvée' });
     res.json(formatRecipe(updated));
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour' }); }
@@ -415,7 +535,7 @@ app.put('/api/recipes/:id', authWithRestaurant, async (req: any, res) => {
 
 app.post('/api/recipes/:id/clone', authWithRestaurant, async (req: any, res) => {
   try {
-    const source = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId }, include: recipeInclude });
+    const source = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: null }, include: recipeInclude });
     if (!source) return res.status(404).json({ error: 'Non trouvée' });
     const cloned = await prisma.recipe.create({
       data: {
@@ -431,26 +551,46 @@ app.post('/api/recipes/:id/clone', authWithRestaurant, async (req: any, res) => 
 
 app.delete('/api/recipes/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    const existing = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId } });
+    const existing = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: null } });
     if (!existing) return res.status(404).json({ error: 'Non trouvée' });
-    await prisma.recipe.delete({ where: { id: parseInt(req.params.id) } });
+    await prisma.recipe.update({ where: { id: parseInt(req.params.id) }, data: { deletedAt: new Date() } });
     res.status(204).send();
   } catch { res.status(500).json({ error: 'Erreur suppression' }); }
+});
+
+app.put('/api/recipes/:id/restore', authWithRestaurant, async (req: any, res) => {
+  try {
+    const existing = await prisma.recipe.findFirst({ where: { id: parseInt(req.params.id), restaurantId: req.restaurantId, deletedAt: { not: null } } });
+    if (!existing) return res.status(404).json({ error: 'Recette non trouvée ou non supprimée' });
+    const restored = await prisma.recipe.update({ where: { id: parseInt(req.params.id) }, data: { deletedAt: null }, include: recipeInclude });
+    res.json(formatRecipe(restored));
+  } catch { res.status(500).json({ error: 'Erreur restauration' }); }
 });
 
 // ============ SUPPLIERS ============
 app.get('/api/suppliers', authWithRestaurant, async (req: any, res) => {
   try {
+    const { limit, offset } = req.query;
+    const includeOpts = {
+      _count: { select: { ingredients: true } },
+      ingredients: {
+        orderBy: { name: 'asc' as const },
+        select: { id: true, name: true, unit: true, pricePerUnit: true, category: true },
+      },
+    };
+    if (limit !== undefined || offset !== undefined) {
+      const take = Math.min(parseInt(limit) || 100, 500);
+      const skip = parseInt(offset) || 0;
+      const [data, total] = await Promise.all([
+        prisma.supplier.findMany({ where: { restaurantId: req.restaurantId }, orderBy: { name: 'asc' }, include: includeOpts, take, skip }),
+        prisma.supplier.count({ where: { restaurantId: req.restaurantId } }),
+      ]);
+      return res.json({ data, total, limit: take, offset: skip });
+    }
     const suppliers = await prisma.supplier.findMany({
       where: { restaurantId: req.restaurantId },
       orderBy: { name: 'asc' },
-      include: {
-        _count: { select: { ingredients: true } },
-        ingredients: {
-          orderBy: { name: 'asc' },
-          select: { id: true, name: true, unit: true, pricePerUnit: true, category: true },
-        },
-      },
+      include: includeOpts,
     });
     res.json(suppliers);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération fournisseurs' }); }
@@ -464,7 +604,7 @@ app.get('/api/suppliers/scores/all', authWithRestaurant, async (req: any, res) =
     });
 
     const allIngredients = await prisma.ingredient.findMany({
-      where: { restaurantId: req.restaurantId },
+      where: { restaurantId: req.restaurantId, deletedAt: null },
       select: { name: true, pricePerUnit: true, supplierId: true },
     });
     const totalUniqueIngredients = allIngredients.length;
@@ -622,7 +762,7 @@ app.get('/api/suppliers/:id/score', authWithRestaurant, async (req: any, res) =>
 
     // 2. Compétitivité prix — compare to average prices across all suppliers
     const allIngredients = await prisma.ingredient.findMany({
-      where: { restaurantId: req.restaurantId },
+      where: { restaurantId: req.restaurantId, deletedAt: null },
       select: { name: true, pricePerUnit: true, supplierId: true },
     });
     const avgPrices: Record<string, { total: number; count: number }> = {};
@@ -704,12 +844,23 @@ app.get('/api/suppliers/:id/score', authWithRestaurant, async (req: any, res) =>
 // ============ INVENTORY ============
 app.get('/api/inventory', authWithRestaurant, async (req: any, res) => {
   try {
+    const { limit, offset } = req.query;
+    if (limit !== undefined || offset !== undefined) {
+      const take = Math.min(parseInt(limit) || 100, 500);
+      const skip = parseInt(offset) || 0;
+      const [rawData, total] = await Promise.all([
+        prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true }, orderBy: { ingredient: { name: 'asc' } }, take, skip }),
+        prisma.inventoryItem.count({ where: { restaurantId: req.restaurantId } }),
+      ]);
+      const data = rawData.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minQuantity }));
+      return res.json({ data, total, limit: take, offset: skip });
+    }
     const items = await prisma.inventoryItem.findMany({
       where: { restaurantId: req.restaurantId },
       include: { ingredient: true },
       orderBy: { ingredient: { name: 'asc' } },
     });
-    res.json(items);
+    res.json(items.map((item: any) => ({ ...item, lowStock: item.currentStock < item.minQuantity })));
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération inventaire' }); }
 });
 
@@ -746,7 +897,7 @@ app.get('/api/inventory/value', authWithRestaurant, async (req: any, res) => {
 app.post('/api/inventory/suggest', authWithRestaurant, async (req: any, res) => {
   try {
     const ingredients = await prisma.ingredient.findMany({
-      where: { restaurantId: req.restaurantId, inventoryItem: null },
+      where: { restaurantId: req.restaurantId, deletedAt: null, inventoryItem: null },
       orderBy: { name: 'asc' },
     });
     res.json(ingredients);
@@ -757,7 +908,7 @@ app.post('/api/inventory', authWithRestaurant, async (req, res) => {
   try {
     const { ingredientId, currentStock, unit, minStock, maxStock, notes } = req.body;
     if (!ingredientId) return res.status(400).json({ error: 'ingredientId requis' });
-    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, restaurantId: req.restaurantId } });
+    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, restaurantId: req.restaurantId, deletedAt: null } });
     if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
     const item = await prisma.inventoryItem.create({
       data: { ingredientId, currentStock: currentStock || 0, unit: unit || ingredient.unit, minStock: minStock || 0, maxStock: maxStock || null, notes: notes || null, restaurantId: req.restaurantId },
@@ -773,11 +924,12 @@ app.post('/api/inventory', authWithRestaurant, async (req, res) => {
 app.put('/api/inventory/:id', authWithRestaurant, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { currentStock, minStock, maxStock, unit, notes } = req.body;
+    const { currentStock, minStock, maxStock, minQuantity, unit, notes } = req.body;
     const data: any = {};
     if (currentStock !== undefined) data.currentStock = parseFloat(currentStock);
     if (minStock !== undefined) data.minStock = parseFloat(minStock);
     if (maxStock !== undefined) data.maxStock = maxStock === null ? null : parseFloat(maxStock);
+    if (minQuantity !== undefined) data.minQuantity = parseFloat(minQuantity);
     if (unit !== undefined) data.unit = unit;
     if (notes !== undefined) data.notes = notes || null;
     const item = await prisma.inventoryItem.update({ where: { id }, data, include: { ingredient: true } });
@@ -872,7 +1024,7 @@ app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) =
     });
     // Fetch all recipes with their ingredients for impact calculation
     const recipes = await prisma.recipe.findMany({
-      where: { restaurantId: req.restaurantId },
+      where: { restaurantId: req.restaurantId, deletedAt: null },
       include: { ingredients: { include: { ingredient: true } } },
     });
     // Check dismissed alerts via NewsItem
@@ -1000,27 +1152,30 @@ app.post('/api/invoices/:id/apply', authWithRestaurant, async (req, res) => {
   try {
     const invoiceId = parseInt(req.params.id);
     const { matches } = req.body; // [{ itemId, ingredientId }]
-    let applied = 0;
-    for (const match of matches || []) {
-      const item = await prisma.invoiceItem.findUnique({ where: { id: match.itemId } });
-      if (!item || !item.unitPrice) continue;
-      // Update ingredient price
-      const ingredient = await prisma.ingredient.update({
-        where: { id: match.ingredientId },
-        data: { pricePerUnit: item.unitPrice },
-      });
-      // Record price history
-      await prisma.priceHistory.create({
-        data: { ingredientId: match.ingredientId, price: item.unitPrice, date: new Date().toISOString().slice(0, 10), source: 'invoice', restaurantId: (req as any).restaurantId },
-      });
-      // Mark item as matched by setting ingredientId
-      await prisma.invoiceItem.update({
-        where: { id: match.itemId },
-        data: { ingredientId: match.ingredientId },
-      });
-      applied++;
-    }
-    await prisma.invoice.update({ where: { id: invoiceId }, data: { status: 'processed' } });
+    const applied = await prisma.$transaction(async (tx) => {
+      let count = 0;
+      for (const match of matches || []) {
+        const item = await tx.invoiceItem.findUnique({ where: { id: match.itemId } });
+        if (!item || !item.unitPrice) continue;
+        // Update ingredient price
+        await tx.ingredient.update({
+          where: { id: match.ingredientId },
+          data: { pricePerUnit: item.unitPrice },
+        });
+        // Record price history
+        await tx.priceHistory.create({
+          data: { ingredientId: match.ingredientId, price: item.unitPrice, date: new Date().toISOString().slice(0, 10), source: 'invoice', restaurantId: (req as any).restaurantId },
+        });
+        // Mark item as matched by setting ingredientId
+        await tx.invoiceItem.update({
+          where: { id: match.itemId },
+          data: { ingredientId: match.ingredientId },
+        });
+        count++;
+      }
+      await tx.invoice.update({ where: { id: invoiceId }, data: { status: 'processed' } });
+      return count;
+    });
     res.json({ applied });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur application facture' }); }
 });
@@ -1133,7 +1288,7 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
     const since = new Date(Date.now() - days * 86400000);
 
     // Get all recipes with margins (scoped to restaurant)
-    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredients: { include: { ingredient: true } } } });
+    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, include: { ingredients: { include: { ingredient: true } } } });
 
     // Get sales data (scoped to restaurant)
     const sales = await prisma.menuSale.findMany({ where: { restaurantId: req.restaurantId, date: { gte: since.toISOString().slice(0, 10) } } });
@@ -1349,8 +1504,10 @@ app.put('/api/messages/conversations/:id/read', authWithRestaurant, async (req: 
 // ── Delete conversation ──
 app.delete('/api/messages/conversations/:id', authWithRestaurant, async (req: any, res) => {
   try {
-    await prisma.message.deleteMany({ where: { conversationId: req.params.id } });
-    await prisma.conversation.delete({ where: { id: req.params.id } });
+    await prisma.$transaction(async (tx) => {
+      await tx.message.deleteMany({ where: { conversationId: req.params.id } });
+      await tx.conversation.delete({ where: { id: req.params.id } });
+    });
     res.json({ success: true });
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur suppression' }); }
 });
@@ -1482,7 +1639,7 @@ app.get('/api/public/menu', async (req, res) => {
   try {
     const restaurantId = parseInt(req.query.restaurantId as string) || 1;
     const recipes = await prisma.recipe.findMany({
-      where: { restaurantId },
+      where: { restaurantId, deletedAt: null },
       include: { ingredients: { include: { ingredient: true } } },
     });
     res.json(recipes.map(r => ({
@@ -1497,7 +1654,7 @@ app.get('/api/public/menu', async (req, res) => {
 app.get('/api/alerts', authWithRestaurant, async (req: any, res) => {
   try {
     const inventory = await prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true } });
-    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredients: { include: { ingredient: true } } } });
+    const recipes = await prisma.recipe.findMany({ where: { restaurantId: req.restaurantId, deletedAt: null }, include: { ingredients: { include: { ingredient: true } } } });
 
     const alerts: { type: string; severity: string; title: string; detail: string }[] = [];
 
@@ -1577,14 +1734,16 @@ app.put('/api/devis/:id', authWithRestaurant, async (req: any, res) => {
     let totalTTC = existing.totalTTC;
 
     if (items) {
-      await prisma.devisItem.deleteMany({ where: { devisId: id } });
-      const devisItems = items.map((item: any) => ({
-        devisId: id, description: item.description || '', quantity: item.quantity || 1,
-        unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),
-      }));
-      await prisma.devisItem.createMany({ data: devisItems });
-      totalHT = devisItems.reduce((s: number, i: any) => s + i.total, 0);
-      totalTTC = totalHT * (1 + (tvaRate || existing.tvaRate) / 100);
+      await prisma.$transaction(async (tx) => {
+        await tx.devisItem.deleteMany({ where: { devisId: id } });
+        const devisItems = items.map((item: any) => ({
+          devisId: id, description: item.description || '', quantity: item.quantity || 1,
+          unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),
+        }));
+        await tx.devisItem.createMany({ data: devisItems });
+        totalHT = devisItems.reduce((s: number, i: any) => s + i.total, 0);
+        totalTTC = totalHT * (1 + (tvaRate || existing.tvaRate) / 100);
+      });
     }
 
     const devis = await prisma.devis.update({
@@ -1812,7 +1971,7 @@ app.post('/api/waste', authWithRestaurant, async (req: any, res) => {
     if (!ingredientId || quantity == null || !unit || !reason || !date) return res.status(400).json({ error: 'Champs requis : ingredientId, quantity, unit, reason, date' });
     const validReasons = ['expired', 'spoiled', 'overproduction', 'damaged', 'other'];
     if (!validReasons.includes(reason)) return res.status(400).json({ error: `Raison invalide. Valeurs acceptées : ${validReasons.join(', ')}` });
-    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId } });
+    const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId, deletedAt: null } });
     if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
     // Cost = quantity converted to bulk unit * pricePerUnit
     // The waste form sends quantity in `unit`, but price is always per bulk unit (kg/L).
@@ -2551,6 +2710,16 @@ app.delete('/api/seminaires/:id', authWithRestaurant, async (req: any, res) => {
 // ============ MARKETPLACE ============
 app.get('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {
   try {
+    const { limit, offset } = req.query;
+    if (limit !== undefined || offset !== undefined) {
+      const take = Math.min(parseInt(limit) || 100, 500);
+      const skip = parseInt(offset) || 0;
+      const [data, total] = await Promise.all([
+        prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' }, take, skip }),
+        prisma.marketplaceOrder.count({ where: { restaurantId: req.restaurantId } }),
+      ]);
+      return res.json({ data, total, limit: take, offset: skip });
+    }
     const orders = await prisma.marketplaceOrder.findMany({
       where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' },
     });
@@ -2637,8 +2806,8 @@ app.post('/api/news/generate', authWithRestaurant, async (req: any, res) => {
 
     // Build restaurant context
     const [ingredients, recipes, priceHist] = await Promise.all([
-      prisma.ingredient.findMany({ where: { restaurantId: rid }, orderBy: { pricePerUnit: 'desc' }, take: 30 }),
-      prisma.recipe.findMany({ where: { restaurantId: rid }, include: { ingredients: { include: { ingredient: true } } }, take: 20 }),
+      prisma.ingredient.findMany({ where: { restaurantId: rid, deletedAt: null }, orderBy: { pricePerUnit: 'desc' }, take: 30 }),
+      prisma.recipe.findMany({ where: { restaurantId: rid, deletedAt: null }, include: { ingredients: { include: { ingredient: true } } }, take: 20 }),
       prisma.priceHistory.findMany({ where: { restaurantId: rid }, orderBy: { date: 'desc' }, take: 50 }),
     ]);
 
@@ -2805,7 +2974,7 @@ app.post('/api/editorial-recipes/:id/add-to-mine', authWithRestaurant, async (re
     for (const ei of editorialIngredients) {
       // Check if ingredient already exists for this restaurant
       let existing = await prisma.ingredient.findFirst({
-        where: { name: ei.ingredient_name, restaurantId: req.restaurantId },
+        where: { name: ei.ingredient_name, restaurantId: req.restaurantId, deletedAt: null },
       });
       if (!existing) {
         existing = await prisma.ingredient.create({
@@ -2920,7 +3089,7 @@ app.get('/api/analytics/pnl', authWithRestaurant, async (req: any, res) => {
 
     // Fetch all recipes with ingredients
     const recipes = await prisma.recipe.findMany({
-      where: { restaurantId: req.restaurantId },
+      where: { restaurantId: req.restaurantId, deletedAt: null },
       include: recipeInclude,
       orderBy: { name: 'asc' },
     });

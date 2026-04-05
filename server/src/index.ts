@@ -33,7 +33,13 @@ import { authMiddleware } from './middleware/auth';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(helmet());
+app.use(helmet({
+  hsts: {
+    maxAge: 63072000, // 2 years in seconds
+    includeSubDomains: true,
+    preload: true,
+  },
+}));
 app.use(cors({
   origin: ALLOWED_ORIGINS,
   credentials: true,

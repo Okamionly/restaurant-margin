@@ -10,6 +10,7 @@ import authRoutes from './routes/auth';
 import aiRoutes from './routes/ai';
 import mercurialeRoutes from './routes/mercuriale';
 import exportRoutes from './routes/export';
+import { getUnitDivisor } from './utils/unitConversion';
 
 
 const app = express();
@@ -176,7 +177,8 @@ async function authWithRestaurant(req: any, res: any, next: any) {
 function calculateMargin(recipe: any) {
   const foodCost = recipe.ingredients.reduce((total: number, ri: any) => {
     const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-    return total + ri.quantity * ri.ingredient.pricePerUnit * wasteMultiplier;
+    const divisor = getUnitDivisor(ri.ingredient.unit);
+    return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
   }, 0);
   const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
   const prepTime = recipe.prepTimeMinutes || 0;
@@ -724,11 +726,11 @@ app.get('/api/inventory/alerts', authWithRestaurant, async (req: any, res) => {
 app.get('/api/inventory/value', authWithRestaurant, async (req: any, res) => {
   try {
     const items = await prisma.inventoryItem.findMany({ where: { restaurantId: req.restaurantId }, include: { ingredient: true } });
-    const totalValue = items.reduce((sum: number, item: any) => sum + item.currentStock * item.ingredient.pricePerUnit, 0);
+    const totalValue = items.reduce((sum: number, item: any) => sum + (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit, 0);
     const byCategory: Record<string, number> = {};
     for (const item of items) {
       const cat = (item as any).ingredient.category;
-      const val = item.currentStock * (item as any).ingredient.pricePerUnit;
+      const val = (item.currentStock / getUnitDivisor((item as any).ingredient.unit)) * (item as any).ingredient.pricePerUnit;
       byCategory[cat] = (byCategory[cat] || 0) + val;
     }
     res.json({
@@ -899,8 +901,9 @@ app.get('/api/price-history/alerts', authWithRestaurant, async (req: any, res) =
         const ri = r.ingredients.find(ri => ri.ingredientId === ingId);
         if (!ri) return null;
         const wasteMult = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-        const oldCost = ri.quantity * first.price * wasteMult;
-        const newCost = ri.quantity * last.price * wasteMult;
+        const divisor = getUnitDivisor(ri.ingredient.unit);
+        const oldCost = (ri.quantity / divisor) * first.price * wasteMult;
+        const newCost = (ri.quantity / divisor) * last.price * wasteMult;
         return { id: r.id, name: r.name, sellingPrice: r.sellingPrice, costImpact: Math.round((newCost - oldCost) * 100) / 100 };
       }).filter(Boolean);
       const alertKey = `price_alert_${ingId}`;
@@ -1128,7 +1131,8 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
     const engineering = recipes.map(recipe => {
       const foodCost = recipe.ingredients.reduce((total, ri) => {
         const wasteMultiplier = ri.wastePercent > 0 ? 1 / (1 - ri.wastePercent / 100) : 1;
-        return total + ri.quantity * ri.ingredient.pricePerUnit * wasteMultiplier;
+        const divisor = getUnitDivisor(ri.ingredient.unit);
+        return total + (ri.quantity / divisor) * ri.ingredient.pricePerUnit * wasteMultiplier;
       }, 0);
       const costPerPortion = recipe.nbPortions > 0 ? foodCost / recipe.nbPortions : foodCost;
       const margin = recipe.sellingPrice - costPerPortion;
@@ -1136,7 +1140,10 @@ app.get('/api/menu-engineering', authWithRestaurant, async (req: any, res) => {
       const salesData = salesByRecipe[recipe.id] || { qty: 0, revenue: 0 };
       const popularity = totalSales > 0 ? (salesData.qty / totalSales) * 100 : 0;
       const avgMargin = recipes.reduce((sum, r) => {
-        const fc = r.ingredients.reduce((t, ri) => t + ri.quantity * ri.ingredient.pricePerUnit * (ri.wastePercent > 0 ? 1/(1-ri.wastePercent/100) : 1), 0);
+        const fc = r.ingredients.reduce((t, ri) => {
+          const d = getUnitDivisor(ri.ingredient.unit);
+          return t + (ri.quantity / d) * ri.ingredient.pricePerUnit * (ri.wastePercent > 0 ? 1/(1-ri.wastePercent/100) : 1);
+        }, 0);
         const cp = r.nbPortions > 0 ? fc / r.nbPortions : fc;
         return sum + (r.sellingPrice - cp);
       }, 0) / Math.max(recipes.length, 1);
@@ -1241,7 +1248,7 @@ app.get('/api/messages/conversations/:id/messages', authWithRestaurant, async (r
 
 app.post('/api/messages/conversations/:id/messages', authWithRestaurant, async (req: any, res) => {
   try {
-    const { content, senderId, senderName } = req.body;
+    const { content, senderId, senderName, subject } = req.body;
     const msg = await prisma.message.create({
       data: {
         conversationId: req.params.id,
@@ -1257,6 +1264,51 @@ app.post('/api/messages/conversations/:id/messages', authWithRestaurant, async (
       where: { id: req.params.id },
       data: { lastMessage: content, updatedAt: new Date() },
     });
+
+    // Send actual email via Resend to the conversation participant
+    try {
+      const resendKey = process.env.RESEND_API_KEY;
+      if (resendKey) {
+        const conv = await prisma.conversation.findUnique({ where: { id: req.params.id } });
+        if (conv && conv.participants && conv.participants.length > 0) {
+          const recipientEmail = conv.participants[0];
+          // Only send if recipient is an external email (not ourselves)
+          if (recipientEmail && !recipientEmail.includes('restaumargin.fr') && recipientEmail.includes('@')) {
+            const restaurant = await prisma.restaurant.findUnique({ where: { id: req.restaurantId } });
+            const restaurantName = restaurant?.name || 'RestauMargin';
+            const emailSubject = subject || `Message de ${restaurantName}`;
+            const resend = new Resend(resendKey);
+            await resend.emails.send({
+              from: `${restaurantName} <contact@restaumargin.fr>`,
+              to: recipientEmail,
+              replyTo: 'contact@restaumargin.fr',
+              subject: emailSubject,
+              html: `
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+                  <div style="background:#0f172a;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
+                    <table style="width:100%"><tr>
+                      <td><img src="https://www.restaumargin.fr/logo192.png" alt="${restaurantName}" style="height:36px;border-radius:8px;" /></td>
+                      <td style="text-align:right;"><p style="margin:0;font-size:18px;font-weight:bold;">${restaurantName}</p></td>
+                    </tr></table>
+                  </div>
+                  <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
+                    <p style="white-space:pre-wrap;line-height:1.6;color:#1e293b;">${content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</p>
+                    <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+                    <p style="font-size:11px;color:#94a3b8;margin:0;">Envoyé via RestauMargin — <a href="https://www.restaumargin.fr" style="color:#94a3b8;">restaumargin.fr</a></p>
+                    <p style="font-size:11px;color:#94a3b8;margin:4px 0 0;">Répondez directement à cet email pour continuer la conversation.</p>
+                  </div>
+                </div>
+              `,
+            });
+            console.log(`[MESSAGE EMAIL] Sent to ${recipientEmail} for conversation ${req.params.id}`);
+          }
+        }
+      }
+    } catch (emailErr: any) {
+      // Log email error but don't fail the message creation
+      console.error('[MESSAGE EMAIL ERROR]', emailErr.message);
+    }
+
     res.status(201).json(msg);
   } catch (e: any) { console.error(e); res.status(500).json({ error: 'Erreur envoi message' }); }
 });
@@ -1362,11 +1414,46 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
   try {
     const { to, subject, body } = req.body;
     if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
-    console.warn('Email SMTP not configured — skipping send. Use Resend instead.');
-    const email = { id: `e-${Date.now()}`, to, subject, body, from: 'noreply@restaumargin.com', messageId: `local-${Date.now()}`, sentAt: new Date().toISOString() };
+
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configuré (RESEND_API_KEY manquant)' });
+
+    const restaurant = await prisma.restaurant.findFirst({ where: { id: req.restaurantId } });
+    const restaurantName = restaurant?.name || 'RestauMargin';
+
+    const resend = new Resend(resendKey);
+    const result = await resend.emails.send({
+      from: `${restaurantName} <contact@restaumargin.fr>`,
+      to,
+      replyTo: 'contact@restaumargin.fr',
+      subject,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#0f172a;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
+            <table style="width:100%"><tr>
+              <td><img src="https://www.restaumargin.fr/logo192.png" alt="${restaurantName}" style="height:36px;border-radius:8px;" /></td>
+              <td style="text-align:right;"><p style="margin:0;font-size:18px;font-weight:bold;">${restaurantName}</p></td>
+            </tr></table>
+          </div>
+          <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
+            <p style="white-space:pre-wrap;line-height:1.6;color:#1e293b;">${body.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</p>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
+            <p style="font-size:11px;color:#94a3b8;margin:0;">Envoyé via RestauMargin — <a href="https://www.restaumargin.fr" style="color:#94a3b8;">restaumargin.fr</a></p>
+          </div>
+        </div>
+      `,
+    });
+
+    const messageId = result?.data?.id || `resend-${Date.now()}`;
+    const email = { id: `e-${Date.now()}`, to, subject, body, from: `${restaurantName} <contact@restaumargin.fr>`, messageId, sentAt: new Date().toISOString() };
     sentEmails.push(email);
-    res.json({ success: true, messageId: email.messageId, warning: 'SMTP not configured, email not actually sent' });
-  } catch (e: any) { res.status(500).json({ error: e.message || 'Erreur envoi email' }); }
+
+    console.log(`[EMAIL SEND] Sent to ${to} — subject: ${subject} — id: ${messageId}`);
+    res.json({ success: true, messageId });
+  } catch (e: any) {
+    console.error('[EMAIL SEND ERROR]', e.message);
+    res.status(500).json({ error: e.message || 'Erreur envoi email' });
+  }
 });
 
 app.get('/api/email/sent', authWithRestaurant, (_req, res) => { res.json(sentEmails); });
@@ -1405,7 +1492,7 @@ app.get('/api/alerts', authWithRestaurant, async (req: any, res) => {
 
     for (const r of recipes) {
       if (r.sellingPrice <= 0) continue;
-      const cost = r.ingredients.reduce((s, ri) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+      const cost = r.ingredients.reduce((s, ri) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
       const margin = (r.sellingPrice - cost) / r.sellingPrice * 100;
       if (margin < 60) {
         alerts.push({ type: 'margin', severity: margin < 40 ? 'critical' : 'warning', title: `Marge faible: ${r.name}`, detail: `${margin.toFixed(1)}% (coût ${cost.toFixed(2)}€)` });
@@ -1708,13 +1795,10 @@ app.post('/api/waste', authWithRestaurant, async (req: any, res) => {
     if (!validReasons.includes(reason)) return res.status(400).json({ error: `Raison invalide. Valeurs acceptées : ${validReasons.join(', ')}` });
     const ingredient = await prisma.ingredient.findFirst({ where: { id: ingredientId } });
     if (!ingredient) return res.status(404).json({ error: 'Ingrédient non trouvé' });
-    let costImpact = quantity * ingredient.pricePerUnit;
-    if (unit !== ingredient.unit) {
-      if (unit === 'g' && ingredient.unit === 'kg') costImpact = (quantity / 1000) * ingredient.pricePerUnit;
-      else if (unit === 'kg' && ingredient.unit === 'g') costImpact = (quantity * 1000) * ingredient.pricePerUnit;
-      else if (unit === 'mL' && ingredient.unit === 'L') costImpact = (quantity / 1000) * ingredient.pricePerUnit;
-      else if (unit === 'L' && ingredient.unit === 'mL') costImpact = (quantity * 1000) * ingredient.pricePerUnit;
-    }
+    // Cost = quantity converted to bulk unit * pricePerUnit
+    // The waste form sends quantity in `unit`, but price is always per bulk unit (kg/L).
+    // Use the waste entry's unit to determine the divisor.
+    const costImpact = (quantity / getUnitDivisor(unit)) * ingredient.pricePerUnit;
     const wasteLog = await prisma.wasteLog.create({
       data: { ingredientId, quantity, unit, reason, costImpact: Math.round(costImpact * 100) / 100, date, notes: notes || null, restaurantId: req.restaurantId },
       include: { ingredient: { select: { id: true, name: true, unit: true, category: true, pricePerUnit: true } } },
@@ -2541,7 +2625,7 @@ app.post('/api/news/generate', authWithRestaurant, async (req: any, res) => {
 
     const ingList = ingredients.map((i: any) => `- ${i.name} (${i.category}): ${i.pricePerUnit}€/${i.unit}`).join('\n');
     const recList = recipes.map((r: any) => {
-      const cost = r.ingredients.reduce((s: number, ri: any) => s + ri.quantity * ri.ingredient.pricePerUnit, 0);
+      const cost = r.ingredients.reduce((s: number, ri: any) => s + (ri.quantity / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit, 0);
       const margin = r.sellingPrice > 0 ? ((r.sellingPrice - cost) / r.sellingPrice * 100) : 0;
       return `- ${r.name}: vente ${r.sellingPrice}€, coût ${cost.toFixed(2)}€, marge ${margin.toFixed(1)}%`;
     }).join('\n');

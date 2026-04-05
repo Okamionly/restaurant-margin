@@ -568,3 +568,12 @@ model NewsItem {
   @@index([restaurantId, dismissed])
   @@map("news_items")
 }
+
+model NewsletterSubscriber {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+  unsubscribed Boolean  @default(false)
+
+  @@map("newsletter_subscribers")
+}

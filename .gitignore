@@ -17,3 +17,10 @@ server/dist/
 docs/rapports/
 docs/data/
 docs/sprints/
+
+# Build artifacts & logs
+*.bak
+logs/
+client/logs/
+client/src/logs/
+client/src/pages/logs/

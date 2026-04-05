@@ -3450,6 +3450,49 @@ app.get('/api/audit-logs', authWithRestaurant, async (req: any, res) => {
   }
 });
 
+// ============ NEWSLETTER SUBSCRIBE (PUBLIC) ============
+const newsletterRateLimit = new Map<string, number[]>();
+
+app.post('/api/newsletter/subscribe', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return res.status(400).json({ error: 'Email invalide' });
+    }
+
+    const safeEmail = email.toLowerCase().trim();
+
+    // Rate limit: 3 per email per hour
+    const now = Date.now();
+    const attempts = (newsletterRateLimit.get(safeEmail) || []).filter((t: number) => now - t < 3600000);
+    if (attempts.length >= 3) {
+      return res.status(429).json({ error: 'Trop de demandes. Réessayez plus tard.' });
+    }
+    attempts.push(now);
+    newsletterRateLimit.set(safeEmail, attempts);
+
+    // Upsert: if already exists and unsubscribed, re-subscribe
+    const existing = await prisma.newsletterSubscriber.findUnique({ where: { email: safeEmail } });
+    if (existing) {
+      if (existing.unsubscribed) {
+        await prisma.newsletterSubscriber.update({
+          where: { email: safeEmail },
+          data: { unsubscribed: false, subscribedAt: new Date() },
+        });
+      }
+      // Already subscribed — still return success
+      return res.json({ success: true, message: 'Merci ! Vous recevrez nos actualités restaurant.' });
+    }
+
+    await prisma.newsletterSubscriber.create({ data: { email: safeEmail } });
+    console.log(`[NEWSLETTER] New subscriber: ${safeEmail}`);
+    res.json({ success: true, message: 'Merci ! Vous recevrez nos actualités restaurant.' });
+  } catch (e: any) {
+    console.error('[NEWSLETTER ERROR]', e.message);
+    res.status(500).json({ error: 'Erreur inscription newsletter' });
+  }
+});
+
 // 404 catch-all
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route non trouvée' });

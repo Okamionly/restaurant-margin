@@ -639,6 +639,15 @@ export const recipeTemplates: RecipeTemplate[] = [
       { name: 'Ail', quantity: 0.003, unit: 'kg', wastePercent: 15 },
     ],
   },
+  {
+    name: 'Entrecôte grillée', category: 'Plat', nbPortions: 1, suggestedSellingPrice: 24, suggestedPrepTime: 5, suggestedCookTime: 15,
+    description: 'Entrecôte grillée, beurre d\'herbes, légumes de saison',
+    suggestedIngredients: [
+      { name: 'Entrecôte de boeuf', quantity: 0.3, unit: 'kg', wastePercent: 5 },
+      { name: 'Beurre doux', quantity: 0.03, unit: 'kg', wastePercent: 0 },
+      { name: 'Haricots verts', quantity: 0.1, unit: 'kg', wastePercent: 5 },
+    ],
+  },
 ];
 
 // Search function for autocomplete
@@ -650,3 +659,16 @@ export function searchTemplates(query: string): RecipeTemplate[] {
     return name.includes(q) || q.split(' ').every((word) => name.includes(word));
   }).slice(0, 8);
 }
+
+// Get all templates grouped by category
+export function getTemplatesByCategory(): Record<string, RecipeTemplate[]> {
+  const grouped: Record<string, RecipeTemplate[]> = {};
+  for (const t of recipeTemplates) {
+    if (!grouped[t.category]) grouped[t.category] = [];
+    grouped[t.category].push(t);
+  }
+  return grouped;
+}
+
+// Category display order for the template library
+export const TEMPLATE_CATEGORY_ORDER = ['Entrée', 'Plat', 'Dessert', 'Accompagnement', 'Boisson'] as const;

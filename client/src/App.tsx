@@ -90,6 +90,7 @@ const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
 const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));
+const Analytics = lazyRetry(() => import('./pages/Analytics'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -628,6 +629,7 @@ function AppLayout() {
     {
       title: 'INTELLIGENCE',
       items: [
+        { to: '/analytics', icon: BarChart3, label: 'Analytiques' },
         { to: '/scanner-factures', icon: Receipt, label: 'Factures' },
         { to: '/actualites', icon: Newspaper, label: 'Actualités IA' },
         { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },
@@ -1006,6 +1008,7 @@ function AppLayout() {
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/gaspillage" element={<WasteTracker />} />
               <Route path="/rfqs" element={<RFQPage />} />
+              <Route path="/analytics" element={<Analytics />} />
               <Route path="/scanner-factures" element={<InvoiceScanner />} />
               <Route path="/actualites" element={<Actualites />} />
               <Route path="/mercuriale" element={<Mercuriale />} />

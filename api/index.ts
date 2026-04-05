@@ -2999,26 +2999,37 @@ app.delete('/api/seminaires/:id', authWithRestaurant, async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression séminaire' }); }
 });
 
-// ============ MARKETPLACE ============
+// ============ MARKETPLACE / SUPPLIER ORDERS ============
+
+// GET /api/marketplace/orders — List orders with optional status filter
 app.get('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {
   try {
-    const { limit, offset } = req.query;
+    const { limit, offset, status, supplier, from, to } = req.query;
+    const where: any = { restaurantId: req.restaurantId };
+    if (status && status !== 'all') where.status = status;
+    if (supplier) where.supplierName = { contains: supplier, mode: 'insensitive' };
+    if (from || to) {
+      where.createdAt = {};
+      if (from) where.createdAt.gte = new Date(from as string);
+      if (to) where.createdAt.lte = new Date(to as string);
+    }
     if (limit !== undefined || offset !== undefined) {
       const take = Math.min(parseInt(limit) || 100, 500);
       const skip = parseInt(offset) || 0;
       const [data, total] = await Promise.all([
-        prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' }, take, skip }),
-        prisma.marketplaceOrder.count({ where: { restaurantId: req.restaurantId } }),
+        prisma.marketplaceOrder.findMany({ where, include: { items: true }, orderBy: { createdAt: 'desc' }, take, skip }),
+        prisma.marketplaceOrder.count({ where }),
       ]);
       return res.json({ data, total, limit: take, offset: skip });
     }
     const orders = await prisma.marketplaceOrder.findMany({
-      where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' },
+      where, include: { items: true }, orderBy: { createdAt: 'desc' },
     });
     res.json(orders);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération commandes marketplace' }); }
 });
 
+// GET /api/marketplace/orders/summary — Summary stats
 app.get('/api/marketplace/orders/summary', authWithRestaurant, async (req: any, res) => {
   try {
     const orders = await prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId } });
@@ -3030,35 +3041,156 @@ app.get('/api/marketplace/orders/summary', authWithRestaurant, async (req: any, 
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur résumé marketplace' }); }
 });
 
+// GET /api/marketplace/orders/spending — Monthly spending per supplier (last 12 months)
+app.get('/api/marketplace/orders/spending', authWithRestaurant, async (req: any, res) => {
+  try {
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+    const orders = await prisma.marketplaceOrder.findMany({
+      where: { restaurantId: req.restaurantId, status: { in: ['received', 'confirmed', 'sent'] }, createdAt: { gte: twelveMonthsAgo } },
+      select: { supplierName: true, totalHT: true, createdAt: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    const spending: Record<string, Record<string, number>> = {};
+    const suppliers = new Set<string>();
+    orders.forEach((o: any) => {
+      const month = new Date(o.createdAt).toISOString().slice(0, 7);
+      if (!spending[month]) spending[month] = {};
+      spending[month][o.supplierName] = (spending[month][o.supplierName] || 0) + o.totalHT;
+      suppliers.add(o.supplierName);
+    });
+    res.json({ spending, suppliers: Array.from(suppliers) });
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur dépenses fournisseurs' }); }
+});
+
+// GET /api/marketplace/orders/:id — Order detail with items
+app.get('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const order = await prisma.marketplaceOrder.findFirst({
+      where: { id, restaurantId: req.restaurantId },
+      include: { items: true },
+    });
+    if (!order) return res.status(404).json({ error: 'Commande non trouvée' });
+    res.json(order);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur récupération commande' }); }
+});
+
+// POST /api/marketplace/orders — Create order with items
 app.post('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {
   try {
-    const { supplierName, items, notes } = req.body;
+    const { supplierName, supplierId, items, notes, expectedDelivery } = req.body;
     if (!supplierName || !items || !Array.isArray(items) || items.length === 0) return res.status(400).json({ error: 'Fournisseur et articles requis' });
     const orderItems = items.map((item: any) => ({
       productName: item.productName || '', quantity: item.quantity || 1, unit: item.unit || '', unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),
+      ingredientId: item.ingredientId || null,
     }));
     const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);
     const order = await prisma.marketplaceOrder.create({
-      data: { supplierName, totalHT, notes: notes || null, restaurantId: req.restaurantId, items: { create: orderItems } },
+      data: {
+        supplierName, supplierId: supplierId || null, totalHT, notes: notes || null,
+        expectedDelivery: expectedDelivery ? new Date(expectedDelivery) : null,
+        restaurantId: req.restaurantId, items: { create: orderItems },
+      },
       include: { items: true },
     });
     res.status(201).json(order);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur création commande marketplace' }); }
 });
 
+// PUT /api/marketplace/orders/:id — Update order fields
 app.put('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
-    const { status, notes } = req.body;
+    const { status, notes, expectedDelivery } = req.body;
     const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });
     if (!existing) return res.status(404).json({ error: 'Commande non trouvée' });
+    const data: any = {};
+    if (status) data.status = status;
+    if (notes !== undefined) data.notes = notes;
+    if (expectedDelivery !== undefined) data.expectedDelivery = expectedDelivery ? new Date(expectedDelivery) : null;
     const order = await prisma.marketplaceOrder.update({
-      where: { id }, data: { ...(status && { status }), ...(notes !== undefined && { notes }) }, include: { items: true },
+      where: { id }, data, include: { items: true },
     });
     res.json(order);
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise à jour commande marketplace' }); }
 });
 
+// PUT /api/marketplace/orders/:id/status — Update order status with lifecycle validation
+app.put('/api/marketplace/orders/:id/status', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { status } = req.body;
+    const validStatuses = ['draft', 'sent', 'confirmed', 'received', 'cancelled', 'claimed'];
+    if (!status || !validStatuses.includes(status)) return res.status(400).json({ error: `Statut invalide. Valides: ${validStatuses.join(', ')}` });
+    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });
+    if (!existing) return res.status(404).json({ error: 'Commande non trouvée' });
+    const transitions: Record<string, string[]> = {
+      draft: ['sent', 'cancelled'],
+      sent: ['confirmed', 'cancelled'],
+      confirmed: ['received', 'cancelled'],
+      received: ['claimed'],
+      cancelled: ['draft'],
+      claimed: ['received'],
+    };
+    const allowed = transitions[existing.status] || [];
+    if (!allowed.includes(status)) return res.status(400).json({ error: `Transition invalide: ${existing.status} -> ${status}. Autorisées: ${allowed.join(', ')}` });
+    const updateData: any = { status };
+    if (status === 'received') updateData.receivedAt = new Date();
+    const order = await prisma.marketplaceOrder.update({ where: { id }, data: updateData, include: { items: true } });
+    res.json(order);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur changement statut commande' }); }
+});
+
+// POST /api/marketplace/orders/:id/receive — Receive order + update inventory
+app.post('/api/marketplace/orders/:id/receive', authWithRestaurant, async (req: any, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { receivedItems } = req.body;
+    const existing = await prisma.marketplaceOrder.findFirst({
+      where: { id, restaurantId: req.restaurantId },
+      include: { items: true },
+    });
+    if (!existing) return res.status(404).json({ error: 'Commande non trouvée' });
+    if (existing.status !== 'confirmed' && existing.status !== 'sent') return res.status(400).json({ error: 'Commande doit être confirmée ou envoyée pour être réceptionnée' });
+
+    if (Array.isArray(receivedItems)) {
+      for (const ri of receivedItems) {
+        if (ri.itemId && ri.receivedQuantity !== undefined) {
+          await prisma.marketplaceOrderItem.update({
+            where: { id: ri.itemId },
+            data: { receivedQuantity: parseFloat(ri.receivedQuantity) },
+          });
+        }
+      }
+    }
+
+    const orderItems = await prisma.marketplaceOrderItem.findMany({ where: { orderId: id } });
+    for (const item of orderItems) {
+      if (item.ingredientId) {
+        const qty = item.receivedQuantity ?? item.quantity;
+        const inventoryItem = await prisma.inventoryItem.findFirst({
+          where: { ingredientId: item.ingredientId, restaurantId: req.restaurantId },
+        });
+        if (inventoryItem) {
+          await prisma.inventoryItem.update({
+            where: { id: inventoryItem.id },
+            data: { currentStock: inventoryItem.currentStock + qty, lastRestockDate: new Date(), lastRestockQuantity: qty },
+          });
+        }
+      }
+    }
+
+    const order = await prisma.marketplaceOrder.update({
+      where: { id },
+      data: { status: 'received', receivedAt: new Date() },
+      include: { items: true },
+    });
+    res.json(order);
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur réception commande' }); }
+});
+
+// DELETE /api/marketplace/orders/:id — Delete order
 app.delete('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {
   try {
     const id = parseInt(req.params.id);
@@ -3827,6 +3959,253 @@ app.post('/api/notifications/send-digest', authWithRestaurant, async (req: any, 
   } catch (e: any) {
     console.error('[DIGEST ERROR]', e.message);
     res.status(500).json({ error: 'Erreur envoi resume email' });
+  }
+});
+
+// ── Analytics Report Endpoint ──
+app.get('/api/analytics/report', authWithRestaurant, async (req: any, res) => {
+  try {
+    const rid = req.restaurantId;
+    const periodDays = parseInt(req.query.period as string) || 30;
+    const now = new Date();
+    const periodStart = new Date(now.getTime() - periodDays * 86400000);
+    const prevPeriodStart = new Date(periodStart.getTime() - periodDays * 86400000);
+
+    // ── Fetch all recipes with ingredients ──
+    const recipes = await prisma.recipe.findMany({
+      where: { restaurantId: rid, deletedAt: null },
+      include: recipeInclude,
+      orderBy: { name: 'asc' },
+    });
+
+    const formattedRecipes = recipes.map(r => formatRecipe(r));
+
+    // ── Fetch ingredients ──
+    const ingredients = await prisma.ingredient.findMany({
+      where: { restaurantId: rid },
+    });
+
+    // ── Period comparison: recipes created in current vs previous period ──
+    const currentPeriodRecipes = formattedRecipes.filter(r => new Date(r.createdAt) >= periodStart);
+    const prevPeriodRecipes = formattedRecipes.filter(r => {
+      const d = new Date(r.createdAt);
+      return d >= prevPeriodStart && d < periodStart;
+    });
+
+    // Average margins
+    const avgMarginCurrent = formattedRecipes.length > 0
+      ? formattedRecipes.reduce((s: number, r: any) => s + (r.margin?.marginPercent || 0), 0) / formattedRecipes.length
+      : 0;
+    const avgFoodCostCurrent = formattedRecipes.length > 0
+      ? formattedRecipes.reduce((s: number, r: any) => s + (r.margin?.costPerPortion || 0), 0) / formattedRecipes.length
+      : 0;
+    const totalRevenuePotential = formattedRecipes.reduce((s: number, r: any) => s + (r.sellingPrice || 0), 0);
+    const totalCostPotential = formattedRecipes.reduce((s: number, r: any) => s + (r.margin?.totalCostPerPortion || 0), 0);
+
+    // ── Top 5 most profitable recipes ──
+    const sortedByMargin = [...formattedRecipes]
+      .filter((r: any) => r.margin && r.sellingPrice > 0)
+      .sort((a: any, b: any) => (b.margin.marginAmount || 0) - (a.margin.marginAmount || 0));
+    const topProfitable = sortedByMargin.slice(0, 5).map((r: any) => ({
+      id: r.id,
+      name: r.name,
+      category: r.category,
+      sellingPrice: r.sellingPrice,
+      marginAmount: r.margin.marginAmount,
+      marginPercent: r.margin.marginPercent,
+      foodCost: r.margin.costPerPortion,
+    }));
+
+    // ── Top 5 worst margin recipes ──
+    const worstMargin = [...formattedRecipes]
+      .filter((r: any) => r.margin && r.sellingPrice > 0)
+      .sort((a: any, b: any) => (a.margin.marginPercent || 0) - (b.margin.marginPercent || 0));
+    const bottomMargin = worstMargin.slice(0, 5).map((r: any) => ({
+      id: r.id,
+      name: r.name,
+      category: r.category,
+      sellingPrice: r.sellingPrice,
+      marginAmount: r.margin.marginAmount,
+      marginPercent: r.margin.marginPercent,
+      foodCost: r.margin.costPerPortion,
+    }));
+
+    // ── Ingredient cost trends (price history) ──
+    const priceHistory = await prisma.priceHistory.findMany({
+      where: {
+        restaurantId: rid,
+        createdAt: { gte: prevPeriodStart },
+      },
+      include: { ingredient: { select: { name: true, unit: true, pricePerUnit: true, category: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    // Group price history by ingredient and compute increase
+    const ingredientPriceMap: Record<number, { name: string; category: string; prices: { date: string; price: number }[]; currentPrice: number }> = {};
+    for (const ph of priceHistory) {
+      if (!ingredientPriceMap[ph.ingredientId]) {
+        ingredientPriceMap[ph.ingredientId] = {
+          name: ph.ingredient.name,
+          category: ph.ingredient.category,
+          prices: [],
+          currentPrice: ph.ingredient.pricePerUnit,
+        };
+      }
+      ingredientPriceMap[ph.ingredientId].prices.push({ date: ph.date, price: ph.price });
+    }
+
+    const ingredientTrends = Object.entries(ingredientPriceMap)
+      .map(([id, data]) => {
+        const prices = data.prices;
+        const oldPrice = prices.length > 0 ? prices[0].price : data.currentPrice;
+        const newPrice = data.currentPrice;
+        const changePercent = oldPrice > 0 ? ((newPrice - oldPrice) / oldPrice) * 100 : 0;
+        return { ingredientId: parseInt(id), name: data.name, category: data.category, oldPrice, newPrice, changePercent };
+      })
+      .sort((a, b) => b.changePercent - a.changePercent)
+      .slice(0, 10);
+
+    // ── Category performance breakdown ──
+    const categoryMap: Record<string, { count: number; totalMargin: number; totalRevenue: number; totalCost: number; recipes: string[] }> = {};
+    for (const r of formattedRecipes) {
+      const cat = r.category || 'Autre';
+      if (!categoryMap[cat]) categoryMap[cat] = { count: 0, totalMargin: 0, totalRevenue: 0, totalCost: 0, recipes: [] };
+      categoryMap[cat].count++;
+      categoryMap[cat].totalMargin += r.margin?.marginAmount || 0;
+      categoryMap[cat].totalRevenue += r.sellingPrice || 0;
+      categoryMap[cat].totalCost += r.margin?.totalCostPerPortion || 0;
+      categoryMap[cat].recipes.push(r.name);
+    }
+    const categoryPerformance = Object.entries(categoryMap).map(([cat, data]) => ({
+      category: cat,
+      recipeCount: data.count,
+      avgMargin: data.count > 0 ? Math.round((data.totalMargin / data.count) * 100) / 100 : 0,
+      totalRevenue: Math.round(data.totalRevenue * 100) / 100,
+      totalCost: Math.round(data.totalCost * 100) / 100,
+      avgMarginPercent: data.totalRevenue > 0 ? Math.round(((data.totalRevenue - data.totalCost) / data.totalRevenue) * 1000) / 10 : 0,
+    }));
+
+    // ── Labor cost analysis ──
+    let laborAnalysis = null;
+    try {
+      const timeEntries = await prisma.timeEntry.findMany({
+        where: { restaurantId: rid, date: { gte: periodStart.toISOString().slice(0, 10) } },
+        include: { employee: { select: { firstName: true, lastName: true, hourlyRate: true } } },
+      });
+      if (timeEntries.length > 0) {
+        const totalMinutes = timeEntries.reduce((s, e) => s + (e.totalMinutes || 0), 0);
+        const totalHours = totalMinutes / 60;
+        const totalLaborCost = timeEntries.reduce((s, e) => {
+          const hours = (e.totalMinutes || 0) / 60;
+          return s + hours * (e.employee.hourlyRate || 0);
+        }, 0);
+        laborAnalysis = {
+          totalHours: Math.round(totalHours * 10) / 10,
+          totalCost: Math.round(totalLaborCost * 100) / 100,
+          avgCostPerHour: totalHours > 0 ? Math.round((totalLaborCost / totalHours) * 100) / 100 : 0,
+          entryCount: timeEntries.length,
+        };
+      }
+    } catch { /* TimeEntry table may not exist */ }
+
+    // ── Food waste impact ──
+    const wasteLogs = await prisma.wasteLog.findMany({
+      where: { restaurantId: rid, date: { gte: periodStart.toISOString().slice(0, 10) } },
+      include: { ingredient: { select: { name: true, category: true } } },
+    });
+    const totalWasteCost = wasteLogs.reduce((s, w) => s + (w.costImpact || 0), 0);
+    const wasteByReason: Record<string, { count: number; cost: number }> = {};
+    for (const w of wasteLogs) {
+      if (!wasteByReason[w.reason]) wasteByReason[w.reason] = { count: 0, cost: 0 };
+      wasteByReason[w.reason].count++;
+      wasteByReason[w.reason].cost += w.costImpact || 0;
+    }
+    const wasteImpact = {
+      totalCost: Math.round(totalWasteCost * 100) / 100,
+      entryCount: wasteLogs.length,
+      byReason: Object.entries(wasteByReason).map(([reason, data]) => ({
+        reason,
+        count: data.count,
+        cost: Math.round(data.cost * 100) / 100,
+      })),
+      topWastedIngredients: Object.values(
+        wasteLogs.reduce((acc: Record<string, { name: string; cost: number; count: number }>, w) => {
+          const name = w.ingredient.name;
+          if (!acc[name]) acc[name] = { name, cost: 0, count: 0 };
+          acc[name].cost += w.costImpact || 0;
+          acc[name].count++;
+          return acc;
+        }, {})
+      ).sort((a, b) => b.cost - a.cost).slice(0, 5),
+    };
+
+    // ── Performance score (0-100) ──
+    let score = 50; // Base
+    // Margin bonus: 70%+ avg margin = great
+    if (avgMarginCurrent >= 70) score += 20;
+    else if (avgMarginCurrent >= 60) score += 15;
+    else if (avgMarginCurrent >= 50) score += 10;
+    else if (avgMarginCurrent < 30) score -= 15;
+    // Recipe count bonus
+    if (formattedRecipes.length >= 20) score += 10;
+    else if (formattedRecipes.length >= 10) score += 5;
+    // Low waste bonus
+    if (totalWasteCost < 50) score += 10;
+    else if (totalWasteCost < 200) score += 5;
+    else if (totalWasteCost > 500) score -= 10;
+    // Variety (categories)
+    if (Object.keys(categoryMap).length >= 4) score += 5;
+    // Clamp
+    score = Math.max(0, Math.min(100, score));
+
+    // ── Margin over time data (simulate from recipe creation dates) ──
+    const marginTimeline: { date: string; avgMargin: number; avgCost: number; recipeCount: number }[] = [];
+    const sortedRecipes = [...formattedRecipes].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+    // Build weekly buckets for the period
+    const bucketSize = periodDays <= 7 ? 1 : periodDays <= 30 ? 7 : 30;
+    for (let d = new Date(periodStart); d <= now; d = new Date(d.getTime() + bucketSize * 86400000)) {
+      const bucketEnd = new Date(d.getTime() + bucketSize * 86400000);
+      const recipesUpToDate = formattedRecipes.filter(r => new Date(r.createdAt) <= bucketEnd);
+      if (recipesUpToDate.length > 0) {
+        const avg = recipesUpToDate.reduce((s: number, r: any) => s + (r.margin?.marginPercent || 0), 0) / recipesUpToDate.length;
+        const avgC = recipesUpToDate.reduce((s: number, r: any) => s + (r.margin?.costPerPortion || 0), 0) / recipesUpToDate.length;
+        marginTimeline.push({
+          date: d.toISOString().slice(0, 10),
+          avgMargin: Math.round(avg * 10) / 10,
+          avgCost: Math.round(avgC * 100) / 100,
+          recipeCount: recipesUpToDate.length,
+        });
+      }
+    }
+
+    res.json({
+      generatedAt: new Date().toISOString(),
+      periodDays,
+      periodStart: periodStart.toISOString(),
+      periodEnd: now.toISOString(),
+      summary: {
+        totalRecipes: formattedRecipes.length,
+        totalIngredients: ingredients.length,
+        avgMarginPercent: Math.round(avgMarginCurrent * 10) / 10,
+        avgFoodCost: Math.round(avgFoodCostCurrent * 100) / 100,
+        totalRevenuePotential: Math.round(totalRevenuePotential * 100) / 100,
+        totalCostPotential: Math.round(totalCostPotential * 100) / 100,
+        newRecipesThisPeriod: currentPeriodRecipes.length,
+        newRecipesPrevPeriod: prevPeriodRecipes.length,
+      },
+      performanceScore: score,
+      topProfitable,
+      bottomMargin,
+      ingredientTrends,
+      categoryPerformance,
+      laborAnalysis,
+      wasteImpact,
+      marginTimeline,
+    });
+  } catch (e: any) {
+    console.error('[ANALYTICS REPORT]', e.message);
+    res.status(500).json({ error: 'Erreur génération rapport analytique' });
   }
 });
 

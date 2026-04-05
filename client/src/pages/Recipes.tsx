@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users } from 'lucide-react';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
 import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -10,7 +10,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';
+import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type RecipeTemplate } from '../data/recipeTemplates';
 import { trackEvent } from '../utils/analytics';
 
 // ── Unit conversion divisor ─────────────────────────────────────────────
@@ -397,6 +397,9 @@ export default function Recipes() {
 
   // View & filter state
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [activeTab, setActiveTab] = useState<'recipes' | 'templates'>('recipes');
+  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>('all');
+  const [templateSearch, setTemplateSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortColumn, setSortColumn] = useState<string>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -483,6 +486,27 @@ export default function Recipes() {
     recipes.forEach((r) => { counts[r.category] = (counts[r.category] || 0) + 1; });
     return Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
   }, [recipes]);
+
+  // ── Templates library data ───────────────────────────────────────
+  const templatesByCategory = useMemo(() => getTemplatesByCategory(), []);
+  const filteredTemplates = useMemo(() => {
+    let templates: RecipeTemplate[] = [];
+    if (templateCategoryFilter === 'all') {
+      for (const cat of TEMPLATE_CATEGORY_ORDER) {
+        if (templatesByCategory[cat]) templates.push(...templatesByCategory[cat]);
+      }
+    } else {
+      templates = templatesByCategory[templateCategoryFilter] || [];
+    }
+    if (templateSearch.trim()) {
+      const q = templateSearch.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      templates = templates.filter((t) => {
+        const name = t.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return name.includes(q);
+      });
+    }
+    return templates;
+  }, [templatesByCategory, templateCategoryFilter, templateSearch]);
 
   const filtered = recipes.filter((r) => {
     const q = search.toLowerCase();
@@ -696,6 +720,13 @@ export default function Recipes() {
     setSuggestions([]);
   }
 
+  // Use a template from the library tab — opens the creation form pre-filled
+  function useTemplate(template: RecipeTemplate) {
+    applyTemplate(template);
+    setActiveTab('recipes');
+    setShowForm(true);
+  }
+
   // AI Mercuriale: suggest ingredients for recipe
   async function handleAiSuggest() {
     if (!form.name.trim() || form.name.trim().length < 2) return;
@@ -898,6 +929,16 @@ export default function Recipes() {
     }
   }
 
+  async function handleClone(recipeId: number) {
+    try {
+      await cloneRecipe(recipeId);
+      showToast(t("recipes.recipeCloned"), 'success');
+      loadData();
+    } catch {
+      showToast(t("recipes.errorCloning"), 'error');
+    }
+  }
+
   function openVariantModal(recipe: Recipe) {
     setVariantTarget(recipe);
     setVariantName(`${recipe.name} \u2014 Variante`);
@@ -997,6 +1038,26 @@ export default function Recipes() {
         </div>
       )}
 
+      {/* ── Tabs: Mes recettes / Templates ──────────────────────────────── */}
+      <div className="flex items-center gap-1 mb-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <button
+          onClick={() => setActiveTab('recipes')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'recipes' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+        >
+          <UtensilsCrossed className="w-4 h-4" />
+          Mes recettes
+        </button>
+        <button
+          onClick={() => setActiveTab('templates')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'templates' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+        >
+          <BookOpen className="w-4 h-4" />
+          Templates
+        </button>
+      </div>
+
+      {activeTab === 'recipes' ? (
+      <>
       {/* ── Search bar + View toggle ───────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1 max-w-md">
@@ -1276,6 +1337,142 @@ export default function Recipes() {
             <X className="w-4 h-4" />
           </button>
         </div>
+      )}
+
+      </>
+      ) : (
+      /* ── Templates Library Tab ──────────────────────────────────────── */
+      <div>
+        {/* Template search + category filter */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
+            <input
+              type="text"
+              placeholder="Rechercher un template..."
+              value={templateSearch}
+              onChange={(e) => setTemplateSearch(e.target.value)}
+              className="input pl-10 w-full"
+            />
+          </div>
+        </div>
+
+        {/* Category filter pills */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setTemplateCategoryFilter('all')}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === 'all' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'}`}
+          >
+            Toutes ({Object.values(templatesByCategory).reduce((s, arr) => s + arr.length, 0)})
+          </button>
+          {TEMPLATE_CATEGORY_ORDER.map((cat) => {
+            const count = templatesByCategory[cat]?.length || 0;
+            if (count === 0) return null;
+            return (
+              <button
+                key={cat}
+                onClick={() => setTemplateCategoryFilter(cat)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === cat ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'}`}
+              >
+                {cat === 'Entrée' ? 'Entrees' : cat === 'Plat' ? 'Plats' : cat === 'Dessert' ? 'Desserts' : cat === 'Accompagnement' ? 'Accompagnements' : cat} ({count})
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Template cards grid */}
+        {filteredTemplates.length === 0 ? (
+          <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+            Aucun template ne correspond a votre recherche.
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredTemplates.map((tpl, idx) => {
+              const preview = getTemplatePreview(tpl);
+              const catLabel = tpl.category === 'Entrée' ? 'Entree' : tpl.category;
+              return (
+                <div
+                  key={`${tpl.name}-${idx}`}
+                  className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden hover:border-[#111111] dark:hover:border-white transition-colors group"
+                >
+                  {/* Header */}
+                  <div className="p-4 pb-3">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-[#111111] dark:text-white truncate">{tpl.name}</h3>
+                        <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                          {catLabel}
+                        </span>
+                      </div>
+                      <span className="text-lg font-bold font-mono text-[#111111] dark:text-white ml-2 flex-shrink-0">
+                        {tpl.suggestedSellingPrice}&euro;
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2">{tpl.description}</p>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="px-4 pb-3">
+                    <div className="flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      <span className="flex items-center gap-1">
+                        <Users className="w-3 h-3" /> {tpl.nbPortions} portion{tpl.nbPortions > 1 ? 's' : ''}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {tpl.suggestedPrepTime + tpl.suggestedCookTime} min
+                      </span>
+                      <span className="flex items-center gap-1">
+                        {tpl.suggestedIngredients.length} ingredients
+                      </span>
+                    </div>
+
+                    {/* Cost estimation from DB ingredients */}
+                    {preview.foundCount > 0 && (
+                      <div className="flex items-center gap-3 mt-2 text-xs">
+                        <span className="text-[#6B7280] dark:text-[#A3A3A3]">
+                          Cout estime : <strong className="font-mono">{preview.costPerPortion.toFixed(2)}&euro;</strong>
+                        </span>
+                        <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600 dark:text-green-400' : preview.margin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                          Marge : {preview.margin.toFixed(0)}%
+                        </span>
+                        {preview.foundCount < tpl.suggestedIngredients.length && (
+                          <span className="text-amber-500">
+                            ({preview.foundCount}/{tpl.suggestedIngredients.length} en base)
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Ingredients preview */}
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {tpl.suggestedIngredients.slice(0, 4).map((ing, i) => (
+                        <span key={i} className="px-1.5 py-0.5 text-[10px] rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                          {ing.name}
+                        </span>
+                      ))}
+                      {tpl.suggestedIngredients.length > 4 && (
+                        <span className="px-1.5 py-0.5 text-[10px] rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+                          +{tpl.suggestedIngredients.length - 4}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action */}
+                  <div className="px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <button
+                      onClick={() => useTemplate(tpl)}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Utiliser ce template
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
       )}
 
       {/* Recipe Form Modal */}

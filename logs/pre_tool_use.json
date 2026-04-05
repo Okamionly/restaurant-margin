@@ -4084,5 +4084,921 @@
       "limit": 5
     },
     "tool_use_id": "toolu_01FvApRA9oGmXAtKDKdnQTLq"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "offset": 1624,
+      "limit": 200
+    },
+    "tool_use_id": "toolu_01LFmH7Si6szhnTwsWtxbyZc"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "old_string": "// 404 catch-all\napp.use((_req, res) => {\n  res.status(404).json({ error: 'Route non trouv\u00c3\u00a9e' });\n});",
+      "new_string": "// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Analytics Report Endpoint \u00e2\u201d\u20ac\u00e2\u201d\u20ac\napp.get('/api/analytics/report', authWithRestaurant, async (req: any, res) => {\n  try {\n    const rid = req.restaurantId;\n    const periodDays = parseInt(req.query.period as string) || 30;\n    const now = new Date();\n    const periodStart = new Date(now.getTime() - periodDays * 86400000);\n    const prevPeriodStart = new Date(periodStart.getTime() - periodDays * 86400000);\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Fetch all recipes with ingredients \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const recipes = await prisma.recipe.findMany({\n      where: { restaurantId: rid, deletedAt: null },\n      include: recipeInclude,\n      orderBy: { name: 'asc' },\n    });\n\n    const formattedRecipes = recipes.map(r => formatRecipe(r));\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Fetch ingredients \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const ingredients = await prisma.ingredient.findMany({\n      where: { restaurantId: rid },\n    });\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Period comparison: recipes created in current vs previous period \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const currentPeriodRecipes = formattedRecipes.filter(r => new Date(r.createdAt) >= periodStart);\n    const prevPeriodRecipes = formattedRecipes.filter(r => {\n      const d = new Date(r.createdAt);\n      return d >= prevPeriodStart && d < periodStart;\n    });\n\n    // Average margins\n    const avgMarginCurrent = formattedRecipes.length > 0\n      ? formattedRecipes.reduce((s: number, r: any) => s + (r.margin?.marginPercent || 0), 0) / formattedRecipes.length\n      : 0;\n    const avgFoodCostCurrent = formattedRecipes.length > 0\n      ? formattedRecipes.reduce((s: number, r: any) => s + (r.margin?.costPerPortion || 0), 0) / formattedRecipes.length\n      : 0;\n    const totalRevenuePotential = formattedRecipes.reduce((s: number, r: any) => s + (r.sellingPrice || 0), 0);\n    const totalCostPotential = formattedRecipes.reduce((s: number, r: any) => s + (r.margin?.totalCostPerPortion || 0), 0);\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Top 5 most profitable recipes \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const sortedByMargin = [...formattedRecipes]\n      .filter((r: any) => r.margin && r.sellingPrice > 0)\n      .sort((a: any, b: any) => (b.margin.marginAmount || 0) - (a.margin.marginAmount || 0));\n    const topProfitable = sortedByMargin.slice(0, 5).map((r: any) => ({\n      id: r.id,\n      name: r.name,\n      category: r.category,\n      sellingPrice: r.sellingPrice,\n      marginAmount: r.margin.marginAmount,\n      marginPercent: r.margin.marginPercent,\n      foodCost: r.margin.costPerPortion,\n    }));\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Top 5 worst margin recipes \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const worstMargin = [...formattedRecipes]\n      .filter((r: any) => r.margin && r.sellingPrice > 0)\n      .sort((a: any, b: any) => (a.margin.marginPercent || 0) - (b.margin.marginPercent || 0));\n    const bottomMargin = worstMargin.slice(0, 5).map((r: any) => ({\n      id: r.id,\n      name: r.name,\n      category: r.category,\n      sellingPrice: r.sellingPrice,\n      marginAmount: r.margin.marginAmount,\n      marginPercent: r.margin.marginPercent,\n      foodCost: r.margin.costPerPortion,\n    }));\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Ingredient cost trends (price history) \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const priceHistory = await prisma.priceHistory.findMany({\n      where: {\n        restaurantId: rid,\n        createdAt: { gte: prevPeriodStart },\n      },\n      include: { ingredient: { select: { name: true, unit: true, pricePerUnit: true, category: true } } },\n      orderBy: { createdAt: 'asc' },\n    });\n\n    // Group price history by ingredient and compute increase\n    const ingredientPriceMap: Record<number, { name: string; category: string; prices: { date: string; price: number }[]; currentPrice: number }> = {};\n    for (const ph of priceHistory) {\n      if (!ingredientPriceMap[ph.ingredientId]) {\n        ingredientPriceMap[ph.ingredientId] = {\n          name: ph.ingredient.name,\n          category: ph.ingredient.category,\n          prices: [],\n          currentPrice: ph.ingredient.pricePerUnit,\n        };\n      }\n      ingredientPriceMap[ph.ingredientId].prices.push({ date: ph.date, price: ph.price });\n    }\n\n    const ingredientTrends = Object.entries(ingredientPriceMap)\n      .map(([id, data]) => {\n        const prices = data.prices;\n        const oldPrice = prices.length > 0 ? prices[0].price : data.currentPrice;\n        const newPrice = data.currentPrice;\n        const changePercent = oldPrice > 0 ? ((newPrice - oldPrice) / oldPrice) * 100 : 0;\n        return { ingredientId: parseInt(id), name: data.name, category: data.category, oldPrice, newPrice, changePercent };\n      })\n      .sort((a, b) => b.changePercent - a.changePercent)\n      .slice(0, 10);\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Category performance breakdown \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const categoryMap: Record<string, { count: number; totalMargin: number; totalRevenue: number; totalCost: number; recipes: string[] }> = {};\n    for (const r of formattedRecipes) {\n      const cat = r.category || 'Autre';\n      if (!categoryMap[cat]) categoryMap[cat] = { count: 0, totalMargin: 0, totalRevenue: 0, totalCost: 0, recipes: [] };\n      categoryMap[cat].count++;\n      categoryMap[cat].totalMargin += r.margin?.marginAmount || 0;\n      categoryMap[cat].totalRevenue += r.sellingPrice || 0;\n      categoryMap[cat].totalCost += r.margin?.totalCostPerPortion || 0;\n      categoryMap[cat].recipes.push(r.name);\n    }\n    const categoryPerformance = Object.entries(categoryMap).map(([cat, data]) => ({\n      category: cat,\n      recipeCount: data.count,\n      avgMargin: data.count > 0 ? Math.round((data.totalMargin / data.count) * 100) / 100 : 0,\n      totalRevenue: Math.round(data.totalRevenue * 100) / 100,\n      totalCost: Math.round(data.totalCost * 100) / 100,\n      avgMarginPercent: data.totalRevenue > 0 ? Math.round(((data.totalRevenue - data.totalCost) / data.totalRevenue) * 1000) / 10 : 0,\n    }));\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Labor cost analysis \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    let laborAnalysis = null;\n    try {\n      const timeEntries = await prisma.timeEntry.findMany({\n        where: { restaurantId: rid, date: { gte: periodStart.toISOString().slice(0, 10) } },\n        include: { employee: { select: { firstName: true, lastName: true, hourlyRate: true } } },\n      });\n      if (timeEntries.length > 0) {\n        const totalMinutes = timeEntries.reduce((s, e) => s + (e.totalMinutes || 0), 0);\n        const totalHours = totalMinutes / 60;\n        const totalLaborCost = timeEntries.reduce((s, e) => {\n          const hours = (e.totalMinutes || 0) / 60;\n          return s + hours * (e.employee.hourlyRate || 0);\n        }, 0);\n        laborAnalysis = {\n          totalHours: Math.round(totalHours * 10) / 10,\n          totalCost: Math.round(totalLaborCost * 100) / 100,\n          avgCostPerHour: totalHours > 0 ? Math.round((totalLaborCost / totalHours) * 100) / 100 : 0,\n          entryCount: timeEntries.length,\n        };\n      }\n    } catch { /* TimeEntry table may not exist */ }\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Food waste impact \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const wasteLogs = await prisma.wasteLog.findMany({\n      where: { restaurantId: rid, date: { gte: periodStart.toISOString().slice(0, 10) } },\n      include: { ingredient: { select: { name: true, category: true } } },\n    });\n    const totalWasteCost = wasteLogs.reduce((s, w) => s + (w.costImpact || 0), 0);\n    const wasteByReason: Record<string, { count: number; cost: number }> = {};\n    for (const w of wasteLogs) {\n      if (!wasteByReason[w.reason]) wasteByReason[w.reason] = { count: 0, cost: 0 };\n      wasteByReason[w.reason].count++;\n      wasteByReason[w.reason].cost += w.costImpact || 0;\n    }\n    const wasteImpact = {\n      totalCost: Math.round(totalWasteCost * 100) / 100,\n      entryCount: wasteLogs.length,\n      byReason: Object.entries(wasteByReason).map(([reason, data]) => ({\n        reason,\n        count: data.count,\n        cost: Math.round(data.cost * 100) / 100,\n      })),\n      topWastedIngredients: Object.values(\n        wasteLogs.reduce((acc: Record<string, { name: string; cost: number; count: number }>, w) => {\n          const name = w.ingredient.name;\n          if (!acc[name]) acc[name] = { name, cost: 0, count: 0 };\n          acc[name].cost += w.costImpact || 0;\n          acc[name].count++;\n          return acc;\n        }, {})\n      ).sort((a, b) => b.cost - a.cost).slice(0, 5),\n    };\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Performance score (0-100) \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    let score = 50; // Base\n    // Margin bonus: 70%+ avg margin = great\n    if (avgMarginCurrent >= 70) score += 20;\n    else if (avgMarginCurrent >= 60) score += 15;\n    else if (avgMarginCurrent >= 50) score += 10;\n    else if (avgMarginCurrent < 30) score -= 15;\n    // Recipe count bonus\n    if (formattedRecipes.length >= 20) score += 10;\n    else if (formattedRecipes.length >= 10) score += 5;\n    // Low waste bonus\n    if (totalWasteCost < 50) score += 10;\n    else if (totalWasteCost < 200) score += 5;\n    else if (totalWasteCost > 500) score -= 10;\n    // Variety (categories)\n    if (Object.keys(categoryMap).length >= 4) score += 5;\n    // Clamp\n    score = Math.max(0, Math.min(100, score));\n\n    // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Margin over time data (simulate from recipe creation dates) \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n    const marginTimeline: { date: string; avgMargin: number; avgCost: number; recipeCount: number }[] = [];\n    const sortedRecipes = [...formattedRecipes].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());\n\n    // Build weekly buckets for the period\n    const bucketSize = periodDays <= 7 ? 1 : periodDays <= 30 ? 7 : 30;\n    for (let d = new Date(periodStart); d <= now; d = new Date(d.getTime() + bucketSize * 86400000)) {\n      const bucketEnd = new Date(d.getTime() + bucketSize * 86400000);\n      const recipesUpToDate = formattedRecipes.filter(r => new Date(r.createdAt) <= bucketEnd);\n      if (recipesUpToDate.length > 0) {\n        const avg = recipesUpToDate.reduce((s: number, r: any) => s + (r.margin?.marginPercent || 0), 0) / recipesUpToDate.length;\n        const avgC = recipesUpToDate.reduce((s: number, r: any) => s + (r.margin?.costPerPortion || 0), 0) / recipesUpToDate.length;\n        marginTimeline.push({\n          date: d.toISOString().slice(0, 10),\n          avgMargin: Math.round(avg * 10) / 10,\n          avgCost: Math.round(avgC * 100) / 100,\n          recipeCount: recipesUpToDate.length,\n        });\n      }\n    }\n\n    res.json({\n      generatedAt: new Date().toISOString(),\n      periodDays,\n      periodStart: periodStart.toISOString(),\n      periodEnd: now.toISOString(),\n      summary: {\n        totalRecipes: formattedRecipes.length,\n        totalIngredients: ingredients.length,\n        avgMarginPercent: Math.round(avgMarginCurrent * 10) / 10,\n        avgFoodCost: Math.round(avgFoodCostCurrent * 100) / 100,\n        totalRevenuePotential: Math.round(totalRevenuePotential * 100) / 100,\n        totalCostPotential: Math.round(totalCostPotential * 100) / 100,\n        newRecipesThisPeriod: currentPeriodRecipes.length,\n        newRecipesPrevPeriod: prevPeriodRecipes.length,\n      },\n      performanceScore: score,\n      topProfitable,\n      bottomMargin,\n      ingredientTrends,\n      categoryPerformance,\n      laborAnalysis,\n      wasteImpact,\n      marginTimeline,\n    });\n  } catch (e: any) {\n    console.error('[ANALYTICS REPORT]', e.message);\n    res.status(500).json({ error: 'Erreur g\u00c3\u00a9n\u00c3\u00a9ration rapport analytique' });\n  }\n});\n\n// 404 catch-all\napp.use((_req, res) => {\n  res.status(404).json({ error: 'Route non trouv\u00c3\u00a9e' });\n});",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01RrH3RVouAkWNi5HeAwEHQf"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "variantTarget.*Modal|Variant Modal|variant.*modal",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "output_mode": "content",
+      "-n": true,
+      "-i": true
+    },
+    "tool_use_id": "toolu_012vD4rERv3VyxTapXa1b4W3"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "\"recharts\"",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\package.json",
+      "output_mode": "content"
+    },
+    "tool_use_id": "toolu_0123G7YSJvC1KBmQd3VAwf44"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "// =+",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_01FtUywgGw5HSZesUPbFHarg"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "mcp__b9330123-b138-435e-bf59-830456397ec3__execute_sql",
+    "tool_input": {
+      "project_id": "wsrzcgbfekifalgtwmyy",
+      "query": "CREATE TABLE IF NOT EXISTS \"newsletter_subscribers\" (\n  \"id\" SERIAL PRIMARY KEY,\n  \"email\" TEXT NOT NULL UNIQUE,\n  \"subscribedAt\" TIMESTAMP NOT NULL DEFAULT NOW(),\n  \"unsubscribed\" BOOLEAN DEFAULT FALSE\n);"
+    },
+    "tool_use_id": "toolu_01Cr7qtgMcq7PJC9xndjqgfG"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "offset": 13,
+      "limit": 4
+    },
+    "tool_use_id": "toolu_01H5GxthoddMyxMHN1edZfpN"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "offset": 184,
+      "limit": 4
+    },
+    "tool_use_id": "toolu_014ssvTAzEqxk4PaFSKXxhNX"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "offset": 446,
+      "limit": 4
+    },
+    "tool_use_id": "toolu_013emxPdULqwb6CJKUJy4TtP"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "offset": 575,
+      "limit": 4
+    },
+    "tool_use_id": "toolu_013MHyhRKCFYpewmq8bFXxYw"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "offset": 635,
+      "limit": 30
+    },
+    "tool_use_id": "toolu_01Mf28edC21rhfXwS8xJZF9P"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "offset": 1,
+      "limit": 12
+    },
+    "tool_use_id": "toolu_01J3KQnxqQMsKW5giWMdse66"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "acd877e34592de27a",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "offset": 2897,
+      "limit": 80
+    },
+    "tool_use_id": "toolu_01SNGgMjADBxLC8Vb7u79xGH"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "Tiramisu|Panna cotta|Mousse chocolat|[Ii]le flottante|Risotto|Burger|Poulet r[o\u00c3\u00b4]ti|Pav[e\u00c3\u00a9] de saumon|Blanquette|Magret|Entrec[o\u00c3\u00b4]te|Fondant chocolat|Tarte tatin|Cr[e\u00c3\u00a8]me br[u\u00c3\u00bb]l[e\u00c3\u00a9]e",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_01HfnrR4VMye4ttZxHFQEZ9x"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "acd877e34592de27a",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "// ============ MARKETPLACE",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_018iKFRFAkP2BnSGWUXSXMpu"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "Fondant chocolat|Mousse chocolat|[Ii]le flottante|Entrec\u00c3\u00b4te",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_01FRVfg1oTNuR8SU1hPRvMm4"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "acd877e34592de27a",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "offset": 3000,
+      "limit": 80
+    },
+    "tool_use_id": "toolu_01KioDVPSrh41627qY3LseS1"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "Velout\u00c3\u00a9|Fondant|Mousse choc|flottante",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "output_mode": "content",
+      "-n": true
+    },
+    "tool_use_id": "toolu_01BKqAgH3FPhrPXxLMqUcBvV"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "old_string": "];\n\n// Search function for autocomplete\nexport function searchTemplates(query: string): RecipeTemplate[] {",
+      "new_string": "  {\n    name: 'Mousse au chocolat', category: 'Dessert', nbPortions: 1, suggestedSellingPrice: 7, suggestedPrepTime: 20, suggestedCookTime: 0,\n    description: 'Mousse au chocolat noir a\u00c3\u00a9rienne, \u00c3\u00a9clats de noisette',\n    suggestedIngredients: [\n      { name: 'Chocolat noir 70%', quantity: 0.1, unit: 'kg', wastePercent: 0 },\n      { name: 'Oeufs (calibre L)', quantity: 3, unit: 'pi\u00c3\u00a8ce', wastePercent: 0 },\n      { name: 'Sucre en poudre', quantity: 0.02, unit: 'kg', wastePercent: 0 },\n      { name: 'Beurre doux', quantity: 0.02, unit: 'kg', wastePercent: 0 },\n    ],\n  },\n  {\n    name: 'Entrec\u00c3\u00b4te grill\u00c3\u00a9e', category: 'Plat', nbPortions: 1, suggestedSellingPrice: 24, suggestedPrepTime: 5, suggestedCookTime: 15,\n    description: 'Entrec\u00c3\u00b4te grill\u00c3\u00a9e, beurre d\\'herbes, l\u00c3\u00a9gumes de saison',\n    suggestedIngredients: [\n      { name: 'Entrec\u00c3\u00b4te de boeuf', quantity: 0.3, unit: 'kg', wastePercent: 5 },\n      { name: 'Beurre doux', quantity: 0.03, unit: 'kg', wastePercent: 0 },\n      { name: 'Haricots verts', quantity: 0.1, unit: 'kg', wastePercent: 5 },\n    ],\n  },\n];\n\n// Search function for autocomplete\nexport function searchTemplates(query: string): RecipeTemplate[] {",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01LCGCfu2XUa4Qf7cxn1iWgw"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\data\\recipeTemplates.ts",
+      "old_string": "  }).slice(0, 8);\n}",
+      "new_string": "  }).slice(0, 8);\n}\n\n// Get all templates grouped by category\nexport function getTemplatesByCategory(): Record<string, RecipeTemplate[]> {\n  const grouped: Record<string, RecipeTemplate[]> = {};\n  for (const t of recipeTemplates) {\n    if (!grouped[t.category]) grouped[t.category] = [];\n    grouped[t.category].push(t);\n  }\n  return grouped;\n}\n\n// Category display order for the template library\nexport const TEMPLATE_CATEGORY_ORDER = ['Entr\u00c3\u00a9e', 'Plat', 'Dessert', 'Accompagnement', 'Boisson'] as const;",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01FmbfL2kska4Cf3mRHFwpTq"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Restaurants.tsx",
+      "content": "import { useState, useEffect, useMemo } from 'react';\nimport { useNavigate } from 'react-router-dom';\nimport {\n  Building2, MapPin, Phone, Users, Plus, Edit, Trash2, Check, ChefHat, ClipboardList, Package, Truck,\n  TrendingUp, TrendingDown, DollarSign, Award, AlertTriangle, BarChart3, ChevronDown, ArrowRight,\n} from 'lucide-react';\nimport { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';\nimport { useRestaurant, type Restaurant } from '../hooks/useRestaurant';\nimport { useToast } from '../hooks/useToast';\nimport { fetchRestaurantsOverview, type RestaurantOverview, type RestaurantOverviewStat } from '../services/api';\nimport Modal from '../components/Modal';\nimport { useTranslation } from '../hooks/useTranslation';\n\ninterface RestaurantFormData {\n  name: string;\n  address: string;\n  cuisineType: string;\n  phone: string;\n  coversPerDay: number;\n}\n\nconst EMPTY_FORM: RestaurantFormData = {\n  name: '',\n  address: '',\n  cuisineType: '',\n  phone: '',\n  coversPerDay: 0,\n};\n\nfunction formatCurrency(n: number): string {\n  return n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' \\u20AC';\n}\n\nfunction formatPercent(n: number): string {\n  return n.toFixed(1) + ' %';\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Custom Tooltip for Charts \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nfunction ChartTooltip({ active, payload, label }: any) {\n  if (!active || !payload?.length) return null;\n  return (\n    <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 shadow-lg\">\n      <p className=\"text-xs font-medium text-[#111111] dark:text-white mb-1\">{label}</p>\n      {payload.map((entry: any, i: number) => (\n        <p key={i} className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">\n          {entry.name}: <span className=\"font-semibold text-[#111111] dark:text-white\">{entry.value.toFixed(1)} %</span>\n        </p>\n      ))}\n    </div>\n  );\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Overview Dashboard Section \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nfunction OverviewDashboard({\n  overview,\n  onNavigateRestaurant,\n}: {\n  overview: RestaurantOverview;\n  onNavigateRestaurant: (id: number) => void;\n}) {\n  const { restaurants, totals } = overview;\n  const navigate = useNavigate();\n\n  // Find best/worst by margin %\n  const sorted = useMemo(() => [...restaurants].sort((a, b) => b.marginPercent - a.marginPercent), [restaurants]);\n  const best = sorted[0] || null;\n  const worst = sorted[sorted.length - 1] || null;\n  const hasDifference = best && worst && best.id !== worst.id;\n\n  // Chart data\n  const chartData = useMemo(\n    () => restaurants.map((r) => ({ name: r.name.length > 14 ? r.name.slice(0, 14) + '...' : r.name, 'Marge %': r.marginPercent, 'Food Cost %': r.foodCostPercent, fullName: r.name })),\n    [restaurants]\n  );\n\n  // Quick switch dropdown\n  const [dropdownOpen, setDropdownOpen] = useState(false);\n\n  return (\n    <div className=\"space-y-6\">\n      {/* Section header */}\n      <div className=\"flex items-center gap-2\">\n        <BarChart3 className=\"w-5 h-5 text-[#111111] dark:text-white\" />\n        <h3 className=\"text-lg font-bold text-[#111111] dark:text-white font-satoshi\">Vue d'ensemble du portefeuille</h3>\n      </div>\n\n      {/* Portfolio total KPIs */}\n      <div className=\"grid grid-cols-2 md:grid-cols-4 gap-4\">\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4\">\n          <div className=\"flex items-center gap-2 mb-2\">\n            <DollarSign className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <span className=\"text-xs font-medium uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">CA Total</span>\n          </div>\n          <p className=\"text-xl font-bold text-[#111111] dark:text-white font-satoshi\">{formatCurrency(totals.totalRevenue)}</p>\n        </div>\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4\">\n          <div className=\"flex items-center gap-2 mb-2\">\n            <TrendingUp className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <span className=\"text-xs font-medium uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Marge Moy.</span>\n          </div>\n          <p className={`text-xl font-bold font-satoshi ${totals.avgMarginPercent >= 65 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>\n            {formatPercent(totals.avgMarginPercent)}\n          </p>\n        </div>\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4\">\n          <div className=\"flex items-center gap-2 mb-2\">\n            <ClipboardList className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <span className=\"text-xs font-medium uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Recettes</span>\n          </div>\n          <p className=\"text-xl font-bold text-[#111111] dark:text-white font-satoshi\">{totals.totalRecipes}</p>\n        </div>\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4\">\n          <div className=\"flex items-center gap-2 mb-2\">\n            <Package className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <span className=\"text-xs font-medium uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Ingredients</span>\n          </div>\n          <p className=\"text-xl font-bold text-[#111111] dark:text-white font-satoshi\">{totals.totalIngredients}</p>\n        </div>\n      </div>\n\n      {/* Best / Worst + Quick Switch */}\n      <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">\n        {/* Best performer */}\n        {best && (\n          <div\n            className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 cursor-pointer hover:border-[#111111] dark:hover:border-white transition-colors\"\n            onClick={() => onNavigateRestaurant(best.id)}\n          >\n            <div className=\"flex items-center gap-2 mb-3\">\n              <Award className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n              <span className=\"text-xs font-bold uppercase tracking-wide text-[#111111] dark:text-white\">Meilleure performance</span>\n            </div>\n            <p className=\"text-sm font-semibold text-[#111111] dark:text-white mb-1\">{best.name}</p>\n            <div className=\"flex items-center gap-3\">\n              <span className=\"text-lg font-bold text-[#111111] dark:text-white\">{formatPercent(best.marginPercent)}</span>\n              <span className=\"text-xs text-[#6B7280] dark:text-[#737373]\">marge</span>\n            </div>\n            <div className=\"mt-2 flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#737373]\">\n              <ArrowRight className=\"w-3 h-3\" />\n              Voir le dashboard\n            </div>\n          </div>\n        )}\n\n        {/* Worst performer */}\n        {worst && hasDifference && (\n          <div\n            className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 cursor-pointer hover:border-[#111111] dark:hover:border-white transition-colors\"\n            onClick={() => onNavigateRestaurant(worst.id)}\n          >\n            <div className=\"flex items-center gap-2 mb-3\">\n              <AlertTriangle className=\"w-4 h-4 text-[#DC2626]\" />\n              <span className=\"text-xs font-bold uppercase tracking-wide text-[#DC2626]\">A ameliorer</span>\n            </div>\n            <p className=\"text-sm font-semibold text-[#111111] dark:text-white mb-1\">{worst.name}</p>\n            <div className=\"flex items-center gap-3\">\n              <span className=\"text-lg font-bold text-[#DC2626]\">{formatPercent(worst.marginPercent)}</span>\n              <span className=\"text-xs text-[#6B7280] dark:text-[#737373]\">marge</span>\n            </div>\n            <div className=\"mt-2 flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#737373]\">\n              <ArrowRight className=\"w-3 h-3\" />\n              Voir le dashboard\n            </div>\n          </div>\n        )}\n\n        {/* Quick switch dropdown */}\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 relative\">\n          <div className=\"flex items-center gap-2 mb-3\">\n            <Building2 className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <span className=\"text-xs font-bold uppercase tracking-wide text-[#111111] dark:text-white\">Acces rapide</span>\n          </div>\n          <button\n            onClick={() => setDropdownOpen(!dropdownOpen)}\n            className=\"w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#171717] text-sm text-[#111111] dark:text-white hover:border-[#111111] dark:hover:border-white transition-colors\"\n          >\n            <span>Choisir un restaurant</span>\n            <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />\n          </button>\n          {dropdownOpen && (\n            <div className=\"absolute left-4 right-4 top-[calc(100%-4px)] z-10 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg shadow-lg overflow-hidden\">\n              {restaurants.map((r) => (\n                <button\n                  key={r.id}\n                  onClick={() => {\n                    setDropdownOpen(false);\n                    onNavigateRestaurant(r.id);\n                  }}\n                  className=\"w-full flex items-center justify-between px-3 py-2.5 text-sm text-left hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors\"\n                >\n                  <span className=\"text-[#111111] dark:text-white font-medium\">{r.name}</span>\n                  <span className=\"text-xs text-[#6B7280] dark:text-[#737373]\">{formatPercent(r.marginPercent)}</span>\n                </button>\n              ))}\n            </div>\n          )}\n        </div>\n      </div>\n\n      {/* Comparison table */}\n      <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden\">\n        <div className=\"px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]\">\n          <h4 className=\"text-sm font-bold text-[#111111] dark:text-white font-satoshi\">Comparaison des KPI</h4>\n        </div>\n        <div className=\"overflow-x-auto\">\n          <table className=\"w-full text-sm\">\n            <thead>\n              <tr className=\"border-b border-[#E5E7EB] dark:border-[#1A1A1A]\">\n                <th className=\"text-left px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Restaurant</th>\n                <th className=\"text-right px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">CA</th>\n                <th className=\"text-right px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Food Cost %</th>\n                <th className=\"text-right px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Marge %</th>\n                <th className=\"text-right px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Recettes</th>\n                <th className=\"px-4 py-2.5\"></th>\n              </tr>\n            </thead>\n            <tbody>\n              {sorted.map((r) => (\n                <tr\n                  key={r.id}\n                  className=\"border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-0 hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors cursor-pointer\"\n                  onClick={() => onNavigateRestaurant(r.id)}\n                >\n                  <td className=\"px-4 py-3\">\n                    <div className=\"flex items-center gap-2\">\n                      <Building2 className=\"w-4 h-4 text-[#6B7280] dark:text-[#737373] flex-shrink-0\" />\n                      <span className=\"font-medium text-[#111111] dark:text-white\">{r.name}</span>\n                    </div>\n                  </td>\n                  <td className=\"px-4 py-3 text-right font-medium text-[#111111] dark:text-white\">{formatCurrency(r.revenue)}</td>\n                  <td className=\"px-4 py-3 text-right\">\n                    <span className={`font-medium ${r.foodCostPercent <= 30 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>\n                      {formatPercent(r.foodCostPercent)}\n                    </span>\n                  </td>\n                  <td className=\"px-4 py-3 text-right\">\n                    <span className={`inline-flex items-center gap-1 font-bold ${r.marginPercent >= 65 ? 'text-[#111111] dark:text-white' : 'text-[#DC2626]'}`}>\n                      {r.marginPercent >= 65 ? <TrendingUp className=\"w-3 h-3\" /> : <TrendingDown className=\"w-3 h-3\" />}\n                      {formatPercent(r.marginPercent)}\n                    </span>\n                  </td>\n                  <td className=\"px-4 py-3 text-right text-[#6B7280] dark:text-[#737373]\">{r.recipeCount}</td>\n                  <td className=\"px-4 py-3 text-right\">\n                    <ArrowRight className=\"w-4 h-4 text-[#6B7280] dark:text-[#737373]\" />\n                  </td>\n                </tr>\n              ))}\n            </tbody>\n          </table>\n        </div>\n      </div>\n\n      {/* Bar chart: margin comparison */}\n      {chartData.length > 1 && (\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4\">\n          <div className=\"flex items-center gap-2 mb-4\">\n            <BarChart3 className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <h4 className=\"text-sm font-bold text-[#111111] dark:text-white font-satoshi\">Marge vs Food Cost par restaurant</h4>\n          </div>\n          <ResponsiveContainer width=\"100%\" height={280}>\n            <BarChart data={chartData} barGap={4}>\n              <CartesianGrid strokeDasharray=\"3 3\" stroke=\"currentColor\" className=\"text-[#E5E7EB] dark:text-[#1A1A1A]\" />\n              <XAxis\n                dataKey=\"name\"\n                tick={{ fill: '#6B7280', fontSize: 11 }}\n                axisLine={{ stroke: '#E5E7EB' }}\n                tickLine={false}\n              />\n              <YAxis\n                tick={{ fill: '#6B7280', fontSize: 11 }}\n                axisLine={{ stroke: '#E5E7EB' }}\n                tickLine={false}\n                domain={[0, 100]}\n                tickFormatter={(v: number) => `${v}%`}\n              />\n              <Tooltip content={<ChartTooltip />} />\n              <Bar dataKey=\"Marge %\" radius={[4, 4, 0, 0]} maxBarSize={48}>\n                {chartData.map((_: any, index: number) => (\n                  <Cell key={index} fill=\"#111111\" className=\"dark:fill-white\" />\n                ))}\n              </Bar>\n              <Bar dataKey=\"Food Cost %\" radius={[4, 4, 0, 0]} maxBarSize={48} fill=\"#D4D4D4\" className=\"dark:fill-[#404040]\" />\n            </BarChart>\n          </ResponsiveContainer>\n          <div className=\"flex items-center justify-center gap-6 mt-2\">\n            <div className=\"flex items-center gap-2\">\n              <div className=\"w-3 h-3 rounded-sm bg-[#111111] dark:bg-white\" />\n              <span className=\"text-xs text-[#6B7280] dark:text-[#737373]\">Marge %</span>\n            </div>\n            <div className=\"flex items-center gap-2\">\n              <div className=\"w-3 h-3 rounded-sm bg-[#D4D4D4] dark:bg-[#404040]\" />\n              <span className=\"text-xs text-[#6B7280] dark:text-[#737373]\">Food Cost %</span>\n            </div>\n          </div>\n        </div>\n      )}\n    </div>\n  );\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Main Page \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nexport default function Restaurants() {\n  const { t } = useTranslation();\n  const navigate = useNavigate();\n  const { restaurants, selectedRestaurant, loading, switchRestaurant, addRestaurant, updateRestaurant, removeRestaurant } = useRestaurant();\n  const { showToast } = useToast();\n  const [showModal, setShowModal] = useState(false);\n  const [editingId, setEditingId] = useState<number | null>(null);\n  const [form, setForm] = useState<RestaurantFormData>(EMPTY_FORM);\n  const [submitting, setSubmitting] = useState(false);\n\n  // Overview data\n  const [overview, setOverview] = useState<RestaurantOverview | null>(null);\n  const [overviewLoading, setOverviewLoading] = useState(false);\n\n  const hasMultiple = restaurants.length > 1;\n\n  useEffect(() => {\n    if (hasMultiple) {\n      setOverviewLoading(true);\n      fetchRestaurantsOverview()\n        .then(setOverview)\n        .catch(() => {})\n        .finally(() => setOverviewLoading(false));\n    }\n  }, [hasMultiple, restaurants.length]);\n\n  function handleNavigateRestaurant(id: number) {\n    switchRestaurant(id);\n    navigate('/');\n  }\n\n  function openAdd() {\n    setEditingId(null);\n    setForm(EMPTY_FORM);\n    setShowModal(true);\n  }\n\n  function openEdit(r: Restaurant) {\n    setEditingId(r.id);\n    setForm({\n      name: r.name,\n      address: r.address || '',\n      cuisineType: r.cuisineType || '',\n      phone: r.phone || '',\n      coversPerDay: r.coversPerDay,\n    });\n    setShowModal(true);\n  }\n\n  async function handleSubmit(e: React.FormEvent) {\n    e.preventDefault();\n    if (!form.name.trim()) {\n      showToast('Le nom du restaurant est requis', 'error');\n      return;\n    }\n    setSubmitting(true);\n    try {\n      if (editingId) {\n        await updateRestaurant(editingId, { ...form });\n        showToast('Restaurant mis \u00c3\u00a0 jour', 'success');\n      } else {\n        await addRestaurant(form);\n        showToast('Restaurant ajoute avec succes', 'success');\n      }\n      setShowModal(false);\n    } catch {\n      showToast('Erreur lors de la sauvegarde', 'error');\n    } finally {\n      setSubmitting(false);\n    }\n  }\n\n  async function handleDelete(id: number, name: string) {\n    if (restaurants.length <= 1) {\n      showToast('Vous devez avoir au moins un restaurant', 'error');\n      return;\n    }\n    try {\n      await removeRestaurant(id);\n      showToast(`\"${name}\" supprime`, 'info');\n    } catch {\n      showToast('Erreur lors de la suppression', 'error');\n    }\n  }\n\n  if (loading) {\n    return (\n      <div className=\"flex items-center justify-center h-64\">\n        <div className=\"text-[#9CA3AF] dark:text-[#737373]\">Chargement...</div>\n      </div>\n    );\n  }\n\n  return (\n    <div className=\"space-y-8\">\n      {/* Header */}\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h2 className=\"text-2xl font-bold text-[#111111] dark:text-white font-satoshi\">Mes Restaurants</h2>\n          <p className=\"text-sm text-[#9CA3AF] dark:text-[#737373] mt-1\">\n            {hasMultiple\n              ? `${restaurants.length} etablissements \u00e2\u20ac\u201d comparez et gerez votre portefeuille`\n              : 'Gerez vos etablissements et basculez entre eux'}\n          </p>\n        </div>\n        <button\n          onClick={openAdd}\n          className=\"flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-medium transition-colors shadow-sm\"\n        >\n          <Plus className=\"w-4 h-4\" />\n          Ajouter un restaurant\n        </button>\n      </div>\n\n      {/* Overview Dashboard (only if multiple restaurants) */}\n      {hasMultiple && overview && !overviewLoading && (\n        <OverviewDashboard overview={overview} onNavigateRestaurant={handleNavigateRestaurant} />\n      )}\n\n      {hasMultiple && overviewLoading && (\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-8 flex items-center justify-center\">\n          <div className=\"text-sm text-[#9CA3AF] dark:text-[#737373]\">Chargement de l'apercu...</div>\n        </div>\n      )}\n\n      {/* Divider between overview and cards */}\n      {hasMultiple && (\n        <div className=\"flex items-center gap-3\">\n          <div className=\"flex-1 h-px bg-[#E5E7EB] dark:bg-[#1A1A1A]\" />\n          <span className=\"text-xs font-bold uppercase tracking-wide text-[#6B7280] dark:text-[#737373]\">Gestion des restaurants</span>\n          <div className=\"flex-1 h-px bg-[#E5E7EB] dark:bg-[#1A1A1A]\" />\n        </div>\n      )}\n\n      {/* Restaurant Cards Grid */}\n      <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n        {restaurants.map((r) => {\n          const isSelected = selectedRestaurant?.id === r.id;\n          return (\n            <div\n              key={r.id}\n              onClick={() => switchRestaurant(r.id)}\n              className={`relative bg-white dark:bg-[#0A0A0A] rounded-xl shadow-sm border-2 transition-all cursor-pointer hover:shadow-md ${\n                isSelected\n                  ? 'border-[#111111] dark:border-white ring-2 ring-[#111111]/20 dark:ring-white/20'\n                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111]/40 dark:hover:border-white/40'\n              }`}\n            >\n              {/* Selected badge */}\n              {isSelected && (\n                <div className=\"absolute -top-2.5 left-4 flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-medium\">\n                  <Check className=\"w-3 h-3\" />\n                  Actif\n                </div>\n              )}\n\n              <div className=\"p-5\">\n                {/* Top row: name + actions */}\n                <div className=\"flex items-start justify-between mb-3\">\n                  <div className=\"flex items-center gap-3\">\n                    <div className={`p-2.5 rounded-lg ${isSelected ? 'bg-[#111111]/10 dark:bg-white/10' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`}>\n                      <Building2 className={`w-5 h-5 ${isSelected ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />\n                    </div>\n                    <div>\n                      <h3 className=\"font-semibold text-[#111111] dark:text-white\">{r.name}</h3>\n                      <span className=\"text-xs px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]\">\n                        {r.cuisineType || '\\u2014'}\n                      </span>\n                    </div>\n                  </div>\n                  <div className=\"flex items-center gap-1\" onClick={(e) => e.stopPropagation()}>\n                    <button\n                      onClick={() => openEdit(r)}\n                      className=\"p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors\"\n                      title=\"Modifier\"\n                    >\n                      <Edit className=\"w-4 h-4\" />\n                    </button>\n                    <button\n                      onClick={() => handleDelete(r.id, r.name)}\n                      className=\"p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-red-600 dark:hover:text-red-400 transition-colors\"\n                      title=\"Supprimer\"\n                    >\n                      <Trash2 className=\"w-4 h-4\" />\n                    </button>\n                  </div>\n                </div>\n\n                {/* Info rows */}\n                <div className=\"space-y-1.5 mb-4\">\n                  <div className=\"flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373]\">\n                    <MapPin className=\"w-3.5 h-3.5 flex-shrink-0\" />\n                    {r.address || '\\u2014'}\n                  </div>\n                  <div className=\"flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373]\">\n                    <Phone className=\"w-3.5 h-3.5 flex-shrink-0\" />\n                    {r.phone || '\\u2014'}\n                  </div>\n                  <div className=\"flex items-center gap-2 text-sm text-[#9CA3AF] dark:text-[#737373]\">\n                    <Users className=\"w-3.5 h-3.5 flex-shrink-0\" />\n                    {r.coversPerDay} couverts/jour\n                  </div>\n                </div>\n\n                {/* Stats row */}\n                <div className=\"grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]\">\n                  <div className=\"text-center\">\n                    <div className=\"flex items-center justify-center gap-1 text-[#9CA3AF] dark:text-[#737373] mb-0.5\">\n                      <ClipboardList className=\"w-3.5 h-3.5\" />\n                    </div>\n                    <div className=\"text-lg font-bold text-[#111111] dark:text-white\">{r._count?.recipes ?? 0}</div>\n                    <div className=\"text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide\">Recettes</div>\n                  </div>\n                  <div className=\"text-center\">\n                    <div className=\"flex items-center justify-center gap-1 text-[#9CA3AF] dark:text-[#737373] mb-0.5\">\n                      <Package className=\"w-3.5 h-3.5\" />\n                    </div>\n                    <div className=\"text-lg font-bold text-[#111111] dark:text-white\">{r._count?.ingredients ?? 0}</div>\n                    <div className=\"text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide\">Ingredients</div>\n                  </div>\n                  <div className=\"text-center\">\n                    <div className=\"flex items-center justify-center gap-1 text-[#9CA3AF] dark:text-[#737373] mb-0.5\">\n                      <Truck className=\"w-3.5 h-3.5\" />\n                    </div>\n                    <div className=\"text-lg font-bold text-[#111111] dark:text-white\">{r._count?.suppliers ?? 0}</div>\n                    <div className=\"text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide\">Fournisseurs</div>\n                  </div>\n                </div>\n              </div>\n            </div>\n          );\n        })}\n      </div>\n\n      {/* Add/Edit Modal */}\n      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingId ? 'Modifier le restaurant' : 'Ajouter un restaurant'}>\n        <form onSubmit={handleSubmit} className=\"space-y-4\">\n          <div>\n            <label className=\"block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1\">Nom du restaurant *</label>\n            <div className=\"relative\">\n              <Building2 className=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]\" />\n              <input\n                type=\"text\"\n                value={form.name}\n                onChange={(e) => setForm({ ...form, name: e.target.value })}\n                className=\"w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none\"\n                placeholder=\"Ex: Le Bistrot de Youssef\"\n              />\n            </div>\n          </div>\n\n          <div>\n            <label className=\"block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1\">Adresse</label>\n            <div className=\"relative\">\n              <MapPin className=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]\" />\n              <input\n                type=\"text\"\n                value={form.address}\n                onChange={(e) => setForm({ ...form, address: e.target.value })}\n                className=\"w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none\"\n                placeholder=\"25 rue de la Paix, Paris\"\n              />\n            </div>\n          </div>\n\n          <div className=\"grid grid-cols-2 gap-4\">\n            <div>\n              <label className=\"block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1\">Type de cuisine</label>\n              <div className=\"relative\">\n                <ChefHat className=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]\" />\n                <input\n                  type=\"text\"\n                  value={form.cuisineType}\n                  onChange={(e) => setForm({ ...form, cuisineType: e.target.value })}\n                  className=\"w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none\"\n                  placeholder=\"Cuisine francaise\"\n                />\n              </div>\n            </div>\n            <div>\n              <label className=\"block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1\">Telephone</label>\n              <div className=\"relative\">\n                <Phone className=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]\" />\n                <input\n                  type=\"tel\"\n                  value={form.phone}\n                  onChange={(e) => setForm({ ...form, phone: e.target.value })}\n                  className=\"w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none\"\n                  placeholder=\"01 42 00 00 00\"\n                />\n              </div>\n            </div>\n          </div>\n\n          <div>\n            <label className=\"block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1\">Couverts par jour</label>\n            <div className=\"relative\">\n              <Users className=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]\" />\n              <input\n                type=\"number\"\n                min={0}\n                value={form.coversPerDay || ''}\n                onChange={(e) => setForm({ ...form, coversPerDay: parseInt(e.target.value) || 0 })}\n                className=\"w-full pl-10 pr-3 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none\"\n                placeholder=\"80\"\n              />\n            </div>\n          </div>\n\n          <div className=\"flex justify-end gap-3 pt-2\">\n            <button\n              type=\"button\"\n              onClick={() => setShowModal(false)}\n              className=\"px-4 py-2.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:hover:bg-[#171717] text-sm font-medium transition-colors\"\n            >\n              Annuler\n            </button>\n            <button\n              type=\"submit\"\n              disabled={submitting}\n              className=\"px-4 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#E5E5E5] disabled:opacity-50 text-white dark:text-[#111111] text-sm font-medium transition-colors\"\n            >\n              {submitting ? 'En cours...' : editingId ? 'Enregistrer' : 'Ajouter'}\n            </button>\n          </div>\n        </form>\n      </Modal>\n    </div>\n  );\n}\n"
+    },
+    "tool_use_id": "toolu_01P13BzBkpuJGDntCF4YvT56"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "  function openVariantModal(recipe: Recipe) {",
+      "new_string": "  async function handleClone(recipeId: number) {\n    try {\n      const cloned = await cloneRecipe(recipeId);\n      showToast(t(\"recipes.recipeCloned\"), 'success');\n      loadData();\n    } catch {\n      showToast(t(\"recipes.errorCloning\"), 'error');\n    }\n  }\n\n  function openVariantModal(recipe: Recipe) {",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_0166pZ7aXY8kBLqHuxLnSV46"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\" && npx tsc --noEmit 2>&1 | head -50",
+      "timeout": 60000,
+      "description": "Type-check the frontend to catch compile errors"
+    },
+    "tool_use_id": "toolu_01NpTMF8ggoJvXHBZKTJ5Jcn"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag } from 'lucide-react';",
+      "new_string": "import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users } from 'lucide-react';",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01USDcTqaTjqEtZ1Ey32DZzj"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "acd877e34592de27a",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "old_string": "// ============ MARKETPLACE ============\napp.get('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {\n  try {\n    const { limit, offset } = req.query;\n    if (limit !== undefined || offset !== undefined) {\n      const take = Math.min(parseInt(limit) || 100, 500);\n      const skip = parseInt(offset) || 0;\n      const [data, total] = await Promise.all([\n        prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' }, take, skip }),\n        prisma.marketplaceOrder.count({ where: { restaurantId: req.restaurantId } }),\n      ]);\n      return res.json({ data, total, limit: take, offset: skip });\n    }\n    const orders = await prisma.marketplaceOrder.findMany({\n      where: { restaurantId: req.restaurantId }, include: { items: true }, orderBy: { createdAt: 'desc' },\n    });\n    res.json(orders);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur r\u00c3\u00a9cup\u00c3\u00a9ration commandes marketplace' }); }\n});\n\napp.get('/api/marketplace/orders/summary', authWithRestaurant, async (req: any, res) => {\n  try {\n    const orders = await prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId } });\n    const totalOrders = orders.length;\n    const totalSpent = orders.reduce((sum: number, o: any) => sum + o.totalHT, 0);\n    const byStatus: Record<string, number> = {};\n    orders.forEach((o: any) => { byStatus[o.status] = (byStatus[o.status] || 0) + 1; });\n    res.json({ totalOrders, totalSpent, byStatus });\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur r\u00c3\u00a9sum\u00c3\u00a9 marketplace' }); }\n});\n\napp.post('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {\n  try {\n    const { supplierName, items, notes } = req.body;\n    if (!supplierName || !items || !Array.isArray(items) || items.length === 0) return res.status(400).json({ error: 'Fournisseur et articles requis' });\n    const orderItems = items.map((item: any) => ({\n      productName: item.productName || '', quantity: item.quantity || 1, unit: item.unit || '', unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),\n    }));\n    const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);\n    const order = await prisma.marketplaceOrder.create({\n      data: { supplierName, totalHT, notes: notes || null, restaurantId: req.restaurantId, items: { create: orderItems } },\n      include: { items: true },\n    });\n    res.status(201).json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur cr\u00c3\u00a9ation commande marketplace' }); }\n});\n\napp.put('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const { status, notes } = req.body;\n    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });\n    if (!existing) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    const order = await prisma.marketplaceOrder.update({\n      where: { id }, data: { ...(status && { status }), ...(notes !== undefined && { notes }) }, include: { items: true },\n    });\n    res.json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise \u00c3\u00a0 jour commande marketplace' }); }\n});\n\napp.delete('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });\n    if (!existing) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    await prisma.marketplaceOrder.delete({ where: { id } });\n    res.json({ message: 'Commande supprim\u00c3\u00a9e' });\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression commande marketplace' }); }\n});",
+      "new_string": "// ============ MARKETPLACE / SUPPLIER ORDERS ============\n\n// GET /api/marketplace/orders \u00e2\u20ac\u201d List orders with optional status filter\napp.get('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {\n  try {\n    const { limit, offset, status, supplier, from, to } = req.query;\n    const where: any = { restaurantId: req.restaurantId };\n    if (status && status !== 'all') where.status = status;\n    if (supplier) where.supplierName = { contains: supplier, mode: 'insensitive' };\n    if (from || to) {\n      where.createdAt = {};\n      if (from) where.createdAt.gte = new Date(from as string);\n      if (to) where.createdAt.lte = new Date(to as string);\n    }\n    if (limit !== undefined || offset !== undefined) {\n      const take = Math.min(parseInt(limit) || 100, 500);\n      const skip = parseInt(offset) || 0;\n      const [data, total] = await Promise.all([\n        prisma.marketplaceOrder.findMany({ where, include: { items: true }, orderBy: { createdAt: 'desc' }, take, skip }),\n        prisma.marketplaceOrder.count({ where }),\n      ]);\n      return res.json({ data, total, limit: take, offset: skip });\n    }\n    const orders = await prisma.marketplaceOrder.findMany({\n      where, include: { items: true }, orderBy: { createdAt: 'desc' },\n    });\n    res.json(orders);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur r\u00c3\u00a9cup\u00c3\u00a9ration commandes marketplace' }); }\n});\n\n// GET /api/marketplace/orders/summary \u00e2\u20ac\u201d Summary stats\napp.get('/api/marketplace/orders/summary', authWithRestaurant, async (req: any, res) => {\n  try {\n    const orders = await prisma.marketplaceOrder.findMany({ where: { restaurantId: req.restaurantId } });\n    const totalOrders = orders.length;\n    const totalSpent = orders.reduce((sum: number, o: any) => sum + o.totalHT, 0);\n    const byStatus: Record<string, number> = {};\n    orders.forEach((o: any) => { byStatus[o.status] = (byStatus[o.status] || 0) + 1; });\n    res.json({ totalOrders, totalSpent, byStatus });\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur r\u00c3\u00a9sum\u00c3\u00a9 marketplace' }); }\n});\n\n// GET /api/marketplace/orders/spending \u00e2\u20ac\u201d Monthly spending per supplier (last 12 months)\napp.get('/api/marketplace/orders/spending', authWithRestaurant, async (req: any, res) => {\n  try {\n    const twelveMonthsAgo = new Date();\n    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);\n    const orders = await prisma.marketplaceOrder.findMany({\n      where: { restaurantId: req.restaurantId, status: { in: ['received', 'confirmed', 'sent'] }, createdAt: { gte: twelveMonthsAgo } },\n      select: { supplierName: true, totalHT: true, createdAt: true },\n      orderBy: { createdAt: 'asc' },\n    });\n    const spending: Record<string, Record<string, number>> = {};\n    const suppliers = new Set<string>();\n    orders.forEach((o: any) => {\n      const month = new Date(o.createdAt).toISOString().slice(0, 7);\n      if (!spending[month]) spending[month] = {};\n      spending[month][o.supplierName] = (spending[month][o.supplierName] || 0) + o.totalHT;\n      suppliers.add(o.supplierName);\n    });\n    res.json({ spending, suppliers: Array.from(suppliers) });\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur d\u00c3\u00a9penses fournisseurs' }); }\n});\n\n// GET /api/marketplace/orders/:id \u00e2\u20ac\u201d Order detail with items\napp.get('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const order = await prisma.marketplaceOrder.findFirst({\n      where: { id, restaurantId: req.restaurantId },\n      include: { items: true },\n    });\n    if (!order) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    res.json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur r\u00c3\u00a9cup\u00c3\u00a9ration commande' }); }\n});\n\n// POST /api/marketplace/orders \u00e2\u20ac\u201d Create order with items\napp.post('/api/marketplace/orders', authWithRestaurant, async (req: any, res) => {\n  try {\n    const { supplierName, supplierId, items, notes, expectedDelivery } = req.body;\n    if (!supplierName || !items || !Array.isArray(items) || items.length === 0) return res.status(400).json({ error: 'Fournisseur et articles requis' });\n    const orderItems = items.map((item: any) => ({\n      productName: item.productName || '', quantity: item.quantity || 1, unit: item.unit || '', unitPrice: item.unitPrice || 0, total: (item.quantity || 1) * (item.unitPrice || 0),\n      ingredientId: item.ingredientId || null,\n    }));\n    const totalHT = orderItems.reduce((sum: number, i: any) => sum + i.total, 0);\n    const order = await prisma.marketplaceOrder.create({\n      data: {\n        supplierName, supplierId: supplierId || null, totalHT, notes: notes || null,\n        expectedDelivery: expectedDelivery ? new Date(expectedDelivery) : null,\n        restaurantId: req.restaurantId, items: { create: orderItems },\n      },\n      include: { items: true },\n    });\n    res.status(201).json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur cr\u00c3\u00a9ation commande marketplace' }); }\n});\n\n// PUT /api/marketplace/orders/:id \u00e2\u20ac\u201d Update order fields\napp.put('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const { status, notes, expectedDelivery } = req.body;\n    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });\n    if (!existing) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    const data: any = {};\n    if (status) data.status = status;\n    if (notes !== undefined) data.notes = notes;\n    if (expectedDelivery !== undefined) data.expectedDelivery = expectedDelivery ? new Date(expectedDelivery) : null;\n    const order = await prisma.marketplaceOrder.update({\n      where: { id }, data, include: { items: true },\n    });\n    res.json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur mise \u00c3\u00a0 jour commande marketplace' }); }\n});\n\n// PUT /api/marketplace/orders/:id/status \u00e2\u20ac\u201d Update order status with lifecycle validation\napp.put('/api/marketplace/orders/:id/status', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const { status } = req.body;\n    const validStatuses = ['draft', 'sent', 'confirmed', 'received', 'cancelled', 'claimed'];\n    if (!status || !validStatuses.includes(status)) return res.status(400).json({ error: `Statut invalide. Valides: ${validStatuses.join(', ')}` });\n    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });\n    if (!existing) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    const transitions: Record<string, string[]> = {\n      draft: ['sent', 'cancelled'],\n      sent: ['confirmed', 'cancelled'],\n      confirmed: ['received', 'cancelled'],\n      received: ['claimed'],\n      cancelled: ['draft'],\n      claimed: ['received'],\n    };\n    const allowed = transitions[existing.status] || [];\n    if (!allowed.includes(status)) return res.status(400).json({ error: `Transition invalide: ${existing.status} -> ${status}. Autoris\u00c3\u00a9es: ${allowed.join(', ')}` });\n    const updateData: any = { status };\n    if (status === 'received') updateData.receivedAt = new Date();\n    const order = await prisma.marketplaceOrder.update({ where: { id }, data: updateData, include: { items: true } });\n    res.json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur changement statut commande' }); }\n});\n\n// POST /api/marketplace/orders/:id/receive \u00e2\u20ac\u201d Receive order + update inventory\napp.post('/api/marketplace/orders/:id/receive', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const { receivedItems } = req.body;\n    const existing = await prisma.marketplaceOrder.findFirst({\n      where: { id, restaurantId: req.restaurantId },\n      include: { items: true },\n    });\n    if (!existing) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    if (existing.status !== 'confirmed' && existing.status !== 'sent') return res.status(400).json({ error: 'Commande doit \u00c3\u00aatre confirm\u00c3\u00a9e ou envoy\u00c3\u00a9e pour \u00c3\u00aatre r\u00c3\u00a9ceptionn\u00c3\u00a9e' });\n\n    if (Array.isArray(receivedItems)) {\n      for (const ri of receivedItems) {\n        if (ri.itemId && ri.receivedQuantity !== undefined) {\n          await prisma.marketplaceOrderItem.update({\n            where: { id: ri.itemId },\n            data: { receivedQuantity: parseFloat(ri.receivedQuantity) },\n          });\n        }\n      }\n    }\n\n    const orderItems = await prisma.marketplaceOrderItem.findMany({ where: { orderId: id } });\n    for (const item of orderItems) {\n      if (item.ingredientId) {\n        const qty = item.receivedQuantity ?? item.quantity;\n        const inventoryItem = await prisma.inventoryItem.findFirst({\n          where: { ingredientId: item.ingredientId, restaurantId: req.restaurantId },\n        });\n        if (inventoryItem) {\n          await prisma.inventoryItem.update({\n            where: { id: inventoryItem.id },\n            data: { currentStock: inventoryItem.currentStock + qty, lastRestockDate: new Date(), lastRestockQuantity: qty },\n          });\n        }\n      }\n    }\n\n    const order = await prisma.marketplaceOrder.update({\n      where: { id },\n      data: { status: 'received', receivedAt: new Date() },\n      include: { items: true },\n    });\n    res.json(order);\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur r\u00c3\u00a9ception commande' }); }\n});\n\n// DELETE /api/marketplace/orders/:id \u00e2\u20ac\u201d Delete order\napp.delete('/api/marketplace/orders/:id', authWithRestaurant, async (req: any, res) => {\n  try {\n    const id = parseInt(req.params.id);\n    const existing = await prisma.marketplaceOrder.findFirst({ where: { id, restaurantId: req.restaurantId } });\n    if (!existing) return res.status(404).json({ error: 'Commande non trouv\u00c3\u00a9e' });\n    await prisma.marketplaceOrder.delete({ where: { id } });\n    res.json({ message: 'Commande supprim\u00c3\u00a9e' });\n  } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur suppression commande marketplace' }); }\n});",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01TXDY64MMGAsWV7nA1WRvNs"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "import { searchTemplates, type RecipeTemplate } from '../data/recipeTemplates';",
+      "new_string": "import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type RecipeTemplate } from '../data/recipeTemplates';",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01GRmHNjkchg1tbUGwLcpS4C"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "  // View & filter state\n  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');\n  const [selectedCategory, setSelectedCategory] = useState<string>('all');",
+      "new_string": "  // View & filter state\n  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');\n  const [activeTab, setActiveTab] = useState<'recipes' | 'templates'>('recipes');\n  const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>('all');\n  const [templateSearch, setTemplateSearch] = useState('');\n  const [selectedCategory, setSelectedCategory] = useState<string>('all');",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01RQ31nVxUEXa5zwaHQ1Lhew"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\" && npx tsc --noEmit 2>&1 | grep -i \"Restaurants\\|api.ts\" || echo \"No errors in Restaurants.tsx or api.ts\"",
+      "timeout": 60000,
+      "description": "Check for errors only in our modified files"
+    },
+    "tool_use_id": "toolu_01BQZwsL6ahqYpwUqhAxv8sZ"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "  const filtered = recipes.filter((r) => {",
+      "new_string": "  // \u00e2\u201d\u20ac\u00e2\u201d\u20ac Templates library data \u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\n  const templatesByCategory = useMemo(() => getTemplatesByCategory(), []);\n  const filteredTemplates = useMemo(() => {\n    let templates: RecipeTemplate[] = [];\n    if (templateCategoryFilter === 'all') {\n      for (const cat of TEMPLATE_CATEGORY_ORDER) {\n        if (templatesByCategory[cat]) templates.push(...templatesByCategory[cat]);\n      }\n    } else {\n      templates = templatesByCategory[templateCategoryFilter] || [];\n    }\n    if (templateSearch.trim()) {\n      const q = templateSearch.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n      templates = templates.filter((t) => {\n        const name = t.name.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n        return name.includes(q);\n      });\n    }\n    return templates;\n  }, [templatesByCategory, templateCategoryFilter, templateSearch]);\n\n  const filtered = recipes.filter((r) => {",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_018RsjARL6YpD31UZrktW4V8"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Write",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Analytics.tsx",
+      "content": "import { useState, useEffect, useRef, useCallback } from 'react';\nimport {\n  BarChart3, TrendingUp, TrendingDown, DollarSign, ChefHat,\n  AlertTriangle, Download, Calendar, ArrowUpRight, ArrowDownRight,\n  Target, Package, Trash2, Clock, Star, Minus,\n  FileText, Printer, RefreshCw,\n} from 'lucide-react';\nimport {\n  LineChart, Line, BarChart, Bar, AreaChart, Area,\n  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,\n  PieChart, Pie, Cell, Legend,\n} from 'recharts';\nimport { useTranslation } from '../hooks/useTranslation';\nimport { useRestaurant } from '../hooks/useRestaurant';\nimport { getToken } from '../services/api';\n\nconst API_BASE = import.meta.env.VITE_API_URL || '/api';\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Types \u00e2\u201d\u20ac\u00e2\u201d\u20ac\ninterface AnalyticsReport {\n  generatedAt: string;\n  periodDays: number;\n  periodStart: string;\n  periodEnd: string;\n  summary: {\n    totalRecipes: number;\n    totalIngredients: number;\n    avgMarginPercent: number;\n    avgFoodCost: number;\n    totalRevenuePotential: number;\n    totalCostPotential: number;\n    newRecipesThisPeriod: number;\n    newRecipesPrevPeriod: number;\n  };\n  performanceScore: number;\n  topProfitable: RecipeSummary[];\n  bottomMargin: RecipeSummary[];\n  ingredientTrends: IngredientTrend[];\n  categoryPerformance: CategoryPerf[];\n  laborAnalysis: LaborAnalysis | null;\n  wasteImpact: WasteImpact;\n  marginTimeline: TimelinePoint[];\n}\n\ninterface RecipeSummary {\n  id: number;\n  name: string;\n  category: string;\n  sellingPrice: number;\n  marginAmount: number;\n  marginPercent: number;\n  foodCost: number;\n}\n\ninterface IngredientTrend {\n  ingredientId: number;\n  name: string;\n  category: string;\n  oldPrice: number;\n  newPrice: number;\n  changePercent: number;\n}\n\ninterface CategoryPerf {\n  category: string;\n  recipeCount: number;\n  avgMargin: number;\n  totalRevenue: number;\n  totalCost: number;\n  avgMarginPercent: number;\n}\n\ninterface LaborAnalysis {\n  totalHours: number;\n  totalCost: number;\n  avgCostPerHour: number;\n  entryCount: number;\n}\n\ninterface WasteImpact {\n  totalCost: number;\n  entryCount: number;\n  byReason: { reason: string; count: number; cost: number }[];\n  topWastedIngredients: { name: string; cost: number; count: number }[];\n}\n\ninterface TimelinePoint {\n  date: string;\n  avgMargin: number;\n  avgCost: number;\n  recipeCount: number;\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Period options \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nconst PERIODS = [\n  { label: '7j', value: 7 },\n  { label: '30j', value: 30 },\n  { label: '90j', value: 90 },\n  { label: '1 an', value: 365 },\n];\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Monochrome colors \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nconst MONO_COLORS = ['#000000', '#404040', '#737373', '#A3A3A3', '#D4D4D4'];\nconst MONO_DARK = ['#FFFFFF', '#D4D4D4', '#A3A3A3', '#737373', '#525252'];\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Sparkline component \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nfunction Sparkline({ data, dataKey, color, width = 80, height = 24 }: {\n  data: { value: number }[];\n  dataKey: string;\n  color: string;\n  width?: number;\n  height?: number;\n}) {\n  return (\n    <ResponsiveContainer width={width} height={height}>\n      <LineChart data={data}>\n        <Line type=\"monotone\" dataKey={dataKey} stroke={color} strokeWidth={1.5} dot={false} />\n      </LineChart>\n    </ResponsiveContainer>\n  );\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Score ring \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nfunction ScoreRing({ score, size = 160 }: { score: number; size?: number }) {\n  const radius = (size - 16) / 2;\n  const circumference = 2 * Math.PI * radius;\n  const offset = circumference - (score / 100) * circumference;\n  const getColor = () => {\n    if (score >= 75) return '#000000';\n    if (score >= 50) return '#525252';\n    if (score >= 25) return '#737373';\n    return '#A3A3A3';\n  };\n  const getDarkColor = () => {\n    if (score >= 75) return '#FFFFFF';\n    if (score >= 50) return '#D4D4D4';\n    if (score >= 25) return '#A3A3A3';\n    return '#737373';\n  };\n  return (\n    <div className=\"relative\" style={{ width: size, height: size }}>\n      <svg width={size} height={size} className=\"transform -rotate-90\">\n        <circle\n          cx={size / 2} cy={size / 2} r={radius}\n          fill=\"none\" stroke=\"#E5E7EB\" strokeWidth=\"8\"\n          className=\"dark:stroke-[#262626]\"\n        />\n        <circle\n          cx={size / 2} cy={size / 2} r={radius}\n          fill=\"none\" strokeWidth=\"8\" strokeLinecap=\"round\"\n          stroke={getColor()}\n          className=\"dark:stroke-white\"\n          style={{\n            strokeDasharray: circumference,\n            strokeDashoffset: offset,\n            transition: 'stroke-dashoffset 1s ease-out',\n          }}\n        />\n      </svg>\n      <div className=\"absolute inset-0 flex flex-col items-center justify-center\">\n        <span className=\"text-3xl font-bold text-[#111111] dark:text-white\">{score}</span>\n        <span className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">/100</span>\n      </div>\n    </div>\n  );\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Change indicator \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nfunction ChangeIndicator({ value, suffix = '%' }: { value: number; suffix?: string }) {\n  if (value === 0) return <span className=\"flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#A3A3A3]\"><Minus className=\"w-3 h-3\" /> 0{suffix}</span>;\n  if (value > 0) return <span className=\"flex items-center gap-1 text-xs text-[#111111] dark:text-white font-medium\"><ArrowUpRight className=\"w-3 h-3\" /> +{value.toFixed(1)}{suffix}</span>;\n  return <span className=\"flex items-center gap-1 text-xs text-[#6B7280] dark:text-[#737373]\"><ArrowDownRight className=\"w-3 h-3\" /> {value.toFixed(1)}{suffix}</span>;\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Waste reason labels \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nconst WASTE_LABELS: Record<string, string> = {\n  expired: 'Perime',\n  spoiled: 'Avarie',\n  overproduction: 'Surproduction',\n  damaged: 'Endommage',\n  other: 'Autre',\n};\n\nexport default function Analytics() {\n  const { t } = useTranslation();\n  const { selectedRestaurant } = useRestaurant();\n  const [period, setPeriod] = useState(30);\n  const [report, setReport] = useState<AnalyticsReport | null>(null);\n  const [loading, setLoading] = useState(true);\n  const [error, setError] = useState('');\n  const [compareMode, setCompareMode] = useState(false);\n  const [prevReport, setPrevReport] = useState<AnalyticsReport | null>(null);\n  const printRef = useRef<HTMLDivElement>(null);\n\n  const fetchReport = useCallback(async (days: number) => {\n    setLoading(true);\n    setError('');\n    try {\n      const token = getToken();\n      const restaurantId = selectedRestaurant?.id;\n      if (!token || !restaurantId) return;\n      const headers: Record<string, string> = {\n        'Content-Type': 'application/json',\n        'Authorization': `Bearer ${token}`,\n        'X-Restaurant-Id': String(restaurantId),\n      };\n      const res = await fetch(`${API_BASE}/analytics/report?period=${days}`, { headers });\n      if (!res.ok) throw new Error('Erreur serveur');\n      const data = await res.json();\n      setReport(data);\n\n      // If compare mode, also fetch previous period\n      if (compareMode) {\n        const prevRes = await fetch(`${API_BASE}/analytics/report?period=${days * 2}`, { headers });\n        if (prevRes.ok) {\n          setPrevReport(await prevRes.json());\n        }\n      }\n    } catch (e: any) {\n      setError(e.message || 'Erreur chargement rapport');\n    } finally {\n      setLoading(false);\n    }\n  }, [selectedRestaurant, compareMode]);\n\n  useEffect(() => {\n    if (selectedRestaurant) fetchReport(period);\n  }, [period, selectedRestaurant, fetchReport]);\n\n  // \u00e2\u201d\u20ac\u00e2\u201d\u20ac PDF Export (print-based) \u00e2\u201d\u20ac\u00e2\u201d\u20ac\n  const handleExportPDF = () => {\n    window.print();\n  };\n\n  if (loading) {\n    return (\n      <div className=\"min-h-screen flex items-center justify-center\">\n        <div className=\"flex flex-col items-center gap-3\">\n          <RefreshCw className=\"w-8 h-8 animate-spin text-[#6B7280] dark:text-[#A3A3A3]\" />\n          <p className=\"text-[#6B7280] dark:text-[#A3A3A3]\">Chargement du rapport...</p>\n        </div>\n      </div>\n    );\n  }\n\n  if (error) {\n    return (\n      <div className=\"min-h-screen flex items-center justify-center\">\n        <div className=\"text-center\">\n          <AlertTriangle className=\"w-12 h-12 text-[#6B7280] dark:text-[#737373] mx-auto mb-4\" />\n          <p className=\"text-[#111111] dark:text-white font-medium mb-2\">Erreur</p>\n          <p className=\"text-[#6B7280] dark:text-[#A3A3A3] text-sm mb-4\">{error}</p>\n          <button onClick={() => fetchReport(period)} className=\"px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg text-sm font-medium hover:opacity-90 transition-opacity\">\n            Reessayer\n          </button>\n        </div>\n      </div>\n    );\n  }\n\n  if (!report) return null;\n\n  const { summary, performanceScore, topProfitable, bottomMargin, ingredientTrends, categoryPerformance, laborAnalysis, wasteImpact, marginTimeline } = report;\n\n  // Dark mode detection for charts\n  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');\n  const chartStroke = isDark ? '#FFFFFF' : '#000000';\n  const chartSecondary = isDark ? '#A3A3A3' : '#6B7280';\n  const chartGrid = isDark ? '#262626' : '#E5E7EB';\n  const chartBg = isDark ? '#0A0A0A' : '#FFFFFF';\n  const chartText = isDark ? '#A3A3A3' : '#6B7280';\n  const chartColors = isDark ? MONO_DARK : MONO_COLORS;\n\n  return (\n    <div ref={printRef} className=\"max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6\">\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Header \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4\">\n        <div>\n          <h1 className=\"text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3\">\n            <BarChart3 className=\"w-7 h-7\" />\n            Analytiques\n          </h1>\n          <p className=\"text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1\">\n            Rapport de performance \u00e2\u20ac\u201d {selectedRestaurant?.name}\n          </p>\n        </div>\n        <div className=\"flex items-center gap-3 flex-wrap\">\n          {/* Period selector */}\n          <div className=\"flex bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5\">\n            {PERIODS.map(p => (\n              <button\n                key={p.value}\n                onClick={() => setPeriod(p.value)}\n                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${\n                  period === p.value\n                    ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] shadow-sm'\n                    : 'text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'\n                }`}\n              >\n                {p.label}\n              </button>\n            ))}\n          </div>\n          {/* Compare toggle */}\n          <button\n            onClick={() => setCompareMode(!compareMode)}\n            className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all ${\n              compareMode\n                ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-[#111111]'\n                : 'border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#111111] dark:hover:border-white'\n            }`}\n          >\n            Comparer\n          </button>\n          {/* Export PDF */}\n          <button\n            onClick={handleExportPDF}\n            className=\"flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-all print:hidden\"\n          >\n            <Printer className=\"w-4 h-4\" />\n            Exporter PDF\n          </button>\n        </div>\n      </div>\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Score + Summary Cards \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-4 gap-4\">\n        {/* Performance Score */}\n        <div className=\"lg:col-span-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center\">\n          <p className=\"text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-4\">Score de performance</p>\n          <ScoreRing score={performanceScore} />\n          <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-3\">\n            {performanceScore >= 75 ? 'Excellent' : performanceScore >= 50 ? 'Bon' : performanceScore >= 25 ? 'A ameliorer' : 'Critique'}\n          </p>\n        </div>\n\n        {/* Summary cards grid */}\n        <div className=\"lg:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-4\">\n          <SummaryCard\n            icon={<Target className=\"w-4 h-4\" />}\n            label=\"Marge moyenne\"\n            value={`${summary.avgMarginPercent}%`}\n            sub={summary.avgMarginPercent >= 65 ? 'Objectif atteint' : 'Sous objectif 65%'}\n            trend={summary.avgMarginPercent >= 65}\n          />\n          <SummaryCard\n            icon={<DollarSign className=\"w-4 h-4\" />}\n            label=\"Food cost moyen\"\n            value={`${summary.avgFoodCost.toFixed(2)} EUR`}\n            sub={`${summary.totalRecipes} recettes`}\n          />\n          <SummaryCard\n            icon={<ChefHat className=\"w-4 h-4\" />}\n            label=\"Recettes\"\n            value={String(summary.totalRecipes)}\n            sub={`+${summary.newRecipesThisPeriod} cette periode`}\n            trend={summary.newRecipesThisPeriod > summary.newRecipesPrevPeriod}\n          />\n          <SummaryCard\n            icon={<Package className=\"w-4 h-4\" />}\n            label=\"Ingredients\"\n            value={String(summary.totalIngredients)}\n            sub=\"references actives\"\n          />\n          <SummaryCard\n            icon={<TrendingUp className=\"w-4 h-4\" />}\n            label=\"CA potentiel\"\n            value={`${summary.totalRevenuePotential.toFixed(0)} EUR`}\n            sub=\"somme des prix de vente\"\n          />\n          <SummaryCard\n            icon={<Trash2 className=\"w-4 h-4\" />}\n            label=\"Gaspillage\"\n            value={`${wasteImpact.totalCost.toFixed(0)} EUR`}\n            sub={`${wasteImpact.entryCount} incidents`}\n            trend={wasteImpact.totalCost < 100}\n          />\n        </div>\n      </div>\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Margin Over Time Chart \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      {marginTimeline.length > 1 && (\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white mb-4\">Evolution des marges</h2>\n          <div className=\"h-64\">\n            <ResponsiveContainer width=\"100%\" height=\"100%\">\n              <AreaChart data={marginTimeline}>\n                <defs>\n                  <linearGradient id=\"marginGrad\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n                    <stop offset=\"5%\" stopColor={chartStroke} stopOpacity={0.15} />\n                    <stop offset=\"95%\" stopColor={chartStroke} stopOpacity={0} />\n                  </linearGradient>\n                </defs>\n                <CartesianGrid strokeDasharray=\"3 3\" stroke={chartGrid} />\n                <XAxis dataKey=\"date\" tick={{ fill: chartText, fontSize: 11 }} tickLine={false} axisLine={false} />\n                <YAxis tick={{ fill: chartText, fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} />\n                <Tooltip\n                  contentStyle={{ background: chartBg, border: `1px solid ${chartGrid}`, borderRadius: 8, fontSize: 12 }}\n                  labelStyle={{ color: chartText }}\n                  formatter={(value: number, name: string) => [\n                    name === 'avgMargin' ? `${value}%` : `${value.toFixed(2)} EUR`,\n                    name === 'avgMargin' ? 'Marge' : 'Cout moyen'\n                  ]}\n                />\n                <Area type=\"monotone\" dataKey=\"avgMargin\" stroke={chartStroke} fill=\"url(#marginGrad)\" strokeWidth={2} />\n                <Line type=\"monotone\" dataKey=\"avgCost\" stroke={chartSecondary} strokeWidth={1.5} strokeDasharray=\"5 5\" dot={false} />\n              </AreaChart>\n            </ResponsiveContainer>\n          </div>\n        </div>\n      )}\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Top / Bottom Tables \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">\n        {/* Top 5 Most Profitable */}\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <div className=\"flex items-center gap-2 mb-4\">\n            <Star className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white\">Top 5 \u00e2\u20ac\u201d Plus rentables</h2>\n          </div>\n          <div className=\"space-y-2\">\n            {topProfitable.length === 0 && (\n              <p className=\"text-sm text-[#6B7280] dark:text-[#A3A3A3]\">Aucune recette</p>\n            )}\n            {topProfitable.map((r, i) => (\n              <div key={r.id} className=\"flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]\">\n                <span className=\"w-6 h-6 flex items-center justify-center rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold flex-shrink-0\">\n                  {i + 1}\n                </span>\n                <div className=\"flex-1 min-w-0\">\n                  <p className=\"text-sm font-medium text-[#111111] dark:text-white truncate\">{r.name}</p>\n                  <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">{r.category} \u00e2\u20ac\u201d {r.sellingPrice.toFixed(2)} EUR</p>\n                </div>\n                <div className=\"text-right flex-shrink-0\">\n                  <p className=\"text-sm font-bold text-[#111111] dark:text-white\">{r.marginPercent.toFixed(1)}%</p>\n                  <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">+{r.marginAmount.toFixed(2)} EUR</p>\n                </div>\n              </div>\n            ))}\n          </div>\n        </div>\n\n        {/* Bottom 5 Worst Margin */}\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <div className=\"flex items-center gap-2 mb-4\">\n            <AlertTriangle className=\"w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]\" />\n            <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white\">Top 5 \u00e2\u20ac\u201d Marges faibles</h2>\n          </div>\n          <div className=\"space-y-2\">\n            {bottomMargin.length === 0 && (\n              <p className=\"text-sm text-[#6B7280] dark:text-[#A3A3A3]\">Aucune recette</p>\n            )}\n            {bottomMargin.map((r, i) => (\n              <div key={r.id} className=\"flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]\">\n                <span className=\"w-6 h-6 flex items-center justify-center rounded-full bg-[#D4D4D4] dark:bg-[#404040] text-[#111111] dark:text-[#D4D4D4] text-xs font-bold flex-shrink-0\">\n                  {i + 1}\n                </span>\n                <div className=\"flex-1 min-w-0\">\n                  <p className=\"text-sm font-medium text-[#111111] dark:text-white truncate\">{r.name}</p>\n                  <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">{r.category} \u00e2\u20ac\u201d {r.sellingPrice.toFixed(2)} EUR</p>\n                </div>\n                <div className=\"text-right flex-shrink-0\">\n                  <p className={`text-sm font-bold ${r.marginPercent < 30 ? 'text-[#6B7280] dark:text-[#737373]' : 'text-[#111111] dark:text-white'}`}>\n                    {r.marginPercent.toFixed(1)}%\n                  </p>\n                  <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">{r.marginAmount.toFixed(2)} EUR</p>\n                </div>\n              </div>\n            ))}\n          </div>\n        </div>\n      </div>\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Category Performance \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      {categoryPerformance.length > 0 && (\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white mb-4\">Performance par categorie</h2>\n          <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-6\">\n            {/* Bar chart */}\n            <div className=\"h-64\">\n              <ResponsiveContainer width=\"100%\" height=\"100%\">\n                <BarChart data={categoryPerformance} layout=\"vertical\">\n                  <CartesianGrid strokeDasharray=\"3 3\" stroke={chartGrid} horizontal={false} />\n                  <XAxis type=\"number\" tick={{ fill: chartText, fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} />\n                  <YAxis type=\"category\" dataKey=\"category\" tick={{ fill: chartText, fontSize: 11 }} tickLine={false} axisLine={false} width={100} />\n                  <Tooltip\n                    contentStyle={{ background: chartBg, border: `1px solid ${chartGrid}`, borderRadius: 8, fontSize: 12 }}\n                    formatter={(value: number) => [`${value}%`, 'Marge']}\n                  />\n                  <Bar dataKey=\"avgMarginPercent\" fill={chartStroke} radius={[0, 4, 4, 0]} barSize={20} />\n                </BarChart>\n              </ResponsiveContainer>\n            </div>\n            {/* Pie chart */}\n            <div className=\"h-64\">\n              <ResponsiveContainer width=\"100%\" height=\"100%\">\n                <PieChart>\n                  <Pie\n                    data={categoryPerformance}\n                    dataKey=\"recipeCount\"\n                    nameKey=\"category\"\n                    cx=\"50%\"\n                    cy=\"50%\"\n                    outerRadius={80}\n                    label={({ category, recipeCount }) => `${category} (${recipeCount})`}\n                    labelLine={false}\n                  >\n                    {categoryPerformance.map((_, i) => (\n                      <Cell key={i} fill={chartColors[i % chartColors.length]} />\n                    ))}\n                  </Pie>\n                  <Tooltip\n                    contentStyle={{ background: chartBg, border: `1px solid ${chartGrid}`, borderRadius: 8, fontSize: 12 }}\n                  />\n                </PieChart>\n              </ResponsiveContainer>\n            </div>\n          </div>\n          {/* Category table */}\n          <div className=\"mt-4 overflow-x-auto\">\n            <table className=\"w-full text-sm\">\n              <thead>\n                <tr className=\"text-left text-xs text-[#6B7280] dark:text-[#A3A3A3] border-b border-[#E5E7EB] dark:border-[#262626]\">\n                  <th className=\"pb-2 font-medium\">Categorie</th>\n                  <th className=\"pb-2 font-medium text-right\">Recettes</th>\n                  <th className=\"pb-2 font-medium text-right\">Marge moy.</th>\n                  <th className=\"pb-2 font-medium text-right\">CA total</th>\n                  <th className=\"pb-2 font-medium text-right\">Cout total</th>\n                </tr>\n              </thead>\n              <tbody>\n                {categoryPerformance.map(cat => (\n                  <tr key={cat.category} className=\"border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0\">\n                    <td className=\"py-2.5 text-[#111111] dark:text-white font-medium\">{cat.category}</td>\n                    <td className=\"py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]\">{cat.recipeCount}</td>\n                    <td className=\"py-2.5 text-right font-medium text-[#111111] dark:text-white\">{cat.avgMarginPercent}%</td>\n                    <td className=\"py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]\">{cat.totalRevenue.toFixed(0)} EUR</td>\n                    <td className=\"py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]\">{cat.totalCost.toFixed(0)} EUR</td>\n                  </tr>\n                ))}\n              </tbody>\n            </table>\n          </div>\n        </div>\n      )}\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Ingredient Cost Trends \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      {ingredientTrends.length > 0 && (\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white mb-4\">Tendances prix ingredients</h2>\n          <div className=\"space-y-2\">\n            {ingredientTrends.map(tr => (\n              <div key={tr.ingredientId} className=\"flex items-center gap-3 p-3 rounded-lg bg-[#F9FAFB] dark:bg-[#111111] border border-[#F3F4F6] dark:border-[#1A1A1A]\">\n                <div className=\"flex-1 min-w-0\">\n                  <p className=\"text-sm font-medium text-[#111111] dark:text-white truncate\">{tr.name}</p>\n                  <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">{tr.category}</p>\n                </div>\n                <div className=\"text-right flex-shrink-0\">\n                  <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">\n                    {tr.oldPrice.toFixed(2)} EUR &rarr; {tr.newPrice.toFixed(2)} EUR\n                  </p>\n                  <ChangeIndicator value={tr.changePercent} />\n                </div>\n              </div>\n            ))}\n          </div>\n        </div>\n      )}\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Labor + Waste side by side \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-4\">\n        {/* Labor Analysis */}\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <div className=\"flex items-center gap-2 mb-4\">\n            <Clock className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white\">Main d'oeuvre</h2>\n          </div>\n          {laborAnalysis ? (\n            <div className=\"grid grid-cols-2 gap-4\">\n              <div>\n                <p className=\"text-2xl font-bold text-[#111111] dark:text-white\">{laborAnalysis.totalHours}h</p>\n                <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">Heures totales</p>\n              </div>\n              <div>\n                <p className=\"text-2xl font-bold text-[#111111] dark:text-white\">{laborAnalysis.totalCost.toFixed(0)} EUR</p>\n                <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">Cout total</p>\n              </div>\n              <div>\n                <p className=\"text-2xl font-bold text-[#111111] dark:text-white\">{laborAnalysis.avgCostPerHour.toFixed(2)} EUR</p>\n                <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">Cout/heure</p>\n              </div>\n              <div>\n                <p className=\"text-2xl font-bold text-[#111111] dark:text-white\">{laborAnalysis.entryCount}</p>\n                <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">Entrees</p>\n              </div>\n            </div>\n          ) : (\n            <div className=\"flex flex-col items-center justify-center py-8 text-center\">\n              <Clock className=\"w-8 h-8 text-[#D4D4D4] dark:text-[#404040] mb-2\" />\n              <p className=\"text-sm text-[#6B7280] dark:text-[#A3A3A3]\">Aucune donnee de temps</p>\n              <p className=\"text-xs text-[#9CA3AF] dark:text-[#525252] mt-1\">Utilisez le planning pour suivre les heures</p>\n            </div>\n          )}\n        </div>\n\n        {/* Food Waste */}\n        <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6\">\n          <div className=\"flex items-center gap-2 mb-4\">\n            <Trash2 className=\"w-4 h-4 text-[#111111] dark:text-white\" />\n            <h2 className=\"text-sm font-semibold text-[#111111] dark:text-white\">Impact gaspillage</h2>\n          </div>\n          {wasteImpact.entryCount > 0 ? (\n            <div className=\"space-y-4\">\n              <div className=\"flex items-baseline gap-2\">\n                <span className=\"text-2xl font-bold text-[#111111] dark:text-white\">{wasteImpact.totalCost.toFixed(0)} EUR</span>\n                <span className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3]\">perdu sur {wasteImpact.entryCount} incidents</span>\n              </div>\n              {/* By reason */}\n              <div className=\"space-y-1.5\">\n                {wasteImpact.byReason.map(r => {\n                  const pct = wasteImpact.totalCost > 0 ? (r.cost / wasteImpact.totalCost) * 100 : 0;\n                  return (\n                    <div key={r.reason} className=\"flex items-center gap-2\">\n                      <span className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3] w-28 flex-shrink-0\">{WASTE_LABELS[r.reason] || r.reason}</span>\n                      <div className=\"flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden\">\n                        <div className=\"h-full bg-[#111111] dark:bg-white rounded-full transition-all\" style={{ width: `${pct}%` }} />\n                      </div>\n                      <span className=\"text-xs font-medium text-[#111111] dark:text-white w-16 text-right\">{r.cost.toFixed(0)} EUR</span>\n                    </div>\n                  );\n                })}\n              </div>\n              {/* Top wasted */}\n              {wasteImpact.topWastedIngredients.length > 0 && (\n                <div className=\"pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]\">\n                  <p className=\"text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-2\">Plus gaspilles</p>\n                  {wasteImpact.topWastedIngredients.slice(0, 3).map(w => (\n                    <div key={w.name} className=\"flex justify-between text-xs py-1\">\n                      <span className=\"text-[#111111] dark:text-white\">{w.name}</span>\n                      <span className=\"text-[#6B7280] dark:text-[#A3A3A3]\">{w.cost.toFixed(2)} EUR ({w.count}x)</span>\n                    </div>\n                  ))}\n                </div>\n              )}\n            </div>\n          ) : (\n            <div className=\"flex flex-col items-center justify-center py-8 text-center\">\n              <Trash2 className=\"w-8 h-8 text-[#D4D4D4] dark:text-[#404040] mb-2\" />\n              <p className=\"text-sm text-[#6B7280] dark:text-[#A3A3A3]\">Aucun gaspillage enregistre</p>\n              <p className=\"text-xs text-[#9CA3AF] dark:text-[#525252] mt-1\">Utilisez le suivi gaspillage</p>\n            </div>\n          )}\n        </div>\n      </div>\n\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Print Footer \u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"hidden print:block text-center text-xs text-[#9CA3AF] mt-8 pt-4 border-t border-[#E5E7EB]\">\n        <p>RestauMargin \u00e2\u20ac\u201d Rapport analytique genere le {new Date().toLocaleDateString('fr-FR')}</p>\n        <p>{selectedRestaurant?.name} \u00e2\u20ac\u201d Periode: {report.periodDays} jours</p>\n      </div>\n    </div>\n  );\n}\n\n// \u00e2\u201d\u20ac\u00e2\u201d\u20ac Summary Card Component \u00e2\u201d\u20ac\u00e2\u201d\u20ac\nfunction SummaryCard({ icon, label, value, sub, trend }: {\n  icon: React.ReactNode;\n  label: string;\n  value: string;\n  sub?: string;\n  trend?: boolean;\n}) {\n  return (\n    <div className=\"bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4\">\n      <div className=\"flex items-center gap-2 mb-2\">\n        <span className=\"text-[#6B7280] dark:text-[#A3A3A3]\">{icon}</span>\n        <span className=\"text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]\">{label}</span>\n      </div>\n      <p className=\"text-xl font-bold text-[#111111] dark:text-white\">{value}</p>\n      {sub && (\n        <p className={`text-xs mt-1 ${trend === true ? 'text-[#111111] dark:text-white font-medium' : trend === false ? 'text-[#9CA3AF] dark:text-[#525252]' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>\n          {sub}\n        </p>\n      )}\n    </div>\n  );\n}\n"
+    },
+    "tool_use_id": "toolu_011y8MMV9KQKT5MvsfBKP74a"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "  // AI Mercuriale: suggest ingredients for recipe",
+      "new_string": "  // Use a template from the library tab \u00e2\u20ac\u201d opens the creation form pre-filled\n  function useTemplate(template: RecipeTemplate) {\n    applyTemplate(template);\n    setActiveTab('recipes');\n    setShowForm(true);\n  }\n\n  // AI Mercuriale: suggest ingredients for recipe",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01WCM6MHpuDyuKDdcctUJuNL"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\" && npx tsc --noEmit -p api/tsconfig.json 2>&1 | head -20",
+      "timeout": 60000,
+      "description": "Type-check the backend API"
+    },
+    "tool_use_id": "toolu_017UezADETmJcZ1DkGKEKv7T"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\App.tsx",
+      "old_string": "const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));",
+      "new_string": "const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));\nconst Analytics = lazyRetry(() => import('./pages/Analytics'));",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01WRCKd3X9HW2ZZPjYEnUmzW"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "offset": 978,
+      "limit": 30
+    },
+    "tool_use_id": "toolu_011cGUVi2co1vny2FkhyjLeT"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "ls \"C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api/tsconfig.json\" 2>&1; ls \"C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin/tsconfig.json\" 2>&1",
+      "description": "Check if tsconfig exists for API"
+    },
+    "tool_use_id": "toolu_01L2fsmBEf2hVcEnVunDC5tv"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "offset": 1033,
+      "limit": 20
+    },
+    "tool_use_id": "toolu_01Uvrv8DqCrdNpyosQG2mo32"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\App.tsx",
+      "old_string": "      title: 'INTELLIGENCE',\n      items: [\n        { to: '/scanner-factures', icon: Receipt, label: 'Factures' },\n        { to: '/actualites', icon: Newspaper, label: 'Actualit\u00c3\u00a9s IA' },\n        { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },\n        { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },\n        { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },\n        { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },\n      ],",
+      "new_string": "      title: 'INTELLIGENCE',\n      items: [\n        { to: '/analytics', icon: BarChart3, label: 'Analytiques' },\n        { to: '/scanner-factures', icon: Receipt, label: 'Factures' },\n        { to: '/actualites', icon: Newspaper, label: 'Actualit\u00c3\u00a9s IA' },\n        { to: '/mercuriale', icon: TrendingUp, label: 'Mercuriale' },\n        { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },\n        { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },\n        { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },\n      ],",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01Dir4R2NEvbS38uhjqVUA8L"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/tsconfig*.json",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin"
+    },
+    "tool_use_id": "toolu_01JPNP8Fpj1DWRS5CA3bySdH"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\App.tsx",
+      "old_string": "              <Route path=\"/scanner-factures\" element={<InvoiceScanner />} />\n              <Route path=\"/actualites\" element={<Actualites />} />",
+      "new_string": "              <Route path=\"/analytics\" element={<Analytics />} />\n              <Route path=\"/scanner-factures\" element={<InvoiceScanner />} />\n              <Route path=\"/actualites\" element={<Actualites />} />",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01SYoSwVeHze6nUxqbqzSiEx"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "app\\.get\\('/api/restaurants/overview'",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "output_mode": "content",
+      "-A": 5
+    },
+    "tool_use_id": "toolu_01WAwWAgsSKjfVT24Xoa6PRM"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Search bar + View toggle \u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"flex flex-col sm:flex-row gap-3 mb-4\">\n        <div className=\"relative flex-1 max-w-md\">\n          <Search className=\"w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]\" />\n          <input\n            type=\"text\"\n            placeholder={t(\"recipes.searchPlaceholder\")}\n            value={search}\n            onChange={(e) => setSearch(e.target.value)}\n            className=\"input pl-10 w-full\"\n          />\n        </div>",
+      "new_string": "      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Tabs: Mes recettes / Templates \u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"flex items-center gap-1 mb-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]\">\n        <button\n          onClick={() => setActiveTab('recipes')}\n          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'recipes' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}\n        >\n          <UtensilsCrossed className=\"w-4 h-4\" />\n          Mes recettes\n        </button>\n        <button\n          onClick={() => setActiveTab('templates')}\n          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'templates' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}\n        >\n          <BookOpen className=\"w-4 h-4\" />\n          Templates\n        </button>\n      </div>\n\n      {activeTab === 'recipes' ? (\n      <>\n      {/* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Search bar + View toggle \u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac */}\n      <div className=\"flex flex-col sm:flex-row gap-3 mb-4\">\n        <div className=\"relative flex-1 max-w-md\">\n          <Search className=\"w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]\" />\n          <input\n            type=\"text\"\n            placeholder={t(\"recipes.searchPlaceholder\")}\n            value={search}\n            onChange={(e) => setSearch(e.target.value)}\n            className=\"input pl-10 w-full\"\n          />\n        </div>",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01H8XohFx9CCM5a2DjhLAdVm"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "fetchRestaurantsOverview",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src",
+      "output_mode": "files_with_matches"
+    },
+    "tool_use_id": "toolu_018NnFFZfxLWTrPb75GDNHKf"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "BarChart3",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\App.tsx",
+      "output_mode": "content",
+      "head_limit": 5
+    },
+    "tool_use_id": "toolu_01Wy6tz7j7Zev92UtDBuyghX"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "Recipe Form Modal",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "output_mode": "content",
+      "-B": 5,
+      "-n": true
+    },
+    "tool_use_id": "toolu_01HHSradhZxC5iDg4WysEBY1"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "analytics/report",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "output_mode": "content",
+      "-C": 2
+    },
+    "tool_use_id": "toolu_017xrKKgPJNNX9r1t3EXamh5"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "app\\.(get|put|delete)\\('/api/restaurants",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\api\\index.ts",
+      "output_mode": "content"
+    },
+    "tool_use_id": "toolu_01GzGCWYyBX6vNJ3x6Neen4k"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/index.css",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src"
+    },
+    "tool_use_id": "toolu_015yxhiwSz5iSoMLUxJ84Kw9"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "wc -l \"C:/Users/mrgue/CLAUDE CODE/restaurant-margin/client/src/pages/Restaurants.tsx\"",
+      "description": "Count lines of Restaurants.tsx"
+    },
+    "tool_use_id": "toolu_01HxcbaJGXuZXFKdCsqPiBJn"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "@media print",
+      "path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\index.css",
+      "output_mode": "content",
+      "-C": 5
+    },
+    "tool_use_id": "toolu_01VX3RMh9jWffYtBpEVByKQJ"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\index.css",
+      "offset": 315,
+      "limit": 40
+    },
+    "tool_use_id": "toolu_014EaAqWABBTNnzwjKdbA1N1"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Analytics.tsx",
+      "offset": 1,
+      "limit": 20
+    },
+    "tool_use_id": "toolu_01HC5QCWgKarZLfYdxyhy5gE"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "abc2d83064c4a5a88",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Restaurants.tsx",
+      "offset": 625,
+      "limit": 10
+    },
+    "tool_use_id": "toolu_01UU1Q5bbM94up1TYMzjiTF1"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Analytics.tsx",
+      "old_string": "import {\n  BarChart3, TrendingUp, TrendingDown, DollarSign, ChefHat,\n  AlertTriangle, Download, Calendar, ArrowUpRight, ArrowDownRight,\n  Target, Package, Trash2, Clock, Star, Minus,\n  FileText, Printer, RefreshCw,\n} from 'lucide-react';\nimport {\n  LineChart, Line, BarChart, Bar, AreaChart, Area,\n  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,\n  PieChart, Pie, Cell, Legend,\n} from 'recharts';",
+      "new_string": "import {\n  BarChart3, TrendingUp, DollarSign, ChefHat,\n  AlertTriangle, ArrowUpRight, ArrowDownRight,\n  Target, Package, Trash2, Clock, Star, Minus,\n  Printer, RefreshCw,\n} from 'lucide-react';\nimport {\n  LineChart, Line, BarChart, Bar, AreaChart, Area,\n  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,\n  PieChart, Pie, Cell,\n} from 'recharts';",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01Fdzscm8tBwcDZSNNfdKUZ9"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\\src\\pages\\Recipes.tsx",
+      "old_string": "      {/* Recipe Form Modal */}",
+      "new_string": "      </>\n      ) : (\n      /* \u00e2\u201d\u20ac\u00e2\u201d\u20ac Templates Library Tab \u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac\u00e2\u201d\u20ac */\n      <div>\n        {/* Template search + category filter */}\n        <div className=\"flex flex-col sm:flex-row gap-3 mb-4\">\n          <div className=\"relative flex-1 max-w-md\">\n            <Search className=\"w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]\" />\n            <input\n              type=\"text\"\n              placeholder=\"Rechercher un template...\"\n              value={templateSearch}\n              onChange={(e) => setTemplateSearch(e.target.value)}\n              className=\"input pl-10 w-full\"\n            />\n          </div>\n        </div>\n\n        {/* Category filter pills */}\n        <div className=\"flex flex-wrap gap-2 mb-6\">\n          <button\n            onClick={() => setTemplateCategoryFilter('all')}\n            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === 'all' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'}`}\n          >\n            Toutes ({Object.values(templatesByCategory).reduce((s, arr) => s + arr.length, 0)})\n          </button>\n          {TEMPLATE_CATEGORY_ORDER.map((cat) => {\n            const count = templatesByCategory[cat]?.length || 0;\n            if (count === 0) return null;\n            return (\n              <button\n                key={cat}\n                onClick={() => setTemplateCategoryFilter(cat)}\n                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${templateCategoryFilter === cat ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'}`}\n              >\n                {cat === 'Entr\u00c3\u00a9e' ? 'Entrees' : cat === 'Plat' ? 'Plats' : cat === 'Dessert' ? 'Desserts' : cat === 'Accompagnement' ? 'Accompagnements' : cat} ({count})\n              </button>\n            );\n          })}\n        </div>\n\n        {/* Template cards grid */}\n        {filteredTemplates.length === 0 ? (\n          <div className=\"text-center py-12 text-[#9CA3AF] dark:text-[#737373]\">\n            Aucun template ne correspond a votre recherche.\n          </div>\n        ) : (\n          <div className=\"grid gap-4 sm:grid-cols-2 lg:grid-cols-3\">\n            {filteredTemplates.map((tpl, idx) => {\n              const preview = getTemplatePreview(tpl);\n              const catLabel = tpl.category === 'Entr\u00c3\u00a9e' ? 'Entree' : tpl.category;\n              return (\n                <div\n                  key={`${tpl.name}-${idx}`}\n                  className=\"bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden hover:border-[#111111] dark:hover:border-white transition-colors group\"\n                >\n                  {/* Header */}\n                  <div className=\"p-4 pb-3\">\n                    <div className=\"flex items-start justify-between mb-2\">\n                      <div className=\"flex-1 min-w-0\">\n                        <h3 className=\"font-semibold text-[#111111] dark:text-white truncate\">{tpl.name}</h3>\n                        <span className=\"inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]\">\n                          {catLabel}\n                        </span>\n                      </div>\n                      <span className=\"text-lg font-bold font-mono text-[#111111] dark:text-white ml-2 flex-shrink-0\">\n                        {tpl.suggestedSellingPrice}&euro;\n                      </span>\n                    </div>\n                    <p className=\"text-xs text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2\">{tpl.description}</p>\n                  </div>\n\n                  {/* Stats */}\n                  <div className=\"px-4 pb-3\">\n                    <div className=\"flex items-center gap-3 text-xs text-[#9CA3AF] dark:text-[#737373]\">\n                      <span className=\"flex items-center gap-1\">\n                        <Users className=\"w-3 h-3\" /> {tpl.nbPortions} portion{tpl.nbPortions > 1 ? 's' : ''}\n                      </span>\n                      <span className=\"flex items-center gap-1\">\n                        <Clock className=\"w-3 h-3\" /> {tpl.suggestedPrepTime + tpl.suggestedCookTime} min\n                      </span>\n                      <span className=\"flex items-center gap-1\">\n                        {tpl.suggestedIngredients.length} ingredients\n                      </span>\n                    </div>\n\n                    {/* Cost estimation from DB ingredients */}\n                    {preview.foundCount > 0 && (\n                      <div className=\"flex items-center gap-3 mt-2 text-xs\">\n                        <span className=\"text-[#6B7280] dark:text-[#A3A3A3]\">\n                          Cout estime : <strong className=\"font-mono\">{preview.costPerPortion.toFixed(2)}&euro;</strong>\n                        </span>\n                        <span className={`font-medium ${preview.margin >= 70 ? 'text-green-600 dark:text-green-400' : preview.margin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>\n                          Marge : {preview.margin.toFixed(0)}%\n                        </span>\n                        {preview.foundCount < tpl.suggestedIngredients.length && (\n                          <span className=\"text-amber-500\">\n                            ({preview.foundCount}/{tpl.suggestedIngredients.length} en base)\n                          </span>\n                        )}\n                      </div>\n                    )}\n\n                    {/* Ingredients preview */}\n                    <div className=\"mt-2 flex flex-wrap gap-1\">\n                      {tpl.suggestedIngredients.slice(0, 4).map((ing, i) => (\n                        <span key={i} className=\"px-1.5 py-0.5 text-[10px] rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]\">\n                          {ing.name}\n                        </span>\n                      ))}\n                      {tpl.suggestedIngredients.length > 4 && (\n                        <span className=\"px-1.5 py-0.5 text-[10px] rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]\">\n                          +{tpl.suggestedIngredients.length - 4}\n                        </span>\n                      )}\n                    </div>\n                  </div>\n\n                  {/* Action */}\n                  <div className=\"px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]\">\n                    <button\n                      onClick={() => useTemplate(tpl)}\n                      className=\"w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors\"\n                    >\n                      <Plus className=\"w-4 h-4\" />\n                      Utiliser ce template\n                    </button>\n                  </div>\n                </div>\n              );\n            })}\n          </div>\n        )}\n      </div>\n      )}\n\n      {/* Recipe Form Modal */}",
+      "replace_all": false
+    },
+    "tool_use_id": "toolu_01D6rFwqgjvmScqo3jc13q4q"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a821bd8b585ceaf49",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\client\" && npx tsc --noEmit --skipLibCheck 2>&1 | head -40",
+      "timeout": 60000,
+      "description": "TypeScript type check on client"
+    },
+    "tool_use_id": "toolu_01YUaXGmSccpjd8isdPAdJQY"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "agent_id": "a0118176bbeb7ad36",
+    "agent_type": "general-purpose",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"C:/Users/mrgue/CLAUDE CODE/restaurant-margin\" && npx tsc --noEmit --project client/tsconfig.json 2>&1 | head -40",
+      "timeout": 30000,
+      "description": "Check TypeScript compilation for errors"
+    },
+    "tool_use_id": "toolu_01LNXPG35sS9Bo5qvG47Wkgg"
   }
 ]

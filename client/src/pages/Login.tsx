@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChefHat, Mail, Lock, User, ArrowLeft, TrendingUp, Brain, Shield, Clock } from 'lucide-react';
+import { ChefHat, Mail, Lock, User, ArrowLeft, TrendingUp, Brain, Shield, Clock, CheckCircle2, Users } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { checkFirstUser } from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
@@ -121,83 +121,101 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex">
+    <div className="min-h-screen bg-[#000000] flex">
       {/* Left panel - hidden on mobile, visible md+ */}
-      <div className="hidden md:flex md:w-1/2 lg:w-[55%] bg-gradient-to-br from-teal-900 via-slate-900 to-slate-950 flex-col justify-center items-center p-12">
+      <div className="hidden md:flex md:w-1/2 lg:w-[55%] bg-[#000000] border-r border-[#222222] flex-col justify-center items-center p-12">
         <div className="max-w-md text-center">
           <div className="flex items-center justify-center gap-3 mb-8">
-            <ChefHat className="w-12 h-12 text-teal-400" />
+            <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center">
+              <ChefHat className="w-7 h-7 text-[#000000]" />
+            </div>
             <h1 className="text-4xl font-bold text-white">RestauMargin</h1>
           </div>
-          <p className="text-xl text-teal-200 mb-12">{t('login.tagline')}</p>
+          <p className="text-xl text-white/60 mb-12">{t('login.tagline')}</p>
 
           {/* 3 value props */}
           <div className="space-y-6 text-left">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-lg bg-teal-500/20 flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="w-5 h-5 text-teal-400" />
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h3 className="text-white font-semibold">{t('login.feature1Title')}</h3>
-                <p className="text-slate-400 text-sm">{t('login.feature1Desc')}</p>
+                <p className="text-white/40 text-sm">{t('login.feature1Desc')}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                <Shield className="w-5 h-5 text-emerald-400" />
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h3 className="text-white font-semibold">{t('login.feature2Title')}</h3>
-                <p className="text-slate-400 text-sm">{t('login.feature2Desc')}</p>
+                <p className="text-white/40 text-sm">{t('login.feature2Desc')}</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                <Brain className="w-5 h-5 text-purple-400" />
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                <Brain className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h3 className="text-white font-semibold">{t('login.feature3Title')}</h3>
-                <p className="text-slate-400 text-sm">{t('login.feature3Desc')}</p>
+                <p className="text-white/40 text-sm">{t('login.feature3Desc')}</p>
               </div>
             </div>
           </div>
 
           {/* Social proof */}
-          <div className="mt-12 pt-8 border-t border-slate-700/50">
-            <p className="text-slate-400 text-sm">{t('login.socialProof')}</p>
+          <div className="mt-12 pt-8 border-t border-white/10">
+            <p className="text-white/40 text-sm">{t('login.socialProof')}</p>
           </div>
         </div>
       </div>
 
       {/* Right panel - form */}
-      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12">
+      <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 bg-[#000000]">
         {/* Mobile logo */}
         <div className="md:hidden flex items-center gap-2 mb-8">
-          <ChefHat className="w-8 h-8 text-teal-400" />
+          <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+            <ChefHat className="w-5 h-5 text-[#000000]" />
+          </div>
           <span className="text-2xl font-bold text-white">RestauMargin</span>
         </div>
 
         <div className="w-full max-w-md">
+          {/* Prominent free trial badge for register mode */}
+          {isRegisterMode && !isForgotPassword && !isFirstUser && (
+            <div className="mb-6 text-center">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-[#000000] text-sm font-bold">
+                <Clock className="w-4 h-4" />
+                Essai gratuit 7 jours
+              </div>
+              <div className="mt-3 flex items-center justify-center gap-2 text-white/50 text-sm">
+                <Users className="w-4 h-4" />
+                <span>Rejoint par 150+ restaurateurs</span>
+              </div>
+            </div>
+          )}
+
           {/* Form card */}
-          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8">
+          <div className="bg-[#111111] border border-[#222222] rounded-2xl p-8">
             <h2 className="text-xl font-semibold text-white mb-6 text-center">
               {isForgotPassword ? t('login.forgotPassword') : isRegisterMode ? t('login.createAccount') : t('login.title')}
             </h2>
 
             {error && (
-              <div className="bg-red-900/30 border border-red-800 rounded-lg p-3 mb-4 text-sm text-red-300">
+              <div className="bg-[#1a0000] border border-[#441111] rounded-lg p-3 mb-4 text-sm text-red-400">
                 {error}
               </div>
             )}
 
             {forgotPasswordSuccess && (
-              <div className="bg-green-900/30 border border-green-800 rounded-lg p-3 mb-4 text-sm text-green-300">
+              <div className="bg-[#001a00] border border-[#114411] rounded-lg p-3 mb-4 text-sm text-green-400">
                 {forgotPasswordSuccess}
               </div>
             )}
 
             {verifiedSuccess && (
-              <div className="bg-green-900/30 border border-green-800 rounded-lg p-3 mb-4 text-sm text-green-300">
+              <div className="bg-[#001a00] border border-[#114411] rounded-lg p-3 mb-4 text-sm text-green-400">
                 {verifiedSuccess}
               </div>
             )}
@@ -206,15 +224,15 @@ export default function Login() {
               <>
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">{t('login.email')}</label>
+                    <label className="block text-sm font-medium text-white/70 mb-1">{t('login.email')}</label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                         placeholder="votre@email.com"
                       />
                     </div>
@@ -222,7 +240,7 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-white hover:bg-white/90 text-[#000000] font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? t('common.loading') : t('login.sendResetLink')}
                   </button>
@@ -230,7 +248,7 @@ export default function Login() {
                 <div className="mt-4 text-center">
                   <button
                     onClick={() => { setIsForgotPassword(false); setError(''); setForgotPasswordSuccess(''); }}
-                    className="inline-flex items-center gap-1 text-sm text-teal-400 hover:underline"
+                    className="inline-flex items-center gap-1 text-sm text-white/50 hover:text-white hover:underline"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     {t('login.backToLogin')}
@@ -240,14 +258,14 @@ export default function Login() {
             ) : (
               <>
                 {isFirstUser && (
-                  <div className="bg-teal-900/30 border border-teal-800 rounded-lg p-3 mb-4 text-sm text-teal-300">
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-4 text-sm text-white/70">
                     {t('login.firstUserMessage')}
                   </div>
                 )}
 
                 {referralCode && isRegisterMode && (
-                  <div className="bg-amber-900/30 border border-amber-800 rounded-lg p-3 mb-4 text-sm text-amber-300 flex items-center gap-2">
-                    <span className="text-amber-400 text-lg">🎁</span>
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-3 mb-4 text-sm text-white/70 flex items-center gap-2">
+                    <span className="text-lg">*</span>
                     Vous avez ete parraine ! Le code <strong className="font-mono">{referralCode}</strong> sera applique a votre compte.
                   </div>
                 )}
@@ -255,9 +273,9 @@ export default function Login() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {isRegisterMode && (
                     <div>
-                      <label htmlFor="register-name" className="block text-sm font-medium text-slate-300 mb-1">{t('login.name')}</label>
+                      <label htmlFor="register-name" className="block text-sm font-medium text-white/70 mb-1">{t('login.name')}</label>
                       <div className="relative">
-                        <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
                         <input
                           id="register-name"
                           type="text"
@@ -265,7 +283,7 @@ export default function Login() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           aria-label="Nom complet"
-                          className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                          className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                           placeholder={t('login.yourName')}
                         />
                       </div>
@@ -273,9 +291,9 @@ export default function Login() {
                   )}
 
                   <div>
-                    <label htmlFor="login-email" className="block text-sm font-medium text-slate-300 mb-1">{t('login.email')}</label>
+                    <label htmlFor="login-email" className="block text-sm font-medium text-white/70 mb-1">{t('login.email')}</label>
                     <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
                       <input
                         id="login-email"
                         type="email"
@@ -283,16 +301,16 @@ export default function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         aria-label="Adresse email"
-                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                         placeholder="votre@email.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="login-password" className="block text-sm font-medium text-slate-300 mb-1">{t('login.password')}</label>
+                    <label htmlFor="login-password" className="block text-sm font-medium text-white/70 mb-1">{t('login.password')}</label>
                     <div className="relative">
-                      <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
                       <input
                         id="login-password"
                         type="password"
@@ -301,7 +319,7 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         aria-label="Mot de passe"
-                        className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                        className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
                         placeholder="........"
                       />
                     </div>
@@ -310,7 +328,7 @@ export default function Login() {
                         <button
                           type="button"
                           onClick={() => { setIsForgotPassword(true); setError(''); }}
-                          className="text-xs text-teal-400 hover:underline"
+                          className="text-xs text-white/50 hover:text-white hover:underline"
                         >
                           {t('login.forgotPasswordLink')}
                         </button>
@@ -318,32 +336,22 @@ export default function Login() {
                     )}
                   </div>
 
-                  {/* Free trial badge */}
-                  {isRegisterMode && !isFirstUser && (
-                    <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-emerald-900/30 border border-emerald-800">
-                      <Clock className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                      <p className="text-sm text-emerald-300">
-                        {t('login.freeTrialBadge')}
-                      </p>
-                    </div>
-                  )}
-
                   {/* CGU checkbox - only in register mode */}
                   {isRegisterMode && (
-                    <label className="flex items-start gap-3 text-sm text-slate-400 cursor-pointer">
+                    <label className="flex items-start gap-3 text-sm text-white/50 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={acceptCgu}
                         onChange={(e) => setAcceptCgu(e.target.checked)}
-                        className="mt-0.5 rounded border-slate-600 bg-slate-800 text-teal-600 focus:ring-teal-500"
+                        className="mt-0.5 rounded border-[#333333] bg-[#000000] text-white focus:ring-white/50"
                       />
                       <span>
                         {t('login.acceptCgu1')}{' '}
-                        <a href="/cgu" target="_blank" className="text-teal-400 hover:text-teal-300 underline">
+                        <a href="/cgu" target="_blank" className="text-white/70 hover:text-white underline">
                           {t('login.cguLink')}
                         </a>{' '}
                         {t('login.acceptCgu2')}{' '}
-                        <a href="/politique-confidentialite" target="_blank" className="text-teal-400 hover:text-teal-300 underline">
+                        <a href="/politique-confidentialite" target="_blank" className="text-white/70 hover:text-white underline">
                           {t('login.privacyLink')}
                         </a>
                       </span>
@@ -353,11 +361,22 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={loading || (isRegisterMode && !acceptCgu)}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-white hover:bg-white/90 text-[#000000] font-semibold py-2.5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? t('common.loading') : isRegisterMode ? t('login.register') : t('login.signIn')}
                   </button>
                 </form>
+
+                {/* Trust badges - only in register mode */}
+                {isRegisterMode && !isFirstUser && (
+                  <div className="mt-5 pt-5 border-t border-[#222222]">
+                    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white/40">
+                      <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Sans carte bancaire</span>
+                      <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Sans engagement</span>
+                      <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Annulez quand vous voulez</span>
+                    </div>
+                  </div>
+                )}
 
                 {!isFirstUser && (
                   <div className="mt-6 text-center">
@@ -367,7 +386,7 @@ export default function Login() {
                         setError('');
                         setAcceptCgu(false);
                       }}
-                      className="text-sm text-teal-400 hover:underline"
+                      className="text-sm text-white/50 hover:text-white hover:underline"
                     >
                       {isRegisterMode ? t('login.alreadyHaveAccount') : t('login.noAccount')}
                     </button>
@@ -378,12 +397,12 @@ export default function Login() {
           </div>
 
           {/* Footer links */}
-          <div className="mt-6 text-center text-sm text-slate-400">
-            <a href="/cgu" className="hover:text-slate-400">{t('login.cgu')}</a>
+          <div className="mt-6 text-center text-sm text-white/30">
+            <a href="/cgu" className="hover:text-white/60">{t('login.cgu')}</a>
             <span className="mx-2">&middot;</span>
-            <a href="/politique-confidentialite" className="hover:text-slate-400">{t('login.privacy')}</a>
+            <a href="/politique-confidentialite" className="hover:text-white/60">{t('login.privacy')}</a>
             <span className="mx-2">&middot;</span>
-            <a href="/mentions-legales" className="hover:text-slate-400">{t('login.legalNotice')}</a>
+            <a href="/mentions-legales" className="hover:text-white/60">{t('login.legalNotice')}</a>
           </div>
         </div>
       </div>

@@ -11,7 +11,11 @@
     "build": "npm run build:server && npm run build:client",
     "build:vercel": "cd server && npx prisma generate && cd ../client && npx vite build",
     "seed": "cd server && npx tsx src/seed.ts",
-    "parse-pdf": "npx tsx scripts/parse-supplier-pdf.ts"
+    "parse-pdf": "npx tsx scripts/parse-supplier-pdf.ts",
+    "scrape": "npx tsx scripts/scrape-restaurants.ts",
+    "scrape:pj": "npx tsx scripts/scrape-pagesjaunes.ts",
+    "campaign": "npx tsx scripts/send-campaign.ts",
+    "campaign:dry": "npx tsx scripts/send-campaign.ts --dry-run"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

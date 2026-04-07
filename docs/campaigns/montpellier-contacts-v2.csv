@@ -1,0 +1,155 @@
+restaurant_name;cuisine_type;email;phone;address;neighborhood;source
+La Reserve Rimbaud;Gastronomique etoile Michelin;contact@reserve-rimbaud.com;04 67 72 52 53;820 avenue Saint-Maur 34000 Montpellier;Bords du Lez;reserve-rimbaud.com
+L'Artichaut;Bistronomique;contact@artichaut-restaurant.com;04 67 67 91 86;15 rue Saint-Firmin 34000 Montpellier;Ecusson;artichaut-restaurant.com
+La Diligence;Gastronomique;contact@la-diligence.com;04 67 66 12 21;2 place Petrarque 34000 Montpellier;Ecusson;la-diligence.com
+La Closerie;Francais gastronomique;oceania.montpellier@oceaniahotels.com;04 67 12 32 32;3 rue du Clos Rene 34000 Montpellier;Comedie;oceaniahotels.com
+ASA;Fusion argentine sud-americain asiatique;contact@asa-restaurant.fr;09 63 43 82 91;6 boulevard des Arceaux 34000 Montpellier;Arceaux;asa-restaurant.fr
+Le Melice;Francais contemporain;info@melice.fr;04 67 64 86 51;Bassin Jacques Coeur 34000 Montpellier;Port Marianne;melice.fr
+Brasserie Pompette;Brasserie francaise;contact@brasserie-pompette.com;06 19 44 33 58;5 Place de la Revolution Francaise 34000 Montpellier;Port Marianne;brasserie-pompette.com
+La Chistera;Bar restaurant;resto@la-chistera.com;04 67 55 39 51;2 bis Rue d'Obilion 34000 Montpellier;Comedie;la-chistera.com
+Le Verre a Soi;Bar a vins;montpellier@verre-a-soi.fr;04 58 000 145;17 Rue Saint-Guilhem 34000 Montpellier;Ecusson;verre-a-soi.fr
+Le Bourdon;Bistronomique;;04 48 79 64 64;35 Rue Saint-Guilhem 34000 Montpellier;Ecusson;restaurant-le-bourdon-montpellier.jimdosite.com
+Maison Marguerite;Francais traditionnel;;04 67 02 17 89;2 impasse Perier 34000 Montpellier;Ecusson;maisonmarguerite34.fr
+Le Montis;Bistronomique;;;14 rue Jules Latreilhe 34000 Montpellier;Ecusson;le-montis-restaurant-montpellier.fr
+Tot ou Tard;Bistronomique;;04 67 66 08 09;7 place de la Chapelle Neuve 34000 Montpellier;Ecusson;totoutard.fr
+Matt Burger;Burger artisanal;;04 67 66 39 19;11 Rue En Gondeau 34000 Montpellier;Ecusson;matt-burger.fr
+Sam's Burger;Burger;;04 99 13 89 90;17 Rue du Pila Saint-Gely 34000 Montpellier;Ecusson;WebSearch
+32 Bits Burger;Burger;;04 67 58 44 95;15 Boulevard Ledru Rollin 34000 Montpellier;Gare;WebSearch
+Boogui Burger;Burger halal;;09 81 02 09 09;24 rue des Ecoles Laiques 34000 Montpellier;Centre;WebSearch
+Broc Cafe;Brasserie burger;;09 70 97 87 37;2 Boulevard Henri IV 34000 Montpellier;Jardin des Plantes;broccafemontpellier.fr
+Cafe du Theatre;Brasserie francaise;;04 67 66 06 62;3 Place de la Comedie 34000 Montpellier;Comedie;cafe-du-theatre-restaurant-montpellier.fr
+Les Gourmands;Francais;;04 67 72 82 76;40 Avenue Saint Lazare 34000 Montpellier;Beaux-Arts;WebSearch
+Cafe Leon;Francais traditionnel;;04 67 60 56 83;12 Rue du Plan d'Agde 34000 Montpellier;Ecusson;WebSearch
+Le Panier d'Aime;Epicerie fine restaurant;;09 83 29 98 62;6 Rue du Plan du Palais 34000 Montpellier;Ecusson;WebSearch
+CQP Comprend qui peut;Cuisine du monde;;07 82 82 68 20;3 Rue Massillian 34000 Montpellier;Ecusson;WebSearch
+Pizzeria Chez Vincent;Pizzeria italienne;;04 67 79 64 62;23 Place Emile Combes 34000 Montpellier;Beaux-Arts;WebSearch
+La Pizzaterie;Pizzeria;;07 86 73 14 93;133 Avenue du Vert Bois 34090 Montpellier;Nord Montpellier;WebSearch
+SPIZZA FAC;Pizzeria;;04 67 63 44 96;Montpellier;Fac;pagesjaunes.fr
+SPIZZA Nord;Pizzeria;;04 67 54 00 44;Montpellier;Nord;pagesjaunes.fr
+La Pizzeria Montpellier;Pizzeria;;09 73 37 38 11;Montpellier;Centre;pagesjaunes.fr
+Il Pastaiolo;Italien pates;;09 54 77 15 17;18 rue Henri Rene 34000 Montpellier;Centre;pagesjaunes.fr
+Il Ristorante;Italien;;04 67 64 91 20;Odysseum 34000 Montpellier;Odysseum;ilristorante.fr
+Le Bistrot Italien;Italien;tsavalli59@hotmail.com;06 19 38 88 29;1 place Rondelet 34000 Montpellier;Gare;eatbu.com
+La Mamma Saint-Roch;Italien;;04 67 55 49 82;1 rue En-Gondeau 34000 Montpellier;Saint-Roch;pagesjaunes.fr
+Casa Di Giorgio;Italien;;04 67 66 04 17;10 rue de la Loge 34000 Montpellier;Ecusson;casadi-giorgio.com
+La Prima Volta;Italien;;04 29 30 64 49;4 rue du Puits des Esquilles 34000 Montpellier;Ecusson;WebSearch
+Cote Sushi Ecusson;Japonais sushi;;;Rue de l'Aiguillerie 34000 Montpellier;Ecusson;cotesushi.com
+Sushi Shop Montpellier;Japonais sushi;;08 26 82 66 28;2 rue de l'Herberie 34000 Montpellier;Ecusson;sushishop.fr
+KUMA-I Sushi;Japonais a volonte;;09 65 20 01 29;16 Rue Boussairolles 34000 Montpellier;Comedie;kumai-sushi.fr
+Yukimi;Japonais;;04 58 28 27 62;78 rue de Galata 34000 Montpellier;Port Marianne;facebook.com/yukimiFR
+Sushi and Wok;Japonais wok;;;11 Rue du Cheval Vert 34000 Montpellier;Gambetta;sushiandwok-34.com
+Bombay Montpellier;Indien;;04 67 02 78 07;6 Rue de Pila Saint-Gely 34000 Montpellier;Ecusson;bombaymontpellier.com
+Le Krishna;Indien;;04 67 79 19 99;7 Rue Bernard Delicieux 34090 Montpellier;Boutonnet;WebSearch
+Le New Kashmir;Indien;;04 67 64 42 69;7 Rue Alfred Bruyas 34000 Montpellier;Centre;WebSearch
+House of Indian;Indien;;;14 Rue du Pont de Lattes 34070 Montpellier;Sud;WebSearch
+Le Karawan;Libanais;fouad_20112012@hotmail.com;06 79 14 54 77;24 rue du Pont de Lattes 34000 Montpellier;Sud;eatbu.com
+Chez le Libanais;Libanais;;04 67 12 11 93;Montpellier;Centre;chez-le-libanais-montpellier.fr
+ATIPICO;Libanais;;07 68 90 68 23;1684 Avenue Albert Einstein Le Millenaire 34000 Montpellier;Millenaire;WebSearch
+L'Observatoire Libanais;Libanais;;;1 Boulevard de l'Observatoire 34000 Montpellier;Observatoire;WebSearch
+Les Delices du Liban;Libanais;;06 13 06 50 13;Montpellier;Centre;WebSearch
+Sawadee Resto Thai;Thailandais;sawadeerestothai34@gmail.com;04 67 22 03 44;59 Avenue de Toulouse Bat Le Toulouse 34070 Montpellier;Toulouse;sawadeerestothai.com
+O Bai Thai;Thailandais;;06 38 62 53 10;21 Avenue Roger Couderc 34070 Montpellier;Croix d'Argent;WebSearch
+Le P'tit Thai;Thailandais;;;22 Route de Lodeve 34080 Montpellier;Celleneuve;pagesjaunes.fr
+Pitaya Montpellier;Thai street food;;04 28 31 68 69;5 Place Jean Jaures 34070 Montpellier;Jean Jaures;pitaya-thaistreetfood.com
+L'Arganier Kebab;Kebab oriental;alien_8@hotmail.fr;09 53 52 78 17;50 rue de l'Aiguillerie 34000 Montpellier;Ecusson;eatbu.com
+Nabab Kebab;Kebab;;06 81 87 15 74;11 Rue de Maguelone 34000 Montpellier;Gare;WebSearch
+Maison Du Kebab;Kebab;;08 90 21 09 77;33 Avenue Georges Clemenceau 34000 Montpellier;Comedie;WebSearch
+Planet Kebab;Kebab;;05 39 12 30 42;208 rue Vendemiaire 34000 Montpellier;Port Marianne;planetkebab34.fr
+Creperie Froment et Sarrasin;Creperie;;04 67 60 68 10;7 rue Jacques Coeur 34000 Montpellier;Ecusson;pagesjaunes.fr
+Bourbon Creperie;Creperie;;09 87 72 63 78;11 rue de Ratte 34000 Montpellier;Ecusson;WebSearch
+Creperie C Breizh;Creperie;;04 67 60 48 34;1 rue des Teissiers 34000 Montpellier;Ecusson;WebSearch
+Les Casseroles en Folie;Creperie;;04 67 29 90 45;5 place de la Chapelle-Neuve 34000 Montpellier;Ecusson;WebSearch
+La Bergerie;Creperie;;04 67 60 76 13;68 rue de l'Aiguillerie 34000 Montpellier;Ecusson;WebSearch
+Le Kreisker;Creperie bretonne;;04 67 60 82 50;3 Passage Bruyas 34000 Montpellier;Ecusson;creperielekreisker.com
+La Creperie de la Comedie;Creperie;bk.comedie@gmail.com;09 75 26 48 87;12 place de la Comedie 34000 Montpellier;Comedie;facebook.com
+Le Mandarin;Chinois;;04 67 92 43 26;5 rue de l'Ancienne Poste 34000 Montpellier;Ecusson;WebSearch
+Sensation de Sichuan;Chinois;;09 52 60 07 87;22 place Jean Bene 34000 Montpellier;Ecusson;WebSearch
+Wok D'Asie;Chinois asiatique;;04 99 06 96 65;4 rue Montels Eglise 34070 Montpellier;Croix d'Argent;WebSearch
+Sensible;Vegetarien vegan;;09 83 88 90 90;25 rue du Pila Saint-Gely 34000 Montpellier;Ecusson;WebSearch
+Peace Food Cafe;Vegan;;07 67 59 90 44;20 rue du Bayle 34000 Montpellier;Ecusson;WebSearch
+Hakko;Vegan slow food;;;20 rue Jacques Coeur 34000 Montpellier;Ecusson;WebSearch
+Green Lab;Vegetarien;;;Montpellier;Centre;WebSearch
+Umami la cinquieme saveur;Coreen fusion;;04 99 58 49 85;3 place de la Canourgue 34000 Montpellier;Ecusson;umami-cinquiemesaveur.com
+Han Bibimbap;Coreen;;;358 Avenue des Pres d'Arenes 34070 Montpellier;Pres d'Arenes;WebSearch
+Maria Cantina;Mexicain;;;Montpellier;Centre;WebSearch
+Urban Tacos;Mexicain;;;Montpellier;Centre;WebSearch
+Aux Delices de la Gourmandise;Africain;;;Montpellier;Centre;auxdelicesdelagourmandise.fr
+L'Ecailler des Beaux-Arts;Fruits de mer poissons;;04 67 58 63 17;Montpellier;Beaux-Arts;WebSearch
+La Morue;Poissons fruits de mer;;;Montpellier;Prefecture;WebSearch
+Chez Toto;Poissons fruits de mer;;;Montpellier;Prefecture;WebSearch
+La Ferme Marine;Buffet fruits de mer;;04 67 01 09 18;Montpellier;Peripherie;lafermemarine.fr
+Le Clandestin;Piano bar tapas;;06 12 27 53 87;18 Rue de la Valfere 34000 Montpellier;Ecusson;leclandestin.fr
+Las Tapas;Bar a tapas;;;6 Rue Jules Latreilhe 34000 Montpellier;Ecusson;las-tapas.fr
+Destination Tapas;Tapas;;04 67 67 92 41;8 Rue Cope Cambes 34000 Montpellier;Ecusson;WebSearch
+La Casita del Barrio;Tapas espagnol;;04 67 60 75 17;2 Rue Rebuffy 34000 Montpellier;Ecusson;WebSearch
+Times;Bar a vin;;04 67 12 00 02;7 Rue des Teissiers 34000 Montpellier;Ecusson;WebSearch
+L'Alchimiste;Francais traditionnel;;04 67 60 93 53;19 Rue Roucher 34000 Montpellier;Centre;WebSearch
+La Casa de Pat';Bar restaurant;;04 67 55 92 48;3 Rue des Multipliants 34000 Montpellier;Saint-Roch;WebSearch
+Complexe Pierre Rouge;Restaurant;;04 67 72 22 08;7 Avenue Saint Lazare 34000 Montpellier;Beaux-Arts;WebSearch
+French Kiss Montpellier;Restaurant brunch;;04 11 93 20 21;4 rue Jules Ferry 34000 Montpellier;Centre;WebSearch
+Nina Cafe;Brunch cafe;;06 51 88 77 26;6 rue Jacques d'Aragon 34000 Montpellier;Ecusson;WebSearch
+Ma Premiere Cantine;Brunch;;04 67 60 24 35;4 place Jean Jaures 34000 Montpellier;Centre;WebSearch
+Ma Premiere Cantine Odysseum;Brunch;;04 67 83 32 26;CC Odysseum Niveau 1 34000 Montpellier;Odysseum;WebSearch
+Hygge Cafe;Coffee shop brunch;;09 54 51 34 14;191 rue Shirin Ebadi 34000 Montpellier;Port Marianne;WebSearch
+Le Refectoire;Brasserie;;04 99 66 57 66;Montpellier;Arceaux;WebSearch
+Le Pre Vert;Restaurant brunch;;04 67 02 72 81;Montpellier;Centre;WebSearch
+Braise Cave et Table;Grillades feu de bois caviste;decouverteduvin@gmail.com;04 99 62 64 25;42 Avenue Saint-Lazare 34000 Montpellier;Beaux-Arts;braise-montpellier.com
+Bistrot des Arceaux;Bistrot;;;25 Rue Hippolyte 34000 Montpellier;Arceaux;pagesjaunes.fr
+O'Bistrot;Bistrot;;;23-25 Place Sean Mac Bride 34000 Montpellier;Antigone;pagesjaunes.fr
+Leon Montpellier;Fruits de mer brasserie;;04 67 99 91 46;108 Avenue du Piree 34000 Montpellier;Antigone;restaurantleon.fr
+Antigone Kebab;Kebab;;;Montpellier;Antigone;pagesjaunes.fr
+Chez Oscar;Francais;;;121 rue d'Athenes 34000 Montpellier;Antigone;chez-oscar-restaurant-montpellier.fr
+Hippopotamus Odysseum;Steakhouse chaine;;04 67 50 49 30;Odysseum 34000 Montpellier;Odysseum;hippopotamus.fr
+Pirates Paradise;Restaurant a theme;;;Odysseum 34000 Montpellier;Odysseum;pirates-paradise.fr
+Under the Sea;Restaurant immersif;;;Odysseum 34000 Montpellier;Odysseum;ephemera-group.com
+Le Jardin des Frangins;Francais;;06 76 63 09 45;2 Rue des Loriots 34000 Montpellier;Pompignane;le-jardin-des-frangins-restaurant-montpellier.fr
+Mahe;Gastronomique;;;Avenue de la Pompignane 34000 Montpellier;Pompignane;mahe-restaurant.fr
+Traiteur Germain;Traiteur;traiteurgermain@traiteurgermain.com;04 67 04 88 86;996 Rue de la Croix de Lavit 34090 Montpellier;Hopitaux-Facultes;traiteurgermain.com
+Andrieux Traiteur;Traiteur;;;Montpellier;Montpellier;andrieux-traiteur.fr
+Chef Traiteur;Traiteur;;;Montpellier;Montpellier;chef-traiteur.fr
+Brasserie du Palais;Brasserie;brasseriedupalais34@hotmail.com;04 67 72 32 82;515 Avenue de la Monnaie 34170 Castelnau-le-Lez;Castelnau-le-Lez;eatbu.com
+Les Chataigniers;Hotel restaurant;leschataigniers34740@gmail.com;04 67 70 20 16;613 Route Departementale Av. de Montpellier 34740 Vendargues;Vendargues (peri-Montpellier);hotel-leschataigniers.fr
+Le Mazerand;Gastronomique;info@le-mazerand.com;04 67 64 82 10;Mas de Causse CD 172 34970 Lattes;Lattes;le-mazerand.com
+Le Chalet Chamoniard;Francais traditionnel;chaletchamoniard@hotmail.fr;04 67 64 03 73;Avenue Marcel Pagnol 34970 Lattes;Lattes;lechaletchamoniard.fr
+L'Oxalis;Francais;oxalis2@live.fr;04 99 54 57 01;Lattes 34970;Lattes;restaurantoxalis.wixsite.com
+Aux Deux Amis;Francais;contact@aux-deux-amis.fr;06 19 07 11 86;Rue des Yeuses 34970 Lattes;Lattes;aux-deux-amis.fr
+Cafe Juste Humain;Restaurant cafe;;04 22 91 06 57;6 Rue des Consuls 34970 Lattes;Lattes;cafejustehumain.com
+Restaurant Renaldo;Bistronomique;;04 99 92 47 18;1 Rue des Chevaliers de Malte 34970 Lattes;Lattes;jrbistronomie.fr
+La Bonne Bouille BASO;Francais;;04 67 15 30 61;8 Rue des Consuls-Port Ariane 34970 Lattes;Lattes;pagesjaunes.fr
+Le Patio Lattes;Bar restaurant;barmusicalpatio@gmail.com;04 67 42 07 48;1 Allee Saint Pierre Route de Palavas 34970 Lattes;Lattes;lepatiolattes.com
+Le Mas de Couran;Restaurant bar club;lemasdecouran@gmail.com;04 67 65 57 57;Chemin de Soriech 34970 Lattes;Lattes;mas-de-couran.com
+L'Effet Jardin;Grillades feu de bois;effetjardin@sfr.fr;04 67 22 40 17;330 Chemin de Soriech 34970 Lattes;Lattes;restaurant-leffetjardin.com
+Pampa Sauvage;Restaurant festif;;;1400 Route de Perols 34970 Lattes;Lattes;pampasauvage.fr
+Le Perols Restaurant;Francais mediterraneen;;04 67 42 46 77;1 bis rue du Courreau 34470 Perols;Perols;WebSearch
+La Table de Tetouan;Marocain;;06 59 43 48 81;25 rue de Terre du Sud 34990 Juvignac;Juvignac;WebSearch
+Bellagio Juvignac;Italien;;;Place Zone Constellations 34990 Juvignac;Juvignac;WebSearch
+TOTA Pizza Juvignac;Pizzeria;;;2 Route Saint Georges d'Orques 34990 Juvignac;Juvignac;WebSearch
+Heaven Sushi Juvignac;Japonais sushi;;;305 Rue Jupiter 34990 Juvignac;Juvignac;WebSearch
+Brasserie Le Rendez Vous;Brasserie;;;Route Saint Georges d'Orques 34990 Juvignac;Juvignac;WebSearch
+La Source des Saveurs;Francais;;;1292 Allee des Thermes 34990 Juvignac;Juvignac;WebSearch
+Miranove Restaurant;Restaurant rooftop;;;Montpellier Centre;Centre;miranove.com
+Atelier O Burger;Burger;;04 67 54 47 09;Montpellier;Centre;pagesjaunes.fr
+Poissonnerie Chez Sauveur;Poissonnerie restaurant;;04 89 41 08 36;Le Cres (pres Montpellier);Le Cres;chezsauveur.com
+Bistrot Chez Felix;Brasserie;;;Montpellier;Comedie;WebSearch
+Brasserie la Fontaine;Brasserie;;;Celleneuve 34080 Montpellier;Celleneuve;facebook.com
+Tacos Street;Mexicain;;;10 rue Jacques Bounin 34000 Montpellier;Centre;WebSearch
+Tacos Avenue Pompignane;Tacos halal;;;Avenue de la Pompignane 34000 Montpellier;Pompignane;tacos-avenue.com
+Kebab N Grill;Kebab;;;50 rue Henri Rene 34000 Montpellier;Centre;WebSearch
+La Table de Cana;Restaurant insertion;;;Pres d'Arenes 34000 Montpellier;Pres d'Arenes;iae34.org
+Eat Salad Port Marianne;Salade healthy;;;Port Marianne 34000 Montpellier;Port Marianne;eatsalad.com
+Campanile Montpellier Est;Hotel restaurant;;;Le Millenaire 34000 Montpellier;Millenaire;campanile.com
+Campanile Croix d'Argent;Hotel restaurant;;;135 rue de Jugurtha ZAC Tournezy 34070 Montpellier;Croix d'Argent;campanile.com
+Bistrot City Ovalie;Bistrot hotel;;;Montpellier Ovalie;Ovalie;WebSearch
+L'Endroit Resto;Francais;;;Montpellier;Centre;lendroit-resto.fr
+Artisane;Gastronomique;;;Ecusson Montpellier;Ecusson;pagesjaunes.fr
+Cote Sushi Antigone;Japonais sushi;;;Boulevard d'Antigone 34000 Montpellier;Antigone;cotesushi.com
+Tako Sushi;Japonais sushi;;;515 boulevard Antigone 34000 Montpellier;Antigone;WebSearch
+Le Mont Liban;Libanais;;;12 rue de l'Universite 34000 Montpellier;Ecusson;WebSearch
+Brasserie Gusto Odysseum;Brasserie;;;Odysseum 34000 Montpellier;Odysseum;WebSearch
+La Jalade;Francais fait maison;clubhouselajalade@gmail.com;06 75 19 22 66;2 Rue de la Jalade 34000 Montpellier;Hopitaux-Facultes;restaurant-lajalade-34.com
+L'Un des Sens;Gastronomique;;06 73 02 23 05;25 Rue Robert Schuman ZAC Peyriere II 34430 Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;restaurant-lundessens.com
+Fleurs de Jade;Vietnamien;;;Montpellier;Comedie;fleursdejade.wixsite.com
+Le Jardin Secret;Francais;;;48 square Babote 34000 Montpellier;Ecusson;pagesjaunes.fr
+Le Mas de Grille;Hotel restaurant;;;93 rue Theophraste Renaudot 34430 Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;hotelmasdegrille.fr
+Au Gre des Vents;Francais viande;;;Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;WebSearch
+La Boucherie;Steakhouse chaine;;;Centre commercial Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;laboucherie.fr

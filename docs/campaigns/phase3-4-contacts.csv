@@ -1,0 +1,8 @@
+restaurant_name;cuisine_type;email;phone;address;city;source
+L'Atrium;Gastronomique;toulouse@restaurantatrium.fr;05 61 61 19 04;Place du Capitole;Toulouse;restaurantatrium.fr
+Le Bouillon Capitole;Brasserie;contact@bouilloncapitole.fr;;1 Place du Capitole;Toulouse;bouilloncapitole.fr
+Le 7 Restaurant;Gastronomique;contact@le7restaurant.com;05 64 31 05 40;Cite du Vin;Bordeaux;le7restaurant.fr
+Benoit Paris;Bistrot parisien;restaurant.benoit@ducasse-paris.com;;20 rue Saint-Martin 75004;Paris;benoit-paris.com
+San Francisco;Restaurant;restaurantsanfrancisco16@gmail.com;;1 rue Mirabeau;Paris;web
+Semilla;Bistronomique;semillaparisrestaurant@gmail.com;;54 Rue de Seine 75006;Paris;semillaparis.com
+Chez France Bistrot;Bistrot;contact@chezfrancebistrot.com;;;Paris;chezfrancebistrot.fr

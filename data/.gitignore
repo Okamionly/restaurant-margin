@@ -1,0 +1,6 @@
+# Ignore scraped data and campaign results (sensitive contact info)
+scraping/*.csv
+scraping/*.json
+!scraping/.gitkeep
+campaigns/*.json
+!campaigns/.gitkeep

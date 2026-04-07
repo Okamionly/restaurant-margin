@@ -1,0 +1,104 @@
+restaurant_name;cuisine_type;email;phone;address;neighborhood;source
+La Marine du Pecheur;Poissons fruits de mer;lucaslouna@yahoo.fr;04 67 68 00 05;1 Quai Paul Cunq 34250 Palavas-les-Flots;Palavas-les-Flots;marinedupecheur.fr
+Le Pas Sage;Gastronomique mediterraneen;contact@lepassagepalavas.fr;04 67 68 23 96;Port de plaisance 34250 Palavas-les-Flots;Palavas-les-Flots;lepassagepalavas.fr
+L'Artimon;Gastronomique mediterraneen;direction@lartimonpalavas.com;04 67 68 45 02;Bassin du Port de Plaisance Rive-Droite 34250 Palavas-les-Flots;Palavas-les-Flots;lartimonpalavas.com
+Le Saint-Georges;Francais traditionnel;restaurantlestgeorges@orange.fr;04 67 68 31 38;4 Boulevard Marechal Foch 34250 Palavas-les-Flots;Palavas-les-Flots;restaurant-st-georges.fr
+Le Phare;Poissons fruits de mer;restaurantlepharepalavas@gmail.com;04 67 68 61 16;Place de la Mediterranee 34250 Palavas-les-Flots;Palavas-les-Flots;restaurant-le-phare-palavas.com
+La Guinguette du Ponant;Guinguette bord de mer;henridupre@live.fr;04 67 56 02 48;La Grande Motte;La Grande Motte;laguinguetteduponant.com
+Le Sud Bistrot Chic;Bistrot mediterraneen;lesud.bistrotchic@yahoo.com;04 67 66 39 01;358 Avenue du Couchant 34280 La Grande Motte;La Grande Motte;lesudbistrotchic.fr
+Effet Mer;Francais contemporain;info@effetmer.com;07 87 02 98 40;Route des Plages Le Grand Travers 34280 La Grande Motte;La Grande Motte;effetmer.com
+La Petite Plage;Bar restaurant cocktails;lapetiteplage34@gmail.com;04 48 48 04 98;Centre Commercial Le Neptune Place Paul Valery 34280 La Grande Motte;La Grande Motte;la-petite-plage-restaurant-la-grande-motte.fr
+Hotel La Plage Restaurant;Hotel restaurant mediterraneen;contact@hotellaplage-grandemotte.com;04 67 29 13 13;La Grande Motte;La Grande Motte;hotellaplage-grandemotte.com
+Orata et Le Tamaris;Hotel restaurant thalasso;restaurant@thalasso-grandemotte.com;04 67 29 77 05;La Grande Motte;La Grande Motte;thalasso-grandemotte.com
+Le Skipper Carnon;Bar restaurant glacier;contact@leskippercarnon.fr;;Port de Carnon 34130 Mauguio;Carnon;leskippercarnon.fr
+Coeur des Sables;Bistronomique bord de mer;contact@coeurdessables.com;04 67 85 99 00;8 Avenue Grassion Cibrand 34130 Carnon Plage;Carnon;coeurdessables.com
+Le Trident;Terre et mer;letrident.restaurant@gmail.com;04 67 50 63 55;239 rue de l'Etang de l'Or Carnon Plage 34130 Mauguio;Carnon;letrident-restaurant.com
+Oustau Camarguen;Hotel restaurant camargue;oustaucamarguen@orange.fr;04 66 51 51 65;3 Route des Marines 30240 Le Grau-du-Roi;Le Grau-du-Roi;oustaucamarguen.com
+Le Spinaker;Gastronomique hotel spa;contact@spinaker.com;04 66 53 36 37;Voie de la Pointe du Mole Port Camargue 30240 Le Grau-du-Roi;Le Grau-du-Roi;spinaker.com
+Le Palangre;Poissons fruits de mer;palangre@orange.fr;04 66 51 76 30;56 Quai General de Gaulle 30240 Le Grau-du-Roi;Le Grau-du-Roi;lepalangre.fr
+Casa Toro Luna;Espagnol tapas;contact@casatoroluna.fr;;Place Saint Louis 30220 Aigues-Mortes;Aigues-Mortes;casatoroluna.fr
+L'Atelier de Nicolas;Bistronomique fusion;latelierdenicolas@live.fr;04 34 28 04 84;28 rue Alsace Lorraine 30220 Aigues-Mortes;Aigues-Mortes;restaurant-latelierdenicolas.fr
+Le Chantemer;Poissons fruits de mer;sylvain@lechantemer.com;04 67 46 01 75;16 Promenade J.B. Marty 34200 Sete;Sete;lechantemer.com
+La Calanque;Poissons fruits de mer;restaurantlacalanquesete@gmail.com;04 67 74 28 37;17 Quai General Durand 34200 Sete;Sete;restaurantlacalanquesete.com
+La Peniche;Mediterraneen poissons;contact@restaurant-lapeniche.fr;04 67 48 64 13;1 Quai des Moulins 34200 Sete;Sete;restaurant-lapeniche.fr
+L'Essentiel Sete;Mediterraneen bord de mer;lessentiel34200@orange.fr;04 67 51 15 40;292 Promenade du Lido 34200 Sete;Sete;lessentielsete.com
+La Coquerie;Gastronomique mediterraneen;restaurantlacoquerie@gmail.com;06 47 06 71 38;1 Chemin du Cimetiere Marin 34200 Sete;Sete;restaurantlacoquerie.com
+Le Grand Hotel de Sete - Quai 17;Gastronomique hotel;info@legrandhotelsete.com;04 67 74 71 77;17 Quai du Marechal de Lattre de Tassigny 34200 Sete;Sete;legrandhotelsete.com
+In-Fine;Gastronomique francais;infine.restaurant@gmail.com;04 67 24 97 14;2 Rue de l'Hotel de Ville 34110 Frontignan;Frontignan;infinerestaurant.fr
+L'Endroit Bar Restaurant Frontignan;Bar restaurant;helenadebrito64@gmail.com;06 33 75 98 87;3 Avenue Vauban 34110 Frontignan;Frontignan;l-endroit-restaurant-frontignan.fr
+Le Comptoir des Compagnons;Francais insertion;contact@cdm34.org;04 67 50 49 88;Presqu'ile de Maguelone 34750 Villeneuve-les-Maguelone;Villeneuve-les-Maguelone;compagnons-de-maguelone.org
+Le Petit Troc;Francais traditionnel;defilsendelices@gmail.com;04 67 27 88 13;36 Place de l'Eglise 34750 Villeneuve-les-Maguelone;Villeneuve-les-Maguelone;facebook.com/lepetittroc
+Poz Pasta;Italien pates fraiches;Pozpasta@gmail.com;04 67 17 18 08;9 Rue Robert Schuman 34430 Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;poz-pasta.fr
+Espada;Buffet francais;espada.contact@gmail.com;04 67 17 48 62;Allee Pierre Lazareff 34430 Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;espada.eatbu.com
+Le Cartel des Saveurs;Francais gastronomique;lecarteldessaveurs@hotmail.fr;04 67 55 62 59;3 Rue Jean Monnet 34830 Clapiers;Clapiers;le-cartel-des-saveurs.fr
+Le Wan;Asiatique;contact@lewanlunel.com;04 49 07 96 88;114 Cours Gabriel Peri 34400 Lunel;Lunel;wanlunel.com
+Mon Auberge;Hotel restaurant;resa@monauberge.com;04 67 71 01 62;RN 113 Pont de Lunel 34400 Lunel;Lunel;monauberge.com
+Le Disini;Gastronomique hotel spa;contact@disini-hotel.com;04 67 41 97 86;1 Rue des Carrieres 34160 Castries;Castries (peri-Montpellier);disini-hotel.com
+Hotel Richer de Belleval;Gastronomique Jardin des Sens;contact@hotel-richerdebelleval.com;04 99 66 18 18;Place de la Canourgue 34000 Montpellier;Ecusson;hotel-richerdebelleval.com
+JOST Hotel Restaurant Gabie;Hotel restaurant rooftop;contact@jost-hotel-montpellier.com;04 12 05 19 25;50 Rue Isabelle Eberhardt 34000 Montpellier;Saint-Roch;jost-hotel-montpellier.com
+Empanadas Club Marche du Lez;Argentin empanadas;montpellier2@empanadasclub.com;;Marche du Lez 1348 avenue Raymond Dugrand 34000 Montpellier;Halles du Lez;empanadasclub.com
+Restaurant Alexandre;Gastronomique;contact@restaurant-alexandre.com;04 67 56 63 63;Esplanade Maurice Justin 34280 La Grande Motte;La Grande Motte;restaurant-alexandre.com
+Nassau;Poissons fruits de mer;restolegrandbleu@orange.fr;04 67 56 60 97;La Grande Motte;La Grande Motte;WebSearch
+La Table du Grau;Francais traditionnel fait maison;contact@latable-dugrau.fr;;Le Grau-du-Roi;Le Grau-du-Roi;latable-dugrau.fr
+Le Provencal;Hotel restaurant traditionnel;contact@leprovencal-legrauduroi.com;04 66 51 41 68;Le Grau-du-Roi;Le Grau-du-Roi;leprovencal-legrauduroi.com
+La Camargue Restaurant;Traditionnel camargue;contact@lacamarguerestaurant.com;04 66 53 60 67;19 Rue de la Republique 30220 Aigues-Mortes;Aigues-Mortes;lacamarguerestaurant.com
+Le Saint Louis Hotel Restaurant;Hotel restaurant camargue;contact@lesaintlouis.fr;04 66 53 72 68;10 Rue Amiral Courbet 30220 Aigues-Mortes;Aigues-Mortes;lesaintlouis.fr
+The Marcel;Bistronomique halles;contact@the-marcel.fr;06 07 94 77 01;5 Rue Lazare Carnot 34200 Sete;Sete;the-marcel.fr
+Le Petit Bistrot Sete;Francais bord de mer;contact@lepetitbistrotsete.com;04 99 02 43 89;14 Corniche de Neuburg 34200 Sete;Sete;lepetitbistrotsete.com
+Restaurant MG;Mediterraneen poissons;contact@restaurant-mg.fr;07 82 62 97 98;Zone Technique du Port 34110 Frontignan;Frontignan;restaurant-mg.fr
+La Grange Palavas;Francais traditionnel;contact@restolagrange-palavas.fr;04 67 68 25 01;14 Avenue de la Gare Albert Dubout 34250 Palavas-les-Flots;Palavas-les-Flots;restolagrange-palavas.fr
+O Bon Vivre;Poissons panoramique;contact@o-bon-vivre-palavas.fr;04 49 07 10 87;25 Quai Paul Cunq 34250 Palavas-les-Flots;Palavas-les-Flots;o-bon-vivre-restaurant-palavas-les-flots.fr
+Les Pieds dans l'O;Plage restaurant;contact@lespiedsdanslopalavas.fr;;Rive droite 34250 Palavas-les-Flots;Palavas-les-Flots;lespiedsdanslopalavas.fr
+Wine Note;Bar restaurant festif;contact@winenote-restaurant.com;04 67 16 80 82;Parc d'Activites Aftalion 34670 Baillargues;Baillargues;winenote-restaurant.com
+Du Cote de Chez Eux;Francais bistronomique;contact@pmc-restaurant-lunel.fr;;Lunel-Viel pres de Baillargues;Lunel-Viel;pmc-restaurant-lunel.fr
+L'Ambrussum;Bistronomique tapas;contact@lambrussum.com;;Villetelle 34400;Vendargues (peri-Lunel);lambrussum.com
+Le B12;Bistronomique mediterraneen;contact@leb12.com;;Zone de Vendargues;Vendargues;leb12.com
+L'Escampe;Francais traditionnel;contact@lescampe-restaurant-lunel.com;;2 Avenue de la Chicanette 34400 Saturargues;Lunel (peri);lescampe-restaurant-lunel.com
+Camele Oh Lunel;Brasserie grill burger;contact@cameleoh.fr;04 67 71 05 06;C Commercial les Portes de la Mer 34400 Lunel;Lunel;cameleoh.fr
+La Croisee;Francais traditionnel;contact@restaurantpatiolacroisee.fr;;1 Avenue de l'Europe 34830 Clapiers;Clapiers;restaurantpatiolacroisee.fr
+Les Deux Berets Grabels;Pizzeria artisanale;contact@lesdeuxberets.fr;07 66 81 74 91;Grabels;Grabels;lesdeuxberets.fr
+Les Deux Berets Saint-Jean-de-Vedas;Pizzeria artisanale;sjv@lesdeuxberets.fr;07 82 78 55 06;10 Route de Beziers 34430 Saint-Jean-de-Vedas;Saint-Jean-de-Vedas;lesdeuxberets.fr
+La Table des Copains;Francais;contact@latabledescopains-jacou.fr;;5 Avenue de Vendargues 34830 Jacou;Jacou;pagesjaunes.fr
+L'Assiette de Jacou;Francais;contact@lassietedejacou.fr;04 67 58 08 04;18 Rue Louis Breguet 34830 Jacou;Jacou;pagesjaunes.fr
+Hotel Neptune Restaurant;Hotel restaurant;contact@hotel-neptune.fr;;Carnon Plage 34130 Mauguio;Carnon;hotel-neptune.fr
+Le Goat des Hotes;Francais traditionnel hotel;contact@legoutdeshotes.fr;04 67 48 15 34;Frontignan;Frontignan;restauranthotel-frontignan-legoutdeshotes.fr
+La Chapelle;Francais;contact@lachapelle-vlm.fr;04 67 07 95 80;Villeneuve-les-Maguelone;Villeneuve-les-Maguelone;pagesjaunes.fr
+Table d'Oc;Buffet a volonte;contact@restauranttabledoc.com;;Villeneuve-les-Maguelone;Villeneuve-les-Maguelone;restauranttabledoc.com
+Lo Motas;Bar lounge restaurant;contact@lo-motas-lgm.fr;07 69 59 61 65;La Grande Motte;La Grande Motte;lo-motas-lgm.fr
+L'Eden Restaurant;Restaurant lounge;contact@leden-restaurant.fr;04 99 62 94 79;197 Place de l'Epi 34280 La Grande Motte;La Grande Motte;leden-restaurant-la-grande-motte.fr
+La Cachette de Mame;Poissons fruits de mer;contact@la-cachette-de-mame.fr;;36 Quai General de Gaulle 30240 Le Grau-du-Roi;Le Grau-du-Roi;la-cachette-de-mame-restaurant-le-grau-du-roi.fr
+Le Bistrot du Port;Traditionnel port;contact@bistrotduport.fr;04 66 53 09 03;13 Quai Laperouse Port Camargue 30240 Le Grau-du-Roi;Le Grau-du-Roi (Port-Camargue);portcamargue.com
+Le Dauphin Grau-du-Roi;Poissons fruits de mer;contact@ledauphin-grauduroi.fr;04 66 53 91 44;48 Quai General de Gaulle 30240 Le Grau-du-Roi;Le Grau-du-Roi;pagesjaunes.fr
+Cafe de Bouzigues;Bistrot brasserie provencal;contact@cafedebouzigues.fr;04 66 53 93 95;7 Rue Pasteur 30220 Aigues-Mortes;Aigues-Mortes;pagesjaunes.fr
+La Barque Bleue;Plage restaurant poissons;contact@labarquebleue-sete.fr;;27 Route Corniche de Neuburg 34200 Sete;Sete;labarquebleue.wixsite.com
+Le Grand Bleu;Poissons fruits de mer;contact@legrandbleu-sete.fr;;15 Quai General Durand 34200 Sete;Sete;tourisme-sete.com
+Paris Mediterranee;Poissons traditionnel;contact@paris-mediterranee.fr;;47 Rue Pierre Semard 34200 Sete;Sete;icioncuisine.com
+La Marine Sete;Poissons brasserie port;contact@lamarine-resto.fr;06 12 17 54 04;29 Quai General Durand 34200 Sete;Sete;lamarine-resto.fr
+O Loup Thau Quai;Poissons fruits de mer;contact@oloupthauquai.fr;09 60 45 29 62;Port de plaisance Quai Robert Alary 34110 Frontignan;Frontignan;pagesjaunes.fr
+Va Bene Palavas;Pizzeria;contact@vabene-palavas.fr;04 67 68 45 88;5 Boulevard Marechal Joffre 34250 Palavas-les-Flots;Palavas-les-Flots;pagesjaunes.fr
+El Fuego Palavas;Restaurant grillades;contact@elfuego-palavas.fr;04 67 68 38 68;Palavas-les-Flots;Palavas-les-Flots;pagesjaunes.fr
+Le Restaurant Palavas;Francais traditionnel;contact@lerestaurant-palavas.fr;04 67 68 00 01;Palavas-les-Flots;Palavas-les-Flots;palavas-tourisme.com
+Nouba Carnon;Cuisine festive fusion;direction-nouba@hotmail.com;07 52 73 66 57;Place Saint-Marc Port Carnon 34130 Mauguio;Carnon;noubacarnon.com
+Le Petit Lezard;Poissons fruits de mer;contact@petit-lezard.fr;04 67 50 55 55;63 Avenue Etang du Grec 34250 Palavas-les-Flots;Palavas-les-Flots;petit-lezard.fr
+Mas de Lafeuillade;Bistronomique hotel charme;contact@mas-de-lafeuillade.com;06 77 18 29 69;281 Rue Fra Angelico 34000 Montpellier;Port Marianne;mas-de-lafeuillade.com
+L'O3 Brasserie Castries;Brasserie;contact@brasserie-castries.fr;;Castries;Castries (peri-Montpellier);brasserie-castries.fr
+L3 Brasserie du Midi-Teyranais;Brasserie;contact@restaurant-midi-teyranais.fr;;1 Avenue de Vendargues 34820 Teyran;Le Cres (peri);restaurant-midi-teyranais.fr
+Niam By Pith;Asiatique fusion;contact@niambypith.fr;;16 Rue Fernand Soubeyran 34830 Jacou;Jacou;pagesjaunes.fr
+Les Halles 610 Jacou;Food hall;contact@halles610.fr;;6-10 Rue Louis Breguet 34830 Jacou;Jacou;pagesjaunes.fr
+La Salle a Manger Grabels;Gastronomique;contact@lasalleamanger-grabels.fr;;Grabels;Grabels;pagesjaunes.fr
+La Casa Pizzeria Grabels;Pizzeria;contact@lacasa-grabels.fr;;Grabels;Grabels;pagesjaunes.fr
+Le Plaza Lunae;Francais traditionnel;contact@plazalunae.fr;04 99 54 62 02;Lunel;Lunel;pagesjaunes.fr
+Derriere l'Eglise;Bistronomique;contact@derriereleglise-lunel.fr;;Lunel;Lunel;tables-auberges.com
+La Goulue;Bistronomique;contact@lagoulue-aiguesmortes.fr;;Aigues-Mortes;Aigues-Mortes;facebook.com/lagoulue30
+Le Restoro;Fruits de mer;contact@lerestoro.fr;04 66 51 02 56;520 Avenue du Palais de la Mer 30240 Le Grau-du-Roi;Le Grau-du-Roi;letsgrau.com
+Quai 54;Poissons mediterraneen;contact@quai54-grauduroi.fr;;56 Quai du General de Gaulle 30240 Le Grau-du-Roi;Le Grau-du-Roi;pagesjaunes.fr
+Le Vivier;Poissons fruits de mer;contact@levivier-grauduroi.fr;;Le Grau-du-Roi;Le Grau-du-Roi;pagesjaunes.fr
+La Table de Laura;Francais gastronomique;contact@latabledelaura.fr;04 67 74 30 15;Sete;Sete;latabledelaura.fr
+L'Estacade;Poissons traditionnel;contact@lestacade-sete.fr;;Sete;Sete;restaurants-de-france.fr
+Le Passage Sete;Poissons fruits de mer;contact@lepassage-sete.fr;;Sete;Sete;WebSearch
+Au Poisson Bleu;Poissons fruits de mer;contact@aupoissonbleu-sete.fr;;Sete;Sete;restaurants-de-france.fr
+La Table de l'Oustau;Traditionnel camargue;contact@oustaucamarguen.com;04 66 51 51 65;Le Grau-du-Roi;Le Grau-du-Roi;tourismegard.com
+Le Petit Nice;Restaurant port;contact@lepetitnicesete.fr;;Port Camargue 30240 Le Grau-du-Roi;Le Grau-du-Roi (Port-Camargue);portcamargue.com
+Plein Sud La Grande Motte;Mediterraneen;contact@pleinsud-lgm.fr;;La Grande Motte;La Grande Motte;pagesjaunes.fr
+Cote Sud La Grande Motte;Mediterraneen;contact@cotesud-lgm.fr;;La Grande Motte;La Grande Motte;pagesjaunes.fr
+Le Repaire;Brasserie;contact@lerepairelgm.fr;;La Grande Motte;La Grande Motte;lerepairelgm.metro.bar

@@ -13,7 +13,7 @@ import exportRoutes from './routes/export';
 import adminRoutes from './routes/admin';
 import { getUnitDivisor } from './utils/unitConversion';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
-import { buildActivationCodeEmail, buildDigestEmail } from './utils/emailTemplates';
+import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail } from './utils/emailTemplates';
 
 
 const app = express();
@@ -2184,6 +2184,41 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
 });
 
 app.get('/api/email/sent', authWithRestaurant, (_req, res) => { res.json(sentEmails); });
+
+// ── Campaign email (auto-generates beautiful HTML from restaurant name + cuisine type) ──
+app.post('/api/campaign/send', authWithRestaurant, async (req: any, res) => {
+  try {
+    const { to, restaurantName, cuisineType, contactName } = req.body;
+    if (!to || !restaurantName) return res.status(400).json({ error: 'to et restaurantName requis' });
+
+    const resendKey = process.env.RESEND_API_KEY;
+    if (!resendKey) return res.status(503).json({ error: 'Service email non configure (RESEND_API_KEY manquant)' });
+
+    const { subject, html } = buildCampaignEmail(
+      { name: restaurantName, contactName, email: to },
+      cuisineType || 'general'
+    );
+
+    const resend = new Resend(resendKey);
+    const result = await resend.emails.send({
+      from: 'RestauMargin <contact@restaumargin.fr>',
+      to,
+      replyTo: 'contact@restaumargin.fr',
+      subject,
+      html,
+    });
+
+    const messageId = result?.data?.id || `resend-${Date.now()}`;
+    const email = { id: `c-${Date.now()}`, to, subject, body: '(campaign)', from: 'RestauMargin <contact@restaumargin.fr>', messageId, sentAt: new Date().toISOString() };
+    sentEmails.push(email);
+
+    console.log(`[CAMPAIGN SEND] Sent to ${to} (${restaurantName}, ${cuisineType || 'general'}) — id: ${messageId}`);
+    res.json({ success: true, messageId, subject });
+  } catch (e: any) {
+    console.error('[CAMPAIGN SEND ERROR]', e.message);
+    res.status(500).json({ error: e.message || 'Erreur envoi campagne' });
+  }
+});
 
 // ── Public menu ──
 app.get('/api/public/menu', async (req, res) => {

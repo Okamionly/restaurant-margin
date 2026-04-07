@@ -540,16 +540,24 @@ export default function Landing() {
             </div>
           </div>
 
+          {/* Social proof headline */}
+          <div className="animate-[fadeInUp_1s_ease-out_0.45s_both]">
+            <p className="mt-16 text-center text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">
+              Deja adopte par des restaurateurs partout en France
+            </p>
+          </div>
+
           {/* Stats bar */}
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-            <div className="mt-16 bg-white border border-gray-200 shadow-sm rounded-2xl py-8 px-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-gray-200 md:divide-x">
+            <div className="bg-white border border-gray-200 shadow-sm rounded-2xl py-8 px-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 divide-gray-200 md:divide-x">
                 <StatCounter value={150} suffix="+" label="Restaurants equipes" />
+                <StatCounter value={12400} suffix="" label="Fiches techniques creees" />
+                <StatCounter value={340} suffix="k" label="Euros economises en food cost" />
                 <StatCounter value={8} suffix="%" label="Cout matiere economise" />
-                <StatCounter value={50} suffix="k" label="Pesees par mois" />
                 <div className="text-center px-6">
-                  <div className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">4.8/5</div>
-                  <div className="text-sm text-gray-500 mt-1 font-medium">Satisfaction clients</div>
+                  <div className="text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">4.8/5</div>
+                  <div className="text-sm text-[#6B7280] mt-1 font-medium">Satisfaction clients</div>
                 </div>
               </div>
             </div>
@@ -607,6 +615,173 @@ export default function Landing() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ VOIR EN ACTION ═══════════════ */}
+      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Voir en action</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+                Un apercu de votre futur quotidien
+              </h2>
+              <p className="mt-4 text-lg text-[#6B7280]">
+                Trois ecrans qui changent la gestion de votre restaurant.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Mockup 1: Dashboard KPIs */}
+            <FadeIn delay={0}>
+              <div className="group">
+                <div className="relative bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#111111]/30 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#111111] flex items-center px-3 gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
+                    <span className="text-[10px] text-white/50 ml-2 font-mono">restaumargin.fr/dashboard</span>
+                  </div>
+                  <div className="mt-4 w-full space-y-3">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 text-center">
+                        <div className="text-xs text-[#9CA3AF]">Food Cost</div>
+                        <div className="text-lg font-bold text-[#111111]">28.4%</div>
+                      </div>
+                      <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 text-center">
+                        <div className="text-xs text-[#9CA3AF]">Marge</div>
+                        <div className="text-lg font-bold text-[#111111]">71.6%</div>
+                      </div>
+                      <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 text-center">
+                        <div className="text-xs text-[#9CA3AF]">Recettes</div>
+                        <div className="text-lg font-bold text-[#111111]">47</div>
+                      </div>
+                    </div>
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-[#9CA3AF]">Evolution marge</span>
+                        <span className="text-xs font-semibold text-[#22C55E]">+4.2%</span>
+                      </div>
+                      <div className="flex items-end gap-1 h-10">
+                        {[40, 55, 45, 60, 52, 68, 72, 65, 78, 82, 75, 88].map((h, i) => (
+                          <div key={i} className="flex-1 bg-[#111111] rounded-sm transition-all duration-700 group-hover:bg-teal-600" style={{ height: `${h}%` }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 text-center">
+                  <h3 className="text-lg font-bold text-[#111111]">Dashboard temps reel</h3>
+                  <p className="text-sm text-[#6B7280] mt-1">KPIs, marges et food cost en un coup d'oeil</p>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Mockup 2: AI Assistant */}
+            <FadeIn delay={150}>
+              <div className="group">
+                <div className="relative bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#111111]/30 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#111111] flex items-center px-3 gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
+                    <span className="text-[10px] text-white/50 ml-2 font-mono">restaumargin.fr/ai</span>
+                  </div>
+                  <div className="mt-4 w-full space-y-3">
+                    <div className="bg-[#111111] rounded-lg p-3 ml-8">
+                      <p className="text-xs text-white/90">"Cree une fiche technique pour un risotto aux cepes, 4 portions, prix de vente 19 euros"</p>
+                    </div>
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-3 mr-8">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Brain className="w-3.5 h-3.5 text-teal-600" />
+                        <span className="text-xs font-semibold text-[#111111]">Assistant IA</span>
+                      </div>
+                      <p className="text-xs text-[#6B7280]">Fiche creee ! Food cost: 5.20EUR (27.4%). Marge brute: 72.6%. Coefficient: 3.65x</p>
+                    </div>
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-7 bg-[#F9FAFB] border border-[#E5E7EB] rounded px-2 flex items-center">
+                          <span className="text-xs text-[#9CA3AF]">Demandez a l'IA...</span>
+                        </div>
+                        <div className="w-7 h-7 rounded bg-[#111111] flex items-center justify-center">
+                          <Send className="w-3 h-3 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 text-center">
+                  <h3 className="text-lg font-bold text-[#111111]">Assistant IA cuisine</h3>
+                  <p className="text-sm text-[#6B7280] mt-1">Creez une recette par chat en 10 secondes</p>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* Mockup 3: Supplier Order via WhatsApp */}
+            <FadeIn delay={300}>
+              <div className="group">
+                <div className="relative bg-[#F9FAFB] border border-[#E5E7EB] rounded-2xl overflow-hidden aspect-[4/3] flex flex-col items-center justify-center p-8 hover:border-[#111111]/30 transition-all duration-500 hover:shadow-lg">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#111111] flex items-center px-3 gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#22C55E]/80" />
+                    <span className="text-[10px] text-white/50 ml-2 font-mono">restaumargin.fr/commandes</span>
+                  </div>
+                  <div className="mt-4 w-full space-y-2.5">
+                    <div className="bg-white border border-[#E5E7EB] rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-semibold text-[#111111]">Metro France</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F9FAFB] border border-[#E5E7EB] text-[#9CA3AF]">CMD-2026-042</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-[#6B7280]">Mozzarella di Bufala</span>
+                          <span className="text-[#111111] font-medium">5 kg</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-[#6B7280]">Tomates San Marzano</span>
+                          <span className="text-[#111111] font-medium">10 kg</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-[#6B7280]">Farine T00</span>
+                          <span className="text-[#111111] font-medium">25 kg</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="flex-1 bg-white border border-[#E5E7EB] rounded-lg p-2.5 flex items-center justify-center gap-2 hover:border-[#111111]/30 transition-colors cursor-pointer">
+                        <Mail className="w-3.5 h-3.5 text-[#111111]" />
+                        <span className="text-xs font-medium text-[#111111]">Email</span>
+                      </div>
+                      <div className="flex-1 bg-[#111111] rounded-lg p-2.5 flex items-center justify-center gap-2 cursor-pointer">
+                        <MessageCircle className="w-3.5 h-3.5 text-white" />
+                        <span className="text-xs font-medium text-white">WhatsApp</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 text-center">
+                  <h3 className="text-lg font-bold text-[#111111]">Commandes en 1 clic</h3>
+                  <p className="text-sm text-[#6B7280] mt-1">Envoyez par email ou WhatsApp a vos fournisseurs</p>
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+
+          {/* CTA under mockups */}
+          <FadeIn delay={400}>
+            <div className="mt-16 text-center">
+              <Link
+                to="/login?mode=register"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all shadow-lg"
+              >
+                Essayer gratuitement pendant 7 jours <ArrowRight className="w-4 h-4" />
+              </Link>
+              <p className="mt-3 text-sm text-[#9CA3AF]">Sans carte bancaire -- Sans engagement</p>
+            </div>
+          </FadeIn>
         </div>
       </section>
 

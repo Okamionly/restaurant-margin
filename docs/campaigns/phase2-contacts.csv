@@ -1,0 +1,9 @@
+restaurant_name;cuisine_type;email;phone;address;city;source
+Le Petit Nice Passedat;Gastronomique 3 etoiles;contact@passedat.fr;04 91 59 25 92;17 Rue des Braves 13007;Marseille;passedat.fr
+Chez Dede;Pizzeria;pizzeriachezdedemarseille@gmail.com;;;Marseille;web
+L'Enclos des Saveurs;Gastronomique;contact@restaurant-nimes.fr;;;Nimes;restaurant-nimes.fr
+Le Chabanais;Francais;lechabanaisnimes@gmail.com;;;Nimes;web
+Il Ristorante Nimes;Italien;contact.nimes@ilristorante.fr;;;Nimes;ilristorante.fr
+Le Carre d'Art;Francais;restaurant.lecarredart@gmail.com;;;Nimes;web
+Au Goustous;Catalan;b.aragon66@orange.fr;06 19 89 41 76;5 Rue du Theatre 66000;Perpignan;web
+Artapas;Tapas;artapas66@gmail.com;04 68 53 15 06;28 bd Georges Clemenceau 66000;Perpignan;web

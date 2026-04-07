@@ -14,11 +14,13 @@
     "parse-pdf": "npx tsx scripts/parse-supplier-pdf.ts",
     "scrape": "npx tsx scripts/scrape-restaurants.ts",
     "scrape:pj": "npx tsx scripts/scrape-pagesjaunes.ts",
+    "scrape:gmaps": "npx tsx scripts/scrape-gmaps.ts",
     "campaign": "npx tsx scripts/send-campaign.ts",
     "campaign:dry": "npx tsx scripts/send-campaign.ts --dry-run"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "puppeteer-core": "^24.0.0"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",

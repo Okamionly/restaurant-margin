@@ -1128,20 +1128,72 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
     ? `Bonjour ${esc(restaurant.contactName)},`
     : `Bonjour,`;
 
-  const bodyHtml = `
-    <p style="margin:0 0 20px 0;">${greeting}</p>
-    <p style="margin:0 0 16px 0;">${esc(cuisine.hook)}</p>
-    <p style="margin:0 0 16px 0;font-weight:600;">${esc(cuisine.pain)}</p>
-    <p style="margin:0 0 24px 0;">${esc(cuisine.benefit)}</p>
-    <p style="margin:0 0 8px 0;">Essayez gratuitement pendant 7 jours, sans engagement :</p>
+  // Uses the SAME design as supplier order emails (wrapper + header + footer)
+  const content = `
+    ${header('Votre cuisine m&eacute;rite mieux')}
+    <tr><td style="padding:30px;">
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 18px;">${greeting}</p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 18px;">
+        ${esc(cuisine.hook)}
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 18px;">
+        ${esc(cuisine.pain)}
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 24px;">
+        ${esc(cuisine.benefit)}
+      </p>
+
+      <div style="border-top:1px solid ${BORDER};margin:24px 0;"></div>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
+        RestauMargin est n&eacute; d'un constat simple : les restaurateurs passent des heures &agrave; calculer leurs co&ucirc;ts sur Excel ou sur un coin de nappe, alors que la technologie pourrait le faire en quelques secondes.
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
+        Aujourd'hui, notre intelligence artificielle permet de <strong>cr&eacute;er une fiche technique par la voix</strong>, en plein service. Vous dites &laquo; risotto aux c&egrave;pes, 4 portions, 19 euros &raquo; &mdash; et le food cost s'affiche en 10 secondes.
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
+        Votre livreur d&eacute;pose une facture ? <strong>Photographiez-la.</strong> L'IA lit les prix et met &agrave; jour vos co&ucirc;ts automatiquement. Plus de saisie manuelle.
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
+        Vos stocks baissent ? <strong>La commande part en 1 clic</strong> &mdash; par email ou WhatsApp &mdash; directement &agrave; votre fournisseur. Et si vous avez une balance Bluetooth, le stock se met &agrave; jour &agrave; chaque pes&eacute;e.
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
+        Un fournisseur augmente ses prix ? <strong>Vous &ecirc;tes alert&eacute; imm&eacute;diatement</strong>, avant que &ccedil;a impacte vos marges.
+      </p>
+
+      <div style="border-top:1px solid ${BORDER};margin:24px 0;"></div>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 24px;">
+        Nous proposons un essai gratuit de 7 jours, sans carte bancaire et sans engagement. En 5 minutes, vous savez exactement ce que chaque plat vous co&ucirc;te et ce qu'il vous rapporte.
+      </p>
+
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+        <tr><td align="center" style="padding:8px 0 24px;">
+          <a href="https://www.restaumargin.fr/login?mode=register" style="display:inline-block;padding:14px 36px;background:${TEAL};color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:15px;font-family:${FONT};">
+            Essayer gratuitement &rarr;
+          </a>
+        </td></tr>
+      </table>
+
+      <p style="color:${MUTED};font-family:${FONT};font-size:13px;text-align:center;margin:0 0 24px;">
+        29&euro;/mois apr&egrave;s l'essai &mdash; Sans engagement
+      </p>
+
+      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0;">
+        &Agrave; bient&ocirc;t,<br>
+        L'&eacute;quipe RestauMargin<br>
+        <span style="color:${MUTED};">Montpellier</span>
+      </p>
+    </td></tr>
+    ${footer('Vous recevez cet email car votre restaurant est r&eacute;f&eacute;renc&eacute; publiquement.')}
   `;
 
-  const html = buildMarketingEmail({
-    recipientName: restaurant.contactName || restaurant.name,
-    subject: cuisine.subject,
-    cuisineType: cuisineType || 'general',
-    bodyHtml,
-  });
-
-  return { subject: cuisine.subject, html };
+  return { subject: cuisine.subject, html: wrapper(content) };
 }

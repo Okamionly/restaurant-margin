@@ -680,7 +680,7 @@ function AppLayout() {
         { to: '/comptabilite', icon: Calculator, label: 'Comptabilité' },
         { to: '/devis', icon: FileText, label: 'Devis & Factures' },
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
-        { to: '/integrations', icon: Plug, label: 'Integrations' },
+        // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
       ],

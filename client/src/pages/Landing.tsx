@@ -688,7 +688,7 @@ export default function Landing() {
                 <h3 className="text-lg font-bold text-[#111111] mb-1">Pro</h3>
                 <p className="text-sm text-[#9CA3AF] mb-6">Pour optimiser et developper son restaurant.</p>
                 <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-extrabold text-[#111111]">49</span>
+                  <span className="text-5xl font-extrabold text-[#111111]">29</span>
                   <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
                 <div className="space-y-4 mb-10 flex-1">
@@ -726,7 +726,7 @@ export default function Landing() {
                 <h3 className="text-lg font-bold text-[#111111] mb-1 mt-2">Business</h3>
                 <p className="text-sm text-[#9CA3AF] mb-6">Pour les groupes multi-restaurants.</p>
                 <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-extrabold text-[#111111]">99</span>
+                  <span className="text-5xl font-extrabold text-[#111111]">79</span>
                   <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
                 <div className="space-y-4 mb-10 flex-1">

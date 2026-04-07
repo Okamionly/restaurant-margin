@@ -622,6 +622,7 @@ function AppLayout() {
       title: 'PRINCIPAL',
       items: [
         { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
+        { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
         { to: '/menu', icon: BookOpen, label: 'La Carte' },
         { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
       ],
@@ -647,7 +648,6 @@ function AppLayout() {
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
         { to: '/allergen-matrix', icon: Shield, label: 'Matrice allergenes' },
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
-        { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
       ],
     },
     {
@@ -674,7 +674,7 @@ function AppLayout() {
         { to: '/comptabilite', icon: Calculator, label: 'Comptabilité' },
         { to: '/devis', icon: FileText, label: 'Devis & Factures' },
         { to: '/marketplace', icon: Store, label: 'Marketplace' },
-        { to: '/integrations', icon: Plug, label: 'Integrations', badgeText: 'Bientôt', disabled: true },
+        { to: '/integrations', icon: Plug, label: 'Integrations' },
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
       ],

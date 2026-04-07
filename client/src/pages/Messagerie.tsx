@@ -3,6 +3,7 @@ import {
   Mail, Send, Search, Reply, Trash2, RefreshCw, Inbox, Star,
   Loader2, Plus, X, Paperclip, ArrowLeft, StarOff,
   Circle, Users, ChefHat, Truck, MessageSquare,
+  Phone, MessageCircle, CheckCheck,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -144,8 +145,12 @@ export default function Messagerie() {
   const [useMock, setUseMock] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'fournisseur' | 'equipe' | 'starred'>('all');
   const [newMsgIds, setNewMsgIds] = useState<Set<string>>(new Set());
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [composeAttachedFile, setComposeAttachedFile] = useState<File | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const composeFileInputRef = useRef<HTMLInputElement>(null);
 
   const activeConv = conversations.find((c) => c.id === activeId) || null;
 
@@ -276,10 +281,24 @@ export default function Messagerie() {
   }
 
   // ── Send message ────────────────────────────────────────────────────
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>, target: 'chat' | 'compose') {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Fichier trop volumineux (max 10 Mo)', 'error');
+      return;
+    }
+    if (target === 'chat') setAttachedFile(file);
+    else setComposeAttachedFile(file);
+  }
+
   async function handleSend() {
     if (!inputText.trim() || !activeId || sending) return;
-    const content = inputText.trim();
+    const content = attachedFile
+      ? `${inputText.trim()}\n📎 ${attachedFile.name}`
+      : inputText.trim();
     setInputText('');
+    setAttachedFile(null);
 
     const tempId = `tmp-${Date.now()}`;
     const newMsg: Message = {
@@ -352,6 +371,9 @@ export default function Messagerie() {
   async function handleComposeSend() {
     if (!composeTo.trim() || !composeBody.trim() || sending) return;
     setSending(true);
+    const bodyWithAttachment = composeAttachedFile
+      ? `${composeBody.trim()}\n📎 ${composeAttachedFile.name}`
+      : composeBody.trim();
     try {
       if (useMock) {
         const mockNew: Conversation = {
@@ -366,13 +388,13 @@ export default function Messagerie() {
           unread: 0,
           category: 'fournisseur',
           online: false,
-          lastMessage: composeBody.trim(),
+          lastMessage: bodyWithAttachment,
           updatedAt: new Date().toISOString(),
           messages: [{
             id: `tmp-${Date.now()}`,
             senderId: 'me',
             senderName: 'RestauMargin',
-            text: composeBody.trim(),
+            text: bodyWithAttachment,
             timestamp: new Date().toISOString(),
             read: true,
             type: 'text',
@@ -395,7 +417,7 @@ export default function Messagerie() {
           method: 'POST',
           headers: getHeaders(),
           body: JSON.stringify({
-            content: composeBody.trim(),
+            content: bodyWithAttachment,
             senderId: 'me',
             senderName: 'RestauMargin',
             subject: composeSubject || 'Sans objet',
@@ -407,6 +429,7 @@ export default function Messagerie() {
       setComposeTo('');
       setComposeSubject('');
       setComposeBody('');
+      setComposeAttachedFile(null);
       showToast(t('messagerie.messageSent'), 'success');
     } catch {
       showToast(t('messagerie.sendError'), 'error');
@@ -444,7 +467,7 @@ export default function Messagerie() {
           </button>
           <button
             onClick={() => setShowCompose(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white text-white rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-all text-sm font-semibold shadow-md hover:shadow-lg hover:scale-[1.02]"
           >
             <Plus className="w-4 h-4" />
             {t('messagerie.newMessage')}
@@ -615,9 +638,42 @@ export default function Messagerie() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-1 flex-shrink-0">
+                  {/* Quick email action */}
+                  {activeConv.email && (
+                    <button
+                      onClick={() => window.open(`mailto:${activeConv.email}?subject=${encodeURIComponent(activeConv.subject || '')}`, '_blank')}
+                      className="p-2 rounded-lg hover:bg-blue-500/10 text-[#9CA3AF] dark:text-[#737373] hover:text-blue-400 transition-colors"
+                      title={`Email: ${activeConv.email}`}
+                    >
+                      <Mail className="w-4 h-4" />
+                    </button>
+                  )}
+                  {/* Quick WhatsApp action */}
+                  <button
+                    onClick={() => {
+                      const name = activeConv.name;
+                      const msg = encodeURIComponent(`Bonjour ${name}, `);
+                      window.open(`https://web.whatsapp.com/send?text=${msg}`, '_blank');
+                    }}
+                    className="p-2 rounded-lg hover:bg-[#25D366]/10 text-[#9CA3AF] dark:text-[#737373] hover:text-[#25D366] transition-colors"
+                    title="WhatsApp"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                  </button>
+                  {/* Quick call action */}
+                  <button
+                    onClick={() => {
+                      showToast('Fonctionnalite appel bientot disponible', 'info');
+                    }}
+                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                    title="Appeler"
+                  >
+                    <Phone className="w-4 h-4" />
+                  </button>
+                  <div className="w-px h-4 bg-[#E5E7EB] dark:bg-[#1A1A1A] mx-0.5" />
                   <button
                     onClick={() => handleToggleStar(activeConv.id)}
-                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-yellow-400 transition-colors"
+                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-yellow-400 transition-colors"
                     title={t('messagerie.tabFavorites')}
                   >
                     {activeConv.starred
@@ -626,7 +682,7 @@ export default function Messagerie() {
                   </button>
                   <button
                     onClick={() => handleDelete(activeConv.id)}
-                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-colors"
+                    className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-colors"
                     title={t('common.delete')}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -693,12 +749,16 @@ export default function Messagerie() {
                             {msg.text}
                           </div>
 
-                          {/* Timestamp + read status */}
+                          {/* Timestamp + delivery status */}
                           <div className={`flex items-center gap-1 px-1 ${isMine ? 'flex-row-reverse' : ''}`}>
                             <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{formatTime(msg.timestamp)}</span>
                             {isMine && (
-                              <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
-                                {msg.read ? '✓✓' : '✓'}
+                              <span className="flex items-center" title={msg.read ? 'Lu' : 'Envoye'}>
+                                {msg.read ? (
+                                  <CheckCheck className="w-3.5 h-3.5 text-blue-400" />
+                                ) : (
+                                  <CheckCheck className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                                )}
                               </span>
                             )}
                           </div>
@@ -712,8 +772,27 @@ export default function Messagerie() {
 
               {/* Input area */}
               <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/80 p-3 flex-shrink-0">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, 'chat')}
+                />
+                {attachedFile && (
+                  <div className="flex items-center gap-2 mb-2 px-2 py-1.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                    <Paperclip className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">{attachedFile.name}</span>
+                    <button onClick={() => setAttachedFile(null)} className="ml-auto flex-shrink-0 hover:text-red-500 transition-colors">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
                 <div className="flex items-end gap-2">
-                  <button className="p-2 rounded-lg text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition-colors flex-shrink-0 mb-0.5">
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-2 rounded-lg text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors flex-shrink-0 mb-0.5"
+                    title="Joindre un fichier"
+                  >
                     <Paperclip className="w-4 h-4" />
                   </button>
                   <div className="flex-1 relative">
@@ -828,9 +907,29 @@ export default function Messagerie() {
 
             {/* Actions */}
             <div className="flex items-center justify-between px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-              <button className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-[#6B7280] dark:text-[#A3A3A3] transition-colors">
-                <Paperclip className="w-4 h-4" />
-              </button>
+              <input
+                ref={composeFileInputRef}
+                type="file"
+                className="hidden"
+                onChange={(e) => handleFileSelect(e, 'compose')}
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => composeFileInputRef.current?.click()}
+                  className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:text-[#6B7280] dark:hover:text-[#A3A3A3] transition-colors"
+                  title="Joindre un fichier"
+                >
+                  <Paperclip className="w-4 h-4" />
+                </button>
+                {composeAttachedFile && (
+                  <div className="flex items-center gap-1.5 px-2 py-1 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                    <span className="truncate max-w-[150px]">{composeAttachedFile.name}</span>
+                    <button onClick={() => setComposeAttachedFile(null)} className="hover:text-red-500 transition-colors">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={handleComposeSend}
                 disabled={!composeTo.trim() || !composeBody.trim() || sending}

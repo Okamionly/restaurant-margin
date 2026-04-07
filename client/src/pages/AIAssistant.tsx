@@ -253,7 +253,7 @@ export default function AIAssistant() {
       id: 'welcome',
       role: 'assistant',
       content:
-        "Bonjour ! Je suis votre **assistant IA RestauMargin**. Je peux analyser vos donnees **ET agir** : creer des fiches techniques, ajouter des ingredients, preparer des commandes fournisseurs. Que voulez-vous faire ?",
+        "Bienvenue ! Je suis votre **assistant IA RestauMargin** — votre copilote pour piloter votre restaurant.\n\nVoici ce que je peux faire pour vous :\n\n**Analyser** — Marges, food cost, rentabilite de vos plats\n**Creer** — Fiches techniques, recettes, menus complets\n**Commander** — Preparer et envoyer vos commandes fournisseurs\n**Optimiser** — Suggestions d'alternatives moins cheres, detection d'anomalies\n**HACCP** — Verifier la conformite, temperatures, tracabilite\n\nChoisissez une suggestion ci-dessous ou posez-moi votre question !",
       timestamp: new Date(),
     },
   ]);
@@ -382,12 +382,12 @@ export default function AIAssistant() {
     return suggestions.sort((a, b) => b.priority - a.priority).slice(0, 4);
   }, [restaurantContext]);
 
-  // Rotate suggestions every 30s
+  // Rotate highlighted suggestion every 8s
   useEffect(() => {
-    if (contextSuggestions.length <= 4) return;
+    if (contextSuggestions.length === 0) return;
     const interval = setInterval(() => {
       setSuggestionIndex(prev => (prev + 1) % contextSuggestions.length);
-    }, 30000);
+    }, 8000);
     return () => clearInterval(interval);
   }, [contextSuggestions.length]);
 
@@ -607,7 +607,7 @@ export default function AIAssistant() {
         id: 'welcome',
         role: 'assistant',
         content:
-          "Bonjour ! Je suis votre **assistant IA RestauMargin**. Je peux analyser vos donnees **ET agir** : creer des fiches techniques, ajouter des ingredients, preparer des commandes fournisseurs. Que voulez-vous faire ?",
+          "Bienvenue ! Je suis votre **assistant IA RestauMargin** — votre copilote pour piloter votre restaurant.\n\nVoici ce que je peux faire pour vous :\n\n**Analyser** — Marges, food cost, rentabilite de vos plats\n**Creer** — Fiches techniques, recettes, menus complets\n**Commander** — Preparer et envoyer vos commandes fournisseurs\n**Optimiser** — Suggestions d'alternatives moins cheres, detection d'anomalies\n**HACCP** — Verifier la conformite, temperatures, tracabilite\n\nChoisissez une suggestion ci-dessous ou posez-moi votre question !",
         timestamp: new Date(),
       },
     ]);
@@ -990,30 +990,34 @@ export default function AIAssistant() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Context-aware suggestions bar — always visible when not typing */}
-        {!isTyping && (
-          <div className="px-4 pb-2">
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Suggestions</span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              {contextSuggestions.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <button
-                    key={s.label}
-                    onClick={() => handleSend(s.prompt)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#111111] dark:hover:bg-white text-[#6B7280] dark:text-[#A3A3A3] hover:text-white dark:hover:text-black border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white rounded-full transition-all duration-200 whitespace-nowrap flex-shrink-0"
-                  >
-                    <Icon className="w-3 h-3" />
-                    {s.label}
-                  </button>
-                );
-              })}
-            </div>
+        {/* Context-aware suggestions bar — always visible */}
+        <div className="px-4 pb-2">
+          <div className="flex items-center gap-2 mb-2">
+            <Lightbulb className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Suggestions rapides</span>
+            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] ml-auto">Basees sur vos donnees</span>
           </div>
-        )}
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            {contextSuggestions.map((s, idx) => {
+              const Icon = s.icon;
+              return (
+                <button
+                  key={s.label}
+                  onClick={() => handleSend(s.prompt)}
+                  disabled={isTyping}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    idx === suggestionIndex % contextSuggestions.length
+                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white shadow-md'
+                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#111111] dark:hover:bg-white text-[#6B7280] dark:text-[#A3A3A3] hover:text-white dark:hover:text-black border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+                  }`}
+                >
+                  <Icon className="w-3 h-3" />
+                  {s.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Input bar */}
         <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
@@ -1103,26 +1107,29 @@ export default function AIAssistant() {
               <Camera className="w-5 h-5" />
             </button>
 
-            {/* Mic button */}
+            {/* Mic button — prominent with pulse */}
             {speechSupported ? (
               <button
                 onClick={toggleVoice}
                 title={isListening ? 'Arreter la dictee' : 'Commande vocale'}
-                className={`flex-shrink-0 p-3 rounded-xl transition-all duration-200 ${
+                className={`relative flex-shrink-0 p-3.5 rounded-2xl transition-all duration-200 ${
                   isListening
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse text-white'
-                    : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black'
+                    ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30'
+                    : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black hover:scale-105'
                 }`}
               >
-                {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                {isListening && (
+                  <span className="absolute inset-0 rounded-2xl bg-red-500 animate-ping opacity-30" />
+                )}
+                {isListening ? <MicOff className="w-6 h-6 relative z-10" /> : <Mic className="w-6 h-6" />}
               </button>
             ) : (
               <button
                 disabled
                 title="Non supporte par votre navigateur"
-                className="flex-shrink-0 p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed"
+                className="flex-shrink-0 p-3.5 rounded-2xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed"
               >
-                <MicOff className="w-5 h-5" />
+                <MicOff className="w-6 h-6" />
               </button>
             )}
 

@@ -1153,27 +1153,72 @@ export default function AutoOrders() {
         />
       </div>
 
-      {/* ── Low-stock alert banner ─────────────────────────────────────────── */}
+      {/* ── Low-stock alert banner with quick reorder ───────────────────── */}
       {lowStockItems.length > 0 && (
-        <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
-            <div>
-              <p className="text-sm font-semibold text-[#111111] dark:text-white">
-                {lowStockItems.length} article{lowStockItems.length > 1 ? 's' : ''} en rupture
-              </p>
-              <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
-                {lowStockItems.map((i) => i.ingredient.name).join(', ')}
-              </p>
+        <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-500/10 rounded-xl">
+                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[#111111] dark:text-white">
+                  {lowStockItems.length} article{lowStockItems.length > 1 ? 's' : ''} en rupture de stock
+                </p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
+                  Cliquez sur un article pour creer une commande rapide, ou generez toutes les commandes d'un coup
+                </p>
+              </div>
             </div>
+            <button
+              onClick={generateAutoOrders}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-semibold text-sm transition shadow-md hover:shadow-lg hover:scale-[1.02]"
+            >
+              <Zap className="w-4 h-4" />
+              {t('autoOrders.generateAutoOrders')}
+            </button>
           </div>
-          <button
-            onClick={generateAutoOrders}
-            className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium text-sm transition shadow-sm"
-          >
-            <Zap className="w-4 h-4" />
-            {t('autoOrders.generateAutoOrders')}
-          </button>
+          {/* Per-item quick reorder buttons */}
+          <div className="flex flex-wrap gap-2">
+            {lowStockItems.slice(0, 8).map((item) => (
+              <button
+                key={item.ingredientId}
+                onClick={() => {
+                  const supplierName = item.ingredient?.supplier || 'Fournisseur inconnu';
+                  const supplierId = item.ingredient?.supplierId || null;
+                  const suggestedQty = Math.max(1, item.minStock * 2 - item.currentStock);
+                  setFormSupplierName(supplierName);
+                  setFormSupplierId(supplierId);
+                  setFormLines([{
+                    id: nextLineId++,
+                    ingredientId: item.ingredientId,
+                    name: item.ingredient.name,
+                    quantity: suggestedQty,
+                    unit: item.unit,
+                    pricePerUnit: item.ingredient.pricePerUnit,
+                    total: suggestedQty * item.ingredient.pricePerUnit,
+                  }]);
+                  setFormNotes('Reapprovisionnement rapide');
+                  setFormExpectedDelivery('');
+                  setEditingOrderId(null);
+                  setFormOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white dark:bg-[#0A0A0A] border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-full transition-all"
+                title={`Stock: ${item.currentStock} / Min: ${item.minStock} ${item.unit}`}
+              >
+                <RefreshCw className="w-3 h-3" />
+                {item.ingredient.name}
+                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                  ({item.currentStock}/{item.minStock} {item.unit})
+                </span>
+              </button>
+            ))}
+            {lowStockItems.length > 8 && (
+              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] self-center ml-1">
+                +{lowStockItems.length - 8} autres
+              </span>
+            )}
+          </div>
         </div>
       )}
 

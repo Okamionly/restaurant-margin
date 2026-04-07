@@ -495,7 +495,7 @@ export default function StationLanding() {
                           required
                           value={orderForm.name}
                           onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
-                          placeholder="Jean Dupont"
+                          placeholder="Votre nom"
                           className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition"
                         />
                       </div>

@@ -241,6 +241,8 @@ const faqItems = [
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -324,6 +326,7 @@ export default function Landing() {
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidEmail(newsletterEmail)) return;
     setNewsletterLoading(true);
     try {
       await fetch('/api/newsletter/subscribe', {
@@ -347,6 +350,10 @@ export default function Landing() {
 
   const handleInlineNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidEmail(inlineNewsletterEmail)) {
+      setInlineNewsletterError('Veuillez entrer une adresse email valide.');
+      return;
+    }
     setInlineNewsletterLoading(true);
     setInlineNewsletterError('');
     try {
@@ -368,6 +375,10 @@ export default function Landing() {
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidEmail(contactForm.email)) {
+      setContactError('Veuillez entrer une adresse email valide.');
+      return;
+    }
     setContactLoading(true);
     setContactError('');
     try {

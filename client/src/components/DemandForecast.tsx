@@ -49,16 +49,16 @@ interface SuggestedIngredient {
 }
 
 const SUGGESTED_ORDER: SuggestedIngredient[] = [
-  { id: 1,  name: 'Filet de boeuf',     quantity: 18,  unit: 'kg',    estimatedCost: 396.00, supplier: 'Transgourmet', urgency: 'élevé' },
-  { id: 2,  name: 'Saumon frais',        quantity: 12,  unit: 'kg',    estimatedCost: 204.00, supplier: 'Pomona',       urgency: 'élevé' },
-  { id: 3,  name: 'Crème fraîche',       quantity: 25,  unit: 'L',     estimatedCost: 95.00,  supplier: 'Transgourmet', urgency: 'normal' },
-  { id: 4,  name: 'Beurre AOP',          quantity: 15,  unit: 'kg',    estimatedCost: 187.50, supplier: 'Transgourmet', urgency: 'normal' },
-  { id: 5,  name: 'Légumes de saison',   quantity: 30,  unit: 'kg',    estimatedCost: 120.00, supplier: 'Rungis Direct', urgency: 'élevé' },
-  { id: 6,  name: 'Pommes de terre',     quantity: 40,  unit: 'kg',    estimatedCost: 52.00,  supplier: 'Pomona',       urgency: 'normal' },
-  { id: 7,  name: 'Oeufs bio',           quantity: 240, unit: 'pièce', estimatedCost: 84.00,  supplier: 'Transgourmet', urgency: 'normal' },
-  { id: 8,  name: 'Farine T55',          quantity: 20,  unit: 'kg',    estimatedCost: 24.00,  supplier: 'Transgourmet', urgency: 'normal' },
-  { id: 9,  name: 'Huile d\'olive EVOO', quantity: 8,   unit: 'L',     estimatedCost: 72.00,  supplier: 'Rungis Direct', urgency: 'normal' },
-  { id: 10, name: 'Chocolat Valrhona',   quantity: 5,   unit: 'kg',    estimatedCost: 95.00,  supplier: 'Transgourmet', urgency: 'normal' },
+  { id: 1,  name: 'Filet de boeuf',     quantity: 18,  unit: 'kg',    estimatedCost: 396.00, supplier: 'Fournisseur A', urgency: 'élevé' },
+  { id: 2,  name: 'Saumon frais',        quantity: 12,  unit: 'kg',    estimatedCost: 204.00, supplier: 'Fournisseur B', urgency: 'élevé' },
+  { id: 3,  name: 'Crème fraîche',       quantity: 25,  unit: 'L',     estimatedCost: 95.00,  supplier: 'Fournisseur A', urgency: 'normal' },
+  { id: 4,  name: 'Beurre AOP',          quantity: 15,  unit: 'kg',    estimatedCost: 187.50, supplier: 'Fournisseur A', urgency: 'normal' },
+  { id: 5,  name: 'Légumes de saison',   quantity: 30,  unit: 'kg',    estimatedCost: 120.00, supplier: 'Fournisseur C', urgency: 'élevé' },
+  { id: 6,  name: 'Pommes de terre',     quantity: 40,  unit: 'kg',    estimatedCost: 52.00,  supplier: 'Fournisseur B', urgency: 'normal' },
+  { id: 7,  name: 'Oeufs bio',           quantity: 240, unit: 'pièce', estimatedCost: 84.00,  supplier: 'Fournisseur A', urgency: 'normal' },
+  { id: 8,  name: 'Farine T55',          quantity: 20,  unit: 'kg',    estimatedCost: 24.00,  supplier: 'Fournisseur A', urgency: 'normal' },
+  { id: 9,  name: 'Huile d\'olive EVOO', quantity: 8,   unit: 'L',     estimatedCost: 72.00,  supplier: 'Fournisseur C', urgency: 'normal' },
+  { id: 10, name: 'Chocolat Valrhona',   quantity: 5,   unit: 'kg',    estimatedCost: 95.00,  supplier: 'Fournisseur A', urgency: 'normal' },
 ];
 
 // ── Helper ─────────────────────────────────────────────────────────────────

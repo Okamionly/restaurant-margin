@@ -2100,8 +2100,8 @@ const sentEmails: any[] = [];
 
 app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
   try {
-    const { to, subject, body } = req.body;
-    if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body requis' });
+    const { to, subject, body, html } = req.body;
+    if (!to || !subject || (!body && !html)) return res.status(400).json({ error: 'to, subject, et body ou html requis' });
 
     const resendKey = process.env.RESEND_API_KEY;
     if (!resendKey) return res.status(503).json({ error: 'Service email non configuré (RESEND_API_KEY manquant)' });
@@ -2109,13 +2109,9 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
     const restaurant = await prisma.restaurant.findFirst({ where: { id: req.restaurantId } });
     const restaurantName = restaurant?.name || 'RestauMargin';
 
-    const resend = new Resend(resendKey);
-    const result = await resend.emails.send({
-      from: `${restaurantName} <contact@restaumargin.fr>`,
-      to,
-      replyTo: 'contact@restaumargin.fr',
-      subject,
-      html: `
+    // If `html` is provided, use it directly (for marketing/campaign emails).
+    // Otherwise, wrap plain-text `body` in the default layout.
+    const emailHtml = html || `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:#0f172a;color:white;padding:16px 24px;border-radius:12px 12px 0 0;">
             <table style="width:100%"><tr>
@@ -2124,16 +2120,24 @@ app.post('/api/email/send', authWithRestaurant, async (req: any, res) => {
             </tr></table>
           </div>
           <div style="padding:24px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px;">
-            <p style="white-space:pre-wrap;line-height:1.6;color:#1e293b;">${body.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</p>
+            <p style="white-space:pre-wrap;line-height:1.6;color:#1e293b;">${body!.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</p>
             <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
             <p style="font-size:11px;color:#94a3b8;margin:0;">Envoyé via RestauMargin — <a href="https://www.restaumargin.fr" style="color:#94a3b8;">restaumargin.fr</a></p>
           </div>
         </div>
-      `,
+      `;
+
+    const resend = new Resend(resendKey);
+    const result = await resend.emails.send({
+      from: `${restaurantName} <contact@restaumargin.fr>`,
+      to,
+      replyTo: 'contact@restaumargin.fr',
+      subject,
+      html: emailHtml,
     });
 
     const messageId = result?.data?.id || `resend-${Date.now()}`;
-    const email = { id: `e-${Date.now()}`, to, subject, body, from: `${restaurantName} <contact@restaumargin.fr>`, messageId, sentAt: new Date().toISOString() };
+    const email = { id: `e-${Date.now()}`, to, subject, body: body || '(html)', from: `${restaurantName} <contact@restaumargin.fr>`, messageId, sentAt: new Date().toISOString() };
     sentEmails.push(email);
 
     console.log(`[EMAIL SEND] Sent to ${to} — subject: ${subject} — id: ${messageId}`);

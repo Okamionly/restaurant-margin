@@ -910,3 +910,238 @@ ${footer()}`;
 
   return wrapper(content);
 }
+
+// ============================================================
+// MARKETING EMAIL TEMPLATES — Premium W&B Monochrome Design
+// ============================================================
+
+export interface MarketingEmailData {
+  recipientName?: string;
+  subject: string;
+  cuisineType?: string;
+  bodyHtml: string;
+}
+
+/**
+ * Premium marketing email template — Stripe/Linear/Notion style.
+ * White background, black text, no gradients, no teal, no emoji logo.
+ * Table-based layout, responsive, email-safe HTML.
+ */
+export function buildMarketingEmail(data: MarketingEmailData): string {
+  const MKT_FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const MKT_BLACK = '#111111';
+  const MKT_WHITE = '#FFFFFF';
+  const MKT_GRAY = '#666666';
+  const MKT_LIGHT_GRAY = '#F5F5F5';
+  const MKT_BORDER = '#E0E0E0';
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>${esc(data.subject)}</title>
+  <!--[if mso]>
+  <style type="text/css">
+    table { border-collapse: collapse; }
+    .fallback-font { font-family: Arial, sans-serif; }
+  </style>
+  <![endif]-->
+  <style type="text/css">
+    @media only screen and (max-width: 620px) {
+      .outer-table { width: 100% !important; }
+      .inner-pad { padding: 24px 20px !important; }
+      .header-pad { padding: 28px 20px !important; }
+      .footer-pad { padding: 24px 20px !important; }
+      .cta-btn { width: 100% !important; text-align: center !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:${MKT_WHITE};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:${MKT_WHITE};">
+    <tr>
+      <td align="center" style="padding:0;">
+        <!-- Outer container -->
+        <table role="presentation" class="outer-table" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;width:100%;background-color:${MKT_WHITE};">
+
+          <!-- Header: RestauMargin wordmark -->
+          <tr>
+            <td class="header-pad" style="padding:40px 32px 24px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="font-family:${MKT_FONT};font-size:22px;font-weight:700;color:${MKT_BLACK};letter-spacing:-0.3px;line-height:1;">
+                    RestauMargin
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Separator line -->
+          <tr>
+            <td style="padding:0 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="border-top:1px solid ${MKT_BLACK};font-size:0;line-height:0;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body content -->
+          <tr>
+            <td class="inner-pad" style="padding:32px 32px 24px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="font-family:${MKT_FONT};font-size:15px;line-height:1.7;color:${MKT_BLACK};">
+                    ${data.bodyHtml}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td class="inner-pad" style="padding:8px 32px 40px 32px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td class="cta-btn" align="center" style="background-color:${MKT_BLACK};border-radius:8px;">
+                    <a href="https://www.restaumargin.fr/demo" target="_blank" style="display:inline-block;padding:16px 32px;font-family:${MKT_FONT};font-size:16px;font-weight:600;color:${MKT_WHITE};text-decoration:none;letter-spacing:0.2px;">
+                      Demander une d&eacute;mo gratuite
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer separator -->
+          <tr>
+            <td style="padding:0 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="border-top:1px solid ${MKT_BORDER};font-size:0;line-height:0;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="footer-pad" style="padding:24px 32px 32px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="font-family:${MKT_FONT};font-size:12px;line-height:1.6;color:${MKT_GRAY};">
+                    RestauMargin SAS &mdash; Montpellier<br>
+                    <a href="https://www.restaumargin.fr" style="color:${MKT_GRAY};text-decoration:underline;">restaumargin.fr</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:12px;font-family:${MKT_FONT};font-size:11px;line-height:1.5;color:#999999;">
+                    Vous recevez cet email car votre &eacute;tablissement correspond &agrave; notre audience professionnelle.<br>
+                    <a href="https://www.restaumargin.fr/unsubscribe" style="color:#999999;text-decoration:underline;">Se d&eacute;sabonner</a>
+                    &nbsp;&middot;&nbsp;
+                    <a href="https://www.restaumargin.fr/privacy" style="color:#999999;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+
+// ---------- Cuisine-specific campaign hooks ----------
+
+const CUISINE_HOOKS: Record<string, { subject: string; hook: string; pain: string; benefit: string }> = {
+  francaise: {
+    subject: 'Vos marges en cuisine fran\u00e7aise sont-elles vraiment optimis\u00e9es ?',
+    hook: 'En gastronomie fran\u00e7aise, chaque centime compte. Entre les produits frais, les sauces maison et les cuissons longues, le food cost peut vite d\u00e9raper sans que vous le voyiez.',
+    pain: 'La plupart des restaurants fran\u00e7ais perdent entre 3% et 8% de marge sur leurs plats signature \u2014 simplement parce qu\u2019ils n\u2019ont pas de visibilit\u00e9 en temps r\u00e9el sur leurs co\u00fbts.',
+    benefit: 'Avec RestauMargin, vous suivez le co\u00fbt exact de chaque fiche technique, d\u00e9tectez les d\u00e9rives de prix fournisseurs, et optimisez votre carte pour maximiser vos marges.',
+  },
+  italienne: {
+    subject: 'Pizzeria, trattoria : savez-vous vraiment combien vous co\u00fbte chaque plat ?',
+    hook: 'Mozzarella, huile d\u2019olive, farine tipo 00\u2026 Les prix des mati\u00e8res premi\u00e8res italiennes sont volatils. Un simple changement de fournisseur peut impacter toute votre rentabilit\u00e9.',
+    pain: 'Combien co\u00fbte r\u00e9ellement votre margherita ? Et votre tiramisu ? Sans fiches techniques pr\u00e9cises, c\u2019est impossible \u00e0 savoir.',
+    benefit: 'RestauMargin calcule automatiquement le food cost de chaque recette et vous alerte quand un prix fournisseur augmente. Fini les mauvaises surprises en fin de mois.',
+  },
+  japonaise: {
+    subject: 'Sushi, ramen, izakaya : ma\u00eetrisez vos co\u00fbts mati\u00e8res',
+    hook: 'Poisson frais, riz \u00e0 sushi, sauce soja premium\u2026 La cuisine japonaise exige des ingr\u00e9dients de qualit\u00e9, et les co\u00fbts peuvent vite flamber.',
+    pain: 'Le poisson repr\u00e9sente souvent 40-50% du co\u00fbt d\u2019un plat en cuisine japonaise. Sans suivi pr\u00e9cis, vous travaillez \u00e0 l\u2019aveugle.',
+    benefit: 'RestauMargin vous donne une vision claire de vos co\u00fbts par plat, suit les variations de prix du march\u00e9, et vous aide \u00e0 ajuster vos tarifs en cons\u00e9quence.',
+  },
+  asiatique: {
+    subject: 'Restaurant asiatique : optimisez vos marges sans sacrifier la qualit\u00e9',
+    hook: 'Wok, curry, bo bun, banh mi\u2026 La cuisine asiatique s\u00e9duit, mais les marges peuvent \u00eatre serr\u00e9es si les portions et les co\u00fbts ne sont pas ma\u00eetris\u00e9s.',
+    pain: 'Avec des cartes souvent larges (30+ plats), suivre le food cost de chaque recette manuellement est un cauchemar. R\u00e9sultat : des plats rentables subventionnent des plats \u00e0 perte.',
+    benefit: 'RestauMargin analyse votre carte compl\u00e8te, identifie vos plats les plus (et moins) rentables, et vous guide pour r\u00e9\u00e9quilibrer vos marges.',
+  },
+  burger: {
+    subject: 'Burger, smash, gourmet : vos marges sont-elles au rendez-vous ?',
+    hook: 'Le march\u00e9 du burger est ultra-comp\u00e9titif. Entre le co\u00fbt du b\u0153uf, les toppings premium et le pain artisanal, la rentabilit\u00e9 se joue au centime pr\u00e8s.',
+    pain: 'Un burger \u00e0 12\u20ac qui co\u00fbte 5,50\u20ac en mati\u00e8res premi\u00e8res, c\u2019est 54% de food cost. Trop \u00e9lev\u00e9. Mais sans outil, comment le savoir ?',
+    benefit: 'RestauMargin d\u00e9compose chaque burger en co\u00fbt exact (pain, steak, sauce, garniture) et vous montre o\u00f9 gagner des points de marge.',
+  },
+  brasserie: {
+    subject: 'Brasserie : comment passer de 30% \u00e0 25% de food cost',
+    hook: 'Plat du jour, carte des classiques, suggestions du chef\u2026 En brasserie, la carte tourne vite et les co\u00fbts doivent suivre.',
+    pain: 'Avec un plat du jour qui change chaque jour, calculer le food cost \u00e0 la main est mission impossible. Pourtant, c\u2019est l\u00e0 que se cachent les d\u00e9rives.',
+    benefit: 'RestauMargin g\u00e9n\u00e8re vos fiches techniques en quelques clics gr\u00e2ce \u00e0 l\u2019IA, et vous donne le food cost instantan\u00e9 de chaque plat \u2014 m\u00eame ceux qui changent tous les jours.',
+  },
+  pizzeria: {
+    subject: 'Pizzeria : chaque pizza est-elle vraiment rentable ?',
+    hook: 'Farine, mozzarella, tomates San Marzano\u2026 Les ingr\u00e9dients d\u2019une vraie pizza ont un co\u00fbt. Et avec 15-20 pizzas \u00e0 la carte, les \u00e9carts de marge peuvent \u00eatre \u00e9normes.',
+    pain: 'Votre 4 fromages est probablement 2x plus ch\u00e8re \u00e0 produire que votre margherita. Vendez-vous la diff\u00e9rence au bon prix ?',
+    benefit: 'RestauMargin analyse chaque pizza de votre carte, compare les co\u00fbts, et vous aide \u00e0 fixer des prix qui refl\u00e8tent la r\u00e9alit\u00e9 de vos co\u00fbts.',
+  },
+  general: {
+    subject: 'Restaurateurs : arr\u00eatez de perdre de l\u2019argent sur chaque plat',
+    hook: 'En France, 1 restaurant sur 3 ferme dans les 3 premi\u00e8res ann\u00e9es. La raison n\u00b01 ? Une mauvaise ma\u00eetrise des co\u00fbts mati\u00e8res.',
+    pain: 'Si vous ne connaissez pas le food cost exact de chaque plat de votre carte, vous pilotez votre restaurant \u00e0 l\u2019aveugle.',
+    benefit: 'RestauMargin est l\u2019outil qui vous donne enfin une vision claire : co\u00fbt par plat, marge r\u00e9elle, alertes prix, fiches techniques automatis\u00e9es par IA.',
+  },
+};
+
+export interface CampaignRestaurant {
+  name: string;
+  contactName?: string;
+  email: string;
+}
+
+/**
+ * Generates a complete personalized campaign email for a restaurant,
+ * using cuisine-specific hooks wrapped in the premium marketing template.
+ */
+export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?: string): { subject: string; html: string } {
+  const cuisine = CUISINE_HOOKS[(cuisineType || 'general').toLowerCase()] || CUISINE_HOOKS.general;
+  const greeting = restaurant.contactName
+    ? `Bonjour ${esc(restaurant.contactName)},`
+    : `Bonjour,`;
+
+  const bodyHtml = `
+    <p style="margin:0 0 20px 0;">${greeting}</p>
+    <p style="margin:0 0 16px 0;">${esc(cuisine.hook)}</p>
+    <p style="margin:0 0 16px 0;font-weight:600;">${esc(cuisine.pain)}</p>
+    <p style="margin:0 0 24px 0;">${esc(cuisine.benefit)}</p>
+    <p style="margin:0 0 8px 0;">Essayez gratuitement pendant 7 jours, sans engagement :</p>
+  `;
+
+  const html = buildMarketingEmail({
+    recipientName: restaurant.contactName || restaurant.name,
+    subject: cuisine.subject,
+    cuisineType: cuisineType || 'general',
+    bodyHtml,
+  });
+
+  return { subject: cuisine.subject, html };
+}

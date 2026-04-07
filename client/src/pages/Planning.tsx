@@ -716,7 +716,7 @@ export default function Planning() {
       {planningTab === 'planning' && (<>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3">
         <StatCard icon={<Users className="w-5 h-5 text-indigo-400" />} label={t('planning.employees')} value={String(employees.length)} />
         <StatCard icon={<Clock className="w-5 h-5 text-amber-400" />} label={t('planning.hoursPerWeek')} value={`${totalHoursWeek.toFixed(0)}h`} />
         <StatCard icon={<Euro className="w-5 h-5 text-emerald-400" />} label={t('planning.laborCost')} value={`${laborCost.toFixed(0)} EUR`} />
@@ -949,8 +949,8 @@ export default function Planning() {
             <UserPlus className="w-3.5 h-3.5" /> {t('common.add')}
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.employee')}</th>
@@ -1156,7 +1156,7 @@ export default function Planning() {
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.hourlyRate')}</label>
               <input
@@ -1244,7 +1244,7 @@ export default function Planning() {
               className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.startTime')}</label>
               <input
@@ -1425,10 +1425,10 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
   return (
     <div className="p-5 space-y-5">
       {/* Day stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.presentEmployees')}</div>
-          <div className="text-2xl font-bold text-[#111111] dark:text-white">{presenceMap.size}</div>
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.presentEmployees')}</div>
+          <div className="text-lg sm:text-2xl font-bold text-[#111111] dark:text-white">{presenceMap.size}</div>
         </div>
         <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.totalHours')}</div>
@@ -1584,15 +1584,15 @@ function PointageTab({
   return (
     <div className="space-y-6">
       {/* Pointage summary cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <Users className="w-5 h-5 text-[#111111] dark:text-white" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
             </div>
             <div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">En service</div>
-              <div className="text-xl font-bold text-[#111111] dark:text-white">{activePunches}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">En service</div>
+              <div className="text-lg sm:text-xl font-bold text-[#111111] dark:text-white">{activePunches}</div>
             </div>
           </div>
         </div>
@@ -1772,8 +1772,8 @@ function PointageTab({
             </button>
           </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A]">
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">Employe</th>

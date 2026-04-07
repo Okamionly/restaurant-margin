@@ -312,6 +312,29 @@ body::before {
   50% { height: 24px; }
 }
 
+/* ── Mobile responsive improvements ────────────────────────────────────── */
+@media (max-width: 639px) {
+  /* Ensure tables don't break layout on mobile */
+  table {
+    font-size: 0.8125rem;
+  }
+
+  /* Full-width cards on mobile (compensate for page padding) */
+  .card {
+    padding: 1rem;
+  }
+
+  /* Prevent horizontal overflow on mobile */
+  .recharts-wrapper {
+    font-size: 10px;
+  }
+
+  /* Smaller chart tick labels on mobile */
+  .recharts-cartesian-axis-tick-value {
+    font-size: 10px !important;
+  }
+}
+
 /* Print styles */
 @media print {
   @page {

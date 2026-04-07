@@ -796,8 +796,8 @@ export default function Suppliers() {
   return (
     <div>
       {/* Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div className="flex gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-lg p-1 w-fit">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-lg p-1 w-full sm:w-fit overflow-x-auto">
           <button
             onClick={() => setActiveTab('mes-fournisseurs')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -845,9 +845,9 @@ export default function Suppliers() {
       {activeTab === 'mes-fournisseurs' && (
         <>
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
+            <div className="flex flex-wrap items-center gap-2">
               {/* Score comparison button */}
               {suppliers.length >= 2 && (
                 <button
@@ -897,25 +897,25 @@ export default function Suppliers() {
           </div>
 
           {/* Stats cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.totalSuppliers')}</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.totalSuppliers')}</span>
+                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.totalSuppliers}</div>
+              <div className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{stats.totalSuppliers}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.linkedIngredients')}</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.linkedIngredients')}</span>
+                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.totalLinked}</div>
+              <div className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{stats.totalLinked}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.withDelivery')}</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.withDelivery')}</span>
+                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
               <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.withDelivery}</div>
             </div>
@@ -1829,9 +1829,9 @@ export default function Suppliers() {
       {activeTab === 'comparateur' && (
         <>
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
-              <Scale className="w-6 h-6 text-emerald-500" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
+              <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
               Comparateur de prix
             </h2>
             {totalPotentialSavings > 0 && (
@@ -1845,13 +1845,13 @@ export default function Suppliers() {
           </div>
 
           {/* Stats cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Produits comparables</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Scale className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">Produits comparables</span>
+                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Scale className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{comparatorData.length}</div>
+              <div className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{comparatorData.length}</div>
             </div>
             <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
               <div className="flex items-center justify-between mb-2">
@@ -1887,9 +1887,9 @@ export default function Suppliers() {
               </p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-hidden -mx-4 sm:mx-0">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm min-w-[600px]">
                   <thead>
                     <tr className="bg-[#FAFAFA] dark:bg-[#1A1A1A] text-left text-xs text-[#9CA3AF] dark:text-[#737373]">
                       <th className="px-4 py-3 font-medium">Ingredient</th>
@@ -2053,7 +2053,7 @@ export default function Suppliers() {
           </div>
 
           {/* Phone + Email */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.phone')}</label>
               <input
@@ -2104,7 +2104,7 @@ export default function Suppliers() {
           </div>
 
           {/* Postal code + City */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.postalCode')}</label>
               <input
@@ -2126,7 +2126,7 @@ export default function Suppliers() {
           </div>
 
           {/* Region + Country */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.region')}</label>
               <select
@@ -2152,7 +2152,7 @@ export default function Suppliers() {
           </div>
 
           {/* SIRET + Website */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.siret')}</label>
               <input
@@ -2218,7 +2218,7 @@ export default function Suppliers() {
           </div>
 
           {/* Min order + Payment terms */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#A3A3A3] mb-1">{t('suppliers.minimumOrder')}</label>
               <input

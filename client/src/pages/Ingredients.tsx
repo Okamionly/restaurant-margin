@@ -617,8 +617,8 @@ export default function Ingredients() {
 
       {/* KPI Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Package className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
@@ -626,8 +626,8 @@ export default function Ingredients() {
             <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.total}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Euro className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
@@ -635,8 +635,8 @@ export default function Ingredients() {
             <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Tag className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
@@ -644,8 +644,8 @@ export default function Ingredients() {
             <p className="text-lg font-bold text-[#111111] dark:text-white truncate">{summaryStats.expensiveCat}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+          <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Truck className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
@@ -695,8 +695,8 @@ export default function Ingredients() {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-x-auto border border-[#E5E7EB] dark:border-[#1A1A1A]">
-        <table className="w-full text-sm">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-x-auto border border-[#E5E7EB] dark:border-[#1A1A1A] -mx-4 sm:mx-0">
+        <table className="w-full text-sm min-w-[640px]">
           <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-left">
             <tr>
               <th className="px-4 py-3 w-10">
@@ -1041,7 +1041,7 @@ export default function Ingredients() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="label">{t('ingredients.unitPriceLabel')}</label>
               <input

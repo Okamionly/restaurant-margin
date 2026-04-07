@@ -790,8 +790,8 @@ export default function Inventory() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Package className="w-7 h-7 text-teal-600" />
+          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <Package className="w-6 h-6 sm:w-7 sm:h-7 text-teal-600" />
             Inventaire
           </h1>
           <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
@@ -829,18 +829,18 @@ export default function Inventory() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-3 sm:p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-1">
             <Package className="w-4 h-4" /> Articles en stock
           </div>
-          <div className="text-2xl font-bold">{items.length}</div>
+          <div className="text-xl sm:text-2xl font-bold">{items.length}</div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-3 sm:p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-1">
             <TrendingUp className="w-4 h-4" /> Valeur totale estimée
           </div>
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+          <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
             {valueData ? `${valueData.totalValue.toFixed(2)} €` : '---'}
           </div>
         </div>
@@ -958,8 +958,8 @@ export default function Inventory() {
 
       {/* Inventory Table */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto -mx-3 sm:mx-0">
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="bg-[#FAFAFA] dark:bg-[#171717] text-left">
                 <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>

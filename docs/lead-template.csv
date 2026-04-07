@@ -1,0 +1,6 @@
+restaurant_name,owner_name,email,phone,city,region,cuisine_type,seats,source,status,notes
+Le Bistrot du Marche,Julien Dupont,contact@bistrotdumarche.fr,01 42 55 66 77,Paris,Ile-de-France,Bistrot,40,Google Maps,nouveau,Site web actif - food cost non maitrise
+Pasta Mia,Marco Rossi,marco@pastamia.fr,04 78 33 44 55,Lyon,Auvergne-Rhone-Alpes,Italien / Pizzeria,80,LinkedIn,contacte,2 sites - interesse par multi-restaurant
+Burger Lab,Antoine Martin,antoine@burgerlab.fr,05 56 77 88 99,Bordeaux,Nouvelle-Aquitaine,Burger artisanal,35,Salon Food Hotel Tech,demo planifiee,Sensible a la hausse des prix viande
+La Table de Fatima,Fatima Benali,fatima.benali@latabledefa.ma,+212 522 334 455,Casablanca,Grand Casablanca,Marocain traditionnel,60,CCI Maroc,nouveau,Expansion Maroc - a contacter en arabe
+Chez Marcel,Marcel Leroy,chezmarcel@outlook.fr,03 20 55 66 77,Lille,Hauts-de-France,Brasserie,55,PagesJaunes,nouveau,Pas de site web - email depuis annuaire

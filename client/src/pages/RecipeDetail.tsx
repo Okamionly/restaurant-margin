@@ -300,14 +300,14 @@ export default function RecipeDetail() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-0">
       {/* ─── Screen toolbar (hidden on print) ─── */}
-      <div className="flex items-center justify-between mb-4 no-print">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 no-print">
         <Link
           to="/recipes"
           className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 text-sm font-medium transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Retour aux recettes
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={handleShare}
             disabled={shareLoading}
@@ -580,7 +580,7 @@ export default function RecipeDetail() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-black text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">{getCurrencySymbol()}</span></div>
+              <div className="text-xl sm:text-2xl font-black text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}<span className="text-sm font-medium ml-0.5">{getCurrencySymbol()}</span></div>
               <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Prix de vente</div>
             </div>
           </div>
@@ -590,12 +590,13 @@ export default function RecipeDetail() {
         </div>
 
         {/* ─── BODY: 2-column layout ─── */}
-        <div className="flex fiche-body">
+        <div className="flex flex-col md:flex-row fiche-body">
           {/* ──── LEFT COLUMN (60%) ──── */}
-          <div className="fiche-left flex-[3] border-r border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <div className="fiche-left flex-[3] md:border-r border-b md:border-b-0 border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4">
             <h2 className="text-[11px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2">Composition</h2>
 
-            <table className="w-full text-[11px] border-collapse">
+            <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
+            <table className="w-full text-[11px] border-collapse min-w-[480px]">
               <thead>
                 <tr className="border-b-2 border-[#D1D5DB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373]">
                   <th className="text-left pb-1.5 font-semibold pl-1">Ingrédient</th>
@@ -641,10 +642,11 @@ export default function RecipeDetail() {
                 </tr>
               </tfoot>
             </table>
+            </div>
           </div>
 
           {/* ──── RIGHT COLUMN (40%) ──── */}
-          <div className="fiche-right flex-[2] p-4 space-y-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/30">
+          <div className="fiche-right flex-[2] p-3 sm:p-4 space-y-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/30">
 
             {/* Key metrics box */}
             <div>

@@ -126,7 +126,7 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
 }) {
   const style = STAT_CARD_STYLES[colorKey] || STAT_CARD_STYLES.teal;
   return (
-    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A]/50 border-t-[3px] ${style.border} p-4 sm:p-5 transition-all duration-300 hover:shadow-lg dark:hover:shadow-black/20 hover:-translate-y-0.5 dark:bg-[#0A0A0A]/40 dark:backdrop-blur-md`}>
+    <div className={`bg-gradient-to-b ${style.gradient} rounded-xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A]/50 border-t-[3px] ${style.border} p-3 sm:p-4 lg:p-5 transition-all duration-300 hover:shadow-lg dark:hover:shadow-black/20 hover:-translate-y-0.5 dark:bg-[#0A0A0A]/40 dark:backdrop-blur-md`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs sm:text-sm font-medium text-[#9CA3AF] dark:text-[#737373] truncate font-general-sans">{title}</span>
         <div className={`p-2 rounded-lg ${color} shadow-lg`}>
@@ -134,7 +134,7 @@ function StatCard({ title, value, numericValue, subtitle, icon: Icon, color, col
         </div>
       </div>
       <div className="flex items-end gap-2">
-        <div className="text-2xl sm:text-3xl font-black font-satoshi text-[#111111] dark:text-white tracking-tight">
+        <div className="text-xl sm:text-2xl lg:text-3xl font-black font-satoshi text-[#111111] dark:text-white tracking-tight">
           {numericValue !== undefined
             ? <AnimatedNumber value={numericValue} decimals={decimals} suffix={suffix} prefix={prefix} />
             : value}
@@ -283,7 +283,7 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
   };
 
   return (
-    <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 overflow-hidden">
+    <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-3 sm:p-5 overflow-hidden">
       {/* Over-budget alert banner */}
       {overBudget && (
         <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50">
@@ -294,7 +294,7 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
         </div>
       )}
 
-      <div className="flex items-start gap-5">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
         {/* Circular progress ring */}
         <div className="relative flex-shrink-0">
           <svg width="88" height="88" viewBox="0 0 88 88" className="transform -rotate-90">
@@ -1366,11 +1366,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* ── Header + Quick Actions ────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 stagger-1">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 stagger-1">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-black font-satoshi tracking-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black font-satoshi tracking-tight">
             <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-300 bg-clip-text text-transparent">{t("dashboard.title")}</span>
           </h2>
           <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">
@@ -1398,19 +1398,19 @@ export default function Dashboard() {
           </Link>
           <Link
             to="/inventory"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm"
           >
             <FileText className="w-4 h-4" /> {t("dashboard.viewInventory")}
           </Link>
           <button
             onClick={fetchWeeklyReport}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors shadow-sm no-print"
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors shadow-sm no-print"
           >
-            <Sparkles className="w-4 h-4" /> Rapport IA
+            <Sparkles className="w-4 h-4" /> <span className="hidden sm:inline">Rapport</span> IA
           </button>
           <button
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm no-print"
+            className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#262626] transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm no-print"
           >
             <Printer className="w-4 h-4" /> {t("dashboard.print")}
           </button>
@@ -1426,7 +1426,7 @@ export default function Dashboard() {
       />
 
       {/* ── Stat Cards (bigger, gradient, colored top border) ─────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 stagger-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 stagger-2">
         <StatCard title={t("dashboard.recipes")} value={String(stats.totalRecipes)} icon={ChefHat} color="bg-[#111111] dark:bg-white" colorKey="teal" />
         <StatCard
           title={t("dashboard.avgMargin")}
@@ -1753,7 +1753,7 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-4 sm:gap-6">
             {/* LEFT SIDE */}
             <div className="space-y-6">
               {/* Revenue Estimation */}
@@ -1803,22 +1803,22 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
-                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
-                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix={currencySuffix()} /></p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-3">
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-3">
+                    <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
+                    <p className="text-base sm:text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
-                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
-                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
-                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix={currencySuffix()} /></p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-3">
+                    <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
+                    <p className="text-base sm:text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
-                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
-                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
-                    <p className="text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix={currencySuffix()} /></p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-3">
+                    <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
+                    <p className="text-base sm:text-xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
-                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-3">
-                    <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
-                    <p className="text-xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix={currencySuffix()} /></p>
+                  <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-3">
+                    <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
+                    <p className="text-base sm:text-xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix={currencySuffix()} /></p>
                   </div>
                 </div>
 
@@ -2281,22 +2281,22 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
-                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
-                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix={currencySuffix()} /></p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-4">
+                <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerDay")}</p>
+                <p className="text-lg sm:text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue} decimals={0} suffix={currencySuffix()} /></p>
               </div>
-              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
-                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
-                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix={currencySuffix()} /></p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-4">
+                <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerWeek")}</p>
+                <p className="text-lg sm:text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 6} decimals={0} suffix={currencySuffix()} /></p>
               </div>
-              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
-                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
-                <p className="text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix={currencySuffix()} /></p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-4">
+                <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.revenuePerMonth")}</p>
+                <p className="text-lg sm:text-2xl font-bold"><AnimatedNumber value={stats.dailyRevenue * 26} decimals={0} suffix={currencySuffix()} /></p>
               </div>
-              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-4">
-                <p className="text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
-                <p className="text-2xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix={currencySuffix()} /></p>
+              <div className="bg-white/10 dark:bg-black/10 rounded-lg p-2 sm:p-4">
+                <p className="text-[10px] sm:text-xs text-white/60 dark:text-[#111111]/60 mb-1">{t("dashboard.profitPerDay")}</p>
+                <p className="text-lg sm:text-2xl font-bold text-green-300 dark:text-green-600"><AnimatedNumber value={stats.dailyProfit} decimals={0} suffix={currencySuffix()} /></p>
               </div>
             </div>
           </div>
@@ -2805,24 +2805,24 @@ export default function Dashboard() {
               </div>
 
               {/* Summary Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                 <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
                   <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Food Cost %</p>
-                  <p className="text-2xl font-bold text-red-500 font-mono">{pnlData.foodCostPercent}%</p>
+                  <p className="text-lg sm:text-2xl font-bold text-red-500 font-mono">{pnlData.foodCostPercent}%</p>
                   <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
                     <div className="h-full bg-red-500 rounded-full" style={{ width: `${Math.min(pnlData.foodCostPercent * 2.5, 100)}%` }} />
                   </div>
                 </div>
                 <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
                   <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Labor Cost %</p>
-                  <p className="text-2xl font-bold text-red-500 font-mono">{pnlData.laborCostPercent}%</p>
+                  <p className="text-lg sm:text-2xl font-bold text-red-500 font-mono">{pnlData.laborCostPercent}%</p>
                   <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
                     <div className="h-full bg-red-400 rounded-full" style={{ width: `${Math.min(pnlData.laborCostPercent * 2.5, 100)}%` }} />
                   </div>
                 </div>
                 <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
                   <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Marge brute %</p>
-                  <p className="text-2xl font-bold text-emerald-500 font-mono">{pnlData.grossMarginPercent}%</p>
+                  <p className="text-lg sm:text-2xl font-bold text-emerald-500 font-mono">{pnlData.grossMarginPercent}%</p>
                   <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full mt-2">
                     <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${Math.min(pnlData.grossMarginPercent, 100)}%` }} />
                   </div>
@@ -2999,7 +2999,7 @@ export default function Dashboard() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto px-6 py-5">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5">
               {reportLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                   <Loader2 className="w-8 h-8 text-[#111111] dark:text-white animate-spin" />
@@ -3010,7 +3010,7 @@ export default function Dashboard() {
                 <>
                   {/* Key Metrics Cards */}
                   {reportData.keyMetrics && (
-                    <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
                       <div className="bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
                         <p className="text-2xl font-black font-satoshi text-[#111111] dark:text-white">{reportData.keyMetrics.recipeCount}</p>
                         <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 font-general-sans">Recettes</p>
@@ -3052,11 +3052,11 @@ export default function Dashboard() {
 
             {/* Footer Actions */}
             {reportData && !reportLoading && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
                 <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-general-sans">
                   Rapport en cache 24h
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={copyReport}
                     className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#E5E5E5] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#262626] transition-colors"

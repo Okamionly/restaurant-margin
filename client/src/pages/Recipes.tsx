@@ -1005,16 +1005,16 @@ export default function Recipes() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-[#111111] dark:text-white">{t("recipes.title")}</h2>
-        <button onClick={openNew} className="btn-primary flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t("recipes.title")}</h2>
+        <button onClick={openNew} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4" /> {t("recipes.newRecipe")}
         </button>
       </div>
 
       {/* ── KPI Summary Cards ──────────────────────────────────────────── */}
       {recipes.length > 0 && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
             <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("recipes.kpiTotal")}</div>
             <div className="text-2xl font-bold text-[#111111] dark:text-white">{kpis.total}</div>
@@ -1061,7 +1061,7 @@ export default function Recipes() {
       <>
       {/* ── Search bar + View toggle ───────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1 sm:max-w-md">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
           <input
             type="text"
@@ -1115,7 +1115,7 @@ export default function Recipes() {
       {/* ── Table View ─────────────────────────────────────────────────── */}
       {viewMode === 'table' ? (
         <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[700px]">
             <thead>
               <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                 <th className="px-4 py-3 w-10">
@@ -1197,7 +1197,7 @@ export default function Recipes() {
         </div>
       ) : (
       /* ── Grid View (existing cards) ────────────────────────────────── */
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.length === 0 ? (
           <p className="text-[#9CA3AF] dark:text-[#737373] col-span-full text-center py-8">
             {recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}
@@ -1206,7 +1206,7 @@ export default function Recipes() {
           filtered.map((recipe) => {
             const allergens = getRecipeAllergens(recipe);
             return (
-            <div key={recipe.id} className={`bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}>
+            <div key={recipe.id} className={`bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-lg sm:hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}>
               {/* Bulk select checkbox */}
               <div className="absolute top-2 left-2 z-10">
                 <input
@@ -1288,7 +1288,7 @@ export default function Recipes() {
 
       {/* ── Bulk Actions Floating Bar (Recipes) ──────────────────────── */}
       {selectedRecipeIds.size > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-6 py-3 flex items-center gap-4">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 justify-center">
           <span className="text-sm font-medium flex items-center gap-2">
             <CheckSquare className="w-4 h-4" />
             {selectedRecipeIds.size} selectionne{selectedRecipeIds.size > 1 ? 's' : ''}
@@ -1387,7 +1387,7 @@ export default function Recipes() {
             Aucun template ne correspond a votre recherche.
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTemplates.map((tpl, idx) => {
               const preview = getTemplatePreview(tpl);
               const catLabel = tpl.category === 'Entrée' ? 'Entree' : tpl.category;
@@ -1479,7 +1479,7 @@ export default function Recipes() {
       {/* Recipe Form Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t("recipes.editRecipeTitle") : t("recipes.newRecipeTitle")}>
         <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} className={`space-y-4 transition-colors duration-500 ${saveSuccess ? 'bg-green-50 dark:bg-green-900/20 rounded-lg p-2 -m-2' : ''}`}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="col-span-2 relative">
               <div className="flex items-center justify-between mb-1">
                 <label className="label mb-0">{t("recipes.dishName")}</label>
@@ -1733,7 +1733,7 @@ export default function Recipes() {
               <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
               <span className="text-sm font-semibold text-[#111111] dark:text-white">{t("recipes.livePreview")}</span>
             </div>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
               <div className="flex justify-between text-[#6B7280] dark:text-[#A3A3A3]">
                 <span>{t("recipes.materialCost")}</span>
                 <strong className="font-mono">{liveCost.toFixed(2)} {getCurrencySymbol()}</strong>

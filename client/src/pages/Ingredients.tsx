@@ -603,20 +603,20 @@ export default function Ingredients() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
-        <div className="flex gap-2">
-          <button onClick={() => window.print()} className="btn-secondary flex items-center gap-2 text-sm no-print" title={t('ingredients.printTooltip')}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <button onClick={() => window.print()} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title={t('ingredients.printTooltip')}>
             <Printer className="w-4 h-4" /> {t('ingredients.print')}
           </button>
-          <button onClick={openNew} className="btn-primary flex items-center gap-2">
+          <button onClick={openNew} className="btn-primary flex items-center gap-2 flex-1 sm:flex-none justify-center">
             <Plus className="w-4 h-4" /> {t('ingredients.add')}
           </button>
         </div>
       </div>
 
       {/* KPI Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
         <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Package className="w-5 h-5 text-[#111111] dark:text-white" />

@@ -5300,5 +5300,25 @@
       }
     ],
     "tool_use_id": "toolu_01AB872uyxRFfibZBJKPAp4h"
+  },
+  {
+    "session_id": "7b8c0b6c-67d3-45f1-b14c-7c765f0930b9",
+    "transcript_path": "C:\\Users\\mrgue\\.claude\\projects\\C--Users-mrgue-CLAUDE-CODE\\7b8c0b6c-67d3-45f1-b14c-7c765f0930b9.jsonl",
+    "cwd": "C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin",
+    "permission_mode": "bypassPermissions",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "cd \"/c/Users/mrgue/CLAUDE CODE/restaurant-margin\" && git add -A && git commit -m \"$(cat <<'EOF'\nfeat: vague IA massive \u00e2\u20ac\u201d streaming, pr\u00c3\u00a9dictif, assistant v2, allerg\u00c3\u00a8nes\n\n- Streaming SSE: r\u00c3\u00a9ponses IA en temps r\u00c3\u00a9el, cache 5min, Sonnet restreint (-50% co\u00c3\u00bbts)\n- IA Pr\u00c3\u00a9dictive: demand forecast 7j, pricing dynamique, brief n\u00c3\u00a9gociation fournisseur\n- Assistant v2: suggestions contextuelles, historique 10 conv, modes Chef/Gestionnaire/HACCP, feedback\n- Allerg\u00c3\u00a8nes IA: 14 allerg\u00c3\u00a8nes EU, cross-contamination, matrice menu compl\u00c3\u00a8te\n- Nutrition IA: calories/macros/health score par recette, \u00c3\u00a9tiquette imprimable\n- Nouvelle page /allergen-matrix\n\nCo-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>\nEOF\n)\" && git push",
+      "description": "Push massive AI wave"
+    },
+    "tool_response": {
+      "stdout": "warning: in the working copy of 'client/src/pages/AIAssistant.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'client/src/pages/Dashboard.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'client/src/pages/RecipeDetail.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'client/src/pages/Suppliers.tsx', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'server/src/routes/ai.ts', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'client/src/pages/AllergenMatrix.tsx', LF will be replaced by CRLF the next time Git touches it\n[main f3bad92] feat: vague IA massive \u00e2\u20ac\u201d streaming, pr\u00c3\u00a9dictif, assistant v2, allerg\u00c3\u00a8nes\n 12 files changed, 2588 insertions(+), 101 deletions(-)\n create mode 100644 client/src/pages/AllergenMatrix.tsx\nTo https://github.com/Okamionly/restaurant-margin.git\n   224406b..f3bad92  main -> main",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false,
+      "noOutputExpected": false
+    },
+    "tool_use_id": "toolu_019FMGN2VAmW98wZZjaQ7RuS"
   }
 ]

@@ -219,7 +219,7 @@ export default function QRCodeGenerator() {
             Gerez vos recettes, calculez vos marges et publiez un menu QR professionnel — tout-en-un.
           </p>
           <Link
-            to="/register"
+            to="/login?mode=register"
             className="inline-flex items-center gap-2 bg-white text-teal-700 font-bold text-sm px-6 py-3 rounded-xl hover:bg-teal-50 transition"
           >
             Essayer gratuitement

@@ -85,7 +85,7 @@ export default function FoodCostCalculator() {
             <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
           </Link>
           <Link
-            to="/register"
+            to="/login?mode=register"
             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-full transition-colors"
           >
             Essai gratuit <ArrowRight className="w-4 h-4" />
@@ -307,10 +307,10 @@ export default function FoodCostCalculator() {
             fournisseurs, alertes de marge — tout en un.
           </p>
           <Link
-            to="/register"
+            to="/login?mode=register"
             className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-full text-base transition-colors shadow-lg shadow-teal-600/20"
           >
-            Essai gratuit 14 jours <ArrowRight className="w-5 h-5" />
+            Essai gratuit 7 jours <ArrowRight className="w-5 h-5" />
           </Link>
         </section>
       </main>

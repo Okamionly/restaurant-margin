@@ -128,7 +128,7 @@ function FAQSection() {
             </button>
             {openIndex === index && (
               <div className="px-6 pb-5 pt-0">
-                <p className="text-slate-300 leading-relaxed pl-8">{faq.answer}</p>
+                <p className="text-slate-600 leading-relaxed pl-8">{faq.answer}</p>
               </div>
             )}
           </div>
@@ -179,7 +179,7 @@ export default function Pricing() {
             pas les developpeurs
           </span>
         </h1>
-        <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-10">
+        <p className="text-lg text-slate-500 max-w-2xl mx-auto mb-10">
           Simple, direct, efficace. Choisissez votre plan et commencez a maitriser vos marges.
         </p>
 
@@ -236,7 +236,7 @@ export default function Pricing() {
                 {plan.icon}
                 <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
               </div>
-              <p className="text-slate-300 text-sm mb-6">{plan.description}</p>
+              <p className="text-slate-500 text-sm mb-6">{plan.description}</p>
 
               {/* Price */}
               <div className="mb-8">
@@ -339,7 +339,7 @@ export default function Pricing() {
                       value={devisForm.message}
                       onChange={(e) => setDevisForm({ ...devisForm, message: e.target.value })}
                       placeholder="Votre besoin (nb. de sites, etc.)"
-                      className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-slate-300 text-slate-900 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
                     />
                     {devisError && (
                       <p className="text-xs text-red-400">{devisError}</p>
@@ -410,7 +410,7 @@ export default function Pricing() {
         <h2 className="text-2xl font-bold text-slate-900 mb-3">
           Pret a reprendre le controle de vos marges ?
         </h2>
-        <p className="text-slate-300 mb-8 max-w-lg mx-auto">
+        <p className="text-slate-500 mb-8 max-w-lg mx-auto">
           Essayez gratuitement pendant 7 jours. Sans carte bancaire, sans engagement.
         </p>
         <a

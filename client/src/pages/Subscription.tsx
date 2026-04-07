@@ -32,23 +32,23 @@ const PLANS: Plan[] = [
   {
     id: 'pro',
     name: 'Pro',
-    price: '29€',
+    price: '29\u20AC',
     period: '/mois',
-    description: 'Pour les restaurateurs qui veulent optimiser leurs marges',
+    description: 'Pour les independants qui veulent maitriser leurs marges',
     icon: <Rocket className="w-6 h-6" />,
     highlighted: true,
-    badge: 'Recommandé',
+    badge: 'Recommande',
     features: [
-      '1 restaurant',
-      'Recettes illimitées',
-      'Ingrédients illimités',
-      'Fiches techniques',
-      'Scanner de factures (OCR)',
-      'Mercuriale (suivi des prix)',
-      'Menu Engineering (matrice BCG)',
-      'HACCP & Traçabilité',
-      'Commandes automatiques',
-      'Support prioritaire',
+      'Fiches techniques illimitees avec calcul des marges',
+      '19 actions IA : recettes par chat ou commande vocale',
+      'Commandes fournisseurs par email et WhatsApp en 1 clic',
+      'Scanner de factures IA : photographiez, tout se met a jour',
+      'Suivi des prix fournisseurs (Mercuriale) avec alertes',
+      'Inventaire avec alertes stock bas',
+      'HACCP digital : temperatures, nettoyage, conformite',
+      'Messagerie integree avec vos fournisseurs',
+      '500 requetes IA par mois',
+      'Essai gratuit 7 jours',
     ],
     cta: 'S\'abonner au Pro',
     gradient: 'from-teal-500/10 to-indigo-600/10',
@@ -57,19 +57,22 @@ const PLANS: Plan[] = [
   {
     id: 'business',
     name: 'Business',
-    price: '79€',
+    price: '79\u20AC',
     period: '/mois',
-    description: 'Pour les groupes et les multi-sites',
+    description: 'Pour les groupes qui gerent plusieurs etablissements',
     icon: <Building2 className="w-6 h-6" />,
     features: [
-      'Tout du Pro +',
-      'Multi-restaurant (jusqu\'à 10)',
-      'API ouverte',
-      'Intégration caisse',
-      'Marketplace fournisseurs',
-      'Manager dédié',
+      'Tout du plan Pro',
+      'Multi-restaurants : gerez tous vos etablissements',
+      '2000 requetes IA par mois',
+      'Rapport IA hebdomadaire automatique',
+      'Menu Engineering : matrice BCG pour optimiser votre carte',
+      'Analyse predictive : previsions de ventes et suggestions prix',
+      'Station Balance compatible (tablette + balance Bluetooth)',
+      'Support prioritaire',
+      'Essai gratuit 7 jours',
     ],
-    cta: 'Contacter l\'équipe',
+    cta: 'S\'abonner au Business',
     gradient: 'from-purple-500/10 to-fuchsia-600/10',
     borderColor: 'border-purple-200 dark:border-purple-700',
   },
@@ -77,24 +80,24 @@ const PLANS: Plan[] = [
 
 const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'Puis-je changer de plan à tout moment ?',
+    question: 'Puis-je changer de plan a tout moment ?',
     answer:
-      'Oui, vous pouvez passer à un plan supérieur ou inférieur à tout moment. Le changement prend effet immédiatement et la facturation est calculée au prorata pour le reste du mois en cours.',
+      'Oui, passez du Pro au Business (ou l\'inverse) quand vous voulez. Le changement est immediat et le montant est ajuste au prorata.',
   },
   {
     question: 'Y a-t-il un engagement ?',
     answer:
-      'Non, aucun engagement. Tous nos plans sont sans engagement et vous pouvez annuler à tout moment. Vos données restent accessibles pendant 30 jours après annulation.',
+      'Non, zero engagement. Vous annulez quand vous voulez. Vos donnees restent accessibles 30 jours apres annulation.',
   },
   {
     question: 'Comment fonctionne le scanner de factures ?',
     answer:
-      'Le scanner OCR vous permet de photographier vos factures fournisseurs. L\'intelligence artificielle extrait automatiquement les prix, quantités et références pour mettre à jour votre mercuriale et vos coûts ingrédients en temps réel.',
+      'Prenez votre facture en photo. L\'IA lit les prix, les quantites et met a jour automatiquement votre mercuriale et vos couts ingredients. Simple comme ca.',
   },
   {
-    question: 'Puis-je utiliser une balance connectee ?',
+    question: 'C\'est quoi les requetes IA ?',
     answer:
-      'Oui, RestauMargin propose une station de pesee logicielle compatible avec toute balance Bluetooth. Connectez votre propre balance et pesez vos ingredients directement depuis l\'application.',
+      'Chaque utilisation de l\'IA (creer une recette, scanner une facture, poser une question) consomme une requete. Le Pro en inclut 500/mois, le Business 2000.',
   },
 ];
 
@@ -106,21 +109,21 @@ interface FeatureRow {
 }
 
 const FEATURE_COMPARISON: FeatureRow[] = [
-  { name: 'Restaurants', pro: '1', business: 'Jusqu\'à 10' },
-  { name: 'Recettes', pro: 'Illimité', business: 'Illimité' },
-  { name: 'Ingrédients', pro: 'Illimité', business: 'Illimité' },
-  { name: 'Fiches techniques', pro: true, business: true },
-  { name: 'Calcul de marge', pro: 'Avancé', business: 'Avancé' },
-  { name: 'Scanner de factures (OCR)', pro: true, business: true },
-  { name: 'Mercuriale', pro: true, business: true },
-  { name: 'Menu Engineering', pro: true, business: true },
-  { name: 'HACCP & Traçabilité', pro: true, business: true },
-  { name: 'Commandes automatiques', pro: true, business: true },
-  { name: 'API ouverte', pro: false, business: true },
-  { name: 'Intégration caisse', pro: false, business: true },
-  { name: 'Marketplace fournisseurs', pro: false, business: true },
-  { name: 'Manager dédié', pro: false, business: true },
-  { name: 'Support', pro: 'Prioritaire', business: 'Dédié' },
+  { name: 'Restaurants', pro: '1', business: 'Tous vos etablissements' },
+  { name: 'Fiches techniques & calcul des marges', pro: 'Illimite', business: 'Illimite' },
+  { name: 'Requetes IA par mois', pro: '500', business: '2000' },
+  { name: 'Commandes fournisseurs (email/WhatsApp)', pro: true, business: true },
+  { name: 'Scanner de factures IA', pro: true, business: true },
+  { name: 'Suivi des prix (Mercuriale)', pro: true, business: true },
+  { name: 'Inventaire & alertes stock bas', pro: true, business: true },
+  { name: 'HACCP digital', pro: true, business: true },
+  { name: 'Messagerie fournisseurs', pro: true, business: true },
+  { name: 'Commande vocale en cuisine', pro: true, business: true },
+  { name: 'Rapport IA hebdomadaire', pro: false, business: true },
+  { name: 'Menu Engineering (matrice BCG)', pro: false, business: true },
+  { name: 'Analyse predictive des ventes', pro: false, business: true },
+  { name: 'Station Balance compatible', pro: false, business: true },
+  { name: 'Support', pro: 'Email', business: 'Prioritaire' },
 ];
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -212,8 +215,8 @@ export default function Subscription() {
             Choisissez votre plan
           </h2>
           <p className="mt-3 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            Des outils puissants pour optimiser la rentabilité de votre restaurant.
-            Choisissez le plan qui correspond à vos besoins.
+            Concu pour les restaurateurs, pas les developpeurs.
+            Simple, direct, efficace.
           </p>
         </div>
 
@@ -305,7 +308,7 @@ export default function Subscription() {
         {/* ── Feature Comparison Table ───────────────────────────────────── */}
         <div className="mt-20">
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8">
-            Comparaison détaillée des fonctionnalités
+            Ce qui est inclus dans chaque plan
           </h2>
 
           <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
@@ -426,10 +429,10 @@ export default function Subscription() {
           <div className="inline-flex flex-col items-center p-8 rounded-2xl bg-gradient-to-br from-teal-50 to-indigo-50 dark:from-teal-900/20 dark:to-indigo-900/20 border border-teal-100 dark:border-teal-800">
             <Sparkles className="w-8 h-8 text-teal-500 dark:text-teal-400 mb-3" />
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-              Des questions sur nos offres ?
+              Besoin d'aide pour choisir ?
             </h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md">
-              Notre équipe est disponible pour vous aider à choisir le plan adapté à vos besoins.
+              On vous explique tout simplement. Ecrivez-nous, on repond vite.
             </p>
             <button className="mt-5 inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5">
               Nous contacter

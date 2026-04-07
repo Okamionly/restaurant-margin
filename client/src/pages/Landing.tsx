@@ -153,46 +153,46 @@ function FadeIn({ children, delay = 0, className = '' }: { children: React.React
 const features = [
   {
     icon: Send,
-    title: 'Messagerie & Commandes directes',
-    description: 'Envoyez vos commandes aux fournisseurs par email et WhatsApp directement depuis RestauMargin.',
+    title: 'Commandes fournisseurs en 1 clic',
+    description: 'Envoyez vos commandes par email ou WhatsApp directement depuis l\'appli. Plus besoin de jongler entre les mails et les coups de fil.',
     priority: true,
   },
   {
     icon: Sparkles,
-    title: 'Intelligence Artificielle',
-    description: '19 actions IA : creer des recettes, analyser vos marges, optimiser vos prix — par chat, voix ou photo.',
+    title: 'L\'IA qui parle cuisine',
+    description: 'Creez des recettes par chat ou commande vocale, scannez vos factures avec l\'appareil photo — l\'IA fait le reste.',
     priority: true,
   },
   {
     icon: ClipboardList,
-    title: 'Fiches techniques automatiques',
-    description: 'Calculez votre food cost instantanement. Coefficients, marges, allergenes — tout est automatique.',
+    title: 'Fiches techniques en quelques clics',
+    description: 'L\'IA calcule vos marges, vos coefficients et vos allergenes automatiquement. Vous n\'avez qu\'a cuisiner.',
     priority: true,
   },
   {
     icon: BarChart3,
-    title: 'Menu Engineering',
-    description: 'Matrice BCG pour identifier vos plats Stars, vos Vaches a lait et vos Poids morts.',
+    title: 'Optimisez votre carte',
+    description: 'Identifiez quels plats vous rapportent le plus et lesquels plombent vos marges. Prenez les bonnes decisions.',
   },
   {
     icon: Truck,
-    title: 'Gestion fournisseurs',
-    description: 'Comparateur de prix, score qualite /10, alertes automatiques et suivi tarifaire.',
+    title: 'Suivez les prix de vos fournisseurs',
+    description: 'La Mercuriale suit l\'evolution des prix et vous alerte quand un fournisseur augmente. Comparez en un coup d\'oeil.',
   },
   {
     icon: Scale,
-    title: 'Station de pesee',
-    description: 'Connectez votre balance Bluetooth et suivez vos marges en direct pendant la preparation.',
+    title: 'Balance connectee en cuisine',
+    description: 'Pesez vos ingredients avec une balance Bluetooth et verifiez vos marges en temps reel pendant la preparation.',
   },
   {
     icon: Thermometer,
-    title: 'HACCP & Tracabilite',
-    description: 'Suivi des temperatures, nettoyage et conformite reglementaire integres.',
+    title: 'HACCP digital, sans papier',
+    description: 'Temperatures, fiches de nettoyage, tracabilite — tout est numerique et conforme. Fini les classeurs.',
   },
   {
     icon: Brain,
-    title: 'Assistant IA conversationnel',
-    description: 'Claude analyse vos donnees, detecte les anomalies et vous conseille en continu.',
+    title: 'Un assistant qui connait votre cuisine',
+    description: 'Posez vos questions, dictez vos commandes. L\'IA analyse vos donnees et vous alerte quand quelque chose cloche.',
   },
 ];
 
@@ -686,19 +686,21 @@ export default function Landing() {
             <FadeIn delay={100}>
               <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col">
                 <h3 className="text-lg font-bold text-[#111111] mb-1">Pro</h3>
-                <p className="text-sm text-[#9CA3AF] mb-6">Pour optimiser et developper son restaurant.</p>
+                <p className="text-sm text-[#9CA3AF] mb-6">Pour les independants qui veulent maitriser leurs marges.</p>
                 <div className="flex items-baseline gap-1 mb-8">
                   <span className="text-5xl font-extrabold text-[#111111]">29</span>
                   <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
                 <div className="space-y-4 mb-10 flex-1">
                   {[
-                    'Dashboard & statistiques',
-                    'Fiches techniques illimitees',
-                    'Menu Engineering BCG',
-                    'Gestion fournisseurs avancee',
-                    'Export PDF / Excel',
-                    'Support prioritaire',
+                    'Fiches techniques illimitees avec calcul automatique des marges',
+                    '19 actions IA : creez vos recettes par chat ou commande vocale',
+                    'Commandes fournisseurs par email et WhatsApp en 1 clic',
+                    'Scanner de factures IA : photographiez, les prix se mettent a jour',
+                    'Suivi des prix fournisseurs (Mercuriale) avec alertes',
+                    'Gestion de l\'inventaire avec alertes stock bas',
+                    'HACCP digital : temperatures, nettoyage, conformite',
+                    '500 requetes IA par mois',
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-3">
                       <Check className="w-4 h-4 text-[#111111] shrink-0" />
@@ -724,7 +726,7 @@ export default function Landing() {
                   Populaire
                 </div>
                 <h3 className="text-lg font-bold text-[#111111] mb-1 mt-2">Business</h3>
-                <p className="text-sm text-[#9CA3AF] mb-6">Pour les groupes multi-restaurants.</p>
+                <p className="text-sm text-[#9CA3AF] mb-6">Pour les groupes qui gerent plusieurs etablissements.</p>
                 <div className="flex items-baseline gap-1 mb-8">
                   <span className="text-5xl font-extrabold text-[#111111]">79</span>
                   <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
@@ -732,11 +734,13 @@ export default function Landing() {
                 <div className="space-y-4 mb-10 flex-1">
                   {[
                     'Tout du plan Pro',
-                    'Multi-restaurants',
-                    'API & webhooks',
-                    'Station de pesee connectee',
-                    'Formation personnalisee',
-                    'Account manager dedie',
+                    'Multi-restaurants : gerez tous vos etablissements',
+                    '2000 requetes IA par mois',
+                    'Rapport IA hebdomadaire automatique',
+                    'Menu Engineering : matrice BCG pour optimiser votre carte',
+                    'Analyse predictive : previsions de ventes et suggestions prix',
+                    'Station Balance compatible (tablette + balance Bluetooth)',
+                    'Support prioritaire',
                   ].map((f) => (
                     <div key={f} className="flex items-center gap-3">
                       <Check className="w-4 h-4 text-[#111111] shrink-0" />

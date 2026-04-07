@@ -10,27 +10,27 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     question: "Comment fonctionne l'abonnement ?",
-    answer: "Choisissez votre plan (Pro 29€ ou Business 79€/mois), payez par carte bancaire via notre plateforme securisee Stripe, et recevez votre code d'activation instantanement.",
+    answer: "Choisissez votre plan (Pro 29\u20AC ou Business 79\u20AC/mois), payez par carte bancaire et recevez votre code d'activation par email. Sans engagement, vous annulez quand vous voulez.",
   },
   {
     question: "Comment fonctionne la facturation annuelle ?",
-    answer: "En choisissant la facturation annuelle, vous beneficiez d'une reduction de 20% par rapport au tarif mensuel. Vous etes facture une seule fois pour l'annee entiere.",
+    answer: "En choisissant la facturation annuelle, vous economisez 20%. Vous etes facture une seule fois pour l'annee entiere.",
   },
   {
     question: "Puis-je changer de plan a tout moment ?",
-    answer: "Absolument. Vous pouvez upgrader ou downgrader votre plan a tout moment. Le changement prend effet immediatement et le montant est ajuste au prorata.",
+    answer: "Oui. Passez du Pro au Business (ou l'inverse) quand vous voulez. Le changement est immediat et le montant est ajuste au prorata.",
   },
   {
     question: "Comment recevoir mon code d'activation ?",
-    answer: "Apres le paiement, vous recevez un code unique (ex: RM-A3F8K2XY) par email. Entrez ce code lors de la creation de votre compte pour activer votre abonnement.",
+    answer: "Apres le paiement, vous recevez un code par email (ex: RM-A3F8K2XY). Entrez-le a la creation de votre compte et c'est parti.",
   },
   {
-    question: "Comment fonctionne le plan Enterprise ?",
-    answer: "Le plan Enterprise est entierement personnalise selon vos besoins. Contactez notre equipe commerciale pour obtenir un devis adapte a votre structure multi-etablissements.",
+    question: "C'est quoi les requetes IA ?",
+    answer: "Chaque fois que vous utilisez l'IA (creer une recette, scanner une facture, poser une question), ca consomme une requete. Le plan Pro inclut 500 requetes/mois, le Business 2000.",
   },
   {
     question: "Quels moyens de paiement acceptez-vous ?",
-    answer: "Nous acceptons les cartes bancaires (Visa, Mastercard, Amex), les virements SEPA et les prelevements automatiques pour les plans annuels.",
+    answer: "Cartes bancaires (Visa, Mastercard, Amex), virements SEPA et prelevements automatiques pour les plans annuels.",
   },
 ];
 
@@ -54,48 +54,47 @@ interface Plan {
 
 const plans: Plan[] = [
   {
-    name: 'Professionnel',
-    description: 'Pour les restaurateurs ambitieux',
+    name: 'Pro',
+    description: 'Pour les independants qui veulent maitriser leurs marges',
     priceMonthly: 29,
     popular: true,
     icon: <Sparkles className="w-6 h-6 text-teal-400" />,
     features: [
-      { text: 'Dashboard & statistiques', included: true },
-      { text: 'Calcul de marge & fiches techniques', included: true },
-      { text: 'Recettes illimitees', included: true },
-      { text: 'Menu Engineering', included: true },
-      { text: 'Gestion fournisseurs', included: true },
-      { text: 'HACCP & Tracabilite', included: true },
-      { text: 'Comptabilite & Devis', included: true },
-      { text: 'Assistant IA (20 questions/jour)', included: true },
-      { text: '5 utilisateurs', included: true },
-      { text: 'Support prioritaire', included: true },
-      { text: 'Kit Station Balance', included: false },
-      { text: 'Inventaire & Stock automatise', included: false },
+      { text: 'Fiches techniques illimitees avec calcul automatique des marges', included: true },
+      { text: '19 actions IA : creez vos recettes par chat ou commande vocale', included: true },
+      { text: 'Commandes fournisseurs par email et WhatsApp en 1 clic', included: true },
+      { text: 'Scanner de factures IA : photographiez, les prix se mettent a jour', included: true },
+      { text: 'Suivi des prix fournisseurs (Mercuriale) avec alertes', included: true },
+      { text: 'Gestion de l\'inventaire avec alertes stock bas', included: true },
+      { text: 'HACCP digital : temperatures, nettoyage, conformite', included: true },
+      { text: 'Messagerie integree avec vos fournisseurs', included: true },
+      { text: '500 requetes IA par mois', included: true },
+      { text: 'Essai gratuit 7 jours', included: true },
       { text: 'Multi-etablissements', included: false },
+      { text: 'Rapport IA hebdomadaire', included: false },
+      { text: 'Analyse predictive des ventes', included: false },
     ],
-    cta: "S'abonner — 29€/mois",
+    cta: "S'abonner — 29\u20AC/mois",
     ctaLink: 'https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04',
     external: true,
   },
   {
     name: 'Business',
-    description: 'Tout inclus pour les professionnels exigeants',
+    description: 'Pour les groupes qui gerent plusieurs etablissements',
     priceMonthly: 79,
     icon: <Building2 className="w-6 h-6 text-emerald-400" />,
     features: [
       { text: 'Tout du plan Pro', included: true },
-      { text: 'Kit Station (Balance + Tablette)', included: true },
-      { text: 'Inventaire & Stock automatise', included: true },
-      { text: 'Multi-etablissements', included: true },
-      { text: 'Assistant IA illimite', included: true },
-      { text: 'Auto-commandes fournisseurs', included: true },
-      { text: 'Planning equipe', included: true },
-      { text: 'Scan factures IA (OCR)', included: true },
-      { text: 'Utilisateurs illimites', included: true },
-      { text: 'Support prioritaire 24/7', included: true },
+      { text: 'Multi-restaurants : gerez tous vos etablissements', included: true },
+      { text: '2000 requetes IA par mois', included: true },
+      { text: 'Rapport IA hebdomadaire automatique', included: true },
+      { text: 'Menu Engineering : matrice BCG pour optimiser votre carte', included: true },
+      { text: 'Analyse predictive : previsions de ventes et suggestions prix', included: true },
+      { text: 'Station Balance compatible (tablette + balance Bluetooth)', included: true },
+      { text: 'Support prioritaire', included: true },
+      { text: 'Essai gratuit 7 jours', included: true },
     ],
-    cta: "S'abonner — 79€/mois",
+    cta: "S'abonner — 79\u20AC/mois",
     ctaLink: 'https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05',
     external: true,
   },
@@ -175,13 +174,13 @@ export default function Pricing() {
       {/* Hero */}
       <section className="pt-20 pb-12 px-4 sm:px-6 text-center">
         <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 text-slate-900">
-          Tarifs simples,{' '}
+          Concu pour les restaurateurs,{' '}
           <span className="bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">
-            marge maximale
+            pas les developpeurs
           </span>
         </h1>
         <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-10">
-          Choisissez le plan adapte a votre etablissement. A partir de 29€/mois.
+          Simple, direct, efficace. Choisissez votre plan et commencez a maitriser vos marges.
         </p>
 
         {/* Toggle mensuel / annuel */}
@@ -409,10 +408,10 @@ export default function Pricing() {
       {/* Footer CTA */}
       <section className="border-t border-slate-200 bg-gray-50 py-16 px-4 sm:px-6 text-center">
         <h2 className="text-2xl font-bold text-slate-900 mb-3">
-          Pret a optimiser vos marges ?
+          Pret a reprendre le controle de vos marges ?
         </h2>
         <p className="text-slate-300 mb-8 max-w-lg mx-auto">
-          Rejoignez des centaines de restaurateurs qui utilisent RestauMargin pour augmenter leur rentabilite.
+          Essayez gratuitement pendant 7 jours. Sans carte bancaire, sans engagement.
         </p>
         <a
           href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
@@ -420,7 +419,7 @@ export default function Pricing() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-8 py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
         >
-          S'abonner a partir de 29€/mois
+          Commencer l'essai gratuit — 29\u20AC/mois
           <ArrowRight className="w-5 h-5" />
         </a>
       </section>

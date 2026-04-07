@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { prisma, JWT_SECRET, authMiddleware } from '../middleware';
+import { prisma, authMiddleware } from '../middleware';
 
 const router = Router();
 

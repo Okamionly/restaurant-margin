@@ -97,6 +97,7 @@ const FeedbackPage = lazyRetry(() => import('./pages/Feedback'));
 const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
 const PublicRecipe = lazyRetry(() => import('./pages/PublicRecipe'));
 const MenuCalendar = lazyRetry(() => import('./pages/MenuCalendar'));
+const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -682,6 +683,7 @@ function AppLayout() {
 
   // Bottom nav items (always visible at bottom of sidebar)
   const bottomNavItems: NavItem[] = [
+    ...(user?.role === 'admin' ? [{ to: '/admin', icon: Shield, label: 'Administration' }] : []),
     ...(user?.role === 'admin' ? [{ to: '/users', icon: Users, label: 'Utilisateurs' }] : []),
     { to: '/settings', icon: Settings, label: 'Paramètres' },
   ];
@@ -1050,6 +1052,7 @@ function AppLayout() {
               <Route path="/abonnement" element={<Subscription />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/users" element={<UserManagement />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

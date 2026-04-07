@@ -43,9 +43,9 @@ HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
           <Link to="/login?mode=register" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base">
             Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
           </Link>
-          <button onClick={() => scrollTo('demo')} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-gray-900 font-semibold border border-gray-300 hover:border-teal-400 hover:shadow-[0_0_15px_rgba(13,148,136,0.08)] transition-all text-base">
-            Voir la demo <ArrowRight className="w-4 h-4" />
-          </button>
+          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#111111] hover:bg-[#333] text-white font-semibold transition-all text-base">
+            Voir les tarifs <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
         <p className="mt-3 text-sm text-gray-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
           <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise
@@ -600,7 +600,7 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 3. HOW IT WORKS ═══════════════ */}
-      <section id="demo" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+      <section id="how-it-works" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">

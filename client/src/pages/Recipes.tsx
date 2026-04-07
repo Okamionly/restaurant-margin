@@ -419,6 +419,7 @@ export default function Recipes() {
     ingredientId: number | null;
     quantity: string;
     wastePercent: string;
+    unit?: string;
     // For new (free-text) ingredients:
     newName: string;
     newUnit: string;

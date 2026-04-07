@@ -74,7 +74,7 @@ function relativeDate(dateStr: string) {
 }
 
 export default function Feedback() {
-  const { addToast } = useToast();
+  const { showToast } = useToast();
   const [stats, setStats] = useState<Stats | null>(null);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [total, setTotal] = useState(0);
@@ -140,7 +140,7 @@ export default function Feedback() {
   function copyLink() {
     navigator.clipboard.writeText(feedbackLink);
     setCopied(true);
-    addToast('Lien copie dans le presse-papier', 'success');
+    showToast('Lien copie dans le presse-papier', 'success');
     setTimeout(() => setCopied(false), 2000);
   }
 

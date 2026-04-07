@@ -63,7 +63,7 @@ Une fois votre premiere fiche creee, votre dashboard prend vie. Vous verrez vos 
 - **Parlez a l'IA** : dans l'application, utilisez le chat IA pour poser n'importe quelle question ("quel est mon food cost moyen ?", "montre-moi mes plats les moins rentables")
 - **Ecrivez-moi** : repondez directement a cet email. C'est moi, Youssef, qui vous reponds. Pas un bot.
 
-Votre essai gratuit dure **14 jours**. Mon conseil : ajoutez au moins 5 ingredients et 3 fiches techniques cette semaine. C'est le moment ou l'outil commence a devenir indispensable.
+Votre essai gratuit dure **7 jours**. Mon conseil : ajoutez au moins 5 ingredients et 3 fiches techniques cette semaine. C'est le moment ou l'outil commence a devenir indispensable.
 
 A tout de suite dans l'appli,
 

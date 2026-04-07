@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Resend } from 'resend';
 import { prisma, JWT_SECRET, TOKEN_EXPIRY, authMiddleware, JwtPayload } from '../middleware';
-import { buildWelcomeEmail } from '../utils/emailTemplates';
+import { buildWelcomeEmail, buildVerifyEmail, buildResetPasswordEmail } from '../utils/emailTemplates';
 
 const router = Router();
 
@@ -141,7 +141,7 @@ router.post('/resend-verification', authMiddleware, async (req: any, res) => {
       await resend.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
         subject: 'RestauMargin — Vérifiez votre adresse email',
-        html: `<h2>Vérification d'email</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/login?verify=${verificationToken}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Vérifier mon email</a></p><p>L'équipe RestauMargin</p>`,
+        html: buildVerifyEmail({ userName: user.name, verifyUrl: `${frontendUrl}/login?verify=${verificationToken}` }),
       });
     }
     res.json({ message: 'Email de vérification envoyé' });
@@ -165,7 +165,7 @@ router.post('/forgot-password', async (req: any, res) => {
       await resend.emails.send({
         from: 'RestauMargin <contact@restaumargin.fr>', to: user.email,
         subject: 'RestauMargin — Réinitialisation de votre mot de passe',
-        html: `<h2>Réinitialisation de mot de passe</h2><p>Bonjour ${user.name},</p><p><a href="${frontendUrl}/reset-password?token=${token}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;display:inline-block;">Réinitialiser mon mot de passe</a></p><p>Ce lien expire dans 1 heure.</p><p>L'équipe RestauMargin</p>`,
+        html: buildResetPasswordEmail({ userName: user.name, resetUrl: `${frontendUrl}/reset-password?token=${token}` }),
       });
     }
     res.json({ message: genericMsg });

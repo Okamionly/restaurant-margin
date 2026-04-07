@@ -121,4 +121,4 @@ youssef@restaumargin.com
 1. **2 min** : Presentation rapide (qui je suis, pourquoi j'ai cree l'outil)
 2. **5 min** : Saisie de 3 plats du prospect en direct (ou a la voix)
 3. **5 min** : Analyse des resultats, identification du plat problematique
-4. **3 min** : Questions + proposition d'essai gratuit 14 jours
+4. **3 min** : Questions + proposition d'essai gratuit 7 jours

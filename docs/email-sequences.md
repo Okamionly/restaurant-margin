@@ -6,7 +6,7 @@
 
 ---
 
-## 1. Sequence Onboarding (5 emails, J0 a J14)
+## 1. Sequence Onboarding (5 emails, J0 a J7)
 
 **Declencheur** : Inscription (trial ou paiement)
 **Objectif** : Activer l'utilisateur jusqu'au moment "aha" (voir sa premiere marge)
@@ -127,7 +127,7 @@ C'est notre fonctionnalite preferee. Et celle de 78% de nos utilisateurs.
 
 ---
 
-### Email 5 -- Upgrade / Fin de trial (J14)
+### Email 5 -- Upgrade / Fin de trial (J7)
 
 **Objet** : Votre trial se termine -- vos marges, elles, continuent
 
@@ -137,7 +137,7 @@ C'est notre fonctionnalite preferee. Et celle de 78% de nos utilisateurs.
 
 {{prenom}},
 
-En 14 jours, voici ce que RestauMargin a fait pour vous :
+En 7 jours, voici ce que RestauMargin a fait pour vous :
 
 - {{nb_ingredients}} ingredients suivis
 - {{nb_recipes}} recettes analysees
@@ -151,7 +151,7 @@ Pas d'engagement. Annulez quand vous voulez. Mais franchement, pourquoi vous le 
 
 **CTA** : Passer a 29 EUR/mois -> {{app_url}}/billing/upgrade
 
-**Timing** : J+14, 9h du matin
+**Timing** : J+7, 9h du matin
 
 ---
 
@@ -240,7 +240,7 @@ Apres 3 mois sur RestauMargin :
 
 Le proprietaire n'a pas change sa carte. Il n'a pas change de fournisseur. Il a juste commence a mesurer.
 
-**CTA** : Essayer gratuitement (14 jours) -> {{app_url}}/signup
+**CTA** : Essayer gratuitement (7 jours) -> {{app_url}}/signup
 
 **Timing** : J+5
 
@@ -263,7 +263,7 @@ Juste une question : qu'est-ce qui vous retient ?
 - "J'ai pas le temps" -> La saisie prend 2 minutes par jour. La commande vocale, encore moins.
 - "C'est trop cher" -> 29 EUR/mois. Le premier mois est souvent rembourse 5 a 10 fois.
 - "Mon Excel marche bien" -> Si votre food cost est en dessous de 28%, gardez Excel. Sinon...
-- "Je veux voir avant de m'engager" -> 14 jours gratuits, aucune carte bancaire requise.
+- "Je veux voir avant de m'engager" -> 7 jours gratuits, aucune carte bancaire requise.
 
 Si la reponse est "pas maintenant", aucun souci. Vous savez ou nous trouver.
 

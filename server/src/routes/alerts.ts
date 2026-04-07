@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
 export const alertsRouter = Router();
 
-const EMAIL_FROM = process.env.EMAIL_FROM || 'RestauMargin <onboarding@resend.dev>';
+const EMAIL_FROM = process.env.EMAIL_FROM || 'RestauMargin <contact@restaumargin.fr>';
 
 interface AlertItem {
   type: 'stock' | 'margin' | 'price';

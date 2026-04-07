@@ -102,6 +102,12 @@ function footer(text?: string): string {
   <p style="color:#94a3b8;font-size:11px;margin:0;">
     ${text || 'Email envoy&eacute; via RestauMargin &mdash; www.restaumargin.fr'}
   </p>
+  <p style="color:#94a3b8;font-size:10px;margin:8px 0 0;">
+    RestauMargin SAS &mdash; contact@restaumargin.fr<br>
+    <a href="https://www.restaumargin.fr/unsubscribe" style="color:#94a3b8;text-decoration:underline;">Se d&eacute;sabonner</a>
+    &nbsp;|&nbsp;
+    <a href="https://www.restaumargin.fr/privacy" style="color:#94a3b8;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+  </p>
 </td></tr>`;
 }
 
@@ -328,7 +334,7 @@ ${header('RestauMargin', 'Bienvenue !')}
 <tr><td style="padding:30px 25px 10px;">
   <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
   <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
-    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">14 jours</strong> est activ&eacute;.
+    Bienvenue sur RestauMargin ! Votre essai gratuit de <strong style="color:${DARK};">7 jours</strong> est activ&eacute;.
     Voici comment d&eacute;marrer en 3 &eacute;tapes simples :
   </p>
 </td></tr>
@@ -506,6 +512,401 @@ ${(data.priceUp.length > 0 || data.priceDown.length > 0) ? `
 </td></tr>
 
 ${footer('Rapport g&eacute;n&eacute;r&eacute; automatiquement par RestauMargin &mdash; www.restaumargin.fr')}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template F : Vérification d'email ----------
+
+export interface VerifyEmailData {
+  userName: string;
+  verifyUrl: string;
+}
+
+export function buildVerifyEmail(data: VerifyEmailData): string {
+  const content = `
+${header('RestauMargin', 'V&eacute;rification de votre email')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Merci de v&eacute;rifier votre adresse email pour s&eacute;curiser votre compte RestauMargin.
+  </p>
+</td></tr>
+
+<tr><td style="padding:25px;text-align:center;">
+  <a href="${esc(data.verifyUrl)}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    V&eacute;rifier mon email &#8594;
+  </a>
+</td></tr>
+
+<tr><td style="padding:0 25px 15px;">
+  <div style="background:${BG_LIGHT};border-radius:8px;padding:16px;text-align:center;">
+    <p style="color:${MUTED};font-size:13px;margin:0;">
+      Si vous n'avez pas cr&eacute;&eacute; de compte sur RestauMargin, ignorez simplement cet email.
+    </p>
+  </div>
+</td></tr>
+
+${footer()}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template G : Réinitialisation de mot de passe ----------
+
+export interface ResetPasswordData {
+  userName: string;
+  resetUrl: string;
+}
+
+export function buildResetPasswordEmail(data: ResetPasswordData): string {
+  const content = `
+${header('RestauMargin', 'R&eacute;initialisation de mot de passe')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Vous avez demand&eacute; la r&eacute;initialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.
+  </p>
+</td></tr>
+
+<tr><td style="padding:25px;text-align:center;">
+  <a href="${esc(data.resetUrl)}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    R&eacute;initialiser mon mot de passe &#8594;
+  </a>
+</td></tr>
+
+<tr><td style="padding:0 25px 15px;">
+  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:16px;text-align:center;">
+    <p style="color:#991b1b;font-size:13px;margin:0;font-weight:600;">
+      &#9888;&#65039; Ce lien expire dans 1 heure.
+    </p>
+    <p style="color:#991b1b;font-size:12px;margin:6px 0 0;">
+      Si vous n'avez pas demand&eacute; cette r&eacute;initialisation, ignorez cet email. Votre mot de passe ne sera pas modifi&eacute;.
+    </p>
+  </div>
+</td></tr>
+
+${footer()}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template H : Code d'activation (après paiement Stripe) ----------
+
+export interface ActivationCodeData {
+  planName: string; // 'Professionnel' or 'Business'
+  activationCode: string;
+}
+
+export function buildActivationCodeEmail(data: ActivationCodeData): string {
+  const content = `
+${header('RestauMargin', 'Votre code d\'activation')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Merci pour votre abonnement !</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Votre abonnement <strong style="color:${DARK};">${esc(data.planName)}</strong> est confirm&eacute;.
+    Utilisez le code ci-dessous pour activer votre compte.
+  </p>
+</td></tr>
+
+<tr><td style="padding:10px 25px 20px;">
+  <div style="background:${BG_LIGHT};border:2px solid ${TEAL};border-radius:12px;padding:24px;text-align:center;">
+    <p style="color:${MUTED};font-size:12px;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">Votre code d'activation</p>
+    <p style="font-size:32px;font-weight:bold;color:${TEAL};letter-spacing:3px;margin:0;">${esc(data.activationCode)}</p>
+  </div>
+</td></tr>
+
+<tr><td style="padding:0 25px 20px;">
+  <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 12px;">Pour commencer :</p>
+  <ol style="color:${MUTED};font-size:14px;line-height:2;padding-left:18px;margin:0;">
+    <li>Rendez-vous sur <a href="https://www.restaumargin.fr/login" style="color:${TEAL};text-decoration:none;font-weight:600;">www.restaumargin.fr</a></li>
+    <li>Cliquez sur &laquo; Cr&eacute;er un compte &raquo;</li>
+    <li>Entrez votre code d'activation : <strong style="color:${DARK};">${esc(data.activationCode)}</strong></li>
+  </ol>
+</td></tr>
+
+<tr><td style="padding:0 25px 25px;text-align:center;">
+  <a href="https://www.restaumargin.fr/login" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    Activer mon compte &#8594;
+  </a>
+</td></tr>
+
+${footer()}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template I : Essai expire dans 2 jours ----------
+
+export interface TrialExpiringData {
+  userName: string;
+  daysLeft: number; // typically 2
+  recipesCount: number;
+  ingredientsCount: number;
+  pricingUrl?: string;
+}
+
+export function buildTrialExpiringEmail(data: TrialExpiringData): string {
+  const pricingUrl = data.pricingUrl || 'https://www.restaumargin.fr/pricing';
+
+  const content = `
+${header('RestauMargin', 'Votre essai se termine bient&ocirc;t')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Votre essai gratuit se termine dans <strong style="color:#dc2626;">${data.daysLeft} jour${data.daysLeft > 1 ? 's' : ''}</strong>.
+    Apr&egrave;s cette date, vous perdrez l'acc&egrave;s &agrave; vos donn&eacute;es et votre dashboard.
+  </p>
+</td></tr>
+
+${(data.recipesCount > 0 || data.ingredientsCount > 0) ? `
+<tr><td style="padding:10px 25px;">
+  <div style="background:${BG_LIGHT};border-radius:10px;padding:20px;">
+    <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 12px;">Ce que vous avez accompli :</p>
+    <table width="100%" cellspacing="0" cellpadding="0"><tr>
+      <td style="text-align:center;padding:8px;">
+        <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:0;">${data.ingredientsCount}</p>
+        <p style="color:${MUTED};font-size:12px;margin:4px 0 0;">ingr&eacute;dients</p>
+      </td>
+      <td style="text-align:center;padding:8px;">
+        <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:0;">${data.recipesCount}</p>
+        <p style="color:${MUTED};font-size:12px;margin:4px 0 0;">fiches techniques</p>
+      </td>
+    </tr></table>
+    <p style="color:${MUTED};font-size:13px;text-align:center;margin:12px 0 0;">
+      Tout cela sera perdu si vous ne passez pas &agrave; un plan payant.
+    </p>
+  </div>
+</td></tr>` : ''}
+
+<tr><td style="padding:20px 25px;">
+  <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 12px;">Nos offres :</p>
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="width:50%;padding:8px;">
+        <div style="background:${BG_LIGHT};border:1px solid ${BORDER};border-radius:10px;padding:20px;text-align:center;">
+          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Pro</p>
+          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">29&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
+          <p style="color:${MUTED};font-size:12px;margin:0;">1 restaurant</p>
+        </div>
+      </td>
+      <td style="width:50%;padding:8px;">
+        <div style="background:${BG_LIGHT};border:2px solid ${TEAL};border-radius:10px;padding:20px;text-align:center;">
+          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Business</p>
+          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">79&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
+          <p style="color:${MUTED};font-size:12px;margin:0;">Multi-sites</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+
+<tr><td style="padding:10px 25px 25px;text-align:center;">
+  <a href="${pricingUrl}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    Passer au plan payant &#8594;
+  </a>
+</td></tr>
+
+<tr><td style="padding:0 25px 15px;">
+  <div style="background:${BG_LIGHT};border-radius:8px;padding:16px;text-align:center;">
+    <p style="color:${MUTED};font-size:13px;margin:0;">
+      Une question ? &Eacute;crivez &agrave;
+      <a href="mailto:contact@restaumargin.fr" style="color:${TEAL};text-decoration:none;">contact@restaumargin.fr</a>
+    </p>
+  </div>
+</td></tr>
+
+${footer()}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template J : Essai expiré — passez au payant ----------
+
+export interface TrialExpiredData {
+  userName: string;
+  pricingUrl?: string;
+}
+
+export function buildTrialExpiredEmail(data: TrialExpiredData): string {
+  const pricingUrl = data.pricingUrl || 'https://www.restaumargin.fr/pricing';
+
+  const content = `
+${header('RestauMargin', 'Votre essai a expir&eacute;')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Votre essai gratuit de 7 jours est termin&eacute;. Votre compte est d&eacute;sactiv&eacute;,
+    mais <strong style="color:${DARK};">vos donn&eacute;es sont conserv&eacute;es 30 jours</strong>.
+  </p>
+</td></tr>
+
+<tr><td style="padding:10px 25px 20px;">
+  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:20px;text-align:center;">
+    <p style="color:#991b1b;font-size:15px;font-weight:600;margin:0;">
+      &#128274; Acc&egrave;s d&eacute;sactiv&eacute;
+    </p>
+    <p style="color:#991b1b;font-size:13px;margin:8px 0 0;">
+      Vos fiches techniques, ingr&eacute;dients et dashboard ne sont plus accessibles.
+    </p>
+  </div>
+</td></tr>
+
+<tr><td style="padding:0 25px 10px;">
+  <p style="color:${DARK};font-size:15px;line-height:1.6;margin:0;">
+    Pour r&eacute;activer votre compte et retrouver toutes vos donn&eacute;es, choisissez un plan :
+  </p>
+</td></tr>
+
+<tr><td style="padding:0 25px 20px;">
+  <table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="width:50%;padding:8px;">
+        <div style="background:${BG_LIGHT};border:1px solid ${BORDER};border-radius:10px;padding:20px;text-align:center;">
+          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Pro</p>
+          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">29&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
+          <p style="color:${MUTED};font-size:12px;margin:0;">Tout pour 1 restaurant</p>
+        </div>
+      </td>
+      <td style="width:50%;padding:8px;">
+        <div style="background:${BG_LIGHT};border:2px solid ${TEAL};border-radius:10px;padding:20px;text-align:center;">
+          <p style="color:${DARK};font-size:16px;font-weight:bold;margin:0;">Business</p>
+          <p style="color:${TEAL};font-size:28px;font-weight:bold;margin:8px 0 4px;">79&euro;<span style="font-size:14px;color:${MUTED};font-weight:normal;">/mois</span></p>
+          <p style="color:${MUTED};font-size:12px;margin:0;">Multi-sites + support prioritaire</p>
+        </div>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+
+<tr><td style="padding:0 25px 25px;text-align:center;">
+  <a href="${pricingUrl}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    R&eacute;activer mon compte &#8594;
+  </a>
+  <p style="color:${MUTED};font-size:12px;margin:12px 0 0;">
+    29&euro;/mois, c'est moins de 1&euro; par jour. Si l'outil vous a permis de d&eacute;tecter
+    un seul plat mal pric&eacute;, il s'est d&eacute;j&agrave; rembours&eacute;.
+  </p>
+</td></tr>
+
+${footer()}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template K : Digest d'alertes (notification hebdomadaire) ----------
+
+export interface DigestEmailData {
+  userName: string;
+  restaurantName: string;
+  alerts: { type: string; title: string; detail: string }[];
+  dashboardUrl?: string;
+}
+
+export function buildDigestEmail(data: DigestEmailData): string {
+  const dashboardUrl = data.dashboardUrl || 'https://www.restaumargin.fr/dashboard';
+
+  const alertRows = data.alerts.map((a, i) => {
+    const bg = i % 2 === 0 ? '#ffffff' : BG_LIGHT;
+    const typeColor = a.type === 'Stock' ? '#f59e0b' : a.type === 'Marge' ? '#dc2626' : TEAL;
+    return `<tr style="background:${bg};">
+      <td style="padding:10px 12px;border-bottom:1px solid ${BORDER};font-size:13px;">
+        <span style="display:inline-block;background:${typeColor};color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">${esc(a.type)}</span>
+      </td>
+      <td style="padding:10px 12px;border-bottom:1px solid ${BORDER};font-size:13px;font-weight:600;color:${DARK};">${esc(a.title)}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid ${BORDER};font-size:13px;color:${DARK};">${esc(a.detail)}</td>
+    </tr>`;
+  }).join('');
+
+  const content = `
+${header('RestauMargin', 'R&eacute;sum&eacute; des alertes')}
+
+<tr><td style="padding:25px 20px 10px;">
+  <p style="font-size:16px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:14px;color:${MUTED};margin:8px 0 0;">
+    <strong style="color:${DARK};">${data.alerts.length} alerte${data.alerts.length > 1 ? 's' : ''}</strong>
+    n&eacute;cessitant votre attention pour <strong style="color:${DARK};">${esc(data.restaurantName)}</strong> :
+  </p>
+</td></tr>
+
+<tr><td style="padding:10px 20px;">
+  <table width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:1px solid ${BORDER};border-radius:8px;overflow:hidden;">
+    <thead>
+      <tr style="background:${TEAL};">
+        <th style="padding:10px 12px;text-align:left;color:white;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Type</th>
+        <th style="padding:10px 12px;text-align:left;color:white;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">&Eacute;l&eacute;ment</th>
+        <th style="padding:10px 12px;text-align:left;color:white;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">D&eacute;tail</th>
+      </tr>
+    </thead>
+    <tbody>${alertRows}</tbody>
+  </table>
+</td></tr>
+
+<tr><td style="padding:25px;text-align:center;">
+  <a href="${dashboardUrl}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:15px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    Voir le tableau de bord &#8594;
+  </a>
+</td></tr>
+
+${footer('R&eacute;sum&eacute; g&eacute;n&eacute;r&eacute; automatiquement par RestauMargin &mdash; www.restaumargin.fr')}`;
+
+  return wrapper(content);
+}
+
+// ---------- Template L : Bienvenue de retour (utilisateur inactif) ----------
+
+export interface WelcomeBackData {
+  userName: string;
+  daysSinceLastLogin: number;
+  dashboardUrl?: string;
+}
+
+export function buildWelcomeBackEmail(data: WelcomeBackData): string {
+  const dashboardUrl = data.dashboardUrl || 'https://www.restaumargin.fr/dashboard';
+
+  const content = `
+${header('RestauMargin', 'On vous attendait !')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    Cela fait <strong style="color:${DARK};">${data.daysSinceLastLogin} jours</strong> que vous ne vous &ecirc;tes pas connect&eacute;(e) &agrave; RestauMargin.
+    Vos donn&eacute;es vous attendent, et on a quelques nouveaut&eacute;s &agrave; vous montrer.
+  </p>
+</td></tr>
+
+<tr><td style="padding:10px 25px;">
+  <div style="background:${BG_LIGHT};border-radius:10px;padding:20px;">
+    <p style="color:${DARK};font-size:14px;font-weight:600;margin:0 0 12px;">&#128161; Pourquoi revenir maintenant ?</p>
+    <ul style="margin:0;padding-left:18px;color:${MUTED};font-size:14px;line-height:2;">
+      <li>Les prix fournisseurs ont peut-&ecirc;tre &eacute;volu&eacute; &mdash; v&eacute;rifiez vos marges</li>
+      <li>Votre food cost est-il toujours sous contr&ocirc;le ?</li>
+      <li>Nouvelles fonctionnalit&eacute;s IA disponibles pour optimiser votre carte</li>
+    </ul>
+  </div>
+</td></tr>
+
+<tr><td style="padding:25px;text-align:center;">
+  <a href="${dashboardUrl}" style="display:inline-block;background:linear-gradient(135deg,${TEAL},${TEAL_LIGHT});color:white;padding:14px 36px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+    Revenir sur mon dashboard &#8594;
+  </a>
+</td></tr>
+
+<tr><td style="padding:0 25px 15px;">
+  <div style="background:${BG_LIGHT};border-radius:8px;padding:16px;text-align:center;">
+    <p style="color:${MUTED};font-size:13px;margin:0;">
+      Besoin d'aide ? &Eacute;crivez-nous &agrave;
+      <a href="mailto:contact@restaumargin.fr" style="color:${TEAL};text-decoration:none;">contact@restaumargin.fr</a>
+    </p>
+  </div>
+</td></tr>
+
+${footer()}`;
 
   return wrapper(content);
 }

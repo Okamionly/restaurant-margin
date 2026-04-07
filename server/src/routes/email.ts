@@ -32,7 +32,7 @@ emailRouter.post('/send', async (req: AuthRequest, res: Response) => {
     const resend = new Resend(apiKey);
 
     const { data, error } = await resend.emails.send({
-      from: 'RestauMargin <onboarding@resend.dev>',
+      from: 'RestauMargin <contact@restaumargin.fr>',
       to: to.trim(),
       subject: subject.trim(),
       html: body.trim().replace(/\n/g, '<br>'),
@@ -46,7 +46,7 @@ emailRouter.post('/send', async (req: AuthRequest, res: Response) => {
     const sent: SentEmail = {
       id: Date.now().toString(),
       to: to.trim(),
-      from: 'onboarding@resend.dev',
+      from: 'contact@restaumargin.fr',
       subject: subject.trim(),
       body: body.trim(),
       messageId: data?.id || '',

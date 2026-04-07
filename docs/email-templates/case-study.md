@@ -57,7 +57,7 @@ Le chef, Julien, gerait ses couts sur un fichier Excel qu'il mettait a jour... u
 On peut verifier ensemble en 15 minutes.
 
 **[Reserver une demo gratuite ->]** {{demo_url}}
-**[Demarrer mon essai gratuit (14 jours) ->]** {{trial_url}}
+**[Demarrer mon essai gratuit (7 jours) ->]** {{trial_url}}
 
 -- Youssef Guessous
 Fondateur, RestauMargin
@@ -88,7 +88,7 @@ Vous gerez plusieurs etablissements ? Alors l'histoire de Marco va vous parler.
 
 ### Ce qu'il a fait avec RestauMargin
 
-Marco a choisi le **plan Business** (99 EUR/mois par site) pour avoir une vue consolidee.
+Marco a choisi le **plan Business** (79 EUR/mois par site) pour avoir une vue consolidee.
 
 1. **Standardisation** : L'IA a aide a creer 25 fiches techniques standardisees pour les 2 sites. Memes recettes, memes grammages.
 2. **Comparaison inter-sites** : Le dashboard montre les ecarts de food cost entre les 2 restaurants. Resultat : le site Lyon 6e avait un food cost 4 points plus eleve que Lyon 3e sur les memes plats.
@@ -164,7 +164,7 @@ Sans RestauMargin, Antoine aurait decouvert la hausse au bilan trimestriel -- **
 
 **Les prix de vos fournisseurs augmentent. Combien de temps mettez-vous a le detecter ?**
 
-**[Tester les alertes prix -- Essai gratuit 14 jours ->]** {{trial_url}}
+**[Tester les alertes prix -- Essai gratuit 7 jours ->]** {{trial_url}}
 
 -- Youssef Guessous
 Fondateur, RestauMargin

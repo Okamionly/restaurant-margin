@@ -27,7 +27,7 @@ C'est pour ca qu'on a construit RestauMargin : **vous parlez a l'IA, elle vous d
 
 Concretement, nos premiers utilisateurs ont recupere **2 a 4 points de marge** en quelques semaines. Pour un restaurant a 500 000 EUR de CA, ca represente 10 000 a 20 000 EUR/an.
 
-**49 EUR/mois, 14 jours d'essai gratuit, sans engagement.**
+**29 EUR/mois, 7 jours d'essai gratuit, sans engagement.**
 
 Est-ce que 15 minutes cette semaine pour une demo rapide, ca vous irait ?
 
@@ -87,7 +87,7 @@ Le probleme d'Excel pour gerer les marges d'un restaurant :
 
 RestauMargin remplace votre tableur par une **IA conversationnelle**. Vous lui parlez, elle calcule vos marges en temps reel. Les prix se mettent a jour automatiquement. Vous etes alerte(e) quand un plat n'est plus rentable.
 
-49 EUR/mois. Essai gratuit 14 jours.
+29 EUR/mois. Essai gratuit 7 jours.
 
 15 minutes pour vous le montrer ?
 

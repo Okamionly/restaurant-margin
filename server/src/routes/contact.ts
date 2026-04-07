@@ -42,7 +42,7 @@ contactRouter.post('/', validate(contactSchema), async (req: Request, res: Respo
 
     // 1. Notification to admin
     await resend.emails.send({
-      from: 'RestauMargin <onboarding@resend.dev>',
+      from: 'RestauMargin <contact@restaumargin.fr>',
       to: 'Mr.guessousyoussef@gmail.com',
       subject: `[RestauMargin] Nouvelle demande — ${sourceLabel}`,
       html: `
@@ -59,7 +59,7 @@ contactRouter.post('/', validate(contactSchema), async (req: Request, res: Respo
 
     // 2. Confirmation to submitter
     await resend.emails.send({
-      from: 'RestauMargin <onboarding@resend.dev>',
+      from: 'RestauMargin <contact@restaumargin.fr>',
       to: email.trim(),
       subject: 'RestauMargin — Votre demande a bien été reçue',
       html: `

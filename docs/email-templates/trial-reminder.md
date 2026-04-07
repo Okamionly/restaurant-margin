@@ -1,7 +1,7 @@
-# Email Template -- Rappel J+7 (essai se termine dans 7 jours)
+# Email Template -- Rappel J+5 (essai se termine dans 2 jours)
 
 > **Objectif** : Convertir l'utilisateur trial en abonne payant
-> **Declencheur** : 7 jours apres inscription (J+7 sur un trial de 14 jours)
+> **Declencheur** : 5 jours apres inscription (J+5 sur un trial de 7 jours)
 > **Expediteur** : Youssef Guessous, Fondateur RestauMargin
 
 ---
@@ -27,7 +27,7 @@ C'est exactement comme ca qu'on obtient des resultats. Bravo.
 
 Pour continuer sans interruption :
 
-**[Passer au plan Pro -- 49 EUR/mois ->]** {{app_url}}/pricing
+**[Passer au plan Pro -- 29 EUR/mois ->]** {{app_url}}/pricing
 
 Ce que vous gardez avec le plan Pro :
 - Toutes vos fiches techniques et ingredients (rien n'est perdu)
@@ -37,7 +37,7 @@ Ce que vous gardez avec le plan Pro :
 - Export PDF / Excel
 - Support prioritaire (je reponds en < 24h)
 
-**49 EUR/mois, c'est moins de 2 EUR par jour.** Si l'outil vous a permis de detecter ne serait-ce qu'un plat mal price, il s'est deja rembourse.
+**29 EUR/mois, c'est moins de 2 EUR par jour.** Si l'outil vous a permis de detecter ne serait-ce qu'un plat mal price, il s'est deja rembourse.
 
 Une question ? Repondez a cet email, je vous reponds personnellement.
 
@@ -78,9 +78,9 @@ youssef@restaumargin.com
 
 ---
 
-## Version C -- Rappel J+11 (3 jours avant expiration)
+## Version C -- Rappel J+6 (veille d'expiration)
 
-**Objet** : Plus que 3 jours d'essai gratuit
+**Objet** : Dernier jour demain — passez au Pro
 
 **Preview** : Vos donnees seront desactivees vendredi. Passez au Pro pour les garder.
 
@@ -97,7 +97,7 @@ Apres cette date :
 
 **Pour continuer :**
 
-**[Passer au Pro -- 49 EUR/mois ->]** {{app_url}}/pricing
+**[Passer au Pro -- 29 EUR/mois ->]** {{app_url}}/pricing
 
 Pas convaincu(e) ? Dites-moi ce qui manque. Je prends tous les retours, meme les critiques. Un simple "ca ne me convient pas parce que..." m'aide enormement a ameliorer l'outil.
 
@@ -107,11 +107,11 @@ Repondez a cet email, je lis tout.
 
 ---
 
-## Version D -- Dernier jour (J+14)
+## Version D -- Dernier jour (J+7)
 
 **Objet** : Votre essai se termine aujourd'hui
 
-**Preview** : Dernier jour. 49 EUR/mois pour garder le controle de vos marges.
+**Preview** : Dernier jour. 29 EUR/mois pour garder le controle de vos marges.
 
 ---
 
@@ -121,7 +121,7 @@ C'est le dernier jour de votre essai gratuit RestauMargin.
 
 **Deux options :**
 
-**Option 1 -- Vous passez au Pro (49 EUR/mois)**
+**Option 1 -- Vous passez au Pro (29 EUR/mois)**
 Vous gardez tout : vos fiches, vos ingredients, votre dashboard, vos marges. Rien ne change, sauf que vous continuez a maitriser vos couts.
 
 **[Passer au Pro maintenant ->]** {{app_url}}/pricing
@@ -129,7 +129,7 @@ Vous gardez tout : vos fiches, vos ingredients, votre dashboard, vos marges. Rie
 **Option 2 -- Vous ne faites rien**
 Votre compte sera desactive ce soir. Vos donnees seront conservees 30 jours. Vous pourrez reactiver a tout moment.
 
-Pas de pression. Mais si l'outil vous a ete utile, meme un tout petit peu, sachez que 49 EUR/mois c'est le prix d'un plat du jour. Et l'outil peut vous faire economiser des milliers d'euros par an.
+Pas de pression. Mais si l'outil vous a ete utile, meme un tout petit peu, sachez que 29 EUR/mois c'est le prix d'un plat du jour. Et l'outil peut vous faire economiser des milliers d'euros par an.
 
 Merci d'avoir teste RestauMargin. Quelle que soit votre decision, j'espere que vous avez appris quelque chose sur vos marges.
 
@@ -139,13 +139,13 @@ Merci d'avoir teste RestauMargin. Quelle que soit votre decision, j'espere que v
 
 ## Notes d'utilisation
 
-### Sequence complete J+7 a J+14
+### Sequence complete J+5 a J+7
 
 | Jour | Email | Condition |
 |------|-------|-----------|
-| J+7 | Version A (actif) OU Version B (peu actif) | Basee sur l'activite (>= 3 fiches = actif) |
-| J+11 | Version C (rappel 3 jours) | Si pas encore abonne |
-| J+14 | Version D (dernier jour) | Si pas encore abonne |
+| J+5 | Version A (actif) OU Version B (peu actif) | Basee sur l'activite (>= 3 fiches = actif) |
+| J+6 | Version C (rappel veille) | Si pas encore abonne |
+| J+7 | Version D (dernier jour) | Si pas encore abonne |
 
 ### Variables dynamiques
 - `{{NbIngredients}}` : Nombre d'ingredients ajoutes

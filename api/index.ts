@@ -13,6 +13,7 @@ import exportRoutes from './routes/export';
 import adminRoutes from './routes/admin';
 import { getUnitDivisor } from './utils/unitConversion';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
+import { buildActivationCodeEmail, buildDigestEmail } from './utils/emailTemplates';
 
 
 const app = express();
@@ -72,23 +73,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
           from: 'RestauMargin <contact@restaumargin.fr>',
           to: customerEmail,
           subject: `RestauMargin — Votre code d'activation ${plan.toUpperCase()}`,
-          html: `
-            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
-              <h1 style="color:#1e40af;">Bienvenue sur RestauMargin !</h1>
-              <p>Merci pour votre abonnement <strong>${plan === 'pro' ? 'Professionnel' : 'Business'}</strong>.</p>
-              <div style="background:#f0f9ff;border:2px solid #2563eb;border-radius:12px;padding:24px;text-align:center;margin:24px 0;">
-                <p style="color:#64748b;margin:0 0 8px;">Votre code d'activation :</p>
-                <p style="font-size:32px;font-weight:bold;color:#1e40af;letter-spacing:2px;margin:0;">${code}</p>
-              </div>
-              <p>Pour commencer :</p>
-              <ol>
-                <li>Rendez-vous sur <a href="https://www.restaumargin.fr/login" style="color:#2563eb;">www.restaumargin.fr</a></li>
-                <li>Cliquez sur "Créer un compte"</li>
-                <li>Entrez votre code d'activation : <strong>${code}</strong></li>
-              </ol>
-              <p style="color:#64748b;font-size:14px;margin-top:32px;">L'équipe RestauMargin<br>contact@restaumargin.fr</p>
-            </div>
-          `,
+          html: buildActivationCodeEmail({ planName: plan === 'pro' ? 'Professionnel' : 'Business', activationCode: code }),
         });
         console.log(`[STRIPE WEBHOOK] Code ${code} (${plan}) envoyé à ${customerEmail}`);
       }
@@ -4449,43 +4434,13 @@ app.post('/api/notifications/send-digest', authWithRestaurant, async (req: any, 
     }
 
     const restName = restaurant?.name || 'Votre restaurant';
-    const alertRows = alerts.map(a =>
-      `<tr><td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;font-size:13px;color:#6B7280;">${a.type}</td><td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;font-size:13px;font-weight:600;color:#111111;">${a.title}</td><td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;font-size:13px;color:#111111;">${a.detail}</td></tr>`
-    ).join('');
 
     const resend = new Resend(resendKey);
     await resend.emails.send({
       from: 'RestauMargin <contact@restaumargin.fr>',
       to: user.email,
       subject: `Votre resume RestauMargin — ${alerts.length} alerte${alerts.length > 1 ? 's' : ''} cette semaine`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;background:#ffffff;">
-          <div style="text-align:center;padding:24px 0;border-bottom:1px solid #E5E7EB;">
-            <h1 style="margin:0;font-size:24px;color:#111111;">RestauMargin</h1>
-            <p style="margin:8px 0 0;font-size:14px;color:#6B7280;">${restName}</p>
-          </div>
-          <div style="padding:24px 0;">
-            <h2 style="margin:0 0 16px;font-size:18px;color:#111111;">Resume des alertes</h2>
-            <p style="font-size:14px;color:#6B7280;margin:0 0 16px;">${alerts.length} alerte${alerts.length > 1 ? 's' : ''} necessitant votre attention :</p>
-            <table style="width:100%;border-collapse:collapse;border:1px solid #E5E7EB;border-radius:8px;overflow:hidden;">
-              <thead>
-                <tr style="background:#F9FAFB;">
-                  <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #E5E7EB;">Type</th>
-                  <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #E5E7EB;">Element</th>
-                  <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #E5E7EB;">Detail</th>
-                </tr>
-              </thead>
-              <tbody>${alertRows}</tbody>
-            </table>
-          </div>
-          <div style="padding:24px 0;text-align:center;border-top:1px solid #E5E7EB;">
-            <a href="https://www.restaumargin.fr/dashboard" style="display:inline-block;padding:12px 32px;background:#111111;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;border-radius:8px;">Voir le tableau de bord</a>
-          </div>
-          <div style="padding:16px 0 0;text-align:center;">
-            <p style="font-size:12px;color:#9CA3AF;margin:0;">RestauMargin — contact@restaumargin.fr</p>
-          </div>
-        </div>
-      `,
+      html: buildDigestEmail({ userName: user.name || 'Chef', restaurantName: restName, alerts }),
     });
 
     console.log(`[DIGEST] Sent ${alerts.length} alerts to ${user.email} for restaurant ${rid}`);

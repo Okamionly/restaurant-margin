@@ -126,7 +126,7 @@ authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, 
         const verifyLink = `${frontendUrl}/login?verify=${verificationToken}`;
 
         await resend.emails.send({
-          from: 'RestauMargin <onboarding@resend.dev>',
+          from: 'RestauMargin <contact@restaumargin.fr>',
           to: user.email,
           subject: 'RestauMargin — Vérifiez votre adresse email',
           html: `
@@ -233,7 +233,7 @@ authRouter.post('/resend-verification', authMiddleware, async (req: AuthRequest,
       const verifyLink = `${frontendUrl}/login?verify=${verificationToken}`;
 
       await resend.emails.send({
-        from: 'RestauMargin <onboarding@resend.dev>',
+        from: 'RestauMargin <contact@restaumargin.fr>',
         to: user.email,
         subject: 'RestauMargin — Vérifiez votre adresse email',
         html: `
@@ -374,7 +374,7 @@ authRouter.post('/forgot-password', validate(forgotPasswordSchema), async (req: 
     if (apiKey) {
       const resend = new Resend(apiKey);
       await resend.emails.send({
-        from: 'RestauMargin <onboarding@resend.dev>',
+        from: 'RestauMargin <contact@restaumargin.fr>',
         to: user.email,
         subject: 'RestauMargin — Réinitialisation de votre mot de passe',
         html: `

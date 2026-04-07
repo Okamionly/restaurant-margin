@@ -41,7 +41,7 @@ router.post('/register', async (req: any, res) => {
         await prisma.activationCode.update({ where: { code: activation.code }, data: { used: true, usedBy: email, usedAt: new Date() } });
       } else {
         plan = 'pro';
-        trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       }
     }
 

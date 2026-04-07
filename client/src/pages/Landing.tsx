@@ -6,7 +6,7 @@ import {
   Users, Menu, X as XIcon, Shield, Lock, Mail,
   Scale, ChevronDown, Phone, Send, Loader2,
   XCircle, Brain, Thermometer, Newspaper,
-  Check, Plus, Minus,
+  Check, Plus, Minus, Sparkles, MessageCircle,
 } from 'lucide-react';
 
 /* <!-- HERO SAUVEGARDE -->
@@ -41,7 +41,7 @@ HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
           <Link to="/login?mode=register" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base">
-            Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
+            Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
           </Link>
           <button onClick={() => scrollTo('demo')} className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-gray-900 font-semibold border border-gray-300 hover:border-teal-400 hover:shadow-[0_0_15px_rgba(13,148,136,0.08)] transition-all text-base">
             Voir la demo <ArrowRight className="w-4 h-4" />
@@ -152,9 +152,22 @@ function FadeIn({ children, delay = 0, className = '' }: { children: React.React
 
 const features = [
   {
+    icon: Send,
+    title: 'Messagerie & Commandes directes',
+    description: 'Envoyez vos commandes aux fournisseurs par email et WhatsApp directement depuis RestauMargin.',
+    priority: true,
+  },
+  {
+    icon: Sparkles,
+    title: 'Intelligence Artificielle',
+    description: '19 actions IA : creer des recettes, analyser vos marges, optimiser vos prix — par chat, voix ou photo.',
+    priority: true,
+  },
+  {
     icon: ClipboardList,
-    title: 'Fiches techniques',
-    description: 'Calculez le cout exact de chaque plat avec ingredients, quantites et couts actualises automatiquement.',
+    title: 'Fiches techniques automatiques',
+    description: 'Calculez votre food cost instantanement. Coefficients, marges, allergenes — tout est automatique.',
+    priority: true,
   },
   {
     icon: BarChart3,
@@ -178,7 +191,7 @@ const features = [
   },
   {
     icon: Brain,
-    title: 'Assistant IA',
+    title: 'Assistant IA conversationnel',
     description: 'Claude analyse vos donnees, detecte les anomalies et vous conseille en continu.',
   },
 ];
@@ -199,20 +212,6 @@ const testimonials = [
     name: 'Karim Benali',
     restaurant: 'Food truck Street Flavors, Bordeaux',
   },
-];
-
-const comparisonRows = [
-  { feature: 'Prix / mois', rm: '49\u20AC', excel: '~12\u20AC', inpulse: '~200\u20AC+' },
-  { feature: 'Fiches techniques auto', rm: true, excel: false, inpulse: true },
-  { feature: 'Calcul marge temps reel', rm: true, excel: false, inpulse: true },
-  { feature: 'IA conversationnelle', rm: true, excel: false, inpulse: false },
-  { feature: 'Commande vocale', rm: true, excel: false, inpulse: false },
-  { feature: 'Prix fournisseurs reels', rm: true, excel: false, inpulse: false },
-  { feature: 'Menu Engineering BCG', rm: true, excel: false, inpulse: false },
-  { feature: 'HACCP integre', rm: true, excel: false, inpulse: false },
-  { feature: 'Alertes prix auto', rm: true, excel: false, inpulse: true },
-  { feature: 'Essai gratuit', rm: '14 jours', excel: false, inpulse: false },
-  { feature: 'Prise en main', rm: '2 min', excel: 'Des heures', inpulse: 'Formation' },
 ];
 
 const faqItems = [
@@ -454,7 +453,7 @@ export default function Landing() {
               <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
               <hr className="border-[#E5E7EB]" />
               <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">Connexion</Link>
-              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 14 jours</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 7 jours</Link>
             </div>
           </div>
         )}
@@ -497,14 +496,8 @@ export default function Landing() {
                   to="/login?mode=register"
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base"
                 >
-                  Essai gratuit 14 jours <ArrowRight className="w-4 h-4" />
+                  Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
                 </Link>
-                <button
-                  onClick={() => scrollTo('demo')}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-transparent text-gray-900 font-semibold border border-gray-300 hover:border-teal-400 hover:shadow-[0_0_15px_rgba(13,148,136,0.08)] transition-all text-base"
-                >
-                  Voir la demo <ArrowRight className="w-4 h-4" />
-                </button>
               </div>
               <p className="mt-3 text-sm text-gray-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
                 <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise
@@ -568,11 +561,30 @@ export default function Landing() {
             </div>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f, i) => {
+          {/* Priority features — larger cards */}
+          <div className="grid sm:grid-cols-3 gap-6 mb-6">
+            {features.filter((f: any) => f.priority).map((f, i) => {
               const Icon = f.icon;
               return (
                 <FadeIn key={i} delay={i * 80}>
+                  <div className="bg-[#FFFFFF] border-2 border-[#111111] rounded-2xl p-10 h-full hover:shadow-lg transition-all duration-300">
+                    <div className="w-14 h-14 rounded-xl bg-[#111111] flex items-center justify-center mb-6">
+                      <Icon className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#111111] mb-3">{f.title}</h3>
+                    <p className="text-sm text-[#6B7280] leading-relaxed">{f.description}</p>
+                  </div>
+                </FadeIn>
+              );
+            })}
+          </div>
+
+          {/* Other features — standard cards */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {features.filter((f: any) => !f.priority).map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <FadeIn key={i} delay={(i + 3) * 80}>
                   <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full hover:border-[#111111]/20 transition-colors duration-300">
                     <div className="w-12 h-12 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center mb-6">
                       <Icon className="w-6 h-6 text-[#111111]" />
@@ -601,7 +613,7 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
             {[
-              { num: '01', title: 'Inscrivez-vous', desc: 'Creez votre compte en 2 minutes. Essai gratuit de 14 jours, sans carte bancaire.' },
+              { num: '01', title: 'Inscrivez-vous', desc: 'Creez votre compte en 2 minutes. Essai gratuit de 7 jours, sans carte bancaire.' },
               { num: '02', title: 'Ajoutez vos donnees', desc: 'Importez vos ingredients, recettes et fournisseurs. Notre assistant IA vous guide.' },
               { num: '03', title: 'Optimisez vos marges', desc: 'Dashboard temps reel, alertes automatiques. Vos marges s\'ameliorent des le premier jour.' },
             ].map((step, i) => (
@@ -650,53 +662,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══════════════ 5. COMPARISON TABLE ═══════════════ */}
-      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Comparatif</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
-                RestauMargin vs les autres
-              </h2>
-              <p className="mt-4 text-lg text-[#6B7280]">Arretez de bricoler sur Excel. Economisez par rapport aux solutions entreprise.</p>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={200}>
-            <div className="overflow-x-auto rounded-2xl border border-[#E5E7EB]">
-              <table className="w-full min-w-[560px] text-sm">
-                <thead>
-                  <tr className="border-b border-[#E5E7EB]">
-                    <th className="text-left py-4 px-6 font-semibold text-[#6B7280] bg-[#FFFFFF]">Fonctionnalite</th>
-                    <th className="py-4 px-6 font-bold text-[#111111] text-center bg-[#FFFFFF] min-w-[140px]">RestauMargin</th>
-                    <th className="py-4 px-6 font-semibold text-[#9CA3AF] text-center bg-[#FFFFFF] min-w-[120px]">Excel</th>
-                    <th className="py-4 px-6 font-semibold text-[#9CA3AF] text-center bg-[#FFFFFF] min-w-[120px]">Inpulse</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonRows.map((row, i) => {
-                    const renderCell = (val: string | boolean, isRM: boolean) => {
-                      if (val === false) return <span className="text-[#E5E7EB] text-lg">&times;</span>;
-                      if (val === true) return <Check className={`w-5 h-5 mx-auto ${isRM ? 'text-[#111111]' : 'text-[#6B7280]'}`} />;
-                      return <span className={isRM ? 'font-bold text-[#111111]' : 'text-[#6B7280]'}>{val}</span>;
-                    };
-                    return (
-                      <tr key={i} className="border-b border-[#E5E7EB] last:border-b-0">
-                        <td className="py-4 px-6 font-medium text-[#111111]">{row.feature}</td>
-                        <td className="py-4 px-6 text-center">{renderCell(row.rm, true)}</td>
-                        <td className="py-4 px-6 text-center">{renderCell(row.excel, false)}</td>
-                        <td className="py-4 px-6 text-center">{renderCell(row.inpulse, false)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <p className="text-center mt-6 text-xs text-[#9CA3AF]">Donnees publiques au 07/04/2026. Les prix concurrents sont des estimations.</p>
-          </FadeIn>
-        </div>
-      </section>
 
       {/* ═══════════════ 6. PRICING ═══════════════ */}
       <section id="pricing" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
@@ -710,8 +675,9 @@ export default function Landing() {
               <p className="mt-4 text-lg text-[#6B7280]">Sans engagement. Annulez quand vous voulez.</p>
               <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E5E7EB] bg-[#F9FAFB]">
                 <Zap className="w-4 h-4 text-teal-600" />
-                <span className="text-sm font-semibold text-[#111111]">Essai gratuit 14 jours</span>
+                <span className="text-sm font-semibold text-[#111111]">Essai gratuit 7 jours</span>
               </div>
+              <p className="mt-3 text-sm text-[#9CA3AF]">Messages et IA limites pendant l'essai</p>
             </div>
           </FadeIn>
 
@@ -746,7 +712,7 @@ export default function Landing() {
                   rel="noopener noreferrer"
                   className="block w-full text-center px-6 py-3.5 rounded-lg bg-[#111111] text-white font-semibold hover:bg-[#333333] transition-colors"
                 >
-                  Choisir Pro
+                  Commencer l'essai gratuit
                 </a>
               </div>
             </FadeIn>
@@ -784,7 +750,7 @@ export default function Landing() {
                   rel="noopener noreferrer"
                   className="block w-full text-center px-6 py-3.5 rounded-lg bg-[#111111] text-white font-semibold hover:bg-[#333333] transition-colors"
                 >
-                  Choisir Business
+                  Commencer l'essai gratuit
                 </a>
               </div>
             </FadeIn>
@@ -1035,7 +1001,7 @@ export default function Landing() {
                 <ChefHat className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#111111]">Essai gratuit 14 jours</p>
+                <p className="text-sm font-semibold text-[#111111]">Essai gratuit 7 jours</p>
                 <p className="text-xs text-[#9CA3AF]">Pas de carte bancaire requise</p>
               </div>
             </div>
@@ -1123,7 +1089,7 @@ export default function Landing() {
 
             <h3 className="text-2xl font-bold text-[#111111] mb-2">Attendez !</h3>
             <p className="text-lg font-semibold text-[#111111] mb-1">
-              Essayez RestauMargin gratuitement pendant 14 jours
+              Essayez RestauMargin gratuitement pendant 7 jours
             </p>
             <p className="text-sm text-[#9CA3AF] mb-6">Pas de carte bancaire requise</p>
 

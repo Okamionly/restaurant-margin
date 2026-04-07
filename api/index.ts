@@ -10,6 +10,7 @@ import authRoutes from './routes/auth';
 import aiRoutes from './routes/ai';
 import mercurialeRoutes from './routes/mercuriale';
 import exportRoutes from './routes/export';
+import adminRoutes from './routes/admin';
 import { getUnitDivisor } from './utils/unitConversion';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
 
@@ -262,6 +263,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/mercuriale', mercurialeRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ── Activation codes (kept at /api/activation/* for backward compat) ──
 function generateActivationCode(): string {

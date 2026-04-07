@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, X, ChefHat, Sparkles, Building2, HelpCircle, ChevronDown, ChevronUp, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { Check, X, ChefHat, Sparkles, Building2, HelpCircle, ChevronDown, ChevronUp, ArrowRight, CheckCircle2, Loader2, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface FAQItem {
@@ -413,15 +413,24 @@ export default function Pricing() {
         <p className="text-slate-500 mb-8 max-w-lg mx-auto">
           Essayez gratuitement pendant 7 jours. Sans carte bancaire, sans engagement.
         </p>
-        <a
-          href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-8 py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
-        >
-          Commencer l'essai gratuit — 29\u20AC/mois
-          <ArrowRight className="w-5 h-5" />
-        </a>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
+          >
+            Commencer l'essai gratuit — 29\u20AC/mois
+            <ArrowRight className="w-5 h-5" />
+          </a>
+          <Link
+            to="/demo"
+            className="inline-flex items-center gap-2 px-8 py-3.5 border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold rounded-xl transition-colors"
+          >
+            <Eye className="w-5 h-5" />
+            Voir la demo
+          </Link>
+        </div>
       </section>
     </div>
   );

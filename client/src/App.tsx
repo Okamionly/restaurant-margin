@@ -1175,6 +1175,10 @@ function App() {
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><Temoignages /></Suspense>} />
+          <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />
+          <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
+          <Route path="/blog/reduire-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFoodCost /></Suspense>} />
+          <Route path="/blog/ia-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIA /></Suspense>} />
           <Route
             path="/station"
             element={

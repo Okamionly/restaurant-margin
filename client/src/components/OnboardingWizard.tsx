@@ -7,11 +7,6 @@ import { createIngredient, createRecipe } from '../services/api';
 const STORAGE_KEY = 'onboarding-completed';
 const TOTAL_STEPS = 5;
 
-const CUISINE_TYPES = [
-  'Française', 'Italienne', 'Japonaise', 'Méditerranéenne', 'Bistronomique',
-  'Fast-casual', 'Brasserie', 'Orientale', 'Asiatique', 'Mexicaine', 'Autre',
-];
-
 interface SuggestedIngredient {
   name: string;
   unit: string;
@@ -21,9 +16,7 @@ interface SuggestedIngredient {
 
 const SUGGESTED_INGREDIENTS: SuggestedIngredient[] = [
   { name: 'Poulet (filet)', unit: 'kg', pricePerUnit: 9.5, category: 'Viandes' },
-  { name: 'Boeuf (entrecôte)', unit: 'kg', pricePerUnit: 28, category: 'Viandes' },
   { name: 'Tomates', unit: 'kg', pricePerUnit: 2.8, category: 'Légumes' },
-  { name: 'Oignons', unit: 'kg', pricePerUnit: 1.5, category: 'Légumes' },
   { name: 'Huile d\'olive', unit: 'L', pricePerUnit: 8.5, category: 'Huiles & Matières grasses' },
 ];
 
@@ -46,8 +39,8 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
 
   // Step 1 — Restaurant info
   const [restaurantName, setRestaurantName] = useState(selectedRestaurant?.name || '');
-  const [cuisineType, setCuisineType] = useState(selectedRestaurant?.cuisineType || '');
-  const [coversPerDay, setCoversPerDay] = useState(selectedRestaurant?.coversPerDay || 50);
+  const [cuisineType] = useState(selectedRestaurant?.cuisineType || '');
+  const [coversPerDay] = useState(selectedRestaurant?.coversPerDay || 50);
 
   // Step 2 — Ingredients
   const [ingredients, setIngredients] = useState<SuggestedIngredient[]>(
@@ -58,8 +51,8 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
   const [recipeName, setRecipeName] = useState('Poulet grillé');
   const [recipeCategory, setRecipeCategory] = useState('Plat');
   const [recipePrice, setRecipePrice] = useState(18);
-  const [selectedIngredientIndexes, setSelectedIngredientIndexes] = useState<number[]>([0, 2, 3]);
-  const [recipeQuantities, setRecipeQuantities] = useState<Record<number, number>>({ 0: 0.2, 2: 0.15, 3: 0.05 });
+  const [selectedIngredientIndexes, setSelectedIngredientIndexes] = useState<number[]>([0, 1]);
+  const [recipeQuantities, setRecipeQuantities] = useState<Record<number, number>>({ 0: 0.2, 1: 0.15 });
 
   // Step 4 — Computed results
   const [createdIngredientIds, setCreatedIngredientIds] = useState<number[]>([]);
@@ -243,12 +236,12 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
 
       {/* Content */}
       <div className="relative z-[220] w-full max-w-2xl mx-4 bg-white dark:bg-[#0A0A0A] rounded-3xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-        {/* Skip button */}
+        {/* Skip button — prominent */}
         <button
           onClick={handleSkip}
-          className="absolute top-5 right-5 z-10 text-sm text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white transition-colors flex items-center gap-1"
+          className="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-lg text-sm font-medium border border-[#E5E7EB] dark:border-[#333333] text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:border-[#111111] dark:hover:border-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-all flex items-center gap-1.5"
         >
-          Passer <X className="w-4 h-4" />
+          Passer l'intro <X className="w-3.5 h-3.5" />
         </button>
 
         {/* Progress bar */}
@@ -259,8 +252,8 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
           />
         </div>
 
-        {/* Step indicator */}
-        <div className="flex items-center justify-center gap-2 pt-6 pb-2">
+        {/* Step indicator with percentage */}
+        <div className="flex items-center justify-center gap-2 pt-6 pb-1">
           {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
             <div
               key={i}
@@ -273,6 +266,11 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
               }`}
             />
           ))}
+        </div>
+        <div className="text-center pb-2">
+          <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">
+            {step + 1}/{TOTAL_STEPS} — {Math.round(((step + 1) / TOTAL_STEPS) * 100)}%
+          </span>
         </div>
 
         {/* Step content */}
@@ -300,44 +298,13 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                     value={restaurantName}
                     onChange={e => setRestaurantName(e.target.value)}
                     placeholder="Chez Marcel"
+                    autoFocus
                     className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white text-sm"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1.5">
-                    Type de cuisine
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {CUISINE_TYPES.map(c => (
-                      <button
-                        key={c}
-                        onClick={() => setCuisineType(c)}
-                        className={`px-3 py-1.5 rounded-lg text-sm border transition-all ${
-                          cuisineType === c
-                            ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] border-[#111111] dark:border-white'
-                            : 'bg-white dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
-                        }`}
-                      >
-                        {c}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-[#111111] dark:text-white mb-1.5">
-                    Couverts par jour (moyenne)
-                  </label>
-                  <input
-                    type="number"
-                    value={coversPerDay}
-                    onChange={e => setCoversPerDay(Number(e.target.value))}
-                    min={1}
-                    max={1000}
-                    className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white text-sm"
-                  />
-                </div>
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center">
+                  Vous pourrez completer les details (cuisine, couverts) plus tard dans les parametres.
+                </p>
               </div>
             </div>
           )}

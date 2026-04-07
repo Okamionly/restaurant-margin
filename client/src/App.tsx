@@ -98,6 +98,11 @@ const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
 const PublicRecipe = lazyRetry(() => import('./pages/PublicRecipe'));
 const MenuCalendar = lazyRetry(() => import('./pages/MenuCalendar'));
 const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));
+const Temoignages = lazyRetry(() => import('./pages/Temoignages'));
+const Demo = lazyRetry(() => import('./pages/Demo'));
+const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));
+const BlogFoodCost = lazyRetry(() => import('./pages/BlogFoodCost'));
+const BlogIA = lazyRetry(() => import('./pages/BlogIA'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -417,6 +422,7 @@ function AppLayout() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [trialBannerDismissed, setTrialBannerDismissed] = useState(() => localStorage.getItem('trial-banner-dismissed') === '1');
   const notifRef = useRef<HTMLDivElement>(null);
   const notifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
@@ -1010,6 +1016,56 @@ function AppLayout() {
           </div>
         )}
 
+        {/* Trial expiry banner */}
+        {(() => {
+          if (trialBannerDismissed || !user?.trialEndsAt) return null;
+          const trialEnd = new Date(user.trialEndsAt);
+          const now = new Date();
+          const diffMs = trialEnd.getTime() - now.getTime();
+          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          const isExpired = diffDays <= 0;
+          const isExpiring = diffDays > 0 && diffDays <= 2;
+
+          if (!isExpired && !isExpiring) return null;
+
+          return (
+            <div className={`border-b px-4 py-2.5 flex items-center justify-between text-sm ${
+              isExpired
+                ? 'bg-red-500/10 border-red-500/30 text-red-400'
+                : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+            }`}>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  {isExpired
+                    ? 'Votre essai gratuit est terminé — Passez au plan Pro'
+                    : `Votre essai gratuit se termine dans ${diffDays} jour${diffDays > 1 ? 's' : ''}`
+                  }
+                </span>
+              </div>
+              <div className="flex items-center gap-3 ml-4 flex-shrink-0">
+                <button
+                  onClick={() => navigate('/abonnement')}
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                    isExpired
+                      ? 'bg-red-500 hover:bg-red-400 text-white'
+                      : 'bg-amber-500 hover:bg-amber-400 text-white'
+                  }`}
+                >
+                  Voir les plans
+                </button>
+                <button
+                  onClick={() => { setTrialBannerDismissed(true); localStorage.setItem('trial-banner-dismissed', '1'); }}
+                  className="p-1 hover:bg-white/10 rounded transition-colors"
+                  aria-label="Fermer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Content */}
         <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
           <Breadcrumbs />
@@ -1118,6 +1174,7 @@ function App() {
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
+          <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><Temoignages /></Suspense>} />
           <Route
             path="/station"
             element={

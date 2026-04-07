@@ -965,6 +965,7 @@ export default function Landing() {
                 <li><button onClick={() => scrollTo('features')} className="hover:text-[#111111] transition-colors">Fonctionnalites</button></li>
                 <li><Link to="/pricing" className="hover:text-[#111111] transition-colors">Tarifs</Link></li>
                 <li><button onClick={() => scrollTo('faq')} className="hover:text-[#111111] transition-colors">FAQ</button></li>
+                <li><Link to="/temoignages" className="hover:text-[#111111] transition-colors">Temoignages</Link></li>
               </ul>
             </div>
 

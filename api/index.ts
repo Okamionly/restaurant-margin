@@ -108,6 +108,41 @@ app.use((req, res, next) => {
 // ── CSRF Protection — temporarily disabled to fix login ──
 // TODO: Re-enable with proper SPA-compatible implementation
 
+// ── Stripe Customer Portal ──
+app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {
+  try {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
+    const stripe = require('stripe')(stripeKey);
+
+    // Find customer by email
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé' });
+
+    // Search for Stripe customer by email
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    let customerId: string;
+
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    } else {
+      // Create customer if not found
+      const customer = await stripe.customers.create({ email: user.email, name: user.name || undefined });
+      customerId = customer.id;
+    }
+
+    // Create portal session
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: 'https://www.restaumargin.fr/abonnement',
+    });
+
+    res.json({ url: session.url });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Erreur création portail Stripe', details: err.message });
+  }
+});
+
 // ── Rate Limiting: Password Reset (3 per email per hour) ──
 const passwordResetLimits = new Map<string, { count: number; resetAt: number }>();
 app.use('/api/auth/forgot-password', (req, _res, next) => {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   Crown, Zap, Check, X, ChevronDown,
-  Rocket, Building2,
+  Rocket, Building2, CreditCard,
   HelpCircle, ArrowRight, Sparkles,
 } from 'lucide-react';
 
@@ -172,10 +172,29 @@ export default function Subscription() {
                 </div>
               </div>
             </div>
-            <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5">
-              <Zap className="w-4 h-4" />
-              Passer au Pro
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('/api/stripe/portal', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    });
+                    const data = await res.json();
+                    if (data.url) window.location.href = data.url;
+                  } catch {}
+                }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black font-medium rounded-xl transition-all hover:bg-[#333] dark:hover:bg-[#E5E5E5]"
+              >
+                <CreditCard className="w-4 h-4" />
+                Gérer mon abonnement
+              </button>
+              <button className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5">
+                <Zap className="w-4 h-4" />
+                Passer au Pro
+              </button>
+            </div>
           </div>
 
           {/* Usage bars */}

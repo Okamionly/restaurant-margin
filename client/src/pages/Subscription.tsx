@@ -311,7 +311,7 @@ export default function Subscription() {
                   className={`mt-8 w-full py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${
                     plan.highlighted
                       ? 'bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white shadow-lg shadow-teal-500/25 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5'
-                      : 'bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-[#111111] dark:text-white hover:-translate-y-0.5'
+                      : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-gray-100 text-white dark:text-black hover:-translate-y-0.5'
                   }`}
                 >
                   <span className="inline-flex items-center gap-2">

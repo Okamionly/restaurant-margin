@@ -131,7 +131,7 @@ export default function KitchenTimer() {
     <>
       {/* Panel */}
       {isOpen && (
-        <div className="fixed bottom-20 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] flex flex-col bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-36 right-4 sm:right-6 z-40 w-[calc(100vw-2rem)] sm:w-80 max-h-[70vh] flex flex-col bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-800/50">
             <div className="flex items-center gap-2">
@@ -272,7 +272,7 @@ export default function KitchenTimer() {
       {/* Floating button - bottom left, above potential cookie banners */}
       <button
         onClick={() => setIsOpen(o => !o)}
-        className={`fixed bottom-4 left-4 sm:left-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 no-print ${
+        className={`fixed bottom-20 right-4 sm:right-6 z-40 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 no-print ${
           isOpen
             ? 'bg-slate-700 hover:bg-slate-600 rotate-12'
             : finishedCount > 0

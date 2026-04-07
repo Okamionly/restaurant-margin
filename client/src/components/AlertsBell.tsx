@@ -139,7 +139,7 @@ export default function AlertsBell() {
       {/* Dropdown panel */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 w-96 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden"
+          className="fixed right-4 top-16 w-[calc(100vw-2rem)] sm:w-96 max-w-96 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-2xl z-[60] overflow-hidden"
           style={{ animation: 'slideDown 0.2s ease-out' }}
         >
           {/* Header */}

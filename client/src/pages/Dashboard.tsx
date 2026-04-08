@@ -775,7 +775,16 @@ export default function Dashboard() {
   }, [reportData]);
 
   const printReport = useCallback(() => {
+    // Mark the report modal as print target, hide rest
+    const modal = document.querySelector('[data-print-report]');
+    if (modal) modal.classList.add('print-target');
+    document.querySelectorAll('.no-print, nav, aside, header').forEach(el => el.classList.add('print-hide'));
     window.print();
+    // Cleanup after print
+    setTimeout(() => {
+      if (modal) modal.classList.remove('print-target');
+      document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+    }, 500);
   }, []);
 
   const TABS: { key: TabKey; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [

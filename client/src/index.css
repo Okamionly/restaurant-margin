@@ -407,4 +407,17 @@ body::before {
   .dark .text-slate-500 {
     color: #475569 !important;
   }
+
+  /* When .print-target exists, only show that element */
+  .print-target ~ *:not(.print-target),
+  .print-hide {
+    display: none !important;
+  }
+  .print-target {
+    display: block !important;
+    width: 100% !important;
+  }
+  .print-only {
+    display: block !important;
+  }
 }

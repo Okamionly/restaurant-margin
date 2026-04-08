@@ -110,9 +110,16 @@ router.delete('/users/:id', authMiddleware, async (req: any, res) => {
     if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin requis' });
     const targetId = parseInt(req.params.id);
     if (targetId === req.user.userId) return res.status(400).json({ error: 'Impossible de supprimer votre propre compte' });
-    await prisma.user.delete({ where: { id: targetId } });
+    // Soft delete: deactivate user instead of hard delete (foreign key constraints)
+    await prisma.user.update({
+      where: { id: targetId },
+      data: { email: `deleted_${targetId}_${Date.now()}@deleted.local`, passwordHash: 'DELETED', role: 'deleted' },
+    });
     res.status(204).send();
-  } catch { res.status(500).json({ error: 'Erreur suppression' }); }
+  } catch (e: any) {
+    console.error('[DELETE USER]', e.message);
+    res.status(500).json({ error: 'Erreur suppression utilisateur' });
+  }
 });
 
 // ============ AUTH: VERIFY EMAIL, RESEND, FORGOT/RESET PASSWORD ============

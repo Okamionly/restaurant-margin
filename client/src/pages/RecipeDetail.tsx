@@ -267,25 +267,26 @@ export default function RecipeDetail() {
     return portions / recipe.nbPortions;
   }, [recipe, portions]);
 
+  // Auto-detected allergens from ingredient names
+  const autoDetectedAllergens = useMemo(() => {
+    if (!recipe) return [];
+    return detectAllergens(recipe.ingredients.map((ri) => ri.ingredient.name));
+  }, [recipe]);
+
+  // Merge DB allergens + auto-detected, deduplicated
+  const allAllergens = recipe ? Array.from(
+    new Set(recipe.ingredients.flatMap((ri) => ri.ingredient.allergens || []))
+  ).sort() : [];
+
+  const mergedAllergens = useMemo(() => {
+    return Array.from(new Set([...allAllergens, ...autoDetectedAllergens])).sort();
+  }, [allAllergens, autoDetectedAllergens]);
+
   if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">Chargement...</div>;
   if (!recipe) return <div className="text-center py-12 text-red-500">Recette non trouvée</div>;
 
   const m = recipe.margin;
   const marginColor = m.marginPercent >= 70 ? 'text-green-600' : m.marginPercent >= 60 ? 'text-amber-600' : 'text-red-600';
-
-  const allAllergens = Array.from(
-    new Set(recipe.ingredients.flatMap((ri) => ri.ingredient.allergens || []))
-  ).sort();
-
-  // Auto-detected allergens from ingredient names
-  const autoDetectedAllergens = useMemo(() => {
-    return detectAllergens(recipe.ingredients.map((ri) => ri.ingredient.name));
-  }, [recipe]);
-
-  // Merge DB allergens + auto-detected, deduplicated
-  const mergedAllergens = useMemo(() => {
-    return Array.from(new Set([...allAllergens, ...autoDetectedAllergens])).sort();
-  }, [allAllergens, autoDetectedAllergens]);
 
   const totalTime = (recipe.prepTimeMinutes || 0) + (recipe.cookTimeMinutes || 0);
 

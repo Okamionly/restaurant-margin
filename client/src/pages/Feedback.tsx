@@ -164,7 +164,7 @@ export default function FeedbackPage() {
         const data = await res.json();
         setStats(data);
       }
-    } catch {}
+    } catch (err) { console.error(err); }
   }
 
   async function loadFeedbacks(p = page) {
@@ -180,7 +180,7 @@ export default function FeedbackPage() {
         setTotal(data.total);
         setTotalPages(data.totalPages);
       }
-    } catch {}
+    } catch (err) { console.error(err); }
   }
 
   useEffect(() => {

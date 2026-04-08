@@ -282,7 +282,7 @@ function BudgetWidget({ data, onEditBudget }: { data: BudgetData | null; onEditB
       });
       setEditing(false);
       onEditBudget();
-    } catch {}
+    } catch (err) { console.error(err); }
   };
 
   return (
@@ -688,7 +688,7 @@ export default function Dashboard() {
         const d = await res.json();
         setBudgetData(d);
       }
-    } catch {}
+    } catch (err) { console.error(err); }
   }, []);
 
   // ── Weekly AI Report ──────────────────────────────────────────────────

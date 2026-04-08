@@ -345,11 +345,11 @@ function GlobalSearch() {
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={() => setOpen(false)}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative w-full max-w-lg mx-4 rounded-2xl border border-white/10 bg-[#0f172a]/80 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
+        className="relative w-full max-w-lg mx-4 rounded-2xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
-          <Search className="w-5 h-5 text-[#94a3b8] flex-shrink-0" />
+          <Search className="w-5 h-5 text-[#737373] flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
@@ -359,7 +359,7 @@ function GlobalSearch() {
             className="flex-1 bg-transparent text-white placeholder-[#64748b] text-sm outline-none"
             autoComplete="off"
           />
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#64748b] bg-[#1e293b] border border-[#334155] rounded">ESC</kbd>
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#64748b] bg-[#171717] border border-[#1A1A1A] rounded">ESC</kbd>
         </div>
         <div className="max-h-[50vh] overflow-y-auto py-2">
           {loading && (
@@ -580,7 +580,7 @@ function AppLayout() {
     <div ref={notifRef} className="relative">
       <button
         onClick={() => setShowNotifications(!showNotifications)}
-        className="relative p-2 rounded-lg hover:bg-[#334155]/50 text-[#94a3b8] hover:text-white transition-colors"
+        className="relative p-2 rounded-lg hover:bg-[#1A1A1A]/50 text-[#737373] hover:text-white transition-colors"
         aria-label={`Notifications${stockAlerts.length > 0 ? ` (${stockAlerts.length} alertes)` : ''}`}
       >
         <Bell className="w-5 h-5" />
@@ -591,8 +591,8 @@ function AppLayout() {
         )}
       </button>
       {showNotifications && stockAlerts.length > 0 && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-[#0f172a] border border-[#334155] rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#334155]/50 flex items-center gap-2">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-amber-400" />
             <span className="text-sm font-semibold text-white">Alertes stock</span>
             <span className="ml-auto text-[10px] font-bold bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">
@@ -603,7 +603,7 @@ function AppLayout() {
             {stockAlerts.map((alert, i) => (
               <div
                 key={i}
-                className="px-4 py-3 flex items-start gap-3 hover:bg-[#1e293b]/50 transition-colors border-b border-[#1e293b]/50 last:border-b-0"
+                className="px-4 py-3 flex items-start gap-3 hover:bg-[#171717]/50 transition-colors border-b border-[#171717]/50 last:border-b-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Package className="w-4 h-4 text-amber-400" />
@@ -1164,13 +1164,13 @@ function App() {
           <Route path="/feedback/:id" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0A0A0A] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" /></div>}><PublicFeedback /></Suspense>} />
           <Route path="/r/:token" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><PublicRecipe /></Suspense>} />
           <Route path="/station-produit" element={<StationLanding />} />
-          <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
-          <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
-          <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
-          <Route path="/cgu" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGU /></Suspense>} />
-          <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
-          <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
-          <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-[#020617] flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
+          <Route path="/dev-corp" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><DevCorp /></Suspense>} />
+          <Route path="/mentions-legales" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><MentionsLegales /></Suspense>} />
+          <Route path="/cgv" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGV /></Suspense>} />
+          <Route path="/cgu" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><CGU /></Suspense>} />
+          <Route path="/politique-confidentialite" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><PolitiqueConfidentialite /></Suspense>} />
+          <Route path="/pricing" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><Pricing /></Suspense>} />
+          <Route path="/reset-password" element={<Suspense fallback={<div className="min-h-screen bg-white dark:bg-black flex items-center justify-center"><Loader2 className="w-8 h-8 text-blue-500 animate-spin" /></div>}><ResetPassword /></Suspense>} />
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />

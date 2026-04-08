@@ -81,7 +81,7 @@ export default function DemandForecast() {
 
   const handleGenerateOrder = () => {
     setOrderGenerated(true);
-    setTimeout(() => navigate('/orders'), 1500);
+    setTimeout(() => navigate('/commandes'), 1500);
   };
 
   return (

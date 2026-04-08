@@ -298,14 +298,6 @@ export async function fetchAlerts(): Promise<{ alerts: AlertItem[]; count: numbe
   return handleResponse(res);
 }
 
-export async function sendAlertEmail(): Promise<{ sent: boolean; alertCount?: number }> {
-  const res = await fetch(`${API_BASE}/alerts/send`, {
-    method: 'POST',
-    headers: authHeaders(),
-  });
-  return handleResponse(res);
-}
-
 // --- Ingredients ---
 
 export async function fetchIngredients(): Promise<Ingredient[]> {

@@ -179,70 +179,30 @@ async function getRestaurantContext(): Promise<string> {
   }
 }
 
-async function callOpenRouter(input: string, history: { role: string; content: string }[]): Promise<string | null> {
-  const apiKey = localStorage.getItem('openrouter_api_key');
-  if (!apiKey) return null;
-
-  const context = await getRestaurantContext();
-  const systemPrompt = `Tu es l'Assistant Chef IA de RestauMargin, une application de gestion de marge pour la restauration. Tu parles en français. Tu es expert en cuisine, gestion de restaurant, marges, coûts matière, et menu engineering.
-
-Voici les données du restaurant:
-${context}
-
-Réponds de manière concise, professionnelle et utile. Utilise les données réelles du restaurant quand c'est pertinent. Si on te demande des calculs, utilise les vrais chiffres. Donne des conseils actionables.`;
-
+async function callBackendAI(input: string): Promise<string | null> {
   try {
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...history.slice(-6).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content })),
-      { role: 'user', content: input },
-    ];
-
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    const res = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': window.location.origin,
-        'X-Title': 'RestauMargin Assistant Chef',
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        model: 'google/gemma-3-12b-it:free',
-        messages,
-        max_tokens: 400,
-        temperature: 0.7,
-      }),
+      body: JSON.stringify({ message: input }),
     });
-
+    if (!res.ok) return null;
     const data = await res.json();
-    if (data.error) {
-      console.warn('OpenRouter error:', data.error.message);
-      // Try fallback models on rate limit
-      if (data.error.code === 429) {
-        const fallbackModels = ['google/gemma-3-4b-it:free', 'mistralai/mistral-small-3.1-24b-instruct:free', 'qwen/qwen3-4b:free'];
-        for (const model of fallbackModels) {
-          try {
-            const retryRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'HTTP-Referer': window.location.origin },
-              body: JSON.stringify({ model, messages, max_tokens: 400, temperature: 0.7 }),
-            });
-            const retryData = await retryRes.json();
-            if (retryData.choices?.[0]?.message?.content) return retryData.choices[0].message.content;
-          } catch { continue; }
-        }
-      }
-      return null;
-    }
-    return data.choices?.[0]?.message?.content || null;
-  } catch {
+    return data.response || null;
+  } catch (err) {
+    console.error('Backend AI chat error:', err);
     return null;
   }
 }
 
 async function generateResponse(input: string, history: { role: string; content: string }[] = []): Promise<string> {
-  // Try OpenRouter first
-  const aiResponse = await callOpenRouter(input, history);
+  // Try backend AI first (routes through /api/ai/chat)
+  const aiResponse = await callBackendAI(input);
   if (aiResponse) return aiResponse;
 
   // Fallback to local keyword matching

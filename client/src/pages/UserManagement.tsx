@@ -95,7 +95,7 @@ export default function UserManagement() {
         const data = await res.json();
         setUsers(data);
       }
-    } catch {} finally {
+    } catch (err) { console.error(err); } finally {
       setLoading(false);
     }
   }
@@ -161,7 +161,7 @@ export default function UserManagement() {
           method: 'DELETE',
           headers: authHeaders(),
         });
-      } catch {}
+      } catch (err) { console.error(err); }
     }
     showToast(`${ids.length} utilisateur(s) supprime(s)`, 'success');
     setSelectedUsers(new Set());

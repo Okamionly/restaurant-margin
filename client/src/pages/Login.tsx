@@ -89,7 +89,10 @@ export default function Login() {
               headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
               body: JSON.stringify({ referralCode }),
             });
-          } catch {}
+          } catch (err) {
+            // Referral system not yet available — silently ignore
+            console.warn('Referral apply failed (non-blocking):', err);
+          }
         }
       } else {
         await login({ email, password });

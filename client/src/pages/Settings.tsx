@@ -197,7 +197,7 @@ function loadFinancialGoals(): FinancialGoals {
   try {
     const stored = localStorage.getItem('restaumargin_financial_goals');
     if (stored) return { ...DEFAULT_FINANCIAL_GOALS, ...JSON.parse(stored) };
-  } catch {}
+  } catch (err) { console.error(err); }
   return DEFAULT_FINANCIAL_GOALS;
 }
 
@@ -215,7 +215,7 @@ function loadSettings(): AppSettings {
     if (stored) {
       return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
     }
-  } catch {}
+  } catch (err) { console.error(err); }
   return DEFAULT_SETTINGS;
 }
 
@@ -420,7 +420,7 @@ export default function Settings() {
     try {
       const stored = localStorage.getItem('coefficients');
       if (stored) return { ...DEFAULT_COEFFICIENTS, ...JSON.parse(stored) };
-    } catch {}
+    } catch (err) { console.error(err); }
     return { ...DEFAULT_COEFFICIENTS };
   });
 
@@ -530,7 +530,7 @@ export default function Settings() {
         ingredients: Array.isArray(ingredients) ? ingredients.length : 0,
         users: Array.isArray(users) ? users.length : 0,
       });
-    } catch {}
+    } catch (err) { console.error(err); }
   }
 
   async function loadReferrals() {
@@ -544,7 +544,14 @@ export default function Settings() {
         setReferrals(data.referrals || []);
         setReferralStats(data.stats || { total: 0, active: 0, freeMonths: 0 });
       }
-    } catch {}
+      // 404 = referral system not available yet — show empty data
+    } catch (err) {
+      console.warn('Referral system unavailable (non-blocking):', err);
+      setReferralCode('');
+      setReferralLink('');
+      setReferrals([]);
+      setReferralStats({ total: 0, active: 0, freeMonths: 0 });
+    }
     setReferralLoading(false);
   }
 
@@ -563,7 +570,7 @@ export default function Settings() {
           })));
         }
       }
-    } catch {}
+    } catch (err) { console.error(err); }
   }
 
   async function handleExport(type: string, label: string) {

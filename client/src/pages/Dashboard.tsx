@@ -8,12 +8,15 @@ import {
   Lightbulb, Sparkles, Star, Zap, ArrowDown,
   Building2, ShoppingBasket, Mic, Check,
   X, Loader2, Copy, Mail, Download,
+  Scale, ScanLine, Brain, Clock, Activity,
+  AlertCircle, PackageX, Flame,
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, LineChart, Line, AreaChart, Area,
 } from 'recharts';
-import { fetchRecipes, fetchIngredients } from '../services/api';
+import { fetchRecipes, fetchIngredients, fetchAlerts, fetchInventoryAlerts } from '../services/api';
+import type { InventoryItem } from '../types';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
@@ -658,6 +661,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [budgetData, setBudgetData] = useState<BudgetData | null>(null);
 
+  // ── New Dashboard Enhancement State ────────────────────────────────
+  const [inventoryAlerts, setInventoryAlerts] = useState<InventoryItem[]>([]);
+  const [systemAlerts, setSystemAlerts] = useState<{ alerts: { type: string; severity: string; title: string; detail: string }[]; count: number }>({ alerts: [], count: 0 });
+  const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; label: string; detail: string; time: string; icon: string }[]>([]);
+
   // ── AI Predictive state ──────────────────────────────────────────────
   const [forecastData, setForecastData] = useState<any>(null);
   const [forecastLoading, setForecastLoading] = useState(false);
@@ -801,6 +809,34 @@ export default function Dashboard() {
       .catch(() => console.error('Erreur chargement'))
       .finally(() => setLoading(false));
     fetchBudget();
+    // Fetch inventory alerts and system alerts for dashboard cards
+    fetchInventoryAlerts()
+      .then(data => setInventoryAlerts(data || []))
+      .catch(() => {});
+    fetchAlerts()
+      .then(data => { if (data) setSystemAlerts(data); })
+      .catch(() => {});
+    // Build recent activity from recipes/ingredients timestamps
+    Promise.all([fetchRecipes(), fetchIngredients()])
+      .then(([recs, ings]) => {
+        const activities: { id: string; type: string; label: string; detail: string; time: string; icon: string }[] = [];
+        recs.slice(0, 20).forEach(r => {
+          if (r.updatedAt) {
+            activities.push({ id: `recipe-${r.id}`, type: 'recipe', label: 'Recette modifiee', detail: r.name, time: r.updatedAt, icon: 'chef' });
+          }
+          if (r.createdAt && r.createdAt !== r.updatedAt) {
+            activities.push({ id: `recipe-new-${r.id}`, type: 'recipe-new', label: 'Nouvelle recette', detail: r.name, time: r.createdAt, icon: 'plus' });
+          }
+        });
+        ings.slice(0, 20).forEach(i => {
+          if (i.updatedAt) {
+            activities.push({ id: `ing-${i.id}`, type: 'ingredient', label: 'Ingredient mis a jour', detail: i.name, time: i.updatedAt, icon: 'package' });
+          }
+        });
+        activities.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+        setRecentActivity(activities.slice(0, 10));
+      })
+      .catch(() => {});
   }, [selectedRestaurant, restaurantLoading, fetchBudget]);
 
   // ── P&L data fetch ──────────────────────────────────────────────────────
@@ -1512,6 +1548,398 @@ export default function Dashboard() {
       <div className="stagger-3">
         <AlertTicker alerts={stats.alertRecipes} />
       </div>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* SECTION 1: Live P&L Summary Card                              */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <div className="stagger-3">
+        <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-5 sm:p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+              <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">Compte de resultat express</h3>
+            <span className="ml-auto text-xs text-[#9CA3AF] dark:text-[#737373]">Estimation journaliere</span>
+          </div>
+          {(() => {
+            const ca = stats.dailyRevenue;
+            const coutMatieres = stats.dailyCost;
+            const margeBrute = ca - coutMatieres;
+            const margePct = ca > 0 ? (margeBrute / ca) * 100 : 0;
+            const coutPct = ca > 0 ? (coutMatieres / ca) * 100 : 0;
+            const getBarColor = (pct: number) => pct >= 70 ? '#059669' : pct >= 50 ? '#D97706' : '#DC2626';
+            const getBarBg = (pct: number) => pct >= 70 ? 'bg-emerald-50 dark:bg-emerald-900/20' : pct >= 50 ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-red-50 dark:bg-red-900/20';
+            const getTextColor = (pct: number) => pct >= 70 ? 'text-emerald-600 dark:text-emerald-400' : pct >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400';
+            return (
+              <div className="space-y-4">
+                {/* Chiffre d'affaires */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-medium text-[#111111] dark:text-white">Chiffre d'affaires</span>
+                    <span className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(ca)}</span>
+                  </div>
+                  <div className="h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700 bg-emerald-500" style={{ width: '100%' }} />
+                  </div>
+                </div>
+                {/* Cout matieres */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-medium text-[#111111] dark:text-white">Cout matieres</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${getBarBg(100 - coutPct)} ${getTextColor(100 - coutPct)}`}>
+                        {coutPct.toFixed(1)}% du CA
+                      </span>
+                      <span className="text-sm font-bold text-red-600 dark:text-red-400">{formatCurrency(coutMatieres)}</span>
+                    </div>
+                  </div>
+                  <div className="h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(coutPct, 100)}%`, backgroundColor: '#DC2626' }} />
+                  </div>
+                </div>
+                {/* Marge brute */}
+                <div className="pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-bold text-[#111111] dark:text-white">Marge brute</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${getBarBg(margePct)} ${getTextColor(margePct)}`}>
+                        {margePct.toFixed(1)}%
+                      </span>
+                      <span className={`text-sm font-bold ${getTextColor(margePct)}`}>{formatCurrency(margeBrute)}</span>
+                    </div>
+                  </div>
+                  <div className="h-4 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(margePct, 100)}%`, backgroundColor: getBarColor(margePct) }} />
+                  </div>
+                  <div className="flex items-center justify-between mt-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <span>0%</span>
+                    <div className="flex gap-4">
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" /> &lt;50%</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" /> 50-70%</span>
+                      <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> &gt;70%</span>
+                    </div>
+                    <span>100%</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* SECTION 2: Top 5 Plats les plus vendus (bar chart)           */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {stats.top10Margin.length > 0 && (
+        <div className="stagger-3">
+          <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-5 sm:p-6">
+            <div className="flex items-center gap-2 mb-5">
+              <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+                <Flame className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              </div>
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">Top 5 — Plats les plus rentables</h3>
+            </div>
+            <div className="space-y-3">
+              {stats.top10Margin.slice(0, 5).map((recipe, i) => {
+                const maxMargin = stats.top10Margin[0].margin.marginPercent;
+                const pct = maxMargin > 0 ? (recipe.margin.marginPercent / maxMargin) * 100 : 0;
+                const barColor = recipe.margin.marginPercent >= 70 ? '#059669' : recipe.margin.marginPercent >= 50 ? '#D97706' : '#DC2626';
+                return (
+                  <Link key={recipe.id} to={`/recipes/${recipe.id}`} className="block group">
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg font-black text-[#9CA3AF] dark:text-[#737373] w-7 text-right tabular-nums">{i + 1}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-[#111111] dark:text-white truncate pr-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                            {recipe.name}
+                          </span>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(recipe.sellingPrice)}</span>
+                            <span className="text-sm font-bold tabular-nums" style={{ color: barColor }}>
+                              {recipe.margin.marginPercent.toFixed(1)}%
+                            </span>
+                          </div>
+                        </div>
+                        {/* Inline CSS bar chart */}
+                        <div className="h-2.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-700 ease-out"
+                            style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: barColor }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+            <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium mt-4">
+              Voir toutes les recettes <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* SECTION 3: Alertes intelligentes                              */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <div className="stagger-3">
+        <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-5 sm:p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+            </div>
+            <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">Alertes intelligentes</h3>
+            {(() => {
+              const totalAlerts = inventoryAlerts.length + systemAlerts.count + stats.alertRecipes.length;
+              return totalAlerts > 0 ? (
+                <span className="ml-auto text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2.5 py-0.5 rounded-full font-bold">{totalAlerts}</span>
+              ) : null;
+            })()}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Stock critique */}
+            <div className={`rounded-xl border p-4 transition-all ${
+              inventoryAlerts.length > 0
+                ? 'border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20'
+                : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]/50'
+            }`}>
+              <div className="flex items-center gap-2 mb-2">
+                <PackageX className={`w-4 h-4 ${inventoryAlerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                <span className={`text-xs font-semibold uppercase tracking-wider ${inventoryAlerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                  Stock critique
+                </span>
+              </div>
+              <p className={`text-2xl font-black font-satoshi ${inventoryAlerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-[#111111] dark:text-white'}`}>
+                {inventoryAlerts.length}
+              </p>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                {inventoryAlerts.length > 0
+                  ? inventoryAlerts.slice(0, 2).map(a => a.ingredient?.name || 'Inconnu').join(', ') + (inventoryAlerts.length > 2 ? '...' : '')
+                  : 'Aucune alerte'}
+              </p>
+              {inventoryAlerts.length > 0 && (
+                <Link to="/inventory" className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 hover:underline font-medium mt-2">
+                  Voir <ArrowRight className="w-3 h-3" />
+                </Link>
+              )}
+            </div>
+
+            {/* Marges negatives */}
+            {(() => {
+              const negMargin = recipes.filter(r => r.margin.marginPercent < 50);
+              return (
+                <div className={`rounded-xl border p-4 transition-all ${
+                  negMargin.length > 0
+                    ? 'border-orange-200 dark:border-orange-900/50 bg-orange-50 dark:bg-orange-950/20'
+                    : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]/50'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingDown className={`w-4 h-4 ${negMargin.length > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                    <span className={`text-xs font-semibold uppercase tracking-wider ${negMargin.length > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                      Marges &lt; 50%
+                    </span>
+                  </div>
+                  <p className={`text-2xl font-black font-satoshi ${negMargin.length > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-[#111111] dark:text-white'}`}>
+                    {negMargin.length}
+                  </p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                    {negMargin.length > 0
+                      ? negMargin.slice(0, 2).map(r => r.name).join(', ') + (negMargin.length > 2 ? '...' : '')
+                      : 'Toutes les marges OK'}
+                  </p>
+                  {negMargin.length > 0 && (
+                    <Link to="/recipes" className="inline-flex items-center gap-1 text-xs text-orange-600 dark:text-orange-400 hover:underline font-medium mt-2">
+                      Corriger <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Ingredients sans prix */}
+            {(() => {
+              const noPriceCount = ingredients.filter(i => !i.pricePerUnit || i.pricePerUnit === 0).length;
+              return (
+                <div className={`rounded-xl border p-4 transition-all ${
+                  noPriceCount > 0
+                    ? 'border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/20'
+                    : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]/50'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className={`w-4 h-4 ${noPriceCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                    <span className={`text-xs font-semibold uppercase tracking-wider ${noPriceCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                      Sans prix
+                    </span>
+                  </div>
+                  <p className={`text-2xl font-black font-satoshi ${noPriceCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-[#111111] dark:text-white'}`}>
+                    {noPriceCount}
+                  </p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                    {noPriceCount > 0 ? `${noPriceCount} ingredient${noPriceCount > 1 ? 's' : ''} a mettre a jour` : 'Tous les prix sont definis'}
+                  </p>
+                  {noPriceCount > 0 && (
+                    <Link to="/ingredients" className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400 hover:underline font-medium mt-2">
+                      Mettre a jour <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Prix fournisseurs en hausse */}
+            {(() => {
+              const priceAlerts = systemAlerts.alerts.filter(a => a.type === 'price');
+              return (
+                <div className={`rounded-xl border p-4 transition-all ${
+                  priceAlerts.length > 0
+                    ? 'border-purple-200 dark:border-purple-900/50 bg-purple-50 dark:bg-purple-950/20'
+                    : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]/50'
+                }`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className={`w-4 h-4 ${priceAlerts.length > 0 ? 'text-purple-600 dark:text-purple-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                    <span className={`text-xs font-semibold uppercase tracking-wider ${priceAlerts.length > 0 ? 'text-purple-600 dark:text-purple-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                      Prix en hausse
+                    </span>
+                  </div>
+                  <p className={`text-2xl font-black font-satoshi ${priceAlerts.length > 0 ? 'text-purple-600 dark:text-purple-400' : 'text-[#111111] dark:text-white'}`}>
+                    {priceAlerts.length}
+                  </p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                    {priceAlerts.length > 0
+                      ? priceAlerts.slice(0, 1).map(a => a.title).join(', ') + (priceAlerts.length > 1 ? '...' : '')
+                      : 'Prix stables'}
+                  </p>
+                  {priceAlerts.length > 0 && (
+                    <Link to="/mercuriale" className="inline-flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 hover:underline font-medium mt-2">
+                      Voir <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* SECTION 4: Quick Actions Grid                                 */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      <div className="stagger-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {/* Nouvelle pesee */}
+          <button
+            onClick={() => navigate('/station')}
+            className="flex flex-col items-center gap-3 p-5 sm:p-6 bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
+          >
+            <div className="p-3 rounded-xl bg-teal-100 dark:bg-teal-900/30 group-hover:bg-teal-200 dark:group-hover:bg-teal-800/40 transition-colors">
+              <Scale className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            </div>
+            <span className="text-sm font-semibold text-[#111111] dark:text-white text-center">Nouvelle pesee</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Station balance</span>
+          </button>
+
+          {/* Commande fournisseur */}
+          <button
+            onClick={() => navigate('/commandes')}
+            className="flex flex-col items-center gap-3 p-5 sm:p-6 bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
+          >
+            <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/40 transition-colors">
+              <ShoppingCart className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <span className="text-sm font-semibold text-[#111111] dark:text-white text-center">Commande fournisseur</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Auto-commandes</span>
+          </button>
+
+          {/* Scan facture */}
+          <button
+            onClick={() => navigate('/scanner-factures')}
+            className="flex flex-col items-center gap-3 p-5 sm:p-6 bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
+          >
+            <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40 transition-colors">
+              <ScanLine className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+            </div>
+            <span className="text-sm font-semibold text-[#111111] dark:text-white text-center">Scan facture</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">OCR intelligent</span>
+          </button>
+
+          {/* Rapport IA */}
+          <button
+            onClick={fetchWeeklyReport}
+            className="flex flex-col items-center gap-3 p-5 sm:p-6 bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group"
+          >
+            <div className="p-3 rounded-xl bg-purple-100 dark:bg-purple-900/30 group-hover:bg-purple-200 dark:group-hover:bg-purple-800/40 transition-colors">
+              <Brain className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <span className="text-sm font-semibold text-[#111111] dark:text-white text-center">Rapport IA</span>
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse hebdo</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {/* SECTION 5: Activite recente (timeline)                        */}
+      {/* ══════════════════════════════════════════════════════════════ */}
+      {recentActivity.length > 0 && (
+        <div className="stagger-3">
+          <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-5 sm:p-6">
+            <div className="flex items-center gap-2 mb-5">
+              <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]">
+                <Activity className="w-5 h-5 text-[#111111] dark:text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">Activite recente</h3>
+              <span className="ml-auto text-xs text-[#9CA3AF] dark:text-[#737373]">Dernieres actions</span>
+            </div>
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-[15px] top-2 bottom-2 w-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+              <div className="space-y-0">
+                {recentActivity.map((item, i) => {
+                  const iconMap: Record<string, React.ReactNode> = {
+                    chef: <ChefHat className="w-3.5 h-3.5" />,
+                    plus: <Plus className="w-3.5 h-3.5" />,
+                    package: <Package className="w-3.5 h-3.5" />,
+                    scale: <Scale className="w-3.5 h-3.5" />,
+                    cart: <ShoppingCart className="w-3.5 h-3.5" />,
+                  };
+                  const colorMap: Record<string, string> = {
+                    recipe: 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
+                    'recipe-new': 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
+                    ingredient: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+                    weighing: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
+                    order: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
+                  };
+                  const timeAgo = (() => {
+                    const diff = Date.now() - new Date(item.time).getTime();
+                    const minutes = Math.floor(diff / 60000);
+                    if (minutes < 1) return 'A l\'instant';
+                    if (minutes < 60) return `Il y a ${minutes}min`;
+                    const hours = Math.floor(minutes / 60);
+                    if (hours < 24) return `Il y a ${hours}h`;
+                    const days = Math.floor(hours / 24);
+                    if (days < 7) return `Il y a ${days}j`;
+                    return new Date(item.time).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+                  })();
+                  return (
+                    <div key={item.id} className="relative flex items-start gap-3 py-2.5 group" style={{ animationDelay: `${i * 50}ms` }}>
+                      <div className={`relative z-10 flex-shrink-0 p-1.5 rounded-lg ${colorMap[item.type] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF]'}`}>
+                        {iconMap[item.icon] || <Clock className="w-3.5 h-3.5" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{item.label}</p>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 tabular-nums">{timeAgo}</span>
+                        </div>
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{item.detail}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Top 5 Margin + Quick Alerts ────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-3">

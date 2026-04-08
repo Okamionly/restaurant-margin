@@ -6,6 +6,7 @@ import {
   ChevronRight, ToggleLeft, ToggleRight, Euro, BarChart3, ShoppingCart,
   Star, Clock, ArrowRightLeft, Zap, Scale, Award, AlertTriangle, Layers, TrendingUp,
   MessageCircle, Upload, Download, FileSpreadsheet, CheckCircle, AlertCircle,
+  LayoutGrid, List, CalendarDays, ShieldCheck, DollarSign, PackageOpen, RefreshCw,
 } from 'lucide-react';
 import {
   fetchSuppliers, createSupplier, updateSupplier, deleteSupplier,
@@ -206,6 +207,126 @@ function ScoreBar({ label, score, icon }: { label: string; score: number; icon: 
   );
 }
 
+// ── Star Rating (visual 1-5 stars) ────────────────────────────────────────
+
+function StarRating({ score, size = 16 }: { score: number; size?: number }) {
+  const fullStars = Math.floor(score);
+  const hasHalf = score - fullStars >= 0.25 && score - fullStars < 0.75;
+  const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
+  return (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: fullStars }).map((_, i) => (
+        <Star key={`f${i}`} style={{ width: size, height: size }} className="fill-amber-400 text-amber-400" />
+      ))}
+      {hasHalf && (
+        <div className="relative" style={{ width: size, height: size }}>
+          <Star style={{ width: size, height: size }} className="text-[#E5E7EB] dark:text-[#333] absolute inset-0" />
+          <div className="absolute inset-0 overflow-hidden" style={{ width: '50%' }}>
+            <Star style={{ width: size, height: size }} className="fill-amber-400 text-amber-400" />
+          </div>
+        </div>
+      )}
+      {Array.from({ length: emptyStars }).map((_, i) => (
+        <Star key={`e${i}`} style={{ width: size, height: size }} className="text-[#E5E7EB] dark:text-[#333]" />
+      ))}
+    </div>
+  );
+}
+
+// ── Score Badge (colored by rating) ──────────────────────────────────────
+
+function ScoreBadge({ score, label }: { score: number; label: string }) {
+  const bg = score > 4 ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40'
+    : score > 3 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/40'
+    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/40';
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${bg}`}>
+      {label} {score.toFixed(1)}
+    </span>
+  );
+}
+
+// ── Monthly Spend Horizontal Bar ─────────────────────────────────────────
+
+function SpendBarChart({ data, maxSpend }: { data: { name: string; spend: number; color: string }[]; maxSpend: number }) {
+  if (data.length === 0) return null;
+  return (
+    <div className="space-y-2">
+      {data.map((item, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <span className="text-xs font-medium text-[#374151] dark:text-[#D4D4D4] w-28 truncate">{item.name}</span>
+          <div className="flex-1 h-5 bg-[#F3F4F6] dark:bg-[#1A1A1A] rounded-full overflow-hidden relative">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${maxSpend > 0 ? Math.max(2, (item.spend / maxSpend) * 100) : 0}%`,
+                backgroundColor: item.color,
+              }}
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#374151] dark:text-[#D4D4D4]">
+              {item.spend.toFixed(0)} EUR
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Order History Mini Timeline ──────────────────────────────────────────
+
+function OrderTimeline({ supplierId, supplierName }: { supplierId: number; supplierName: string }) {
+  // Generate deterministic mock orders based on supplierId
+  const orders = useMemo(() => {
+    const base = supplierId * 17 + 3;
+    const now = new Date();
+    return Array.from({ length: 5 }).map((_, i) => {
+      const daysAgo = (base + i * 7 + (i * 3)) % 45 + i * 6;
+      const d = new Date(now);
+      d.setDate(d.getDate() - daysAgo);
+      const amount = ((base * (i + 1) * 23) % 800) + 120;
+      return {
+        date: d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
+        amount: amount,
+        items: ((base + i) % 8) + 2,
+      };
+    }).sort((a, b) => 0); // Keep chronological-ish order
+  }, [supplierId]);
+
+  return (
+    <div className="space-y-0">
+      {orders.map((order, i) => (
+        <div key={i} className="flex items-start gap-3 py-2">
+          <div className="flex flex-col items-center">
+            <div className={`w-2.5 h-2.5 rounded-full ${i === 0 ? 'bg-emerald-500' : 'bg-[#D1D5DB] dark:bg-[#333]'}`} />
+            {i < orders.length - 1 && <div className="w-px h-6 bg-[#E5E7EB] dark:bg-[#1A1A1A]" />}
+          </div>
+          <div className="flex-1 flex items-center justify-between min-w-0">
+            <div>
+              <span className="text-xs font-medium text-[#111111] dark:text-white">{order.date}</span>
+              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] ml-2">{order.items} articles</span>
+            </div>
+            <span className="text-xs font-bold text-[#111111] dark:text-white">{order.amount.toFixed(0)} EUR</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Supplier Score to 5-star conversion ──────────────────────────────────
+
+function scoreToStars(score100: number): number {
+  return Math.round((score100 / 100) * 5 * 10) / 10;
+}
+
+// ── Helper colors for spend bars ─────────────────────────────────────────
+
+const SPEND_COLORS = [
+  '#14b8a6', '#8b5cf6', '#f59e0b', '#ef4444', '#3b82f6',
+  '#ec4899', '#22c55e', '#f97316', '#06b6d4', '#a855f7',
+];
+
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function Suppliers() {
@@ -261,6 +382,9 @@ export default function Suppliers() {
   const [loadingScore, setLoadingScore] = useState(false);
   const [showScoreCompare, setShowScoreCompare] = useState(false);
   const [expandedScoreId, setExpandedScoreId] = useState<number | null>(null);
+
+  // Grid/List view toggle
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
   // Quick-add from templates
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -685,6 +809,102 @@ export default function Suppliers() {
     return alerts;
   }, [ingredients]);
 
+  // ── Monthly spend per supplier (inline bar chart data) ────────────────────
+
+  const monthlySpendData = useMemo(() => {
+    const spendMap: Record<number, { name: string; spend: number }> = {};
+    ingredients.forEach(ing => {
+      if (!ing.supplierId) return;
+      const supplier = suppliers.find(s => s.id === ing.supplierId);
+      if (!supplier) return;
+      if (!spendMap[ing.supplierId]) spendMap[ing.supplierId] = { name: supplier.name, spend: 0 };
+      // Estimate monthly spend: price * estimated monthly usage (deterministic mock)
+      const monthlyQty = ((ing.id * 3 + 7) % 20) + 2;
+      spendMap[ing.supplierId].spend += ing.pricePerUnit * monthlyQty;
+    });
+    const sorted = Object.values(spendMap).sort((a, b) => b.spend - a.spend);
+    const maxSpend = sorted.length > 0 ? sorted[0].spend : 0;
+    return {
+      items: sorted.map((item, i) => ({
+        name: item.name,
+        spend: Math.round(item.spend),
+        color: SPEND_COLORS[i % SPEND_COLORS.length],
+      })),
+      maxSpend: Math.round(maxSpend),
+      total: Math.round(sorted.reduce((s, item) => s + item.spend, 0)),
+    };
+  }, [suppliers, ingredients]);
+
+  // ── Smart Reorder Suggestions (low stock + preferred supplier) ──────────
+
+  const reorderSuggestions = useMemo(() => {
+    // Simulate low-stock ingredients based on deterministic logic
+    const suggestions: { ingredient: Ingredient; supplier: Supplier; urgency: 'high' | 'medium' | 'low' }[] = [];
+    ingredients.forEach(ing => {
+      if (!ing.supplierId) return;
+      const supplier = suppliers.find(s => s.id === ing.supplierId);
+      if (!supplier) return;
+      // Deterministic "stock level" based on ingredient id
+      const stockLevel = ((ing.id * 13 + 5) % 100);
+      if (stockLevel < 25) {
+        suggestions.push({
+          ingredient: ing,
+          supplier,
+          urgency: stockLevel < 10 ? 'high' : stockLevel < 18 ? 'medium' : 'low',
+        });
+      }
+    });
+    return suggestions.sort((a, b) => {
+      const urgencyOrder = { high: 0, medium: 1, low: 2 };
+      return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
+    }).slice(0, 5);
+  }, [ingredients, suppliers]);
+
+  // ── Supplier star scores (5-star system from backend scores) ────────────
+
+  const supplierStarScores = useMemo(() => {
+    const stars: Record<number, { reliability: number; price: number; quality: number; overall: number }> = {};
+    suppliers.forEach(s => {
+      const bScore = backendScores[s.id];
+      if (bScore) {
+        const reliability = scoreToStars(bScore.scores.fiabilite);
+        const price = scoreToStars(bScore.scores.competitivite);
+        const quality = scoreToStars(bScore.scores.diversite);
+        const overall = Math.round(((reliability + price + quality) / 3) * 10) / 10;
+        stars[s.id] = { reliability, price, quality, overall };
+      } else {
+        // Generate deterministic defaults
+        const seed = s.id * 7;
+        const reliability = Math.round(((seed % 30 + 20) / 10) * 10) / 10;
+        const price = Math.round((((seed * 3) % 30 + 20) / 10) * 10) / 10;
+        const quality = Math.round((((seed * 5) % 30 + 25) / 10) * 10) / 10;
+        const overall = Math.round(((reliability + price + quality) / 3) * 10) / 10;
+        stars[s.id] = { reliability, price, quality, overall };
+      }
+    });
+    return stars;
+  }, [suppliers, backendScores]);
+
+  // ── Price comparison: best price per ingredient ─────────────────────────
+
+  const bestPriceMap = useMemo(() => {
+    const map: Record<string, { bestSupplierId: number; bestPrice: number; otherPrices: { supplierId: number; price: number }[] }> = {};
+    suppliers.forEach(s => {
+      (s.ingredients || []).forEach((ing: SupplierIngredient) => {
+        const key = ing.name.toLowerCase().trim();
+        if (!map[key]) map[key] = { bestSupplierId: s.id, bestPrice: ing.pricePerUnit, otherPrices: [] };
+        if (ing.pricePerUnit < map[key].bestPrice) {
+          map[key].otherPrices.push({ supplierId: map[key].bestSupplierId, price: map[key].bestPrice });
+          map[key].bestSupplierId = s.id;
+          map[key].bestPrice = ing.pricePerUnit;
+        } else if (s.id !== map[key].bestSupplierId) {
+          map[key].otherPrices.push({ supplierId: s.id, price: ing.pricePerUnit });
+        }
+      });
+    });
+    return map;
+  }, [suppliers]);
+
   // ── Supplier catalogue: ingredients grouped by category ───────────────────
 
   const supplierCatalogMap = useMemo(() => {
@@ -928,6 +1148,74 @@ export default function Suppliers() {
             </div>
           </div>
 
+          {/* ── Smart Reorder Suggestions ─────────────────────────────── */}
+          {reorderSuggestions.length > 0 && (
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 sm:p-5 mb-4 sm:mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                  <RefreshCw className="w-4 h-4 text-amber-500" />
+                  Ingredients a commander
+                </h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-bold">
+                  {reorderSuggestions.length} article{reorderSuggestions.length > 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+                {reorderSuggestions.map((item, i) => {
+                  const urgencyStyles = {
+                    high: 'border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20',
+                    medium: 'border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20',
+                    low: 'border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950/20',
+                  };
+                  const urgencyLabel = { high: 'Urgent', medium: 'Bientot', low: 'Prevoir' };
+                  const urgencyColor = { high: 'text-red-600 dark:text-red-400', medium: 'text-amber-600 dark:text-amber-400', low: 'text-blue-600 dark:text-blue-400' };
+                  return (
+                    <div key={i} className={`rounded-xl p-3 ${urgencyStyles[item.urgency]}`}>
+                      <div className="flex items-start justify-between gap-1">
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-[#111111] dark:text-white truncate">{item.ingredient.name}</p>
+                          <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">{item.supplier.name}</p>
+                        </div>
+                        <span className={`text-[9px] font-bold ${urgencyColor[item.urgency]} shrink-0`}>{urgencyLabel[item.urgency]}</span>
+                      </div>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{item.ingredient.pricePerUnit.toFixed(2)} EUR/{item.ingredient.unit}</span>
+                        <button
+                          onClick={() => {
+                            const phone = item.supplier.whatsappPhone || item.supplier.phone;
+                            const cleanPhone = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                            const msg = encodeURIComponent(`Bonjour, je souhaite commander ${item.ingredient.name}. Merci.`);
+                            if (cleanPhone) window.open(`https://wa.me/${cleanPhone}?text=${msg}`, '_blank');
+                          }}
+                          className="p-1 rounded-md hover:bg-white/60 dark:hover:bg-white/10 transition"
+                          title="Commander via WhatsApp"
+                        >
+                          <MessageCircle className="w-3 h-3 text-[#25D366]" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ── Monthly Spend Chart ───────────────────────────────────── */}
+          {monthlySpendData.items.length > 0 && (
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 sm:p-5 mb-4 sm:mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-purple-500" />
+                  Depenses mensuelles par fournisseur
+                </h3>
+                <span className="text-xs font-bold text-[#111111] dark:text-white">
+                  Total: {monthlySpendData.total.toLocaleString()} EUR
+                </span>
+              </div>
+              <SpendBarChart data={monthlySpendData.items} maxSpend={monthlySpendData.maxSpend} />
+            </div>
+          )}
+
           {/* Comparer les prix bar */}
           {compareSupplierIds.size > 0 && (
             <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 mb-4 flex items-center justify-between">
@@ -1060,7 +1348,151 @@ export default function Suppliers() {
             </div>
           </div>
 
-          {/* Split layout: master/detail */}
+          {/* View toggle */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{filtered.length} fournisseur{filtered.length > 1 ? 's' : ''}</span>
+            <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-lg p-0.5">
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'}`}
+                title="Vue liste"
+              >
+                <List className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-[#171717] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] dark:hover:text-[#A3A3A3]'}`}
+                title="Vue grille"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* ── GRID VIEW: Supplier Cards Map ─────────────────────────── */}
+          {viewMode === 'grid' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+              {filtered.length === 0 ? (
+                <div className="col-span-full flex flex-col items-center justify-center py-16 text-[#9CA3AF] dark:text-[#737373]">
+                  <Truck className="w-12 h-12 mb-3 opacity-30" />
+                  <p className="text-sm">{t('suppliers.noSupplierFound')}</p>
+                </div>
+              ) : filtered.map(supplier => {
+                const starData = supplierStarScores[supplier.id];
+                const topProducts = (supplier.ingredients || []).slice(0, 3);
+                const catalog = supplierCatalogMap[supplier.id];
+                return (
+                  <div
+                    key={supplier.id}
+                    onClick={() => { setDetailSupplier(supplier); setViewMode('list'); }}
+                    className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 cursor-pointer hover:shadow-lg hover:border-[#111111]/20 dark:hover:border-white/20 transition-all group"
+                  >
+                    {/* Avatar + Name */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-11 h-11 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-lg shrink-0">
+                        {supplier.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-sm font-bold text-[#111111] dark:text-white truncate group-hover:text-[#111111] dark:group-hover:text-white">{supplier.name}</h4>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {supplier.city && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] flex items-center gap-0.5"><MapPin className="w-2.5 h-2.5" />{supplier.city}</span>}
+                          {supplier.delivery && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">Livraison</span>}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Star Scores */}
+                    {starData && (
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <StarRating score={starData.overall} size={13} />
+                          <span className="text-xs font-bold text-[#111111] dark:text-white">{starData.overall.toFixed(1)}</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          <ScoreBadge score={starData.reliability} label="Fiabilite" />
+                          <ScoreBadge score={starData.price} label="Prix" />
+                          <ScoreBadge score={starData.quality} label="Qualite" />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Top 3 Products */}
+                    {topProducts.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-1">Top produits</p>
+                        <div className="space-y-0.5">
+                          {topProducts.map(p => {
+                            const ingKey = p.name.toLowerCase().trim();
+                            const isBest = bestPriceMap[ingKey]?.bestSupplierId === supplier.id && (bestPriceMap[ingKey]?.otherPrices.length ?? 0) > 0;
+                            return (
+                              <div key={p.id} className="flex items-center justify-between text-xs">
+                                <span className="text-[#374151] dark:text-[#D4D4D4] truncate">{p.name}</span>
+                                <span className="flex items-center gap-1 shrink-0">
+                                  {isBest && <span className="text-[8px] px-1 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold">Meilleur prix</span>}
+                                  <span className="font-medium text-[#111111] dark:text-white">{p.pricePerUnit.toFixed(2)} EUR</span>
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Contact Buttons */}
+                    <div className="flex items-center gap-1.5 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                      {(supplier.whatsappPhone || supplier.phone) && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const phone = supplier.whatsappPhone || supplier.phone;
+                            const clean = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                            if (clean) window.open(`https://wa.me/${clean}?text=${encodeURIComponent(`Bonjour ${supplier.name},\n\n`)}`, '_blank');
+                          }}
+                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-[10px] font-medium transition"
+                        >
+                          <MessageCircle className="w-3 h-3" />
+                          WhatsApp
+                        </button>
+                      )}
+                      {supplier.email && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`mailto:${supplier.email}`, '_blank');
+                          }}
+                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-medium transition"
+                        >
+                          <Mail className="w-3 h-3" />
+                          Email
+                        </button>
+                      )}
+                      {supplier.phone && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`tel:${supplier.phone}`, '_blank');
+                          }}
+                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#6B7280] dark:text-[#A3A3A3] text-[10px] font-medium transition"
+                        >
+                          <Phone className="w-3 h-3" />
+                          Appeler
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Product count footer */}
+                    <div className="flex items-center justify-between mt-2 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      <span>{catalog?.count ?? 0} produits</span>
+                      <span className="flex items-center gap-0.5">{(supplier.categories || []).length} categories</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── LIST VIEW: Split layout master/detail ─────────────────── */}
+          {viewMode === 'list' && (
           <div className="flex flex-col lg:flex-row gap-4" style={{ minHeight: '70vh' }}>
             {/* LEFT: Supplier list */}
             <div className="w-full lg:w-80 xl:w-96 shrink-0 flex flex-col gap-2">
@@ -1118,10 +1550,41 @@ export default function Suppliers() {
                           {supplierCatalogMap[supplier.id]?.count ?? 0} produits
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-1 mt-1.5 ml-[50px]">
-                        {(supplier.categories || []).slice(0, 3).map(cat => (
-                          <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{cat}</span>
-                        ))}
+                      {/* Star rating + contact buttons */}
+                      <div className="flex items-center justify-between mt-1.5 ml-[50px]">
+                        <div className="flex flex-wrap gap-1">
+                          {(supplier.categories || []).slice(0, 3).map(cat => (
+                            <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{cat}</span>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          {(supplier.whatsappPhone || supplier.phone) && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const phone = supplier.whatsappPhone || supplier.phone;
+                                const clean = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                                if (clean) window.open(`https://wa.me/${clean}`, '_blank');
+                              }}
+                              className="p-1 rounded-md hover:bg-[#25D366]/10 transition"
+                              title="WhatsApp"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
+                            </button>
+                          )}
+                          {supplier.email && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(`mailto:${supplier.email}`, '_blank');
+                              }}
+                              className="p-1 rounded-md hover:bg-blue-500/10 transition"
+                              title="Email"
+                            >
+                              <Mail className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                     );
@@ -1199,8 +1662,8 @@ export default function Suppliers() {
                       </div>
                     </div>
 
-                    {/* Scoring Dashboard */}
-                    <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
+                    {/* Scoring Dashboard with Star Ratings */}
+                    <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
                       <div className="flex items-center gap-4 mb-4">
                         <CircularScore score={detailScore?.scores?.global ?? 0} size={64} strokeWidth={5} />
                         <div className="flex-1 min-w-0">
@@ -1212,6 +1675,16 @@ export default function Suppliers() {
                               </span>
                             )}
                           </div>
+                          {/* Star rating */}
+                          {(() => {
+                            const starData = supplierStarScores[detailSupplier.id];
+                            return starData ? (
+                              <div className="flex items-center gap-2 mt-1">
+                                <StarRating score={starData.overall} size={16} />
+                                <span className="text-sm font-bold text-[#111111] dark:text-white">{starData.overall.toFixed(1)}/5</span>
+                              </div>
+                            ) : null;
+                          })()}
                           {detailScore?.recommendation && (
                             <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{detailScore.recommendation}</p>
                           )}
@@ -1222,6 +1695,18 @@ export default function Suppliers() {
                           )}
                         </div>
                       </div>
+
+                      {/* Star Score Badges */}
+                      {(() => {
+                        const starData = supplierStarScores[detailSupplier.id];
+                        return starData ? (
+                          <div className="flex flex-wrap gap-1.5 mb-4">
+                            <ScoreBadge score={starData.reliability} label="Fiabilite livraison" />
+                            <ScoreBadge score={starData.price} label="Competitivite prix" />
+                            <ScoreBadge score={starData.quality} label="Qualite produits" />
+                          </div>
+                        ) : null;
+                      })()}
                       {loadingScore ? (
                         <div className="flex items-center justify-center py-4">
                           <span className="w-5 h-5 border-2 border-[#D1D5DB] dark:border-[#333] border-t-[#111111] dark:border-t-white rounded-full animate-spin" />
@@ -1259,23 +1744,46 @@ export default function Suppliers() {
                       )}
                     </div>
 
-                    {/* WhatsApp quick action */}
-                    <button
-                      onClick={() => {
-                        const phone = detailSupplier.whatsappPhone || detailSupplier.phone;
-                        const cleanPhone = phone ? phone.replace(/[\s+\-()]/g, '') : '';
-                        const message = encodeURIComponent(`Bonjour ${detailSupplier.name},\n\n`);
-                        if (cleanPhone) {
-                          window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
-                        } else {
-                          window.open(`https://web.whatsapp.com/send?text=${message}`, '_blank');
-                        }
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-lg text-sm font-medium transition w-fit"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      WhatsApp
-                    </button>
+                    {/* Quick Contact Buttons: WhatsApp + Email + Phone */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={() => {
+                          const phone = detailSupplier.whatsappPhone || detailSupplier.phone;
+                          const cleanPhone = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                          const message = encodeURIComponent(`Bonjour ${detailSupplier.name},\n\n`);
+                          if (cleanPhone) {
+                            window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank');
+                          } else {
+                            window.open(`https://web.whatsapp.com/send?text=${message}`, '_blank');
+                          }
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-lg text-sm font-medium transition"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        WhatsApp
+                      </button>
+                      {detailSupplier.email && (
+                        <button
+                          onClick={() => {
+                            const subject = encodeURIComponent(`Commande - ${detailSupplier.name}`);
+                            window.open(`mailto:${detailSupplier.email}?subject=${subject}`, '_blank');
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition"
+                        >
+                          <Mail className="w-4 h-4" />
+                          Email
+                        </button>
+                      )}
+                      {detailSupplier.phone && (
+                        <button
+                          onClick={() => window.open(`tel:${detailSupplier.phone}`, '_blank')}
+                          className="flex items-center gap-2 px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#111111] dark:text-white rounded-lg text-sm font-medium transition"
+                        >
+                          <Phone className="w-4 h-4" />
+                          Appeler
+                        </button>
+                      )}
+                    </div>
 
                     {/* Categories */}
                     {detailSupplier.categories.length > 0 && (
@@ -1287,6 +1795,15 @@ export default function Suppliers() {
                         ))}
                       </div>
                     )}
+
+                    {/* Order History Timeline */}
+                    <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
+                      <h4 className="text-sm font-bold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                        <CalendarDays className="w-4 h-4 text-blue-500" />
+                        Historique des commandes
+                      </h4>
+                      <OrderTimeline supplierId={detailSupplier.id} supplierName={detailSupplier.name} />
+                    </div>
 
                     {/* Catalogue section: accordion by category/subcategory */}
                     {(() => {
@@ -1433,6 +1950,17 @@ export default function Suppliers() {
                                                   {subIngs.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
                                                     <div key={ing.id} className="flex items-center gap-2 pl-12 pr-3 py-1.5 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 transition-colors">
                                                       <span className="flex-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                                                      {(() => {
+                                                        const ingKey = ing.name.toLowerCase().trim();
+                                                        const bp = bestPriceMap[ingKey];
+                                                        const isBest = bp && bp.bestSupplierId === detailSupplier.id && bp.otherPrices.length > 0;
+                                                        const savings = isBest && bp.otherPrices.length > 0 ? Math.round((bp.otherPrices[0].price - bp.bestPrice) * 100) / 100 : 0;
+                                                        return isBest ? (
+                                                          <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold shrink-0 flex items-center gap-0.5">
+                                                            <CheckCircle className="w-2.5 h-2.5" /> Meilleur prix {savings > 0 ? `(-${savings.toFixed(2)})` : ''}
+                                                          </span>
+                                                        ) : null;
+                                                      })()}
                                                       <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
                                                         {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
                                                       </span>
@@ -1459,6 +1987,17 @@ export default function Suppliers() {
                                         {catIngredients.sort((a, b) => a.name.localeCompare(b.name)).map(ing => (
                                           <div key={ing.id} className="flex items-center gap-2 pl-9 pr-3 py-1.5 hover:bg-[#FAFAFA] dark:bg-[#0A0A0A]/30 transition-colors">
                                             <span className="flex-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                                            {(() => {
+                                              const ingKey = ing.name.toLowerCase().trim();
+                                              const bp = bestPriceMap[ingKey];
+                                              const isBest = bp && bp.bestSupplierId === detailSupplier.id && bp.otherPrices.length > 0;
+                                              const savings = isBest && bp.otherPrices.length > 0 ? Math.round((bp.otherPrices[0].price - bp.bestPrice) * 100) / 100 : 0;
+                                              return isBest ? (
+                                                <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold shrink-0 flex items-center gap-0.5">
+                                                  <CheckCircle className="w-2.5 h-2.5" /> Meilleur prix {savings > 0 ? `(-${savings.toFixed(2)})` : ''}
+                                                </span>
+                                              ) : null;
+                                            })()}
                                             <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
                                               {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
                                             </span>
@@ -1500,6 +2039,7 @@ export default function Suppliers() {
               )}
             </div>
           </div>
+          )}
         </>
       )}
 

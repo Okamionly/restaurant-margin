@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows } from 'lucide-react';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
 import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -64,6 +64,269 @@ function convertToBaseUnit(quantity: number, inputUnit: string, priceUnit: strin
 function MarginBadge({ percent }: { percent: number }) {
   const color = percent >= 70 ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : percent >= 60 ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300';
   return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{percent.toFixed(1)}%</span>;
+}
+
+// ── Margin Alert Badge ──────────────────────────────────────────────────
+function MarginAlertBadge({ percent }: { percent: number }) {
+  if (percent < 0) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-600 text-white animate-pulse shadow-lg shadow-red-500/30">
+        <AlertTriangle className="w-3 h-3" /> PERTE
+      </span>
+    );
+  }
+  if (percent > 80) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-lg shadow-emerald-500/30">
+        <Star className="w-3 h-3" /> STAR
+      </span>
+    );
+  }
+  return null;
+}
+
+// ── Cost Breakdown Donut (pure CSS) ─────────────────────────────────────
+function CostDonut({ costPercent, marginPercent }: { costPercent: number; marginPercent: number }) {
+  const clampedCost = Math.max(0, Math.min(100, costPercent));
+  const clampedMargin = Math.max(0, 100 - clampedCost);
+  const costColor = clampedCost > 50 ? '#EF4444' : clampedCost > 30 ? '#F59E0B' : '#10B981';
+  const marginColor = clampedMargin >= 70 ? '#10B981' : clampedMargin >= 50 ? '#F59E0B' : '#EF4444';
+  const deg = (clampedCost / 100) * 360;
+
+  return (
+    <div className="relative" title={`Cout: ${clampedCost.toFixed(0)}% | Marge: ${clampedMargin.toFixed(0)}%`}>
+      <div
+        className="w-12 h-12 rounded-full"
+        style={{
+          background: `conic-gradient(${costColor} 0deg, ${costColor} ${deg}deg, ${marginColor} ${deg}deg, ${marginColor} 360deg)`,
+        }}
+      >
+        <div className="absolute inset-[3px] rounded-full bg-white dark:bg-[#0A0A0A] flex items-center justify-center">
+          <span className="text-[9px] font-bold text-[#111111] dark:text-white leading-none">{marginPercent.toFixed(0)}%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Margin Health Bar ───────────────────────────────────────────────────
+function MarginHealthBar({ recipes }: { recipes: Recipe[] }) {
+  if (recipes.length === 0) return null;
+  const good = recipes.filter(r => (r.margin?.marginPercent || 0) > 70).length;
+  const medium = recipes.filter(r => { const m = r.margin?.marginPercent || 0; return m >= 50 && m <= 70; }).length;
+  const bad = recipes.filter(r => (r.margin?.marginPercent || 0) < 50).length;
+  const total = recipes.length;
+  const goodPct = (good / total) * 100;
+  const mediumPct = (medium / total) * 100;
+  const badPct = (bad / total) * 100;
+
+  return (
+    <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 mb-4 sm:mb-6">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Scale className="w-4 h-4 text-[#111111] dark:text-white" />
+          <span className="text-sm font-semibold text-[#111111] dark:text-white">Sante du portefeuille</span>
+        </div>
+        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{total} recettes</span>
+      </div>
+      {/* Bar */}
+      <div className="w-full h-5 rounded-full overflow-hidden flex bg-[#F3F4F6] dark:bg-[#171717]">
+        {goodPct > 0 && (
+          <div
+            className="h-full bg-emerald-500 flex items-center justify-center transition-all duration-500"
+            style={{ width: `${goodPct}%` }}
+          >
+            {goodPct > 12 && <span className="text-[10px] font-bold text-white">{good}</span>}
+          </div>
+        )}
+        {mediumPct > 0 && (
+          <div
+            className="h-full bg-amber-500 flex items-center justify-center transition-all duration-500"
+            style={{ width: `${mediumPct}%` }}
+          >
+            {mediumPct > 12 && <span className="text-[10px] font-bold text-white">{medium}</span>}
+          </div>
+        )}
+        {badPct > 0 && (
+          <div
+            className="h-full bg-red-500 flex items-center justify-center transition-all duration-500"
+            style={{ width: `${badPct}%` }}
+          >
+            {badPct > 12 && <span className="text-[10px] font-bold text-white">{bad}</span>}
+          </div>
+        )}
+      </div>
+      {/* Legend */}
+      <div className="flex flex-wrap items-center gap-4 mt-2.5">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Bonne marge &gt;70% ({good})</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Moyenne 50-70% ({medium})</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Critique &lt;50% ({bad})</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Quick Price Simulator ───────────────────────────────────────────────
+function PriceSimulator({ recipe }: { recipe: Recipe }) {
+  const [simPrice, setSimPrice] = useState(recipe.sellingPrice);
+  const [open, setOpen] = useState(false);
+  const cost = recipe.margin?.costPerPortion || 0;
+  const simMargin = simPrice > 0 ? ((simPrice - cost) / simPrice) * 100 : 0;
+  const diff = simPrice - recipe.sellingPrice;
+
+  if (!open) {
+    return (
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+        className="flex items-center gap-1 text-[10px] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+        title="Simuler un nouveau prix"
+      >
+        <SlidersHorizontal className="w-3 h-3" /> Simuler prix
+      </button>
+    );
+  }
+
+  return (
+    <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2.5 mt-2 border border-[#E5E7EB] dark:border-[#1A1A1A] space-y-2" onClick={e => e.stopPropagation()}>
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase text-[#9CA3AF] dark:text-[#737373]">Simulateur de prix</span>
+        <button onClick={() => { setSimPrice(recipe.sellingPrice); setOpen(false); }} className="p-0.5 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+          <X className="w-3 h-3" />
+        </button>
+      </div>
+      <input
+        type="range"
+        min={Math.max(0, cost)}
+        max={Math.max(cost * 5, recipe.sellingPrice * 2)}
+        step="0.5"
+        value={simPrice}
+        onChange={(e) => setSimPrice(parseFloat(e.target.value))}
+        className="w-full h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-[#111111] dark:accent-white"
+      />
+      <div className="flex items-center justify-between text-xs">
+        <span className="font-mono text-[#111111] dark:text-white font-bold">{simPrice.toFixed(2)}{getCurrencySymbol()}</span>
+        {diff !== 0 && (
+          <span className={`font-mono text-[10px] ${diff > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+            {diff > 0 ? '+' : ''}{diff.toFixed(2)}
+          </span>
+        )}
+        <span className={`font-bold ${simMargin >= 70 ? 'text-emerald-500' : simMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
+          {simMargin.toFixed(1)}%
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ── Recipe Comparison Modal ─────────────────────────────────────────────
+function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]; onClose: () => void }) {
+  const [a, b] = recipes;
+
+  const getIngCost = (recipe: Recipe) => {
+    return recipe.ingredients.map(ri => {
+      const ing = ri.ingredient;
+      if (!ing) return { name: '?', cost: 0, qty: ri.quantity, unit: '' };
+      const inputUnit = ing.unit || 'kg';
+      const effectiveQty = ri.quantity * (1 + (ri.wastePercent || 0) / 100);
+      const convertedQty = effectiveQty / getUnitDivisor(inputUnit);
+      return { name: ing.name, cost: ing.pricePerUnit * convertedQty, qty: ri.quantity, unit: ing.unit };
+    });
+  };
+
+  const aIngs = getIngCost(a);
+  const bIngs = getIngCost(b);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2">
+            <GitCompareArrows className="w-5 h-5 text-[#111111] dark:text-white" />
+            <h3 className="text-lg font-bold text-[#111111] dark:text-white">Comparaison de recettes</h3>
+          </div>
+          <button onClick={onClose} className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-0 divide-x divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+          {/* Headers */}
+          {[a, b].map((r, i) => (
+            <div key={i} className="p-4">
+              <h4 className="font-bold text-[#111111] dark:text-white text-sm">{r.name}</h4>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{r.category}</span>
+            </div>
+          ))}
+
+          {/* Key Metrics */}
+          {[a, b].map((r, i) => (
+            <div key={`m-${i}`} className="px-4 pb-4 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Prix vente</div>
+                  <div className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
+                </div>
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Cout/portion</div>
+                  <div className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
+                </div>
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Marge</div>
+                  <div className={`text-sm font-bold ${r.margin.marginPercent >= 70 ? 'text-emerald-500' : r.margin.marginPercent >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
+                    {r.margin.marginPercent.toFixed(1)}%
+                  </div>
+                </div>
+                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Coefficient</div>
+                  <div className="text-sm font-bold font-mono text-[#111111] dark:text-white">x{r.margin.coefficient.toFixed(2)}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Ingredients */}
+          {[{ ings: aIngs, r: a }, { ings: bIngs, r: b }].map(({ ings, r }, i) => (
+            <div key={`ing-${i}`} className="px-4 pb-4">
+              <div className="text-[10px] font-semibold uppercase text-[#9CA3AF] dark:text-[#737373] mb-2">
+                Ingredients ({r.ingredients.length})
+              </div>
+              <div className="space-y-1">
+                {ings.map((ing, j) => (
+                  <div key={j} className="flex items-center justify-between text-xs">
+                    <span className="text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
+                    <span className="font-mono text-[#111111] dark:text-white">{ing.cost.toFixed(2)}{getCurrencySymbol()}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Winner */}
+        <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-b-2xl">
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <Trophy className="w-4 h-4 text-amber-500" />
+            <span className="text-[#6B7280] dark:text-[#A3A3A3]">Plus rentable :</span>
+            <span className="font-bold text-[#111111] dark:text-white">
+              {a.margin.marginPercent >= b.margin.marginPercent ? a.name : b.name}
+            </span>
+            <span className="text-emerald-500 font-bold">
+              ({Math.max(a.margin.marginPercent, b.margin.marginPercent).toFixed(1)}%)
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ── Category gradient colors for recipe photo placeholders ───────────────
@@ -441,6 +704,17 @@ export default function Recipes() {
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<number>>(new Set());
   const [bulkRecipeCategoryOpen, setBulkRecipeCategoryOpen] = useState(false);
 
+  // Sort for grid view
+  const [gridSort, setGridSort] = useState<'margin-asc' | 'margin-desc' | 'cost-desc' | 'cost-asc' | 'price-desc' | 'price-asc' | 'name-asc' | 'name-desc'>('margin-asc');
+
+  // Batch margin fixer
+  const [showBatchFixer, setShowBatchFixer] = useState(false);
+  const [batchTargetMargin, setBatchTargetMargin] = useState(70);
+
+  // Recipe comparison
+  const [compareIds, setCompareIds] = useState<number[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
+
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [variantTarget, setVariantTarget] = useState<Recipe | null>(null);
@@ -543,6 +817,55 @@ export default function Recipes() {
     });
     return sorted;
   }, [filtered, sortColumn, sortDirection, viewMode]);
+
+  // ── Grid sort logic ─────────────────────────────────────────────────
+  const gridSortedFiltered = useMemo(() => {
+    const sorted = [...filtered];
+    sorted.sort((a, b) => {
+      switch (gridSort) {
+        case 'margin-asc': return (a.margin?.marginPercent || 0) - (b.margin?.marginPercent || 0);
+        case 'margin-desc': return (b.margin?.marginPercent || 0) - (a.margin?.marginPercent || 0);
+        case 'cost-desc': return (b.margin?.costPerPortion || 0) - (a.margin?.costPerPortion || 0);
+        case 'cost-asc': return (a.margin?.costPerPortion || 0) - (b.margin?.costPerPortion || 0);
+        case 'price-desc': return b.sellingPrice - a.sellingPrice;
+        case 'price-asc': return a.sellingPrice - b.sellingPrice;
+        case 'name-asc': return a.name.localeCompare(b.name);
+        case 'name-desc': return b.name.localeCompare(a.name);
+        default: return 0;
+      }
+    });
+    return sorted;
+  }, [filtered, gridSort]);
+
+  // ── Comparison helpers ─────────────────────────────────────────────
+  function toggleCompare(id: number) {
+    setCompareIds(prev => {
+      if (prev.includes(id)) return prev.filter(x => x !== id);
+      if (prev.length >= 2) return [prev[1], id];
+      return [...prev, id];
+    });
+  }
+
+  // ── Batch margin fixer: compute optimal prices ─────────────────────
+  const batchFixerResults = useMemo(() => {
+    if (!showBatchFixer) return [];
+    const ids = Array.from(selectedRecipeIds);
+    return ids.map(id => {
+      const recipe = recipes.find(r => r.id === id);
+      if (!recipe) return null;
+      const cost = recipe.margin?.costPerPortion || 0;
+      const targetPrice = cost / (1 - batchTargetMargin / 100);
+      const currentMargin = recipe.margin?.marginPercent || 0;
+      return {
+        id: recipe.id,
+        name: recipe.name,
+        currentPrice: recipe.sellingPrice,
+        currentMargin,
+        suggestedPrice: Math.ceil(targetPrice * 2) / 2, // round to nearest 0.50
+        cost,
+      };
+    }).filter(Boolean) as { id: number; name: string; currentPrice: number; currentMargin: number; suggestedPrice: number; cost: number }[];
+  }, [showBatchFixer, selectedRecipeIds, recipes, batchTargetMargin]);
 
   // ── Bulk selection helpers (recipes) ────────────────────────────────
   function toggleSelectRecipe(id: number) {
@@ -1040,6 +1363,9 @@ export default function Recipes() {
         </div>
       )}
 
+      {/* ── Margin Health Bar ─────────────────────────────────────────── */}
+      {recipes.length > 0 && <MarginHealthBar recipes={recipes} />}
+
       {/* ── Tabs: Mes recettes / Templates ──────────────────────────────── */}
       <div className="flex items-center gap-1 mb-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
         <button
@@ -1060,7 +1386,7 @@ export default function Recipes() {
 
       {activeTab === 'recipes' ? (
       <>
-      {/* ── Search bar + View toggle ───────────────────────────────────── */}
+      {/* ── Search bar + Sort + View toggle ─────────────────────────────── */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="relative flex-1 sm:max-w-md">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
@@ -1072,6 +1398,50 @@ export default function Recipes() {
             className="input pl-10 w-full"
           />
         </div>
+
+        {/* Sort dropdown for grid view */}
+        {viewMode === 'grid' && (
+          <div className="flex items-center gap-1.5">
+            <ArrowUpDown className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+            <select
+              value={gridSort}
+              onChange={(e) => setGridSort(e.target.value as typeof gridSort)}
+              className="input text-xs py-1.5 pr-8"
+            >
+              <option value="margin-asc">Marge (pire d'abord)</option>
+              <option value="margin-desc">Marge (meilleure d'abord)</option>
+              <option value="cost-desc">Cout (plus cher d'abord)</option>
+              <option value="cost-asc">Cout (moins cher d'abord)</option>
+              <option value="price-desc">Prix vente (decroissant)</option>
+              <option value="price-asc">Prix vente (croissant)</option>
+              <option value="name-asc">Nom (A-Z)</option>
+              <option value="name-desc">Nom (Z-A)</option>
+            </select>
+          </div>
+        )}
+
+        {/* Compare mode toggle */}
+        {compareIds.length > 0 && (
+          <button
+            onClick={() => {
+              if (compareIds.length === 2) {
+                setShowComparison(true);
+              }
+            }}
+            disabled={compareIds.length < 2}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${compareIds.length === 2 ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'}`}
+          >
+            <GitCompareArrows className="w-3.5 h-3.5" />
+            Comparer ({compareIds.length}/2)
+            <button
+              onClick={(e) => { e.stopPropagation(); setCompareIds([]); }}
+              className="ml-1 p-0.5 hover:bg-white/20 rounded"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </button>
+        )}
+
         <div className="flex items-center gap-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-1">
           <button
             onClick={() => setViewMode('grid')}
@@ -1197,19 +1567,21 @@ export default function Recipes() {
           </table>
         </div>
       ) : (
-      /* ── Grid View (existing cards) ────────────────────────────────── */
+      /* ── Grid View (enhanced cards) ──────────────────────────────────── */
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.length === 0 ? (
+        {gridSortedFiltered.length === 0 ? (
           <p className="text-[#9CA3AF] dark:text-[#737373] col-span-full text-center py-8">
             {recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}
           </p>
         ) : (
-          filtered.map((recipe) => {
+          gridSortedFiltered.map((recipe) => {
             const allergens = getRecipeAllergens(recipe);
+            const costPct = recipe.sellingPrice > 0 ? (recipe.margin.costPerPortion / recipe.sellingPrice) * 100 : 100;
+            const isComparing = compareIds.includes(recipe.id);
             return (
-            <div key={recipe.id} className={`bg-white dark:bg-[#0A0A0A] rounded-lg shadow hover:shadow-lg sm:hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}>
+            <div key={recipe.id} className={`bg-white dark:bg-[#0A0A0A] rounded-2xl shadow hover:shadow-lg sm:hover:-translate-y-1 transition-all duration-200 overflow-hidden group relative ${selectedRecipeIds.has(recipe.id) ? 'ring-2 ring-[#111111] dark:ring-white' : ''} ${isComparing ? 'ring-2 ring-blue-500' : ''}`}>
               {/* Bulk select checkbox */}
-              <div className="absolute top-2 left-2 z-10">
+              <div className="absolute top-2 left-2 z-10 flex items-center gap-1.5">
                 <input
                   type="checkbox"
                   checked={selectedRecipeIds.has(recipe.id)}
@@ -1219,17 +1591,38 @@ export default function Recipes() {
                   aria-label={`Selectionner ${recipe.name}`}
                 />
               </div>
+
+              {/* Compare toggle button */}
+              <button
+                onClick={() => toggleCompare(recipe.id)}
+                className={`absolute top-2 right-2 z-10 p-1.5 rounded-lg transition-all ${isComparing ? 'bg-blue-500 text-white shadow-lg' : 'bg-black/30 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50'}`}
+                title={isComparing ? 'Retirer de la comparaison' : 'Ajouter a la comparaison'}
+              >
+                <GitCompareArrows className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Margin Alert Badge */}
+              {(recipe.margin.marginPercent < 0 || recipe.margin.marginPercent > 80) && (
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
+                  <MarginAlertBadge percent={recipe.margin.marginPercent} />
+                </div>
+              )}
+
               {/* Photo placeholder */}
               <RecipePhotoPlaceholder category={recipe.category} />
 
               <div className="p-4">
-                {/* Header: name + category + margin */}
+                {/* Header: name + category + donut */}
                 <div className="flex justify-between items-start mb-3">
-                  <div>
+                  <div className="flex-1 min-w-0 mr-2">
                     <h3 className="font-semibold text-lg text-[#111111] dark:text-white leading-tight">{recipe.name}</h3>
-                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{recipe.category}</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{recipe.category}</span>
+                      <MarginBadge percent={recipe.margin.marginPercent} />
+                    </div>
                   </div>
-                  <MarginBadge percent={recipe.margin.marginPercent} />
+                  {/* Cost Breakdown Donut */}
+                  <CostDonut costPercent={costPct} marginPercent={recipe.margin.marginPercent} />
                 </div>
 
                 {/* Key stats row */}
@@ -1252,7 +1645,7 @@ export default function Recipes() {
 
                 {/* Coefficient info */}
                 <div className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] font-mono mb-2">
-                  Coeff. ×{recipe.margin.coefficient.toFixed(2)} (obj. ×{getCoefficient(recipe.category, coefficients).toFixed(1)} {recipe.category})
+                  Coeff. x{recipe.margin.coefficient.toFixed(2)} (obj. x{getCoefficient(recipe.category, coefficients).toFixed(1)} {recipe.category})
                 </div>
 
                 {/* Allergen icons row */}
@@ -1264,8 +1657,11 @@ export default function Recipes() {
                   </div>
                 )}
 
+                {/* Quick Price Simulator */}
+                <PriceSimulator recipe={recipe} />
+
                 {/* Actions */}
-                <div className="flex gap-2 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex gap-2 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-2">
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
@@ -1295,6 +1691,15 @@ export default function Recipes() {
             {selectedRecipeIds.size} selectionne{selectedRecipeIds.size > 1 ? 's' : ''}
           </span>
           <div className="w-px h-6 bg-white/20 dark:bg-black/20" />
+
+          {/* Batch margin fixer */}
+          <button
+            onClick={() => setShowBatchFixer(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+          >
+            <Zap className="w-4 h-4" />
+            Optimiser les prix
+          </button>
 
           {/* Bulk delete */}
           <button
@@ -1993,6 +2398,142 @@ export default function Recipes() {
           </div>
         </form>
       </Modal>
+
+      {/* ── Batch Margin Fixer Modal ──────────────────────────────────── */}
+      {showBatchFixer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowBatchFixer(false)}>
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-emerald-500" />
+                <h3 className="text-lg font-bold text-[#111111] dark:text-white">Optimiser les prix</h3>
+              </div>
+              <button onClick={() => setShowBatchFixer(false)} className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              {/* Target margin slider */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-[#111111] dark:text-white">Marge cible</label>
+                  <span className="text-lg font-bold text-emerald-500">{batchTargetMargin}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={30}
+                  max={90}
+                  step={5}
+                  value={batchTargetMargin}
+                  onChange={(e) => setBatchTargetMargin(parseInt(e.target.value))}
+                  className="w-full h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                />
+                <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+                  <span>30%</span>
+                  <span>60%</span>
+                  <span>90%</span>
+                </div>
+              </div>
+
+              {/* Results table */}
+              <div className="space-y-2">
+                {batchFixerResults.map((r) => {
+                  const priceDiff = r.suggestedPrice - r.currentPrice;
+                  const needsChange = Math.abs(priceDiff) > 0.01;
+                  return (
+                    <div key={r.id} className={`rounded-xl p-3 border ${needsChange ? 'border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/10' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-[#111111] dark:text-white truncate">{r.name}</span>
+                        <span className={`text-xs font-bold ${r.currentMargin >= batchTargetMargin ? 'text-emerald-500' : 'text-red-500'}`}>
+                          {r.currentMargin.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                        <span>Cout: {r.cost.toFixed(2)}{getCurrencySymbol()}</span>
+                        <span className="text-[#9CA3AF] dark:text-[#737373]">|</span>
+                        <span>Actuel: {r.currentPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                        {needsChange && (
+                          <>
+                            <span className="text-[#111111] dark:text-white font-bold">
+                              &rarr; {r.suggestedPrice.toFixed(2)}{getCurrencySymbol()}
+                            </span>
+                            <span className={`font-mono text-[10px] ${priceDiff > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
+                              ({priceDiff > 0 ? '+' : ''}{priceDiff.toFixed(2)})
+                            </span>
+                          </>
+                        )}
+                        {!needsChange && (
+                          <span className="text-emerald-500 font-medium flex items-center gap-1">
+                            <Check className="w-3 h-3" /> OK
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Apply button */}
+              <div className="flex items-center justify-between pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  {batchFixerResults.filter(r => Math.abs(r.suggestedPrice - r.currentPrice) > 0.01).length} recette(s) a ajuster
+                </span>
+                <button
+                  onClick={async () => {
+                    const toUpdate = batchFixerResults.filter(r => Math.abs(r.suggestedPrice - r.currentPrice) > 0.01);
+                    try {
+                      for (const r of toUpdate) {
+                        const recipe = recipes.find(rec => rec.id === r.id);
+                        if (recipe) {
+                          await updateRecipe(r.id, {
+                            name: recipe.name,
+                            category: recipe.category,
+                            sellingPrice: r.suggestedPrice,
+                            nbPortions: recipe.nbPortions,
+                            description: recipe.description || undefined,
+                            prepTimeMinutes: recipe.prepTimeMinutes ?? undefined,
+                            cookTimeMinutes: recipe.cookTimeMinutes ?? undefined,
+                            laborCostPerHour: recipe.laborCostPerHour ?? undefined,
+                            ingredients: recipe.ingredients.map(ri => ({
+                              ingredientId: ri.ingredientId,
+                              quantity: ri.quantity,
+                              wastePercent: ri.wastePercent,
+                            })),
+                          });
+                        }
+                      }
+                      showToast(`${toUpdate.length} prix mis a jour`, 'success');
+                      setShowBatchFixer(false);
+                      setSelectedRecipeIds(new Set());
+                      loadData();
+                    } catch {
+                      showToast('Erreur lors de la mise a jour des prix', 'error');
+                    }
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg transition-colors"
+                >
+                  <Zap className="w-4 h-4" />
+                  Appliquer les prix
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Recipe Comparison Panel ────────────────────────────────────── */}
+      {showComparison && compareIds.length === 2 && (() => {
+        const recA = recipes.find(r => r.id === compareIds[0]);
+        const recB = recipes.find(r => r.id === compareIds[1]);
+        if (!recA || !recB) return null;
+        return (
+          <RecipeComparisonPanel
+            recipes={[recA, recB]}
+            onClose={() => { setShowComparison(false); setCompareIds([]); }}
+          />
+        );
+      })()}
 
       {/* Delete Confirm */}
       <ConfirmDialog

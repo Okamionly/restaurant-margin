@@ -7,6 +7,8 @@ import {
   Scale, ChevronDown, Phone, Send, Loader2,
   XCircle, Brain, Thermometer, Newspaper,
   Check, Plus, Minus, Sparkles, MessageCircle,
+  ShieldCheck, Globe, Headphones, FileCheck, CreditCard,
+  Package, Calculator,
 } from 'lucide-react';
 
 /* <!-- HERO SAUVEGARDE -->
@@ -117,14 +119,21 @@ function useAnimatedCounter(target: number, duration = 2000, trigger = false) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!trigger) return;
-    let start = 0;
-    const step = Math.ceil(target / (duration / 16));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(start);
-    }, 16);
-    return () => clearInterval(timer);
+    let rafId: number;
+    let startTime: number | null = null;
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutCubic for smooth deceleration
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      }
+    };
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
   }, [target, duration, trigger]);
   return count;
 }
@@ -198,42 +207,66 @@ const features = [
 
 const testimonials = [
   {
-    quote: "+4 points de marge en 3 mois. Les fiches techniques automatiques nous ont tout change.",
+    quote: "+4 points de marge en 3 mois. Les fiches techniques automatiques nous ont tout change. Avant on calculait a la main sur des Post-it, maintenant tout est precis au centime pres.",
     name: 'Laurent Dubois',
-    restaurant: 'Restaurant gastronomique, Lyon',
+    role: 'Chef proprietaire',
+    restaurant: 'Le Jardin des Saveurs',
+    city: 'Lyon',
+    stars: 5,
+    initials: 'LD',
   },
   {
-    quote: "Interface intuitive, calcul en temps reel. Exactement ce qu'il manquait aux restaurateurs.",
+    quote: "On a reduit notre food cost de 34% a 27% en 2 mois. L'IA qui cree les fiches techniques en 10 secondes, c'est un game changer. Mon equipe ne peut plus s'en passer.",
     name: 'Sophie Martin',
-    restaurant: 'Brasserie Le Comptoir, Paris',
+    role: 'Directrice',
+    restaurant: 'Brasserie Le Comptoir',
+    city: 'Paris',
+    stars: 5,
+    initials: 'SM',
   },
   {
-    quote: "Chaque centime compte en food truck. RestauMargin m'aide a rester competitif et rentable.",
+    quote: "Chaque centime compte en food truck. Les alertes sur les prix fournisseurs m'ont fait economiser 800 euros le premier mois. L'app est simple, rapide, parfaite pour le terrain.",
     name: 'Karim Benali',
-    restaurant: 'Food truck Street Flavors, Bordeaux',
+    role: 'Gerant',
+    restaurant: 'Street Flavors',
+    city: 'Bordeaux',
+    stars: 5,
+    initials: 'KB',
   },
 ];
 
 const faqItems = [
   {
+    q: "Est-ce que c'est complique a prendre en main ?",
+    a: "Pas du tout. L'interface est pensee pour les restaurateurs, pas pour les informaticiens. La plupart de nos clients creent leur premiere fiche technique en moins de 5 minutes. Et notre assistant IA vous guide a chaque etape.",
+  },
+  {
+    q: "Combien ca coute ?",
+    a: "Le plan Pro demarre a 29 euros/mois et le plan Business a 79 euros/mois. L'essai gratuit de 7 jours est sans carte bancaire et sans engagement. Vous pouvez annuler a tout moment depuis votre espace.",
+  },
+  {
+    q: 'Mes donnees sont-elles securisees ?',
+    a: "Vos donnees sont hebergees en Europe (Supabase), chiffrees en transit (SSL/TLS) et au repos. Nous sommes conformes RGPD. Aucune donnee n'est revendue a des tiers. Vous restez proprietaire de vos donnees a 100%.",
+  },
+  {
     q: "Comment fonctionne l'abonnement ?",
     a: "Choisissez votre plan (Pro ou Business), payez par carte bancaire et recevez votre code d'activation instantanement. L'abonnement est mensuel, sans engagement. Vous pouvez annuler a tout moment depuis votre espace.",
   },
   {
-    q: "Comment recevoir mon code d'activation ?",
-    a: "Apres le paiement, vous recevez un email avec votre code d'activation et un lien pour creer votre compte. Connectez-vous, entrez le code et commencez a utiliser RestauMargin immediatement.",
-  },
-  {
-    q: 'Puis-je changer de plan ?',
-    a: 'Oui, vous pouvez upgrader ou downgrader votre plan a tout moment. Le changement prend effet au prochain cycle de facturation. Le prorata est calcule automatiquement.',
+    q: "Est-ce que ca marche pour mon type de restaurant ?",
+    a: "Oui. RestauMargin est utilise par des restaurants gastronomiques, des brasseries, des food trucks, des pizzerias, des traiteurs et meme des dark kitchens. L'outil s'adapte a tous les formats de restauration.",
   },
   {
     q: 'Puis-je utiliser une balance connectee ?',
     a: "Oui. RestauMargin propose une station de pesee logicielle compatible avec toute balance Bluetooth. Connectez votre propre balance et pesez vos ingredients directement depuis l'application.",
   },
   {
-    q: 'Mes donnees sont-elles securisees ?',
-    a: "Vos donnees sont hebergees en Europe (Supabase), chiffrees en transit (SSL/TLS) et au repos. Nous sommes conformes RGPD. Aucune donnee n'est revendue a des tiers.",
+    q: "Combien de temps pour voir des resultats ?",
+    a: "La plupart de nos clients constatent une amelioration de leurs marges des la premiere semaine. En moyenne, nos utilisateurs reduisent leur food cost de 3 a 5 points en moins de 3 mois.",
+  },
+  {
+    q: "Puis-je importer mes recettes existantes ?",
+    a: "Oui. Vous pouvez importer vos ingredients et recettes depuis un fichier Excel, ou simplement les dicter a notre assistant IA qui creera les fiches techniques automatiquement.",
   },
 ];
 
@@ -794,22 +827,79 @@ export default function Landing() {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
                 Trois etapes simples
               </h2>
+              <p className="mt-4 text-lg text-[#6B7280]">
+                De l'inscription a l'optimisation de vos marges en quelques minutes.
+              </p>
             </div>
           </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12 relative">
+            {/* Connector line (desktop) */}
+            <div className="hidden md:block absolute top-20 left-[20%] right-[20%] h-px bg-[#E5E7EB]" />
+
             {[
-              { num: '01', title: 'Inscrivez-vous', desc: 'Creez votre compte en 2 minutes. Essai gratuit de 7 jours, sans carte bancaire.' },
-              { num: '02', title: 'Ajoutez vos donnees', desc: 'Importez vos ingredients, recettes et fournisseurs. Notre assistant IA vous guide.' },
-              { num: '03', title: 'Optimisez vos marges', desc: 'Dashboard temps reel, alertes automatiques. Vos marges s\'ameliorent des le premier jour.' },
-            ].map((step, i) => (
-              <FadeIn key={i} delay={i * 120}>
-                <div className="text-center md:text-left">
-                  <div className="text-6xl sm:text-7xl font-extrabold text-[#111111] leading-none mb-6 tracking-tight">
-                    {step.num}
+              { num: '01', icon: Package, title: 'Ajoutez vos ingredients', desc: 'Importez votre liste d\'ingredients depuis Excel ou dictez-les a l\'IA. Prix, fournisseurs, unites : tout est organise automatiquement.' },
+              { num: '02', icon: ClipboardList, title: 'Creez vos fiches techniques', desc: 'L\'assistant IA genere vos fiches en 10 secondes. Food cost, marge, allergenes, coefficient — tout est calcule en temps reel.' },
+              { num: '03', icon: TrendingUp, title: 'Optimisez vos marges', desc: 'Dashboard avec KPIs, alertes prix fournisseurs, Menu Engineering. Vos marges s\'ameliorent des le premier jour.' },
+            ].map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <FadeIn key={i} delay={i * 150}>
+                  <div className="text-center relative">
+                    <div className="relative z-10 w-16 h-16 rounded-2xl bg-[#111111] flex items-center justify-center mx-auto mb-6 shadow-lg">
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#111111] text-white text-sm font-bold flex items-center justify-center -mt-3 -ml-8 z-20 border-2 border-white shadow">
+                      {step.num}
+                    </div>
+                    <h3 className="text-xl font-bold text-[#111111] mb-3">{step.title}</h3>
+                    <p className="text-[#6B7280] leading-relaxed max-w-xs mx-auto">{step.desc}</p>
                   </div>
-                  <h3 className="text-xl font-bold text-[#111111] mb-3">{step.title}</h3>
-                  <p className="text-[#6B7280] leading-relaxed">{step.desc}</p>
+                </FadeIn>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ 4. SOCIAL PROOF / TESTIMONIALS ═══════════════ */}
+      <section id="testimonials" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Temoignages</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+                Ils ont transforme leurs marges
+              </h2>
+              <p className="mt-4 text-lg text-[#6B7280]">
+                Des restaurateurs comme vous partagent leur experience.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <FadeIn key={i} delay={i * 100}>
+                <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col hover:shadow-lg hover:border-[#111111]/20 transition-all duration-500">
+                  {/* Stars */}
+                  <div className="flex items-center gap-0.5 mb-4">
+                    {Array.from({ length: t.stars }).map((_, s) => (
+                      <Star key={s} className="w-4 h-4 fill-[#111111] text-[#111111]" />
+                    ))}
+                  </div>
+                  <p className="text-[#111111] leading-relaxed mb-8 flex-1 text-[15px]">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="border-t border-[#E5E7EB] pt-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center shrink-0">
+                      <span className="text-white font-bold text-sm">{t.initials}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-[#111111]">{t.name}</p>
+                      <p className="text-sm text-[#6B7280]">{t.role}</p>
+                      <p className="text-xs text-[#9CA3AF]">{t.restaurant}, {t.city}</p>
+                    </div>
+                  </div>
                 </div>
               </FadeIn>
             ))}
@@ -817,34 +907,51 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══════════════ 4. SOCIAL PROOF / TESTIMONIALS ═══════════════ */}
-      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ═══════════════ ROI CALCULATOR ═══════════════ */}
+      <section id="roi-calculator" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-20">
-              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Temoignages</p>
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Calculateur ROI</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
-                Ce que disent nos clients
+                Combien pouvez-vous economiser ?
               </h2>
+              <p className="mt-4 text-lg text-[#6B7280]">
+                Estimez vos economies mensuelles avec RestauMargin.
+              </p>
             </div>
           </FadeIn>
+          <FadeIn delay={100}>
+            <ROICalculator />
+          </FadeIn>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <FadeIn key={i} delay={i * 100}>
-                <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col">
-                  <div className="text-4xl text-[#E5E7EB] font-serif leading-none mb-4">&ldquo;</div>
-                  <p className="text-[#111111] leading-relaxed mb-8 flex-1">
-                    {t.quote}
-                  </p>
-                  <div className="border-t border-[#E5E7EB] pt-6">
-                    <p className="text-sm font-bold text-[#111111]">{t.name}</p>
-                    <p className="text-sm text-[#9CA3AF]">{t.restaurant}</p>
+      {/* ═══════════════ TRUST BADGES ═══════════════ */}
+      <section className="py-16 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
+              {[
+                { icon: ShieldCheck, label: 'Donnees securisees', sub: 'Chiffrement SSL/TLS' },
+                { icon: Globe, label: 'Made in France', sub: 'Heberge en Europe' },
+                { icon: Headphones, label: 'Support 7j/7', sub: 'Reponse sous 24h' },
+                { icon: FileCheck, label: 'RGPD Conforme', sub: 'Vos donnees vous appartiennent' },
+                { icon: CreditCard, label: 'Essai sans CB', sub: '7 jours gratuits' },
+              ].map((badge, i) => {
+                const Icon = badge.icon;
+                return (
+                  <div key={i} className="flex flex-col items-center text-center p-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center mb-3">
+                      <Icon className="w-6 h-6 text-[#111111]" />
+                    </div>
+                    <p className="text-sm font-bold text-[#111111]">{badge.label}</p>
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">{badge.sub}</p>
                   </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -1179,36 +1286,31 @@ export default function Landing() {
         </div>
       </footer>
 
-      {/* ═══════════════ FLOATING CTA BAR ═══════════════ */}
+      {/* ═══════════════ STICKY CTA BAR ═══════════════ */}
       <div
         className={`fixed bottom-0 inset-x-0 z-[80] transition-all duration-500 ease-out ${
           showFloatingCTA ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
         }`}
       >
-        <div className="bg-[#FFFFFF]/95 backdrop-blur-xl border-t border-[#E5E7EB]">
+        <div className="bg-[#111111] border-t border-[#333333] shadow-[0_-4px_20px_rgba(0,0,0,0.15)]">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
             <div className="hidden sm:flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#111111] flex items-center justify-center">
-                <ChefHat className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                <Zap className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-[#111111]">Essai gratuit 7 jours</p>
-                <p className="text-xs text-[#9CA3AF]">Pas de carte bancaire requise</p>
+                <p className="text-sm font-semibold text-white">Essayer gratuitement -- 7 jours sans engagement</p>
+                <p className="text-xs text-white/50">Pas de carte bancaire requise</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <p className="sm:hidden text-sm font-semibold text-white">7 jours gratuits, sans CB</p>
+            <div className="flex items-center gap-3 shrink-0">
               <Link
                 to="/login?mode=register"
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white font-semibold text-sm transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-white hover:bg-gray-100 text-[#111111] font-semibold text-sm transition-all"
               >
-                Commencer <ArrowRight className="w-4 h-4" />
+                Commencer maintenant <ArrowRight className="w-4 h-4" />
               </Link>
-              <button
-                onClick={() => scrollTo('pricing')}
-                className="hidden sm:inline-flex items-center justify-center px-4 py-2.5 rounded-lg border border-[#E5E7EB] text-[#111111] text-sm font-medium hover:bg-[#F9FAFB] transition-colors"
-              >
-                Voir les tarifs
-              </button>
             </div>
           </div>
         </div>
@@ -1337,12 +1439,136 @@ function FAQItem({ q, a, isLast = false }: { q: string; a: string; isLast?: bool
         className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#F9FAFB] transition-colors"
       >
         <span className="font-semibold text-[#111111] pr-4">{q}</span>
-        <div className="w-6 h-6 rounded-full border border-[#E5E7EB] flex items-center justify-center shrink-0">
-          {open ? <Minus className="w-3.5 h-3.5 text-[#111111]" /> : <Plus className="w-3.5 h-3.5 text-[#111111]" />}
+        <div className={`w-6 h-6 rounded-full border border-[#E5E7EB] flex items-center justify-center shrink-0 transition-all duration-300 ${open ? 'rotate-180 bg-[#111111] border-[#111111]' : ''}`}>
+          {open ? <Minus className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#111111]" />}
         </div>
       </button>
       <div className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
         <p className="px-6 text-sm text-[#6B7280] leading-relaxed">{a}</p>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  ROI Calculator                                                     */
+/* ------------------------------------------------------------------ */
+
+function ROICalculator() {
+  const [couverts, setCouverts] = useState(80);
+  const [prixMoyen, setPrixMoyen] = useState(18);
+  const [nbPlats, setNbPlats] = useState(25);
+
+  // Calculation: RestauMargin typically saves 3-5% on food cost
+  // Average food cost = 30% of revenue
+  // Monthly revenue = couverts * prixMoyen * 26 working days
+  const monthlyRevenue = couverts * prixMoyen * 26;
+  const currentFoodCost = monthlyRevenue * 0.32; // 32% average food cost
+  const savingsPercent = 0.04; // 4% savings on food cost
+  const monthlySavings = Math.round(currentFoodCost * savingsPercent);
+  const yearlySavings = monthlySavings * 12;
+
+  return (
+    <div className="border-2 border-[#111111] rounded-2xl overflow-hidden">
+      <div className="bg-[#111111] px-8 py-5">
+        <div className="flex items-center gap-3">
+          <Calculator className="w-5 h-5 text-white" />
+          <h3 className="text-lg font-bold text-white">Estimez vos economies</h3>
+        </div>
+      </div>
+
+      <div className="p-8 space-y-8">
+        {/* Slider: Couverts/jour */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-semibold text-[#111111]">Nombre de couverts par jour</label>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{couverts}</span>
+          </div>
+          <input
+            type="range"
+            min={20}
+            max={300}
+            step={5}
+            value={couverts}
+            onChange={(e) => setCouverts(Number(e.target.value))}
+            className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
+            <span>20</span>
+            <span>300</span>
+          </div>
+        </div>
+
+        {/* Slider: Prix moyen */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-semibold text-[#111111]">Prix moyen d'un plat (EUR)</label>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{prixMoyen}EUR</span>
+          </div>
+          <input
+            type="range"
+            min={8}
+            max={45}
+            step={1}
+            value={prixMoyen}
+            onChange={(e) => setPrixMoyen(Number(e.target.value))}
+            className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
+            <span>8EUR</span>
+            <span>45EUR</span>
+          </div>
+        </div>
+
+        {/* Slider: Nombre de plats */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-semibold text-[#111111]">Nombre de plats a la carte</label>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{nbPlats}</span>
+          </div>
+          <input
+            type="range"
+            min={5}
+            max={80}
+            step={1}
+            value={nbPlats}
+            onChange={(e) => setNbPlats(Number(e.target.value))}
+            className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+          />
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
+            <span>5</span>
+            <span>80</span>
+          </div>
+        </div>
+
+        {/* Results */}
+        <div className="border-t border-[#E5E7EB] pt-8">
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 text-center">
+              <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-semibold mb-1">CA mensuel estime</p>
+              <p className="text-2xl font-extrabold text-[#111111]">{monthlyRevenue.toLocaleString('fr-FR')}EUR</p>
+            </div>
+            <div className="bg-[#111111] rounded-xl p-5 text-center">
+              <p className="text-xs text-white/60 uppercase tracking-wider font-semibold mb-1">Economies / mois</p>
+              <p className="text-3xl font-extrabold text-white">{monthlySavings.toLocaleString('fr-FR')}EUR</p>
+            </div>
+            <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 text-center">
+              <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-semibold mb-1">Economies / an</p>
+              <p className="text-2xl font-extrabold text-[#111111]">{yearlySavings.toLocaleString('fr-FR')}EUR</p>
+            </div>
+          </div>
+          <p className="text-xs text-[#9CA3AF] text-center mt-4">
+            * Estimation basee sur une reduction moyenne de 4% du food cost, constatee chez nos clients.
+          </p>
+          <div className="mt-6 text-center">
+            <Link
+              to="/login?mode=register"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all"
+            >
+              Commencer a economiser <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

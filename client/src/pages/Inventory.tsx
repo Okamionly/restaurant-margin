@@ -3,7 +3,7 @@ import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
   ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
   PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash, ScanBarcode, Camera, XOctagon,
-  ShoppingCart, ChevronDown, ChevronUp
+  ShoppingCart, ChevronDown, ChevronUp, Timer, Flame, BarChart3, CheckSquare, Square
 } from 'lucide-react';
 import {
   fetchInventory, fetchInventoryAlerts, fetchInventoryValue, fetchInventorySuggestions,
@@ -118,6 +118,15 @@ function getExpirationStatus(expirationDate?: string): 'expired' | 'soon3' | 'so
   return 'ok';
 }
 
+function getDaysUntilExpiry(expirationDate?: string): number | null {
+  if (!expirationDate) return null;
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const exp = new Date(expirationDate);
+  exp.setHours(0, 0, 0, 0);
+  return Math.floor((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+}
+
 function getStatus(item: InventoryItem): 'ok' | 'low' | 'critical' {
   if (item.currentStock <= 0) return 'critical';
   if (item.currentStock < item.minStock) return 'low';
@@ -135,6 +144,26 @@ function getExpirationOrder(expStatus: string): number {
   if (expStatus === 'soon3') return 1;
   if (expStatus === 'soon7') return 2;
   return 3;
+}
+
+/** Compute stock fill % for the progress bar */
+function getStockPercent(item: InventoryItem): number {
+  const max = item.maxStock && item.maxStock > 0 ? item.maxStock : item.minStock * 3;
+  if (max <= 0) return item.currentStock > 0 ? 100 : 0;
+  return Math.min(100, Math.max(0, (item.currentStock / max) * 100));
+}
+
+/** Stock bar color based on fill percentage */
+function getStockBarColor(pct: number): string {
+  if (pct < 20) return 'bg-red-500';
+  if (pct < 50) return 'bg-amber-500';
+  return 'bg-emerald-500';
+}
+
+function getStockBarTrack(pct: number): string {
+  if (pct < 20) return 'bg-red-100 dark:bg-red-900/30';
+  if (pct < 50) return 'bg-amber-100 dark:bg-amber-900/30';
+  return 'bg-emerald-100 dark:bg-emerald-900/30';
 }
 
 export default function Inventory() {
@@ -185,6 +214,13 @@ export default function Inventory() {
   const [expandedSuppliers, setExpandedSuppliers] = useState<Set<string>>(new Set());
   const [reorderBelowCount, setReorderBelowCount] = useState(0);
 
+  // Quick restock inline
+  const [quickRestockId, setQuickRestockId] = useState<number | null>(null);
+  const [quickRestockQty, setQuickRestockQty] = useState('');
+
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
   // Forms
   const [addForm, setAddForm] = useState({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' as LocationType });
   const [restockForm, setRestockForm] = useState({ id: 0, name: '', quantity: '' });
@@ -195,6 +231,9 @@ export default function Inventory() {
 
   // Waste form
   const [wasteForm, setWasteForm] = useState({ itemId: 0, ingredientId: 0, ingredientName: '', unit: '', quantity: '', reason: 'expired', notes: '' });
+
+  // Category tabs scroll ref
+  const catScrollRef = useRef<HTMLDivElement>(null);
 
   async function loadData() {
     try {
@@ -230,6 +269,25 @@ export default function Inventory() {
   useEffect(() => {
     const belowMin = items.filter(i => i.currentStock < i.minStock && i.minStock > 0).length;
     setReorderBelowCount(belowMin);
+  }, [items]);
+
+  // Compute total stock value from items directly (for the big card)
+  const computedTotalValue = useMemo(() => {
+    return items.reduce((sum, item) => {
+      return sum + (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
+    }, 0);
+  }, [items]);
+
+  // Expiring soon items
+  const expiringItems = useMemo(() => {
+    return items
+      .map(item => {
+        const meta = parseMeta(item.notes);
+        const days = getDaysUntilExpiry(meta.expirationDate);
+        return { item, days, expirationDate: meta.expirationDate };
+      })
+      .filter(x => x.days !== null && x.days <= 7)
+      .sort((a, b) => (a.days ?? 999) - (b.days ?? 999));
   }, [items]);
 
   // Filtered and sorted items
@@ -288,15 +346,83 @@ export default function Inventory() {
     else { setSortKey(key); setSortDir('asc'); }
   }
 
-  // Categories present in inventory
-  const categories = useMemo(() => {
-    const cats = new Set(items.map(i => i.ingredient.category));
-    return Array.from(cats).sort();
+  // Categories present in inventory with counts
+  const categoriesWithCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    items.forEach(i => {
+      const cat = i.ingredient.category;
+      map.set(cat, (map.get(cat) || 0) + 1);
+    });
+    return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   }, [items]);
+
+  // --- Bulk selection helpers ---
+  function toggleSelect(id: number) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === filteredItems.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredItems.map(i => i.id)));
+    }
+  }
+
+  function handleBulkExportCSV() {
+    const selected = filteredItems.filter(i => selectedIds.has(i.id));
+    if (selected.length === 0) { showToast('Aucun article selectionne', 'error'); return; }
+    const header = 'Ingredient,Categorie,Stock actuel,Unite,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
+    const rows = selected.map(item => {
+      const val = ((item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit).toFixed(2);
+      const status = getStatus(item) === 'ok' ? 'OK' : getStatus(item) === 'low' ? 'Bas' : 'Critique';
+      const meta = parseMeta(item.notes);
+      return `"${item.ingredient.name}","${item.ingredient.category}",${item.currentStock},"${item.unit}",${item.minStock},${item.maxStock || ''},${val},${status},"${meta.location || ''}","${meta.expirationDate || ''}"`;
+    }).join('\n');
+    const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `inventaire_selection_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${selected.length} article(s) exporte(s) en CSV`, 'success');
+  }
+
+  async function handleBulkReorder() {
+    const selected = items.filter(i => selectedIds.has(i.id) && i.currentStock < i.minStock);
+    if (selected.length === 0) {
+      showToast('Aucun article en stock bas dans la selection', 'error');
+      return;
+    }
+    // Open the reorder modal which handles the full workflow
+    openReorderModal();
+  }
+
+  // --- Quick Restock inline ---
+  async function handleQuickRestock(itemId: number) {
+    const qty = parseFloat(quickRestockQty);
+    if (!qty || qty <= 0) { showToast('Quantite invalide', 'error'); return; }
+    try {
+      await restockInventoryItem(itemId, qty);
+      showToast(`+${qty} ajoute au stock`, 'success');
+      setQuickRestockId(null);
+      setQuickRestockQty('');
+      loadData();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erreur';
+      showToast(message, 'error');
+    }
+  }
 
   // --- Handlers ---
   async function handleAdd() {
-    if (!addForm.ingredientId) { showToast('Sélectionnez un ingrédient', 'error'); return; }
+    if (!addForm.ingredientId) { showToast('Selectionnez un ingredient', 'error'); return; }
     try {
       const meta: ItemMeta = {};
       if (addForm.expirationDate) meta.expirationDate = addForm.expirationDate;
@@ -310,7 +436,7 @@ export default function Inventory() {
         unit: addForm.unit || undefined,
         notes: notesStr || undefined,
       });
-      showToast('Ingrédient ajouté à l\'inventaire', 'success');
+      showToast('Ingredient ajoute a l\'inventaire', 'success');
       setShowAddModal(false);
       setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' });
       loadData();
@@ -322,10 +448,10 @@ export default function Inventory() {
 
   async function handleRestock() {
     const qty = parseFloat(restockForm.quantity);
-    if (!qty || qty <= 0) { showToast('Quantité invalide', 'error'); return; }
+    if (!qty || qty <= 0) { showToast('Quantite invalide', 'error'); return; }
     try {
       await restockInventoryItem(restockForm.id, qty);
-      showToast('Stock mis à jour', 'success');
+      showToast('Stock mis a jour', 'success');
       setShowRestockModal(false);
       setRestockForm({ id: 0, name: '', quantity: '' });
       loadData();
@@ -358,7 +484,7 @@ export default function Inventory() {
       if (editForm.unit) data.unit = editForm.unit;
       data.notes = notesStr || undefined;
       await updateInventoryItem(editForm.id, data);
-      showToast('Inventaire mis à jour', 'success');
+      showToast('Inventaire mis a jour', 'success');
       setShowEditModal(false);
       loadData();
     } catch (err: unknown) {
@@ -371,7 +497,7 @@ export default function Inventory() {
     if (!deleteTarget) return;
     try {
       await deleteInventoryItem(deleteTarget);
-      showToast('Supprimé de l\'inventaire', 'success');
+      showToast('Supprime de l\'inventaire', 'success');
       setDeleteTarget(null);
       loadData();
     } catch (err: unknown) {
@@ -403,7 +529,7 @@ export default function Inventory() {
           added++;
         } catch { /* skip duplicates */ }
       }
-      showToast(`${added} ingrédient(s) ajouté(s) à l'inventaire`, 'success');
+      showToast(`${added} ingredient(s) ajoute(s) a l'inventaire`, 'success');
       loadData();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erreur';
@@ -421,15 +547,15 @@ export default function Inventory() {
         : '';
       if (data.mode === 'set') {
         await updateInventoryItem(weighTarget.id, { currentStock: data.weight });
-        showToast(`Stock mis à jour : ${data.weight} ${weighTarget.unit}${valueStr}`, 'success');
+        showToast(`Stock mis a jour : ${data.weight} ${weighTarget.unit}${valueStr}`, 'success');
       } else {
         await restockInventoryItem(weighTarget.id, data.weight);
-        showToast(`Stock mis à jour : ${data.weight} ${weighTarget.unit}${valueStr}`, 'success');
+        showToast(`Stock mis a jour : ${data.weight} ${weighTarget.unit}${valueStr}`, 'success');
       }
       setWeighTarget(null);
       loadData();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour';
+      const message = err instanceof Error ? err.message : 'Erreur lors de la mise a jour';
       showToast(message, 'error');
     }
   }
@@ -516,13 +642,13 @@ export default function Inventory() {
       })).filter(o => o.items.length > 0);
 
       if (orders.length === 0) {
-        showToast('Aucun article avec une quantité > 0', 'error');
+        showToast('Aucun article avec une quantite > 0', 'error');
         setReorderConfirming(false);
         return;
       }
 
       const result = await confirmAutoReorder(orders);
-      showToast(`${result.count} commande${result.count > 1 ? 's' : ''} créée${result.count > 1 ? 's' : ''}`, 'success');
+      showToast(`${result.count} commande${result.count > 1 ? 's' : ''} creee${result.count > 1 ? 's' : ''}`, 'success');
 
       if (supplierFilter) {
         // Remove ordered supplier from the list
@@ -557,7 +683,7 @@ export default function Inventory() {
     // Check BarcodeDetector support
     if (typeof BarcodeDetector === 'undefined') {
       setScannerSupported(false);
-      setScannerError('BarcodeDetector non supporté par ce navigateur. Utilisez Chrome 83+ ou Edge 83+.');
+      setScannerError('BarcodeDetector non supporte par ce navigateur. Utilisez Chrome 83+ ou Edge 83+.');
       return;
     }
 
@@ -602,8 +728,8 @@ export default function Inventory() {
           }
         }, 300);
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Erreur caméra';
-        setScannerError(`Impossible d'accéder à la caméra: ${message}`);
+        const message = err instanceof Error ? err.message : 'Erreur camera';
+        setScannerError(`Impossible d'acceder a la camera: ${message}`);
       }
     }, 100);
   }
@@ -616,7 +742,7 @@ export default function Inventory() {
     const inventoryMatch = items.find(item => item.ingredient?.barcode === barcode);
     if (inventoryMatch) {
       openRestock(inventoryMatch);
-      showToast(`Code-barres détecté : ${inventoryMatch.ingredient.name}`, 'success');
+      showToast(`Code-barres detecte : ${inventoryMatch.ingredient.name}`, 'success');
       return;
     }
 
@@ -633,12 +759,12 @@ export default function Inventory() {
         location: '',
       });
       setShowAddModal(true);
-      showToast(`Code-barres détecté : ${ingredientMatch.name} (pas encore en inventaire)`, 'info');
+      showToast(`Code-barres detecte : ${ingredientMatch.name} (pas encore en inventaire)`, 'info');
       return;
     }
 
     // Not found
-    showToast(`Code-barres ${barcode} non trouvé. Ajoutez-le d'abord dans les ingrédients.`, 'error');
+    showToast(`Code-barres ${barcode} non trouve. Ajoutez-le d'abord dans les ingredients.`, 'error');
   }
 
   function closeScanner() {
@@ -654,7 +780,7 @@ export default function Inventory() {
   // Waste handler
   async function handleWasteSubmit() {
     const qty = parseFloat(wasteForm.quantity);
-    if (!qty || qty <= 0) { showToast('Quantité invalide', 'error'); return; }
+    if (!qty || qty <= 0) { showToast('Quantite invalide', 'error'); return; }
     try {
       await createWasteLog({
         ingredientId: wasteForm.ingredientId,
@@ -670,7 +796,7 @@ export default function Inventory() {
         const newStock = Math.max(0, item.currentStock - qty);
         await updateInventoryItem(wasteForm.itemId, { currentStock: newStock });
       }
-      showToast('Perte déclarée et stock mis à jour', 'success');
+      showToast('Perte declaree et stock mis a jour', 'success');
       setShowWasteModal(false);
       setWasteForm({ itemId: 0, ingredientId: 0, ingredientName: '', unit: '', quantity: '', reason: 'expired', notes: '' });
       loadData();
@@ -694,7 +820,7 @@ export default function Inventory() {
   }
 
   function handleExportCSV() {
-    const header = 'Ingrédient,Catégorie,Stock actuel,Unité,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
+    const header = 'Ingredient,Categorie,Stock actuel,Unite,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
     const rows = filteredItems.map(item => {
       const val = ((item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit).toFixed(2);
       const status = getStatus(item) === 'ok' ? 'OK' : getStatus(item) === 'low' ? 'Bas' : 'Critique';
@@ -708,7 +834,7 @@ export default function Inventory() {
     a.download = `inventaire_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Export CSV téléchargé', 'success');
+    showToast('Export CSV telecharge', 'success');
   }
 
   function handlePrint() {
@@ -751,35 +877,40 @@ export default function Inventory() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Low Stock Notification Banner */}
+    <div className="space-y-5">
+      {/* ══════ 6. LOW STOCK SUMMARY BANNER ══════ */}
       {!bannerDismissed && (criticalCount > 0 || lowCount > 0) && (
         <div
-          className={`rounded-xl border p-4 flex items-center justify-between cursor-pointer transition-colors ${
-            criticalCount > 0
-              ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-              : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
-          }`}
+          className="rounded-2xl border p-4 flex items-center justify-between cursor-pointer transition-all hover:shadow-md"
+          style={{
+            background: criticalCount > 0
+              ? 'linear-gradient(135deg, rgba(239,68,68,0.08) 0%, rgba(239,68,68,0.02) 100%)'
+              : 'linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.02) 100%)',
+            borderColor: criticalCount > 0 ? '#FCA5A5' : '#FCD34D',
+          }}
           onClick={() => { setFilterAlertOnly(true); setBannerDismissed(true); }}
         >
           <div className="flex items-center gap-3">
-            <AlertTriangle className={`w-5 h-5 ${criticalCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`} />
-            <div>
-              <span className="font-semibold text-sm">
-                {criticalCount > 0 && (
-                  <span className="text-red-700 dark:text-red-400">{criticalCount} article{criticalCount > 1 ? 's' : ''} en rupture</span>
-                )}
-                {criticalCount > 0 && lowCount > 0 && <span className="text-[#9CA3AF] dark:text-[#737373]">, </span>}
-                {lowCount > 0 && (
-                  <span className="text-amber-700 dark:text-amber-400">{lowCount} article{lowCount > 1 ? 's' : ''} en stock bas</span>
-                )}
-              </span>
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Cliquez pour filtrer les alertes</p>
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${criticalCount > 0 ? 'bg-red-100 dark:bg-red-900/40' : 'bg-amber-100 dark:bg-amber-900/40'}`}>
+              <AlertTriangle className={`w-5 h-5 ${criticalCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`} />
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {criticalCount > 0 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-600 text-white">
+                  {criticalCount} en rupture
+                </span>
+              )}
+              {lowCount > 0 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500 text-white">
+                  {lowCount} stock bas
+                </span>
+              )}
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-1">Cliquez pour filtrer</span>
             </div>
           </div>
           <button
             onClick={e => { e.stopPropagation(); setBannerDismissed(true); }}
-            className="p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
             title="Masquer"
           >
             <X className="w-4 h-4" />
@@ -795,12 +926,12 @@ export default function Inventory() {
             Inventaire
           </h1>
           <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
-            Gestion des stocks d'ingrédients
+            Gestion des stocks d'ingredients
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button onClick={openReorderModal} className="relative flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-            <ShoppingCart className="w-4 h-4" /> Réappro auto
+            <ShoppingCart className="w-4 h-4" /> Reappro auto
             {reorderBelowCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center px-1 text-[11px] font-bold rounded-full bg-red-600 text-white">
                 {reorderBelowCount}
@@ -828,43 +959,103 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-3 sm:p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-1">
-            <Package className="w-4 h-4" /> Articles en stock
+      {/* ══════ 2. STOCK VALUE CARD + STATS ══════ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* Total Value - Hero Card */}
+        <div className="col-span-2 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-50 dark:from-emerald-900/10 to-transparent rounded-bl-full" />
+          <div className="relative">
+            <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              Valeur totale du stock
+            </div>
+            <div className="text-3xl sm:text-4xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+              {computedTotalValue.toFixed(2)} <span className="text-lg font-medium">EUR</span>
+            </div>
+            <div className="flex items-center gap-4 mt-3">
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <span className="font-semibold text-black dark:text-white">{items.length}</span> articles
+              </div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <span className="font-semibold text-black dark:text-white">{categoriesWithCounts.length}</span> categories
+              </div>
+              {lastUpdate && (
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  MaJ {lastUpdate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="text-xl sm:text-2xl font-bold">{items.length}</div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-3 sm:p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-1">
-            <TrendingUp className="w-4 h-4" /> Valeur totale estimée
+
+        {/* Alerts Card */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-2">
+            <div className="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <AlertTriangle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+            </div>
+            Alertes
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
-            {valueData ? `${valueData.totalValue.toFixed(2)} €` : '---'}
-          </div>
-        </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
-            <AlertTriangle className="w-4 h-4" /> Alertes stock bas
-          </div>
-          <div className={`text-2xl font-bold ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+          <div className={`text-2xl font-bold ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
             {alerts.length}
           </div>
+          <div className="flex gap-1.5 mt-2">
+            {criticalCount > 0 && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">
+                {criticalCount} critique
+              </span>
+            )}
+            {lowCount > 0 && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+                {lowCount} bas
+              </span>
+            )}
+            {alerts.length === 0 && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+                Tout OK
+              </span>
+            )}
+          </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
-          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-1">
-            <RefreshCw className="w-4 h-4" /> Dernière mise à jour
+
+        {/* Expiring Soon Card */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-2">
+            <div className="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+              <Timer className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400" />
+            </div>
+            Expirent bientot
           </div>
-          <div className="text-lg font-semibold">
-            {lastUpdate ? lastUpdate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '---'}
+          <div className={`text-2xl font-bold ${expiringItems.length > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+            {expiringItems.length}
           </div>
+          {expiringItems.length > 0 ? (
+            <div className="mt-2 space-y-0.5 max-h-16 overflow-hidden">
+              {expiringItems.slice(0, 2).map(({ item, days }) => (
+                <div key={item.id} className="text-[10px] truncate">
+                  <span className={`font-semibold ${(days ?? 0) <= 0 ? 'text-red-600 dark:text-red-400' : (days ?? 0) <= 3 ? 'text-red-500' : 'text-orange-500'}`}>
+                    {(days ?? 0) <= 0 ? 'Expire' : `${days}j`}
+                  </span>
+                  <span className="text-[#9CA3AF] dark:text-[#737373] ml-1">{item.ingredient.name}</span>
+                </div>
+              ))}
+              {expiringItems.length > 2 && (
+                <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">+{expiringItems.length - 2} autres</div>
+              )}
+            </div>
+          ) : (
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 inline-block mt-2">
+              Aucun
+            </span>
+          )}
         </div>
       </div>
 
       {/* Alert Panel */}
       {alerts.length > 0 && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-4">
           <h3 className="font-semibold text-red-700 dark:text-red-400 flex items-center gap-2 mb-3">
             <AlertTriangle className="w-5 h-5" />
             Alertes de stock ({alerts.length})
@@ -879,7 +1070,7 @@ export default function Inventory() {
                   </div>
                 </div>
                 <button onClick={() => openRestock(item)} className="px-2 py-1 text-xs bg-[#111111] dark:bg-white text-white dark:text-black rounded hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-                  Réapprovisionner
+                  Reapprovisionner
                 </button>
               </div>
             ))}
@@ -889,10 +1080,10 @@ export default function Inventory() {
 
       {/* Value by category (pie chart representation) */}
       {valueData && valueData.byCategory.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <h3 className="font-semibold flex items-center gap-2 mb-3">
             <PieChart className="w-5 h-5 text-teal-600" />
-            Valeur par catégorie
+            Valeur par categorie
           </h3>
           <div className="flex flex-wrap gap-3">
             {valueData.byCategory.sort((a, b) => b.value - a.value).map(cat => {
@@ -902,7 +1093,7 @@ export default function Inventory() {
                   <span>{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                   <div>
                     <div className="text-sm font-medium">{cat.category}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} € ({pct.toFixed(1)}%)</div>
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} EUR ({pct.toFixed(1)}%)</div>
                   </div>
                   <div className="w-16 h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden">
                     <div className="h-full bg-teal-500 rounded-full" style={{ width: `${pct}%` }} />
@@ -914,32 +1105,61 @@ export default function Inventory() {
         </div>
       )}
 
+      {/* ══════ 5. CATEGORY FILTER TABS ══════ */}
+      <div ref={catScrollRef} className="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-1 px-1">
+        <button
+          onClick={() => setFilterCategory('')}
+          className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+            filterCategory === ''
+              ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
+              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+          }`}
+        >
+          <Package className="w-3.5 h-3.5" />
+          Tout
+          <span className={`ml-0.5 text-[11px] px-1.5 py-0 rounded-full ${
+            filterCategory === '' ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E5E7EB] dark:bg-[#262626]'
+          }`}>
+            {items.length}
+          </span>
+        </button>
+        {categoriesWithCounts.map(([cat, count]) => (
+          <button
+            key={cat}
+            onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
+            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+              filterCategory === cat
+                ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
+                : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+            }`}
+          >
+            <span className="text-sm">{CATEGORY_EMOJIS[cat] || '📦'}</span>
+            {cat}
+            <span className={`ml-0.5 text-[11px] px-1.5 py-0 rounded-full ${
+              filterCategory === cat ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E5E7EB] dark:bg-[#262626]'
+            }`}>
+              {count}
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
           <input
             type="text"
-            placeholder="Rechercher un ingrédient..."
+            placeholder="Rechercher un ingredient..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
           />
         </div>
         <select
-          value={filterCategory}
-          onChange={e => setFilterCategory(e.target.value)}
-          className="px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
-        >
-          <option value="">Toutes catégories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{CATEGORY_EMOJIS[cat] || ''} {cat}</option>
-          ))}
-        </select>
-        <select
           value={filterLocation}
           onChange={e => setFilterLocation(e.target.value as LocationType)}
-          className="px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+          className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
         >
           <option value="">Tous emplacements</option>
           {LOCATIONS.map(loc => (
@@ -956,35 +1176,70 @@ export default function Inventory() {
         )}
       </div>
 
-      {/* Inventory Table */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] overflow-hidden">
+      {/* ══════ 7. BULK ACTIONS BAR ══════ */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 px-4 py-3 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-2xl">
+          <CheckSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <span className="text-sm font-semibold text-teal-700 dark:text-teal-300">{selectedIds.size} selectionne{selectedIds.size > 1 ? 's' : ''}</span>
+          <div className="flex-1" />
+          <button
+            onClick={handleBulkReorder}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black text-xs font-medium rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+          >
+            <ShoppingCart className="w-3.5 h-3.5" /> Commander tout
+          </button>
+          <button
+            onClick={handleBulkExportCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] text-xs font-medium rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" /> Exporter CSV
+          </button>
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="p-1.5 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/40 text-teal-600 dark:text-teal-400 transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* ══════ INVENTORY TABLE ══════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
         <div className="overflow-x-auto -mx-3 sm:mx-0">
-          <table className="w-full text-sm min-w-[700px]">
+          <table className="w-full text-sm min-w-[800px]">
             <thead>
               <tr className="bg-[#FAFAFA] dark:bg-[#171717] text-left">
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
-                  <span className="flex items-center gap-1">Ingrédient <ArrowUpDown className="w-3 h-3" /></span>
+                {/* Checkbox column */}
+                <th className="px-3 py-3 w-10">
+                  <button onClick={toggleSelectAll} className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors">
+                    {selectedIds.size === filteredItems.length && filteredItems.length > 0
+                      ? <CheckSquare className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                      : <Square className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                    }
+                  </button>
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('name')}>
+                  <span className="flex items-center gap-1">Ingredient <ArrowUpDown className="w-3 h-3" /></span>
+                </th>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('currentStock')}>
                   <span className="flex items-center gap-1">Stock <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium">Unité</th>
-                <th className="px-4 py-3 font-medium">Min</th>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">Max</th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
+                <th className="px-3 py-3 font-medium w-40">Niveau</th>
+                <th className="px-3 py-3 font-medium hidden md:table-cell">Expiration</th>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hidden sm:table-cell" onClick={() => toggleSort('value')}>
                   <span className="flex items-center gap-1">Valeur <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
+                <th className="px-3 py-3 font-medium cursor-pointer select-none hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" onClick={() => toggleSort('status')}>
                   <span className="flex items-center gap-1">Statut <ArrowUpDown className="w-3 h-3" /></span>
                 </th>
-                <th className="px-4 py-3 font-medium text-right">Actions</th>
+                <th className="px-3 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y dark:divide-[#1A1A1A]">
+            <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {filteredItems.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
-                    {items.length === 0 ? 'Aucun article dans l\'inventaire. Ajoutez des ingrédients pour commencer.' : 'Aucun résultat pour cette recherche.'}
+                    {items.length === 0 ? 'Aucun article dans l\'inventaire. Ajoutez des ingredients pour commencer.' : 'Aucun resultat pour cette recherche.'}
                   </td>
                 </tr>
               ) : filteredItems.map(item => {
@@ -992,31 +1247,33 @@ export default function Inventory() {
                 const value = (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
                 const meta = parseMeta(item.notes);
                 const expStatus = getExpirationStatus(meta.expirationDate);
+                const daysLeft = getDaysUntilExpiry(meta.expirationDate);
+                const stockPct = getStockPercent(item);
+                const isSelected = selectedIds.has(item.id);
                 return (
-                  <tr key={item.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 transition-colors ${expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''}`}>
-                    <td className="px-4 py-3">
+                  <tr
+                    key={item.id}
+                    className={`hover:bg-[#FAFAFA] dark:hover:bg-[#171717]/30 transition-colors ${
+                      expStatus === 'expired' ? 'bg-red-50/50 dark:bg-red-900/10' : ''
+                    } ${isSelected ? 'bg-teal-50/50 dark:bg-teal-900/10' : ''}`}
+                  >
+                    {/* Checkbox */}
+                    <td className="px-3 py-3">
+                      <button onClick={() => toggleSelect(item.id)} className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors">
+                        {isSelected
+                          ? <CheckSquare className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                          : <Square className="w-4 h-4 text-[#D1D5DB] dark:text-[#404040]" />
+                        }
+                      </button>
+                    </td>
+
+                    {/* Ingredient name + meta */}
+                    <td className="px-3 py-3">
                       <div className="flex items-center gap-2">
-                        <span>{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
+                        <span className="text-lg">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
                         <div>
                           <div className="font-medium flex items-center gap-1.5 flex-wrap">
                             {item.ingredient.name}
-                            {/* Expiration badges */}
-                            {expStatus === 'expired' && (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">
-                                <Clock className="w-2.5 h-2.5" /> Expiré
-                              </span>
-                            )}
-                            {expStatus === 'soon3' && (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 animate-pulse">
-                                <Clock className="w-2.5 h-2.5" /> Expire bientôt
-                              </span>
-                            )}
-                            {expStatus === 'soon7' && (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400">
-                                <Clock className="w-2.5 h-2.5" /> Expire bientôt
-                              </span>
-                            )}
-                            {/* Location tag */}
                             {meta.location && (
                               <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium ${LOCATION_COLORS[meta.location] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                                 <MapPin className="w-2.5 h-2.5" /> {meta.location}
@@ -1024,22 +1281,12 @@ export default function Inventory() {
                             )}
                           </div>
                           <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.ingredient.category}</div>
-                          {/* Expiration date display */}
-                          {meta.expirationDate && (
-                            <div className={`text-[10px] ${expStatus === 'expired' || expStatus === 'soon3' ? 'text-red-500 dark:text-red-400' : expStatus === 'soon7' ? 'text-orange-500 dark:text-orange-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
-                              Exp: {new Date(meta.expirationDate).toLocaleDateString('fr-FR')}
-                            </div>
-                          )}
-                          {/* Last restock info */}
-                          {item.lastRestockDate && item.lastRestockQuantity && (
-                            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
-                              Dernier réappro: {item.lastRestockQuantity}{item.unit} le {new Date(item.lastRestockDate).toLocaleDateString('fr-FR')}
-                            </div>
-                          )}
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+
+                    {/* Stock with inline edit */}
+                    <td className="px-3 py-3">
                       {editingStockId === item.id ? (
                         <div className="flex items-center gap-1">
                           <input
@@ -1047,11 +1294,11 @@ export default function Inventory() {
                             value={inlineStock}
                             onChange={e => setInlineStock(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') handleInlineStockSave(item.id); if (e.key === 'Escape') setEditingStockId(null); }}
-                            className="w-20 px-2 py-1 text-sm border rounded dark:border-[#1A1A1A] dark:bg-[#171717] focus:ring-2 focus:ring-teal-500 outline-none"
+                            className="w-20 px-2 py-1 text-sm border rounded border-[#E5E7EB] dark:border-[#1A1A1A] dark:bg-[#171717] focus:ring-2 focus:ring-teal-500 outline-none"
                             autoFocus
                             step="0.01"
                           />
-                          <button onClick={() => handleInlineStockSave(item.id)} className="text-green-600 hover:text-green-700">
+                          <button onClick={() => handleInlineStockSave(item.id)} className="text-emerald-600 hover:text-emerald-700">
                             <CheckCircle2 className="w-4 h-4" />
                           </button>
                           <button onClick={() => setEditingStockId(null)} className="text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]">
@@ -1059,22 +1306,123 @@ export default function Inventory() {
                           </button>
                         </div>
                       ) : (
-                        <span
-                          className="cursor-pointer hover:text-teal-600 transition-colors"
-                          onClick={() => { setEditingStockId(item.id); setInlineStock(String(item.currentStock)); }}
-                          title="Cliquer pour modifier"
-                        >
-                          {item.currentStock}
-                        </span>
+                        <div>
+                          <span
+                            className="cursor-pointer hover:text-teal-600 transition-colors font-semibold"
+                            onClick={() => { setEditingStockId(item.id); setInlineStock(String(item.currentStock)); }}
+                            title="Cliquer pour modifier"
+                          >
+                            {item.currentStock} <span className="text-xs font-normal text-[#9CA3AF] dark:text-[#737373]">{item.unit}</span>
+                          </span>
+                          <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                            min {item.minStock}{item.maxStock ? ` / max ${item.maxStock}` : ''}
+                          </div>
+                        </div>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373]">{item.unit}</td>
-                    <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373]">{item.minStock}</td>
-                    <td className="px-4 py-3 text-[#9CA3AF] dark:text-[#737373] hidden md:table-cell">{item.maxStock ?? '---'}</td>
-                    <td className="px-4 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} €</td>
-                    <td className="px-4 py-3">
+
+                    {/* ══════ 1. VISUAL STOCK BAR ══════ */}
+                    <td className="px-3 py-3">
+                      <div className="space-y-1">
+                        <div className={`w-full h-3 rounded-full overflow-hidden ${getStockBarTrack(stockPct)}`}>
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${getStockBarColor(stockPct)}`}
+                            style={{ width: `${stockPct}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[10px] font-semibold ${stockPct < 20 ? 'text-red-600 dark:text-red-400' : stockPct < 50 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                            {Math.round(stockPct)}%
+                          </span>
+                          {/* ══════ 4. QUICK RESTOCK BUTTON ══════ */}
+                          {quickRestockId === item.id ? (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                value={quickRestockQty}
+                                onChange={e => setQuickRestockQty(e.target.value)}
+                                onKeyDown={e => { if (e.key === 'Enter') handleQuickRestock(item.id); if (e.key === 'Escape') { setQuickRestockId(null); setQuickRestockQty(''); } }}
+                                className="w-14 px-1.5 py-0.5 text-[11px] border rounded border-[#E5E7EB] dark:border-[#1A1A1A] dark:bg-[#171717] focus:ring-1 focus:ring-teal-500 outline-none"
+                                placeholder="qty"
+                                autoFocus
+                                step="0.1"
+                              />
+                              <button
+                                onClick={() => handleQuickRestock(item.id)}
+                                className="text-emerald-600 hover:text-emerald-700"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => { setQuickRestockId(null); setQuickRestockQty(''); }}
+                                className="text-[#9CA3AF] hover:text-[#6B7280]"
+                              >
+                                <XCircle className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => { setQuickRestockId(item.id); setQuickRestockQty(''); }}
+                              className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 hover:bg-teal-200 dark:hover:bg-teal-900/50 transition-colors"
+                              title="Restock rapide"
+                            >
+                              <Plus className="w-2.5 h-2.5" /> Restock
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* ══════ 3. EXPIRY COUNTDOWN ══════ */}
+                    <td className="px-3 py-3 hidden md:table-cell">
+                      {meta.expirationDate ? (
+                        <div className="flex flex-col gap-0.5">
+                          {daysLeft !== null && (
+                            <span className={`inline-flex items-center gap-1 text-xs font-semibold ${
+                              daysLeft <= 0 ? 'text-red-600 dark:text-red-400' :
+                              daysLeft <= 3 ? 'text-red-500 dark:text-red-400' :
+                              daysLeft <= 7 ? 'text-amber-500 dark:text-amber-400' :
+                              'text-emerald-600 dark:text-emerald-400'
+                            }`}>
+                              <Clock className="w-3 h-3" />
+                              {daysLeft <= 0 ? (
+                                <span className="px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-[10px] font-bold animate-pulse">
+                                  EXPIRE
+                                </span>
+                              ) : (
+                                <>
+                                  {daysLeft}j restant{daysLeft > 1 ? 's' : ''}
+                                </>
+                              )}
+                            </span>
+                          )}
+                          {/* Mini progress bar for expiry */}
+                          {daysLeft !== null && daysLeft > 0 && (
+                            <div className="w-20 h-1.5 rounded-full bg-[#E5E7EB] dark:bg-[#262626] overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all ${
+                                  daysLeft <= 3 ? 'bg-red-500' : daysLeft <= 7 ? 'bg-amber-500' : 'bg-emerald-500'
+                                }`}
+                                style={{ width: `${Math.min(100, (daysLeft / 30) * 100)}%` }}
+                              />
+                            </div>
+                          )}
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                            {new Date(meta.expirationDate).toLocaleDateString('fr-FR')}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-[#D1D5DB] dark:text-[#404040]">---</span>
+                      )}
+                    </td>
+
+                    {/* Value */}
+                    <td className="px-3 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} EUR</td>
+
+                    {/* Status */}
+                    <td className="px-3 py-3">
                       {status === 'ok' && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                           <CheckCircle2 className="w-3 h-3" /> OK
                         </span>
                       )}
@@ -1084,20 +1432,22 @@ export default function Inventory() {
                         </span>
                       )}
                       {status === 'critical' && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
-                          <XCircle className="w-3 h-3" /> Critique
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 animate-pulse">
+                          <Flame className="w-3 h-3" /> Critique
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3">
+
+                    {/* Actions */}
+                    <td className="px-3 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => openWaste(item)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors" title="Déclarer perte">
+                        <button onClick={() => openWaste(item)} className="p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30 text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors" title="Declarer perte">
                           <Trash className="w-4 h-4" />
                         </button>
                         <button onClick={() => setWeighTarget(item)} className="p-1.5 rounded hover:bg-emerald-50 dark:hover:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 transition-colors" title="Peser avec la balance">
                           <Scale className="w-4 h-4" />
                         </button>
-                        <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Réapprovisionner">
+                        <button onClick={() => openRestock(item)} className="p-1.5 rounded hover:bg-teal-50 dark:hover:bg-teal-900/30 text-teal-600 dark:text-teal-400 transition-colors" title="Reapprovisionner">
                           <RefreshCw className="w-4 h-4" />
                         </button>
                         <button onClick={() => openEdit(item)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors" title="Modifier">
@@ -1117,10 +1467,10 @@ export default function Inventory() {
       </div>
 
       {/* Add Modal */}
-      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Ajouter à l'inventaire">
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Ajouter a l'inventaire">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Ingrédient</label>
+            <label className="block text-sm font-medium mb-1">Ingredient</label>
             <select
               value={addForm.ingredientId}
               onChange={e => {
@@ -1128,15 +1478,15 @@ export default function Inventory() {
                 const ing = suggestions.find(s => s.id === id);
                 setAddForm(f => ({ ...f, ingredientId: id, unit: ing?.unit || '' }));
               }}
-              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
-              <option value={0}>-- Sélectionner --</option>
+              <option value={0}>-- Selectionner --</option>
               {suggestions.map(ing => (
                 <option key={ing.id} value={ing.id}>{CATEGORY_EMOJIS[ing.category] || ''} {ing.name} ({ing.unit})</option>
               ))}
             </select>
             {suggestions.length === 0 && (
-              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Tous les ingrédients sont déjà dans l'inventaire.</p>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Tous les ingredients sont deja dans l'inventaire.</p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -1146,7 +1496,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.currentStock}
                 onChange={e => setAddForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -1157,7 +1507,7 @@ export default function Inventory() {
                 type="number"
                 value={addForm.minStock}
                 onChange={e => setAddForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 placeholder="0"
                 step="0.01"
               />
@@ -1170,7 +1520,7 @@ export default function Inventory() {
                 type="date"
                 value={addForm.expirationDate}
                 onChange={e => setAddForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -1178,7 +1528,7 @@ export default function Inventory() {
               <select
                 value={addForm.location}
                 onChange={e => setAddForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -1188,7 +1538,7 @@ export default function Inventory() {
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleAdd} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
@@ -1199,26 +1549,26 @@ export default function Inventory() {
       </Modal>
 
       {/* Restock Modal */}
-      <Modal isOpen={showRestockModal} onClose={() => setShowRestockModal(false)} title={`Réapprovisionner : ${restockForm.name}`}>
+      <Modal isOpen={showRestockModal} onClose={() => setShowRestockModal(false)} title={`Reapprovisionner : ${restockForm.name}`}>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Quantité à ajouter</label>
+            <label className="block text-sm font-medium mb-1">Quantite a ajouter</label>
             <input
               type="number"
               value={restockForm.quantity}
               onChange={e => setRestockForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
-              placeholder="Quantité"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              placeholder="Quantite"
               step="0.01"
               autoFocus
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowRestockModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleRestock} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-              Réapprovisionner
+              Reapprovisionner
             </button>
           </div>
         </div>
@@ -1234,17 +1584,17 @@ export default function Inventory() {
                 type="number"
                 value={editForm.currentStock}
                 onChange={e => setEditForm(f => ({ ...f, currentStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Unité</label>
+              <label className="block text-sm font-medium mb-1">Unite</label>
               <input
                 type="text"
                 value={editForm.unit}
                 onChange={e => setEditForm(f => ({ ...f, unit: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
           </div>
@@ -1255,7 +1605,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.minStock}
                 onChange={e => setEditForm(f => ({ ...f, minStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
               />
             </div>
@@ -1265,7 +1615,7 @@ export default function Inventory() {
                 type="number"
                 value={editForm.maxStock}
                 onChange={e => setEditForm(f => ({ ...f, maxStock: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 step="0.01"
                 placeholder="Optionnel"
               />
@@ -1278,7 +1628,7 @@ export default function Inventory() {
                 type="date"
                 value={editForm.expirationDate}
                 onChange={e => setEditForm(f => ({ ...f, expirationDate: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               />
             </div>
             <div>
@@ -1286,7 +1636,7 @@ export default function Inventory() {
               <select
                 value={editForm.location}
                 onChange={e => setEditForm(f => ({ ...f, location: e.target.value as LocationType }))}
-                className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               >
                 <option value="">-- Aucun --</option>
                 {LOCATIONS.map(loc => (
@@ -1300,13 +1650,13 @@ export default function Inventory() {
             <textarea
               value={editForm.notes}
               onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
               placeholder="Notes optionnelles..."
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleEdit} className="px-4 py-2 text-sm bg-[#111111] dark:bg-white text-white dark:text-black rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
@@ -1317,16 +1667,16 @@ export default function Inventory() {
       </Modal>
 
       {/* Waste Modal */}
-      <Modal isOpen={showWasteModal} onClose={() => setShowWasteModal(false)} title={`Déclarer perte : ${wasteForm.ingredientName}`}>
+      <Modal isOpen={showWasteModal} onClose={() => setShowWasteModal(false)} title={`Declarer perte : ${wasteForm.ingredientName}`}>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Quantité perdue ({wasteForm.unit})</label>
+            <label className="block text-sm font-medium mb-1">Quantite perdue ({wasteForm.unit})</label>
             <input
               type="number"
               value={wasteForm.quantity}
               onChange={e => setWasteForm(f => ({ ...f, quantity: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
-              placeholder="Quantité"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              placeholder="Quantite"
               step="0.01"
               autoFocus
             />
@@ -1336,7 +1686,7 @@ export default function Inventory() {
             <select
               value={wasteForm.reason}
               onChange={e => setWasteForm(f => ({ ...f, reason: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
             >
               {WASTE_REASONS.map(r => (
                 <option key={r.value} value={r.value}>{r.label}</option>
@@ -1348,17 +1698,17 @@ export default function Inventory() {
             <textarea
               value={wasteForm.notes}
               onChange={e => setWasteForm(f => ({ ...f, notes: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
               rows={2}
-              placeholder="Détails supplémentaires..."
+              placeholder="Details supplementaires..."
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+            <button onClick={() => setShowWasteModal(false)} className="px-4 py-2 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
               Annuler
             </button>
             <button onClick={handleWasteSubmit} className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1.5">
-              <Trash className="w-4 h-4" /> Déclarer perte
+              <Trash className="w-4 h-4" /> Declarer perte
             </button>
           </div>
         </div>
@@ -1381,8 +1731,8 @@ export default function Inventory() {
       {/* Barcode Scanner Modal */}
       {showScanner && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80">
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border dark:border-[#1A1A1A] w-full max-w-lg mx-4 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b dark:border-[#1A1A1A]">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] w-full max-w-lg mx-4 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
               <h3 className="font-semibold flex items-center gap-2">
                 <Camera className="w-5 h-5" /> Scanner un code-barres
               </h3>
@@ -1409,7 +1759,7 @@ export default function Inventory() {
                             placeholder="Ex: 3017620422003"
                             value={lastScannedBarcode}
                             onChange={e => setLastScannedBarcode(e.target.value)}
-                            className="flex-1 px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                            className="flex-1 px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
                             autoFocus
                             onKeyDown={e => { if (e.key === 'Enter' && lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
                           />
@@ -1449,7 +1799,7 @@ export default function Inventory() {
                     </div>
                   )}
                   {/* Manual fallback input */}
-                  <div className="border-t dark:border-[#1A1A1A] pt-3 mt-2">
+                  <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] pt-3 mt-2">
                     <label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Ou saisir manuellement</label>
                     <div className="flex gap-2">
                       <input
@@ -1458,7 +1808,7 @@ export default function Inventory() {
                         placeholder="Code-barres..."
                         value={lastScannedBarcode}
                         onChange={e => setLastScannedBarcode(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-lg border dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                        className="flex-1 px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
                         onKeyDown={e => { if (e.key === 'Enter' && lastScannedBarcode.trim()) { closeScanner(); handleBarcodeDetected(lastScannedBarcode.trim()); } }}
                       />
                       <button
@@ -1478,14 +1828,14 @@ export default function Inventory() {
       )}
 
       {/* Auto-Reorder Modal */}
-      <Modal isOpen={showReorderModal} onClose={() => setShowReorderModal(false)} title="Réapprovisionnement automatique" className="max-w-3xl">
+      <Modal isOpen={showReorderModal} onClose={() => setShowReorderModal(false)} title="Reapprovisionnement automatique" className="max-w-3xl">
         {reorderLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-[#111111] dark:text-white" />
           </div>
         ) : reorderGroups.length === 0 ? (
           <div className="text-center py-12">
-            <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-green-600 dark:text-green-400" />
+            <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-600 dark:text-emerald-400" />
             <p className="text-lg font-semibold">Tous les stocks sont suffisants</p>
             <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">Aucun article en dessous du seuil minimum</p>
           </div>
@@ -1494,7 +1844,7 @@ export default function Inventory() {
             {/* Summary */}
             <div className="flex items-center justify-between px-4 py-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-xl">
               <div>
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Total estimé</span>
+                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Total estime</span>
                 <p className="text-xl font-bold">
                   {reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0).toFixed(2)} EUR
                 </p>
@@ -1507,7 +1857,7 @@ export default function Inventory() {
 
             {/* Per-supplier groups */}
             {reorderGroups.map(group => (
-              <div key={group.supplier} className="border dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+              <div key={group.supplier} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
                 {/* Supplier header */}
                 <button
                   onClick={() => toggleSupplier(group.supplier)}
@@ -1530,10 +1880,10 @@ export default function Inventory() {
 
                 {/* Items table */}
                 {expandedSuppliers.has(group.supplier) && (
-                  <div className="border-t dark:border-[#1A1A1A]">
+                  <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-[#9CA3AF] dark:text-[#737373] text-xs border-b dark:border-[#1A1A1A]">
+                        <tr className="text-[#9CA3AF] dark:text-[#737373] text-xs border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
                           <th className="text-left px-4 py-2 font-medium">Ingredient</th>
                           <th className="text-right px-2 py-2 font-medium">Stock</th>
                           <th className="text-right px-2 py-2 font-medium">Min</th>
@@ -1547,7 +1897,7 @@ export default function Inventory() {
                           const ratio = item.suggestedQty > 0 ? editedQty / item.suggestedQty : 0;
                           const cost = item.estimatedCost * ratio;
                           return (
-                            <tr key={item.ingredientId} className="border-b dark:border-[#1A1A1A] last:border-b-0">
+                            <tr key={item.ingredientId} className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-b-0">
                               <td className="px-4 py-2.5">
                                 <span className="font-medium">{item.ingredient}</span>
                                 <span className="text-[#9CA3AF] dark:text-[#737373] ml-1 text-xs">({item.unit})</span>
@@ -1565,7 +1915,7 @@ export default function Inventory() {
                                   step="0.1"
                                   value={editedQty}
                                   onChange={e => setEditedQty(group.supplier, item.ingredientId, parseFloat(e.target.value) || 0)}
-                                  className="w-20 text-center px-2 py-1 rounded-lg border dark:border-[#333333] bg-white dark:bg-[#171717] text-sm font-medium focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
+                                  className="w-20 text-center px-2 py-1 rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#171717] text-sm font-medium focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
                                 />
                               </td>
                               <td className="text-right px-4 py-2.5 font-medium">{cost.toFixed(2)} EUR</td>
@@ -1576,7 +1926,7 @@ export default function Inventory() {
                     </table>
 
                     {/* Per-supplier order button */}
-                    <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t dark:border-[#1A1A1A] flex items-center justify-between">
+                    <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
                       <span className="text-sm font-semibold">Sous-total : {getGroupEstimatedCost(group).toFixed(2)} EUR</span>
                       <button
                         onClick={() => handleConfirmReorder(group.supplier)}
@@ -1593,7 +1943,7 @@ export default function Inventory() {
             ))}
 
             {/* Global order all button */}
-            <div className="pt-2 border-t dark:border-[#1A1A1A]">
+            <div className="pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
               <button
                 onClick={() => handleConfirmReorder()}
                 disabled={reorderConfirming}
@@ -1611,7 +1961,7 @@ export default function Inventory() {
       <ConfirmDialog
         isOpen={deleteTarget !== null}
         title="Supprimer de l'inventaire"
-        message="Êtes-vous sûr de vouloir supprimer cet article de l'inventaire ? Cette action est irréversible."
+        message="Etes-vous sur de vouloir supprimer cet article de l'inventaire ? Cette action est irreversible."
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}
       />

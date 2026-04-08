@@ -5,6 +5,8 @@ import {
   Download, Shield, Clock, BarChart3, PieChart, TrendingUp, X, AlertTriangle,
   Upload, Copy, ExternalLink, Heart, UserPlus, Send, Loader2,
   Crown, Repeat, Sparkles, UserMinus, MessageSquare, Megaphone, Zap,
+  Cake, Award, Calendar, StickyNote, ChevronRight, ArrowUpRight,
+  Gift, Target, Activity, ChevronsRight,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -26,6 +28,7 @@ type ViewMode = 'cards' | 'table';
 type SortField = 'nom' | 'caTotal' | 'derniereVisite';
 type TabId = 'infos' | 'preferences' | 'historique' | 'documents' | 'rgpd';
 type SegmentId = 'tous' | 'vip' | 'reguliers' | 'nouveaux' | 'inactifs';
+type LoyaltyTier = 'Bronze' | 'Silver' | 'Gold';
 
 interface Allergene {
   id: string;
@@ -65,6 +68,7 @@ interface Client {
   nbCommandes: number;
   derniereVisite: string;
   dateCreation: string;
+  dateNaissance: string;
   allergenes: string[];
   regime: string[];
   platsFavoris: string[];
@@ -134,6 +138,7 @@ const EMAIL_TEMPLATES = [
   { id: 'remerciement', label: 'Remerciement post-evenement', subject: 'Merci pour votre confiance !', body: 'Bonjour,\n\nNous tenions a vous remercier pour votre confiance lors de votre dernier evenement.\n\nCordialement,' },
   { id: 'relance', label: 'Relance devis en attente', subject: 'Votre devis en attente', body: 'Bonjour,\n\nNous revenons vers vous concernant le devis que nous vous avons transmis.\n\nCordialement,' },
   { id: 'promo', label: 'Offre speciale / promotion', subject: 'Offre speciale pour vous !', body: 'Bonjour,\n\nNous avons le plaisir de vous faire parvenir une offre exclusive.\n\nCordialement,' },
+  { id: 'anniversaire', label: 'Anniversaire client', subject: 'Joyeux anniversaire !', body: 'Cher [prenom],\n\nToute notre equipe vous souhaite un tres joyeux anniversaire !\n\nPour celebrer ce jour special, nous vous offrons -15% sur votre prochaine visite.\n\nCordialement,' },
 ];
 
 const CAMPAIGN_TEMPLATES: Record<SegmentId, { subject: string; body: string }> = {
@@ -151,7 +156,14 @@ const CLIENTS_STORAGE_KEY = 'restaumargin_clients';
 function loadClientsFromStorage(): Client[] {
   try {
     const raw = localStorage.getItem(CLIENTS_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Migrate old clients that don't have dateNaissance
+      return parsed.map((c: Client) => ({
+        ...c,
+        dateNaissance: c.dateNaissance || '',
+      }));
+    }
   } catch { /* corrupt data */ }
   return [];
 }
@@ -177,6 +189,37 @@ function fmtDate(d: string) {
 
 function getInitials(nom: string, prenom: string) {
   return `${prenom?.[0] || ''}${nom?.[0] || ''}`.toUpperCase();
+}
+
+function getLoyaltyTier(caTotal: number): LoyaltyTier {
+  if (caTotal >= 1000) return 'Gold';
+  if (caTotal >= 500) return 'Silver';
+  return 'Bronze';
+}
+
+function getLoyaltyColors(tier: LoyaltyTier) {
+  switch (tier) {
+    case 'Gold': return { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-300 dark:border-amber-700', icon: 'text-amber-500' };
+    case 'Silver': return { bg: 'bg-[#F3F4F6] dark:bg-[#1A1A1A]', text: 'text-[#6B7280] dark:text-[#A3A3A3]', border: 'border-[#D1D5DB] dark:border-[#333]', icon: 'text-[#9CA3AF]' };
+    case 'Bronze': return { bg: 'bg-orange-50 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-400', border: 'border-orange-200 dark:border-orange-800', icon: 'text-orange-500' };
+  }
+}
+
+function getBirthdayDaysAway(dateNaissance: string): number | null {
+  if (!dateNaissance) return null;
+  const today = new Date();
+  const bday = new Date(dateNaissance);
+  const thisYearBday = new Date(today.getFullYear(), bday.getMonth(), bday.getDate());
+  if (thisYearBday < today) {
+    thisYearBday.setFullYear(today.getFullYear() + 1);
+  }
+  const diff = Math.ceil((thisYearBday.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function isBirthdayThisWeek(dateNaissance: string): boolean {
+  const days = getBirthdayDaysAway(dateNaissance);
+  return days !== null && days >= 0 && days <= 7;
 }
 
 const interactionIcons: Record<string, { icon: string; color: string }> = {
@@ -207,12 +250,13 @@ export default function Clients() {
   const [segments, setSegments] = useState<SegmentsResponse | null>(null);
   const [loadingSegments, setLoadingSegments] = useState(false);
 
-  // Modals
+  // Modals & sidebar
   const [showDetail, setShowDetail] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showEmail, setShowEmail] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showCampaign, setShowCampaign] = useState(false);
+  const [sidebarClient, setSidebarClient] = useState<Client | null>(null);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
   const [detailTab, setDetailTab] = useState<TabId>('infos');
@@ -222,6 +266,7 @@ export default function Clients() {
     id: '', nom: '', prenom: '', entreprise: '', siret: '', type: 'Particulier',
     tags: [], email: '', telephone: '', adresse: '', notes: '',
     caTotal: 0, nbCommandes: 0, derniereVisite: '', dateCreation: new Date().toISOString().split('T')[0],
+    dateNaissance: '',
     allergenes: [], regime: [], platsFavoris: [], historique: [], documents: [],
     consentementRGPD: new Date().toISOString().split('T')[0],
   };
@@ -241,6 +286,9 @@ export default function Clients() {
   // Tag editing
   const [editingTags, setEditingTags] = useState(false);
   const [clientNotes, setClientNotes] = useState('');
+
+  // Sidebar notes for quick editing
+  const [sidebarNotes, setSidebarNotes] = useState('');
 
   // ── Load segments ──────────────────────────────────────────────────────
 
@@ -266,17 +314,61 @@ export default function Clients() {
 
   useEffect(() => { loadSegments(); }, [loadSegments]);
 
+  // ── Computed KPIs ─────────────────────────────────────────────────────
+
+  const kpis = useMemo(() => {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const nouveauxCeMois = clients.filter(c => {
+      if (!c.dateCreation) return false;
+      return new Date(c.dateCreation) >= thirtyDaysAgo;
+    }).length;
+
+    const totalCA = clients.reduce((s, c) => s + c.caTotal, 0);
+    const totalCommandes = clients.reduce((s, c) => s + c.nbCommandes, 0);
+    const panierMoyen = totalCommandes > 0 ? totalCA / totalCommandes : 0;
+
+    // Taux de fidelisation: clients with 2+ orders / total clients
+    const clientsFideles = clients.filter(c => c.nbCommandes >= 2).length;
+    const tauxFidelisation = clients.length > 0 ? Math.round((clientsFideles / clients.length) * 100) : 0;
+
+    return { totalClients: clients.length, nouveauxCeMois, panierMoyen, tauxFidelisation, totalCA };
+  }, [clients]);
+
+  // ── Birthday alerts ─────────────────────────────────────────────────
+
+  const birthdayClients = useMemo(() => {
+    return clients.filter(c => isBirthdayThisWeek(c.dateNaissance)).map(c => ({
+      ...c,
+      daysAway: getBirthdayDaysAway(c.dateNaissance) || 0,
+    })).sort((a, b) => a.daysAway - b.daysAway);
+  }, [clients]);
+
   // ── Filtering & sorting ───────────────────────────────────────────────
 
   const filtered = useMemo(() => {
     let result = [...clients];
 
-    // Segment filter
-    if (activeSegment !== 'tous' && segments) {
-      const segData = segments[activeSegment as keyof Omit<SegmentsResponse, 'total'>];
-      if (segData && segData.clientIds) {
-        const ids = new Set(segData.clientIds);
-        result = result.filter(c => ids.has(c.id));
+    // Segment filter (local fallback if server segments unavailable)
+    if (activeSegment !== 'tous') {
+      if (segments) {
+        const segData = segments[activeSegment as keyof Omit<SegmentsResponse, 'total'>];
+        if (segData && segData.clientIds) {
+          const ids = new Set(segData.clientIds);
+          result = result.filter(c => ids.has(c.id));
+        }
+      } else {
+        // Local fallback segmentation
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+        switch (activeSegment) {
+          case 'vip': result = result.filter(c => c.caTotal > 500); break;
+          case 'reguliers': result = result.filter(c => c.nbCommandes >= 3); break;
+          case 'nouveaux': result = result.filter(c => c.dateCreation && new Date(c.dateCreation) >= thirtyDaysAgo); break;
+          case 'inactifs': result = result.filter(c => c.derniereVisite && new Date(c.derniereVisite) < sixtyDaysAgo); break;
+        }
       }
     }
 
@@ -286,7 +378,8 @@ export default function Clients() {
         c.nom.toLowerCase().includes(q) ||
         c.prenom.toLowerCase().includes(q) ||
         c.entreprise.toLowerCase().includes(q) ||
-        c.email.toLowerCase().includes(q)
+        c.email.toLowerCase().includes(q) ||
+        c.telephone.includes(q)
       );
     }
     if (filterType) result = result.filter(c => c.type === filterType);
@@ -301,7 +394,31 @@ export default function Clients() {
     return result;
   }, [clients, search, filterType, sortField, sortAsc, activeSegment, segments]);
 
+  // ── Local segment counts (for when server segments are unavailable) ──
+
+  const localSegmentCounts = useMemo(() => {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+    return {
+      vip: segments?.vip.count ?? clients.filter(c => c.caTotal > 500).length,
+      reguliers: segments?.reguliers.count ?? clients.filter(c => c.nbCommandes >= 3).length,
+      nouveaux: segments?.nouveaux.count ?? clients.filter(c => c.dateCreation && new Date(c.dateCreation) >= thirtyDaysAgo).length,
+      inactifs: segments?.inactifs.count ?? clients.filter(c => c.derniereVisite && new Date(c.derniereVisite) < sixtyDaysAgo).length,
+    };
+  }, [clients, segments]);
+
   // ── Actions ───────────────────────────────────────────────────────────
+
+  function openSidebar(c: Client) {
+    setSidebarClient(c);
+    setSidebarNotes(c.notes || '');
+  }
+
+  function closeSidebar() {
+    setSidebarClient(null);
+    setSidebarNotes('');
+  }
 
   function openDetail(c: Client) {
     setSelectedClient(c);
@@ -345,6 +462,11 @@ export default function Clients() {
     }
     if (editingClient) {
       setClients(prev => prev.map(c => c.id === form.id ? form : c));
+      // Update sidebar if open
+      if (sidebarClient && sidebarClient.id === form.id) {
+        setSidebarClient(form);
+        setSidebarNotes(form.notes || '');
+      }
       showToast(t('clients.clientUpdated') || 'Client mis a jour', 'success');
     } else {
       setClients(prev => [...prev, form]);
@@ -356,6 +478,7 @@ export default function Clients() {
   function handleDelete(id: string) {
     setClients(prev => prev.filter(c => c.id !== id));
     setShowDetail(false);
+    if (sidebarClient && sidebarClient.id === id) closeSidebar();
     showToast(t('clients.clientDeleted') || 'Client supprime', 'success');
   }
 
@@ -419,11 +542,44 @@ export default function Clients() {
   function handleRGPDForget(c: Client) {
     setClients(prev => prev.filter(cl => cl.id !== c.id));
     setShowDetail(false);
+    if (sidebarClient && sidebarClient.id === c.id) closeSidebar();
     showToast(`Donnees de ${c.prenom} ${c.nom} supprimees (RGPD)`, 'success');
   }
 
   function handleCSVImport() {
     showToast(t('clients.csvImportSoon') || 'Import CSV bientot disponible', 'info');
+  }
+
+  function handleCSVExport() {
+    if (filtered.length === 0) {
+      showToast('Aucun client a exporter', 'error');
+      return;
+    }
+    const headers = ['Prenom', 'Nom', 'Email', 'Telephone', 'Entreprise', 'Type', 'CA Total', 'Nb Commandes', 'Derniere Visite', 'Date Naissance', 'Date Creation', 'Tags', 'Notes'];
+    const rows = filtered.map(c => [
+      c.prenom,
+      c.nom,
+      c.email,
+      c.telephone,
+      c.entreprise,
+      c.type,
+      c.caTotal.toString(),
+      c.nbCommandes.toString(),
+      c.derniereVisite,
+      c.dateNaissance || '',
+      c.dateCreation,
+      c.tags.join('; '),
+      c.notes.replace(/\n/g, ' '),
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(','))].join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `clients_export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${filtered.length} clients exportes en CSV`, 'success');
   }
 
   function toggleClientTag(clientId: string, tag: ClientTag) {
@@ -432,9 +588,15 @@ export default function Clients() {
       const has = c.tags.includes(tag);
       return { ...c, tags: has ? c.tags.filter(t => t !== tag) : [...c.tags, tag] };
     }));
-    // Update selected client too
     if (selectedClient && selectedClient.id === clientId) {
       setSelectedClient(prev => {
+        if (!prev) return prev;
+        const has = prev.tags.includes(tag);
+        return { ...prev, tags: has ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag] };
+      });
+    }
+    if (sidebarClient && sidebarClient.id === clientId) {
+      setSidebarClient(prev => {
         if (!prev) return prev;
         const has = prev.tags.includes(tag);
         return { ...prev, tags: has ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag] };
@@ -446,6 +608,9 @@ export default function Clients() {
     setClients(prev => prev.map(c => c.id === clientId ? { ...c, notes } : c));
     if (selectedClient && selectedClient.id === clientId) {
       setSelectedClient(prev => prev ? { ...prev, notes } : prev);
+    }
+    if (sidebarClient && sidebarClient.id === clientId) {
+      setSidebarClient(prev => prev ? { ...prev, notes } : prev);
     }
     showToast('Notes sauvegardees', 'success');
   }
@@ -528,6 +693,14 @@ export default function Clients() {
     inactifs: 'Inactifs',
   };
 
+  const segmentDescriptions: Record<SegmentId, string> = {
+    tous: 'Tous les clients',
+    vip: '>500 EUR depenses',
+    reguliers: '3+ visites',
+    nouveaux: '<30 jours',
+    inactifs: '>60 jours sans visite',
+  };
+
   const segmentIcons: Record<SegmentId, React.ReactNode> = {
     tous: <Users className="w-4 h-4" />,
     vip: <Crown className="w-4 h-4" />,
@@ -565,24 +738,79 @@ export default function Clients() {
         ? 'from-indigo-500 to-indigo-700'
         : 'from-[#111111] to-[#333]';
     return (
-      <div className={`${size} rounded-full bg-gradient-to-br ${colors} flex items-center justify-center text-white font-bold flex-shrink-0`}>
+      <div className={`${size} rounded-full bg-gradient-to-br ${colors} flex items-center justify-center text-white font-bold flex-shrink-0 relative`}>
         {getInitials(c.nom, c.prenom)}
+        {isBirthdayThisWeek(c.dateNaissance) && (
+          <div className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 rounded-full flex items-center justify-center">
+            <Cake className="w-3 h-3 text-white" />
+          </div>
+        )}
       </div>
     );
   }
 
-  // ── Client Card ───────────────────────────────────────────────────────
+  function renderLoyaltyBadge(c: Client) {
+    const tier = getLoyaltyTier(c.caTotal);
+    const colors = getLoyaltyColors(tier);
+    return (
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${colors.bg} ${colors.text} ${colors.border}`}>
+        <Award className={`w-3 h-3 ${colors.icon}`} />
+        {tier}
+      </span>
+    );
+  }
+
+  function renderBirthdayAlert(c: Client & { daysAway: number }) {
+    return (
+      <div key={c.id} className="flex items-center gap-3 px-3 py-2 bg-pink-50 dark:bg-pink-900/20 rounded-xl border border-pink-200 dark:border-pink-800">
+        {renderAvatar(c, 'w-8 h-8 text-xs')}
+        <div className="flex-1 min-w-0">
+          <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">{c.prenom} {c.nom}</span>
+          <span className="text-xs text-pink-600 dark:text-pink-400">
+            {c.daysAway === 0 ? "Aujourd'hui !" : `Dans ${c.daysAway} jour${c.daysAway > 1 ? 's' : ''}`}
+          </span>
+        </div>
+        <button
+          onClick={() => {
+            setSelectedClient(c);
+            const tpl = EMAIL_TEMPLATES.find(t => t.id === 'anniversaire');
+            if (tpl) {
+              setEmailSubject(tpl.subject);
+              setEmailMessage(tpl.body.replace('[prenom]', c.prenom));
+            }
+            setShowEmail(true);
+          }}
+          className="px-2.5 py-1 rounded-lg text-xs font-medium bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300 hover:bg-pink-200 dark:hover:bg-pink-900/60 transition-colors"
+        >
+          <Gift className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
+
+  // ── Client Card (Grid View) ───────────────────────────────────────────
 
   function ClientCard({ c }: { c: Client }) {
+    const tier = getLoyaltyTier(c.caTotal);
     return (
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 hover:shadow-lg hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
-        onClick={() => openDetail(c)}>
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 hover:shadow-lg hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
+        onClick={() => openSidebar(c)}>
+        {/* Birthday banner */}
+        {isBirthdayThisWeek(c.dateNaissance) && (
+          <div className="flex items-center gap-2 px-3 py-1.5 -mx-5 -mt-5 mb-4 rounded-t-2xl bg-gradient-to-r from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-900/10 border-b border-pink-200 dark:border-pink-800">
+            <Cake className="w-3.5 h-3.5 text-pink-500" />
+            <span className="text-xs font-medium text-pink-600 dark:text-pink-400">
+              Anniversaire {getBirthdayDaysAway(c.dateNaissance) === 0 ? "aujourd'hui !" : `dans ${getBirthdayDaysAway(c.dateNaissance)} jour${(getBirthdayDaysAway(c.dateNaissance) || 0) > 1 ? 's' : ''}`}
+            </span>
+          </div>
+        )}
+
         <div className="flex items-start gap-4">
           {renderAvatar(c, 'w-12 h-12 text-base')}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-semibold text-[#111111] dark:text-white truncate">{c.prenom} {c.nom}</h3>
-              <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).text}`}>{c.type}</span>
+              {renderLoyaltyBadge(c)}
             </div>
             {c.entreprise && (
               <div className="flex items-center gap-1.5 text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
@@ -590,11 +818,17 @@ export default function Clients() {
                 <span className="truncate">{c.entreprise}</span>
               </div>
             )}
-            <div className="flex items-center gap-3 mt-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
-              <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{c.email}</span>
+            <div className="flex items-center gap-3 mt-1.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+              {c.email && <span className="flex items-center gap-1 truncate"><Mail className="w-3 h-3 flex-shrink-0" />{c.email}</span>}
             </div>
+            {c.telephone && (
+              <div className="flex items-center gap-1 mt-0.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                <Phone className="w-3 h-3" />{c.telephone}
+              </div>
+            )}
             <div className="flex items-center gap-2 mt-2 flex-wrap">
-              {renderTags(c.tags)}
+              {renderTags(c.tags.slice(0, 3))}
+              {c.tags.length > 3 && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">+{c.tags.length - 3}</span>}
             </div>
           </div>
         </div>
@@ -602,30 +836,31 @@ export default function Clients() {
         <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
           <div className="text-center">
             <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(c.caTotal)}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">CA Total</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Total depense</div>
           </div>
           <div className="text-center">
             <div className="text-lg font-bold text-[#111111] dark:text-white">{c.nbCommandes}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Commandes</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Commandes</div>
           </div>
           <div className="text-center">
             <div className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{fmtDate(c.derniereVisite)}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Derniere visite</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Derniere visite</div>
           </div>
         </div>
 
+        {/* Quick Actions */}
         <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
-            <Mail className="w-3.5 h-3.5" /> Email
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+            <Send className="w-3.5 h-3.5" /> Envoyer email
           </button>
-          <button onClick={(e) => { e.stopPropagation(); openWhatsApp(c.telephone); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
-            <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
+          <button onClick={(e) => { e.stopPropagation(); setSidebarNotes(c.notes || ''); openSidebar(c); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+            <StickyNote className="w-3.5 h-3.5" /> Ajouter note
           </button>
-          <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F9FAFB] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#4B5563] transition-colors">
-            <Edit2 className="w-3.5 h-3.5" /> Modifier
+          <button onClick={(e) => { e.stopPropagation(); showToast('Programme de fidelite bientot disponible', 'info'); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors">
+            <Award className="w-3.5 h-3.5" /> Creer fidelite
           </button>
         </div>
       </div>
@@ -680,298 +915,492 @@ export default function Clients() {
     );
   }
 
-  // ── Segment Card ──────────────────────────────────────────────────────
-
-  function SegmentCard({ id, label, icon, count, revenue, avgTicket, color, borderColor }: {
-    id: SegmentId; label: string; icon: React.ReactNode; count: number; revenue: number; avgTicket: number; color: string; borderColor: string;
-  }) {
-    return (
-      <div
-        onClick={() => setActiveSegment(id)}
-        className={`bg-white dark:bg-[#0A0A0A] rounded-xl border-2 p-4 cursor-pointer transition-all hover:shadow-md ${
-          activeSegment === id ? borderColor : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
-        }`}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <div className={`flex items-center gap-2 ${color}`}>
-            {icon}
-            <span className="text-sm font-semibold">{label}</span>
-          </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); openCampaign(id); }}
-            className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
-            title="Campagne email"
-          >
-            <Megaphone className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
-          </button>
-        </div>
-        <div className="text-3xl font-bold text-[#111111] dark:text-white">{count}</div>
-        <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">clients</div>
-        <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
-          <div>
-            <div className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(revenue)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">CA total</div>
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(avgTicket)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // ── Render ────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
-            <Users className="w-7 h-7 text-[#111111] dark:text-[#A3A3A3]" />
-            CRM Clients
-          </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
-            {clients.length} clients &middot; {fmt(stats.totalCA)} CA total
-          </p>
+    <div className="flex gap-0">
+      {/* Main content area */}
+      <div className={`flex-1 space-y-6 transition-all duration-300 ${sidebarClient ? 'mr-0' : ''}`}>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+              <Users className="w-7 h-7 text-[#111111] dark:text-[#A3A3A3]" />
+              CRM Clients
+            </h1>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+              {clients.length} clients &middot; {fmt(stats.totalCA)} CA total
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <button onClick={() => setShowStats(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-sm font-medium transition-colors">
+              <BarChart3 className="w-4 h-4" /> Statistiques
+            </button>
+            <button onClick={handleCSVExport}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-sm font-medium transition-colors">
+              <Download className="w-4 h-4" /> Exporter la liste
+            </button>
+            <button onClick={handleCSVImport}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-sm font-medium transition-colors">
+              <Upload className="w-4 h-4" /> Import CSV
+            </button>
+            <button onClick={openAdd}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors shadow-sm">
+              <Plus className="w-4 h-4" /> Nouveau client
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={() => setShowStats(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] text-sm font-medium transition-colors">
-            <BarChart3 className="w-4 h-4" /> Statistiques
-          </button>
-          <button onClick={handleCSVImport}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] text-sm font-medium transition-colors">
-            <Upload className="w-4 h-4" /> Import CSV
-          </button>
-          <button onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors shadow-sm">
-            <Plus className="w-4 h-4" /> Nouveau client
-          </button>
+
+        {/* ── KPI Stats Header ──────────────────────────────────────── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
+                <Users className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+              </div>
+              <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-0.5">
+                <ArrowUpRight className="w-3 h-3" />
+                actifs
+              </span>
+            </div>
+            <div className="text-3xl font-bold text-[#111111] dark:text-white">{kpis.totalClients}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Total clients</div>
+          </div>
+
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2.5 rounded-xl bg-green-50 dark:bg-green-900/20">
+                <UserPlus className="w-5 h-5 text-green-600 dark:text-green-400" />
+              </div>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">ce mois</span>
+            </div>
+            <div className="text-3xl font-bold text-green-600 dark:text-green-400">{kpis.nouveauxCeMois}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Nouveaux ce mois</div>
+          </div>
+
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">EUR/commande</span>
+            </div>
+            <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">{fmt(kpis.panierMoyen)}</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Panier moyen</div>
+          </div>
+
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20">
+                <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">2+ commandes</span>
+            </div>
+            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{kpis.tauxFidelisation}%</div>
+            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Taux de fidelisation</div>
+          </div>
         </div>
-      </div>
 
-      {/* ── Segment Dashboard ──────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <SegmentCard
-          id="vip" label="VIP" icon={<Crown className="w-4 h-4" />}
-          count={segments?.vip.count || 0}
-          revenue={segments?.vip.totalRevenue || 0}
-          avgTicket={segments?.vip.avgTicket || 0}
-          color="text-amber-600 dark:text-amber-400"
-          borderColor="border-amber-400 dark:border-amber-600"
-        />
-        <SegmentCard
-          id="reguliers" label="Reguliers" icon={<Repeat className="w-4 h-4" />}
-          count={segments?.reguliers.count || 0}
-          revenue={segments?.reguliers.totalRevenue || 0}
-          avgTicket={segments?.reguliers.avgTicket || 0}
-          color="text-blue-600 dark:text-blue-400"
-          borderColor="border-blue-400 dark:border-blue-600"
-        />
-        <SegmentCard
-          id="nouveaux" label="Nouveaux" icon={<Sparkles className="w-4 h-4" />}
-          count={segments?.nouveaux.count || 0}
-          revenue={segments?.nouveaux.totalRevenue || 0}
-          avgTicket={segments?.nouveaux.avgTicket || 0}
-          color="text-green-600 dark:text-green-400"
-          borderColor="border-green-400 dark:border-green-600"
-        />
-        <SegmentCard
-          id="inactifs" label="Inactifs" icon={<UserMinus className="w-4 h-4" />}
-          count={segments?.inactifs.count || 0}
-          revenue={segments?.inactifs.totalRevenue || 0}
-          avgTicket={segments?.inactifs.avgTicket || 0}
-          color="text-red-600 dark:text-red-400"
-          borderColor="border-red-400 dark:border-red-600"
-        />
-      </div>
+        {/* ── Birthday Alerts ────────────────────────────────────────── */}
+        {birthdayClients.length > 0 && (
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-pink-200 dark:border-pink-800 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Cake className="w-5 h-5 text-pink-500" />
+              <h3 className="text-sm font-semibold text-[#111111] dark:text-white">
+                Anniversaires cette semaine ({birthdayClients.length})
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {birthdayClients.map(c => renderBirthdayAlert(c))}
+            </div>
+          </div>
+        )}
 
-      {/* ── Segment Tabs ──────────────────────────────────────────────── */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-1">
-        <div className="flex gap-1 overflow-x-auto">
-          {(['tous', 'vip', 'reguliers', 'nouveaux', 'inactifs'] as SegmentId[]).map(seg => (
-            <button
-              key={seg}
-              onClick={() => setActiveSegment(seg)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                activeSegment === seg
-                  ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                  : 'text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
-              }`}
-            >
-              {segmentIcons[seg]}
-              {segmentLabels[seg]}
-              {seg !== 'tous' && segments && (
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+        {/* ── Segment Filter Tabs ────────────────────────────────────── */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-1.5">
+          <div className="flex gap-1 overflow-x-auto">
+            {(['tous', 'vip', 'reguliers', 'nouveaux', 'inactifs'] as SegmentId[]).map(seg => (
+              <button
+                key={seg}
+                onClick={() => setActiveSegment(seg)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+                  activeSegment === seg
+                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-sm'
+                    : 'text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                }`}
+              >
+                {segmentIcons[seg]}
+                <span>{segmentLabels[seg]}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                   activeSegment === seg
                     ? 'bg-white/20 dark:bg-black/20'
                     : 'bg-[#F3F4F6] dark:bg-[#171717]'
                 }`}>
-                  {segments[seg as keyof Omit<SegmentsResponse, 'total'>]?.count || 0}
+                  {seg === 'tous' ? clients.length : localSegmentCounts[seg]}
                 </span>
-              )}
-              {seg === 'tous' && (
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  activeSegment === seg
-                    ? 'bg-white/20 dark:bg-black/20'
-                    : 'bg-[#F3F4F6] dark:bg-[#171717]'
-                }`}>
-                  {clients.length}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Filters bar */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-            <input type="text" placeholder="Rechercher un client..."
-              value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-transparent" />
+              </button>
+            ))}
           </div>
-
-          {/* Type filter */}
-          <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
-            className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
-            <option value="">Tous les types</option>
-            <option value="Particulier">Particulier</option>
-            <option value="Entreprise">Entreprise</option>
-            <option value="Association">Association</option>
-          </select>
-
-          {/* Sort */}
-          <div className="flex items-center gap-1">
-            <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
-              className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
-              <option value="nom">Tri par nom</option>
-              <option value="caTotal">Tri par CA</option>
-              <option value="derniereVisite">Tri par visite</option>
-            </select>
-            <button onClick={() => setSortAsc(!sortAsc)}
-              className="p-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
-              {sortAsc ? <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
-            </button>
-          </div>
-
-          {/* Campaign for current segment */}
           {activeSegment !== 'tous' && (
-            <button onClick={() => openCampaign(activeSegment)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-              <Megaphone className="w-4 h-4" /> Campagne email
-            </button>
-          )}
-
-          {/* View toggle */}
-          <div className="flex items-center bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
-            <button onClick={() => setViewMode('cards')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-[#4B5563] shadow-sm text-[#111111] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button onClick={() => setViewMode('table')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#4B5563] shadow-sm text-[#111111] dark:text-[#A3A3A3]' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
-              <List className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Results count */}
-      {filtered.length !== clients.length && (
-        <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
-          {filtered.length} resultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
-        </p>
-      )}
-
-      {/* Empty state */}
-      {clients.length === 0 && (
-        <div className="text-center py-16">
-          <Users className="w-16 h-16 mx-auto mb-4 text-[#D1D5DB] dark:text-[#333]" />
-          <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">Aucun client</h3>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-6">Commencez par ajouter votre premier client pour activer le CRM.</p>
-          <button onClick={openAdd}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors">
-            <Plus className="w-4 h-4" /> Ajouter un client
-          </button>
-        </div>
-      )}
-
-      {/* Card view */}
-      {viewMode === 'cards' && clients.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filtered.map(c => <ClientCard key={c.id} c={c} />)}
-        </div>
-      )}
-
-      {/* Table view */}
-      {viewMode === 'table' && clients.length > 0 && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black/50">
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Client</th>
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Type</th>
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Tags</th>
-                <th className="text-right px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">CA Total</th>
-                <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Commandes</th>
-                <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Derniere visite</th>
-                <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
-              {filtered.map(c => (
-                <tr key={c.id} className="hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 cursor-pointer transition-colors"
-                  onClick={() => openDetail(c)}>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {renderAvatar(c, 'w-8 h-8 text-xs')}
-                      <div>
-                        <div className="font-medium text-[#111111] dark:text-white">{c.prenom} {c.nom}</div>
-                        <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{c.entreprise || c.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[c.type] || TYPE_COLORS['Particulier']).text}`}>{c.type}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1 flex-wrap">{renderTags(c.tags)}</div>
-                  </td>
-                  <td className="px-4 py-3 text-right font-medium text-[#111111] dark:text-white">{fmt(c.caTotal)}</td>
-                  <td className="px-4 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">{c.nbCommandes}</td>
-                  <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{fmtDate(c.derniereVisite)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-center gap-1">
-                      <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
-                        className="p-1.5 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/30 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors" title="Email">
-                        <Mail className="w-4 h-4" />
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); openWhatsApp(c.telephone); }}
-                        className="p-1.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/30 text-[#9CA3AF] dark:text-[#737373] hover:text-green-600 dark:hover:text-green-400 transition-colors" title="WhatsApp">
-                        <MessageSquare className="w-4 h-4" />
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
-                        className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors" title="Modifier">
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {filtered.length === 0 && (
-            <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
-              <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Aucun client trouve</p>
+            <div className="px-4 py-1.5 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+              {segmentDescriptions[activeSegment]}
             </div>
           )}
+        </div>
+
+        {/* Filters bar */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+            {/* Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <input type="text" placeholder="Rechercher un client..."
+                value={search} onChange={e => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-transparent" />
+            </div>
+
+            {/* Type filter */}
+            <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
+              className="px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
+              <option value="">Tous les types</option>
+              <option value="Particulier">Particulier</option>
+              <option value="Entreprise">Entreprise</option>
+              <option value="Association">Association</option>
+            </select>
+
+            {/* Sort */}
+            <div className="flex items-center gap-1">
+              <select value={sortField} onChange={e => setSortField(e.target.value as SortField)}
+                className="px-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#9CA3AF] dark:text-[#737373]">
+                <option value="nom">Tri par nom</option>
+                <option value="caTotal">Tri par CA</option>
+                <option value="derniereVisite">Tri par visite</option>
+              </select>
+              <button onClick={() => setSortAsc(!sortAsc)}
+                className="p-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                {sortAsc ? <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
+              </button>
+            </div>
+
+            {/* Campaign for current segment */}
+            {activeSegment !== 'tous' && (
+              <button onClick={() => openCampaign(activeSegment)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                <Megaphone className="w-4 h-4" /> Campagne email
+              </button>
+            )}
+
+            {/* View toggle */}
+            <div className="flex items-center bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-0.5">
+              <button onClick={() => setViewMode('cards')}
+                className={`p-2.5 rounded-lg transition-colors ${viewMode === 'cards' ? 'bg-white dark:bg-[#333] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button onClick={() => setViewMode('table')}
+                className={`p-2.5 rounded-lg transition-colors ${viewMode === 'table' ? 'bg-white dark:bg-[#333] shadow-sm text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#4B5563]'}`}>
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Results count */}
+        {filtered.length !== clients.length && (
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+            {filtered.length} resultat{filtered.length > 1 ? 's' : ''} sur {clients.length} clients
+          </p>
+        )}
+
+        {/* Empty state */}
+        {clients.length === 0 && (
+          <div className="text-center py-16">
+            <Users className="w-16 h-16 mx-auto mb-4 text-[#D1D5DB] dark:text-[#333]" />
+            <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">Aucun client</h3>
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-6">Commencez par ajouter votre premier client pour activer le CRM.</p>
+            <button onClick={openAdd}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black text-sm font-medium transition-colors">
+              <Plus className="w-4 h-4" /> Ajouter un client
+            </button>
+          </div>
+        )}
+
+        {/* Card view */}
+        {viewMode === 'cards' && clients.length > 0 && (
+          <div className={`grid grid-cols-1 gap-4 ${sidebarClient ? 'md:grid-cols-1 xl:grid-cols-2' : 'md:grid-cols-2 xl:grid-cols-3'}`}>
+            {filtered.map(c => <ClientCard key={c.id} c={c} />)}
+          </div>
+        )}
+
+        {/* Table view */}
+        {viewMode === 'table' && clients.length > 0 && (
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black/50">
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Client</th>
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Fidelite</th>
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Tags</th>
+                  <th className="text-right px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">CA Total</th>
+                  <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Commandes</th>
+                  <th className="text-left px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Derniere visite</th>
+                  <th className="text-center px-4 py-3 font-medium text-[#9CA3AF] dark:text-[#737373]">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+                {filtered.map(c => (
+                  <tr key={c.id} className="hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 cursor-pointer transition-colors"
+                    onClick={() => openSidebar(c)}>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        {renderAvatar(c, 'w-9 h-9 text-xs')}
+                        <div>
+                          <div className="font-medium text-[#111111] dark:text-white flex items-center gap-2">
+                            {c.prenom} {c.nom}
+                            {isBirthdayThisWeek(c.dateNaissance) && <Cake className="w-3.5 h-3.5 text-pink-500" />}
+                          </div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{c.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">{renderLoyaltyBadge(c)}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1 flex-wrap">{renderTags(c.tags.slice(0, 2))}{c.tags.length > 2 && <span className="text-[10px] text-[#9CA3AF]">+{c.tags.length - 2}</span>}</div>
+                    </td>
+                    <td className="px-4 py-3 text-right font-medium text-[#111111] dark:text-white">{fmt(c.caTotal)}</td>
+                    <td className="px-4 py-3 text-center text-[#6B7280] dark:text-[#A3A3A3]">{c.nbCommandes}</td>
+                    <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{fmtDate(c.derniereVisite)}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-1">
+                        <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
+                          className="p-1.5 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/30 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors" title="Envoyer email">
+                          <Send className="w-4 h-4" />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); openSidebar(c); }}
+                          className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors" title="Ajouter note">
+                          <StickyNote className="w-4 h-4" />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); openEdit(c); }}
+                          className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#374151] transition-colors" title="Modifier">
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filtered.length === 0 && (
+              <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>Aucun client trouve</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ── Client Detail Sidebar ──────────────────────────────────────── */}
+      {sidebarClient && (
+        <div className="w-[380px] lg:w-[420px] flex-shrink-0 ml-6 hidden md:block">
+          <div className="sticky top-6 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden max-h-[calc(100vh-120px)] overflow-y-auto">
+            {/* Sidebar Header */}
+            <div className="relative p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <button onClick={closeSidebar}
+                className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <X className="w-4 h-4 text-[#9CA3AF]" />
+              </button>
+              <div className="flex items-start gap-4">
+                {renderAvatar(sidebarClient, 'w-14 h-14 text-lg')}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-bold text-[#111111] dark:text-white">{sidebarClient.prenom} {sidebarClient.nom}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[sidebarClient.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[sidebarClient.type] || TYPE_COLORS['Particulier']).text}`}>{sidebarClient.type}</span>
+                    {renderLoyaltyBadge(sidebarClient)}
+                  </div>
+                  {sidebarClient.entreprise && (
+                    <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                      <Building2 className="w-3 h-3" /> {sidebarClient.entreprise}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Birthday alert in sidebar */}
+              {isBirthdayThisWeek(sidebarClient.dateNaissance) && (
+                <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800">
+                  <Cake className="w-4 h-4 text-pink-500" />
+                  <span className="text-xs font-medium text-pink-600 dark:text-pink-400">
+                    Anniversaire {getBirthdayDaysAway(sidebarClient.dateNaissance) === 0 ? "aujourd'hui !" : `dans ${getBirthdayDaysAway(sidebarClient.dateNaissance)} jour${(getBirthdayDaysAway(sidebarClient.dateNaissance) || 0) > 1 ? 's' : ''}`}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Contact Info */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] space-y-2.5">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Contact</h4>
+              {sidebarClient.email && (
+                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                  <Mail className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                  <span className="truncate">{sidebarClient.email}</span>
+                </div>
+              )}
+              {sidebarClient.telephone && (
+                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                  <Phone className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                  <span>{sidebarClient.telephone}</span>
+                </div>
+              )}
+              {sidebarClient.adresse && (
+                <div className="flex items-start gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                  <Building2 className="w-4 h-4 text-[#9CA3AF] flex-shrink-0 mt-0.5" />
+                  <span>{sidebarClient.adresse}</span>
+                </div>
+              )}
+              {sidebarClient.dateNaissance && (
+                <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                  <Calendar className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                  <span>Ne(e) le {fmtDate(sidebarClient.dateNaissance)}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2.5 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+                <Clock className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                <span>Client depuis {fmtDate(sidebarClient.dateCreation)}</span>
+              </div>
+            </div>
+
+            {/* Lifetime Value */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Valeur client</h4>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
+                  <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(sidebarClient.caTotal)}</div>
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Lifetime Value</div>
+                </div>
+                <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
+                  <div className="text-lg font-bold text-[#111111] dark:text-white">{sidebarClient.nbCommandes}</div>
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Commandes</div>
+                </div>
+                <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
+                  <div className="text-lg font-bold text-[#111111] dark:text-white">
+                    {sidebarClient.nbCommandes > 0 ? fmt(sidebarClient.caTotal / sidebarClient.nbCommandes) : '--'}
+                  </div>
+                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
+                </div>
+              </div>
+              {sidebarClient.derniereVisite && (
+                <div className="mt-3 text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" />
+                  Derniere visite : {fmtDate(sidebarClient.derniereVisite)}
+                </div>
+              )}
+            </div>
+
+            {/* Favorite Dishes */}
+            {sidebarClient.platsFavoris.length > 0 && (
+              <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+                <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+                  <Star className="w-3.5 h-3.5 text-amber-500" /> Plats favoris
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {sidebarClient.platsFavoris.map(p => (
+                    <span key={p} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">{p}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Order History Timeline */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Historique</h4>
+              {sidebarClient.historique.length === 0 ? (
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-4">Aucune interaction</p>
+              ) : (
+                <div className="relative pl-5 border-l-2 border-[#E5E7EB] dark:border-[#1A1A1A] space-y-3 max-h-48 overflow-y-auto">
+                  {sidebarClient.historique.slice(0, 8).map(h => (
+                    <div key={h.id} className="relative">
+                      <div className="absolute -left-[23px] w-3 h-3 rounded-full bg-white dark:bg-[#0A0A0A] border-2 border-[#D1D5DB] dark:border-[#333]" />
+                      <div className="flex items-center justify-between">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${interactionIcons[h.type]?.color || ''}`}>
+                          {h.type.charAt(0).toUpperCase() + h.type.slice(1)}
+                        </span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtDate(h.date)}</span>
+                      </div>
+                      <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 line-clamp-1">{h.description}</p>
+                      {h.montant && <p className="text-xs font-semibold text-[#111111] dark:text-white">{fmt(h.montant)}</p>}
+                    </div>
+                  ))}
+                  {sidebarClient.historique.length > 8 && (
+                    <button onClick={() => openDetail(sidebarClient)}
+                      className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors flex items-center gap-1">
+                      Voir tout <ChevronsRight className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Notes (quick edit) */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+                <StickyNote className="w-3.5 h-3.5" /> Notes
+              </h4>
+              <textarea
+                value={sidebarNotes}
+                onChange={e => setSidebarNotes(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-xs text-[#111111] dark:text-white resize-none"
+                placeholder="Notes internes sur ce client..."
+              />
+              {sidebarNotes !== (sidebarClient.notes || '') && (
+                <button
+                  onClick={() => saveClientNotes(sidebarClient.id, sidebarNotes)}
+                  className="mt-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                  Sauvegarder
+                </button>
+              )}
+            </div>
+
+            {/* Tags */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Tags</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {sidebarClient.tags.length > 0 ? renderTags(sidebarClient.tags) : (
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Aucun tag</span>
+                )}
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="p-5 space-y-2">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Actions rapides</h4>
+              <button onClick={() => openEmailModal(sidebarClient)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                <Send className="w-4 h-4" /> Envoyer email
+              </button>
+              <button onClick={() => openWhatsApp(sidebarClient.telephone)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
+                <MessageSquare className="w-4 h-4" /> WhatsApp
+              </button>
+              <button onClick={() => { closeSidebar(); openEdit(sidebarClient); }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
+                <Edit2 className="w-4 h-4" /> Modifier le profil
+              </button>
+              <button onClick={() => openDetail(sidebarClient)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
+                <Eye className="w-4 h-4" /> Voir fiche complete
+              </button>
+              <button onClick={() => showToast('Programme de fidelite bientot disponible', 'info')}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors border border-amber-200 dark:border-amber-800">
+                <Award className="w-4 h-4" /> Creer fidelite
+              </button>
+              <button onClick={() => handleDelete(sidebarClient.id)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                <Trash2 className="w-4 h-4" /> Supprimer
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -987,6 +1416,7 @@ export default function Clients() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${(TYPE_COLORS[selectedClient.type] || TYPE_COLORS['Particulier']).bg} ${(TYPE_COLORS[selectedClient.type] || TYPE_COLORS['Particulier']).text}`}>{selectedClient.type}</span>
+                  {renderLoyaltyBadge(selectedClient)}
                   {renderTags(selectedClient.tags)}
                 </div>
                 {selectedClient.entreprise && (
@@ -994,32 +1424,42 @@ export default function Clients() {
                     <Building2 className="w-4 h-4" /> {selectedClient.entreprise}
                   </div>
                 )}
-                <div className="flex items-center gap-4 mt-2 text-sm text-[#9CA3AF] dark:text-[#737373]">
+                <div className="flex items-center gap-4 mt-2 text-sm text-[#9CA3AF] dark:text-[#737373] flex-wrap">
                   <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {selectedClient.email}</span>
                   <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {selectedClient.telephone}</span>
+                  {selectedClient.dateNaissance && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" /> {fmtDate(selectedClient.dateNaissance)}
+                      {isBirthdayThisWeek(selectedClient.dateNaissance) && <Cake className="w-3.5 h-3.5 text-pink-500" />}
+                    </span>
+                  )}
                 </div>
-                <div className="flex items-center gap-3 mt-3">
+                <div className="flex items-center gap-3 mt-3 flex-wrap">
                   <button onClick={() => openEmailModal(selectedClient)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
-                    <Mail className="w-3.5 h-3.5" /> Envoyer email
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                    <Send className="w-3.5 h-3.5" /> Envoyer email
                   </button>
                   <button onClick={() => openWhatsApp(selectedClient.telephone)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
                     <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
                   </button>
                   <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#4B5563] transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
                     <Edit2 className="w-3.5 h-3.5" /> Modifier
                   </button>
+                  <button onClick={() => showToast('Programme de fidelite bientot disponible', 'info')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors border border-amber-200 dark:border-amber-800">
+                    <Award className="w-3.5 h-3.5" /> Creer fidelite
+                  </button>
                   <button onClick={() => handleDelete(selectedClient.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">
                     <Trash2 className="w-3.5 h-3.5" /> Supprimer
                   </button>
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold text-[#111111] dark:text-white">{fmt(selectedClient.caTotal)}</div>
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">CA Total</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Lifetime Value</div>
                 <div className="text-lg font-semibold text-[#6B7280] dark:text-[#A3A3A3] mt-1">
                   {selectedClient.nbCommandes > 0 ? fmt(selectedClient.caTotal / selectedClient.nbCommandes) : '--'}
                 </div>
@@ -1060,8 +1500,8 @@ export default function Clients() {
                   <div className="space-y-3">
                     <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Email</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.email}</p></div>
                     <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Telephone</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.telephone}</p></div>
+                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Date de naissance</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.dateNaissance ? fmtDate(selectedClient.dateNaissance) : '--'}</p></div>
                     <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Client depuis</label><p className="text-sm text-[#111111] dark:text-white">{fmtDate(selectedClient.dateCreation)}</p></div>
-                    <div><label className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">Commandes</label><p className="text-sm text-[#111111] dark:text-white">{selectedClient.nbCommandes}</p></div>
                   </div>
                 </div>
 
@@ -1108,13 +1548,13 @@ export default function Clients() {
                     value={clientNotes}
                     onChange={e => setClientNotes(e.target.value)}
                     rows={3}
-                    className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white resize-none"
+                    className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white resize-none"
                     placeholder="Notes internes sur ce client..."
                   />
                   {clientNotes !== (selectedClient.notes || '') && (
                     <button
                       onClick={() => saveClientNotes(selectedClient.id, clientNotes)}
-                      className="mt-2 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                      className="mt-2 px-4 py-1.5 rounded-xl text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                       Sauvegarder notes
                     </button>
                   )}
@@ -1185,17 +1625,17 @@ export default function Clients() {
               <div className="space-y-3">
                 {/* Summary bar */}
                 <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3 text-center">
+                  <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
                     <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(selectedClient.caTotal)}</div>
                     <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Total depense</div>
                   </div>
-                  <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3 text-center">
+                  <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
                     <div className="text-lg font-bold text-[#111111] dark:text-white">
                       {selectedClient.nbCommandes > 0 ? fmt(selectedClient.caTotal / selectedClient.nbCommandes) : '--'}
                     </div>
                     <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Ticket moyen</div>
                   </div>
-                  <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3 text-center">
+                  <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center">
                     <div className="text-lg font-bold text-[#111111] dark:text-white">{selectedClient.nbCommandes}</div>
                     <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Visites</div>
                   </div>
@@ -1210,7 +1650,7 @@ export default function Clients() {
                         <div className="absolute -left-[29px] w-4 h-4 rounded-full bg-white dark:bg-[#0A0A0A] border-2 border-[#D1D5DB] dark:border-[#1A1A1A] flex items-center justify-center text-[8px] font-bold">
                           {interactionIcons[h.type]?.icon || '?'}
                         </div>
-                        <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-3">
+                        <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3">
                           <div className="flex items-center justify-between">
                             <span className={`px-2 py-0.5 rounded text-xs font-medium ${interactionIcons[h.type]?.color || ''}`}>
                               {h.type.charAt(0).toUpperCase() + h.type.slice(1)}
@@ -1234,7 +1674,7 @@ export default function Clients() {
                   <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucun document</p>
                 ) : (
                   selectedClient.documents.map(d => (
-                    <div key={d.id} className="flex items-center justify-between bg-[#F9FAFB] dark:bg-black rounded-lg p-3">
+                    <div key={d.id} className="flex items-center justify-between bg-[#F9FAFB] dark:bg-black rounded-xl p-3">
                       <div className="flex items-center gap-3">
                         <FileText className={`w-5 h-5 ${d.type === 'facture' ? 'text-green-500' : 'text-[#374151] dark:text-[#D4D4D4]'}`} />
                         <div>
@@ -1260,7 +1700,7 @@ export default function Clients() {
             {/* Tab: RGPD */}
             {detailTab === 'rgpd' && (
               <div className="space-y-4">
-                <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-4">
+                <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-5 h-5 text-[#374151] dark:text-[#D4D4D4]" />
                     <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373]">Protection des donnees</h4>
@@ -1276,11 +1716,11 @@ export default function Clients() {
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <button onClick={() => exportClientData(selectedClient)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 text-sm font-medium transition-colors">
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 text-sm font-medium transition-colors">
                     <Download className="w-4 h-4" /> Exporter donnees
                   </button>
                   <button onClick={() => handleRGPDForget(selectedClient)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-sm font-medium transition-colors">
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 text-sm font-medium transition-colors">
                     <Trash2 className="w-4 h-4" /> Droit a l'oubli
                   </button>
                 </div>
@@ -1296,7 +1736,7 @@ export default function Clients() {
         className="max-w-3xl">
         <div className="space-y-5">
           {duplicateWarning && (
-            <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-lg text-sm text-amber-700 dark:text-amber-300">
+            <div className="flex items-center gap-2 px-4 py-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-xl text-sm text-amber-700 dark:text-amber-300">
               <AlertTriangle className="w-4 h-4 flex-shrink-0" />
               {duplicateWarning}
             </div>
@@ -1306,50 +1746,55 @@ export default function Clients() {
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Prenom</label>
               <input type="text" value={form.prenom} onChange={e => setForm({ ...form, prenom: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nom</label>
               <input type="text" value={form.nom}
                 onChange={e => { setForm({ ...form, nom: e.target.value }); checkDuplicate(e.target.value, form.email); }}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Email</label>
               <input type="email" value={form.email}
                 onChange={e => { setForm({ ...form, email: e.target.value }); checkDuplicate(form.nom, e.target.value); }}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Telephone</label>
               <input type="tel" value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Entreprise</label>
               <input type="text" value={form.entreprise} onChange={e => setForm({ ...form, entreprise: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Date de naissance</label>
+              <input type="date" value={form.dateNaissance} onChange={e => setForm({ ...form, dateNaissance: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">SIRET</label>
               <input type="text" value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
-            </div>
-            <div className="col-span-full">
-              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Adresse</label>
-              <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Type</label>
               <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value as ClientType })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white">
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white">
                 <option value="Particulier">Particulier</option>
                 <option value="Entreprise">Entreprise</option>
                 <option value="Association">Association</option>
               </select>
             </div>
-            <div>
+            <div className="col-span-full">
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Adresse</label>
+              <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+            </div>
+            <div className="col-span-full">
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Tags</label>
               <div className="flex gap-2 flex-wrap">
                 {Object.keys(BASIC_TAG_COLORS).map(tag => (
@@ -1360,7 +1805,7 @@ export default function Clients() {
                         tags: f.tags.includes(tag as ClientTag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag as ClientTag],
                       }));
                     }}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                    className={`px-2.5 py-1 rounded-xl text-xs font-medium border transition-colors ${
                       form.tags.includes(tag as ClientTag)
                         ? `${BASIC_TAG_COLORS[tag].bg} ${BASIC_TAG_COLORS[tag].text} ${BASIC_TAG_COLORS[tag].border}`
                         : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A]'
@@ -1377,17 +1822,17 @@ export default function Clients() {
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">CA Total (EUR)</label>
               <input type="number" value={form.caTotal} onChange={e => setForm({ ...form, caTotal: parseFloat(e.target.value) || 0 })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Nb commandes</label>
               <input type="number" value={form.nbCommandes} onChange={e => setForm({ ...form, nbCommandes: parseInt(e.target.value) || 0 })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Derniere visite</label>
               <input type="date" value={form.derniereVisite} onChange={e => setForm({ ...form, derniereVisite: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
             </div>
           </div>
 
@@ -1396,7 +1841,7 @@ export default function Clients() {
             <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Allergenes (14 allergenes UE)</label>
             <div className="flex flex-wrap gap-2">
               {EU_ALLERGENES.map(a => (
-                <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
+                <label key={a.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border cursor-pointer transition-colors ${
                   form.allergenes.includes(a.id)
                     ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700'
                     : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
@@ -1420,7 +1865,7 @@ export default function Clients() {
             <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Regime alimentaire</label>
             <div className="flex flex-wrap gap-2">
               {REGIMES.map(r => (
-                <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border cursor-pointer transition-colors ${
+                <label key={r} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border cursor-pointer transition-colors ${
                   form.regime.includes(r)
                     ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700'
                     : 'bg-[#F9FAFB] dark:bg-black text-[#9CA3AF] dark:text-[#737373] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
@@ -1444,7 +1889,7 @@ export default function Clients() {
             <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Notes</label>
             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white resize-none" />
+              className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white resize-none" />
           </div>
 
           {/* Actions */}
@@ -1455,11 +1900,11 @@ export default function Clients() {
             </button>
             <div className="flex gap-3">
               <button onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={handleSave}
-                className="px-6 py-2 rounded-lg text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+                className="px-6 py-2 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
                 {editingClient ? 'Sauvegarder' : 'Ajouter'}
               </button>
             </div>
@@ -1478,7 +1923,8 @@ export default function Clients() {
                 {EMAIL_TEMPLATES.map(tpl => (
                   <button key={tpl.id}
                     onClick={() => applyTemplate(tpl)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedTemplate === tpl.id ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-white' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'}`}>
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${selectedTemplate === tpl.id ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-white' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'}`}>
+                    {tpl.id === 'anniversaire' && <Cake className="w-3 h-3 inline mr-1" />}
                     {tpl.label}
                   </button>
                 ))}
@@ -1488,23 +1934,23 @@ export default function Clients() {
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Sujet</label>
               <input type="text" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)}
                 placeholder="Sujet de l'email..."
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none" />
             </div>
             <div>
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Message</label>
               <textarea value={emailMessage} onChange={(e) => setEmailMessage(e.target.value)}
                 placeholder="Votre message..."
                 rows={6}
-                className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-vertical" />
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-[#111111] outline-none resize-vertical" />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => { setShowEmail(false); setEmailSubject(''); setEmailMessage(''); setSelectedTemplate(''); }}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={handleSendClientEmail}
                 disabled={sendingClientEmail || !emailSubject.trim() || !emailMessage.trim()}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
                 {sendingClientEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 Envoyer
               </button>
@@ -1519,10 +1965,10 @@ export default function Clients() {
         className="max-w-2xl">
         <div className="space-y-5">
           {/* Segment info */}
-          <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-4">
+          <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] ${segmentColors[campaignSegment]}`}>
+                <div className={`p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] ${segmentColors[campaignSegment]}`}>
                   {segmentIcons[campaignSegment]}
                 </div>
                 <div>
@@ -1548,7 +1994,7 @@ export default function Clients() {
                     setCampaignSubject(tpl.subject);
                     setCampaignMessage(tpl.body);
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${
                     campaignSegment === seg
                       ? 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white text-white dark:text-black'
                       : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
@@ -1565,7 +2011,7 @@ export default function Clients() {
           <div>
             <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Sujet</label>
             <input type="text" value={campaignSubject} onChange={e => setCampaignSubject(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none" />
+              className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none" />
           </div>
 
           {/* Message */}
@@ -1575,13 +2021,13 @@ export default function Clients() {
             </label>
             <textarea value={campaignMessage} onChange={e => setCampaignMessage(e.target.value)}
               rows={8}
-              className="w-full px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none resize-vertical" />
+              className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:ring-white outline-none resize-vertical" />
           </div>
 
           {/* Preview */}
           <div>
             <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Apercu</label>
-            <div className="bg-[#F9FAFB] dark:bg-black rounded-lg p-4 text-sm text-[#6B7280] dark:text-[#A3A3A3] whitespace-pre-wrap border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-sm text-[#6B7280] dark:text-[#A3A3A3] whitespace-pre-wrap border border-[#E5E7EB] dark:border-[#1A1A1A]">
               {campaignMessage.replace(/\[nom\]/gi, 'Dupont').replace(/\[prenom\]/gi, 'Jean').replace(/\[entreprise\]/gi, 'SARL Example')}
             </div>
           </div>
@@ -1593,12 +2039,12 @@ export default function Clients() {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowCampaign(false)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
                 Annuler
               </button>
               <button onClick={handleSendCampaign}
                 disabled={sendingCampaign || !campaignSubject.trim() || !campaignMessage.trim() || getSegmentClients(campaignSegment).length === 0}
-                className="flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
+                className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors disabled:opacity-50">
                 {sendingCampaign ? <Loader2 className="w-4 h-4 animate-spin" /> : <Megaphone className="w-4 h-4" />}
                 Envoyer la campagne
               </button>
@@ -1612,20 +2058,20 @@ export default function Clients() {
         <div className="space-y-8">
           {/* KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-[#111111] dark:text-white">{clients.length}</div>
               <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Total clients</div>
             </div>
-            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-[#111111] dark:text-[#A3A3A3]">{fmt(stats.totalCA)}</div>
               <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">CA Total</div>
             </div>
-            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">{fmt(stats.avgCA)}</div>
               <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">CA moyen/client</div>
             </div>
-            <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{segments?.vip.count || 0}</div>
+            <div className="bg-[#F9FAFB] dark:bg-black rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{localSegmentCounts.vip}</div>
               <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Clients VIP</div>
             </div>
           </div>
@@ -1636,10 +2082,10 @@ export default function Clients() {
               <PieChart className="w-4 h-4 text-purple-500" /> Distribution par segment
             </h4>
             <PieChartSimple data={[
-              { label: 'VIP', value: segments?.vip.count || 0, color: '#f59e0b' },
-              { label: 'Reguliers', value: segments?.reguliers.count || 0, color: '#3b82f6' },
-              { label: 'Nouveaux', value: segments?.nouveaux.count || 0, color: '#22c55e' },
-              { label: 'Inactifs', value: segments?.inactifs.count || 0, color: '#ef4444' },
+              { label: 'VIP', value: localSegmentCounts.vip, color: '#f59e0b' },
+              { label: 'Reguliers', value: localSegmentCounts.reguliers, color: '#3b82f6' },
+              { label: 'Nouveaux', value: localSegmentCounts.nouveaux, color: '#22c55e' },
+              { label: 'Inactifs', value: localSegmentCounts.inactifs, color: '#ef4444' },
             ]} />
           </div>
 

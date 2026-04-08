@@ -1,8 +1,9 @@
-import { useState, useMemo, useCallback, useEffect, DragEvent } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef, DragEvent, MouseEvent as ReactMouseEvent } from 'react';
 import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
   Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical,
-  Timer, LogIn, LogOut, Play, Square
+  Timer, LogIn, LogOut, Play, Square, Printer, AlertCircle,
+  Sun, Moon, Coffee, ChefHat, UtensilsCrossed, GlassWater, Droplets
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -55,9 +56,18 @@ interface TimeclockSummaryEmployee {
   days: Record<string, number>;
 }
 
+interface Conflict {
+  employeeId: number;
+  employeeName: string;
+  shiftA: Shift;
+  shiftB: Shift;
+}
+
 type EmployeeRole = 'Chef' | 'Commis' | 'Serveur' | 'Serveuse' | 'Plongeur' | 'Plongeuse' | 'Patissier' | 'Patissiere';
 
 type ShiftType = 'matin' | 'midi' | 'soir';
+
+type PosteType = 'cuisine' | 'salle' | 'bar' | 'plonge';
 
 const ROLES: EmployeeRole[] = ['Chef', 'Commis', 'Serveur', 'Serveuse', 'Plongeur', 'Plongeuse', 'Patissier', 'Patissiere'];
 
@@ -83,14 +93,25 @@ const SHIFT_TYPES: { key: ShiftType; label: string; start: string; end: string; 
   { key: 'soir', label: 'Soir', start: '17:00', end: '23:00', color: 'text-purple-400', bg: 'bg-purple-500/20 border-purple-500/30' },
 ];
 
-const POSTES = [
-  { value: 'cuisine', label: 'Cuisine' },
-  { value: 'salle', label: 'Salle' },
-  { value: 'plonge', label: 'Plonge' },
-] as const;
+const POSTES: { value: PosteType; label: string; icon: string }[] = [
+  { value: 'cuisine', label: 'Cuisine', icon: 'chef' },
+  { value: 'salle', label: 'Salle', icon: 'utensils' },
+  { value: 'bar', label: 'Bar', icon: 'glass' },
+  { value: 'plonge', label: 'Plonge', icon: 'droplets' },
+];
+
+const POSTE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  cuisine: { bg: 'bg-orange-500/15', text: 'text-orange-500', border: 'border-orange-500/30' },
+  salle: { bg: 'bg-blue-500/15', text: 'text-blue-500', border: 'border-blue-500/30' },
+  bar: { bg: 'bg-purple-500/15', text: 'text-purple-500', border: 'border-purple-500/30' },
+  plonge: { bg: 'bg-cyan-500/15', text: 'text-cyan-500', border: 'border-cyan-500/30' },
+};
 
 const JOURS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 const JOURS_FULL = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+// Time grid hours 6h -> 23h
+const GRID_HOURS = Array.from({ length: 18 }, (_, i) => i + 6);
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -130,7 +151,63 @@ function getShiftType(start: string): ShiftType {
   return 'soir';
 }
 
-// (mock data removed — starts empty, loaded from API)
+function timeToMinutes(t: string): number {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m || 0);
+}
+
+function minutesToTime(m: number): string {
+  const h = Math.floor(m / 60);
+  const min = m % 60;
+  return `${h.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+}
+
+function getPosteIcon(type: string) {
+  switch (type) {
+    case 'cuisine': return <ChefHat className="w-3 h-3" />;
+    case 'salle': return <UtensilsCrossed className="w-3 h-3" />;
+    case 'bar': return <GlassWater className="w-3 h-3" />;
+    case 'plonge': return <Droplets className="w-3 h-3" />;
+    default: return <ChefHat className="w-3 h-3" />;
+  }
+}
+
+// Detect conflicts: same employee, same day, overlapping times
+function detectConflicts(shifts: Shift[], employees: Employee[]): Conflict[] {
+  const conflicts: Conflict[] = [];
+  const empMap = new Map(employees.map(e => [e.id, e]));
+
+  // Group shifts by employeeId + date
+  const grouped = new Map<string, Shift[]>();
+  for (const s of shifts) {
+    const key = `${s.employeeId}-${s.date}`;
+    const arr = grouped.get(key) || [];
+    arr.push(s);
+    grouped.set(key, arr);
+  }
+
+  for (const [, dayShifts] of grouped) {
+    if (dayShifts.length < 2) continue;
+    for (let i = 0; i < dayShifts.length; i++) {
+      for (let j = i + 1; j < dayShifts.length; j++) {
+        const a = dayShifts[i];
+        const b = dayShifts[j];
+        if (a.startTime < b.endTime && a.endTime > b.startTime) {
+          const emp = empMap.get(a.employeeId);
+          if (emp) {
+            conflicts.push({
+              employeeId: a.employeeId,
+              employeeName: emp.name,
+              shiftA: a,
+              shiftB: b,
+            });
+          }
+        }
+      }
+    }
+  }
+  return conflicts;
+}
 
 // ── API helpers ──────────────────────────────────────────────────────
 
@@ -141,6 +218,63 @@ function getAuthHeaders(): Record<string, string> {
   if (token) headers['Authorization'] = `Bearer ${token}`;
   if (rid) headers['X-Restaurant-Id'] = rid;
   return headers;
+}
+
+// ── Print CSS ───────────────────────────────────────────────────────
+
+const PRINT_STYLE_ID = 'planning-print-style';
+
+function injectPrintStyles() {
+  if (document.getElementById(PRINT_STYLE_ID)) return;
+  const style = document.createElement('style');
+  style.id = PRINT_STYLE_ID;
+  style.textContent = `
+    @media print {
+      body * { visibility: hidden !important; }
+      #planning-printable, #planning-printable * { visibility: visible !important; }
+      #planning-printable {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: white !important;
+        color: black !important;
+        padding: 20px !important;
+      }
+      #planning-printable .no-print { display: none !important; }
+      #planning-printable table { border-collapse: collapse; width: 100%; }
+      #planning-printable th, #planning-printable td {
+        border: 1px solid #ccc !important;
+        padding: 4px 8px !important;
+        font-size: 11px !important;
+        color: black !important;
+        background: white !important;
+      }
+      #planning-printable th { background: #f5f5f5 !important; font-weight: bold; }
+      #planning-printable .print-title {
+        font-size: 18px !important;
+        font-weight: bold !important;
+        margin-bottom: 12px !important;
+        display: block !important;
+        color: black !important;
+      }
+      #planning-printable .print-subtitle {
+        font-size: 12px !important;
+        color: #666 !important;
+        margin-bottom: 16px !important;
+        display: block !important;
+      }
+      #planning-printable .shift-chip {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px !important;
+        border: 1px solid #ccc !important;
+        margin: 1px;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 // ── Component ──────────────────────────────────────────────────────────
@@ -166,9 +300,18 @@ export default function Planning() {
   const [nextId, setNextId] = useState(100);
   const [dragEmployee, setDragEmployee] = useState<Employee | null>(null);
 
+  // Drag-to-create state
+  const [dragCreateState, setDragCreateState] = useState<{
+    dayIdx: number;
+    startHour: number;
+    currentHour: number;
+    active: boolean;
+  } | null>(null);
+
   // Modals
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showShiftModal, setShowShiftModal] = useState(false);
+  const [showConflictsModal, setShowConflictsModal] = useState(false);
   const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
   const [editShift, setEditShift] = useState<Shift | null>(null);
 
@@ -182,6 +325,9 @@ export default function Planning() {
 
   // Weekly revenue for ratio (0 when no data)
   const weeklyRevenue = 0;
+
+  // Inject print styles on mount
+  useEffect(() => { injectPrintStyles(); }, []);
 
   // ── API: Load employees on mount ──────────────────────────────────────
 
@@ -368,6 +514,22 @@ export default function Planning() {
 
   const laborRatio = weeklyRevenue > 0 ? (laborCost / weeklyRevenue) * 100 : 0;
 
+  // Today's staff count
+  const todayStr = formatDate(new Date());
+  const todayShifts = useMemo(() => shifts.filter(s => s.date === todayStr), [shifts, todayStr]);
+  const todayStaffCount = useMemo(() => {
+    return new Set(todayShifts.map(s => s.employeeId)).size;
+  }, [todayShifts]);
+  const todayTotalHours = useMemo(() => {
+    return todayShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
+  }, [todayShifts]);
+  const todayEstCost = useMemo(() => {
+    return todayShifts.reduce((sum, s) => {
+      const emp = employees.find(e => e.id === s.employeeId);
+      return sum + (emp ? shiftHours(s.startTime, s.endTime) * (emp.hourlyRate ?? 0) : 0);
+    }, 0);
+  }, [todayShifts, employees]);
+
   // Per-employee weekly hours
   const employeeWeeklyHours = useMemo(() => {
     const map = new Map<number, number>();
@@ -385,6 +547,9 @@ export default function Planning() {
     employeeWeeklyHours.forEach(h => { if (h > 35) count++; });
     return count;
   }, [employeeWeeklyHours]);
+
+  // Conflict detection
+  const conflicts = useMemo(() => detectConflicts(weekShifts, employees), [weekShifts, employees]);
 
   // Daily cost
   const dailyCosts = useMemo(() => {
@@ -431,7 +596,6 @@ export default function Planning() {
       color: empForm.color,
     };
     if (editEmployee) {
-      // Optimistic update
       setEmployees(prev => prev.map(e =>
         e.id === editEmployee.id ? { ...e, ...empData } : e
       ));
@@ -485,14 +649,14 @@ export default function Planning() {
 
   // ── Shift CRUD ────────────────────────────────────────────────────
 
-  function openAddShift(day?: string, shiftType?: ShiftType) {
+  function openAddShift(day?: string, shiftType?: ShiftType, startH?: number, endH?: number) {
     setEditShift(null);
     const st = shiftType ? SHIFT_TYPES.find(s => s.key === shiftType) : null;
     setShiftForm({
       ...emptyShiftForm,
       date: day || '',
-      startTime: st?.start || '',
-      endTime: st?.end || '',
+      startTime: startH != null ? minutesToTime(startH * 60) : (st?.start || ''),
+      endTime: endH != null ? minutesToTime(endH * 60) : (st?.end || ''),
     });
     setShowShiftModal(true);
   }
@@ -588,7 +752,7 @@ export default function Planning() {
     showToast(t('planning.shiftDeleted'), 'success');
   }
 
-  // ── Drag & drop ──────────────────────────────────────────────────
+  // ── Drag & drop (employee cards) ──────────────────────────────────
 
   const handleDragStart = useCallback((emp: Employee) => {
     setDragEmployee(emp);
@@ -621,7 +785,7 @@ export default function Planning() {
       date: dayStr,
       startTime: st.start,
       endTime: st.end,
-      type: shiftType,
+      type: poste,
     };
     const newShift: Shift = { id: localId, ...shiftData };
     try {
@@ -641,7 +805,38 @@ export default function Planning() {
     }
     showToast(`${dragEmployee.name || t('planning.employee')} ${t('planning.assigned')}`, 'success');
     setDragEmployee(null);
-  }, [dragEmployee, shifts, nextId, showToast]);
+  }, [dragEmployee, shifts, nextId, showToast, t]);
+
+  // ── Drag-to-create on time grid ───────────────────────────────────
+
+  function handleGridMouseDown(dayIdx: number, hour: number) {
+    setDragCreateState({ dayIdx, startHour: hour, currentHour: hour + 1, active: true });
+  }
+
+  function handleGridMouseMove(dayIdx: number, hour: number) {
+    if (!dragCreateState || !dragCreateState.active) return;
+    if (dayIdx !== dragCreateState.dayIdx) return;
+    const newEnd = Math.max(dragCreateState.startHour + 1, hour + 1);
+    setDragCreateState(prev => prev ? { ...prev, currentHour: Math.min(newEnd, 24) } : null);
+  }
+
+  function handleGridMouseUp() {
+    if (!dragCreateState || !dragCreateState.active) return;
+    const { dayIdx, startHour, currentHour } = dragCreateState;
+    const dayStr = weekDayStrings[dayIdx];
+    const realStart = Math.min(startHour, currentHour);
+    const realEnd = Math.max(startHour, currentHour);
+    setDragCreateState(null);
+    if (realEnd - realStart >= 1 && dayStr) {
+      openAddShift(dayStr, undefined, realStart, realEnd);
+    }
+  }
+
+  // ── Print handler ─────────────────────────────────────────────────
+
+  function handlePrint() {
+    window.print();
+  }
 
   // ── Summary table data ────────────────────────────────────────────
 
@@ -666,19 +861,33 @@ export default function Planning() {
   // ── Render ──────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="planning-printable">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
-            <CalendarDays className="w-7 h-7 text-indigo-500" />
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2 print-title">
+            <CalendarDays className="w-7 h-7 text-indigo-500 no-print" />
             {t('planning.title')}
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
-            {t('planning.subtitle')}
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1 print-subtitle">
+            {t('planning.subtitle')} -- {weekLabel}
           </p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap no-print">
+          <button
+            onClick={handlePrint}
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
+          >
+            <Printer className="w-4 h-4" /> Imprimer le planning
+          </button>
+          {conflicts.length > 0 && (
+            <button
+              onClick={() => setShowConflictsModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition text-sm font-medium animate-pulse"
+            >
+              <AlertCircle className="w-4 h-4" /> {conflicts.length} conflit{conflicts.length > 1 ? 's' : ''}
+            </button>
+          )}
           <button onClick={openAddEmployee} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-medium">
             <UserPlus className="w-4 h-4" /> {t('planning.employee')}
           </button>
@@ -689,7 +898,7 @@ export default function Planning() {
       </div>
 
       {/* Tab navigation */}
-      <div className="flex rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] p-1 gap-1">
+      <div className="flex rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] p-1 gap-1 no-print">
         <button
           onClick={() => setPlanningTab('planning')}
           className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg transition ${
@@ -715,37 +924,59 @@ export default function Planning() {
       {/* ══════════ PLANNING TAB ══════════ */}
       {planningTab === 'planning' && (<>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3">
-        <StatCard icon={<Users className="w-5 h-5 text-indigo-400" />} label={t('planning.employees')} value={String(employees.length)} />
-        <StatCard icon={<Clock className="w-5 h-5 text-amber-400" />} label={t('planning.hoursPerWeek')} value={`${totalHoursWeek.toFixed(0)}h`} />
-        <StatCard icon={<Euro className="w-5 h-5 text-emerald-400" />} label={t('planning.laborCost')} value={`${laborCost.toFixed(0)} EUR`} />
+      {/* ── Staff Summary Bar ── */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
         <StatCard
-          icon={<CalendarDays className="w-5 h-5 text-teal-400" />}
-          label={t('planning.laborRatio')}
-          value={`${laborRatio.toFixed(1)}%`}
+          icon={<Users className="w-5 h-5 text-indigo-400" />}
+          label="Personnes aujourd'hui"
+          value={String(todayStaffCount)}
+          subtitle={`sur ${employees.length} employes`}
+        />
+        <StatCard
+          icon={<Clock className="w-5 h-5 text-amber-400" />}
+          label="Heures aujourd'hui"
+          value={`${todayTotalHours.toFixed(0)}h`}
+        />
+        <StatCard
+          icon={<Euro className="w-5 h-5 text-emerald-400" />}
+          label="Cout estime jour"
+          value={`${todayEstCost.toFixed(0)} EUR`}
+        />
+        <StatCard
+          icon={<Clock className="w-5 h-5 text-blue-400" />}
+          label={t('planning.hoursPerWeek')}
+          value={`${totalHoursWeek.toFixed(0)}h`}
+        />
+        <StatCard
+          icon={<Euro className="w-5 h-5 text-teal-400" />}
+          label={t('planning.laborCost')}
+          value={`${laborCost.toFixed(0)} EUR`}
           alert={laborRatio > 30}
         />
         <StatCard
           icon={<AlertTriangle className="w-5 h-5 text-rose-400" />}
           label={t('planning.hoursAlerts')}
-          value={`${alertCount}`}
-          alert={alertCount > 0}
-          subtitle={alertCount > 0 ? `${alertCount} ${t('planning.employeesOver35h')}` : 'OK'}
+          value={`${alertCount + conflicts.length}`}
+          alert={alertCount > 0 || conflicts.length > 0}
+          subtitle={
+            conflicts.length > 0
+              ? `${conflicts.length} conflit${conflicts.length > 1 ? 's' : ''}, ${alertCount} >35h`
+              : alertCount > 0 ? `${alertCount} ${t('planning.employeesOver35h')}` : 'OK'
+          }
         />
       </div>
 
       {/* Week navigation + view toggle */}
-      <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 gap-3 no-print">
         <div className="flex items-center gap-2">
-          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
+          <button onClick={goPrev} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
             <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
           </button>
-          <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-900/40 text-indigo-300 hover:bg-indigo-800/50 transition border border-indigo-700/30">
+          <button onClick={goThisWeek} className="px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition border border-indigo-200 dark:border-indigo-700/30">
             {t('planning.today')}
           </button>
           <h2 className="text-lg font-semibold text-[#111111] dark:text-white px-2">{weekLabel}</h2>
-          <button onClick={goNext} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
+          <button onClick={goNext} className="p-2 rounded-lg hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
             <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
           </button>
         </div>
@@ -766,105 +997,181 @@ export default function Planning() {
       </div>
 
       {/* Employee drag panel */}
-      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 no-print">
         <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">
           {t('planning.dragToAssign')}
         </h3>
         <div className="flex flex-wrap gap-2">
-          {employees.map(emp => (
-            <div
-              key={emp.id}
-              draggable
-              onDragStart={() => handleDragStart(emp)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-grab active:cursor-grabbing hover:border-[#D1D5DB] dark:hover:border-[#333] transition select-none"
-            >
-              <GripVertical className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
-              <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
-              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] font-medium">{emp.name || ''}</span>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
-            </div>
-          ))}
+          {employees.map(emp => {
+            const empConflicts = conflicts.filter(c => c.employeeId === emp.id);
+            return (
+              <div
+                key={emp.id}
+                draggable
+                onDragStart={() => handleDragStart(emp)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-grab active:cursor-grabbing hover:border-[#D1D5DB] dark:hover:border-[#333] transition select-none ${
+                  empConflicts.length > 0 ? 'border-red-500 ring-1 ring-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                }`}
+              >
+                <GripVertical className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] font-medium">{emp.name || ''}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                {empConflicts.length > 0 && (
+                  <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold">
+                    <AlertCircle className="w-3 h-3" /> {empConflicts.length}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* ── Vue semaine ── */}
+      {/* ── Week View Calendar: 7-column time grid ── */}
       {view === 'semaine' && (
         <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          {/* Desktop grid */}
+          {/* Desktop: Full time-slot grid */}
           <div className="hidden lg:block overflow-x-auto">
-            <div className="grid grid-cols-7 min-w-[900px]">
+            <div
+              className="grid min-w-[900px]"
+              style={{ gridTemplateColumns: '60px repeat(7, 1fr)' }}
+              onMouseUp={handleGridMouseUp}
+              onMouseLeave={() => dragCreateState?.active && handleGridMouseUp()}
+            >
+              {/* Header row */}
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] p-2 text-center">
+                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Heure</span>
+              </div>
               {weekDays.map((day, i) => {
                 const dayStr = formatDate(day);
-                const dayShifts = shifts.filter(s => s.date === dayStr);
-                const isToday = formatDate(new Date()) === dayStr;
-                const dayCost = dailyCosts[i];
-
+                const isToday = todayStr === dayStr;
+                const dayConflicts = conflicts.filter(c => c.shiftA.date === dayStr);
                 return (
-                  <div key={i} className={`border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 ${isToday ? 'bg-indigo-950/20' : ''}`}>
-                    {/* Day header */}
-                    <div className={`px-3 py-2.5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] text-center ${isToday ? 'bg-indigo-900/30' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
-                      <div className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS[i]}</div>
-                      <div className={`text-sm font-bold ${isToday ? 'text-indigo-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
-                        {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
-                      </div>
-                      <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">{(dayCost ?? 0).toFixed(0)} EUR</div>
+                  <div
+                    key={i}
+                    className={`border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 px-2 py-2 text-center ${
+                      isToday ? 'bg-indigo-50 dark:bg-indigo-950/20' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'
+                    }`}
+                  >
+                    <div className="text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{JOURS_FULL[i]}</div>
+                    <div className={`text-sm font-bold ${isToday ? 'text-indigo-500' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                      {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
                     </div>
-                    {/* Shift zones */}
-                    {SHIFT_TYPES.map(st => {
-                      const zoneShifts = dayShifts.filter(s => getShiftType(s.startTime) === st.key);
-                      return (
-                        <div
-                          key={st.key}
-                          onDragOver={handleDragOver}
-                          onDrop={() => handleDrop(dayStr, st.key)}
-                          className={`border-b border-[#E5E7EB] dark:border-[#1A1A1A] last:border-b-0 min-h-[60px] p-1.5 transition ${dragEmployee ? 'bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:bg-[#171717]/30' : ''}`}
-                        >
-                          <div className={`text-[9px] font-medium uppercase tracking-wider mb-1 ${st.color}`}>
-                            {st.label} ({st.start}-{st.end})
-                          </div>
-                          <div className="space-y-1">
-                            {zoneShifts
-                              .sort((a, b) => a.startTime.localeCompare(b.startTime))
-                              .map(s => {
-                                const emp = employees.find(e => e.id === s.employeeId);
-                                if (!emp) return null;
-                                return (
-                                  <div
-                                    key={s.id}
-                                    className="rounded-md p-1.5 text-xs cursor-pointer hover:brightness-110 transition group relative border"
-                                    style={{
-                                      backgroundColor: (emp.color || '#6366f1') + '20',
-                                      borderColor: (emp.color || '#6366f1') + '40',
-                                    }}
-                                    onClick={() => openEditShift(s)}
-                                  >
-                                    <div className="font-semibold text-[#111111] dark:text-white truncate">{emp.name || ''}</div>
-                                    <div className="text-[10px] font-mono text-[#9CA3AF] dark:text-[#737373]">{s.startTime}-{s.endTime}</div>
-                                    <button
-                                      onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
-                                      className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-white dark:bg-black hover:bg-red-900/60 transition"
-                                    >
-                                      <X className="w-3 h-3 text-red-400" />
-                                    </button>
-                                  </div>
-                                );
-                              })}
-                          </div>
-                        </div>
-                      );
-                    })}
-                    {/* Add button */}
-                    <div className="p-1.5">
-                      <button
-                        onClick={() => openAddShift(dayStr)}
-                        className="w-full py-1.5 border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-xs"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </button>
-                    </div>
+                    {dayConflicts.length > 0 && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[9px] font-bold mt-0.5">
+                        <AlertCircle className="w-2.5 h-2.5" /> {dayConflicts.length}
+                      </span>
+                    )}
                   </div>
                 );
               })}
+
+              {/* Time rows: 6h -> 23h */}
+              {GRID_HOURS.map(hour => (
+                <>
+                  {/* Hour label */}
+                  <div
+                    key={`label-${hour}`}
+                    className="border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] p-1 text-center flex items-center justify-center"
+                  >
+                    <span className="text-[10px] font-mono text-[#9CA3AF] dark:text-[#737373]">
+                      {hour.toString().padStart(2, '0')}:00
+                    </span>
+                  </div>
+                  {/* 7 day cells for this hour */}
+                  {weekDays.map((day, dayIdx) => {
+                    const dayStr = formatDate(day);
+                    const isToday = todayStr === dayStr;
+
+                    // Find shifts that span this hour
+                    const hourShifts = shifts.filter(s => {
+                      if (s.date !== dayStr) return false;
+                      const sStart = timeToMinutes(s.startTime);
+                      const sEnd = timeToMinutes(s.endTime);
+                      const cellStart = hour * 60;
+                      const cellEnd = (hour + 1) * 60;
+                      return sStart < cellEnd && sEnd > cellStart;
+                    });
+
+                    // Drag-to-create highlight
+                    const isDragHighlight = dragCreateState?.active
+                      && dragCreateState.dayIdx === dayIdx
+                      && hour >= Math.min(dragCreateState.startHour, dragCreateState.currentHour)
+                      && hour < Math.max(dragCreateState.startHour, dragCreateState.currentHour);
+
+                    // Only render shift block at its start hour
+                    const startsHere = hourShifts.filter(s => {
+                      const sh = parseInt(s.startTime.split(':')[0]);
+                      return sh === hour;
+                    });
+
+                    return (
+                      <div
+                        key={`cell-${hour}-${dayIdx}`}
+                        className={`border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 relative min-h-[32px] transition-colors cursor-crosshair ${
+                          isToday ? 'bg-indigo-50/50 dark:bg-indigo-950/10' : ''
+                        } ${isDragHighlight ? 'bg-indigo-100 dark:bg-indigo-900/30' : ''} ${
+                          dragEmployee ? 'hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]' : ''
+                        }`}
+                        onDragOver={handleDragOver}
+                        onDrop={() => {
+                          const shiftType = hour < 11 ? 'matin' as ShiftType : hour < 17 ? 'midi' as ShiftType : 'soir' as ShiftType;
+                          handleDrop(dayStr, shiftType);
+                        }}
+                        onMouseDown={() => handleGridMouseDown(dayIdx, hour)}
+                        onMouseMove={() => handleGridMouseMove(dayIdx, hour)}
+                      >
+                        {startsHere.map(s => {
+                          const emp = employees.find(e => e.id === s.employeeId);
+                          if (!emp) return null;
+                          const sStart = timeToMinutes(s.startTime);
+                          const sEnd = timeToMinutes(s.endTime);
+                          const spanHours = Math.ceil((sEnd - sStart) / 60);
+                          const posteColor = POSTE_COLORS[s.type] || POSTE_COLORS.cuisine;
+                          const shiftConflict = conflicts.some(
+                            c => (c.shiftA.id === s.id || c.shiftB.id === s.id)
+                          );
+
+                          return (
+                            <div
+                              key={s.id}
+                              className={`absolute left-0.5 right-0.5 z-10 rounded-md p-1 text-[10px] cursor-pointer hover:brightness-110 transition group border ${
+                                shiftConflict ? 'ring-2 ring-red-500 border-red-500' : posteColor.border
+                              }`}
+                              style={{
+                                top: `${((sStart % 60) / 60) * 100}%`,
+                                height: `${spanHours * 32 - 2}px`,
+                                backgroundColor: (emp.color || '#6366f1') + '18',
+                                borderColor: shiftConflict ? undefined : (emp.color || '#6366f1') + '40',
+                              }}
+                              onClick={(e) => { e.stopPropagation(); openEditShift(s); }}
+                            >
+                              <div className="flex items-center gap-1 truncate">
+                                {shiftConflict && <AlertCircle className="w-2.5 h-2.5 text-red-500 flex-shrink-0" />}
+                                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                                <span className="font-semibold text-[#111111] dark:text-white truncate">{emp.name}</span>
+                              </div>
+                              {spanHours >= 2 && (
+                                <div className="flex items-center gap-1 mt-0.5 text-[#9CA3AF] dark:text-[#737373]">
+                                  {getPosteIcon(s.type)}
+                                  <span>{s.startTime}-{s.endTime}</span>
+                                </div>
+                              )}
+                              <button
+                                onClick={e => { e.stopPropagation(); deleteShift(s.id); }}
+                                className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 p-0.5 rounded bg-white dark:bg-black hover:bg-red-100 dark:hover:bg-red-900/60 transition"
+                              >
+                                <X className="w-2.5 h-2.5 text-red-400" />
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </>
+              ))}
             </div>
           </div>
 
@@ -873,7 +1180,7 @@ export default function Planning() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
               <button
                 onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
+                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
               >
                 <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
               </button>
@@ -885,7 +1192,7 @@ export default function Planning() {
               </div>
               <button
                 onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
+                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
               >
                 <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
               </button>
@@ -894,6 +1201,7 @@ export default function Planning() {
               day={weekDays[selectedDayIdx]}
               shifts={shifts}
               employees={employees}
+              conflicts={conflicts}
               onEditShift={openEditShift}
               onDeleteShift={deleteShift}
               onAddShift={(dayStr, shiftType) => openAddShift(dayStr, shiftType)}
@@ -905,13 +1213,13 @@ export default function Planning() {
         </div>
       )}
 
-      {/* ── Vue jour ── */}
+      {/* ── Day Detail View (jour) ── */}
       {view === 'jour' && (
         <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] no-print">
             <button
               onClick={() => setSelectedDayIdx(prev => (prev - 1 + 7) % 7)}
-              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
+              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
             >
               <ChevronLeft className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
             </button>
@@ -923,15 +1231,16 @@ export default function Planning() {
             </div>
             <button
               onClick={() => setSelectedDayIdx(prev => (prev + 1) % 7)}
-              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:bg-[#171717] transition"
+              className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
             >
               <ChevronRight className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
             </button>
           </div>
-          <DayDetailView
+          <DayTimelineView
             day={weekDays[selectedDayIdx]}
             shifts={shifts}
             employees={employees}
+            conflicts={conflicts}
             onEditShift={openEditShift}
             onDeleteShift={deleteShift}
             onAddShift={(dayStr, shiftType) => openAddShift(dayStr, shiftType)}
@@ -945,7 +1254,7 @@ export default function Planning() {
           <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
             <Users className="w-4 h-4 text-indigo-400" /> {t('planning.team')} ({employees.length})
           </h3>
-          <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-400 hover:underline flex items-center gap-1">
+          <button onClick={openAddEmployee} className="text-xs font-medium text-indigo-400 hover:underline flex items-center gap-1 no-print">
             <UserPlus className="w-3.5 h-3.5" /> {t('common.add')}
           </button>
         </div>
@@ -956,10 +1265,9 @@ export default function Planning() {
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.employee')}</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.role')}</th>
                 <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.rate')}</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.contract')}</th>
                 <th className="px-4 py-2.5 text-right text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.hoursPerWeek')}</th>
                 <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.status')}</th>
-                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase">{t('planning.actions')}</th>
+                <th className="px-4 py-2.5 text-center text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase no-print">{t('planning.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
@@ -967,12 +1275,18 @@ export default function Planning() {
                 const hours = employeeWeeklyHours.get(emp.id) || 0;
                 const isOver35 = hours > 35;
                 const isOver48 = hours > 48;
+                const empConflicts = conflicts.filter(c => c.employeeId === emp.id);
                 return (
-                  <tr key={emp.id} className="hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
+                  <tr key={emp.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
                         <span className="font-medium text-[#111111] dark:text-white">{emp.name || ''}</span>
+                        {empConflicts.length > 0 && (
+                          <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[10px] font-bold">
+                            <AlertCircle className="w-3 h-3" /> Conflit
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -981,14 +1295,17 @@ export default function Planning() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{(emp.hourlyRate ?? 0).toFixed(2)} EUR/h</td>
-                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{emp.hourlyRate ?? 0}h</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
                         {hours.toFixed(0)}h
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      {isOver48 ? (
+                      {empConflicts.length > 0 ? (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
+                          CONFLIT
+                        </span>
+                      ) : isOver48 ? (
                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
                           ILLEGAL &gt;48h
                         </span>
@@ -1002,12 +1319,12 @@ export default function Planning() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-3 text-center no-print">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:bg-[#171717] transition">
+                        <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition">
                           <Edit className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
                         </button>
-                        <button onClick={() => deleteEmployee(emp.id)} className="p-1.5 rounded hover:bg-red-900/20 transition">
+                        <button onClick={() => deleteEmployee(emp.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/20 transition">
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
                         </button>
                       </div>
@@ -1020,7 +1337,7 @@ export default function Planning() {
         </div>
       </div>
 
-      {/* Weekly summary table */}
+      {/* Weekly summary table (print-friendly) */}
       <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
@@ -1044,8 +1361,9 @@ export default function Planning() {
               {summaryRows.map(row => {
                 const isOver35 = row.total > 35;
                 const isOver48 = row.total > 48;
+                const empConflicts = conflicts.filter(c => c.employeeId === row.emp.id);
                 return (
-                  <tr key={row.emp.id} className="hover:bg-[#FAFAFA] dark:bg-[#0A0A0A] transition">
+                  <tr key={row.emp.id} className="hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition">
                     <td className="px-4 py-2.5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: row.emp.color || '#6366f1' }} />
@@ -1064,7 +1382,9 @@ export default function Planning() {
                       {row.cost > 0 ? `${row.cost.toFixed(0)} EUR` : '-'}
                     </td>
                     <td className="px-3 py-2.5 text-center">
-                      {isOver48 ? (
+                      {empConflicts.length > 0 ? (
+                        <AlertCircle className="w-4 h-4 text-red-500 mx-auto" />
+                      ) : isOver48 ? (
                         <AlertTriangle className="w-4 h-4 text-red-400 mx-auto" />
                       ) : isOver35 ? (
                         <AlertTriangle className="w-4 h-4 text-amber-400 mx-auto" />
@@ -1178,14 +1498,14 @@ export default function Planning() {
                   key={c}
                   type="button"
                   onClick={() => setEmpForm(f => ({ ...f, color: c }))}
-                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.color === c ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                  className={`w-8 h-8 rounded-full border-2 transition ${empForm.color === c ? 'border-[#111111] dark:border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   style={{ backgroundColor: c }}
                 />
               ))}
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:bg-[#171717] rounded-lg transition">
+            <button onClick={() => setShowEmployeeModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
               {t('common.cancel')}
             </button>
             <button onClick={saveEmployee} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
@@ -1266,18 +1586,30 @@ export default function Planning() {
           </div>
           <div>
             <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">{t('planning.position')}</label>
-            <select
-              value={shiftForm.type}
-              onChange={e => setShiftForm(f => ({ ...f, type: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
-            >
-              {POSTES.map(p => (
-                <option key={p.value} value={p.value}>{p.label}</option>
-              ))}
-            </select>
+            <div className="grid grid-cols-4 gap-2">
+              {POSTES.map(p => {
+                const colors = POSTE_COLORS[p.value];
+                const isSelected = shiftForm.type === p.value;
+                return (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setShiftForm(f => ({ ...f, type: p.value }))}
+                    className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition ${
+                      isSelected
+                        ? `${colors.bg} ${colors.text} ${colors.border}`
+                        : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                    }`}
+                  >
+                    {getPosteIcon(p.value)}
+                    {p.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:bg-[#171717] rounded-lg transition">
+            <button onClick={() => setShowShiftModal(false)} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
               {t('common.cancel')}
             </button>
             {editShift && (
@@ -1290,6 +1622,40 @@ export default function Planning() {
             )}
             <button onClick={saveShift} className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">
               {editShift ? t('common.edit') : t('common.add')}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Conflicts Modal ────────────────────────────────────────────── */}
+      <Modal
+        isOpen={showConflictsModal}
+        onClose={() => setShowConflictsModal(false)}
+        title="Conflits de planning detectes"
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Les employes suivants ont des creneaux qui se chevauchent :
+          </p>
+          {conflicts.map((c, idx) => (
+            <div key={idx} className="p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/30">
+              <div className="flex items-center gap-2 mb-1">
+                <AlertCircle className="w-4 h-4 text-red-500" />
+                <span className="font-semibold text-[#111111] dark:text-white text-sm">{c.employeeName}</span>
+                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{c.shiftA.date}</span>
+              </div>
+              <div className="text-xs text-red-600 dark:text-red-400 space-y-0.5 pl-6">
+                <div>Creneau 1 : {c.shiftA.startTime} - {c.shiftA.endTime} ({c.shiftA.type})</div>
+                <div>Creneau 2 : {c.shiftB.startTime} - {c.shiftB.endTime} ({c.shiftB.type})</div>
+              </div>
+            </div>
+          ))}
+          {conflicts.length === 0 && (
+            <p className="text-center text-[#9CA3AF] dark:text-[#737373] py-4">Aucun conflit detecte.</p>
+          )}
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setShowConflictsModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+              Fermer
             </button>
           </div>
         </div>
@@ -1310,14 +1676,14 @@ function StatCard({ icon, label, value, alert, subtitle }: {
   return (
     <div className={`bg-white dark:bg-black rounded-2xl p-4 border ${alert ? 'border-red-700/50' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
       <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-lg ${alert ? 'bg-red-900/30' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
+        <div className={`p-2 rounded-lg ${alert ? 'bg-red-100 dark:bg-red-900/30' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
           {icon}
         </div>
-        <div>
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{label}</div>
-          <div className={`text-xl font-bold ${alert ? 'text-red-400' : 'text-[#111111] dark:text-white'}`}>{value}</div>
+        <div className="min-w-0">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{label}</div>
+          <div className={`text-lg sm:text-xl font-bold ${alert ? 'text-red-400' : 'text-[#111111] dark:text-white'}`}>{value}</div>
           {subtitle && (
-            <div className={`text-xs ${alert ? 'text-red-400' : 'text-emerald-400'}`}>{subtitle}</div>
+            <div className={`text-[10px] sm:text-xs truncate ${alert ? 'text-red-400' : 'text-emerald-400'}`}>{subtitle}</div>
           )}
         </div>
       </div>
@@ -1325,10 +1691,11 @@ function StatCard({ icon, label, value, alert, subtitle }: {
   );
 }
 
-function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, onAddShift, dragEmployee, onDragOver, onDrop }: {
+function MobileDayContent({ day, shifts, employees, conflicts, onEditShift, onDeleteShift, onAddShift, dragEmployee, onDragOver, onDrop }: {
   day: Date;
   shifts: Shift[];
   employees: Employee[];
+  conflicts: Conflict[];
   onEditShift: (s: Shift) => void;
   onDeleteShift: (id: number) => void;
   onAddShift: (dayStr: string, shiftType?: ShiftType) => void;
@@ -1360,20 +1727,28 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
                 .map(s => {
                   const emp = employees.find(e => e.id === s.employeeId);
                   if (!emp) return null;
+                  const shiftConflict = conflicts.some(c => c.shiftA.id === s.id || c.shiftB.id === s.id);
+                  const posteColor = POSTE_COLORS[s.type] || POSTE_COLORS.cuisine;
                   return (
                     <div
                       key={s.id}
-                      className="rounded-lg p-2.5 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative"
+                      className={`rounded-lg p-2.5 bg-white dark:bg-black border cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative ${
+                        shiftConflict ? 'border-red-500 ring-1 ring-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                      }`}
                       onClick={() => onEditShift(s)}
                     >
                       <div className="flex items-center gap-2">
+                        {shiftConflict && <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />}
                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
                         <span className="font-semibold text-[#111111] dark:text-white text-sm">{emp.name || ''}</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${posteColor.bg} ${posteColor.text} font-medium`}>
+                          {s.type}
+                        </span>
                       </div>
                       <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{ROLE_LABELS[emp.role] || emp.role || ''} -- {s.startTime} a {s.endTime}</div>
                       <button
                         onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
-                        className="absolute top-2 right-2 p-1 rounded bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-red-900/40 transition"
+                        className="absolute top-2 right-2 p-1 rounded bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-red-100 dark:hover:bg-red-900/40 transition"
                       >
                         <X className="w-3.5 h-3.5 text-red-400" />
                       </button>
@@ -1397,10 +1772,13 @@ function MobileDayContent({ day, shifts, employees, onEditShift, onDeleteShift, 
   );
 }
 
-function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onAddShift }: {
+// ── Day Timeline View (detailed hour-by-hour) ──────────────────────
+
+function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDeleteShift, onAddShift }: {
   day: Date;
   shifts: Shift[];
   employees: Employee[];
+  conflicts: Conflict[];
   onEditShift: (s: Shift) => void;
   onDeleteShift: (id: number) => void;
   onAddShift: (dayStr: string, shiftType?: ShiftType) => void;
@@ -1413,8 +1791,10 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
     const emp = employees.find(e => e.id === s.employeeId);
     return sum + (emp ? shiftHours(s.startTime, s.endTime) * (emp.hourlyRate ?? 0) : 0);
   }, 0);
+  const uniqueEmployees = new Set(dayShifts.map(s => s.employeeId)).size;
+  const dayConflicts = conflicts.filter(c => c.shiftA.date === dayStr);
 
-  // Group by employee for presence
+  // Group by employee for presence timeline
   const presenceMap = new Map<number, Shift[]>();
   dayShifts.forEach(s => {
     const arr = presenceMap.get(s.employeeId) || [];
@@ -1425,18 +1805,97 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
   return (
     <div className="p-5 space-y-5">
       {/* Day stats */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
         <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.presentEmployees')}</div>
-          <div className="text-lg sm:text-2xl font-bold text-[#111111] dark:text-white">{presenceMap.size}</div>
+          <div className="text-lg sm:text-2xl font-bold text-[#111111] dark:text-white">{uniqueEmployees}</div>
         </div>
-        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.totalHours')}</div>
-          <div className="text-2xl font-bold text-[#111111] dark:text-white">{totalHours.toFixed(0)}h</div>
+        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.totalHours')}</div>
+          <div className="text-lg sm:text-2xl font-bold text-[#111111] dark:text-white">{totalHours.toFixed(0)}h</div>
         </div>
-        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.dayCost')}</div>
-          <div className="text-2xl font-bold text-emerald-400">{totalCost.toFixed(0)} EUR</div>
+        <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.dayCost')}</div>
+          <div className="text-lg sm:text-2xl font-bold text-emerald-400">{totalCost.toFixed(0)} EUR</div>
+        </div>
+        {dayConflicts.length > 0 && (
+          <div className="bg-red-50 dark:bg-red-950/20 rounded-xl p-2 sm:p-3 text-center border border-red-200 dark:border-red-800/30">
+            <div className="text-[10px] sm:text-xs text-red-500">Conflits</div>
+            <div className="text-lg sm:text-2xl font-bold text-red-500">{dayConflicts.length}</div>
+          </div>
+        )}
+      </div>
+
+      {/* Timeline visualization */}
+      <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 overflow-x-auto">
+        <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-3">Timeline 6h - 23h</h4>
+        {/* Hour ruler */}
+        <div className="flex mb-2" style={{ minWidth: '600px' }}>
+          <div className="w-28 flex-shrink-0" />
+          <div className="flex-1 flex">
+            {GRID_HOURS.map(h => (
+              <div key={h} className="flex-1 text-center">
+                <span className="text-[9px] font-mono text-[#9CA3AF] dark:text-[#737373]">{h}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Employee rows */}
+        <div className="space-y-1.5" style={{ minWidth: '600px' }}>
+          {employees.map(emp => {
+            const empShifts = presenceMap.get(emp.id) || [];
+            const empConflicts = dayConflicts.filter(c => c.employeeId === emp.id);
+            return (
+              <div key={emp.id} className="flex items-center gap-2">
+                <div className="w-28 flex-shrink-0 flex items-center gap-1.5 truncate">
+                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                  <span className="text-xs font-medium text-[#111111] dark:text-white truncate">{emp.name}</span>
+                  {empConflicts.length > 0 && <AlertCircle className="w-3 h-3 text-red-500 flex-shrink-0" />}
+                </div>
+                <div className="flex-1 relative h-7 bg-white dark:bg-black rounded border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  {/* Hour grid lines */}
+                  {GRID_HOURS.map((h, i) => (
+                    <div
+                      key={h}
+                      className="absolute top-0 bottom-0 border-l border-[#E5E7EB] dark:border-[#1A1A1A]"
+                      style={{ left: `${(i / GRID_HOURS.length) * 100}%` }}
+                    />
+                  ))}
+                  {/* Shift bars */}
+                  {empShifts.map(s => {
+                    const sStart = timeToMinutes(s.startTime);
+                    const sEnd = timeToMinutes(s.endTime);
+                    const gridStart = 6 * 60; // 6:00
+                    const gridEnd = 24 * 60; // 24:00
+                    const left = Math.max(0, ((sStart - gridStart) / (gridEnd - gridStart)) * 100);
+                    const width = Math.min(100 - left, ((sEnd - sStart) / (gridEnd - gridStart)) * 100);
+                    const shiftConflict = empConflicts.some(c => c.shiftA.id === s.id || c.shiftB.id === s.id);
+                    const posteColor = POSTE_COLORS[s.type] || POSTE_COLORS.cuisine;
+                    return (
+                      <div
+                        key={s.id}
+                        className={`absolute top-0.5 bottom-0.5 rounded cursor-pointer hover:brightness-110 transition flex items-center px-1 overflow-hidden ${
+                          shiftConflict ? 'ring-2 ring-red-500' : ''
+                        }`}
+                        style={{
+                          left: `${left}%`,
+                          width: `${width}%`,
+                          backgroundColor: (emp.color || '#6366f1') + '30',
+                          borderLeft: `3px solid ${emp.color || '#6366f1'}`,
+                        }}
+                        onClick={() => onEditShift(s)}
+                        title={`${emp.name} - ${s.startTime} a ${s.endTime} (${s.type})`}
+                      >
+                        <span className="text-[9px] font-medium text-[#111111] dark:text-white truncate">
+                          {s.startTime}-{s.endTime}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -1445,7 +1904,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
         const zoneShifts = dayShifts.filter(s => getShiftType(s.startTime) === st.key);
         return (
           <div key={st.key}>
-            <div className={`flex items-center gap-2 mb-3`}>
+            <div className="flex items-center gap-2 mb-3">
               <div className={`w-3 h-3 rounded-full ${st.key === 'matin' ? 'bg-amber-400' : st.key === 'midi' ? 'bg-teal-400' : 'bg-purple-400'}`} />
               <h4 className={`font-semibold ${st.color}`}>{st.label} ({st.start} - {st.end})</h4>
               <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{zoneShifts.length} creneau(x)</span>
@@ -1458,19 +1917,31 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                     const emp = employees.find(e => e.id === s.employeeId);
                     if (!emp) return null;
                     const hours = shiftHours(s.startTime, s.endTime);
+                    const shiftConflict = conflicts.some(c => c.shiftA.id === s.id || c.shiftB.id === s.id);
+                    const posteColor = POSTE_COLORS[s.type] || POSTE_COLORS.cuisine;
                     return (
                       <div
                         key={s.id}
-                        className="rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative"
+                        className={`rounded-xl p-4 border bg-[#FAFAFA] dark:bg-[#0A0A0A] cursor-pointer hover:border-[#D1D5DB] dark:hover:border-[#333] transition group relative ${
+                          shiftConflict ? 'border-red-500 ring-1 ring-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                        }`}
                         onClick={() => onEditShift(s)}
                       >
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: emp.color || '#6366f1' }}>
                             {(emp.name || '').charAt(0)}
                           </div>
-                          <div>
-                            <div className="font-semibold text-[#111111] dark:text-white">{emp.name || ''}</div>
-                            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              {shiftConflict && <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />}
+                              <span className="font-semibold text-[#111111] dark:text-white truncate">{emp.name || ''}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${posteColor.bg} ${posteColor.text} font-medium flex items-center gap-0.5`}>
+                                {getPosteIcon(s.type)} {s.type}
+                              </span>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
@@ -1479,7 +1950,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
-                          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-white dark:bg-black hover:bg-red-900/40 transition"
+                          className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-white dark:bg-black hover:bg-red-100 dark:hover:bg-red-900/40 transition no-print"
                         >
                           <Trash2 className="w-3.5 h-3.5 text-red-400" />
                         </button>
@@ -1494,7 +1965,7 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
             )}
             <button
               onClick={() => onAddShift(dayStr, st.key)}
-              className="mt-2 w-full py-2 border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm"
+              className="mt-2 w-full py-2 border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#9CA3AF] dark:text-[#737373] hover:border-indigo-500 hover:text-indigo-400 transition flex items-center justify-center gap-1 text-sm no-print"
             >
               <Plus className="w-4 h-4" /> Ajouter un creneau {st.label.toLowerCase()}
             </button>
@@ -1512,18 +1983,24 @@ function DayDetailView({ day, shifts, employees, onEditShift, onDeleteShift, onA
             const empShifts = presenceMap.get(emp.id);
             const isPresent = !!empShifts && empShifts.length > 0;
             const empHours = empShifts ? empShifts.reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0) : 0;
+            const empConflicts = dayConflicts.filter(c => c.employeeId === emp.id);
             return (
               <div
                 key={emp.id}
                 className={`flex items-center justify-between px-4 py-2.5 rounded-xl border transition ${
-                  isPresent ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black opacity-50'
+                  empConflicts.length > 0
+                    ? 'border-red-500 bg-red-50 dark:bg-red-950/10'
+                    : isPresent ? 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black opacity-50'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2.5 h-2.5 rounded-full ${isPresent ? 'bg-emerald-400' : 'bg-[#D1D5DB] dark:bg-[#475569]'}`} />
+                  <div className={`w-2.5 h-2.5 rounded-full ${empConflicts.length > 0 ? 'bg-red-500' : isPresent ? 'bg-emerald-400' : 'bg-[#D1D5DB] dark:bg-[#475569]'}`} />
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
                   <span className={`text-sm font-medium ${isPresent ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{emp.name || ''}</span>
                   <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ROLE_LABELS[emp.role] || emp.role || ''}</span>
+                  {empConflicts.length > 0 && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 font-bold">CONFLIT</span>
+                  )}
                 </div>
                 <div className="text-sm">
                   {isPresent ? (
@@ -1570,7 +2047,6 @@ function PointageTab({
 }) {
   const { t } = useTranslation();
   const today = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  // clockTick triggers re-render for live elapsed time display
   void clockTick;
 
   const activePunches = employees.filter(e => getEmployeePunchStatus(e.id).isPunchedIn).length;
@@ -1596,36 +2072,36 @@ function PointageTab({
             </div>
           </div>
         </div>
-        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <LogOut className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
             </div>
             <div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Termines aujourd'hui</div>
-              <div className="text-xl font-bold text-[#111111] dark:text-white">{completedToday}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">Termines aujourd'hui</div>
+              <div className="text-lg sm:text-xl font-bold text-[#111111] dark:text-white">{completedToday}</div>
             </div>
           </div>
         </div>
-        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <Clock className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
             </div>
             <div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Heures aujourd'hui</div>
-              <div className="text-xl font-bold text-[#111111] dark:text-white">{formatDuration(totalMinutesToday)}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">Heures aujourd'hui</div>
+              <div className="text-lg sm:text-xl font-bold text-[#111111] dark:text-white">{formatDuration(totalMinutesToday)}</div>
             </div>
           </div>
         </div>
-        <div className="bg-white dark:bg-black rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
-              <CalendarDays className="w-5 h-5 text-[#111111] dark:text-white" />
+        <div className="bg-white dark:bg-black rounded-2xl p-3 sm:p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A]">
+              <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" />
             </div>
             <div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Date</div>
-              <div className="text-sm font-bold text-[#111111] dark:text-white capitalize">{today}</div>
+              <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">Date</div>
+              <div className="text-xs sm:text-sm font-bold text-[#111111] dark:text-white capitalize">{today}</div>
             </div>
           </div>
         </div>
@@ -1717,7 +2193,6 @@ function PointageTab({
                 const elapsed = isOpen ? getElapsedMinutes(entry.punchIn) : (entry.totalMinutes || 0);
                 return (
                   <div key={entry.id} className="flex items-center gap-3">
-                    {/* Time marker */}
                     <div className="flex flex-col items-center w-16 flex-shrink-0">
                       <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">{formatTimeFromISO(entry.punchIn)}</span>
                       <div className={`w-px h-4 ${isOpen ? 'bg-emerald-500' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A]'}`} />
@@ -1725,7 +2200,6 @@ function PointageTab({
                         {entry.punchOut ? formatTimeFromISO(entry.punchOut) : '--:--'}
                       </span>
                     </div>
-                    {/* Bar */}
                     <div className={`flex-1 rounded-xl p-3 border ${isOpen ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]'}`}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -1818,7 +2292,6 @@ function PointageTab({
                       </tr>
                     );
                   })}
-                  {/* Totals row */}
                   <tr className="bg-[#FAFAFA] dark:bg-[#0A0A0A] font-semibold">
                     <td className="px-4 py-2.5 text-[#111111] dark:text-white">Total</td>
                     {weekDays.map((d, i) => {

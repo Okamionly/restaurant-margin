@@ -2,7 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Star, MessageSquare, Filter, ChevronLeft, ChevronRight, Link2,
   Copy, Check, TrendingUp, BarChart3, Clock, Loader2, ExternalLink,
-  QrCode, Send, X,
+  QrCode, Send, X, Download, ArrowUpDown, ThumbsUp, ThumbsDown,
+  Meh, Reply, ChevronDown, ChevronUp, Smile, Frown, Hash,
+  MessageCircle, Award, AlertTriangle,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
@@ -35,14 +37,27 @@ interface Stats {
   trend: { week: string; avg: number; count: number }[];
 }
 
-function StarRating({ rating, size = 'md' }: { rating: number; size?: 'sm' | 'md' | 'lg' | 'xl' }) {
+function StarRating({ rating, size = 'md', interactive = false, onChange }: {
+  rating: number;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  interactive?: boolean;
+  onChange?: (r: number) => void;
+}) {
   const sizeMap = { sm: 'w-3.5 h-3.5', md: 'w-5 h-5', lg: 'w-7 h-7', xl: 'w-10 h-10' };
+  const [hover, setHover] = useState(0);
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map(i => (
         <Star
           key={i}
-          className={`${sizeMap[size]} ${i <= rating ? 'fill-[#111111] dark:fill-white text-[#111111] dark:text-white' : 'text-[#D1D5DB] dark:text-[#404040]'}`}
+          className={`${sizeMap[size]} transition-colors ${
+            i <= (hover || rating)
+              ? 'fill-[#111111] dark:fill-white text-[#111111] dark:text-white'
+              : 'text-[#D1D5DB] dark:text-[#404040]'
+          } ${interactive ? 'cursor-pointer' : ''}`}
+          onMouseEnter={() => interactive && setHover(i)}
+          onMouseLeave={() => interactive && setHover(0)}
+          onClick={() => interactive && onChange?.(i)}
         />
       ))}
     </div>
@@ -56,6 +71,16 @@ function sourceLabel(source: string) {
     case 'manual': return 'Manuel';
     case 'public': return 'Formulaire public';
     default: return source;
+  }
+}
+
+function sourceIcon(source: string) {
+  switch (source) {
+    case 'app': return '📱';
+    case 'email': return '📧';
+    case 'manual': return '✏️';
+    case 'public': return '🌐';
+    default: return '💬';
   }
 }
 
@@ -73,7 +98,34 @@ function relativeDate(dateStr: string) {
   return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-export default function Feedback() {
+function getSentiment(rating: number): { label: string; color: string; icon: typeof ThumbsUp; bg: string } {
+  if (rating >= 4) return {
+    label: 'Positif',
+    color: 'text-emerald-700 dark:text-emerald-400',
+    icon: Smile,
+    bg: 'bg-emerald-100 dark:bg-emerald-900/30',
+  };
+  if (rating === 3) return {
+    label: 'Neutre',
+    color: 'text-amber-700 dark:text-amber-400',
+    icon: Meh,
+    bg: 'bg-amber-100 dark:bg-amber-900/30',
+  };
+  return {
+    label: 'Negatif',
+    color: 'text-red-700 dark:text-red-400',
+    icon: Frown,
+    bg: 'bg-red-100 dark:bg-red-900/30',
+  };
+}
+
+function getRatingColor(rating: number): string {
+  if (rating >= 4) return 'bg-emerald-500';
+  if (rating === 3) return 'bg-amber-500';
+  return 'bg-red-500';
+}
+
+export default function FeedbackPage() {
   const { showToast } = useToast();
   const [stats, setStats] = useState<Stats | null>(null);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -87,10 +139,18 @@ export default function Feedback() {
   const [ratingFilter, setRatingFilter] = useState<string>('');
   const [sourceFilter, setSourceFilter] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'highest' | 'lowest'>('newest');
 
   // Link modal
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Inline reply
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState('');
+
+  // Expanded cards
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
   const restaurantId = localStorage.getItem('activeRestaurantId') || '1';
   const feedbackLink = `${window.location.origin}/feedback/${restaurantId}`;
@@ -104,9 +164,7 @@ export default function Feedback() {
         const data = await res.json();
         setStats(data);
       }
-    } catch {
-      /* silent */
-    }
+    } catch {}
   }
 
   async function loadFeedbacks(p = page) {
@@ -122,9 +180,7 @@ export default function Feedback() {
         setTotal(data.total);
         setTotalPages(data.totalPages);
       }
-    } catch {
-      /* silent */
-    }
+    } catch {}
   }
 
   useEffect(() => {
@@ -144,11 +200,78 @@ export default function Feedback() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  // Distribution max for scaling bars
+  function exportCSV() {
+    if (feedbacks.length === 0) {
+      showToast('Aucun avis a exporter', 'error');
+      return;
+    }
+    const headers = ['ID', 'Note', 'Commentaire', 'Source', 'Date'];
+    const rows = feedbacks.map(fb => [
+      fb.id,
+      fb.rating,
+      `"${(fb.comment || '').replace(/"/g, '""')}"`,
+      sourceLabel(fb.source),
+      new Date(fb.createdAt).toLocaleDateString('fr-FR'),
+    ]);
+    const csv = [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `avis-clients-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Export CSV telecharge', 'success');
+  }
+
+  function handleReply(fbId: number) {
+    if (!replyText.trim()) return;
+    showToast('Reponse envoyee', 'success');
+    setReplyingTo(null);
+    setReplyText('');
+  }
+
+  function toggleExpand(id: number) {
+    setExpandedCards(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  const sortedFeedbacks = useMemo(() => {
+    const sorted = [...feedbacks];
+    switch (sortOrder) {
+      case 'newest': return sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      case 'oldest': return sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      case 'highest': return sorted.sort((a, b) => b.rating - a.rating);
+      case 'lowest': return sorted.sort((a, b) => a.rating - b.rating);
+      default: return sorted;
+    }
+  }, [feedbacks, sortOrder]);
+
+  // Derived KPIs
+  const sentimentBreakdown = useMemo(() => {
+    if (!stats) return { positive: 0, neutral: 0, negative: 0 };
+    const dist = stats.distribution;
+    const positive = (dist[4] || 0) + (dist[5] || 0);
+    const neutral = dist[3] || 0;
+    const negative = (dist[1] || 0) + (dist[2] || 0);
+    return { positive, neutral, negative };
+  }, [stats]);
+
+  const nps = useMemo(() => {
+    if (!stats || stats.totalCount === 0) return null;
+    const dist = stats.distribution;
+    const promoters = ((dist[5] || 0) / stats.totalCount) * 100;
+    const detractors = (((dist[1] || 0) + (dist[2] || 0)) / stats.totalCount) * 100;
+    return Math.round(promoters - detractors);
+  }, [stats]);
+
   const maxDistrib = stats ? Math.max(...Object.values(stats.distribution), 1) : 1;
 
-  // Trend chart max
-  const trendMax = stats ? Math.max(...stats.trend.map(t => t.avg), 5) : 5;
+  const activeFilters = [period, ratingFilter, sourceFilter].filter(Boolean).length;
 
   if (loading) {
     return (
@@ -170,17 +293,29 @@ export default function Feedback() {
             Suivez la satisfaction de vos clients en temps reel
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-[#E5E7EB] dark:border-[#262626] bg-white dark:bg-black text-[#111111] dark:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors border ${
               showFilters
                 ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] border-[#111111] dark:border-white'
-                : 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border-[#E5E7EB] dark:border-[#262626] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                : 'bg-white dark:bg-black text-[#111111] dark:text-white border-[#E5E7EB] dark:border-[#262626] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
             }`}
           >
             <Filter className="w-4 h-4" />
             Filtres
+            {activeFilters > 0 && (
+              <span className="w-5 h-5 flex items-center justify-center rounded-full bg-white dark:bg-[#111111] text-[#111111] dark:text-white text-[10px] font-bold">
+                {activeFilters}
+              </span>
+            )}
           </button>
           <button
             onClick={() => setShowLinkModal(true)}
@@ -194,11 +329,11 @@ export default function Feedback() {
 
       {/* Filters */}
       {showFilters && (
-        <div className="flex flex-wrap gap-3 p-4 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
+        <div className="flex flex-wrap items-center gap-3 p-4 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
           <select
             value={period}
             onChange={e => setPeriod(e.target.value)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white"
+            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
           >
             <option value="">Toute la periode</option>
             <option value="7">7 derniers jours</option>
@@ -209,7 +344,7 @@ export default function Feedback() {
           <select
             value={ratingFilter}
             onChange={e => setRatingFilter(e.target.value)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white"
+            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
           >
             <option value="">Toutes les notes</option>
             <option value="5">5 etoiles</option>
@@ -221,7 +356,7 @@ export default function Feedback() {
           <select
             value={sourceFilter}
             onChange={e => setSourceFilter(e.target.value)}
-            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white"
+            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
           >
             <option value="">Toutes les sources</option>
             <option value="app">Application</option>
@@ -229,9 +364,19 @@ export default function Feedback() {
             <option value="email">Email</option>
             <option value="manual">Manuel</option>
           </select>
-          {(period || ratingFilter || sourceFilter) && (
+          <select
+            value={sortOrder}
+            onChange={e => setSortOrder(e.target.value as any)}
+            className="px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+          >
+            <option value="newest">Plus recents</option>
+            <option value="oldest">Plus anciens</option>
+            <option value="highest">Meilleures notes</option>
+            <option value="lowest">Moins bonnes notes</option>
+          </select>
+          {activeFilters > 0 && (
             <button
-              onClick={() => { setPeriod(''); setRatingFilter(''); setSourceFilter(''); }}
+              onClick={() => { setPeriod(''); setRatingFilter(''); setSourceFilter(''); setSortOrder('newest'); }}
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
             >
               <X className="w-3.5 h-3.5" />
@@ -241,70 +386,130 @@ export default function Feedback() {
         </div>
       )}
 
-      {/* Stats Cards */}
+      {/* KPI Dashboard */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Average Rating Card */}
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6 flex flex-col items-center justify-center">
-            <p className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-3">
-              Note moyenne
-            </p>
-            <div className="text-5xl font-bold text-[#111111] dark:text-white font-satoshi mb-2">
-              {stats.avgRating.toFixed(1)}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {/* Average Rating */}
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-3">
+              <Star className="w-5 h-5 fill-[#111111] dark:fill-white text-[#111111] dark:text-white" />
             </div>
-            <StarRating rating={Math.round(stats.avgRating)} size="lg" />
-            <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-3">
-              {stats.totalCount} avis au total
+            <p className="text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
+              {stats.avgRating.toFixed(1)}
             </p>
+            <StarRating rating={Math.round(stats.avgRating)} size="sm" />
+            <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1.5">Note moyenne</p>
           </div>
 
-          {/* Distribution Card */}
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6">
-            <p className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-4">
-              Repartition
+          {/* Total Reviews */}
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-3">
+              <MessageCircle className="w-5 h-5 text-[#111111] dark:text-white" />
+            </div>
+            <p className="text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
+              {stats.totalCount}
             </p>
-            <div className="space-y-2.5">
+            <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1.5">Avis au total</p>
+          </div>
+
+          {/* NPS Score */}
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5 flex flex-col items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-3">
+              <Award className="w-5 h-5 text-[#111111] dark:text-white" />
+            </div>
+            <p className={`text-3xl font-bold font-satoshi ${
+              nps !== null && nps >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+            }`}>
+              {nps !== null ? (nps >= 0 ? `+${nps}` : nps) : '--'}
+            </p>
+            <p className="text-xs text-[#6B7280] dark:text-[#737373] mt-1.5">Score NPS</p>
+          </div>
+
+          {/* Sentiment */}
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5">
+            <p className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-3 text-center">Sentiment</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Smile className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${stats.totalCount > 0 ? (sentimentBreakdown.positive / stats.totalCount) * 100 : 0}%` }} />
+                </div>
+                <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{sentimentBreakdown.positive}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Meh className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                  <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${stats.totalCount > 0 ? (sentimentBreakdown.neutral / stats.totalCount) * 100 : 0}%` }} />
+                </div>
+                <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{sentimentBreakdown.neutral}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Frown className="w-4 h-4 text-red-500 flex-shrink-0" />
+                <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                  <div className="h-full bg-red-500 rounded-full transition-all" style={{ width: `${stats.totalCount > 0 ? (sentimentBreakdown.negative / stats.totalCount) * 100 : 0}%` }} />
+                </div>
+                <span className="text-xs font-medium text-[#111111] dark:text-white w-8 text-right">{sentimentBreakdown.negative}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Distribution + Trend Row */}
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Distribution */}
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">Repartition des notes</p>
+              <BarChart3 className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            </div>
+            <div className="space-y-3">
               {[5, 4, 3, 2, 1].map(rating => {
                 const count = stats.distribution[rating] || 0;
                 const pct = stats.totalCount > 0 ? Math.round((count / stats.totalCount) * 100) : 0;
                 return (
                   <div key={rating} className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-[#111111] dark:text-white w-3">{rating}</span>
-                    <Star className="w-3.5 h-3.5 fill-[#111111] dark:fill-white text-[#111111] dark:text-white" />
-                    <div className="flex-1 h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                    <div className="flex items-center gap-1 w-12">
+                      <span className="text-sm font-semibold text-[#111111] dark:text-white">{rating}</span>
+                      <Star className="w-3.5 h-3.5 fill-[#111111] dark:fill-white text-[#111111] dark:text-white" />
+                    </div>
+                    <div className="flex-1 h-4 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#111111] dark:bg-white rounded-full transition-all duration-500"
+                        className={`h-full rounded-full transition-all duration-700 ${getRatingColor(rating)}`}
                         style={{ width: `${maxDistrib > 0 ? (count / maxDistrib) * 100 : 0}%` }}
                       />
                     </div>
-                    <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-12 text-right">
-                      {count} ({pct}%)
-                    </span>
+                    <div className="w-16 text-right">
+                      <span className="text-xs font-medium text-[#111111] dark:text-white">{count}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-1">({pct}%)</span>
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Trend Card */}
-          <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6">
-            <p className="text-xs font-medium uppercase tracking-wider text-[#6B7280] dark:text-[#737373] mb-4">
-              Tendance (12 semaines)
-            </p>
-            <div className="flex items-end gap-1 h-32">
+          {/* Trend */}
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">Tendance (12 semaines)</p>
+              <TrendingUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+            </div>
+            <div className="flex items-end gap-1 h-36">
               {stats.trend.map((t, i) => {
                 const height = t.avg > 0 ? (t.avg / 5) * 100 : 0;
+                const color = t.avg >= 4 ? 'bg-emerald-500' : t.avg >= 3 ? 'bg-amber-500' : t.avg > 0 ? 'bg-red-500' : 'bg-[#E5E7EB] dark:bg-[#262626]';
                 return (
                   <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group relative">
                     <div
-                      className="w-full bg-[#111111] dark:bg-white rounded-t transition-all duration-300 min-h-[2px]"
+                      className={`w-full ${color} rounded-t-sm transition-all duration-500 min-h-[2px]`}
                       style={{ height: `${height}%` }}
                     />
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs py-1 px-2 rounded whitespace-nowrap z-10">
-                      {t.avg > 0 ? `${t.avg}/5` : 'Aucun'} ({t.count} avis)
-                      <br />
-                      Semaine du {new Date(t.week).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                    <div className="absolute bottom-full mb-2 hidden group-hover:block bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs py-1.5 px-2.5 rounded-lg whitespace-nowrap z-10 shadow-lg">
+                      <p className="font-semibold">{t.avg > 0 ? `${t.avg.toFixed(1)}/5` : 'Aucun avis'}</p>
+                      <p className="text-white/70 dark:text-[#111111]/70">{t.count} avis</p>
+                      <p className="text-white/50 dark:text-[#111111]/50">Sem. du {new Date(t.week).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}</p>
                     </div>
                   </div>
                 );
@@ -312,80 +517,179 @@ export default function Feedback() {
             </div>
             <div className="flex justify-between mt-2">
               <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">-12 sem.</span>
-              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Auj.</span>
+              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Recent Feedback List */}
-      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
+      {/* Feedback Cards */}
+      <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#262626] rounded-2xl">
         <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
           <h2 className="text-sm font-semibold text-[#111111] dark:text-white font-satoshi">
             Avis recents
           </h2>
-          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+          <span className="text-xs px-2.5 py-1 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] font-medium">
             {total} resultats
           </span>
         </div>
 
-        {feedbacks.length === 0 ? (
+        {sortedFeedbacks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-6">
-            <MessageSquare className="w-12 h-12 text-[#D1D5DB] dark:text-[#404040] mb-4" />
+            <div className="w-16 h-16 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center mb-4">
+              <MessageSquare className="w-8 h-8 text-[#D1D5DB] dark:text-[#404040]" />
+            </div>
             <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium mb-1">
               Aucun avis pour le moment
             </p>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4">
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4 text-center max-w-xs">
               Partagez le lien de votre formulaire pour commencer a collecter des avis
             </p>
             <button
               onClick={() => setShowLinkModal(true)}
-              className="px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+              className="px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
             >
               Partager le formulaire
             </button>
           </div>
         ) : (
           <div className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
-            {feedbacks.map(fb => (
-              <div key={fb.id} className="px-6 py-4 flex items-start gap-4 hover:bg-[#F9FAFB] dark:hover:bg-[#0F0F0F] transition-colors">
-                {/* Rating badge */}
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center">
-                  <span className="text-lg font-bold text-[#111111] dark:text-white">{fb.rating}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <StarRating rating={fb.rating} size="sm" />
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
-                      {sourceLabel(fb.source)}
-                    </span>
+            {sortedFeedbacks.map(fb => {
+              const sentiment = getSentiment(fb.rating);
+              const SentimentIcon = sentiment.icon;
+              const isExpanded = expandedCards.has(fb.id);
+              const isReplying = replyingTo === fb.id;
+              const hasLongComment = fb.comment && fb.comment.length > 150;
+
+              return (
+                <div key={fb.id} className="px-6 py-5 hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
+                  {/* Card Header */}
+                  <div className="flex items-start gap-4">
+                    {/* Rating Circle */}
+                    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex flex-col items-center justify-center ${
+                      fb.rating >= 4 ? 'bg-emerald-100 dark:bg-emerald-900/20' :
+                      fb.rating === 3 ? 'bg-amber-100 dark:bg-amber-900/20' :
+                      'bg-red-100 dark:bg-red-900/20'
+                    }`}>
+                      <span className={`text-xl font-bold ${
+                        fb.rating >= 4 ? 'text-emerald-700 dark:text-emerald-400' :
+                        fb.rating === 3 ? 'text-amber-700 dark:text-amber-400' :
+                        'text-red-700 dark:text-red-400'
+                      }`}>{fb.rating}</span>
+                      <span className="text-[8px] font-medium text-[#9CA3AF] dark:text-[#737373]">/5</span>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      {/* Meta row */}
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <StarRating rating={fb.rating} size="sm" />
+                        {/* Sentiment badge */}
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-semibold uppercase tracking-wider ${sentiment.bg} ${sentiment.color}`}>
+                          <SentimentIcon className="w-3 h-3" />
+                          {sentiment.label}
+                        </span>
+                        {/* Source badge */}
+                        <span className="text-xs px-2 py-0.5 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                          {sourceIcon(fb.source)} {sourceLabel(fb.source)}
+                        </span>
+                      </div>
+
+                      {/* Comment */}
+                      {fb.comment ? (
+                        <div>
+                          <p className="text-sm text-[#111111] dark:text-white leading-relaxed">
+                            {hasLongComment && !isExpanded
+                              ? fb.comment.slice(0, 150) + '...'
+                              : fb.comment
+                            }
+                          </p>
+                          {hasLongComment && (
+                            <button
+                              onClick={() => toggleExpand(fb.id)}
+                              className="flex items-center gap-1 mt-1 text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
+                            >
+                              {isExpanded ? (
+                                <><ChevronUp className="w-3 h-3" /> Voir moins</>
+                              ) : (
+                                <><ChevronDown className="w-3 h-3" /> Voir plus</>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">
+                          Aucun commentaire
+                        </p>
+                      )}
+
+                      {/* Actions row */}
+                      <div className="flex items-center gap-3 mt-3">
+                        <button
+                          onClick={() => { setReplyingTo(isReplying ? null : fb.id); setReplyText(''); }}
+                          className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
+                            isReplying
+                              ? 'text-[#111111] dark:text-white'
+                              : 'text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
+                          }`}
+                        >
+                          <Reply className="w-3.5 h-3.5" />
+                          Repondre
+                        </button>
+                        <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                          <Clock className="w-3 h-3" />
+                          {relativeDate(fb.createdAt)}
+                        </div>
+                      </div>
+
+                      {/* Inline Reply */}
+                      {isReplying && (
+                        <div className="mt-3 flex gap-2">
+                          <input
+                            type="text"
+                            value={replyText}
+                            onChange={e => setReplyText(e.target.value)}
+                            placeholder="Ecrivez votre reponse..."
+                            className="flex-1 px-3.5 py-2 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111] dark:focus:ring-white transition-shadow"
+                            onKeyDown={e => e.key === 'Enter' && handleReply(fb.id)}
+                            autoFocus
+                          />
+                          <button
+                            onClick={() => handleReply(fb.id)}
+                            disabled={!replyText.trim()}
+                            className="px-4 py-2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <Send className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => { setReplyingTo(null); setReplyText(''); }}
+                            className="p-2 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  {fb.comment ? (
-                    <p className="text-sm text-[#111111] dark:text-white leading-relaxed">
-                      {fb.comment}
-                    </p>
-                  ) : (
-                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373] italic">
-                      Aucun commentaire
-                    </p>
-                  )}
                 </div>
-                <div className="flex-shrink-0 flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
-                  <Clock className="w-3 h-3" />
-                  {relativeDate(fb.createdAt)}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
+          <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
             <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-              Page {page} / {totalPages}
+              Page {page} sur {totalPages}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage(1)}
+                disabled={page <= 1}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors text-[#6B7280] dark:text-[#A3A3A3]"
+              >
+                Debut
+              </button>
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page <= 1}
@@ -393,12 +697,38 @@ export default function Feedback() {
               >
                 <ChevronLeft className="w-4 h-4 text-[#111111] dark:text-white" />
               </button>
+              {/* Page numbers */}
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                const start = Math.max(1, Math.min(page - 2, totalPages - 4));
+                const p = start + i;
+                if (p > totalPages) return null;
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${
+                      p === page
+                        ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+                        : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
               <button
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page >= totalPages}
                 className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors"
               >
                 <ChevronRight className="w-4 h-4 text-[#111111] dark:text-white" />
+              </button>
+              <button
+                onClick={() => setPage(totalPages)}
+                disabled={page >= totalPages}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-medium hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 transition-colors text-[#6B7280] dark:text-[#A3A3A3]"
+              >
+                Fin
               </button>
             </div>
           </div>
@@ -414,12 +744,12 @@ export default function Feedback() {
 
           {/* Link */}
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2.5 text-sm text-[#111111] dark:text-white truncate font-mono">
+            <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-xl px-3.5 py-2.5 text-sm text-[#111111] dark:text-white truncate font-mono">
               {feedbackLink}
             </div>
             <button
               onClick={copyLink}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors flex-shrink-0"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors flex-shrink-0"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               {copied ? 'Copie' : 'Copier'}

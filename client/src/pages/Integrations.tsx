@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { Plug, Key, Webhook, Copy, RefreshCw, ExternalLink, Check, Zap, ShoppingBag, Calculator, Calendar, Truck, Eye, EyeOff, Plus, Send, Clock } from 'lucide-react';
+import {
+  Plug, Key, Webhook, Copy, RefreshCw, ExternalLink, Check, Zap, Eye, EyeOff,
+  Plus, Send, Clock, CreditCard, Bluetooth, BarChart3, MessageCircle, Mail,
+  MessageSquare, FileSpreadsheet, Shield, Activity, AlertTriangle, CheckCircle,
+  XCircle, ChevronDown, ChevronUp, ArrowRight, Settings, Search, X, Wifi,
+  WifiOff, Timer, TrendingUp, Heart
+} from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 
@@ -11,175 +17,225 @@ interface WebhookConfig {
   url: string;
   active: boolean;
   lastTriggered: string | null;
+  events: string[];
 }
+
+type IntegrationStatus = 'connected' | 'available' | 'coming_soon';
+type IntegrationCategory = 'all' | 'payments' | 'communication' | 'analytics' | 'tools';
 
 interface Integration {
   id: string;
   name: string;
   description: string;
   features: string[];
-  color: string;
-  logo: string;
-  connected: boolean;
+  icon: typeof CreditCard;
+  iconColor: string;
+  iconBg: string;
+  status: IntegrationStatus;
+  category: IntegrationCategory;
   lastSync?: string;
-  comingSoon?: boolean;
+  uptime?: number;
+  requestsToday?: number;
+  setupSteps?: string[];
+}
+
+interface ApiKeyEntry {
+  id: string;
+  name: string;
+  key: string;
+  created: string;
+  lastUsed: string;
+  scopes: string[];
 }
 
 // ── Mock Data ────────────────────────────────────────────────────────────────
 
-const MOCK_API_KEY = '';
+const INTEGRATIONS: Integration[] = [
+  {
+    id: 'stripe',
+    name: 'Stripe',
+    description: 'Paiements en ligne, abonnements et facturation automatique',
+    features: ['Paiements par carte', 'Abonnements recurrents', 'Factures automatiques', 'Tableau de bord financier'],
+    icon: CreditCard,
+    iconColor: 'text-violet-600 dark:text-violet-400',
+    iconBg: 'bg-violet-100 dark:bg-violet-900/30',
+    status: 'connected',
+    category: 'payments',
+    lastSync: '8 avr. 2026, 09:15',
+    uptime: 99.98,
+    requestsToday: 342,
+    setupSteps: [
+      'Creez un compte Stripe sur stripe.com',
+      'Recuperez votre cle API depuis le Dashboard',
+      'Collez la cle dans le champ ci-dessous',
+      'Testez la connexion avec un paiement test',
+    ],
+  },
+  {
+    id: 'bluetooth',
+    name: 'Balance Bluetooth',
+    description: 'Connectez votre balance pour peser les ingredients en temps reel',
+    features: ['Pesee en direct', 'Calibration automatique', 'Historique des pesees', 'Alerte de deviation'],
+    icon: Bluetooth,
+    iconColor: 'text-blue-600 dark:text-blue-400',
+    iconBg: 'bg-blue-100 dark:bg-blue-900/30',
+    status: 'available',
+    category: 'tools',
+    setupSteps: [
+      'Activez le Bluetooth sur votre tablette',
+      'Allumez la balance et mettez-la en mode appairage',
+      'Selectionnez la balance dans la liste des appareils',
+      'Verifiez la connexion avec un test de pesee',
+    ],
+  },
+  {
+    id: 'ga4',
+    name: 'Google Analytics 4',
+    description: 'Suivez le comportement utilisateur et les conversions',
+    features: ['Trafic en temps reel', 'Entonnoir de conversion', 'Segments d\'audience', 'Rapports personnalises'],
+    icon: BarChart3,
+    iconColor: 'text-orange-600 dark:text-orange-400',
+    iconBg: 'bg-orange-100 dark:bg-orange-900/30',
+    status: 'connected',
+    category: 'analytics',
+    lastSync: '8 avr. 2026, 08:00',
+    uptime: 100,
+    requestsToday: 1287,
+    setupSteps: [
+      'Connectez-vous a Google Analytics',
+      'Creez une propriete GA4 pour RestauMargin',
+      'Copiez l\'ID de mesure (G-XXXXXXXXXX)',
+      'Collez-le dans les parametres ci-dessous',
+    ],
+  },
+  {
+    id: 'crisp',
+    name: 'Crisp',
+    description: 'Chat en direct et support client integre',
+    features: ['Chat en direct', 'Base de connaissances', 'Chatbot automatise', 'Historique des conversations'],
+    icon: MessageCircle,
+    iconColor: 'text-purple-600 dark:text-purple-400',
+    iconBg: 'bg-purple-100 dark:bg-purple-900/30',
+    status: 'connected',
+    category: 'communication',
+    lastSync: '8 avr. 2026, 09:30',
+    uptime: 99.95,
+    requestsToday: 56,
+    setupSteps: [
+      'Creez un compte sur crisp.chat',
+      'Ajoutez votre site web dans Crisp',
+      'Copiez l\'identifiant du site',
+      'Collez-le dans le champ de configuration',
+    ],
+  },
+  {
+    id: 'resend',
+    name: 'Resend',
+    description: 'Envoi d\'emails transactionnels et newsletters',
+    features: ['Emails transactionnels', 'Templates HTML', 'Statistiques d\'envoi', 'Gestion des rebonds'],
+    icon: Mail,
+    iconColor: 'text-black dark:text-white',
+    iconBg: 'bg-gray-100 dark:bg-gray-800',
+    status: 'connected',
+    category: 'communication',
+    lastSync: '8 avr. 2026, 07:45',
+    uptime: 99.99,
+    requestsToday: 128,
+    setupSteps: [
+      'Inscrivez-vous sur resend.com',
+      'Verifiez votre domaine d\'envoi',
+      'Generez une cle API',
+      'Ajoutez la cle dans RestauMargin',
+    ],
+  },
+  {
+    id: 'whatsapp',
+    name: 'WhatsApp Business',
+    description: 'Notifications clients et alertes equipe via WhatsApp',
+    features: ['Notifications de commande', 'Alertes stock bas', 'Messages automatiques', 'Groupes d\'equipe'],
+    icon: MessageSquare,
+    iconColor: 'text-green-600 dark:text-green-400',
+    iconBg: 'bg-green-100 dark:bg-green-900/30',
+    status: 'coming_soon',
+    category: 'communication',
+    setupSteps: [
+      'Creez un compte WhatsApp Business API',
+      'Configurez un numero de telephone dedie',
+      'Obtenez le token d\'acces permanent',
+      'Ajoutez le token dans RestauMargin',
+    ],
+  },
+  {
+    id: 'excel',
+    name: 'Export Excel',
+    description: 'Exportez vos donnees en Excel / CSV pour votre comptable',
+    features: ['Export en un clic', 'Templates personnalises', 'Planification automatique', 'Compatible Google Sheets'],
+    icon: FileSpreadsheet,
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+    status: 'available',
+    category: 'tools',
+    setupSteps: [
+      'Selectionnez les donnees a exporter',
+      'Choisissez le format (Excel ou CSV)',
+      'Configurez un planning d\'export automatique',
+      'Definissez les destinataires par email',
+    ],
+  },
+];
 
 const INITIAL_WEBHOOKS: WebhookConfig[] = [
-  { id: 'wh1', name: 'Nouvelle commande', url: 'https://hooks.example.com/orders', active: true, lastTriggered: '2026-03-27 09:14' },
-  { id: 'wh2', name: 'Stock bas', url: 'https://hooks.example.com/low-stock', active: true, lastTriggered: '2026-03-26 17:45' },
-  { id: 'wh3', name: 'Nouvelle recette', url: '', active: false, lastTriggered: null },
-  { id: 'wh4', name: 'Prix modifié', url: '', active: false, lastTriggered: null },
+  { id: 'wh1', name: 'Nouvelle commande', url: 'https://hooks.example.com/orders', active: true, lastTriggered: '2026-04-08 09:14', events: ['order.created'] },
+  { id: 'wh2', name: 'Stock bas', url: 'https://hooks.example.com/low-stock', active: true, lastTriggered: '2026-04-07 17:45', events: ['stock.low'] },
+  { id: 'wh3', name: 'Nouvelle recette', url: '', active: false, lastTriggered: null, events: ['recipe.created'] },
+  { id: 'wh4', name: 'Prix modifie', url: '', active: false, lastTriggered: null, events: ['price.updated'] },
 ];
 
-const CAISSE_INTEGRATIONS: Integration[] = [
+const MOCK_API_KEYS: ApiKeyEntry[] = [
   {
-    id: 'lightspeed',
-    name: 'Lightspeed',
-    description: 'Synchronisez vos ventes et tickets',
-    features: ['Import automatique des ventes', 'Synchronisation des tickets', 'Rapprochement des marges'],
-    color: '#e4002b',
-    logo: 'LS',
-    connected: true,
-    lastSync: '27 mars 2026, 08:30',
+    id: 'key1',
+    name: 'Production API',
+    key: 'rm_live_sk_7f8a9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a',
+    created: '15 janv. 2026',
+    lastUsed: '8 avr. 2026, 09:12',
+    scopes: ['read', 'write', 'webhooks'],
   },
   {
-    id: 'zelty',
-    name: 'Zelty',
-    description: 'Importez vos ventes automatiquement',
-    features: ['Import des ventes quotidiennes', 'Suivi des encaissements', 'Analyse par service'],
-    color: '#6c63ff',
-    logo: 'ZE',
-    connected: false,
-  },
-  {
-    id: 'laddition',
-    name: "L'Addition",
-    description: "Liez votre caisse L'Addition",
-    features: ['Liaison caisse directe', 'Export des tickets', 'Suivi du CA par poste'],
-    color: '#ff6b35',
-    logo: 'LA',
-    connected: false,
-    comingSoon: true,
-  },
-  {
-    id: 'tiller',
-    name: 'Tiller',
-    description: 'Connectez votre caisse Tiller',
-    features: ['Synchronisation en temps reel', 'Historique des ventes', 'Ventilation par produit'],
-    color: '#1a1a2e',
-    logo: 'TI',
-    connected: false,
-    comingSoon: true,
+    id: 'key2',
+    name: 'Test / Developpement',
+    key: 'rm_test_sk_1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b',
+    created: '20 fev. 2026',
+    lastUsed: '7 avr. 2026, 14:30',
+    scopes: ['read'],
   },
 ];
 
-const COMPTA_INTEGRATIONS: Integration[] = [
-  {
-    id: 'pennylane',
-    name: 'Pennylane',
-    description: 'Exportez vos factures et écritures',
-    features: ['Export automatique des factures', 'Écritures comptables', 'Rapprochement bancaire'],
-    color: '#6366f1',
-    logo: 'PL',
-    connected: true,
-    lastSync: '26 mars 2026, 23:00',
-  },
-  {
-    id: 'indy',
-    name: 'Indy',
-    description: 'Synchronisez avec votre comptable',
-    features: ['Partage des documents', 'Export des ecritures', 'Suivi TVA'],
-    color: '#10b981',
-    logo: 'IN',
-    connected: false,
-  },
-  {
-    id: 'quickbooks',
-    name: 'QuickBooks',
-    description: 'Comptabilite cloud internationale',
-    features: ['Export plan comptable', 'Factures et depenses', 'Reporting financier'],
-    color: '#2ca01c',
-    logo: 'QB',
-    connected: false,
-    comingSoon: true,
-  },
-];
+// ── Status helpers ──────────────────────────────────────────────────────────
 
-const RESERVATION_INTEGRATIONS: Integration[] = [
-  {
-    id: 'thefork',
-    name: 'TheFork (LaFourchette)',
-    description: 'Previsions basees sur vos reservations',
-    features: ['Import des reservations', 'Previsions de couverts', 'Analyse du taux de remplissage'],
-    color: '#00ab6b',
-    logo: 'TF',
-    connected: false,
+const STATUS_CONFIG: Record<IntegrationStatus, { label: string; badge: string; dot: string }> = {
+  connected: {
+    label: 'Connecte',
+    badge: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
+    dot: 'bg-emerald-500',
   },
-  {
-    id: 'zenchef',
-    name: 'Zenchef',
-    description: 'Synchronisez vos reservations',
-    features: ['Calendrier des reservations', 'Previsions de frequentation', 'Gestion des no-shows'],
-    color: '#ff5a5f',
-    logo: 'ZC',
-    connected: false,
+  available: {
+    label: 'Disponible',
+    badge: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
+    dot: 'bg-blue-500',
   },
-  {
-    id: 'octotable',
-    name: 'Octotable',
-    description: 'Gérez vos réservations',
-    features: ['Plan de salle connecté', 'Historique client', 'Prévisions journalières'],
-    color: '#7c3aed',
-    logo: 'OT',
-    connected: false,
-    comingSoon: true,
+  coming_soon: {
+    label: 'Bientot',
+    badge: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
+    dot: 'bg-amber-500',
   },
-  {
-    id: 'google-reserve',
-    name: 'Google Reserve',
-    description: 'Reservations via Google Maps',
-    features: ['Reservations directes', 'Visibilite Google', 'Synchronisation automatique'],
-    color: '#4285f4',
-    logo: 'GR',
-    connected: false,
-    comingSoon: true,
-  },
-];
+};
 
-const LIVRAISON_INTEGRATIONS: Integration[] = [
-  {
-    id: 'ubereats',
-    name: 'Uber Eats',
-    description: 'Importez vos commandes livraison',
-    features: ['Import des commandes', 'Suivi des commissions', 'Analyse de rentabilite'],
-    color: '#06c167',
-    logo: 'UE',
-    connected: false,
-  },
-  {
-    id: 'deliveroo',
-    name: 'Deliveroo',
-    description: 'Synchronisez vos ventes Deliveroo',
-    features: ['Commandes en temps reel', 'Suivi des marges livraison', 'Catalogue synchronise'],
-    color: '#00ccbc',
-    logo: 'DL',
-    connected: false,
-  },
-  {
-    id: 'justeat',
-    name: 'Just Eat',
-    description: 'Connectez Just Eat à RestauMargin',
-    features: ['Import des commandes', 'Gestion du menu en ligne', 'Statistiques de vente'],
-    color: '#ff8000',
-    logo: 'JE',
-    connected: false,
-    comingSoon: true,
-  },
+const CATEGORY_TABS: { key: IntegrationCategory; label: string; icon: typeof Plug }[] = [
+  { key: 'all', label: 'Toutes', icon: Plug },
+  { key: 'payments', label: 'Paiements', icon: CreditCard },
+  { key: 'communication', label: 'Communication', icon: MessageCircle },
+  { key: 'analytics', label: 'Analytique', icon: BarChart3 },
+  { key: 'tools', label: 'Outils', icon: Settings },
 ];
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -187,30 +243,48 @@ const LIVRAISON_INTEGRATIONS: Integration[] = [
 export default function Integrations() {
   const { t } = useTranslation();
   const { showToast } = useToast();
-  const [apiKeyVisible, setApiKeyVisible] = useState(false);
+
+  // State
+  const [activeCategory, setActiveCategory] = useState<IntegrationCategory>('all');
+  const [integrations, setIntegrations] = useState(INTEGRATIONS);
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>(INITIAL_WEBHOOKS);
-  const [integrations, setIntegrations] = useState({
-    caisse: CAISSE_INTEGRATIONS,
-    compta: COMPTA_INTEGRATIONS,
-    reservation: RESERVATION_INTEGRATIONS,
-    livraison: LIVRAISON_INTEGRATIONS,
+  const [apiKeys] = useState<ApiKeyEntry[]>(MOCK_API_KEYS);
+  const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
+  const [confirmRegenerate, setConfirmRegenerate] = useState<string | null>(null);
+  const [setupWizard, setSetupWizard] = useState<string | null>(null);
+  const [wizardStep, setWizardStep] = useState(0);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // ── Filtered integrations ────────────────────────────────────────────────
+
+  const filteredIntegrations = integrations.filter(integ => {
+    const matchesCategory = activeCategory === 'all' || integ.category === activeCategory;
+    const matchesSearch = !searchQuery || integ.name.toLowerCase().includes(searchQuery.toLowerCase()) || integ.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
   });
-  const [confirmRegenerate, setConfirmRegenerate] = useState(false);
+
+  const connectedCount = integrations.filter(i => i.status === 'connected').length;
+  const avgUptime = integrations.filter(i => i.uptime).reduce((sum, i) => sum + (i.uptime || 0), 0) / (integrations.filter(i => i.uptime).length || 1);
 
   // ── API Key Handlers ──────────────────────────────────────────────────────
 
-  const copyApiKey = () => {
-    navigator.clipboard.writeText(MOCK_API_KEY);
-    showToast('Clé API copiée dans le presse-papiers', 'success');
+  const toggleKeyVisibility = (keyId: string) => {
+    setVisibleKeys(prev => ({ ...prev, [keyId]: !prev[keyId] }));
   };
 
-  const regenerateApiKey = () => {
-    if (!confirmRegenerate) {
-      setConfirmRegenerate(true);
+  const copyApiKey = (key: string) => {
+    navigator.clipboard.writeText(key);
+    showToast('Cle API copiee dans le presse-papiers', 'success');
+  };
+
+  const regenerateApiKey = (keyId: string) => {
+    if (confirmRegenerate !== keyId) {
+      setConfirmRegenerate(keyId);
       return;
     }
-    setConfirmRegenerate(false);
-    showToast('Nouvelle clé API générée avec succès', 'success');
+    setConfirmRegenerate(null);
+    showToast('Nouvelle cle API generee avec succes', 'success');
   };
 
   // ── Webhook Handlers ──────────────────────────────────────────────────────
@@ -232,305 +306,563 @@ export default function Integrations() {
       showToast('Veuillez saisir une URL avant de tester', 'error');
       return;
     }
-    showToast(`Test envoyé à ${wh.url}`, 'info');
+    showToast(`Test envoye a ${wh.url}`, 'info');
   };
 
   const addWebhook = () => {
     const id = `wh${Date.now()}`;
-    setWebhooks(prev => [...prev, { id, name: 'Nouveau webhook', url: '', active: false, lastTriggered: null }]);
-    showToast('Webhook ajouté', 'success');
+    setWebhooks(prev => [...prev, { id, name: 'Nouveau webhook', url: '', active: false, lastTriggered: null, events: [] }]);
+    showToast('Webhook ajoute', 'success');
+  };
+
+  const deleteWebhook = (id: string) => {
+    setWebhooks(prev => prev.filter(wh => wh.id !== id));
+    showToast('Webhook supprime', 'info');
   };
 
   // ── Integration Handlers ──────────────────────────────────────────────────
 
-  const toggleConnection = (category: keyof typeof integrations, id: string) => {
-    setIntegrations(prev => ({
-      ...prev,
-      [category]: prev[category].map(integ =>
-        integ.id === id && !integ.comingSoon
-          ? {
-              ...integ,
-              connected: !integ.connected,
-              lastSync: !integ.connected ? 'A l\'instant' : undefined,
-            }
-          : integ
-      ),
-    }));
-    const found = integrations[category].find(i => i.id === id);
-    if (found && !found.comingSoon) {
-      showToast(
-        found.connected ? `${found.name} déconnecté` : `${found.name} connecté avec succès`,
-        found.connected ? 'info' : 'success'
-      );
-    }
+  const toggleConnection = (id: string) => {
+    const integ = integrations.find(i => i.id === id);
+    if (!integ || integ.status === 'coming_soon') return;
+
+    setIntegrations(prev => prev.map(i =>
+      i.id === id
+        ? {
+            ...i,
+            status: i.status === 'connected' ? 'available' as IntegrationStatus : 'connected' as IntegrationStatus,
+            lastSync: i.status !== 'connected' ? 'A l\'instant' : undefined,
+            uptime: i.status !== 'connected' ? 99.9 : undefined,
+            requestsToday: i.status !== 'connected' ? 0 : undefined,
+          }
+        : i
+    ));
+    showToast(
+      integ.status === 'connected' ? `${integ.name} deconnecte` : `${integ.name} connecte avec succes`,
+      integ.status === 'connected' ? 'info' : 'success'
+    );
   };
 
-  // ── Integration Card ──────────────────────────────────────────────────────
+  const openSetupWizard = (id: string) => {
+    setSetupWizard(id);
+    setWizardStep(0);
+  };
 
-  const IntegrationCard = ({ integ, category }: { integ: Integration; category: keyof typeof integrations }) => (
-    <div className={`bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-5 flex flex-col gap-3 transition-all hover:shadow-md ${integ.comingSoon ? 'opacity-75' : ''}`}>
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-[#111111] dark:text-white font-bold text-sm shadow-md"
-            style={{ backgroundColor: integ.color }}
-          >
-            {integ.logo}
-          </div>
-          <div>
-            <h4 className="font-semibold text-[#111111] dark:text-white dark:text-white">{integ.name}</h4>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{integ.description}</p>
-          </div>
-        </div>
-        {integ.comingSoon ? (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 whitespace-nowrap">
-            Bientot disponible
-          </span>
-        ) : integ.connected ? (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center gap-1">
-            <Check className="w-3 h-3" /> Connecte
-          </span>
-        ) : (
-          <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
-            Non connecte
-          </span>
-        )}
-      </div>
-
-      <ul className="space-y-1">
-        {integ.features.map((f, i) => (
-          <li key={i} className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-            <Zap className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-            {f}
-          </li>
-        ))}
-      </ul>
-
-      {integ.connected && integ.lastSync && (
-        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
-          <Clock className="w-3 h-3" /> Derniere synchro : {integ.lastSync}
-        </p>
-      )}
-
-      <div className="mt-auto pt-2">
-        {integ.comingSoon ? (
-          <button disabled className="w-full px-4 py-2 text-sm font-medium rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed">
-            Bientot disponible
-          </button>
-        ) : integ.connected ? (
-          <button
-            onClick={() => toggleConnection(category, integ.id)}
-            className="w-full px-4 py-2 text-sm font-medium rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-          >
-            Déconnecter
-          </button>
-        ) : (
-          <button
-            onClick={() => toggleConnection(category, integ.id)}
-            className="w-full px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-          >
-            Connecter
-          </button>
-        )}
-      </div>
-    </div>
-  );
-
-  // ── Section renderer ──────────────────────────────────────────────────────
-
-  const IntegrationSection = ({
-    icon: Icon,
-    title,
-    items,
-    category,
-  }: {
-    icon: typeof ShoppingBag;
-    title: string;
-    items: Integration[];
-    category: keyof typeof integrations;
-  }) => (
-    <section>
-      <div className="flex items-center gap-2 mb-4">
-        <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-        <h3 className="text-lg font-semibold text-[#111111] dark:text-white dark:text-white">{title}</h3>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {items.map(integ => (
-          <IntegrationCard key={integ.id} integ={integ} category={category} />
-        ))}
-      </div>
-    </section>
-  );
+  const closeSetupWizard = () => {
+    setSetupWizard(null);
+    setWizardStep(0);
+  };
 
   // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-[#111111] dark:text-white dark:text-white flex items-center gap-3">
-          <Plug className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-          API & Intégrations
-        </h1>
-        <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">
-          Connectez RestauMargin à vos outils
-        </p>
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-black dark:text-white flex items-center gap-3">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+              <Plug className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            API & Integrations
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+            Connectez RestauMargin a vos outils preferes
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-sm">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-medium text-emerald-700 dark:text-emerald-400">{connectedCount} connectees</span>
+          </div>
+        </div>
       </div>
 
-      {/* ── API Key Section ─────────────────────────────────────────────────── */}
-      <section className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-6 space-y-5">
-        <div className="flex items-center gap-2">
-          <Key className="w-5 h-5 text-amber-500" />
-          <h2 className="text-lg font-semibold text-[#111111] dark:text-white dark:text-white">Cle API</h2>
-        </div>
-
-        {/* Key display */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 flex items-center gap-2 px-4 py-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:bg-black border dark:border-[#1A1A1A] rounded-lg font-mono text-sm">
-            <span className="flex-1 truncate text-[#9CA3AF] dark:text-[#737373]">
-              {apiKeyVisible ? MOCK_API_KEY : '\u2022'.repeat(40)}
-            </span>
-            <button
-              onClick={() => setApiKeyVisible(!apiKeyVisible)}
-              className="p-1 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] transition-colors"
-              title={apiKeyVisible ? 'Masquer' : 'Afficher'}
-            >
-              {apiKeyVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
+      {/* ── Integration Health Dashboard ───────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Integrations actives', value: `${connectedCount}/${integrations.length}`, icon: Wifi, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+          { label: 'Disponibilite moyenne', value: `${avgUptime.toFixed(2)}%`, icon: Activity, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+          { label: 'Requetes aujourd\'hui', value: integrations.reduce((s, i) => s + (i.requestsToday || 0), 0).toLocaleString(), icon: TrendingUp, color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/20' },
+          { label: 'Webhooks actifs', value: `${webhooks.filter(w => w.active).length}/${webhooks.length}`, icon: Webhook, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+        ].map((stat, idx) => (
+          <div key={idx} className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl p-4 flex items-center gap-4">
+            <div className={`p-2.5 rounded-xl ${stat.bg}`}>
+              <stat.icon className={`w-5 h-5 ${stat.color}`} />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{stat.label}</p>
+              <p className="text-lg font-bold text-black dark:text-white">{stat.value}</p>
+            </div>
           </div>
-          <div className="flex gap-2">
+        ))}
+      </div>
+
+      {/* ── Category Tabs + Search ─────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex flex-wrap gap-2 flex-1">
+          {CATEGORY_TABS.map(tab => (
             <button
-              onClick={copyApiKey}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] transition-colors"
-            >
-              <Copy className="w-4 h-4" /> Copier
-            </button>
-            <button
-              onClick={regenerateApiKey}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                confirmRegenerate
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717]'
+              key={tab.key}
+              onClick={() => setActiveCategory(tab.key)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                activeCategory === tab.key
+                  ? 'bg-black dark:bg-white text-white dark:text-black shadow-md'
+                  : 'bg-white dark:bg-black border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-600'
               }`}
             >
-              <RefreshCw className="w-4 h-4" />
-              {confirmRegenerate ? 'Confirmer ?' : 'Regenerer'}
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
             </button>
-          </div>
+          ))}
         </div>
-
-        {/* Usage stats */}
-        <div>
-          <div className="flex items-center justify-between text-sm mb-1.5">
-            <span className="text-[#6B7280] dark:text-[#A3A3A3]">Utilisation ce mois</span>
-            <span className="font-medium text-[#9CA3AF] dark:text-[#737373]">1 247 / 10 000 requetes</span>
-          </div>
-          <div className="w-full h-2.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
-            <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: '12.47%' }} />
-          </div>
-          <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">1 247 requetes ce mois</p>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="pl-9 pr-4 py-2 w-full sm:w-56 text-sm border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-black dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+          />
         </div>
+      </div>
 
-        {/* Doc link */}
-        <a
-          href="#"
-          onClick={(e) => { e.preventDefault(); showToast('Documentation API ouverte', 'info'); }}
-          className="inline-flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          <ExternalLink className="w-4 h-4" /> Consulter la documentation API
-        </a>
-      </section>
+      {/* ── Integration Cards Grid ─────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {filteredIntegrations.map(integ => {
+          const statusConf = STATUS_CONFIG[integ.status];
+          const Icon = integ.icon;
+          const isExpanded = expandedCard === integ.id;
 
-      {/* ── Webhooks Section ────────────────────────────────────────────────── */}
-      <section className="bg-white dark:bg-[#0A0A0A] rounded-xl border dark:border-[#1A1A1A] p-6 space-y-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Webhook className="w-5 h-5 text-purple-500" />
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white dark:text-white">Webhooks</h2>
-          </div>
-          <button
-            onClick={addWebhook}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Ajouter un webhook
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          {webhooks.map(wh => (
+          return (
             <div
-              key={wh.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:bg-black rounded-lg border dark:border-[#1A1A1A]"
+              key={integ.id}
+              className={`bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden transition-all hover:shadow-lg hover:border-gray-300 dark:hover:border-gray-700 ${integ.status === 'coming_soon' ? 'opacity-70' : ''}`}
             >
-              <div className="sm:w-40 flex-shrink-0">
-                <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{wh.name}</span>
-                {wh.lastTriggered && (
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1 mt-0.5">
-                    <Clock className="w-3 h-3" /> {wh.lastTriggered}
-                  </p>
+              {/* Card Header */}
+              <div className="p-5">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${integ.iconBg}`}>
+                      <Icon className={`w-5 h-5 ${integ.iconColor}`} />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-black dark:text-white text-sm">{integ.name}</h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{integ.description}</p>
+                    </div>
+                  </div>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold rounded-full whitespace-nowrap ${statusConf.badge}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${statusConf.dot}`} />
+                    {statusConf.label}
+                  </span>
+                </div>
+
+                {/* Features */}
+                <div className="space-y-1.5 mb-4">
+                  {integ.features.slice(0, isExpanded ? undefined : 2).map((f, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                      <Zap className="w-3 h-3 text-blue-500 flex-shrink-0" />
+                      <span>{f}</span>
+                    </div>
+                  ))}
+                  {integ.features.length > 2 && (
+                    <button
+                      onClick={() => setExpandedCard(isExpanded ? null : integ.id)}
+                      className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1"
+                    >
+                      {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                      {isExpanded ? 'Moins' : `+${integ.features.length - 2} fonctionnalites`}
+                    </button>
+                  )}
+                </div>
+
+                {/* Health indicators for connected integrations */}
+                {integ.status === 'connected' && (
+                  <div className="flex items-center gap-3 mb-4 p-2.5 bg-gray-50 dark:bg-gray-900/50 rounded-xl">
+                    {integ.uptime && (
+                      <div className="flex items-center gap-1.5 text-[11px]">
+                        <Heart className="w-3 h-3 text-emerald-500" />
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">{integ.uptime}%</span>
+                      </div>
+                    )}
+                    {integ.requestsToday !== undefined && (
+                      <div className="flex items-center gap-1.5 text-[11px]">
+                        <Activity className="w-3 h-3 text-blue-500" />
+                        <span className="text-gray-600 dark:text-gray-400">{integ.requestsToday} req.</span>
+                      </div>
+                    )}
+                    {integ.lastSync && (
+                      <div className="flex items-center gap-1.5 text-[11px] ml-auto">
+                        <Clock className="w-3 h-3 text-gray-400" />
+                        <span className="text-gray-500 dark:text-gray-400">{integ.lastSync}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="flex gap-2">
+                  {integ.status === 'coming_soon' ? (
+                    <button disabled className="flex-1 px-4 py-2.5 text-sm font-medium rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-600 cursor-not-allowed">
+                      Bientot disponible
+                    </button>
+                  ) : integ.status === 'connected' ? (
+                    <>
+                      <button
+                        onClick={() => toggleConnection(integ.id)}
+                        className="flex-1 px-4 py-2.5 text-sm font-medium rounded-xl border border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      >
+                        Deconnecter
+                      </button>
+                      <button
+                        onClick={() => openSetupWizard(integ.id)}
+                        className="px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                        title="Configurer"
+                      >
+                        <Settings className="w-4 h-4" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => toggleConnection(integ.id)}
+                        className="flex-1 px-4 py-2.5 text-sm font-medium rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                      >
+                        Connecter
+                      </button>
+                      <button
+                        onClick={() => openSetupWizard(integ.id)}
+                        className="px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                        title="Guide d'installation"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Setup Wizard Modal ─────────────────────────────────────────────── */}
+      {setupWizard && (() => {
+        const integ = integrations.find(i => i.id === setupWizard);
+        if (!integ || !integ.setupSteps) return null;
+        const Icon = integ.icon;
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl w-full max-w-lg shadow-2xl">
+              {/* Wizard Header */}
+              <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-800">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${integ.iconBg}`}>
+                    <Icon className={`w-5 h-5 ${integ.iconColor}`} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black dark:text-white">Configurer {integ.name}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Etape {wizardStep + 1} sur {integ.setupSteps.length}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={closeSetupWizard}
+                  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-900 text-gray-500 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="px-5 pt-4">
+                <div className="flex gap-1.5">
+                  {integ.setupSteps.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-1.5 flex-1 rounded-full transition-all ${
+                        idx <= wizardStep ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-800'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Step Content */}
+              <div className="p-5">
+                <div className="space-y-4">
+                  {integ.setupSteps.map((step, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex items-start gap-3 transition-opacity ${
+                        idx === wizardStep ? 'opacity-100' : idx < wizardStep ? 'opacity-40' : 'opacity-20'
+                      }`}
+                    >
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
+                        idx < wizardStep
+                          ? 'bg-emerald-500 text-white'
+                          : idx === wizardStep
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                      }`}>
+                        {idx < wizardStep ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                      </div>
+                      <div className="pt-0.5">
+                        <p className={`text-sm ${
+                          idx === wizardStep ? 'text-black dark:text-white font-medium' : 'text-gray-500 dark:text-gray-400'
+                        }`}>
+                          {step}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Wizard Footer */}
+              <div className="flex items-center justify-between p-5 border-t border-gray-200 dark:border-gray-800">
+                <button
+                  onClick={() => setWizardStep(Math.max(0, wizardStep - 1))}
+                  disabled={wizardStep === 0}
+                  className="px-4 py-2 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  Precedent
+                </button>
+                {wizardStep < integ.setupSteps.length - 1 ? (
+                  <button
+                    onClick={() => setWizardStep(wizardStep + 1)}
+                    className="px-5 py-2 text-sm font-medium rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                  >
+                    Suivant
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      toggleConnection(integ.id);
+                      closeSetupWizard();
+                    }}
+                    className="px-5 py-2 text-sm font-medium rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition-colors flex items-center gap-2"
+                  >
+                    <Check className="w-4 h-4" /> Terminer
+                  </button>
                 )}
               </div>
-              <input
-                type="url"
-                placeholder="https://votre-endpoint.com/webhook"
-                value={wh.url}
-                onChange={e => updateWebhookUrl(wh.id, e.target.value)}
-                className="flex-1 px-3 py-2 text-sm border dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] placeholder:text-[#6B7280] dark:text-[#A3A3A3] focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-              />
-              <div className="flex items-center gap-2">
-                {/* Toggle */}
-                <button
-                  onClick={() => toggleWebhook(wh.id)}
-                  className={`relative w-10 h-6 rounded-full transition-colors ${
-                    wh.active ? 'bg-green-500' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A] dark:bg-[#171717]'
-                  }`}
-                >
-                  <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
-                    wh.active ? 'translate-x-[18px]' : 'translate-x-0.5'
-                  }`} />
-                </button>
-                {/* Test */}
-                <button
-                  onClick={() => testWebhook(wh)}
-                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] dark:hover:bg-[#171717] transition-colors"
-                  title="Tester"
-                >
-                  <Send className="w-3.5 h-3.5" /> Test
-                </button>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ── API Keys Section ───────────────────────────────────────────────── */}
+      <section className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
+        <div className="p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-xl">
+              <Key className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-black dark:text-white">Cles API</h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Gerez vos cles d'acces a l'API RestauMargin</p>
+            </div>
+          </div>
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); showToast('Documentation API ouverte', 'info'); }}
+            className="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+          >
+            <ExternalLink className="w-3.5 h-3.5" /> Documentation
+          </a>
+        </div>
+
+        <div className="divide-y divide-gray-100 dark:divide-gray-800/50">
+          {apiKeys.map(apiKey => (
+            <div key={apiKey.id} className="p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-semibold text-black dark:text-white">{apiKey.name}</h4>
+                  <div className="flex items-center gap-3 mt-1 text-[11px] text-gray-500 dark:text-gray-400">
+                    <span>Creee le {apiKey.created}</span>
+                    <span>Derniere utilisation : {apiKey.lastUsed}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {apiKey.scopes.map(scope => (
+                    <span key={scope} className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400">
+                      {scope}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex-1 flex items-center gap-2 px-3 py-2.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl font-mono text-xs">
+                  <span className="flex-1 truncate text-gray-600 dark:text-gray-400">
+                    {visibleKeys[apiKey.id] ? apiKey.key : `${apiKey.key.slice(0, 12)}${'*'.repeat(32)}`}
+                  </span>
+                  <button
+                    onClick={() => toggleKeyVisibility(apiKey.id)}
+                    className="p-1 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-500 transition-colors"
+                    title={visibleKeys[apiKey.id] ? 'Masquer' : 'Afficher'}
+                  >
+                    {visibleKeys[apiKey.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => copyApiKey(apiKey.key)}
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5" /> Copier
+                  </button>
+                  <button
+                    onClick={() => regenerateApiKey(apiKey.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-colors ${
+                      confirmRegenerate === apiKey.id
+                        ? 'bg-red-600 hover:bg-red-700 text-white'
+                        : 'border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900'
+                    }`}
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    {confirmRegenerate === apiKey.id ? 'Confirmer ?' : 'Regenerer'}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Usage Stats */}
+        <div className="p-5 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/20">
+          <div className="flex items-center justify-between text-sm mb-2">
+            <span className="text-gray-600 dark:text-gray-400">Utilisation ce mois</span>
+            <span className="font-semibold text-black dark:text-white">1 247 / 10 000 requetes</span>
+          </div>
+          <div className="w-full h-2.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: '12.47%' }} />
+          </div>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">Renouvellement le 1er mai 2026</p>
+        </div>
       </section>
 
-      {/* ── Integration Sections ────────────────────────────────────────────── */}
-      <IntegrationSection
-        icon={ShoppingBag}
-        title="Integrations Caisse"
-        items={integrations.caisse}
-        category="caisse"
-      />
+      {/* ── Webhooks Section ────────────────────────────────────────────────── */}
+      <section className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">
+        <div className="p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
+              <Webhook className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-black dark:text-white">Webhooks</h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Recevez des notifications en temps reel</p>
+            </div>
+          </div>
+          <button
+            onClick={addWebhook}
+            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+          >
+            <Plus className="w-4 h-4" /> Ajouter
+          </button>
+        </div>
 
-      <IntegrationSection
-        icon={Calculator}
-        title="Integrations Comptabilite"
-        items={integrations.compta}
-        category="compta"
-      />
+        <div className="divide-y divide-gray-100 dark:divide-gray-800/50">
+          {webhooks.map(wh => (
+            <div key={wh.id} className="p-4 sm:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div className="sm:w-44 flex-shrink-0">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${wh.active ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-700'}`} />
+                    <span className="text-sm font-medium text-black dark:text-white">{wh.name}</span>
+                  </div>
+                  {wh.lastTriggered && (
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5 ml-4">
+                      <Clock className="w-3 h-3" /> {wh.lastTriggered}
+                    </p>
+                  )}
+                </div>
+                <input
+                  type="url"
+                  placeholder="https://votre-endpoint.com/webhook"
+                  value={wh.url}
+                  onChange={e => updateWebhookUrl(wh.id, e.target.value)}
+                  className="flex-1 px-3 py-2.5 text-sm border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-black dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                />
+                <div className="flex items-center gap-2">
+                  {/* Toggle */}
+                  <button
+                    onClick={() => toggleWebhook(wh.id)}
+                    className={`relative w-10 h-6 rounded-full transition-colors flex-shrink-0 ${
+                      wh.active ? 'bg-emerald-500' : 'bg-gray-200 dark:bg-gray-800'
+                    }`}
+                  >
+                    <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-md transition-transform ${
+                      wh.active ? 'translate-x-[18px]' : 'translate-x-0.5'
+                    }`} />
+                  </button>
+                  {/* Test */}
+                  <button
+                    onClick={() => testWebhook(wh)}
+                    className="flex items-center gap-1 px-3 py-2 text-xs font-medium rounded-xl border border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                    title="Tester"
+                  >
+                    <Send className="w-3.5 h-3.5" /> Test
+                  </button>
+                  {/* Delete */}
+                  <button
+                    onClick={() => deleteWebhook(wh.id)}
+                    className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    title="Supprimer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-      <IntegrationSection
-        icon={Calendar}
-        title="Integrations Reservation"
-        items={integrations.reservation}
-        category="reservation"
-      />
+        {webhooks.length === 0 && (
+          <div className="p-8 text-center">
+            <Webhook className="w-10 h-10 text-gray-300 dark:text-gray-700 mx-auto mb-3" />
+            <p className="text-sm text-gray-500 dark:text-gray-400">Aucun webhook configure</p>
+            <button
+              onClick={addWebhook}
+              className="mt-3 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              Ajouter votre premier webhook
+            </button>
+          </div>
+        )}
+      </section>
 
-      <IntegrationSection
-        icon={Truck}
-        title="Integrations Livraison"
-        items={integrations.livraison}
-        category="livraison"
-      />
+      {/* ── Security & Info Footer ─────────────────────────────────────────── */}
+      <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl p-5">
+        <div className="flex items-start gap-3">
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex-shrink-0">
+            <Shield className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-black dark:text-white mb-1">Securite des integrations</h4>
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+              Toutes les connexions utilisent le chiffrement TLS 1.3. Les cles API sont hashees et ne sont jamais stockees en clair.
+              Les webhooks sont signes avec HMAC-SHA256 pour verifier leur authenticite.
+            </p>
+            <div className="flex flex-wrap gap-4 mt-3">
+              <span className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+                <CheckCircle className="w-3 h-3 text-emerald-500" /> Chiffrement TLS 1.3
+              </span>
+              <span className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+                <CheckCircle className="w-3 h-3 text-emerald-500" /> Cles hashees (SHA-256)
+              </span>
+              <span className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+                <CheckCircle className="w-3 h-3 text-emerald-500" /> Webhooks signes HMAC
+              </span>
+              <span className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+                <CheckCircle className="w-3 h-3 text-emerald-500" /> Conformite RGPD
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,9 @@ import {
   FileText, Search, Plus, Filter, Eye, Download, Send, ArrowRight,
   Trash2, Edit2, CheckCircle, XCircle, Clock, Euro, Copy,
   CreditCard, Building2,
-  AlertTriangle, RotateCcw, Receipt, Loader2
+  AlertTriangle, RotateCcw, Receipt, Loader2,
+  LayoutGrid, List, ChevronLeft, ChevronRight, Utensils,
+  Wine, CakeSlice, Heart, Briefcase, Sparkles, ClipboardList
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -118,6 +120,89 @@ const STATUS_CONFIG: Record<DocStatus, { label: string; bg: string; text: string
 };
 
 const UNITES = ['unité', 'heure', 'jour', 'forfait', 'kg', 'litre', 'personne', 'lot'];
+
+// ── Quote Templates ───────────────────────────────────────────────────
+
+interface QuoteTemplate {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  description: string;
+  lignes: Omit<LigneDevis, 'id'>[];
+}
+
+const QUOTE_TEMPLATES: QuoteTemplate[] = [
+  {
+    id: 'menu_entreprise',
+    label: 'Menu Entreprise',
+    icon: Briefcase,
+    description: 'Dejeuner ou diner d\'affaires avec menu complet',
+    lignes: [
+      { description: 'Mise en bouche du Chef', quantite: 1, unite: 'personne', prixUnitaireHT: 8, tauxTVA: 10 },
+      { description: 'Entree : Salade de saison', quantite: 1, unite: 'personne', prixUnitaireHT: 14, tauxTVA: 10 },
+      { description: 'Plat principal : Filet de boeuf, legumes de saison', quantite: 1, unite: 'personne', prixUnitaireHT: 28, tauxTVA: 10 },
+      { description: 'Dessert : Selection patissiere', quantite: 1, unite: 'personne', prixUnitaireHT: 12, tauxTVA: 10 },
+      { description: 'Boissons (vin, eau, cafe)', quantite: 1, unite: 'personne', prixUnitaireHT: 18, tauxTVA: 20 },
+      { description: 'Service et mise en place', quantite: 1, unite: 'forfait', prixUnitaireHT: 150, tauxTVA: 20 },
+    ],
+  },
+  {
+    id: 'cocktail',
+    label: 'Cocktail',
+    icon: Wine,
+    description: 'Cocktail dinatoire avec pieces salees et sucrees',
+    lignes: [
+      { description: 'Pieces salees (assortiment 8 varietes)', quantite: 1, unite: 'personne', prixUnitaireHT: 22, tauxTVA: 10 },
+      { description: 'Pieces sucrees (mignardises)', quantite: 1, unite: 'personne', prixUnitaireHT: 10, tauxTVA: 10 },
+      { description: 'Boissons cocktail (champagne, soft, jus)', quantite: 1, unite: 'personne', prixUnitaireHT: 16, tauxTVA: 20 },
+      { description: 'Personnel de service (3h)', quantite: 2, unite: 'personne', prixUnitaireHT: 90, tauxTVA: 20 },
+      { description: 'Location verrerie et materiel', quantite: 1, unite: 'forfait', prixUnitaireHT: 120, tauxTVA: 20 },
+    ],
+  },
+  {
+    id: 'buffet',
+    label: 'Buffet',
+    icon: CakeSlice,
+    description: 'Buffet complet pour evenement (chaud + froid)',
+    lignes: [
+      { description: 'Buffet froid (charcuterie, crudites, salades)', quantite: 1, unite: 'personne', prixUnitaireHT: 18, tauxTVA: 10 },
+      { description: 'Buffet chaud (3 plats)', quantite: 1, unite: 'personne', prixUnitaireHT: 24, tauxTVA: 10 },
+      { description: 'Plateau de fromages', quantite: 1, unite: 'personne', prixUnitaireHT: 8, tauxTVA: 10 },
+      { description: 'Desserts varies', quantite: 1, unite: 'personne', prixUnitaireHT: 10, tauxTVA: 10 },
+      { description: 'Boissons (vin, eau, jus, cafe)', quantite: 1, unite: 'personne', prixUnitaireHT: 14, tauxTVA: 20 },
+      { description: 'Mise en place et decoration', quantite: 1, unite: 'forfait', prixUnitaireHT: 200, tauxTVA: 20 },
+    ],
+  },
+  {
+    id: 'mariage',
+    label: 'Mariage',
+    icon: Heart,
+    description: 'Formule mariage complete (vin d\'honneur + repas)',
+    lignes: [
+      { description: 'Vin d\'honneur (champagne, canapes, verrines)', quantite: 1, unite: 'personne', prixUnitaireHT: 28, tauxTVA: 10 },
+      { description: 'Menu mariage : Entree gastronomique', quantite: 1, unite: 'personne', prixUnitaireHT: 18, tauxTVA: 10 },
+      { description: 'Menu mariage : Plat principal', quantite: 1, unite: 'personne', prixUnitaireHT: 36, tauxTVA: 10 },
+      { description: 'Piece montee / Wedding cake', quantite: 1, unite: 'forfait', prixUnitaireHT: 350, tauxTVA: 10 },
+      { description: 'Vins de table (blanc + rouge)', quantite: 1, unite: 'personne', prixUnitaireHT: 22, tauxTVA: 20 },
+      { description: 'Champagne dessert + brunch', quantite: 1, unite: 'personne', prixUnitaireHT: 12, tauxTVA: 20 },
+      { description: 'Personnel de service (soiree complete)', quantite: 5, unite: 'personne', prixUnitaireHT: 180, tauxTVA: 20 },
+      { description: 'Location materiel + decoration', quantite: 1, unite: 'forfait', prixUnitaireHT: 500, tauxTVA: 20 },
+    ],
+  },
+];
+
+// ── Status board columns for Kanban ───────────────────────────────────
+
+const KANBAN_STATUSES: DocStatus[] = ['brouillon', 'envoye', 'accepte', 'refuse'];
+const KANBAN_COLORS: Record<string, { bg: string; text: string; border: string; dot: string }> = {
+  brouillon: { bg: 'bg-[#F3F4F6] dark:bg-[#171717]/50', text: 'text-[#6B7280] dark:text-[#A3A3A3]', border: 'border-[#E5E7EB] dark:border-[#1A1A1A]', dot: 'bg-[#D1D5DB] dark:bg-[#525252]' },
+  envoye: { bg: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-800', dot: 'bg-amber-400' },
+  accepte: { bg: 'bg-green-50 dark:bg-green-900/20', text: 'text-green-700 dark:text-green-300', border: 'border-green-200 dark:border-green-800', dot: 'bg-green-400' },
+  refuse: { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-300', border: 'border-red-200 dark:border-red-800', dot: 'bg-red-400' },
+};
+
+type ViewMode = 'list' | 'kanban';
+type WizardStep = 'template' | 'client' | 'lines' | 'extras' | 'preview';
 
 const CONDITIONS_PAIEMENT = [
   'Paiement à réception',
@@ -553,6 +638,7 @@ export default function Devis() {
   const [statusFilter, setStatusFilter] = useState<DocStatus | 'all'>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
 
   // Modals
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -562,6 +648,10 @@ export default function Devis() {
   const [editingDoc, setEditingDoc] = useState<DocumentDevis | null>(null);
   const [paymentDocId, setPaymentDocId] = useState<string | null>(null);
   const [sendingEmailId, setSendingEmailId] = useState<string | null>(null);
+
+  // Wizard state
+  const [wizardStep, setWizardStep] = useState<WizardStep>('template');
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
   // Create form state
   const [createType, setCreateType] = useState<DocType>('devis');
@@ -643,12 +733,29 @@ export default function Devis() {
     setConditionsPaiement(CONDITIONS_PAIEMENT[1]);
     setNotes('');
     setEditingDoc(null);
+    setWizardStep('template');
+    setSelectedTemplate(null);
   }
 
   function handleOpenCreate(type: DocType = 'devis') {
     resetForm();
     setCreateType(type);
     setShowCreateModal(true);
+  }
+
+  function handleSelectTemplate(templateId: string) {
+    const tmpl = QUOTE_TEMPLATES.find(t2 => t2.id === templateId);
+    if (tmpl) {
+      setSelectedTemplate(templateId);
+      setLignes(tmpl.lignes.map(l => ({ ...l, id: generateId() })));
+    }
+    setWizardStep('client');
+  }
+
+  function handleSkipTemplate() {
+    setSelectedTemplate(null);
+    setLignes([emptyLigne()]);
+    setWizardStep('client');
   }
 
   async function handleSaveDocument() {
@@ -912,13 +1019,36 @@ export default function Devis() {
             {t('devis.subtitle')}
           </p>
         </div>
-        <button
-          onClick={() => handleOpenCreate(activeTab === 'avoirs' ? 'avoir' : activeTab === 'factures' ? 'facture' : 'devis')}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-semibold transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
-          {activeTab === 'avoirs' ? t('devis.newCreditNote') : activeTab === 'factures' ? t('devis.newInvoice') : t('devis.newQuote')}
-        </button>
+        <div className="flex items-center gap-3">
+          {/* View toggle */}
+          {activeTab === 'devis' && (
+            <div className="flex bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
+              <button
+                onClick={() => setViewMode('list')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'list' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+                }`}
+              >
+                <List className="w-4 h-4" /> Liste
+              </button>
+              <button
+                onClick={() => setViewMode('kanban')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  viewMode === 'kanban' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+                }`}
+              >
+                <LayoutGrid className="w-4 h-4" /> Kanban
+              </button>
+            </div>
+          )}
+          <button
+            onClick={() => handleOpenCreate(activeTab === 'avoirs' ? 'avoir' : activeTab === 'factures' ? 'facture' : 'devis')}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-semibold transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            {activeTab === 'avoirs' ? t('devis.newCreditNote') : activeTab === 'factures' ? t('devis.newInvoice') : t('devis.newQuote')}
+          </button>
+        </div>
       </div>
 
       {/* Loading */}
@@ -948,7 +1078,8 @@ export default function Devis() {
         ))}
       </div>
 
-      {/* Tabs */}
+      {/* Tabs — List view (or always for factures/avoirs) */}
+      {(viewMode === 'list' || activeTab !== 'devis') && (
       <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-sm border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
         <div className="flex border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           {([
@@ -1148,6 +1279,101 @@ export default function Devis() {
           )}
         </div>
       </div>
+      )}
+
+      {/* ═══════════ KANBAN VIEW (devis tab only) ═══════════ */}
+      {activeTab === 'devis' && viewMode === 'kanban' && (
+        <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          {KANBAN_STATUSES.map(status => {
+            const col = KANBAN_COLORS[status];
+            const columnDocs = documents
+              .filter(d => d.type === 'devis' && d.statut === status)
+              .filter(d => {
+                if (!search) return true;
+                const s = search.toLowerCase();
+                return d.numero.toLowerCase().includes(s) || d.client.nom.toLowerCase().includes(s) || d.client.raisonSociale.toLowerCase().includes(s);
+              })
+              .sort((a, b) => new Date(b.dateCreation).getTime() - new Date(a.dateCreation).getTime());
+            return (
+              <div key={status} className="flex-shrink-0 w-72">
+                {/* Column header */}
+                <div className={`flex items-center gap-2 px-3 py-2.5 rounded-t-xl border ${col.border} ${col.bg}`}>
+                  <div className={`w-2.5 h-2.5 rounded-full ${col.dot}`} />
+                  <span className={`text-sm font-semibold ${col.text}`}>{t(STATUS_KEYS[status])}</span>
+                  <span className={`ml-auto text-xs font-medium px-2 py-0.5 rounded-full ${col.bg} ${col.text}`}>
+                    {columnDocs.length}
+                  </span>
+                </div>
+                {/* Cards */}
+                <div className={`border-x border-b ${col.border} rounded-b-xl bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 p-2 space-y-2 min-h-[240px]`}>
+                  {columnDocs.length === 0 && (
+                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-10">Aucun devis</div>
+                  )}
+                  {columnDocs.map(doc => (
+                    <div
+                      key={doc.id}
+                      onClick={() => handlePreview(doc)}
+                      className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 cursor-pointer hover:shadow-md hover:border-[#111111]/30 dark:hover:border-white/30 transition-all group"
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="font-mono text-xs font-semibold text-[#9CA3AF] dark:text-[#737373]">{doc.numero}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatDate(doc.dateCreation)}</span>
+                      </div>
+                      <h4 className="text-sm font-semibold text-[#111111] dark:text-white truncate">{doc.client.raisonSociale || doc.client.nom}</h4>
+                      {doc.client.nom && doc.client.raisonSociale && doc.client.nom !== doc.client.raisonSociale && (
+                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 truncate">{doc.client.nom}</p>
+                      )}
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F3F4F6] dark:border-[#1A1A1A]/50">
+                        <div>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">HT</span>
+                          <span className="ml-1 text-sm font-bold text-[#111111] dark:text-white">{formatEuro(doc.totalHT)}</span>
+                        </div>
+                        <div>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">TTC</span>
+                          <span className="ml-1 text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">{formatEuro(doc.totalTTC)}</span>
+                        </div>
+                      </div>
+                      {/* Quick actions on hover */}
+                      <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={e2 => { e2.stopPropagation(); handleEdit(doc); }}
+                          className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                          title={t('devis.edit')}
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={e2 => { e2.stopPropagation(); handleSendEmail(doc); }}
+                          className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]"
+                          title={t('devis.sendByEmail')}
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={e2 => { e2.stopPropagation(); handleDuplicate(doc); }}
+                          className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+                          title={t('devis.duplicate')}
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        {doc.statut === 'brouillon' && (
+                          <button
+                            onClick={e2 => { e2.stopPropagation(); handleDelete(doc.id); }}
+                            className="p-1 rounded text-[#9CA3AF] dark:text-[#737373] hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 ml-auto"
+                            title={t('devis.delete')}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       </>)}
 
@@ -1159,7 +1385,84 @@ export default function Devis() {
         className="max-w-5xl"
       >
         <div className="space-y-6">
-          {/* Entreprise info (auto-filled, read-only summary) */}
+
+          {/* ── Wizard Step Indicator ── */}
+          {!editingDoc && createType === 'devis' && (
+            <div className="flex items-center gap-2 mb-2">
+              {(['template', 'client', 'lines', 'extras', 'preview'] as WizardStep[]).map((step, i) => {
+                const labels: Record<WizardStep, string> = { template: 'Template', client: 'Client', lines: 'Lignes', extras: 'Options', preview: 'Apercu' };
+                const icons: Record<WizardStep, React.ComponentType<{ className?: string }>> = { template: Sparkles, client: Building2, lines: ClipboardList, extras: FileText, preview: Eye };
+                const StepIcon = icons[step];
+                const isActive = wizardStep === step;
+                const stepOrder: WizardStep[] = ['template', 'client', 'lines', 'extras', 'preview'];
+                const isPast = stepOrder.indexOf(step) < stepOrder.indexOf(wizardStep);
+                return (
+                  <div key={step} className="flex items-center gap-2 flex-1">
+                    <button
+                      onClick={() => isPast && setWizardStep(step)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all w-full justify-center ${
+                        isActive
+                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                          : isPast
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 cursor-pointer hover:bg-green-200 dark:hover:bg-green-900/50'
+                            : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                      }`}
+                    >
+                      <StepIcon className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">{labels[step]}</span>
+                    </button>
+                    {i < 4 && <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB] dark:text-[#525252] flex-shrink-0" />}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── Wizard Step: Template Selection ── */}
+          {!editingDoc && createType === 'devis' && wizardStep === 'template' && (
+            <div>
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-1">Choisir un template de devis</h4>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-4">Selectionnez un modele pour pre-remplir les lignes, ou partez de zero.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {QUOTE_TEMPLATES.map(tmpl => {
+                  const TmplIcon = tmpl.icon;
+                  const templateTotals = calcTotals(tmpl.lignes.map(l => ({ ...l, id: '' })));
+                  return (
+                    <button
+                      key={tmpl.id}
+                      onClick={() => handleSelectTemplate(tmpl.id)}
+                      className="text-left p-4 rounded-xl border-2 border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white bg-white dark:bg-[#0A0A0A] transition-all group"
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center group-hover:bg-[#111111] dark:group-hover:bg-white transition-colors">
+                          <TmplIcon className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3] group-hover:text-white dark:group-hover:text-black transition-colors" />
+                        </div>
+                        <div>
+                          <h5 className="text-sm font-bold text-[#111111] dark:text-white">{tmpl.label}</h5>
+                          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{tmpl.lignes.length} lignes - {formatEuro(templateTotals.totalTTC)} TTC/pers.</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{tmpl.description}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={handleSkipTemplate}
+                className="mt-4 w-full py-3 border-2 border-dashed border-[#D1D5DB] dark:border-[#333] rounded-xl text-sm font-medium text-[#9CA3AF] dark:text-[#737373] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-colors"
+              >
+                <Plus className="w-4 h-4 inline mr-2" />
+                Devis vierge (sans template)
+              </button>
+            </div>
+          )}
+
+          {/* ── Wizard Step: Client (or always show for edit/non-devis) ── */}
+          {(editingDoc || createType !== 'devis' || wizardStep === 'client' || wizardStep === 'lines' || wizardStep === 'extras' || wizardStep === 'preview') && wizardStep !== 'template' && (
+          <>
+
+          {/* Show entreprise info */}
+          {(editingDoc || createType !== 'devis' || wizardStep === 'client') && (
           <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A]/20 rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="w-4 h-4 text-[#111111] dark:text-[#A3A3A3]" />
@@ -1172,8 +1475,10 @@ export default function Devis() {
               <div>TVA : {ENTREPRISE.tvaIntracommunautaire}</div>
             </div>
           </div>
+          )}
 
-          {/* Client section */}
+          {/* Client section — show on client step or always for edit */}
+          {(editingDoc || createType !== 'devis' || wizardStep === 'client') && (
           <div>
             <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
               <Building2 className="w-4 h-4" />
@@ -1203,8 +1508,22 @@ export default function Devis() {
               ))}
             </div>
           </div>
+          )}
 
-          {/* Lignes de devis */}
+          {/* Wizard nav: client -> lines */}
+          {!editingDoc && createType === 'devis' && wizardStep === 'client' && (
+            <div className="flex justify-between pt-2">
+              <button onClick={() => setWizardStep('template')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <ChevronLeft className="w-4 h-4" /> Retour
+              </button>
+              <button onClick={() => setWizardStep('lines')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+                Suivant <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Lignes de devis — show on lines step or always for edit */}
+          {(editingDoc || createType !== 'devis' || wizardStep === 'lines' || wizardStep === 'extras' || wizardStep === 'preview') && (<>
           <div>
             <h4 className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
               <FileText className="w-4 h-4" />
@@ -1240,9 +1559,12 @@ export default function Devis() {
             </button>
           </div>
 
-          {/* Totals */}
+          {/* Totals — live price calculator */}
           <div className="flex justify-end">
-            <div className="w-72 space-y-2 bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4">
+            <div className="w-80 space-y-2 bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h5 className="text-xs font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Euro className="w-3.5 h-3.5" /> Calcul en direct
+              </h5>
               <div className="flex justify-between text-sm">
                 <span className="text-[#9CA3AF] dark:text-[#737373]">Total HT</span>
                 <span className="font-semibold text-[#111111] dark:text-white">{formatEuro(formTotals.totalHT)}</span>
@@ -1259,8 +1581,22 @@ export default function Devis() {
               </div>
             </div>
           </div>
+          </>)}
 
-          {/* Conditions */}
+          {/* Wizard nav: lines -> extras */}
+          {!editingDoc && createType === 'devis' && wizardStep === 'lines' && (
+            <div className="flex justify-between pt-2">
+              <button onClick={() => setWizardStep('client')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <ChevronLeft className="w-4 h-4" /> Retour
+              </button>
+              <button onClick={() => setWizardStep('extras')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+                Suivant <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Conditions — show on extras step or always for edit */}
+          {(editingDoc || createType !== 'devis' || wizardStep === 'extras' || wizardStep === 'preview') && (<>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {createType === 'devis' && (
               <div>
@@ -1298,22 +1634,67 @@ export default function Devis() {
             />
           </div>
 
-          {/* Mentions légales (read-only) */}
+          {/* Mentions legales (read-only) */}
           <div className="bg-[#F9FAFB] dark:bg-[#171717]/30 rounded-xl p-4">
             <div className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-2">{t('devis.legalNotices')}</div>
             <div className="text-xs text-[#9CA3AF] dark:text-[#737373] whitespace-pre-line">
               {createType === 'devis' ? MENTIONS_LEGALES_DEVIS : MENTIONS_LEGALES_FACTURE}
             </div>
           </div>
+          </>)}
+
+          {/* Wizard nav: extras -> preview */}
+          {!editingDoc && createType === 'devis' && wizardStep === 'extras' && (
+            <div className="flex justify-between pt-2">
+              <button onClick={() => setWizardStep('lines')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                <ChevronLeft className="w-4 h-4" /> Retour
+              </button>
+              <button onClick={() => setWizardStep('preview')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black transition-colors">
+                Apercu <Eye className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* ── Wizard Step: Preview ── */}
+          {!editingDoc && createType === 'devis' && wizardStep === 'preview' && (
+            <div>
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                <Eye className="w-4 h-4" /> Apercu du devis
+              </h4>
+              <PDFPreview
+                doc={{
+                  id: '', type: 'devis', numero: nextNumber('devis'),
+                  client, lignes,
+                  dateCreation: new Date().toISOString().split('T')[0],
+                  dateValidite: new Date(Date.now() + dureeValidite * 86400000).toISOString().split('T')[0],
+                  dureeValidite, conditionsPaiement,
+                  mentionsLegales: MENTIONS_LEGALES_DEVIS,
+                  notes, statut: 'brouillon',
+                  ...formTotals,
+                }}
+                entreprise={ENTREPRISE}
+              />
+            </div>
+          )}
+
+          {/* Close the outer wizard conditional */}
+          </>
+          )}
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+            {!editingDoc && createType === 'devis' && wizardStep === 'preview' && (
+              <button onClick={() => setWizardStep('extras')} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors mr-auto">
+                <ChevronLeft className="w-4 h-4" /> Retour
+              </button>
+            )}
             <button
               onClick={() => { setShowCreateModal(false); resetForm(); }}
               className="px-4 py-2.5 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
             >
               {t('common.cancel')}
             </button>
+            {(editingDoc || createType !== 'devis' || wizardStep === 'preview') && (
             <button
               onClick={handleSaveDocument}
               disabled={saving}
@@ -1322,6 +1703,7 @@ export default function Devis() {
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingDoc ? t('devis.update') : t('devis.save')}
             </button>
+            )}
           </div>
         </div>
       </Modal>

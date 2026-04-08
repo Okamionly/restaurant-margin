@@ -4,7 +4,8 @@ import {
   Trash2, Send, CheckCircle2, XCircle, Clock, Building2, Utensils,
   Printer, PartyPopper, ArrowRight, Search, LayoutGrid, Calendar,
   Phone, Mail, MapPin, Monitor, Music, Mic, Tv, Flower2, Camera,
-  FileText, DollarSign
+  FileText, DollarSign, BarChart3, CheckSquare, Square, PieChart,
+  Target, CalendarCheck
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import Modal from '../components/Modal';
@@ -104,6 +105,29 @@ interface SeminaireEvent {
   timeline: TimelineEntry[];
 }
 
+// ── Checklist items per event ──────────────────────────────────────────
+
+interface ChecklistItem {
+  id: string;
+  label: string;
+  checked: boolean;
+}
+
+const DEFAULT_CHECKLIST: Omit<ChecklistItem, 'checked'>[] = [
+  { id: 'contact_client', label: 'Contact client confirme' },
+  { id: 'menu_valide', label: 'Menu valide par le client' },
+  { id: 'salle_reservee', label: 'Salle reservee et preparee' },
+  { id: 'equipements_verifies', label: 'Equipements verifies et testes' },
+  { id: 'personnel_affecte', label: 'Personnel de service affecte' },
+  { id: 'fournisseurs_commandes', label: 'Commandes fournisseurs passees' },
+  { id: 'decoration_prete', label: 'Decoration installee' },
+  { id: 'arrhes_recues', label: 'Arrhes recues' },
+  { id: 'beo_imprime', label: 'BEO imprime et distribue' },
+  { id: 'facture_envoyee', label: 'Facture envoyee' },
+];
+
+type SeminaireViewMode = 'kanban' | 'calendar' | 'analytics';
+
 // ── Constants ──────────────────────────────────────────────────────────
 
 const STATUS_COLUMNS: EventStatus[] = ['Demande', 'Devis envoyé', 'Confirmé', 'En cours', 'Soldé'];
@@ -185,7 +209,7 @@ export default function Seminaires() {
   }, []);
 
   useEffect(() => { fetchEvents(); }, [fetchEvents]);
-  const [viewMode, setViewMode] = useState<'kanban' | 'calendar'>('kanban');
+  const [viewMode, setViewMode] = useState<SeminaireViewMode>('kanban');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<SeminaireEvent | null>(null);
@@ -204,6 +228,55 @@ export default function Seminaires() {
     notes: '',
   };
   const [form, setForm] = useState(emptyForm);
+
+  // ── Checklist state (per event id) ──
+  const [checklists, setChecklists] = useState<Record<number, ChecklistItem[]>>({});
+
+  function getChecklist(eventId: number): ChecklistItem[] {
+    if (checklists[eventId]) return checklists[eventId];
+    return DEFAULT_CHECKLIST.map(item => ({ ...item, checked: false }));
+  }
+
+  function toggleChecklistItem(eventId: number, itemId: string) {
+    setChecklists(prev => {
+      const current = prev[eventId] || DEFAULT_CHECKLIST.map(item => ({ ...item, checked: false }));
+      return {
+        ...prev,
+        [eventId]: current.map(item => item.id === itemId ? { ...item, checked: !item.checked } : item),
+      };
+    });
+  }
+
+  // ── Analytics data ──
+  const analytics = useMemo(() => {
+    const byType: Record<string, number> = {};
+    const byMonth: Record<string, { count: number; revenue: number }> = {};
+    let totalRevenue = 0;
+    let totalGuests = 0;
+    let completedEvents = 0;
+
+    events.forEach(e => {
+      // By type
+      byType[e.type] = (byType[e.type] || 0) + 1;
+
+      // By month
+      const monthKey = e.date.substring(0, 7);
+      if (!byMonth[monthKey]) byMonth[monthKey] = { count: 0, revenue: 0 };
+      byMonth[monthKey].count += 1;
+      if (['Confirmé', 'En cours', 'Soldé'].includes(e.status)) {
+        byMonth[monthKey].revenue += e.totalEstime;
+        totalRevenue += e.totalEstime;
+      }
+
+      totalGuests += e.nbConvivesMax;
+      if (e.status === 'Soldé') completedEvents++;
+    });
+
+    const avgPerEvent = events.length > 0 ? Math.round(totalRevenue / events.filter(e => ['Confirmé', 'En cours', 'Soldé'].includes(e.status)).length) || 0 : 0;
+    const avgGuests = events.length > 0 ? Math.round(totalGuests / events.length) : 0;
+
+    return { byType, byMonth, totalRevenue, totalGuests, completedEvents, avgPerEvent, avgGuests };
+  }, [events]);
 
   // ── Filtered events ──
   const filtered = useMemo(() => {
@@ -408,7 +481,7 @@ export default function Seminaires() {
             <button
               onClick={() => setViewMode('kanban')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                viewMode === 'kanban' ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+                viewMode === 'kanban' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
               }`}
             >
               <LayoutGrid className="w-4 h-4" /> Kanban
@@ -416,10 +489,18 @@ export default function Seminaires() {
             <button
               onClick={() => setViewMode('calendar')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                viewMode === 'calendar' ? 'bg-white dark:bg-[#171717] text-[#111111] dark:text-white dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+                viewMode === 'calendar' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
               }`}
             >
               <Calendar className="w-4 h-4" /> Calendrier
+            </button>
+            <button
+              onClick={() => setViewMode('analytics')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                viewMode === 'analytics' ? 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white shadow-sm' : 'text-[#9CA3AF] dark:text-[#737373]'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" /> Analytique
             </button>
           </div>
           <button
@@ -636,6 +717,213 @@ export default function Seminaires() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════ ANALYTICS VIEW ═══════════ */}
+      {viewMode === 'analytics' && (
+        <div className="space-y-6">
+          {/* Analytics summary cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                  <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">CA Total Confirme</p>
+                  <p className="text-xl font-bold text-[#111111] dark:text-white">{formatEuro(analytics.totalRevenue)}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                  <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Panier Moyen</p>
+                  <p className="text-xl font-bold text-[#111111] dark:text-white">{formatEuro(analytics.avgPerEvent)}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Convives Moyens</p>
+                  <p className="text-xl font-bold text-[#111111] dark:text-white">{analytics.avgGuests} pers.</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                  <CalendarCheck className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Evenements Soldes</p>
+                  <p className="text-xl font-bold text-[#111111] dark:text-white">{analytics.completedEvents}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Distribution by type */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+              <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+                <PieChart className="w-4 h-4 text-[#9CA3AF]" /> Repartition par type
+              </h3>
+              <div className="space-y-3">
+                {Object.entries(analytics.byType).sort((a, b) => b[1] - a[1]).map(([type, count]) => {
+                  const pct = events.length > 0 ? Math.round((count / events.length) * 100) : 0;
+                  return (
+                    <div key={type} className="flex items-center gap-3">
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${TYPE_COLORS[type as EventType] || TYPE_COLORS['Autre']}`}>
+                        {type}
+                      </span>
+                      <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#111111] dark:bg-white rounded-full transition-all"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-bold text-[#111111] dark:text-white w-12 text-right">{count}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-10 text-right">{pct}%</span>
+                    </div>
+                  );
+                })}
+                {Object.keys(analytics.byType).length === 0 && (
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-4">Aucune donnee</p>
+                )}
+              </div>
+            </div>
+
+            {/* Distribution by status */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+              <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-[#9CA3AF]" /> Repartition par statut
+              </h3>
+              <div className="space-y-3">
+                {STATUS_COLUMNS.map(status => {
+                  const count = events.filter(e => e.status === status).length;
+                  const pct = events.length > 0 ? Math.round((count / events.length) * 100) : 0;
+                  const col = STATUS_COLORS[status];
+                  return (
+                    <div key={status} className="flex items-center gap-3">
+                      <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${col.bg} ${col.text}`}>
+                        <span className={`w-2 h-2 rounded-full ${col.dot}`} />
+                        {status}
+                      </span>
+                      <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${col.dot} rounded-full transition-all`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-bold text-[#111111] dark:text-white w-12 text-right">{count}</span>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-10 text-right">{pct}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly revenue chart (text-based) */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-[#9CA3AF]" /> Historique mensuel
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <th className="text-left py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Mois</th>
+                    <th className="text-center py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Evenements</th>
+                    <th className="text-right py-2 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">CA Confirme</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]/50">
+                  {Object.entries(analytics.byMonth)
+                    .sort((a, b) => b[0].localeCompare(a[0]))
+                    .map(([month, data]) => {
+                      const d = new Date(month + '-01');
+                      const label = d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+                      const maxRevenue = Math.max(...Object.values(analytics.byMonth).map(m => m.revenue), 1);
+                      const barWidth = Math.round((data.revenue / maxRevenue) * 100);
+                      return (
+                        <tr key={month} className="hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30">
+                          <td className="py-2.5 font-medium text-[#111111] dark:text-white capitalize">{label}</td>
+                          <td className="py-2.5 text-center">
+                            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] text-xs font-bold text-[#111111] dark:text-white">
+                              {data.count}
+                            </span>
+                          </td>
+                          <td className="py-2.5">
+                            <div className="flex items-center justify-end gap-2">
+                              <div className="w-24 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${barWidth}%` }} />
+                              </div>
+                              <span className="font-bold text-[#111111] dark:text-white text-right w-20">{formatEuro(data.revenue)}</span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  {Object.keys(analytics.byMonth).length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">Aucun historique</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Event history list */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-[#9CA3AF]" /> Historique complet
+            </h3>
+            <div className="space-y-2">
+              {events
+                .sort((a, b) => b.date.localeCompare(a.date))
+                .map(ev => {
+                  const col = STATUS_COLORS[ev.status];
+                  return (
+                    <div
+                      key={ev.id}
+                      onClick={() => { setSelectedEvent(ev); setShowDetailModal(true); }}
+                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 cursor-pointer transition-colors border border-transparent hover:border-[#E5E7EB] dark:hover:border-[#1A1A1A]"
+                    >
+                      <div className="text-center flex-shrink-0 w-12">
+                        <div className="text-lg font-bold text-[#111111] dark:text-white leading-none">{new Date(ev.date + 'T00:00:00').getDate()}</div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">{new Date(ev.date + 'T00:00:00').toLocaleDateString('fr-FR', { month: 'short' })}</div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-[#111111] dark:text-white truncate">{ev.clientNom}</h4>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${TYPE_COLORS[ev.type]}`}>{ev.type}</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{ev.nbConvivesMax} convives</span>
+                        </div>
+                      </div>
+                      <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0 ${col.bg} ${col.text}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${col.dot}`} />
+                        {ev.status}
+                      </span>
+                      <span className="text-sm font-bold text-[#111111] dark:text-white flex-shrink-0 w-20 text-right">{formatEuro(ev.totalEstime)}</span>
+                    </div>
+                  );
+                })}
+              {events.length === 0 && (
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] text-center py-8">Aucun evenement</p>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -1038,6 +1326,43 @@ export default function Seminaires() {
                     </p>
                   </div>
                 )}
+
+                {/* Checklist */}
+                <div>
+                  <h4 className="text-sm font-bold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4" /> Checklist
+                    <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] ml-auto">
+                      {getChecklist(ev.id).filter(c => c.checked).length}/{getChecklist(ev.id).length}
+                    </span>
+                  </h4>
+                  <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 rounded-xl p-3 space-y-1.5">
+                    {/* Progress bar */}
+                    <div className="w-full h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden mb-3">
+                      <div
+                        className="h-full bg-emerald-500 rounded-full transition-all duration-300"
+                        style={{ width: `${getChecklist(ev.id).length > 0 ? Math.round((getChecklist(ev.id).filter(c => c.checked).length / getChecklist(ev.id).length) * 100) : 0}%` }}
+                      />
+                    </div>
+                    {getChecklist(ev.id).map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => toggleChecklistItem(ev.id, item.id)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
+                          item.checked
+                            ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20'
+                            : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-white dark:hover:bg-[#171717]'
+                        }`}
+                      >
+                        {item.checked ? (
+                          <CheckSquare className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        ) : (
+                          <Square className="w-4 h-4 text-[#D1D5DB] dark:text-[#525252] flex-shrink-0" />
+                        )}
+                        <span className={item.checked ? 'line-through opacity-70' : ''}>{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 {/* Timeline */}
                 <div>

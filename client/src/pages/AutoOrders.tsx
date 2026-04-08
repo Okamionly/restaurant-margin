@@ -5,7 +5,8 @@ import {
   Clock, X, Mail, Copy, CopyPlus, Filter, Edit3,
   AlertTriangle, Zap, History, RefreshCw, CheckCircle2, CircleDot,
   MessageCircle, XCircle, AlertOctagon, BarChart3, Calendar,
-  ClipboardCheck, ThumbsDown,
+  ClipboardCheck, ThumbsDown, TrendingUp, TrendingDown, Brain,
+  Timer, Target, Wallet, ArrowRight, Sparkles, Phone,
 } from 'lucide-react';
 import { fetchIngredients, fetchSuppliers, fetchInventoryAlerts } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
@@ -145,35 +146,35 @@ const STATUS_CONFIG: Record<OrderStatus, {
   'envoyé': {
     badge: 'bg-blue-500/10 text-blue-400 border border-blue-500/30',
     dot: 'bg-blue-500',
-    label: 'Envoyé',
+    label: 'Envoye',
     icon: Send,
     step: 1,
   },
   'confirmé': {
     badge: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
     dot: 'bg-amber-500',
-    label: 'Confirmé',
+    label: 'Confirme',
     icon: CheckCircle2,
     step: 2,
   },
   'livré': {
     badge: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
     dot: 'bg-emerald-500',
-    label: 'Livré',
+    label: 'Livre',
     icon: Package,
     step: 3,
   },
   'annulé': {
     badge: 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] border border-[#E5E7EB] dark:border-[#262626] line-through',
     dot: 'bg-[#6B7280]',
-    label: 'Annulé',
+    label: 'Annule',
     icon: XCircle,
     step: -1,
   },
   'réclamation': {
     badge: 'bg-red-500/10 text-red-400 border border-red-500/30',
     dot: 'bg-red-500',
-    label: 'Réclamation',
+    label: 'Reclamation',
     icon: AlertOctagon,
     step: 4,
   },
@@ -189,7 +190,7 @@ function fmtDate(iso: string) {
 
 function fmtMonth(ym: string) {
   const [y, m] = ym.split('-');
-  const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+  const months = ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec'];
   return `${months[parseInt(m) - 1]} ${y.slice(2)}`;
 }
 
@@ -206,28 +207,321 @@ function emptyLine(): OrderLine {
   return { id: nextLineId++, ingredientId: null, name: '', quantity: 1, unit: 'kg', pricePerUnit: 0, total: 0 };
 }
 
-// ── Timeline component ────────────────────────────────────────────────────────
+// ── KPI Dashboard Card ──────────────────────────────────────────────────────
 
-function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status: OrderStatus; date: string; expectedDelivery?: string | null; receivedAt?: string | null }) {
-  const steps: { key: OrderStatus; label: string; sublabel: string; date?: string }[] = [
-    { key: 'brouillon', label: 'Brouillon', sublabel: 'Commande créée', date },
-    { key: 'envoyé', label: 'Envoyé', sublabel: 'Envoyé au fournisseur' },
-    { key: 'confirmé', label: 'Confirmé', sublabel: 'Confirmé par le fournisseur' },
-    { key: 'livré', label: 'Livré', sublabel: 'Marchandise reçue', date: receivedAt || undefined },
-  ];
-  if (status === 'annulé') return (
-    <div className="mt-4 px-2">
-      <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-2">Suivi de livraison</p>
-      <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-        <XCircle className="w-4 h-4 text-[#9CA3AF]" />
-        Commande annulée
+function KPICard({ icon, label, value, trend, trendLabel, accent }: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  trend?: 'up' | 'down' | 'neutral';
+  trendLabel?: string;
+  accent: string;
+}) {
+  return (
+    <div className={`rounded-2xl p-5 border bg-white dark:bg-black/50 ${accent} relative overflow-hidden group hover:shadow-lg transition-all duration-300`}>
+      <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-gradient-to-br from-black/[0.02] dark:from-white/[0.02] to-transparent -translate-y-8 translate-x-8" />
+      <div className="flex items-start justify-between">
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">{label}</p>
+          <p className="text-2xl font-bold text-[#111111] dark:text-white tracking-tight">{value}</p>
+          {trendLabel && (
+            <div className="flex items-center gap-1">
+              {trend === 'up' && <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />}
+              {trend === 'down' && <TrendingDown className="w-3.5 h-3.5 text-red-500" />}
+              <span className={`text-xs font-medium ${trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                {trendLabel}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] group-hover:scale-110 transition-transform">
+          {icon}
+        </div>
       </div>
     </div>
   );
-  if (status === 'réclamation') {
-    steps.push({ key: 'réclamation', label: 'Réclamation', sublabel: 'Problème signalé' });
+}
+
+// ── Smart Reorder Suggestion ────────────────────────────────────────────────
+
+type UrgencyLevel = 'urgent' | 'normal' | 'planifie';
+
+interface ReorderSuggestion {
+  ingredient: InventoryItem;
+  urgency: UrgencyLevel;
+  daysUntilStockout: number;
+  suggestedQty: number;
+  estimatedCost: number;
+}
+
+function computeReorderSuggestions(lowStockItems: InventoryItem[]): ReorderSuggestion[] {
+  return lowStockItems.slice(0, 6).map((item) => {
+    const stockRatio = item.currentStock / Math.max(item.minStock, 0.1);
+    const suggestedQty = Math.max(1, Math.ceil(item.minStock * 2 - item.currentStock));
+    const estimatedCost = suggestedQty * item.ingredient.pricePerUnit;
+
+    // Estimate days until stockout based on consumption rate
+    const dailyConsumption = item.minStock / 7; // rough estimate: minStock = 1 week supply
+    const daysUntilStockout = dailyConsumption > 0 ? Math.max(0, Math.floor(item.currentStock / dailyConsumption)) : 99;
+
+    let urgency: UrgencyLevel;
+    if (stockRatio <= 0.2 || daysUntilStockout <= 1) {
+      urgency = 'urgent';
+    } else if (stockRatio <= 0.5 || daysUntilStockout <= 3) {
+      urgency = 'normal';
+    } else {
+      urgency = 'planifie';
+    }
+
+    return { ingredient: item, urgency, daysUntilStockout, suggestedQty, estimatedCost };
+  }).sort((a, b) => {
+    const urgencyOrder = { urgent: 0, normal: 1, planifie: 2 };
+    return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
+  });
+}
+
+function UrgencyBadge({ urgency }: { urgency: UrgencyLevel }) {
+  const config = {
+    urgent: { label: 'Urgent', bg: 'bg-red-500/10 text-red-500 border-red-500/30', dot: 'bg-red-500' },
+    normal: { label: 'Normal', bg: 'bg-amber-500/10 text-amber-500 border-amber-500/30', dot: 'bg-amber-500' },
+    planifie: { label: 'Planifie', bg: 'bg-blue-500/10 text-blue-500 border-blue-500/30', dot: 'bg-blue-500' },
+  };
+  const c = config[urgency];
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${c.bg}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${c.dot} animate-pulse`} />
+      {c.label}
+    </span>
+  );
+}
+
+function SmartReorderSection({ suggestions, onCreateOrder }: {
+  suggestions: ReorderSuggestion[];
+  onCreateOrder: (item: InventoryItem, qty: number) => void;
+}) {
+  if (suggestions.length === 0) return null;
+
+  return (
+    <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
+        <div className="p-2 rounded-xl bg-gradient-to-br from-[#111111] dark:from-white to-[#333] dark:to-[#D4D4D4]">
+          <Brain className="w-4 h-4 text-white dark:text-black" />
+        </div>
+        <div>
+          <h2 className="text-base font-bold text-[#111111] dark:text-white">Suggestions de reapprovisionnement</h2>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Analyse IA : stock, consommation, delai de livraison</p>
+        </div>
+        <Sparkles className="w-4 h-4 text-amber-400 ml-1" />
+      </div>
+      <div className="p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {suggestions.slice(0, 3).map((s) => (
+            <div
+              key={s.ingredient.ingredientId}
+              className="border border-[#E5E7EB] dark:border-[#262626] rounded-xl p-4 hover:shadow-md transition-all duration-200 group bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 hover:bg-white dark:hover:bg-[#0A0A0A]"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-xs">
+                    {s.ingredient.ingredient.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-[#111111] dark:text-white">{s.ingredient.ingredient.name}</p>
+                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                      {s.ingredient.ingredient.supplier || 'Fournisseur inconnu'}
+                    </p>
+                  </div>
+                </div>
+                <UrgencyBadge urgency={s.urgency} />
+              </div>
+
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#6B7280] dark:text-[#A3A3A3]">Stock actuel</span>
+                  <span className="font-medium text-[#111111] dark:text-white">
+                    {s.ingredient.currentStock} / {s.ingredient.minStock} {s.ingredient.unit}
+                  </span>
+                </div>
+                {/* Stock bar */}
+                <div className="w-full h-1.5 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${
+                      s.urgency === 'urgent' ? 'bg-red-500' : s.urgency === 'normal' ? 'bg-amber-500' : 'bg-blue-500'
+                    }`}
+                    style={{ width: `${Math.min(100, (s.ingredient.currentStock / Math.max(s.ingredient.minStock, 1)) * 100)}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
+                    <Timer className="w-3 h-3" />
+                    ~{s.daysUntilStockout}j avant rupture
+                  </span>
+                  <span className="font-medium text-[#111111] dark:text-white">{fmtEuro(s.estimatedCost)}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => onCreateOrder(s.ingredient, s.suggestedQty)}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg text-xs font-semibold transition-all group-hover:shadow-md"
+              >
+                <ShoppingCart className="w-3.5 h-3.5" />
+                Commander {s.suggestedQty} {s.ingredient.unit}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Supplier Order Cards ────────────────────────────────────────────────────
+
+function SupplierOrderCards({ orders, suppliers, onWhatsApp, onSendEmail, onExpand, expandedSupplier }: {
+  orders: Order[];
+  suppliers: Supplier[];
+  onWhatsApp: (order: Order) => void;
+  onSendEmail: (order: Order) => void;
+  onExpand: (name: string | null) => void;
+  expandedSupplier: string | null;
+}) {
+  // Group pending orders (brouillon + envoye) by supplier
+  const supplierGroups = useMemo(() => {
+    const pending = orders.filter((o) => o.status === 'brouillon' || o.status === 'envoyé');
+    const groups = new Map<string, { orders: Order[]; supplier: Supplier | undefined; totalCost: number }>();
+
+    pending.forEach((o) => {
+      const key = o.supplierName;
+      if (!groups.has(key)) {
+        const supplier = suppliers.find((s) => s.id === o.supplierId);
+        groups.set(key, { orders: [], supplier, totalCost: 0 });
+      }
+      const group = groups.get(key)!;
+      group.orders.push(o);
+      group.totalCost += o.totalHT;
+    });
+
+    return Array.from(groups.entries()).sort((a, b) => b[1].totalCost - a[1].totalCost);
+  }, [orders, suppliers]);
+
+  if (supplierGroups.length === 0) return null;
+
+  return (
+    <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
+        <Truck className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+        <h2 className="text-base font-bold text-[#111111] dark:text-white">Commandes par fournisseur</h2>
+        <span className="px-2 py-0.5 bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] rounded-full text-xs font-medium">
+          {supplierGroups.length} fournisseur{supplierGroups.length > 1 ? 's' : ''}
+        </span>
+      </div>
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {supplierGroups.map(([name, group]) => {
+          const isExpanded = expandedSupplier === name;
+          const initials = name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+          const totalItems = group.orders.reduce((sum, o) => sum + o.lines.length, 0);
+
+          return (
+            <div
+              key={name}
+              className={`border rounded-xl overflow-hidden transition-all duration-200 ${
+                isExpanded
+                  ? 'border-[#111111] dark:border-white shadow-lg'
+                  : 'border-[#E5E7EB] dark:border-[#262626] hover:border-[#9CA3AF] dark:hover:border-[#525252]'
+              }`}
+            >
+              <div
+                className="p-4 cursor-pointer"
+                onClick={() => onExpand(isExpanded ? null : name)}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-sm shrink-0">
+                    {initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[#111111] dark:text-white truncate">{name}</p>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                      {totalItems} article{totalItems > 1 ? 's' : ''} / {group.orders.length} commande{group.orders.length > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-[#111111] dark:text-white">{fmtEuro(group.totalCost)}</p>
+                    <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] uppercase">HT</p>
+                  </div>
+                </div>
+
+                {/* Quick action buttons */}
+                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={() => group.orders[0] && onSendEmail(group.orders[0])}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-lg text-xs font-semibold transition"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    Commander
+                  </button>
+                  <button
+                    onClick={() => group.orders[0] && onWhatsApp(group.orders[0])}
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-lg text-xs font-semibold transition border border-[#25D366]/30"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Expanded item details */}
+              {isExpanded && (
+                <div className="border-t border-[#E5E7EB] dark:border-[#262626] bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 p-3 space-y-2">
+                  {group.orders.map((order) => (
+                    <div key={order.id}>
+                      {order.lines.map((line) => (
+                        <div key={line.id} className="flex items-center justify-between py-1.5 text-xs">
+                          <span className="text-[#111111] dark:text-white font-medium">{line.name}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[#6B7280] dark:text-[#A3A3A3]">{line.quantity} {line.unit}</span>
+                            <span className="font-medium text-[#111111] dark:text-white">{fmtEuro(line.total)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                  {group.supplier?.phone && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-[#E5E7EB] dark:border-[#262626] text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                      <Phone className="w-3 h-3" />
+                      {group.supplier.phone}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Order Timeline (enhanced) ───────────────────────────────────────────────
+
+function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status: OrderStatus; date: string; expectedDelivery?: string | null; receivedAt?: string | null }) {
+  const timelineSteps: { key: string; label: string; date?: string; color: string; done: boolean; active: boolean }[] = [
+    { key: 'commandee', label: 'Commandee', date, color: 'bg-[#111111] dark:bg-white', done: true, active: status === 'brouillon' },
+    { key: 'confirmee', label: 'Confirmee', color: 'bg-blue-500', done: ['envoyé', 'confirmé', 'livré', 'réclamation'].includes(status), active: status === 'envoyé' },
+    { key: 'expediee', label: 'Expediee', color: 'bg-amber-500', done: ['confirmé', 'livré', 'réclamation'].includes(status), active: status === 'confirmé' },
+    { key: 'livree', label: 'Livree', date: receivedAt || undefined, color: 'bg-emerald-500', done: ['livré', 'réclamation'].includes(status), active: status === 'livré' },
+    { key: 'verifiee', label: 'Verifiee', color: 'bg-emerald-600', done: status === 'réclamation' || (status === 'livré' && !!receivedAt), active: false },
+  ];
+
+  if (status === 'annulé') {
+    return (
+      <div className="mt-4 px-2">
+        <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider mb-2">Suivi de livraison</p>
+        <div className="flex items-center gap-2 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+          <XCircle className="w-4 h-4 text-[#9CA3AF]" />
+          Commande annulee
+        </div>
+      </div>
+    );
   }
-  const currentStep = STATUS_CONFIG[status].step;
 
   return (
     <div className="mt-4 px-2">
@@ -235,49 +529,97 @@ function OrderTimeline({ status, date, expectedDelivery, receivedAt }: { status:
       {expectedDelivery && (
         <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mb-3 flex items-center gap-1.5">
           <Calendar className="w-3.5 h-3.5" />
-          Livraison prévue : <span className="font-medium text-[#111111] dark:text-white">{fmtDate(expectedDelivery)}</span>
+          Livraison prevue : <span className="font-medium text-[#111111] dark:text-white">{fmtDate(expectedDelivery)}</span>
         </p>
       )}
       <div className="flex items-start gap-0">
-        {steps.map((step, idx) => {
-          const cfg = STATUS_CONFIG[step.key];
-          const done = idx <= currentStep;
-          const active = idx === currentStep;
-          const isLast = idx === steps.length - 1;
+        {timelineSteps.map((step, idx) => {
+          const isLast = idx === timelineSteps.length - 1;
           return (
             <div key={step.key} className="flex-1 flex flex-col items-center relative">
               {!isLast && (
-                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${done && idx < currentStep ? 'bg-[#111111] dark:bg-white' : 'bg-[#F3F4F6] dark:bg-[#171717]'}`} />
+                <div className={`absolute top-3.5 left-1/2 w-full h-0.5 ${step.done && !step.active ? step.color : 'bg-[#F3F4F6] dark:bg-[#171717]'}`} />
               )}
               <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all ${
-                done
-                  ? active
-                    ? step.key === 'réclamation'
-                      ? 'border-red-500 bg-red-500/20'
-                      : 'border-[#111111] dark:border-white bg-[#111111] dark:bg-white/20'
+                step.done
+                  ? step.active
+                    ? 'border-[#111111] dark:border-white bg-[#111111]/20 dark:bg-white/20'
                     : 'border-emerald-500 bg-emerald-500/20'
                   : 'border-[#E5E7EB] dark:border-[#262626] bg-[#FAFAFA] dark:bg-[#0A0A0A]'
               }`}>
-                {done && !active ? (
+                {step.done && !step.active ? (
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                ) : active ? (
-                  <CircleDot className={`w-3.5 h-3.5 ${step.key === 'réclamation' ? 'text-red-400' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`} />
+                ) : step.active ? (
+                  <CircleDot className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
                 ) : (
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#4B5563]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#D4D4D4] dark:bg-[#4B5563]" />
                 )}
               </div>
               <div className="mt-2 text-center">
-                <p className={`text-xs font-semibold ${active ? (step.key === 'réclamation' ? 'text-red-400' : 'text-[#6B7280] dark:text-[#A3A3A3]') : done ? 'text-emerald-400' : 'text-[#4B5563] dark:text-[#A3A3A3]'}`}>
+                <p className={`text-xs font-semibold ${step.active ? 'text-[#111111] dark:text-white' : step.done ? 'text-emerald-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
                   {step.label}
                 </p>
-                <p className="text-[10px] text-[#4B5563] dark:text-[#A3A3A3] mt-0.5">{step.sublabel}</p>
-                {active && step.date && (
+                {step.date && (
                   <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{fmtDate(step.date)}</p>
                 )}
               </div>
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+// ── Budget Tracker ──────────────────────────────────────────────────────────
+
+function BudgetTracker({ monthlySpend, budget }: { monthlySpend: number; budget: number }) {
+  const percentage = budget > 0 ? Math.min((monthlySpend / budget) * 100, 150) : 0;
+  const isOverBudget = monthlySpend > budget;
+  const remaining = budget - monthlySpend;
+
+  return (
+    <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Wallet className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
+          <h3 className="font-bold text-sm text-[#111111] dark:text-white">Budget mensuel</h3>
+        </div>
+        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+          isOverBudget
+            ? 'bg-red-500/10 text-red-500 border border-red-500/30'
+            : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30'
+        }`}>
+          {isOverBudget ? 'Depasse' : 'Dans le budget'}
+        </span>
+      </div>
+
+      <div className="flex items-end justify-between mb-2">
+        <div>
+          <p className="text-2xl font-bold text-[#111111] dark:text-white">{fmtEuro(monthlySpend)}</p>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">sur {fmtEuro(budget)} prevu</p>
+        </div>
+        <p className={`text-sm font-semibold ${isOverBudget ? 'text-red-500' : 'text-emerald-500'}`}>
+          {isOverBudget ? '+' : ''}{fmtEuro(remaining)}
+        </p>
+      </div>
+
+      {/* Progress bar */}
+      <div className="w-full h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden relative">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${
+            isOverBudget ? 'bg-red-500' : percentage > 80 ? 'bg-amber-500' : 'bg-emerald-500'
+          }`}
+          style={{ width: `${Math.min(percentage, 100)}%` }}
+        />
+        {/* Budget line marker */}
+        {percentage > 100 && (
+          <div className="absolute top-0 bottom-0 w-0.5 bg-[#111111] dark:bg-white" style={{ left: `${(100 / percentage) * 100}%` }} />
+        )}
+      </div>
+      <div className="flex justify-between mt-1">
+        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">0 EUR</span>
+        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtEuro(budget)}</span>
       </div>
     </div>
   );
@@ -314,7 +656,6 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
 
     ctx.clearRect(0, 0, width, height);
 
-    // Compute max value
     let maxVal = 0;
     months.forEach((m) => {
       let monthTotal = 0;
@@ -327,7 +668,6 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
     const barW = Math.min(40, (chartW / months.length) * 0.6);
     const gap = (chartW - barW * months.length) / (months.length + 1);
 
-    // Grid lines
     ctx.strokeStyle = isDark ? '#262626' : '#E5E7EB';
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) {
@@ -342,7 +682,6 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
       ctx.fillText(Math.round((maxVal * i) / 4) + ' \u20AC', padding.left - 8, y + 3);
     }
 
-    // Bars (stacked)
     months.forEach((m, mi) => {
       const x = padding.left + gap + mi * (barW + gap);
       let cumY = 0;
@@ -352,7 +691,6 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
         ctx.fillStyle = colors[si % colors.length];
         ctx.beginPath();
         const y = padding.top + chartH - cumY - h;
-        // Rounded top corners only for the top segment
         const radius = 3;
         ctx.moveTo(x, y + radius);
         ctx.arcTo(x, y, x + barW, y, radius);
@@ -364,7 +702,6 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
         cumY += h;
       });
 
-      // Month label
       ctx.fillStyle = isDark ? '#737373' : '#9CA3AF';
       ctx.font = '10px sans-serif';
       ctx.textAlign = 'center';
@@ -375,7 +712,7 @@ function SpendingChart({ data }: { data: SpendingData | null }) {
   if (!data || Object.keys(data.spending).length === 0) {
     return (
       <div className="text-center py-8 text-[#6B7280] dark:text-[#A3A3A3] text-sm">
-        Aucune donnée de dépenses disponible
+        Aucune donnee de depenses disponible
       </div>
     );
   }
@@ -416,6 +753,7 @@ export default function AutoOrders() {
   // UI state
   const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<'tous' | OrderStatus>('tous');
+  const [expandedSupplier, setExpandedSupplier] = useState<string | null>(null);
 
   // Order form modal
   const [formOpen, setFormOpen] = useState(false);
@@ -446,8 +784,8 @@ export default function AutoOrders() {
   const [receiveLines, setReceiveLines] = useState<{ itemId: number; name: string; orderedQty: number; receivedQty: number; unit: string; checked: boolean }[]>([]);
   const [receivingId, setReceivingId] = useState<number | null>(null);
 
-  // Tabs: commandes vs historique vs dépenses
-  const [activeTab, setActiveTab] = useState<'commandes' | 'historique' | 'depenses'>('commandes');
+  // Tabs: dashboard vs commandes vs historique vs depenses
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'commandes' | 'historique' | 'depenses'>('dashboard');
 
   // Spending data
   const [spendingData, setSpendingData] = useState<SpendingData | null>(null);
@@ -457,6 +795,9 @@ export default function AutoOrders() {
   const [historyDateTo, setHistoryDateTo] = useState('');
   const [historySupplier, setHistorySupplier] = useState('');
   const [historyStatus, setHistoryStatus] = useState<'tous' | OrderStatus>('tous');
+
+  // Budget
+  const monthlyBudget = 5000; // Could be from settings
 
   // ── fetch data ─────────────────────────────────────────────────────────────
 
@@ -488,7 +829,6 @@ export default function AutoOrders() {
         // Inventory alerts are optional
       }
 
-      // Load spending data
       try {
         const spendingRes = await fetch('/api/marketplace/orders/spending', {
           headers: autoOrdersAuthHeaders(),
@@ -510,7 +850,19 @@ export default function AutoOrders() {
 
   // ── summary stats ──────────────────────────────────────────────────────────
 
-  const totalCount = orders.length;
+  const now = new Date();
+  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+  const activeOrders = orders.filter((o) => ['brouillon', 'envoyé', 'confirmé'].includes(o.status));
+  const monthOrders = orders.filter((o) => o.date.startsWith(currentMonth));
+  const monthTotal = monthOrders.reduce((sum, o) => sum + o.totalHT, 0);
+  const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevMonthStr = `${prevMonth.getFullYear()}-${String(prevMonth.getMonth() + 1).padStart(2, '0')}`;
+  const prevMonthOrders = orders.filter((o) => o.date.startsWith(prevMonthStr));
+  const prevMonthTotal = prevMonthOrders.reduce((sum, o) => sum + o.totalHT, 0);
+  const monthTrend = prevMonthTotal > 0 ? ((monthTotal - prevMonthTotal) / prevMonthTotal * 100) : 0;
+  const estimatedSavings = monthTotal * 0.08; // Estimated 8% savings from smart ordering
+
   const brouillonCount = orders.filter((o) => o.status === 'brouillon').length;
   const envoyeCount = orders.filter((o) => o.status === 'envoyé').length;
   const confirmeCount = orders.filter((o) => o.status === 'confirmé').length;
@@ -523,6 +875,10 @@ export default function AutoOrders() {
     if (statusFilter === 'tous') return orders;
     return orders.filter((o) => o.status === statusFilter);
   }, [orders, statusFilter]);
+
+  // ── reorder suggestions ───────────────────────────────────────────────────
+
+  const reorderSuggestions = useMemo(() => computeReorderSuggestions(lowStockItems), [lowStockItems]);
 
   // ── form helpers ──────────────────────────────────────────────────────────
 
@@ -543,6 +899,26 @@ export default function AutoOrders() {
     setFormLines(order.lines.map((l) => ({ ...l })));
     setFormNotes(order.notes);
     setFormExpectedDelivery(order.expectedDelivery ? order.expectedDelivery.split('T')[0] : '');
+    setFormOpen(true);
+  }
+
+  function openQuickOrder(item: InventoryItem, qty: number) {
+    const supplierName = item.ingredient?.supplier || 'Fournisseur inconnu';
+    const supplierId = item.ingredient?.supplierId || null;
+    setFormSupplierName(supplierName);
+    setFormSupplierId(supplierId);
+    setFormLines([{
+      id: nextLineId++,
+      ingredientId: item.ingredientId,
+      name: item.ingredient.name,
+      quantity: qty,
+      unit: item.unit,
+      pricePerUnit: item.ingredient.pricePerUnit,
+      total: qty * item.ingredient.pricePerUnit,
+    }]);
+    setFormNotes('Reapprovisionnement rapide');
+    setFormExpectedDelivery('');
+    setEditingOrderId(null);
     setFormOpen(true);
   }
 
@@ -688,7 +1064,6 @@ export default function AutoOrders() {
           body: JSON.stringify({ status: STATUS_TO_API[newStatus] }),
         });
       } catch {
-        // Revert on error
         setOrders((prev) =>
           prev.map((o) => (o.id === id ? { ...o, status: order.status } : o)),
         );
@@ -698,11 +1073,11 @@ export default function AutoOrders() {
     }
     const labels: Record<OrderStatus, string> = {
       'brouillon': 'remis en brouillon',
-      'envoyé': 'marqué envoyé',
-      'confirmé': 'marqué confirmé',
-      'livré': 'marqué livré',
-      'annulé': 'annulé',
-      'réclamation': 'réclamation ouverte',
+      'envoyé': 'marque envoye',
+      'confirmé': 'marque confirme',
+      'livré': 'marque livre',
+      'annulé': 'annule',
+      'réclamation': 'reclamation ouverte',
     };
     showToast(`Commande ${labels[newStatus]}`, 'success');
   }
@@ -735,6 +1110,49 @@ export default function AutoOrders() {
     };
     setOrders((prev) => [dup, ...prev]);
     showToast(t('autoOrders.orderDuplicated'), 'success');
+  }
+
+  // ── One-Click Reorder ────────────────────────────────────────────────────
+
+  function handleReorder(order: Order) {
+    const dup: Order = {
+      ...order,
+      id: nextOrderId++,
+      dbId: undefined,
+      status: 'brouillon',
+      date: new Date().toISOString(),
+      expectedDelivery: null,
+      receivedAt: null,
+      notes: `Recommande depuis commande du ${fmtDate(order.date)}`,
+      lines: order.lines.map((l) => ({ ...l, id: nextLineId++, receivedQuantity: null })),
+    };
+
+    // Save to API
+    fetch('/api/marketplace/orders', {
+      method: 'POST',
+      headers: autoOrdersAuthHeaders(),
+      body: JSON.stringify({
+        supplierName: dup.supplierName,
+        supplierId: dup.supplierId,
+        notes: dup.notes,
+        items: dup.lines.map((l) => ({
+          productName: l.name,
+          quantity: l.quantity,
+          unit: l.unit,
+          unitPrice: l.pricePerUnit,
+          ingredientId: l.ingredientId,
+        })),
+      }),
+    }).then(async (res) => {
+      if (res.ok) {
+        const created: ApiOrder = await res.json();
+        const fromApi = apiOrderToLocal(created);
+        setOrders((prev) => prev.map((o) => (o.id === dup.id ? fromApi : o)));
+      }
+    }).catch(() => {/* non-fatal */});
+
+    setOrders((prev) => [dup, ...prev]);
+    showToast('Commande re-creee en brouillon', 'success');
   }
 
   // ── Reception ─────────────────────────────────────────────────────────────
@@ -770,7 +1188,7 @@ export default function AutoOrders() {
           const fromApi = apiOrderToLocal(updated);
           setOrders((prev) => prev.map((o) => (o.id === receiveOrder.id ? fromApi : o)));
         } else {
-          throw new Error('Erreur réception');
+          throw new Error('Erreur reception');
         }
       } else {
         setOrders((prev) =>
@@ -778,10 +1196,10 @@ export default function AutoOrders() {
         );
       }
 
-      showToast('Commande réceptionnée, inventaire mis à jour', 'success');
+      showToast('Commande receptionnee, inventaire mis a jour', 'success');
       setReceiveOrder(null);
     } catch {
-      showToast('Erreur lors de la réception', 'error');
+      showToast('Erreur lors de la reception', 'error');
     } finally {
       setReceivingId(null);
     }
@@ -800,14 +1218,14 @@ export default function AutoOrders() {
         return;
       }
 
-      const subject = `RELANCE \u2014 Commande RestauMargin - ${order.supplierName} - ${fmtDate(order.date)}`;
+      const subject = `RELANCE -- Commande RestauMargin - ${order.supplierName} - ${fmtDate(order.date)}`;
       const body = [
         `Bonjour,`,
         ``,
-        `Nous revenons vers vous concernant la commande envoyée le ${fmtDate(order.date)}.`,
+        `Nous revenons vers vous concernant la commande envoyee le ${fmtDate(order.date)}.`,
         ``,
-        `\u00C0 ce jour, nous n'avons pas encore reçu la marchandise ou de confirmation de livraison.`,
-        `Pourriez-vous nous tenir informés de l'état d'avancement de cette commande ?`,
+        `A ce jour, nous n'avons pas encore recu la marchandise ou de confirmation de livraison.`,
+        `Pourriez-vous nous tenir informes de l'etat d'avancement de cette commande ?`,
         ``,
         `--- Rappel de la commande ---`,
         ``,
@@ -830,7 +1248,7 @@ export default function AutoOrders() {
           subject,
           orderLines: order.lines.map((l) => ({ name: l.name, quantity: l.quantity, unit: l.unit, total: l.total })),
           totalHT: order.totalHT,
-          notes: `RELANCE \u2014 ${order.notes}`,
+          notes: `RELANCE -- ${order.notes}`,
         }),
       });
 
@@ -854,7 +1272,7 @@ export default function AutoOrders() {
       `Fournisseur : ${order.supplierName}`,
       `Date : ${fmtDate(order.date)}`,
       ``,
-      `--- Détail de la commande ---`,
+      `--- Detail de la commande ---`,
       ``,
     ];
     order.lines.forEach((line) => {
@@ -868,7 +1286,7 @@ export default function AutoOrders() {
     lines.push(`Total TTC : ${fmtEuro(order.totalTTC)}`);
     lines.push(``);
     if (order.expectedDelivery) {
-      lines.push(`Livraison souhaitée : ${fmtDate(order.expectedDelivery)}`);
+      lines.push(`Livraison souhaitee : ${fmtDate(order.expectedDelivery)}`);
       lines.push(``);
     }
     if (order.notes) {
@@ -941,7 +1359,7 @@ export default function AutoOrders() {
         ...totals,
         status: 'brouillon',
         date: new Date().toISOString(),
-        notes: 'Commande auto-générée (réapprovisionnement)',
+        notes: 'Commande auto-generee (reapprovisionnement)',
       });
     });
 
@@ -954,7 +1372,7 @@ export default function AutoOrders() {
     setShowAutoReviewModal(false);
     setAutoGeneratedOrders([]);
     setLowStockItems([]);
-    showToast(`${autoGeneratedOrders.length} commande(s) auto-générée(s) en brouillon`, 'success');
+    showToast(`${autoGeneratedOrders.length} commande(s) auto-generee(s) en brouillon`, 'success');
 
     for (const order of autoGeneratedOrders) {
       try {
@@ -1040,7 +1458,9 @@ export default function AutoOrders() {
       'Articles:',
       lines,
       '',
-      'Merci de confirmer la réception.',
+      `Total HT: ${fmtEuro(order.totalHT)}`,
+      '',
+      'Merci de confirmer la reception.',
       `Cordialement, ${restaurantName}`,
     ].join('\n');
 
@@ -1057,7 +1477,6 @@ export default function AutoOrders() {
   const historyOrders = useMemo(() => {
     return [...orders]
       .filter((o) => {
-        // Base: exclude brouillon from history
         if (o.status === 'brouillon') return false;
         if (historyStatus !== 'tous' && o.status !== historyStatus) return false;
         if (historySupplier && !o.supplierName.toLowerCase().includes(historySupplier.toLowerCase())) return false;
@@ -1074,8 +1493,6 @@ export default function AutoOrders() {
       })
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, [orders, historyStatus, historySupplier, historyDateFrom, historyDateTo]);
-
-  // ── Unique supplier names for filter ────────────────────────────────────────
 
   const uniqueSupplierNames = useMemo(() => {
     const names = new Set(orders.map((o) => o.supplierName));
@@ -1104,135 +1521,38 @@ export default function AutoOrders() {
           </h1>
           <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">{t('autoOrders.subtitle')}</p>
         </div>
-        <button
-          onClick={openNewOrderForm}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
-          {t('autoOrders.newOrder')}
-        </button>
-      </div>
-
-      {/* ── Summary cards ───────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <SummaryCard
-          icon={<FileText className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />}
-          label={t('autoOrders.totalOrders')}
-          value={String(totalCount)}
-          accent="border-[#E5E7EB] dark:border-[#262626]"
-        />
-        <SummaryCard
-          icon={<Clock className="w-5 h-5 text-[#9CA3AF]" />}
-          label="Brouillons"
-          value={String(brouillonCount)}
-          accent="border-[#E5E7EB] dark:border-[#262626]"
-        />
-        <SummaryCard
-          icon={<Send className="w-5 h-5 text-blue-400" />}
-          label="Envoyés"
-          value={String(envoyeCount)}
-          accent="border-blue-500/20"
-        />
-        <SummaryCard
-          icon={<CheckCircle2 className="w-5 h-5 text-amber-400" />}
-          label="Confirmés"
-          value={String(confirmeCount)}
-          accent="border-amber-500/20"
-        />
-        <SummaryCard
-          icon={<Package className="w-5 h-5 text-emerald-400" />}
-          label="Livrés"
-          value={String(livreCount)}
-          accent="border-emerald-500/20"
-        />
-        <SummaryCard
-          icon={<Euro className="w-5 h-5 text-[#111111] dark:text-white" />}
-          label={t('autoOrders.totalValueHT')}
-          value={fmtEuro(totalValue)}
-          accent="border-[#111111]/20 dark:border-white/20"
-        />
-      </div>
-
-      {/* ── Low-stock alert banner with quick reorder ───────────────────── */}
-      {lowStockItems.length > 0 && (
-        <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-500/10 rounded-xl">
-                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-[#111111] dark:text-white">
-                  {lowStockItems.length} article{lowStockItems.length > 1 ? 's' : ''} en rupture de stock
-                </p>
-                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
-                  Cliquez sur un article pour creer une commande rapide, ou generez toutes les commandes d'un coup
-                </p>
-              </div>
-            </div>
+        <div className="flex items-center gap-2">
+          {lowStockItems.length > 0 && (
             <button
               onClick={generateAutoOrders}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-semibold text-sm transition shadow-md hover:shadow-lg hover:scale-[1.02]"
+              className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-xl font-medium transition text-sm"
             >
               <Zap className="w-4 h-4" />
-              {t('autoOrders.generateAutoOrders')}
+              Auto-reappro ({lowStockItems.length})
             </button>
-          </div>
-          {/* Per-item quick reorder buttons */}
-          <div className="flex flex-wrap gap-2">
-            {lowStockItems.slice(0, 8).map((item) => (
-              <button
-                key={item.ingredientId}
-                onClick={() => {
-                  const supplierName = item.ingredient?.supplier || 'Fournisseur inconnu';
-                  const supplierId = item.ingredient?.supplierId || null;
-                  const suggestedQty = Math.max(1, item.minStock * 2 - item.currentStock);
-                  setFormSupplierName(supplierName);
-                  setFormSupplierId(supplierId);
-                  setFormLines([{
-                    id: nextLineId++,
-                    ingredientId: item.ingredientId,
-                    name: item.ingredient.name,
-                    quantity: suggestedQty,
-                    unit: item.unit,
-                    pricePerUnit: item.ingredient.pricePerUnit,
-                    total: suggestedQty * item.ingredient.pricePerUnit,
-                  }]);
-                  setFormNotes('Reapprovisionnement rapide');
-                  setFormExpectedDelivery('');
-                  setEditingOrderId(null);
-                  setFormOpen(true);
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white dark:bg-[#0A0A0A] border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-full transition-all"
-                title={`Stock: ${item.currentStock} / Min: ${item.minStock} ${item.unit}`}
-              >
-                <RefreshCw className="w-3 h-3" />
-                {item.ingredient.name}
-                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
-                  ({item.currentStock}/{item.minStock} {item.unit})
-                </span>
-              </button>
-            ))}
-            {lowStockItems.length > 8 && (
-              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] self-center ml-1">
-                +{lowStockItems.length - 8} autres
-              </span>
-            )}
-          </div>
+          )}
+          <button
+            onClick={openNewOrderForm}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-medium transition shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            {t('autoOrders.newOrder')}
+          </button>
         </div>
-      )}
+      </div>
 
       {/* ── Tab switcher ────────────────────────────────────────────────────── */}
-      <div className="flex gap-1 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#262626] rounded-xl p-1 w-fit">
+      <div className="flex gap-1 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#262626] rounded-xl p-1 w-fit overflow-x-auto">
         {[
+          { key: 'dashboard' as const, icon: Target, label: 'Dashboard', count: null },
           { key: 'commandes' as const, icon: Package, label: t('autoOrders.ordersTab'), count: orders.length },
           { key: 'historique' as const, icon: History, label: t('autoOrders.historyTab'), count: historyOrders.length },
-          { key: 'depenses' as const, icon: BarChart3, label: 'Dépenses', count: null },
+          { key: 'depenses' as const, icon: BarChart3, label: 'Depenses', count: null },
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap ${
               activeTab === tab.key
                 ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white shadow-sm'
                 : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
@@ -1246,6 +1566,127 @@ export default function AutoOrders() {
           </button>
         ))}
       </div>
+
+      {/* ── Dashboard Tab ────────────────────────────────────────────────────── */}
+      {activeTab === 'dashboard' && (
+        <div className="space-y-6">
+          {/* KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <KPICard
+              icon={<ShoppingCart className="w-5 h-5 text-[#111111] dark:text-white" />}
+              label="Commandes en cours"
+              value={String(activeOrders.length)}
+              trend={activeOrders.length > 3 ? 'up' : 'neutral'}
+              trendLabel={`${brouillonCount} brouillon, ${envoyeCount} envoye`}
+              accent="border-[#E5E7EB] dark:border-[#262626]"
+            />
+            <KPICard
+              icon={<Calendar className="w-5 h-5 text-blue-500" />}
+              label="Commandes ce mois"
+              value={String(monthOrders.length)}
+              trend={monthOrders.length > prevMonthOrders.length ? 'up' : monthOrders.length < prevMonthOrders.length ? 'down' : 'neutral'}
+              trendLabel={`${monthOrders.length > prevMonthOrders.length ? '+' : ''}${monthOrders.length - prevMonthOrders.length} vs mois dernier`}
+              accent="border-blue-500/20"
+            />
+            <KPICard
+              icon={<Euro className="w-5 h-5 text-[#111111] dark:text-white" />}
+              label="Montant total ce mois"
+              value={fmtEuro(monthTotal)}
+              trend={monthTrend > 0 ? 'up' : monthTrend < 0 ? 'down' : 'neutral'}
+              trendLabel={`${monthTrend >= 0 ? '+' : ''}${monthTrend.toFixed(1)}% vs precedent`}
+              accent="border-[#111111]/20 dark:border-white/20"
+            />
+            <KPICard
+              icon={<Sparkles className="w-5 h-5 text-emerald-500" />}
+              label="Economie estimee"
+              value={fmtEuro(estimatedSavings)}
+              trend="up"
+              trendLabel="~8% via commandes groupees"
+              accent="border-emerald-500/20"
+            />
+          </div>
+
+          {/* Budget Tracker */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2">
+              {/* Smart Reorder Suggestions */}
+              <SmartReorderSection
+                suggestions={reorderSuggestions}
+                onCreateOrder={openQuickOrder}
+              />
+              {reorderSuggestions.length === 0 && (
+                <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl p-8 text-center">
+                  <CheckCircle2 className="w-10 h-10 mx-auto mb-3 text-emerald-400" />
+                  <p className="font-semibold text-[#111111] dark:text-white">Stock optimal</p>
+                  <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">Tous vos ingredients sont au-dessus du seuil minimum</p>
+                </div>
+              )}
+            </div>
+            <div>
+              <BudgetTracker monthlySpend={monthTotal} budget={monthlyBudget} />
+            </div>
+          </div>
+
+          {/* Supplier Order Cards */}
+          <SupplierOrderCards
+            orders={orders}
+            suppliers={suppliers}
+            onWhatsApp={handleWhatsAppOrder}
+            onSendEmail={openEmailModal}
+            onExpand={setExpandedSupplier}
+            expandedSupplier={expandedSupplier}
+          />
+
+          {/* Low-stock alert banner */}
+          {lowStockItems.length > 0 && (
+            <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-amber-500/10 rounded-xl">
+                    <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[#111111] dark:text-white">
+                      {lowStockItems.length} article{lowStockItems.length > 1 ? 's' : ''} en rupture de stock
+                    </p>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
+                      Cliquez sur un article pour creer une commande rapide
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={generateAutoOrders}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl font-semibold text-sm transition shadow-md hover:shadow-lg hover:scale-[1.02]"
+                >
+                  <Zap className="w-4 h-4" />
+                  {t('autoOrders.generateAutoOrders')}
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {lowStockItems.slice(0, 8).map((item) => (
+                  <button
+                    key={item.ingredientId}
+                    onClick={() => openQuickOrder(item, Math.max(1, item.minStock * 2 - item.currentStock))}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white dark:bg-[#0A0A0A] border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 rounded-full transition-all"
+                    title={`Stock: ${item.currentStock} / Min: ${item.minStock} ${item.unit}`}
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    {item.ingredient.name}
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      ({item.currentStock}/{item.minStock} {item.unit})
+                    </span>
+                  </button>
+                ))}
+                {lowStockItems.length > 8 && (
+                  <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] self-center ml-1">
+                    +{lowStockItems.length - 8} autres
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Orders list ─────────────────────────────────────────────────────── */}
       {activeTab === 'commandes' && (
@@ -1295,6 +1736,7 @@ export default function AutoOrders() {
                   onReceive={() => openReceiveModal(order)}
                   onDelete={() => setDeleteTarget(order.id)}
                   onDuplicate={() => duplicateOrder(order)}
+                  onReorder={() => handleReorder(order)}
                   onDirectSend={() => handleSendOrderEmail(order)}
                   onWhatsApp={() => handleWhatsAppOrder(order)}
                   onRelance={() => handleRelanceFournisseur(order)}
@@ -1313,7 +1755,7 @@ export default function AutoOrders() {
           <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
             <History className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
             <h2 className="text-lg font-semibold text-[#111111] dark:text-white">{t('autoOrders.orderHistory')}</h2>
-            <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{historyOrders.length} résultat(s)</span>
+            <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">{historyOrders.length} resultat(s)</span>
           </div>
 
           {/* History filters */}
@@ -1382,7 +1824,7 @@ export default function AutoOrders() {
                     <th className="text-right py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.totalHT')}</th>
                     <th className="text-right py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.totalTTC')}</th>
                     <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.status')}</th>
-                    <th className="text-left py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{t('autoOrders.notes')}</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#262626]">
@@ -1407,7 +1849,17 @@ export default function AutoOrders() {
                             {cfg.label}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-sm text-[#6B7280] dark:text-[#A3A3A3] max-w-[200px] truncate">{order.notes || '\u2014'}</td>
+                        <td className="py-3 px-4 text-center">
+                          {/* One-Click Reorder */}
+                          <button
+                            onClick={() => handleReorder(order)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] rounded-lg transition border border-[#E5E7EB] dark:border-[#262626]"
+                            title="Recommander les memes articles"
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                            Recommander
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
@@ -1423,7 +1875,7 @@ export default function AutoOrders() {
         <section className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
           <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center gap-3">
             <BarChart3 className="w-5 h-5 text-[#6B7280] dark:text-[#A3A3A3]" />
-            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Dépenses par fournisseur</h2>
+            <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Depenses par fournisseur</h2>
             <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">12 derniers mois</span>
           </div>
           <div className="p-6">
@@ -1448,7 +1900,7 @@ export default function AutoOrders() {
                 onChange={(e) => handleSupplierChange(e.target.value)}
                 className="w-full px-3 py-2 border border-[#E5E7EB] dark:border-[#262626] rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111]"
               >
-                <option value="__custom__">\u2014 Saisie libre \u2014</option>
+                <option value="__custom__">-- Saisie libre --</option>
                 {suppliers.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
@@ -1465,7 +1917,7 @@ export default function AutoOrders() {
 
           {/* Expected delivery date */}
           <div>
-            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date de livraison prévue</label>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date de livraison prevue</label>
             <input
               type="date"
               value={formExpectedDelivery}
@@ -1481,14 +1933,14 @@ export default function AutoOrders() {
               {formLines.map((line) => (
                 <div key={line.id} className="flex flex-wrap items-end gap-2 p-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 rounded-lg border border-[#E5E7EB] dark:border-[#262626]">
                   <div className="flex-1 min-w-[160px]">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Ingrédient</label>
+                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Ingredient</label>
                     {ingredients.length > 0 ? (
                       <select
                         value={line.ingredientId ?? ''}
                         onChange={(e) => handleIngredientSelect(line.id, e.target.value)}
                         className="w-full px-2 py-1.5 border border-[#E5E7EB] dark:border-[#262626] rounded-md text-sm bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
                       >
-                        <option value="">\u2014 Sélectionner \u2014</option>
+                        <option value="">-- Selectionner --</option>
                         {ingredients.map((i) => (
                           <option key={i.id} value={i.id}>{i.name}</option>
                         ))}
@@ -1513,7 +1965,7 @@ export default function AutoOrders() {
                     )}
                   </div>
                   <div className="w-20">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Qté</label>
+                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Qte</label>
                     <input
                       type="number"
                       min={0}
@@ -1524,7 +1976,7 @@ export default function AutoOrders() {
                     />
                   </div>
                   <div className="w-20">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Unité</label>
+                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Unite</label>
                     <input
                       type="text"
                       value={line.unit}
@@ -1655,6 +2107,14 @@ export default function AutoOrders() {
               >
                 {t('common.cancel')}
               </button>
+              {/* WhatsApp button in email modal */}
+              <button
+                onClick={() => { handleWhatsAppOrder(emailOrder); }}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30 rounded-lg transition text-sm font-medium"
+              >
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp
+              </button>
               <button
                 onClick={handleCopyToClipboard}
                 className="flex items-center justify-center gap-2 px-4 py-2 border border-[#E5E7EB] dark:border-[#262626] text-[#6B7280] dark:text-[#A3A3A3] bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition text-sm"
@@ -1679,7 +2139,7 @@ export default function AutoOrders() {
       <Modal
         isOpen={!!receiveOrder}
         onClose={() => setReceiveOrder(null)}
-        title="Réception de commande"
+        title="Reception de commande"
       >
         {receiveOrder && (
           <div className="space-y-4 max-h-[70vh] overflow-y-auto">
@@ -1692,7 +2152,7 @@ export default function AutoOrders() {
             </div>
 
             <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-              Cochez les articles reçus et ajustez les quantités si nécessaire. L'inventaire sera mis à jour automatiquement.
+              Cochez les articles recus et ajustez les quantites si necessaire. L'inventaire sera mis a jour automatiquement.
             </p>
 
             <div className="space-y-2">
@@ -1706,10 +2166,10 @@ export default function AutoOrders() {
                   </button>
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium ${line.checked ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373] line-through'}`}>{line.name}</p>
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Commandé : {line.orderedQty} {line.unit}</p>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Commande : {line.orderedQty} {line.unit}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Reçu :</label>
+                    <label className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Recu :</label>
                     <input
                       type="number"
                       min={0}
@@ -1723,7 +2183,7 @@ export default function AutoOrders() {
                   </div>
                   {line.checked && line.receivedQty !== line.orderedQty && (
                     <span className="text-xs text-amber-400 font-medium">
-                      {line.receivedQty < line.orderedQty ? 'Manque' : 'Excédent'}
+                      {line.receivedQty < line.orderedQty ? 'Manque' : 'Excedent'}
                     </span>
                   )}
                 </div>
@@ -1743,7 +2203,7 @@ export default function AutoOrders() {
                 className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium transition shadow-sm disabled:opacity-50"
               >
                 {receivingId ? <Loader2 className="w-4 h-4 animate-spin" /> : <ClipboardCheck className="w-4 h-4" />}
-                Valider la réception
+                Valider la reception
               </button>
             </div>
           </div>
@@ -1758,8 +2218,8 @@ export default function AutoOrders() {
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto">
           <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
-            {autoGeneratedOrders.length} commande(s) générée(s) à partir des articles en rupture de stock.
-            Vérifiez les quantités avant de confirmer.
+            {autoGeneratedOrders.length} commande(s) generee(s) a partir des articles en rupture de stock.
+            Verifiez les quantites avant de confirmer.
           </p>
           {autoGeneratedOrders.map((order) => (
             <div key={order.id} className="border border-[#E5E7EB] dark:border-[#262626] rounded-xl overflow-hidden">
@@ -1774,8 +2234,8 @@ export default function AutoOrders() {
                 <thead>
                   <tr className="text-xs text-[#6B7280] dark:text-[#A3A3A3] border-b border-[#E5E7EB] dark:border-[#262626]">
                     <th className="text-left py-2 px-4">Article</th>
-                    <th className="text-center py-2 px-3">Qté</th>
-                    <th className="text-center py-2 px-3">Unité</th>
+                    <th className="text-center py-2 px-3">Qte</th>
+                    <th className="text-center py-2 px-3">Unite</th>
                     <th className="text-right py-2 px-4">Prix unit.</th>
                     <th className="text-right py-2 px-4">Total</th>
                   </tr>
@@ -1827,20 +2287,6 @@ export default function AutoOrders() {
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 
-function SummaryCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent: string }) {
-  return (
-    <div className={`rounded-2xl p-4 border bg-white dark:bg-black/50 ${accent}`}>
-      <div className="flex items-center gap-3">
-        {icon}
-        <div>
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wide">{label}</p>
-          <p className="text-xl font-bold text-[#111111] dark:text-white mt-0.5">{value}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function OrderRow({
   order,
   expanded,
@@ -1851,6 +2297,7 @@ function OrderRow({
   onReceive,
   onDelete,
   onDuplicate,
+  onReorder,
   onDirectSend,
   onWhatsApp,
   onRelance,
@@ -1866,6 +2313,7 @@ function OrderRow({
   onReceive: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
+  onReorder: () => void;
   onDirectSend?: () => void;
   onWhatsApp?: () => void;
   onRelance?: () => void;
@@ -1875,7 +2323,6 @@ function OrderRow({
   const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG['brouillon'];
   const StatusIcon = cfg.icon;
 
-  // Next action buttons per status
   function renderActionButtons() {
     const buttons: React.ReactNode[] = [];
 
@@ -1886,7 +2333,7 @@ function OrderRow({
         </button>,
       );
       buttons.push(
-        <button key="email" onClick={onSend} title="Préparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+        <button key="email" onClick={onSend} title="Preparer email" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
           <Mail className="w-3.5 h-3.5" /> Email
         </button>,
       );
@@ -1914,7 +2361,7 @@ function OrderRow({
 
     if (order.status === 'envoyé') {
       buttons.push(
-        <button key="confirm" onClick={() => onStatusChange('confirmé')} title="Marquer confirmé" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/10 rounded-lg transition">
+        <button key="confirm" onClick={() => onStatusChange('confirmé')} title="Marquer confirme" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-amber-400 hover:bg-amber-500/10 rounded-lg transition">
           <CheckCircle2 className="w-3.5 h-3.5" /> Confirmer
         </button>,
       );
@@ -1935,8 +2382,8 @@ function OrderRow({
 
     if (order.status === 'confirmé') {
       buttons.push(
-        <button key="receive" onClick={onReceive} title="Réceptionner" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition">
-          <ClipboardCheck className="w-3.5 h-3.5" /> Réceptionner
+        <button key="receive" onClick={onReceive} title="Receptionner" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition">
+          <ClipboardCheck className="w-3.5 h-3.5" /> Receptionner
         </button>,
       );
       buttons.push(
@@ -1948,8 +2395,13 @@ function OrderRow({
 
     if (order.status === 'livré') {
       buttons.push(
-        <button key="claim" onClick={() => onStatusChange('réclamation')} title="Signaler un problème" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition">
-          <ThumbsDown className="w-3.5 h-3.5" /> Réclamation
+        <button key="reorder" onClick={onReorder} title="Recommander" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] rounded-lg transition border border-[#E5E7EB] dark:border-[#262626]">
+          <RefreshCw className="w-3.5 h-3.5" /> Recommander
+        </button>,
+      );
+      buttons.push(
+        <button key="claim" onClick={() => onStatusChange('réclamation')} title="Signaler un probleme" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-red-400 hover:bg-red-500/10 rounded-lg transition">
+          <ThumbsDown className="w-3.5 h-3.5" /> Reclamation
         </button>,
       );
     }
@@ -1957,15 +2409,15 @@ function OrderRow({
     if (order.status === 'annulé') {
       buttons.push(
         <button key="reopen" onClick={() => onStatusChange('brouillon')} title="Remettre en brouillon" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
-          <RefreshCw className="w-3.5 h-3.5" /> Réouvrir
+          <RefreshCw className="w-3.5 h-3.5" /> Reouvrir
         </button>,
       );
     }
 
     if (order.status === 'réclamation') {
       buttons.push(
-        <button key="resolve" onClick={() => onStatusChange('livré')} title="Résoudre la réclamation" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition">
-          <Check className="w-3.5 h-3.5" /> Résolu
+        <button key="resolve" onClick={() => onStatusChange('livré')} title="Resoudre la reclamation" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition">
+          <Check className="w-3.5 h-3.5" /> Resolu
         </button>,
       );
     }
@@ -2033,9 +2485,9 @@ function OrderRow({
                 <thead>
                   <tr className="text-left text-[#6B7280] dark:text-[#A3A3A3] text-xs border-b border-[#E5E7EB] dark:border-[#262626]">
                     <th className="pb-2 pr-4">Produit</th>
-                    <th className="pb-2 pr-4">Commandé</th>
-                    {order.status === 'livré' || order.status === 'réclamation' ? <th className="pb-2 pr-4">Reçu</th> : null}
-                    <th className="pb-2 pr-4">Unité</th>
+                    <th className="pb-2 pr-4">Commande</th>
+                    {order.status === 'livré' || order.status === 'réclamation' ? <th className="pb-2 pr-4">Recu</th> : null}
+                    <th className="pb-2 pr-4">Unite</th>
                     <th className="pb-2 pr-4">Prix unitaire</th>
                     <th className="pb-2 text-right">Total</th>
                   </tr>
@@ -2084,11 +2536,20 @@ function OrderRow({
               </p>
             )}
 
-            {/* Dates info */}
-            <div className="mt-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626] flex flex-wrap gap-4 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-              <span>Créée : {fmtDate(order.date)}</span>
-              {order.expectedDelivery && <span>Livraison prévue : {fmtDate(order.expectedDelivery)}</span>}
-              {order.receivedAt && <span>Reçue : {fmtDate(order.receivedAt)}</span>}
+            {/* Dates info + WhatsApp quick action */}
+            <div className="mt-3 pt-3 border-t border-[#E5E7EB] dark:border-[#262626] flex flex-wrap items-center gap-4 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+              <span>Creee : {fmtDate(order.date)}</span>
+              {order.expectedDelivery && <span>Livraison prevue : {fmtDate(order.expectedDelivery)}</span>}
+              {order.receivedAt && <span>Recue : {fmtDate(order.receivedAt)}</span>}
+              {onWhatsApp && (order.status === 'brouillon' || order.status === 'envoyé') && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onWhatsApp(); }}
+                  className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/20 rounded-lg transition border border-[#25D366]/30"
+                >
+                  <MessageCircle className="w-3.5 h-3.5" />
+                  Commander via WhatsApp
+                </button>
+              )}
             </div>
           </div>
         </div>

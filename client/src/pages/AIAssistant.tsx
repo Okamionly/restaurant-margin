@@ -1,5 +1,12 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle, ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff, BarChart3, Camera, Copy, Check, Share2, ThumbsUp, ThumbsDown, History, Plus, Trash2, AlertTriangle, Shield, ChevronDown } from 'lucide-react';
+import {
+  Bot, Send, User, Sparkles, MessageSquare, Lightbulb, CheckCircle2, XCircle,
+  ExternalLink, ChefHat, Package, ShoppingCart, TrendingUp, Star, Mic, MicOff,
+  BarChart3, Camera, Copy, Check, Share2, ThumbsUp, ThumbsDown, History, Plus,
+  Trash2, AlertTriangle, Shield, ChevronDown, FileDown, ArrowRight,
+  UtensilsCrossed, Leaf, Scale, ClipboardList, Zap, Database,
+  ChevronRight, X, Clock, Ratio
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { trackEvent } from '../utils/analytics';
@@ -31,6 +38,7 @@ interface Message {
   actions?: ActionResult[];
   image?: string;
   feedback?: 'up' | 'down' | null;
+  isStreaming?: boolean;
 }
 
 interface Conversation {
@@ -57,7 +65,16 @@ interface RestaurantContext {
   priceChanges: number;
   totalRecipes: number;
   totalIngredients: number;
+  totalSuppliers: number;
   avgMargin: number;
+}
+
+interface PromptCard {
+  icon: typeof ChefHat;
+  title: string;
+  description: string;
+  prompt: string;
+  gradient: string;
 }
 
 // ---- Constants ----
@@ -74,9 +91,54 @@ const MODE_PREFIXES: Record<AIMode, string> = {
   haccp: '[Mode HACCP] Focus sur la securite alimentaire, temperatures, tracabilite et conformite HACCP.',
 };
 
+const PROMPT_CARDS: PromptCard[] = [
+  {
+    icon: UtensilsCrossed,
+    title: 'Optimise ma carte',
+    description: 'Analyse la rentabilite de chaque plat et suggere des ajustements',
+    prompt: 'Analyse ma carte et optimise-la : identifie les plats les moins rentables et propose des ajustements de prix ou de composition pour ameliorer mes marges',
+    gradient: 'from-amber-500/10 to-orange-500/10',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Analyse mes marges',
+    description: 'Vue complete de vos marges avec recommandations',
+    prompt: 'Analyse mes marges globales et identifie les points d\'amelioration. Donne-moi un rapport detaille avec des recommandations concretes',
+    gradient: 'from-emerald-500/10 to-teal-500/10',
+  },
+  {
+    icon: Lightbulb,
+    title: 'Suggestions recettes tendance',
+    description: 'Recettes populaires adaptees a votre inventaire',
+    prompt: 'Suggere-moi des recettes tendance que je pourrais realiser avec mes ingredients actuels, en respectant une bonne marge',
+    gradient: 'from-purple-500/10 to-pink-500/10',
+  },
+  {
+    icon: Leaf,
+    title: 'Reduis mon gaspillage',
+    description: 'Strategies anti-gaspillage basees sur vos stocks',
+    prompt: 'Analyse mes stocks et mes recettes pour identifier les sources de gaspillage alimentaire. Propose des strategies concretes pour les reduire',
+    gradient: 'from-green-500/10 to-lime-500/10',
+  },
+  {
+    icon: Scale,
+    title: 'Compare mes fournisseurs',
+    description: 'Benchmark prix et qualite de vos fournisseurs',
+    prompt: 'Compare mes fournisseurs : identifie lesquels sont les plus chers par categorie et propose des alternatives pour reduire mes couts d\'achat',
+    gradient: 'from-blue-500/10 to-cyan-500/10',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Rapport hebdomadaire',
+    description: 'Synthese de la semaine avec KPIs et alertes',
+    prompt: 'Genere un rapport hebdomadaire complet : KPIs, alertes stock, evolution des marges, actions recommandees pour la semaine prochaine',
+    gradient: 'from-rose-500/10 to-red-500/10',
+  },
+];
+
 const CONVERSATION_STORAGE_KEY = 'rm_ai_conversations';
 const FEEDBACK_STORAGE_KEY = 'rm_ai_feedback';
-const MAX_CONVERSATIONS = 10;
+const MAX_CONVERSATIONS = 20;
 
 // ---- Helpers ----
 
@@ -177,23 +239,29 @@ async function fetchRestaurantContext(): Promise<RestaurantContext> {
     priceChanges: 0,
     totalRecipes: 0,
     totalIngredients: 0,
+    totalSuppliers: 0,
     avgMargin: 75,
   };
 
   try {
-    const [ingredientsRes, recipesRes] = await Promise.allSettled([
+    const [ingredientsRes, recipesRes, suppliersRes] = await Promise.allSettled([
       fetch('/api/ingredients', { headers }),
       fetch('/api/recipes', { headers }),
+      fetch('/api/suppliers', { headers }),
     ]);
 
     let ingredients: any[] = [];
     let recipes: any[] = [];
+    let suppliers: any[] = [];
 
     if (ingredientsRes.status === 'fulfilled' && ingredientsRes.value.ok) {
       ingredients = await ingredientsRes.value.json();
     }
     if (recipesRes.status === 'fulfilled' && recipesRes.value.ok) {
       recipes = await recipesRes.value.json();
+    }
+    if (suppliersRes.status === 'fulfilled' && suppliersRes.value.ok) {
+      suppliers = await suppliersRes.value.json();
     }
 
     const lowStock = ingredients.filter((i: any) =>
@@ -220,6 +288,7 @@ async function fetchRestaurantContext(): Promise<RestaurantContext> {
       priceChanges: 0,
       totalRecipes: recipes.length,
       totalIngredients: ingredients.length,
+      totalSuppliers: Array.isArray(suppliers) ? suppliers.length : 0,
       avgMargin: Math.round(avgMargin),
     };
   } catch {
@@ -241,6 +310,29 @@ const SpeechRecognitionAPI =
     ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     : null;
 
+// Streaming simulation helper
+function simulateStreaming(
+  fullText: string,
+  onUpdate: (partial: string) => void,
+  onComplete: () => void
+) {
+  let index = 0;
+  const chunkSize = () => Math.floor(Math.random() * 4) + 2; // 2-5 chars at a time
+  const speed = () => Math.floor(Math.random() * 20) + 10; // 10-30ms
+
+  function step() {
+    if (index >= fullText.length) {
+      onComplete();
+      return;
+    }
+    const next = Math.min(index + chunkSize(), fullText.length);
+    index = next;
+    onUpdate(fullText.slice(0, index));
+    setTimeout(step, speed());
+  }
+  setTimeout(step, 100);
+}
+
 // ---- Component ----
 
 export default function AIAssistant() {
@@ -248,22 +340,15 @@ export default function AIAssistant() {
   const navigate = useNavigate();
 
   // Core state
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome',
-      role: 'assistant',
-      content:
-        "Bienvenue ! Je suis votre **assistant IA RestauMargin** — votre copilote pour piloter votre restaurant.\n\nVoici ce que je peux faire pour vous :\n\n**Analyser** — Marges, food cost, rentabilite de vos plats\n**Creer** — Fiches techniques, recettes, menus complets\n**Commander** — Preparer et envoyer vos commandes fournisseurs\n**Optimiser** — Suggestions d'alternatives moins cheres, detection d'anomalies\n**HACCP** — Verifier la conformite, temperatures, tracabilite\n\nChoisissez une suggestion ci-dessous ou posez-moi votre question !",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
   const [aiUsage, setAiUsage] = useState<AIUsage | null>(null);
   const [quotaReached, setQuotaReached] = useState(false);
   const [pendingImage, setPendingImage] = useState<string | null>(null);
 
-  // New feature state
+  // Feature state
   const [aiMode, setAiMode] = useState<AIMode>('gestionnaire');
   const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
@@ -271,11 +356,13 @@ export default function AIAssistant() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [restaurantContext, setRestaurantContext] = useState<RestaurantContext | null>(null);
-  const [suggestionIndex, setSuggestionIndex] = useState(0);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const modeDropdownRef = useRef<HTMLDivElement>(null);
+  const streamingIdRef = useRef<string | null>(null);
+
+  const isEmptyChat = messages.length === 0;
 
   // Fetch AI usage on mount
   const fetchUsage = useCallback(async () => {
@@ -298,12 +385,12 @@ export default function AIAssistant() {
 
   useEffect(() => { fetchUsage(); }, [fetchUsage]);
 
-  // Fetch restaurant context for smart suggestions
+  // Fetch restaurant context for badges & smart suggestions
   useEffect(() => {
     fetchRestaurantContext().then(setRestaurantContext);
   }, []);
 
-  // Context-aware suggestions
+  // Context-aware quick suggestions (shown as pills below messages)
   const contextSuggestions = useMemo((): ContextSuggestion[] => {
     const suggestions: ContextSuggestion[] = [];
     const ctx = restaurantContext;
@@ -311,85 +398,31 @@ export default function AIAssistant() {
     if (ctx) {
       if (ctx.lowStockCount > 0) {
         suggestions.push({
-          label: `${ctx.lowStockCount} ingredients en rupture`,
+          label: `${ctx.lowStockCount} ruptures de stock`,
           prompt: 'Commander les ingredients manquants et en rupture de stock',
           icon: AlertTriangle,
           priority: 10,
         });
       }
-
       if (ctx.lowMarginRecipes > 0) {
         suggestions.push({
-          label: `${ctx.lowMarginRecipes} recettes a faible marge`,
+          label: `${ctx.lowMarginRecipes} recettes faible marge`,
           prompt: 'Optimiser les recettes a faible marge (moins de 60%) avec des alternatives moins cheres',
           icon: TrendingUp,
           priority: 9,
         });
       }
-
-      if (ctx.recentRecipeCount === 0) {
-        suggestions.push({
-          label: 'Generer le menu de la semaine',
-          prompt: 'Generer le menu de la semaine avec des recettes equilibrees et rentables',
-          icon: ChefHat,
-          priority: 8,
-        });
-      }
-
-      if (ctx.priceChanges > 0) {
-        suggestions.push({
-          label: 'Analyser les hausses de prix',
-          prompt: 'Analyser l\'impact des hausses de prix recentes sur mes marges',
-          icon: BarChart3,
-          priority: 7,
-        });
-      }
     }
 
-    // Always-available suggestions
-    suggestions.push({
-      label: 'Creer une fiche technique',
-      prompt: 'Cree-moi une fiche technique pour une nouvelle recette',
-      icon: ChefHat,
-      priority: 5,
-    });
-    suggestions.push({
-      label: 'Analyser mes marges',
-      prompt: 'Analyse mes marges globales et identifie les points d\'amelioration',
-      icon: TrendingUp,
-      priority: 4,
-    });
-    suggestions.push({
-      label: 'Preparer une commande',
-      prompt: 'Prepare une commande fournisseur basee sur mes besoins actuels',
-      icon: ShoppingCart,
-      priority: 3,
-    });
-    suggestions.push({
-      label: 'Mon plat star',
-      prompt: 'Quel est mon plat star et pourquoi ?',
-      icon: Star,
-      priority: 2,
-    });
-    suggestions.push({
-      label: 'Ajouter un ingredient',
-      prompt: 'Ajoute un nouvel ingredient a mon inventaire',
-      icon: Package,
-      priority: 1,
-    });
+    suggestions.push(
+      { label: 'Creer une fiche technique', prompt: 'Cree-moi une fiche technique pour une nouvelle recette', icon: ChefHat, priority: 5 },
+      { label: 'Preparer une commande', prompt: 'Prepare une commande fournisseur basee sur mes besoins actuels', icon: ShoppingCart, priority: 3 },
+      { label: 'Mon plat star', prompt: 'Quel est mon plat star et pourquoi ?', icon: Star, priority: 2 },
+      { label: 'Ajouter un ingredient', prompt: 'Ajoute un nouvel ingredient a mon inventaire', icon: Package, priority: 1 },
+    );
 
-    // Sort by priority descending, take top 4
-    return suggestions.sort((a, b) => b.priority - a.priority).slice(0, 4);
+    return suggestions.sort((a, b) => b.priority - a.priority).slice(0, 5);
   }, [restaurantContext]);
-
-  // Rotate highlighted suggestion every 8s
-  useEffect(() => {
-    if (contextSuggestions.length === 0) return;
-    const interval = setInterval(() => {
-      setSuggestionIndex(prev => (prev + 1) % contextSuggestions.length);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [contextSuggestions.length]);
 
   // Close mode dropdown on outside click
   useEffect(() => {
@@ -402,9 +435,9 @@ export default function AIAssistant() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  // Save conversation whenever messages change
+  // Save conversation whenever messages change (skip empty)
   useEffect(() => {
-    if (messages.length <= 1) return;
+    if (messages.length === 0) return;
     const convId = currentConversationId || Date.now().toString();
     if (!currentConversationId) setCurrentConversationId(convId);
 
@@ -434,7 +467,7 @@ export default function AIAssistant() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+  }, [messages, isTyping, isStreaming]);
 
   const cancelAutoSend = useCallback(() => {
     if (autoSendTimerRef.current) {
@@ -526,11 +559,11 @@ export default function AIAssistant() {
   }
 
   function handlePhotoCapture() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.capture = 'environment';
-    input.onchange = async (e) => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.capture = 'environment';
+    fileInput.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
       const reader = new FileReader();
@@ -541,12 +574,12 @@ export default function AIAssistant() {
       };
       reader.readAsDataURL(file);
     };
-    input.click();
+    fileInput.click();
   }
 
   async function handleSend(text?: string) {
     const messageText = (text || input).trim();
-    if (!messageText || isTyping) return;
+    if (!messageText || isTyping || isStreaming) return;
 
     const currentImage = pendingImage;
     const userMessage: Message = {
@@ -566,16 +599,47 @@ export default function AIAssistant() {
     try {
       const imageBase64 = currentImage ? currentImage.split(',')[1] : undefined;
       const { response, actions } = await getAIResponse(messageText, messages, imageBase64, aiMode);
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
+
+      // Start streaming simulation
+      setIsTyping(false);
+      setIsStreaming(true);
+
+      const streamMsgId = (Date.now() + 1).toString();
+      streamingIdRef.current = streamMsgId;
+
+      // Add empty message for streaming
+      const streamingMessage: Message = {
+        id: streamMsgId,
         role: 'assistant',
-        content: response,
+        content: '',
         timestamp: new Date(),
         actions: actions && actions.length > 0 ? actions : undefined,
         feedback: null,
+        isStreaming: true,
       };
-      setMessages((prev) => [...prev, assistantMessage]);
-      fetchUsage();
+      setMessages((prev) => [...prev, streamingMessage]);
+
+      // Simulate streaming
+      simulateStreaming(
+        response,
+        (partial) => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === streamMsgId ? { ...m, content: partial } : m
+            )
+          );
+        },
+        () => {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === streamMsgId ? { ...m, content: response, isStreaming: false } : m
+            )
+          );
+          setIsStreaming(false);
+          streamingIdRef.current = null;
+          fetchUsage();
+        }
+      );
     } catch (err: any) {
       const errMsg = err?.message || "Desole, une erreur s'est produite. Veuillez reessayer.";
       if (errMsg.includes('Quota')) setQuotaReached(true);
@@ -586,8 +650,8 @@ export default function AIAssistant() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
-    } finally {
       setIsTyping(false);
+      setIsStreaming(false);
     }
   }
 
@@ -602,17 +666,10 @@ export default function AIAssistant() {
 
   function handleNewConversation() {
     setCurrentConversationId(null);
-    setMessages([
-      {
-        id: 'welcome',
-        role: 'assistant',
-        content:
-          "Bienvenue ! Je suis votre **assistant IA RestauMargin** — votre copilote pour piloter votre restaurant.\n\nVoici ce que je peux faire pour vous :\n\n**Analyser** — Marges, food cost, rentabilite de vos plats\n**Creer** — Fiches techniques, recettes, menus complets\n**Commander** — Preparer et envoyer vos commandes fournisseurs\n**Optimiser** — Suggestions d'alternatives moins cheres, detection d'anomalies\n**HACCP** — Verifier la conformite, temperatures, tracabilite\n\nChoisissez une suggestion ci-dessous ou posez-moi votre question !",
-        timestamp: new Date(),
-      },
-    ]);
+    setMessages([]);
     setShowHistory(false);
     trackEvent('ai_new_conversation');
+    setTimeout(() => inputRef.current?.focus(), 100);
   }
 
   function handleLoadConversation(conv: Conversation) {
@@ -658,26 +715,77 @@ export default function AIAssistant() {
     trackEvent('ai_feedback', { feedback });
   }
 
+  function handleExportConversation() {
+    const text = messages.map(m =>
+      `[${m.role === 'user' ? 'Vous' : 'IA'}] ${m.timestamp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}\n${m.content}\n`
+    ).join('\n---\n\n');
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `conversation-ia-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    trackEvent('ai_export_conversation');
+  }
+
+  // ---- Rendering helpers ----
+
   function formatContent(content: string) {
     return content.split('\n').map((line, i) => {
-      const parts = line.split(/(\*\*[^*]+\*\*)/).map((part, j) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
-          return (
-            <strong key={j} className="font-semibold text-[#111111] dark:text-white">
-              {part.slice(2, -2)}
-            </strong>
-          );
-        }
-        return <span key={j}>{part}</span>;
-      });
+      // Handle bullet points
+      const bulletMatch = line.match(/^(\s*)([-*])\s(.+)/);
+      if (bulletMatch) {
+        const indent = bulletMatch[1].length;
+        const text = bulletMatch[3];
+        return (
+          <div key={i} className="flex gap-2 items-start" style={{ marginLeft: indent * 8 }}>
+            <span className="w-1.5 h-1.5 rounded-full bg-black dark:bg-white mt-2 flex-shrink-0" />
+            <span>{formatInline(text)}</span>
+          </div>
+        );
+      }
+
+      // Handle numbered lists
+      const numberedMatch = line.match(/^(\s*)(\d+)\.\s(.+)/);
+      if (numberedMatch) {
+        const indent = numberedMatch[1].length;
+        const num = numberedMatch[2];
+        const text = numberedMatch[3];
+        return (
+          <div key={i} className="flex gap-2 items-start" style={{ marginLeft: indent * 8 }}>
+            <span className="text-xs font-bold text-black dark:text-white mt-0.5 min-w-[1.2rem] flex-shrink-0">{num}.</span>
+            <span>{formatInline(text)}</span>
+          </div>
+        );
+      }
+
+      // Handle headings (### or ##)
+      if (line.startsWith('### ')) {
+        return <p key={i} className="font-bold text-sm text-black dark:text-white mt-2 mb-1">{formatInline(line.slice(4))}</p>;
+      }
+      if (line.startsWith('## ')) {
+        return <p key={i} className="font-bold text-base text-black dark:text-white mt-3 mb-1">{formatInline(line.slice(3))}</p>;
+      }
 
       if (line.trim() === '') return <br key={i} />;
-      return (
-        <div key={i} className={line.startsWith('   ') ? 'ml-4' : ''}>
-          {parts}
-        </div>
-      );
+
+      return <div key={i}>{formatInline(line)}</div>;
     });
+  }
+
+  function formatInline(text: string) {
+    // Bold **text**, italic *text*, code `text`
+    const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} className="font-semibold text-black dark:text-white">{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return <code key={j} className="px-1.5 py-0.5 bg-black/5 dark:bg-white/10 rounded text-xs font-mono">{part.slice(1, -1)}</code>;
+      }
+      return <span key={j}>{part}</span>;
+    });
+    return <>{parts}</>;
   }
 
   function renderActions(actions: ActionResult[]) {
@@ -695,20 +803,20 @@ export default function AIAssistant() {
               }`}
             >
               {action.success ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
               ) : (
-                <XCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-medium ${action.success ? 'text-emerald-300' : 'text-red-300'}`}>
+                <p className={`text-sm font-medium ${action.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                   {getActionLabel(action.type)}
                 </p>
-                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{action.message}</p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] truncate">{action.message}</p>
               </div>
               {action.success && route && (
                 <button
                   onClick={() => navigate(route)}
-                  className="flex items-center gap-1 px-2.5 py-1 text-xs bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#111111] dark:text-white rounded-lg transition-colors flex-shrink-0"
+                  className="flex items-center gap-1 px-2.5 py-1 text-xs bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-black dark:text-white rounded-lg transition-colors flex-shrink-0"
                 >
                   <ExternalLink className="w-3 h-3" />
                   Voir
@@ -721,350 +829,469 @@ export default function AIAssistant() {
     );
   }
 
+  // Quick action buttons after AI response
+  function renderQuickActions(msg: Message) {
+    if (msg.role !== 'assistant' || msg.isStreaming) return null;
+    const hasActions = msg.actions && msg.actions.length > 0;
+
+    return (
+      <div className="flex flex-wrap gap-2 mt-2">
+        {hasActions && msg.actions?.some(a => a.success) && (
+          <button
+            onClick={() => {
+              const successAction = msg.actions?.find(a => a.success);
+              if (successAction) {
+                const route = getActionRoute(successAction);
+                if (route) navigate(route);
+              }
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-full transition-colors"
+          >
+            <CheckCircle2 className="w-3 h-3" />
+            Appliquer
+          </button>
+        )}
+        <button
+          onClick={() => handleExportConversation()}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[#6B7280] dark:text-[#A3A3A3] border border-black/10 dark:border-white/10 rounded-full transition-colors"
+        >
+          <FileDown className="w-3 h-3" />
+          Exporter
+        </button>
+        <button
+          onClick={() => {
+            setInput('');
+            inputRef.current?.focus();
+          }}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 text-[#6B7280] dark:text-[#A3A3A3] border border-black/10 dark:border-white/10 rounded-full transition-colors"
+        >
+          <ArrowRight className="w-3 h-3" />
+          Poser une autre question
+        </button>
+      </div>
+    );
+  }
+
   const currentModeInfo = AI_MODES.find(m => m.key === aiMode)!;
   const CurrentModeIcon = currentModeInfo.icon;
 
+  // ---- RENDER ----
+
   return (
-    <div className="flex flex-col h-[calc(100vh-10rem)] max-h-[900px]">
-      {/* Header */}
-      <div className="mb-4">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white shadow-lg">
-            <Sparkles className="w-6 h-6 text-white dark:text-black" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-[#111111] dark:text-white">Assistant IA</h1>
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Analyse vos donnees et agit sur votre restaurant</p>
-          </div>
+    <div className="flex flex-col h-[calc(100vh-6rem)] max-w-4xl mx-auto">
+      {/* ===== HEADER BAR ===== */}
+      <div className="flex items-center gap-3 mb-3 px-1">
+        <div className="p-2 rounded-xl bg-black dark:bg-white">
+          <Sparkles className="w-5 h-5 text-white dark:text-black" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl font-bold text-black dark:text-white tracking-tight">Assistant IA</h1>
+          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Votre copilote restaurant intelligent</p>
+        </div>
 
-          {/* Mode selector */}
-          <div className="relative" ref={modeDropdownRef}>
+        {/* Mode selector */}
+        <div className="relative" ref={modeDropdownRef}>
+          <button
+            onClick={() => setModeDropdownOpen(!modeDropdownOpen)}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-black/30 dark:hover:border-white/30 transition-colors"
+          >
+            <CurrentModeIcon className="w-4 h-4 text-black dark:text-white" />
+            <span className="text-xs font-medium text-black dark:text-white hidden sm:inline">{currentModeInfo.label}</span>
+            <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${modeDropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {modeDropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-60 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl z-50 overflow-hidden">
+              {AI_MODES.map(mode => {
+                const Icon = mode.icon;
+                const isActive = aiMode === mode.key;
+                return (
+                  <button
+                    key={mode.key}
+                    onClick={() => { setAiMode(mode.key); setModeDropdownOpen(false); trackEvent('ai_mode_change', { mode: mode.key }); }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                      isActive
+                        ? 'bg-black dark:bg-white text-white dark:text-black'
+                        : 'hover:bg-[#F5F5F5] dark:hover:bg-[#111111] text-black dark:text-white'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium">{mode.label}</p>
+                      <p className={`text-[11px] ${isActive ? 'text-white/60 dark:text-black/60' : 'text-[#6B7280]'}`}>{mode.description}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* History */}
+        <button
+          onClick={() => setShowHistory(!showHistory)}
+          className={`p-2 rounded-xl border transition-colors ${
+            showHistory
+              ? 'bg-black dark:bg-white border-black dark:border-white text-white dark:text-black'
+              : 'bg-white dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-black/30 dark:hover:border-white/30 text-[#6B7280]'
+          }`}
+          title="Historique"
+        >
+          <History className="w-4 h-4" />
+        </button>
+
+        {/* New conversation */}
+        <button
+          onClick={handleNewConversation}
+          className="p-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-black/30 dark:hover:border-white/30 text-[#6B7280] transition-colors"
+          title="Nouvelle conversation"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* ===== CONTEXT BADGES ===== */}
+      {restaurantContext && (
+        <div className="flex flex-wrap gap-2 mb-3 px-1">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+            <Database className="w-3 h-3 text-emerald-500" />
+            <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalRecipes} recettes</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+            <Package className="w-3 h-3 text-blue-500" />
+            <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalIngredients} ingredients</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+            <ShoppingCart className="w-3 h-3 text-purple-500" />
+            <span className="text-[11px] font-medium text-black dark:text-white">{restaurantContext.totalSuppliers} fournisseurs</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-full">
+            <Ratio className="w-3 h-3 text-amber-500" />
+            <span className="text-[11px] font-medium text-black dark:text-white">Marge moy. {restaurantContext.avgMargin}%</span>
+          </div>
+          {restaurantContext.lowStockCount > 0 && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-full">
+              <AlertTriangle className="w-3 h-3 text-red-500" />
+              <span className="text-[11px] font-medium text-red-600 dark:text-red-400">{restaurantContext.lowStockCount} alertes stock</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ===== QUOTA BAR (compact) ===== */}
+      {aiUsage && (
+        <div className="mb-3 px-1">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-1.5 bg-[#F5F5F5] dark:bg-[#111111] rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-700 ${
+                  aiUsage.percentage > 80 ? 'bg-red-500' : aiUsage.percentage > 50 ? 'bg-amber-500' : 'bg-black dark:bg-white'
+                }`}
+                style={{ width: `${Math.min(aiUsage.percentage, 100)}%` }}
+              />
+            </div>
+            <span className="text-[10px] text-[#6B7280] whitespace-nowrap">{aiUsage.used}/{aiUsage.limit} requetes</span>
+          </div>
+          {quotaReached && (
+            <p className="text-[11px] text-red-500 mt-1 font-medium">Quota mensuel atteint. Passez au plan Business.</p>
+          )}
+        </div>
+      )}
+
+      {/* ===== HISTORY PANEL (overlay-style) ===== */}
+      {showHistory && (
+        <div className="mb-3 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden max-h-72 shadow-lg">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] sticky top-0 bg-white dark:bg-[#0A0A0A] z-10">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-black dark:text-white" />
+              <p className="text-sm font-semibold text-black dark:text-white">Historique</p>
+              <span className="text-[10px] text-[#6B7280] bg-[#F5F5F5] dark:bg-[#111111] px-2 py-0.5 rounded-full">{conversations.length}</span>
+            </div>
             <button
-              onClick={() => setModeDropdownOpen(!modeDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/30 transition-colors"
+              onClick={() => setShowHistory(false)}
+              className="p-1 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#111111] text-[#6B7280] transition-colors"
             >
-              <CurrentModeIcon className="w-4 h-4 text-[#111111] dark:text-white" />
-              <span className="text-sm font-medium text-[#111111] dark:text-white hidden sm:inline">{currentModeInfo.label}</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3] transition-transform ${modeDropdownOpen ? 'rotate-180' : ''}`} />
+              <X className="w-4 h-4" />
             </button>
+          </div>
+          <div className="overflow-y-auto max-h-56">
+            {conversations.length === 0 ? (
+              <div className="px-4 py-8 text-center">
+                <MessageSquare className="w-8 h-8 text-[#E5E7EB] dark:text-[#1A1A1A] mx-auto mb-2" />
+                <p className="text-sm text-[#6B7280]">Aucune conversation sauvegardee</p>
+              </div>
+            ) : (
+              conversations.map(conv => (
+                <button
+                  key={conv.id}
+                  onClick={() => handleLoadConversation(conv)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F5F5F5] dark:hover:bg-[#111111] transition-colors border-b border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 last:border-b-0 group ${
+                    conv.id === currentConversationId ? 'bg-[#F5F5F5] dark:bg-[#111111]' : ''
+                  }`}
+                >
+                  <MessageSquare className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-black dark:text-white truncate font-medium">{conv.title}</p>
+                    <p className="text-[11px] text-[#6B7280]">
+                      {new Date(conv.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      {' '} -- {conv.messages.length} msg -- {conv.mode}
+                    </p>
+                  </div>
+                  <button
+                    onClick={(e) => handleDeleteConversation(conv.id, e)}
+                    className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#6B7280] hover:text-red-500 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+                    title="Supprimer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
-            {modeDropdownOpen && (
-              <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl z-50 overflow-hidden">
-                {AI_MODES.map(mode => {
-                  const Icon = mode.icon;
-                  const isActive = aiMode === mode.key;
+      {/* ===== MAIN CHAT AREA ===== */}
+      <div className="flex-1 flex flex-col bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden min-h-0">
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* EMPTY STATE: Prompt Cards Grid */}
+          {isEmptyChat && !isTyping ? (
+            <div className="flex flex-col items-center justify-center h-full">
+              <div className="text-center mb-8">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-black dark:bg-white flex items-center justify-center">
+                  <Bot className="w-7 h-7 text-white dark:text-black" />
+                </div>
+                <h2 className="text-xl font-bold text-black dark:text-white mb-1">Bonjour, comment puis-je vous aider ?</h2>
+                <p className="text-sm text-[#6B7280] max-w-md mx-auto">
+                  Je suis votre assistant IA RestauMargin. J'analyse vos donnees et agis sur votre restaurant.
+                </p>
+              </div>
+
+              {/* 6 Prompt Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-2xl px-2">
+                {PROMPT_CARDS.map((card) => {
+                  const Icon = card.icon;
                   return (
                     <button
-                      key={mode.key}
-                      onClick={() => { setAiMode(mode.key); setModeDropdownOpen(false); trackEvent('ai_mode_change', { mode: mode.key }); }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-                        isActive
-                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                          : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#111111] dark:text-white'
-                      }`}
+                      key={card.title}
+                      onClick={() => handleSend(card.prompt)}
+                      disabled={quotaReached}
+                      className={`group text-left p-4 rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-gradient-to-br ${card.gradient} hover:border-black/30 dark:hover:border-white/30 hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium">{mode.label}</p>
-                        <p className={`text-xs ${isActive ? 'text-white/60 dark:text-black/60' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{mode.description}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="p-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] group-hover:border-black/20 dark:group-hover:border-white/20 transition-colors">
+                          <Icon className="w-4 h-4 text-black dark:text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-black dark:text-white mb-0.5">{card.title}</p>
+                          <p className="text-[11px] text-[#6B7280] leading-relaxed line-clamp-2">{card.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 mt-3 text-[10px] text-[#6B7280] group-hover:text-black dark:group-hover:text-white transition-colors">
+                        <ChevronRight className="w-3 h-3" />
+                        <span>Cliquez pour lancer</span>
                       </div>
                     </button>
                   );
                 })}
               </div>
-            )}
-          </div>
-
-          {/* History button */}
-          <button
-            onClick={() => setShowHistory(!showHistory)}
-            className={`p-2.5 rounded-xl border transition-colors ${
-              showHistory
-                ? 'bg-[#111111] dark:bg-white border-[#111111] dark:border-white text-white dark:text-black'
-                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/30 text-[#6B7280] dark:text-[#A3A3A3]'
-            }`}
-            title="Historique"
-          >
-            <History className="w-5 h-5" />
-          </button>
-
-          {/* New conversation button */}
-          <button
-            onClick={handleNewConversation}
-            className="p-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white/30 text-[#6B7280] dark:text-[#A3A3A3] transition-colors"
-            title="Nouvelle conversation"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* AI Quota Bar */}
-      {aiUsage && (
-        <div className="mb-4 bg-white/50 dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
-              <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
-                Quota IA : {aiUsage.used}/{aiUsage.limit} requetes ce mois ({aiUsage.percentage}%)
-              </span>
-            </div>
-            <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{aiUsage.month}</span>
-          </div>
-          <div className="w-full h-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-700 ease-out ${
-                aiUsage.percentage > 80
-                  ? 'bg-red-500'
-                  : aiUsage.percentage > 50
-                  ? 'bg-amber-500'
-                  : 'bg-[#111111] dark:bg-white'
-              }`}
-              style={{ width: `${Math.min(aiUsage.percentage, 100)}%` }}
-            />
-          </div>
-          {quotaReached && (
-            <p className="text-xs text-red-400 mt-2 font-medium">
-              Quota mensuel atteint. Passez au plan Business pour continuer.
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* History panel */}
-      {showHistory && (
-        <div className="mb-4 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden max-h-64 overflow-y-auto">
-          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] sticky top-0 bg-white dark:bg-[#0A0A0A] z-10">
-            <p className="text-sm font-semibold text-[#111111] dark:text-white">Historique des conversations</p>
-          </div>
-          {conversations.length === 0 ? (
-            <div className="px-4 py-8 text-center">
-              <MessageSquare className="w-8 h-8 text-[#E5E7EB] dark:text-[#1A1A1A] mx-auto mb-2" />
-              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune conversation sauvegardee</p>
             </div>
           ) : (
-            conversations.map(conv => (
-              <button
-                key={conv.id}
-                onClick={() => handleLoadConversation(conv)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors border-b border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 last:border-b-0 ${
-                  conv.id === currentConversationId ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''
-                }`}
-              >
-                <MessageSquare className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373] flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-[#111111] dark:text-white truncate">{conv.title}</p>
-                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                    {new Date(conv.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                    {' '} — {conv.messages.length} msg — {conv.mode}
-                  </p>
-                </div>
-                <button
-                  onClick={(e) => handleDeleteConversation(conv.id, e)}
-                  className="p-1.5 rounded-lg hover:bg-red-500/10 text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 transition-colors flex-shrink-0"
-                  title="Supprimer"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </button>
-            ))
-          )}
-        </div>
-      )}
-
-      {/* Chat container */}
-      <div className="flex-1 flex flex-col bg-white/50 dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
-        {/* Messages area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
-            >
-              <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.role === 'user'
-                    ? 'bg-[#111111] dark:bg-white'
-                    : 'bg-[#111111] dark:bg-white'
-                }`}
-              >
-                {msg.role === 'user' ? (
-                  <User className="w-4 h-4 text-white dark:text-black" />
-                ) : (
-                  <Bot className="w-4 h-4 text-white dark:text-black" />
-                )}
-              </div>
-              <div className="max-w-[80%]">
+            /* MESSAGES LIST */
+            <div className="space-y-5">
+              {messages.map((msg) => (
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                    msg.role === 'user'
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black rounded-br-md'
-                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] rounded-bl-md border border-[#E5E7EB] dark:border-[#1A1A1A]/50'
-                  }`}
+                  key={msg.id}
+                  className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  {msg.image && (
-                    <img
-                      src={msg.image}
-                      alt="Photo envoyee"
-                      className="w-40 h-40 object-cover rounded-xl mb-2 border border-white/20"
-                    />
-                  )}
-                  {formatContent(msg.content)}
-                  {msg.actions && msg.actions.length > 0 && renderActions(msg.actions)}
+                  {/* Avatar */}
                   <div
-                    className={`text-[10px] mt-2 ${
-                      msg.role === 'user' ? 'text-white/40 dark:text-black/40' : 'text-[#9CA3AF] dark:text-[#737373]'
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5 ${
+                      msg.role === 'user'
+                        ? 'bg-black dark:bg-white'
+                        : 'bg-emerald-500'
                     }`}
                   >
-                    {msg.timestamp.toLocaleTimeString('fr-FR', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+                    {msg.role === 'user' ? (
+                      <User className="w-4 h-4 text-white dark:text-black" />
+                    ) : (
+                      <Bot className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+
+                  {/* Message content */}
+                  <div className={`${msg.role === 'user' ? 'max-w-[75%]' : 'max-w-[85%] flex-1'}`}>
+                    <div
+                      className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                        msg.role === 'user'
+                          ? 'bg-black dark:bg-white text-white dark:text-black rounded-tr-md'
+                          : 'bg-[#FAFAFA] dark:bg-[#111111] text-[#374151] dark:text-[#D4D4D4] rounded-tl-md border-l-2 border-l-emerald-500'
+                      }`}
+                    >
+                      {msg.image && (
+                        <img
+                          src={msg.image}
+                          alt="Photo envoyee"
+                          className="w-40 h-40 object-cover rounded-xl mb-2 border border-white/20"
+                        />
+                      )}
+                      {formatContent(msg.content)}
+                      {msg.isStreaming && (
+                        <span className="inline-block w-2 h-4 bg-emerald-500 rounded-sm ml-0.5 animate-pulse" />
+                      )}
+                      {msg.actions && msg.actions.length > 0 && !msg.isStreaming && renderActions(msg.actions)}
+                    </div>
+
+                    {/* Timestamp */}
+                    <div className={`text-[10px] mt-1 px-1 ${msg.role === 'user' ? 'text-right text-[#6B7280]' : 'text-[#6B7280]'}`}>
+                      {msg.timestamp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+
+                    {/* Assistant toolbar: copy, share, feedback, quick actions */}
+                    {msg.role === 'assistant' && !msg.isStreaming && (
+                      <>
+                        <div className="flex items-center gap-1 mt-1 ml-1">
+                          <button
+                            onClick={() => handleCopyMessage(msg.content, msg.id)}
+                            className="p-1.5 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white transition-colors"
+                            title="Copier"
+                          >
+                            {copiedMessageId === msg.id ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            onClick={() => handleShareMessage(msg.content)}
+                            className="p-1.5 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white transition-colors"
+                            title="Partager"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                          </button>
+                          <div className="w-px h-3 bg-[#E5E7EB] dark:bg-[#1A1A1A] mx-0.5" />
+                          <button
+                            onClick={() => handleFeedback(msg.id, 'up')}
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              msg.feedback === 'up'
+                                ? 'bg-emerald-500/10 text-emerald-500'
+                                : 'hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white'
+                            }`}
+                            title="Bonne reponse"
+                          >
+                            <ThumbsUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleFeedback(msg.id, 'down')}
+                            className={`p-1.5 rounded-lg transition-colors ${
+                              msg.feedback === 'down'
+                                ? 'bg-red-500/10 text-red-500'
+                                : 'hover:bg-[#F5F5F5] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] hover:text-black dark:hover:text-white'
+                            }`}
+                            title="Mauvaise reponse"
+                          >
+                            <ThumbsDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        {/* Quick Action Buttons */}
+                        {msg.id === messages[messages.length - 1]?.id && renderQuickActions(msg)}
+                      </>
+                    )}
                   </div>
                 </div>
+              ))}
 
-                {/* Copy / Share / Feedback — assistant messages only */}
-                {msg.role === 'assistant' && msg.id !== 'welcome' && (
-                  <div className="flex items-center gap-1 mt-1.5 ml-1">
-                    <button
-                      onClick={() => handleCopyMessage(msg.content, msg.id)}
-                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
-                      title="Copier"
-                    >
-                      {copiedMessageId === msg.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
-                    <button
-                      onClick={() => handleShareMessage(msg.content)}
-                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
-                      title="Partager"
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                    </button>
-                    <div className="w-px h-3 bg-[#E5E7EB] dark:bg-[#1A1A1A] mx-0.5" />
-                    <button
-                      onClick={() => handleFeedback(msg.id, 'up')}
-                      className={`p-1.5 rounded-lg transition-colors ${
-                        msg.feedback === 'up'
-                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                          : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
-                      }`}
-                      title="Bonne reponse"
-                    >
-                      <ThumbsUp className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleFeedback(msg.id, 'down')}
-                      className={`p-1.5 rounded-lg transition-colors ${
-                        msg.feedback === 'down'
-                          ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
-                          : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
-                      }`}
-                      title="Mauvaise reponse"
-                    >
-                      <ThumbsDown className="w-3.5 h-3.5" />
-                    </button>
+              {/* Typing indicator */}
+              {isTyping && (
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-500 mt-0.5">
+                    <Bot className="w-4 h-4 text-white" />
                   </div>
-                )}
-              </div>
-            </div>
-          ))}
-
-          {isTyping && (
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-[#111111] dark:bg-white">
-                <Bot className="w-4 h-4 text-white dark:text-black" />
-              </div>
-              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 rounded-2xl rounded-bl-md px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1.5 items-center h-5">
-                    <span className="w-2 h-2 bg-[#111111] dark:bg-white rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-2 h-2 bg-[#111111] dark:bg-white rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-2 h-2 bg-[#111111] dark:bg-white rounded-full animate-bounce [animation-delay:300ms]" />
+                  <div className="bg-[#FAFAFA] dark:bg-[#111111] border-l-2 border-l-emerald-500 rounded-2xl rounded-tl-md px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1 items-center">
+                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
+                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:150ms]" />
+                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:300ms]" />
+                      </div>
+                      <span className="text-xs text-[#6B7280]">Analyse en cours...</span>
+                    </div>
                   </div>
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse en cours...</span>
                 </div>
-              </div>
+              )}
+
+              <div ref={messagesEndRef} />
             </div>
           )}
-
-          <div ref={messagesEndRef} />
         </div>
 
-        {/* Context-aware suggestions bar — always visible */}
-        <div className="px-4 pb-2">
-          <div className="flex items-center gap-2 mb-2">
-            <Lightbulb className="w-3.5 h-3.5 text-[#111111] dark:text-white" />
-            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">Suggestions rapides</span>
-            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] ml-auto">Basees sur vos donnees</span>
+        {/* ===== QUICK SUGGESTIONS BAR (only when there are messages) ===== */}
+        {!isEmptyChat && (
+          <div className="px-4 pb-2">
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {contextSuggestions.slice(0, 4).map((s) => {
+                const Icon = s.icon;
+                return (
+                  <button
+                    key={s.label}
+                    onClick={() => handleSend(s.prompt)}
+                    disabled={isTyping || isStreaming}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black rounded-full transition-all whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-[#6B7280]"
+                  >
+                    <Icon className="w-3 h-3" />
+                    {s.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {contextSuggestions.map((s, idx) => {
-              const Icon = s.icon;
-              return (
-                <button
-                  key={s.label}
-                  onClick={() => handleSend(s.prompt)}
-                  disabled={isTyping}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border rounded-full transition-all duration-300 whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
-                    idx === suggestionIndex % contextSuggestions.length
-                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white shadow-md'
-                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#111111] dark:hover:bg-white text-[#6B7280] dark:text-[#A3A3A3] hover:text-white dark:hover:text-black border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
-                  }`}
-                >
-                  <Icon className="w-3 h-3" />
-                  {s.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        )}
 
-        {/* Input bar */}
+        {/* ===== INPUT BAR ===== */}
         <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
           {/* Pending image preview */}
           {pendingImage && (
-            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
+            <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
               <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]" />
-              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] flex-1">Photo prete a envoyer</span>
+              <span className="text-sm text-[#6B7280] flex-1">Photo prete a envoyer</span>
               <button
                 onClick={() => setPendingImage(null)}
-                className="text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white underline transition-colors"
+                className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
               >
-                Supprimer
+                <X className="w-4 h-4 text-[#6B7280]" />
               </button>
             </div>
           )}
 
           {/* Listening indicator */}
           {isListening && (
-            <div className="flex items-center justify-center gap-3 mb-2 py-2 px-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-              <span className="text-sm text-red-400 font-medium">Ecoute en cours...</span>
-              <div className="flex items-center gap-1">
-                <span
-                  className="w-1 bg-red-400 rounded-full"
-                  style={{ animation: 'soundWave 0.6s ease-in-out infinite', animationDelay: '0ms', height: '8px' }}
-                />
-                <span
-                  className="w-1 bg-red-400 rounded-full"
-                  style={{ animation: 'soundWave 0.6s ease-in-out infinite', animationDelay: '150ms', height: '8px' }}
-                />
-                <span
-                  className="w-1 bg-red-400 rounded-full"
-                  style={{ animation: 'soundWave 0.6s ease-in-out infinite', animationDelay: '300ms', height: '8px' }}
-                />
+            <div className="flex items-center justify-center gap-3 mb-2 py-2 px-3 bg-red-500/5 border border-red-500/20 rounded-xl">
+              <div className="relative">
+                <Mic className="w-4 h-4 text-red-500" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-ping" />
+              </div>
+              <span className="text-xs text-red-500 font-medium">Ecoute en cours...</span>
+              <div className="flex items-center gap-0.5">
+                {[0, 1, 2, 3, 4].map(i => (
+                  <span
+                    key={i}
+                    className="w-0.5 bg-red-500 rounded-full"
+                    style={{
+                      animation: 'soundWave 0.6s ease-in-out infinite',
+                      animationDelay: `${i * 80}ms`,
+                      height: '8px',
+                    }}
+                  />
+                ))}
               </div>
             </div>
           )}
 
           {/* Auto-send countdown */}
           {autoSendCountdown !== null && (
-            <div className="flex items-center justify-center gap-2 mb-2 py-1.5 px-3 bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
-              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-                Envoi dans {autoSendCountdown}s...
-              </span>
+            <div className="flex items-center justify-center gap-2 mb-2 py-1.5 px-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
+              <Zap className="w-3 h-3 text-amber-500" />
+              <span className="text-xs text-[#6B7280]">Envoi dans {autoSendCountdown}s...</span>
               <button
                 onClick={cancelAutoSend}
-                className="text-xs text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white underline transition-colors"
+                className="text-xs text-[#6B7280] hover:text-black dark:hover:text-white underline transition-colors"
               >
                 Annuler
               </button>
@@ -1082,73 +1309,88 @@ export default function AIAssistant() {
                 }}
                 onKeyDown={handleKeyDown}
                 disabled={quotaReached}
-                placeholder={quotaReached ? 'Quota IA mensuel atteint' : isListening ? 'Parlez maintenant...' : 'Demandez-moi de creer une recette, ajouter un ingredient...'}
+                placeholder={quotaReached ? 'Quota IA mensuel atteint' : isListening ? 'Parlez maintenant...' : 'Posez une question ou donnez une instruction...'}
                 rows={1}
-                className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl px-4 py-3 pr-12 text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-[#111111]/20 dark:focus:ring-white/20 focus:border-[#111111] dark:focus:border-white/50 resize-none transition-all"
-                style={{ minHeight: '44px', maxHeight: '120px' }}
+                className="w-full bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl px-4 py-3 text-sm text-black dark:text-white placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 focus:border-black/30 dark:focus:border-white/30 resize-none transition-all"
+                style={{ minHeight: '46px', maxHeight: '140px' }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement;
                   target.style.height = 'auto';
-                  target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                  target.style.height = Math.min(target.scrollHeight, 140) + 'px';
                 }}
               />
-              <div className="absolute right-2 bottom-1.5 flex items-center gap-1">
-                <MessageSquare className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3]" />
-              </div>
             </div>
 
-            {/* Photo button */}
+            {/* Photo */}
             <button
               onClick={handlePhotoCapture}
-              disabled={quotaReached || isTyping}
-              title="Prendre une photo d'ingredient"
-              className="flex-shrink-0 p-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#F3F4F6] dark:disabled:bg-[#171717] disabled:text-[#9CA3AF] dark:disabled:text-[#737373] text-white dark:text-black rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+              disabled={quotaReached || isTyping || isStreaming}
+              title="Photo d'ingredient"
+              className="flex-shrink-0 p-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black disabled:opacity-40 disabled:cursor-not-allowed text-[#6B7280] rounded-2xl transition-all"
             >
               <Camera className="w-5 h-5" />
             </button>
 
-            {/* Mic button — prominent with pulse */}
+            {/* Mic */}
             {speechSupported ? (
               <button
                 onClick={toggleVoice}
                 title={isListening ? 'Arreter la dictee' : 'Commande vocale'}
-                className={`relative flex-shrink-0 p-3.5 rounded-2xl transition-all duration-200 ${
+                className={`relative flex-shrink-0 p-3 rounded-2xl transition-all ${
                   isListening
-                    ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/30'
-                    : 'bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black hover:scale-105'
+                    ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20'
+                    : 'bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black text-[#6B7280]'
                 }`}
               >
                 {isListening && (
-                  <span className="absolute inset-0 rounded-2xl bg-red-500 animate-ping opacity-30" />
+                  <span className="absolute inset-0 rounded-2xl bg-red-500 animate-ping opacity-20" />
                 )}
-                {isListening ? <MicOff className="w-6 h-6 relative z-10" /> : <Mic className="w-6 h-6" />}
+                {isListening ? <MicOff className="w-5 h-5 relative z-10" /> : <Mic className="w-5 h-5" />}
               </button>
             ) : (
               <button
                 disabled
                 title="Non supporte par votre navigateur"
-                className="flex-shrink-0 p-3.5 rounded-2xl bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] cursor-not-allowed"
+                className="flex-shrink-0 p-3 rounded-2xl bg-[#FAFAFA] dark:bg-[#111111] text-[#D4D4D4] dark:text-[#333] cursor-not-allowed"
               >
-                <MicOff className="w-6 h-6" />
+                <MicOff className="w-5 h-5" />
               </button>
             )}
 
+            {/* Send */}
             <button
               onClick={() => {
                 cancelAutoSend();
                 handleSend();
               }}
-              disabled={(!input.trim() && !pendingImage) || isTyping || quotaReached}
-              className="flex-shrink-0 p-3 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#F3F4F6] dark:disabled:bg-[#171717] disabled:text-[#9CA3AF] dark:disabled:text-[#737373] text-white dark:text-black rounded-xl transition-all duration-200 disabled:cursor-not-allowed"
+              disabled={(!input.trim() && !pendingImage) || isTyping || isStreaming || quotaReached}
+              className="flex-shrink-0 p-3 bg-black dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] disabled:bg-[#E5E7EB] dark:disabled:bg-[#1A1A1A] disabled:text-[#9CA3AF] text-white dark:text-black rounded-2xl transition-all disabled:cursor-not-allowed"
             >
               <Send className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] mt-2 text-center">
-            Assistant IA RestauMargin — Mode {currentModeInfo.label}
+
+          <p className="text-[10px] text-[#9CA3AF] mt-2 text-center">
+            Mode {currentModeInfo.label} -- RestauMargin IA
           </p>
         </div>
       </div>
+
+      {/* Sound wave animation CSS */}
+      <style>{`
+        @keyframes soundWave {
+          0%, 100% { height: 4px; }
+          50% { height: 16px; }
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </div>
   );
 }

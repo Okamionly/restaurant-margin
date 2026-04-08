@@ -1054,20 +1054,31 @@ export default function Recipes() {
 
   // AI Mercuriale: suggest ingredients for recipe
   async function handleAiSuggest() {
-    if (!form.name.trim() || form.name.trim().length < 2) return;
+    if (!form.name.trim() || form.name.trim().length < 2) {
+      showToast('Entrez un nom de recette (min 2 caracteres)', 'error');
+      return;
+    }
     setAiSuggestionsLoading(true);
     setShowAiSuggestions(false);
     try {
-      const data = await suggestMercurialeIngredients(form.name.trim());
+      const res = await fetch(`/api/mercuriale/suggest?q=${encodeURIComponent(form.name.trim())}`, { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}`, 'X-Restaurant-Id': localStorage.getItem('activeRestaurantId') || '1' } });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: `Erreur ${res.status}` }));
+        showToast(errData.error || `Erreur ${res.status}`, 'error');
+        return;
+      }
+      const data = await res.json();
       if (data.ingredients && data.ingredients.length > 0) {
         setAiSuggestions(data.ingredients);
         setAiSuggestionsChecked(data.ingredients.map(() => true));
         setShowAiSuggestions(true);
+        showToast(`${data.ingredients.length} ingredients suggeres par l'IA`, 'success');
       } else {
-        showToast('Aucune suggestion trouvee pour cette recette', 'error');
+        showToast('L\'IA n\'a pas pu generer de suggestions. Verifiez que le nom de recette est clair (ex: "Risotto aux cepes").', 'info');
       }
-    } catch {
-      showToast('Erreur lors de la suggestion IA', 'error');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erreur connexion serveur';
+      showToast(`Erreur IA: ${msg}`, 'error');
     } finally {
       setAiSuggestionsLoading(false);
     }

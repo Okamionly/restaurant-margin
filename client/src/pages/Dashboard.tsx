@@ -1221,6 +1221,15 @@ export default function Dashboard() {
     return Array.from(catMap.entries()).map(([name, count]) => ({ name, count }));
   }, [recipes, ingredients]);
 
+  // ── Loading ────────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-teal-600 border-t-transparent" />
+      </div>
+    );
+  }
+
   // ── Empty state with onboarding — now shows dynamic KPIs ──────────────
   if (!stats || stats.totalRecipes === 0) {
     const avgFoodCostPct = recipes.length > 0
@@ -1391,15 +1400,6 @@ export default function Dashboard() {
   }
 
   const sortedByMargin = [...recipes].sort((a, b) => a.margin.marginPercent - b.margin.marginPercent);
-
-  // ── Loading ────────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-teal-600 border-t-transparent" />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4 sm:space-y-6">

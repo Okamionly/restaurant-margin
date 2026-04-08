@@ -71,19 +71,21 @@ export function removeToken(): void {
 
 // --- CSRF Token Management (Double-Submit Cookie Pattern) ---
 
+/** CSRF token stored in memory (more reliable than cookies on Vercel) */
+let csrfTokenInMemory: string | null = null;
+let csrfTokenPromise: Promise<string> | null = null;
+
 /** Read the csrf_token cookie value set by the server */
 function getCsrfTokenFromCookie(): string | null {
   const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]+)/);
   return match ? match[1] : null;
 }
 
-/** Fetch a CSRF token from the server if we don't have one in the cookie yet */
-let csrfTokenPromise: Promise<string> | null = null;
-
 export async function ensureCsrfToken(): Promise<string> {
-  // Check cookie first — if already present, use it
-  const existing = getCsrfTokenFromCookie();
-  if (existing) return existing;
+  // Check memory first, then cookie
+  if (csrfTokenInMemory) return csrfTokenInMemory;
+  const fromCookie = getCsrfTokenFromCookie();
+  if (fromCookie) { csrfTokenInMemory = fromCookie; return fromCookie; }
 
   // Avoid multiple parallel fetches
   if (csrfTokenPromise) return csrfTokenPromise;
@@ -92,8 +94,9 @@ export async function ensureCsrfToken(): Promise<string> {
     .then(async (res) => {
       if (!res.ok) throw new Error('Failed to fetch CSRF token');
       const data = await res.json();
+      csrfTokenInMemory = data.csrfToken as string;
       csrfTokenPromise = null;
-      return data.csrfToken as string;
+      return csrfTokenInMemory;
     })
     .catch((err) => {
       csrfTokenPromise = null;
@@ -130,8 +133,8 @@ function authHeaders(): Record<string, string> {
   if (restaurantId) {
     headers['X-Restaurant-Id'] = restaurantId;
   }
-  // Include CSRF token from cookie for state-changing requests
-  const csrfToken = getCsrfTokenFromCookie();
+  // Include CSRF token (memory first, then cookie)
+  const csrfToken = csrfTokenInMemory || getCsrfTokenFromCookie();
   if (csrfToken) {
     headers['X-CSRF-Token'] = csrfToken;
   }

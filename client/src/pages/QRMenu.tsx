@@ -217,6 +217,45 @@ export default function QRMenu() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllergenFilter, setShowAllergenFilter] = useState(false);
 
+  const [realRecipes, setRealRecipes] = useState<MenuItem[]>([]);
+  const [loadingRecipes, setLoadingRecipes] = useState(true);
+
+  // Fetch real recipes from API
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const restaurantId = localStorage.getItem('activeRestaurantId');
+    if (!token) { setLoadingRecipes(false); return; }
+    fetch('/api/recipes', {
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, 'X-Restaurant-Id': restaurantId || '1' },
+    })
+      .then(r => r.ok ? r.json() : [])
+      .then((recipes: any[]) => {
+        if (recipes.length > 0) {
+          const mapped: MenuItem[] = recipes.map((r: any) => {
+            const cat = (r.category || '').toLowerCase();
+            let category: MenuCategory = 'plats';
+            if (cat.includes('entree') || cat.includes('starter')) category = 'entrees';
+            else if (cat.includes('dessert') || cat.includes('patisserie')) category = 'desserts';
+            else if (cat.includes('boisson') || cat.includes('drink') || cat.includes('cocktail')) category = 'boissons';
+            return {
+              id: String(r.id),
+              name: r.name,
+              description: r.description || '',
+              price: r.sellingPrice || 0,
+              category,
+              allergens: (r.allergens || []).map((a: string) => a.toLowerCase().replace(/\s/g, '_')),
+              isPopular: r.margin?.marginPercent > 70,
+              isNew: new Date(r.createdAt) > new Date(Date.now() - 7 * 86400000),
+            };
+          });
+          setRealRecipes(mapped);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingRecipes(false));
+  }, []);
+
+  const menuItems = realRecipes.length > 0 ? realRecipes : DEMO_MENU;
   const restaurantName = selectedRestaurant?.name || 'Votre Restaurant';
 
   const menuUrl = useMemo(() => {
@@ -232,7 +271,7 @@ export default function QRMenu() {
 
   // Filter menu items
   const filteredItems = useMemo(() => {
-    return DEMO_MENU.filter(item => {
+    return menuItems.filter(item => {
       // Category filter
       if (activeCategory !== 'all' && item.category !== activeCategory) return false;
       // Allergen filter (exclude items containing these allergens)
@@ -247,7 +286,7 @@ export default function QRMenu() {
       }
       return true;
     });
-  }, [activeCategory, activeAllergenFilters, searchQuery]);
+  }, [activeCategory, activeAllergenFilters, searchQuery, menuItems]);
 
   const groupedItems = useMemo(() => {
     const groups: Record<MenuCategory, MenuItem[]> = { entrees: [], plats: [], desserts: [], boissons: [] };

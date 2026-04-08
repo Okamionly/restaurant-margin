@@ -476,6 +476,7 @@ export default function MenuCalendar() {
     setSidebarDragRecipe(recipe);
     setDragEntry(null);
     e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('text/plain', String(recipe.id));
   };
 
   // ── Print ──

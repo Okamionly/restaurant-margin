@@ -162,7 +162,14 @@ app.use((req, res, next) => {
     return next();
   }
 
-  // Validate CSRF token: header must match cookie
+  // Skip CSRF for requests with Bearer token (JWT is already a non-guessable token)
+  // CSRF protection is mainly needed for cookie-based auth (which we don't use)
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return next();
+  }
+
+  // For non-authenticated requests, validate CSRF token: header must match cookie
   const headerToken = req.headers['x-csrf-token'] as string | undefined;
   const cookieHeader = req.headers.cookie || '';
   const cookieMatch = cookieHeader.match(/(?:^|;\s*)csrf_token=([^;]+)/);

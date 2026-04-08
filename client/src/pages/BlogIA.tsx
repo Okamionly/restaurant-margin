@@ -178,6 +178,122 @@ export default function BlogIA() {
           </div>
         </div>
 
+        {/* ── Avant / Apres ── */}
+        <h2>Avant / Apres : la gestion avec et sans IA</h2>
+        <p>Voici des comparaisons concretes entre la gestion traditionnelle et la gestion assistee par IA :</p>
+
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Tache</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Avant (manuel)</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Apres (avec IA)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Saisie factures','3h/semaine, erreurs de saisie','10 min/semaine, OCR automatique'],
+                ['Creation fiche technique','30 min par fiche','30 secondes (dictee vocale)'],
+                ['Suivi food cost','Excel, calcul mensuel','Temps reel, alerte automatique'],
+                ['Menu engineering','Demi-journee d\'analyse','Disponible en permanence'],
+                ['Detection anomalies','Decouverte en fin de mois','Alerte immediate'],
+                ['Commande fournisseur','Estimation au feeling','Suggestion basee sur l\'historique'],
+                ['Revision des prix','Annuelle, au doigt mouille','Continue, basee sur les donnees'],
+              ].map(([tache, avant, apres]) => (
+                <tr key={tache} className="border-t border-slate-100">
+                  <td className="px-4 py-2.5 font-medium text-slate-900">{tache}</td>
+                  <td className="px-4 py-2.5 text-red-600">{avant}</td>
+                  <td className="px-4 py-2.5 text-emerald-600">{apres}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 my-6">
+          <p className="text-sm text-emerald-800 !mb-0">
+            <strong>Gain de temps estime :</strong> 8 a 12 heures par semaine sur les taches administratives. Soit l'equivalent d'un jour et demi de travail redirige vers la cuisine, le service et la creativite.
+          </p>
+        </div>
+
+        {/* ── 5 cas d'usage concrets ── */}
+        <h2>5 cas d'usage concrets de l'IA en restaurant</h2>
+
+        <div className="space-y-4 my-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <h3 className="text-base font-bold text-slate-900 !mt-0 mb-2">1. Optimisation des achats</h3>
+            <p className="text-sm !mb-1">L'IA analyse vos historiques de consommation, croise avec les prix du marche et les saisons pour vous suggerer le meilleur moment d'acheter chaque ingredient. Resultat : <strong>economies de 5 a 10 % sur le poste achats</strong>.</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <h3 className="text-base font-bold text-slate-900 !mt-0 mb-2">2. Prevision de frequentation</h3>
+            <p className="text-sm !mb-1">En croisant meteo, evenements locaux, vacances scolaires et historique, l'IA prevoit le nombre de couverts a +/- 10 %. Vous commandez juste ce qu'il faut. Resultat : <strong>reduction du gaspillage de 20 a 30 %</strong>.</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <h3 className="text-base font-bold text-slate-900 !mt-0 mb-2">3. Controle des portions</h3>
+            <p className="text-sm !mb-1">L'IA compare le food cost theorique (fiches techniques) et le food cost reel (achats). Un ecart anormal declenche une alerte : sur-portions, pertes anormales, erreurs de recette. Resultat : <strong>food cost reel aligne sur le theorique a 2 points pres</strong>.</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <h3 className="text-base font-bold text-slate-900 !mt-0 mb-2">4. Pricing dynamique intelligent</h3>
+            <p className="text-sm !mb-1">L'IA analyse la sensibilite prix de vos clients, les prix de votre zone de chalandise et votre structure de couts pour suggerer des ajustements de prix. Resultat : <strong>augmentation du ticket moyen de 3 a 8 %</strong> sans perte de frequentation.</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <h3 className="text-base font-bold text-slate-900 !mt-0 mb-2">5. Analyse de rentabilite en temps reel</h3>
+            <p className="text-sm !mb-1">Chaque plat est suivi en continu : food cost, marge, popularite, tendance. L'IA genere un tableau de bord avec des recommandations actionnables (retirer un poids mort, promouvoir une enigme). Resultat : <strong>+3 a 5 points de marge brute globale</strong>.</p>
+          </div>
+        </div>
+
+        {/* ── CTA intermediaire ── */}
+        <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-xl p-6 my-8 text-center">
+          <h3 className="text-lg font-bold text-white mb-2">Testez l'IA de RestauMargin gratuitement</h3>
+          <p className="text-teal-100 text-sm mb-4">Scan de factures, fiches techniques vocales, menu engineering automatique. Tout est inclus dans l'essai gratuit.</p>
+          <Link
+            to="/login?mode=register"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-teal-700 font-semibold rounded-lg hover:bg-teal-50 transition-colors text-sm"
+          >
+            Creer mon compte gratuit
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* ── Articles complementaires ── */}
+        <h2>Articles complementaires</h2>
+        <div className="grid sm:grid-cols-3 gap-4 my-6">
+          <Link to="/blog/calcul-marge-restaurant" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide 2026</h3>
+            <p className="text-xs text-slate-500 !mb-0">Formules, benchmarks et erreurs courantes.</p>
+          </Link>
+          <Link to="/blog/reduire-food-cost" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">5 methodes pour reduire le food cost de 15 %</h3>
+            <p className="text-xs text-slate-500 !mb-0">Fiches techniques, negociation, gaspillage.</p>
+          </Link>
+          <Link to="/blog/coefficient-multiplicateur" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Coefficient multiplicateur en restauration</h3>
+            <p className="text-xs text-slate-500 !mb-0">Tableaux complets, exemples et erreurs a eviter.</p>
+          </Link>
+        </div>
+
+        {/* ── FAQ ── */}
+        <h2>Questions frequentes sur l'IA en restauration</h2>
+        <div className="space-y-3 my-6">
+          {[
+            { q: 'L\'IA peut-elle vraiment aider un petit restaurant ?', a: 'Oui. L\'IA n\'est pas reservee aux grandes chaines. Un petit restaurant avec 40-80 couverts/jour beneficie enormement de l\'automatisation des taches repetitives : saisie de factures, calcul de food cost, suivi des prix fournisseurs. Le gain de temps et la precision des calculs s\'appliquent quelle que soit la taille de l\'etablissement.' },
+            { q: 'Combien coute un outil de gestion IA pour restaurant ?', a: 'Les prix varient enormement. Certains outils comme RestauMargin proposent un essai gratuit et des formules accessibles des le premier jour. Le retour sur investissement est generalement atteint en 1 a 3 mois grace aux economies realisees sur le food cost (3 a 5 points de marge en plus).' },
+            { q: 'L\'IA va-t-elle remplacer les cuisiniers ?', a: 'Non. L\'IA excelle dans le calcul, l\'analyse de donnees et la detection d\'anomalies. Elle ne peut pas gouter une sauce, creer une recette originale ou gerer un coup de feu. Son role est de liberer le restaurateur des taches administratives pour qu\'il puisse se concentrer sur la cuisine et le service.' },
+            { q: 'Comment l\'IA detecte-t-elle les anomalies dans les achats ?', a: 'L\'IA compare les achats reels avec les consommations theoriques (calculees a partir des ventes x fiches techniques). Un ecart anormal (par exemple, achat de 50 kg de saumon pour 30 kg de consommation theorique) declenche une alerte : gaspillage, sur-portions, vol ou erreur de commande.' },
+            { q: 'Faut-il des competences techniques pour utiliser l\'IA ?', a: 'Non. Les outils modernes comme RestauMargin sont concus pour etre utilises par des restaurateurs, pas des informaticiens. L\'interface est simple : photographiez vos factures, dictez vos recettes, consultez vos tableaux de bord. L\'IA travaille en coulisses.' },
+            { q: 'Quels sont les resultats concrets de l\'IA en restauration ?', a: 'D\'apres les cas clients de RestauMargin : reduction du food cost de 3 a 7 points, gain de 8 a 12 heures/semaine sur les taches administratives, augmentation du ticket moyen de 3 a 8 %, reduction du gaspillage de 20 a 30 %. Le ROI est generalement atteint en 2-3 mois.' },
+          ].map((item) => (
+            <details key={item.q} className="bg-slate-50 border border-slate-200 rounded-xl group">
+              <summary className="px-5 py-4 font-semibold text-slate-900 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
+                {item.q}
+                <ArrowRight className="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
+              </summary>
+              <p className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+
         {/* ── Conviction ── */}
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 my-8">
           <h3 className="text-base font-bold text-slate-900 mb-3">Notre conviction</h3>
@@ -216,6 +332,89 @@ export default function BlogIA() {
           <p>&copy; {new Date().getFullYear()} RestauMargin</p>
         </div>
       </footer>
+
+      {/* ── JSON-LD Article Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: "L'IA en restauration : gadget ou revolution ?",
+            description: "Intelligence artificielle en restauration : decouvrez ce que l'IA peut vraiment faire pour votre restaurant et ce qu'elle ne remplacera jamais.",
+            image: 'https://www.restaumargin.fr/og-image.png',
+            author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
+            publisher: {
+              '@type': 'Organization',
+              name: 'RestauMargin',
+              logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
+            },
+            datePublished: '2026-03-25',
+            dateModified: '2026-04-08',
+            mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/ia-restauration' },
+          }),
+        }}
+      />
+      {/* ── JSON-LD FAQ Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: "L'IA peut-elle vraiment aider un petit restaurant ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Oui. L'IA n'est pas reservee aux grandes chaines. Un petit restaurant beneficie de l'automatisation des taches repetitives : saisie factures, calcul food cost, suivi prix fournisseurs.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "Combien coute un outil de gestion IA pour restaurant ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Les prix varient. RestauMargin propose un essai gratuit. Le ROI est atteint en 1 a 3 mois grace aux economies sur le food cost.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "L'IA va-t-elle remplacer les cuisiniers ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Non. L'IA excelle dans le calcul et l'analyse. Elle ne peut pas gouter une sauce ou creer une recette originale. Son role est de liberer le restaurateur des taches administratives.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "Comment l'IA detecte-t-elle les anomalies dans les achats ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "L'IA compare achats reels et consommations theoriques. Un ecart anormal declenche une alerte : gaspillage, sur-portions, vol ou erreur de commande.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "Faut-il des competences techniques pour utiliser l'IA ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Non. Les outils modernes sont concus pour des restaurateurs. Photographiez vos factures, dictez vos recettes, consultez vos tableaux de bord.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "Quels sont les resultats concrets de l'IA en restauration ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Reduction food cost 3-7 points, gain 8-12h/semaine, ticket moyen +3-8 %, gaspillage -20-30 %. ROI en 2-3 mois.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <style>{`
         .prose-article h2 {

@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   QrCode, Eye, EyeOff, Printer, Copy, Check, Globe, Smartphone, ExternalLink,
   Download, Palette, ChefHat, UtensilsCrossed, Coffee, Wine, CakeSlice,

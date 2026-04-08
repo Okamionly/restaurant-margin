@@ -395,6 +395,105 @@ export default function BlogFoodCost() {
         </div>
       </footer>
 
+      {/* ── JSON-LD Article Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: '5 methodes pour reduire votre food cost de 15 %',
+            description: 'Decouvrez 5 methodes eprouvees pour reduire votre food cost de 15 % sans sacrifier la qualite. Fiches techniques, negociation, gaspillage, menu engineering.',
+            image: 'https://www.restaumargin.fr/og-image.png',
+            author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
+            publisher: {
+              '@type': 'Organization',
+              name: 'RestauMargin',
+              logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
+            },
+            datePublished: '2026-03-15',
+            dateModified: '2026-04-08',
+            mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/reduire-food-cost' },
+          }),
+        }}
+      />
+      {/* ── JSON-LD FAQ Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: "Qu'est-ce que le food cost en restauration ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Le food cost est le ratio entre le cout des matieres premieres et le chiffre d'affaires HT. Un food cost de 30 % signifie que pour chaque euro de vente, 30 centimes vont aux ingredients.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "Comment calculer le food cost d'un plat ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Additionnez le cout de tous les ingredients, puis divisez par le prix de vente HT et multipliez par 100. Formule : Food cost (%) = (Cout matiere total / Prix de vente HT) x 100.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Quel food cost viser pour etre rentable ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "En restauration traditionnelle, visez 28-33 %. Pizzeria : 20-25 %. Gastronomique : 32-40 %. Le prime cost (food cost + ratio personnel) ne doit pas depasser 65-70 % du CA.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Quelle est la difference entre food cost theorique et food cost reel ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Le food cost theorique vient des fiches techniques. Le reel vient des achats effectifs. La difference revele gaspillage, sur-portions ou vol. L'ecart ideal est inferieur a 2 points.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Comment reduire son food cost sans baisser la qualite ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Cinq leviers : fiches techniques precises, negociation fournisseurs, reduction gaspillage, menu engineering, suivi mercuriale.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Quelle est la formule du coefficient multiplicateur ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Coefficient = 1 / Food cost cible. Pour un food cost de 30 %, le coefficient est 3,33.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'A quelle frequence recalculer le food cost ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Chaque semaine minimum pour le food cost global. A chaque changement de prix fournisseur pour les fiches techniques.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Le food cost inclut-il les boissons ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'En general, on distingue food cost (nourriture, 25-35 %) et beverage cost (boissons, 18-25 %). Le COGS combine les deux.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
+
       <style>{`
         .prose-article h2 {
           font-family: 'Satoshi', 'Inter', sans-serif;

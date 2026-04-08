@@ -185,6 +185,92 @@ export default function BlogCoefficient() {
           RestauMargin calcule automatiquement le coefficient et le food cost de chaque plat, vous alerte quand les prix fournisseurs changent, et genere votre matrice de menu engineering en temps reel. Plus besoin d'Excel.
         </p>
 
+        {/* ── Benchmarks par type de cuisine ── */}
+        <h2>Coefficients recommandes par type de cuisine</h2>
+        <p>Le coefficient multiplicateur varie aussi selon le type de cuisine. Voici les fourchettes constatees en France en 2026 :</p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Type de cuisine</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Coefficient moyen</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Food cost resultant</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Pourquoi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Pizzeria','x 4,0 a 5,0','20-25 %','Ingredients de base tres peu couteux'],
+                ['Creperie','x 4,5 a 6,0','17-22 %','Farine, oeufs, lait : cout minimal'],
+                ['Cuisine asiatique','x 3,5 a 4,5','22-29 %','Riz, nouilles, legumes accessibles'],
+                ['Cuisine italienne','x 3,0 a 4,0','25-33 %','Pates peu couteuses, fromages plus chers'],
+                ['Bistrot francais','x 3,0 a 3,5','29-33 %','Produits de marche, viandes'],
+                ['Cuisine de la mer','x 2,8 a 3,5','29-36 %','Poissons et fruits de mer couteux'],
+                ['Gastronomique','x 2,5 a 3,3','30-40 %','Produits premium, travail technique'],
+                ['Burger gourmet','x 3,5 a 4,5','22-29 %','Cout viande modere, vente additionnelle'],
+                ['Cuisine vegetarienne','x 4,0 a 5,0','20-25 %','Legumes, legumineuses accessibles'],
+                ['Sushi / Japonais','x 3,0 a 4,0','25-33 %','Poisson cru de qualite, riz peu couteux'],
+              ].map(([type, coef, fc, why]) => (
+                <tr key={type} className="border-t border-slate-100">
+                  <td className="px-4 py-2.5 font-medium text-slate-900">{type}</td>
+                  <td className="px-4 py-2.5 text-teal-700 font-semibold">{coef}</td>
+                  <td className="px-4 py-2.5 text-slate-700">{fc}</td>
+                  <td className="px-4 py-2.5 text-slate-500 text-xs">{why}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── Table des coefficients de 1.5x a 5.0x ── */}
+        <h2>Table de conversion : coefficient, food cost et marge brute</h2>
+        <p>Ce tableau de reference vous permet de convertir instantanement entre coefficient multiplicateur, food cost et marge brute :</p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Coefficient</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Food cost</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Marge brute</th>
+                <th className="text-left px-3 py-2.5 font-semibold text-slate-600">Exemple (cout 5 EUR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['x 1,5','66,7 %','33,3 %','7,50 EUR'],
+                ['x 2,0','50,0 %','50,0 %','10,00 EUR'],
+                ['x 2,5','40,0 %','60,0 %','12,50 EUR'],
+                ['x 3,0','33,3 %','66,7 %','15,00 EUR'],
+                ['x 3,33','30,0 %','70,0 %','16,65 EUR'],
+                ['x 3,5','28,6 %','71,4 %','17,50 EUR'],
+                ['x 4,0','25,0 %','75,0 %','20,00 EUR'],
+                ['x 4,5','22,2 %','77,8 %','22,50 EUR'],
+                ['x 5,0','20,0 %','80,0 %','25,00 EUR'],
+              ].map(([coef, fc, mb, ex]) => (
+                <tr key={coef} className="border-t border-slate-100">
+                  <td className="px-3 py-2.5 font-bold text-teal-700">{coef}</td>
+                  <td className="px-3 py-2.5 text-slate-700">{fc}</td>
+                  <td className="px-3 py-2.5 text-slate-700">{mb}</td>
+                  <td className="px-3 py-2.5 text-slate-500">{ex}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── CTA intermediaire ── */}
+        <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-xl p-6 my-8 text-center">
+          <h3 className="text-lg font-bold text-white mb-2">Calculez vos coefficients automatiquement</h3>
+          <p className="text-teal-100 text-sm mb-4">Creez un compte gratuit et obtenez le coefficient, le food cost et la marge de chaque plat en temps reel.</p>
+          <Link
+            to="/login?mode=register"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-teal-700 font-semibold rounded-lg hover:bg-teal-50 transition-colors text-sm"
+          >
+            Creer mon compte gratuit
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
         {/* ── Points cles ── */}
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 my-8">
           <h3 className="text-base font-bold text-slate-900 mb-3">Points cles a retenir</h3>
@@ -196,6 +282,44 @@ export default function BlogCoefficient() {
             <li>5. Revisez vos coefficients au minimum chaque trimestre.</li>
             <li>6. Combinez avec le menu engineering pour maximiser vos marges.</li>
           </ol>
+        </div>
+
+        {/* ── Articles complementaires ── */}
+        <h2>Articles complementaires</h2>
+        <div className="grid sm:grid-cols-3 gap-4 my-6">
+          <Link to="/blog/calcul-marge-restaurant" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide 2026</h3>
+            <p className="text-xs text-slate-500 !mb-0">Marge brute, marge nette, food cost — toutes les formules.</p>
+          </Link>
+          <Link to="/blog/reduire-food-cost" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">5 methodes pour reduire le food cost de 15 %</h3>
+            <p className="text-xs text-slate-500 !mb-0">Fiches techniques, negociation, gaspillage.</p>
+          </Link>
+          <Link to="/blog/ia-restauration" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">L'IA en restauration</h3>
+            <p className="text-xs text-slate-500 !mb-0">Scanner de factures, fiches techniques vocales, alertes.</p>
+          </Link>
+        </div>
+
+        {/* ── FAQ ── */}
+        <h2>Questions frequentes sur le coefficient multiplicateur</h2>
+        <div className="space-y-3 my-6">
+          {[
+            { q: 'Qu\'est-ce que le coefficient multiplicateur en restauration ?', a: 'C\'est un chiffre que vous multipliez par le cout matiere de votre plat pour obtenir le prix de vente HT. Par exemple, un cout de 4 EUR x coefficient 3,5 = 14 EUR HT. C\'est la methode la plus directe pour fixer vos prix en partant de vos couts reels.' },
+            { q: 'Comment calculer le coefficient multiplicateur ?', a: 'Deux methodes : 1) A partir du food cost cible : Coefficient = 1 / Food cost. Pour un food cost de 30 %, coefficient = 1/0,30 = 3,33. 2) A partir des donnees reelles : Coefficient = Prix de vente HT / Cout matiere.' },
+            { q: 'Quel est le coefficient multiplicateur moyen en restauration ?', a: 'Le coefficient moyen en restauration traditionnelle se situe entre 3,0 et 3,5, soit un food cost de 29 a 33 %. Mais il varie enormement par categorie : x 4-5 pour les desserts, x 8-12 pour les boissons chaudes, x 2,5-3,5 pour les vins.' },
+            { q: 'Pourquoi ne pas appliquer un coefficient unique a toute la carte ?', a: 'Chaque categorie de plat a une valeur percue differente. Les boissons chaudes (cafe, the) ont des couts tres bas et acceptent des coefficients de x 8 a x 12. Les plats de poisson, plus chers, necessitent des coefficients plus faibles (x 3,0) pour rester dans les prix du marche. Un coefficient unique produirait des prix aberrants.' },
+            { q: 'Coefficient multiplicateur : avec ou sans TVA ?', a: 'Le coefficient s\'applique au cout matiere HT pour donner un prix de vente HT. La TVA est ajoutee ensuite. En France, la TVA sur la restauration sur place est de 10 %. Si votre calcul donne 15,00 EUR HT, le prix TTC sera 16,50 EUR (arrondi a 16,50 EUR sur la carte).' },
+            { q: 'Comment optimiser son coefficient multiplicateur ?', a: 'Trois strategies : 1) Augmenter la valeur percue du plat (presentation, garniture, storytelling menu) pour justifier un prix plus eleve. 2) Reduire le cout matiere en negociant fournisseurs ou en optimisant les rendements. 3) Utiliser le menu engineering pour promouvoir les plats a fort coefficient.' },
+          ].map((item) => (
+            <details key={item.q} className="bg-slate-50 border border-slate-200 rounded-xl group">
+              <summary className="px-5 py-4 font-semibold text-slate-900 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
+                {item.q}
+                <ArrowRight className="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
+              </summary>
+              <p className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
         </div>
       </article>
 
@@ -228,6 +352,89 @@ export default function BlogCoefficient() {
           <p>&copy; {new Date().getFullYear()} RestauMargin</p>
         </div>
       </footer>
+
+      {/* ── JSON-LD Article Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: 'Comment calculer le coefficient multiplicateur de vos plats',
+            description: 'Apprenez a calculer le coefficient multiplicateur en restauration pour fixer vos prix de vente et maximiser vos marges. Guide complet avec exemples.',
+            image: 'https://www.restaumargin.fr/og-image.png',
+            author: { '@type': 'Organization', name: 'RestauMargin', url: 'https://www.restaumargin.fr' },
+            publisher: {
+              '@type': 'Organization',
+              name: 'RestauMargin',
+              logo: { '@type': 'ImageObject', url: 'https://www.restaumargin.fr/icon-512.png' },
+            },
+            datePublished: '2026-03-20',
+            dateModified: '2026-04-08',
+            mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.restaumargin.fr/blog/coefficient-multiplicateur' },
+          }),
+        }}
+      />
+      {/* ── JSON-LD FAQ Schema ── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: "Qu'est-ce que le coefficient multiplicateur en restauration ?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "C'est un chiffre que vous multipliez par le cout matiere de votre plat pour obtenir le prix de vente HT. Exemple : cout 4 EUR x coefficient 3,5 = 14 EUR HT.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Comment calculer le coefficient multiplicateur ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Coefficient = 1 / Food cost cible. Pour un food cost de 30 %, coefficient = 3,33. Ou bien : Coefficient = Prix de vente HT / Cout matiere.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Quel est le coefficient multiplicateur moyen en restauration ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Entre 3,0 et 3,5 en restauration traditionnelle (food cost 29-33 %). Desserts : x 4-5. Boissons chaudes : x 8-12. Vins : x 2,5-3,5.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Pourquoi ne pas appliquer un coefficient unique a toute la carte ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Chaque categorie a une valeur percue differente. Un coefficient unique produirait des prix aberrants (boissons trop bon marche, poissons trop chers).',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Coefficient multiplicateur : avec ou sans TVA ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Le coefficient s'applique au cout matiere HT pour donner un prix de vente HT. La TVA (10 % en restauration sur place) est ajoutee ensuite.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Comment optimiser son coefficient multiplicateur ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Augmenter la valeur percue (presentation, storytelling), reduire le cout matiere (negociation, rendements), utiliser le menu engineering.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       {/* ── Inline styles for article prose ── */}
       <style>{`

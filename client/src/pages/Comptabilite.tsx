@@ -662,7 +662,7 @@ export default function Comptabilite() {
   }
 
   function handleExportPDF() {
-    showToast('Export PDF bientot disponible', 'info');
+    window.print();
   }
 
   function handleSendToAccountant() {
@@ -948,7 +948,7 @@ export default function Comptabilite() {
               className="w-full flex items-center gap-3 px-4 py-2.5 bg-[#F9FAFB] dark:bg-[#171717] hover:bg-[#F3F4F6] dark:hover:bg-[#1A1A1A] rounded-xl text-sm font-medium text-[#111111] dark:text-white transition-colors border border-[#E5E7EB] dark:border-[#1A1A1A]"
             >
               <FileText className="w-4 h-4 text-red-500" />
-              Exporter en PDF (bientot)
+              Exporter en PDF
             </button>
             <button
               onClick={handleSendToAccountant}
@@ -1643,7 +1643,7 @@ export default function Comptabilite() {
                 <FileText className="w-5 h-5 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-[#111111] dark:text-white">Exporter en PDF (bientot)</h3>
+                <h3 className="font-semibold text-[#111111] dark:text-white">Exporter en PDF</h3>
                 <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Synthese complete du mois</p>
               </div>
             </div>

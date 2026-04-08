@@ -82,21 +82,9 @@ const emptyForm: SupplierFormData = {
   notes: '',
 };
 
-// ── Mock data: supplier ratings ──────────────────────────────────────────────
-
-interface SupplierRating {
-  reliability: number; // 1-5 stars
-  deliveryDays: string;
-  minOrderAmount: string;
-}
-
-function getMockRating(supplierId: number): SupplierRating {
-  return { reliability: 0, deliveryDays: '-', minOrderAmount: '-' };
-}
-
-function getMockPriceHistory(basePrice: number): number[] {
-  return [];
-}
+// ── Supplier ratings: computed from real data via fetchAllSupplierScores ──────
+// (no mock data — scores come from the API based on order history, price
+//  consistency, category breadth, etc. See api.ts: fetchSupplierScore)
 
 // ── Mini sparkline chart (SVG) ──────────────────────────────────────────────
 

@@ -48,7 +48,19 @@ interface ApiKeyEntry {
   scopes: string[];
 }
 
-// ── Mock Data ────────────────────────────────────────────────────────────────
+// ── Integration Definitions ──────────────────────────────────────────────────
+// Status is loaded from localStorage; defaults to 'available' (not connected)
+
+function loadIntegrationStatuses(): Record<string, IntegrationStatus> {
+  try {
+    const stored = localStorage.getItem('restaumargin_integration_statuses');
+    return stored ? JSON.parse(stored) : {};
+  } catch { return {}; }
+}
+
+function saveIntegrationStatuses(statuses: Record<string, IntegrationStatus>) {
+  localStorage.setItem('restaumargin_integration_statuses', JSON.stringify(statuses));
+}
 
 const INTEGRATIONS: Integration[] = [
   {
@@ -59,11 +71,8 @@ const INTEGRATIONS: Integration[] = [
     icon: CreditCard,
     iconColor: 'text-violet-600 dark:text-violet-400',
     iconBg: 'bg-violet-100 dark:bg-violet-900/30',
-    status: 'connected',
+    status: 'available',
     category: 'payments',
-    lastSync: '8 avr. 2026, 09:15',
-    uptime: 99.98,
-    requestsToday: 342,
     setupSteps: [
       'Creez un compte Stripe sur stripe.com',
       'Recuperez votre cle API depuis le Dashboard',
@@ -96,11 +105,8 @@ const INTEGRATIONS: Integration[] = [
     icon: BarChart3,
     iconColor: 'text-orange-600 dark:text-orange-400',
     iconBg: 'bg-orange-100 dark:bg-orange-900/30',
-    status: 'connected',
+    status: 'available',
     category: 'analytics',
-    lastSync: '8 avr. 2026, 08:00',
-    uptime: 100,
-    requestsToday: 1287,
     setupSteps: [
       'Connectez-vous a Google Analytics',
       'Creez une propriete GA4 pour RestauMargin',
@@ -116,11 +122,8 @@ const INTEGRATIONS: Integration[] = [
     icon: MessageCircle,
     iconColor: 'text-purple-600 dark:text-purple-400',
     iconBg: 'bg-purple-100 dark:bg-purple-900/30',
-    status: 'connected',
+    status: 'available',
     category: 'communication',
-    lastSync: '8 avr. 2026, 09:30',
-    uptime: 99.95,
-    requestsToday: 56,
     setupSteps: [
       'Creez un compte sur crisp.chat',
       'Ajoutez votre site web dans Crisp',
@@ -136,11 +139,8 @@ const INTEGRATIONS: Integration[] = [
     icon: Mail,
     iconColor: 'text-black dark:text-white',
     iconBg: 'bg-gray-100 dark:bg-gray-800',
-    status: 'connected',
+    status: 'available',
     category: 'communication',
-    lastSync: '8 avr. 2026, 07:45',
-    uptime: 99.99,
-    requestsToday: 128,
     setupSteps: [
       'Inscrivez-vous sur resend.com',
       'Verifiez votre domaine d\'envoi',
@@ -191,24 +191,17 @@ const INITIAL_WEBHOOKS: WebhookConfig[] = [
   { id: 'wh4', name: 'Prix modifie', url: '', active: false, lastTriggered: null, events: ['price.updated'] },
 ];
 
-const MOCK_API_KEYS: ApiKeyEntry[] = [
-  {
-    id: 'key1',
-    name: 'Production API',
-    key: 'rm_live_sk_7f8a9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a',
-    created: '15 janv. 2026',
-    lastUsed: '8 avr. 2026, 09:12',
-    scopes: ['read', 'write', 'webhooks'],
-  },
-  {
-    id: 'key2',
-    name: 'Test / Developpement',
-    key: 'rm_test_sk_1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b',
-    created: '20 fev. 2026',
-    lastUsed: '7 avr. 2026, 14:30',
-    scopes: ['read'],
-  },
-];
+// API keys are managed via localStorage — no hardcoded mock keys
+function loadApiKeys(): ApiKeyEntry[] {
+  try {
+    const stored = localStorage.getItem('restaumargin_api_keys');
+    return stored ? JSON.parse(stored) : [];
+  } catch { return []; }
+}
+
+function saveApiKeys(keys: ApiKeyEntry[]) {
+  localStorage.setItem('restaumargin_api_keys', JSON.stringify(keys));
+}
 
 // ── Status helpers ──────────────────────────────────────────────────────────
 
@@ -244,11 +237,26 @@ export default function Integrations() {
   const { t } = useTranslation();
   const { showToast } = useToast();
 
-  // State
+  // State — integration statuses & API keys loaded from localStorage
   const [activeCategory, setActiveCategory] = useState<IntegrationCategory>('all');
-  const [integrations, setIntegrations] = useState(INTEGRATIONS);
+  const [integrations, setIntegrations] = useState(() => {
+    const savedStatuses = loadIntegrationStatuses();
+    return INTEGRATIONS.map(integ => {
+      const saved = savedStatuses[integ.id];
+      if (saved && saved !== integ.status && integ.status !== 'coming_soon') {
+        return {
+          ...integ,
+          status: saved,
+          lastSync: saved === 'connected' ? 'Connecte manuellement' : undefined,
+          uptime: saved === 'connected' ? 99.9 : undefined,
+          requestsToday: saved === 'connected' ? 0 : undefined,
+        };
+      }
+      return integ;
+    });
+  });
   const [webhooks, setWebhooks] = useState<WebhookConfig[]>(INITIAL_WEBHOOKS);
-  const [apiKeys] = useState<ApiKeyEntry[]>(MOCK_API_KEYS);
+  const [apiKeys, setApiKeys] = useState<ApiKeyEntry[]>(loadApiKeys);
   const [visibleKeys, setVisibleKeys] = useState<Record<string, boolean>>({});
   const [confirmRegenerate, setConfirmRegenerate] = useState<string | null>(null);
   const [setupWizard, setSetupWizard] = useState<string | null>(null);
@@ -284,7 +292,33 @@ export default function Integrations() {
       return;
     }
     setConfirmRegenerate(null);
+    const newKey = `rm_live_sk_${Array.from({ length: 40 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('')}`;
+    const updated = apiKeys.map(k => k.id === keyId ? { ...k, key: newKey, created: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) } : k);
+    setApiKeys(updated);
+    saveApiKeys(updated);
     showToast('Nouvelle cle API generee avec succes', 'success');
+  };
+
+  const createApiKey = () => {
+    const newKey: ApiKeyEntry = {
+      id: `key_${Date.now()}`,
+      name: `Cle API ${apiKeys.length + 1}`,
+      key: `rm_live_sk_${Array.from({ length: 40 }, () => '0123456789abcdef'[Math.floor(Math.random() * 16)]).join('')}`,
+      created: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
+      lastUsed: '-',
+      scopes: ['read'],
+    };
+    const updated = [...apiKeys, newKey];
+    setApiKeys(updated);
+    saveApiKeys(updated);
+    showToast('Nouvelle cle API creee', 'success');
+  };
+
+  const deleteApiKey = (keyId: string) => {
+    const updated = apiKeys.filter(k => k.id !== keyId);
+    setApiKeys(updated);
+    saveApiKeys(updated);
+    showToast('Cle API supprimee', 'info');
   };
 
   // ── Webhook Handlers ──────────────────────────────────────────────────────
@@ -326,17 +360,26 @@ export default function Integrations() {
     const integ = integrations.find(i => i.id === id);
     if (!integ || integ.status === 'coming_soon') return;
 
-    setIntegrations(prev => prev.map(i =>
-      i.id === id
-        ? {
-            ...i,
-            status: i.status === 'connected' ? 'available' as IntegrationStatus : 'connected' as IntegrationStatus,
-            lastSync: i.status !== 'connected' ? 'A l\'instant' : undefined,
-            uptime: i.status !== 'connected' ? 99.9 : undefined,
-            requestsToday: i.status !== 'connected' ? 0 : undefined,
-          }
-        : i
-    ));
+    const newStatus: IntegrationStatus = integ.status === 'connected' ? 'available' : 'connected';
+
+    setIntegrations(prev => {
+      const updated = prev.map(i =>
+        i.id === id
+          ? {
+              ...i,
+              status: newStatus,
+              lastSync: newStatus === 'connected' ? 'A l\'instant' : undefined,
+              uptime: newStatus === 'connected' ? 99.9 : undefined,
+              requestsToday: newStatus === 'connected' ? 0 : undefined,
+            }
+          : i
+      );
+      // Persist statuses to localStorage
+      const statuses: Record<string, IntegrationStatus> = {};
+      updated.forEach(i => { statuses[i.id] = i.status; });
+      saveIntegrationStatuses(statuses);
+      return updated;
+    });
     showToast(
       integ.status === 'connected' ? `${integ.name} deconnecte` : `${integ.name} connecte avec succes`,
       integ.status === 'connected' ? 'info' : 'success'
@@ -665,15 +708,36 @@ export default function Integrations() {
               <p className="text-xs text-gray-500 dark:text-gray-400">Gerez vos cles d'acces a l'API RestauMargin</p>
             </div>
           </div>
-          <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); showToast('Documentation API ouverte', 'info'); }}
-            className="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
-          >
-            <ExternalLink className="w-3.5 h-3.5" /> Documentation
-          </a>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={createApiKey}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" /> Creer une cle
+            </button>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); showToast('Documentation API ouverte', 'info'); }}
+              className="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Documentation
+            </a>
+          </div>
         </div>
 
+        {apiKeys.length === 0 ? (
+          <div className="p-10 text-center">
+            <Key className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+            <h3 className="text-sm font-semibold text-black dark:text-white mb-1">Aucune cle API</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Creez une cle API pour integrer RestauMargin avec vos outils externes.</p>
+            <button
+              onClick={createApiKey}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-xl bg-teal-600 hover:bg-teal-500 text-white transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" /> Creer ma premiere cle
+            </button>
+          </div>
+        ) : (
         <div className="divide-y divide-gray-100 dark:divide-gray-800/50">
           {apiKeys.map(apiKey => (
             <div key={apiKey.id} className="p-5 space-y-3">
@@ -725,23 +789,33 @@ export default function Integrations() {
                     <RefreshCw className="w-3.5 h-3.5" />
                     {confirmRegenerate === apiKey.id ? 'Confirmer ?' : 'Regenerer'}
                   </button>
+                  <button
+                    onClick={() => deleteApiKey(apiKey.id)}
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" /> Supprimer
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        )}
 
         {/* Usage Stats */}
+        {apiKeys.length > 0 && (
         <div className="p-5 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/20">
+
           <div className="flex items-center justify-between text-sm mb-2">
             <span className="text-gray-600 dark:text-gray-400">Utilisation ce mois</span>
-            <span className="font-semibold text-black dark:text-white">1 247 / 10 000 requetes</span>
+            <span className="font-semibold text-black dark:text-white">0 / 10 000 requetes</span>
           </div>
           <div className="w-full h-2.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: '12.47%' }} />
+            <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: '0%' }} />
           </div>
-          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">Renouvellement le 1er mai 2026</p>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">Compteur renouvele chaque mois</p>
         </div>
+        )}
       </section>
 
       {/* ── Webhooks Section ────────────────────────────────────────────────── */}

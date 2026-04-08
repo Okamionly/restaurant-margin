@@ -93,7 +93,11 @@ export default function PublicMenu() {
 
   async function fetchPublicMenu() {
     try {
-      const res = await fetch(`${API_BASE}/public/menu`);
+      // Try restaurantId from URL params, then from localStorage, then default to 1
+      const ridFromUrl = searchParams.get('restaurantId');
+      const ridFromStorage = localStorage.getItem('activeRestaurantId');
+      const rid = ridFromUrl || ridFromStorage || '1';
+      const res = await fetch(`${API_BASE}/public/menu?restaurantId=${rid}`);
       if (!res.ok) throw new Error('Erreur');
       const data = await res.json();
       setRecipes(data);

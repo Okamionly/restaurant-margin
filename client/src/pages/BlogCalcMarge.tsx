@@ -524,6 +524,25 @@ export default function BlogCalcMarge() {
           </div>
         </section>
 
+        {/* ═════════════ Articles complementaires ═════════════ */}
+        <section className="mb-16">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Pour aller plus loin</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <Link to="/blog/reduire-food-cost" className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-slate-900 mb-1.5 group-hover:text-teal-700 transition-colors">5 methodes pour reduire votre food cost de 15 %</h3>
+              <p className="text-sm text-slate-500">Fiches techniques, negociation, gaspillage, menu engineering et mercuriale.</p>
+            </Link>
+            <Link to="/blog/coefficient-multiplicateur" className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-slate-900 mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur : le guide complet</h3>
+              <p className="text-sm text-slate-500">Tableaux par categorie, erreurs courantes et cas pratique d'un menu a 35 EUR.</p>
+            </Link>
+            <Link to="/blog/ia-restauration" className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-slate-900 mb-1.5 group-hover:text-teal-700 transition-colors">L'IA en restauration : gadget ou revolution ?</h3>
+              <p className="text-sm text-slate-500">Ce que l'IA peut vraiment faire pour votre restaurant (et ses limites).</p>
+            </Link>
+          </div>
+        </section>
+
         {/* ═════════════ FAQ Schema ═════════════ */}
         <section className="mb-16">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Questions frequentes</h2>
@@ -543,6 +562,22 @@ export default function BlogCalcMarge() {
             <FAQItem
               q="A quelle frequence faut-il recalculer ses marges ?"
               a="Idealement chaque semaine pour le food cost global, et a chaque changement de prix fournisseur pour les fiches techniques individuelles. Les variations de prix des matieres premieres peuvent etre rapides, surtout sur les produits frais. Un outil comme RestauMargin automatise ce suivi en continu."
+            />
+            <FAQItem
+              q="Comment calculer le coefficient multiplicateur en restauration ?"
+              a="Le coefficient multiplicateur se calcule en divisant le prix de vente HT par le cout des matieres premieres. Inversement, vous pouvez l'obtenir via la formule : Coefficient = 1 / Food cost cible. Par exemple, pour un food cost cible de 30 %, le coefficient est de 3,33. Multipliez votre cout matiere par ce coefficient pour obtenir votre prix de vente HT."
+            />
+            <FAQItem
+              q="Quel est le ratio personnel ideal en restauration ?"
+              a="Le ratio personnel (masse salariale / chiffre d'affaires) se situe idealement entre 30 % et 40 % en restauration traditionnelle. En ajoutant le food cost (25-35 %), ces deux postes representent le prime cost, qui ne devrait pas depasser 65-70 % du CA pour garantir une marge nette viable."
+            />
+            <FAQItem
+              q="Faut-il calculer sa marge en HT ou en TTC ?"
+              a="Toujours en HT (hors taxes). La TVA collectee ne vous appartient pas, elle est reversee a l'Etat. Calculer votre food cost sur un prix TTC donnerait un ratio artificiellement bas et fausserait votre analyse. En France, la TVA en restauration sur place est de 10 %, a emporter de 5,5 % ou 10 % selon les produits."
+            />
+            <FAQItem
+              q="Comment ameliorer sa marge sans augmenter les prix ?"
+              a="Plusieurs leviers existent : optimiser les portions avec des fiches techniques precises, negocier avec vos fournisseurs, reduire le gaspillage (FIFO, pesee des dechets), utiliser le menu engineering pour promouvoir vos plats a forte marge, substituer certains ingredients par des alternatives moins couteuses sans sacrifier la qualite. RestauMargin vous aide a identifier ces opportunites automatiquement."
             />
           </div>
         </section>
@@ -606,7 +641,7 @@ export default function BlogCalcMarge() {
                 name: 'Quel est le food cost ideal pour un restaurant ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Le food cost ideal depend de votre type de restaurant. En regle generale, il se situe entre 25 % et 35 %.',
+                  text: 'Le food cost ideal depend de votre type de restaurant. En regle generale, il se situe entre 25 % et 35 %. Une pizzeria peut viser 22-25 %, un restaurant gastronomique acceptera 35-40 %.',
                 },
               },
               {
@@ -622,7 +657,7 @@ export default function BlogCalcMarge() {
                 name: 'Quelle est la difference entre marge brute et marge nette ?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'La marge brute ne deduit que le cout des matieres premieres. La marge nette deduit toutes les charges.',
+                  text: 'La marge brute ne deduit que le cout des matieres premieres. La marge nette deduit toutes les charges : personnel, loyer, energie, assurances, taxes. La marge brute tourne autour de 65-75 % tandis que la marge nette se situe entre 5 et 15 %.',
                 },
               },
               {
@@ -631,6 +666,38 @@ export default function BlogCalcMarge() {
                 acceptedAnswer: {
                   '@type': 'Answer',
                   text: 'Idealement chaque semaine pour le food cost global, et a chaque changement de prix fournisseur pour les fiches techniques.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Comment calculer le coefficient multiplicateur en restauration ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Le coefficient multiplicateur se calcule avec la formule : Coefficient = 1 / Food cost cible. Pour un food cost de 30 %, le coefficient est de 3,33. Multipliez le cout matiere par ce coefficient pour obtenir le prix de vente HT.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Quel est le ratio personnel ideal en restauration ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Le ratio personnel (masse salariale / CA) se situe entre 30 % et 40 %. En ajoutant le food cost (25-35 %), le prime cost ne devrait pas depasser 65-70 % du CA.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Faut-il calculer sa marge en HT ou en TTC ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Toujours en HT. La TVA collectee est reversee a l\'Etat. Calculer en TTC donnerait un ratio fausse. En France, la TVA restauration sur place est de 10 %.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Comment ameliorer sa marge sans augmenter les prix ?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Optimiser les portions avec des fiches techniques, negocier fournisseurs, reduire le gaspillage, utiliser le menu engineering pour promouvoir les plats a forte marge, substituer certains ingredients.',
                 },
               },
             ],

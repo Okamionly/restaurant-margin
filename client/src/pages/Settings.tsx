@@ -800,10 +800,7 @@ export default function Settings() {
   }
 
   function handleDeleteAccount() {
-    if (deleteConfirmText !== 'SUPPRIMER MON COMPTE') return;
-    showToast('Suppression du compte bientot disponible', 'info');
-    setShowDeleteAccountModal(false);
-    setDeleteConfirmText('');
+    // Account deletion removed — not yet implemented
   }
 
   // ---------------------------------------------------------------------------
@@ -1535,14 +1532,14 @@ export default function Settings() {
                 Ajoutez une couche de securite supplementaire avec un code a usage unique
               </p>
             </div>
-            <ToggleSwitch
-              enabled={twoFAEnabled}
-              onChange={(val) => {
-                setTwoFAEnabled(val);
-                showToast(val ? '2FA active (bientot disponible)' : '2FA desactive', val ? 'success' : 'info');
-              }}
-              color="bg-emerald-500"
-            />
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373] italic">Prochainement</span>
+              <ToggleSwitch
+                enabled={false}
+                onChange={() => {}}
+                color="bg-emerald-500"
+              />
+            </div>
           </div>
         </div>
 
@@ -1602,13 +1599,6 @@ export default function Settings() {
             >
               <Trash2 className="w-4 h-4" />
               Supprimer toutes les donnees
-            </button>
-            <button
-              onClick={() => { setDeleteConfirmText(''); setShowDeleteAccountModal(true); }}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white transition-colors text-sm font-medium flex-1"
-            >
-              <Trash2 className="w-4 h-4" />
-              Supprimer le compte
             </button>
           </div>
         </div>
@@ -1929,7 +1919,7 @@ export default function Settings() {
               Export CSV
             </button>
             <button
-              onClick={() => showToast('Export PDF bientot disponible', 'info')}
+              onClick={() => window.print()}
               className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#111111] dark:text-white text-sm font-medium rounded-xl transition-colors flex-1"
             >
               <FileText className="w-4 h-4" />

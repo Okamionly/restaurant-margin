@@ -173,7 +173,7 @@ const LANGUAGES = [
   { code: 'es', label: 'Espanol', flag: 'ES' },
 ];
 
-// ── Demo menu data ────────────────────────────────────────────────────────
+// ── Demo menu fallback (shown ONLY if user has no recipes in the database) ──
 const DEMO_MENU: MenuItem[] = [
   { id: '1', name: 'Salade Nicoise', description: 'Thon frais, olives, oeufs, haricots verts, tomates et anchois', price: 14.50, category: 'entrees', allergens: ['oeufs', 'poisson'], isPopular: true },
   { id: '2', name: 'Veloute de potiron', description: 'Potiron bio, creme fraiche, noisettes torrefiees', price: 9.00, category: 'entrees', allergens: ['lait', 'fruits_coques'], isVegetarian: true },
@@ -255,12 +255,15 @@ export default function QRMenu() {
       .finally(() => setLoadingRecipes(false));
   }, []);
 
+  const isUsingDemoMenu = realRecipes.length === 0 && !loadingRecipes;
   const menuItems = realRecipes.length > 0 ? realRecipes : DEMO_MENU;
   const restaurantName = selectedRestaurant?.name || 'Votre Restaurant';
 
   const menuUrl = useMemo(() => {
     const base = window.location.origin;
     const params = new URLSearchParams();
+    const rid = localStorage.getItem('activeRestaurantId');
+    if (rid) params.set('restaurantId', rid);
     if (!showPrices) params.set('hidePrices', '1');
     if (!showAllergens) params.set('hideAllergens', '1');
     if (!showDescriptions) params.set('hideDesc', '1');
@@ -527,6 +530,12 @@ export default function QRMenu() {
       </div>
 
       {/* ── Menu Preview Section ── */}
+      {isUsingDemoMenu && (
+        <div className="mb-4 flex items-center gap-2 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl text-sm text-amber-700 dark:text-amber-400">
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+          <span>Apercu avec des plats de demonstration. Ajoutez vos recettes pour voir votre vrai menu ici.</span>
+        </div>
+      )}
       <div className="border-t border-black/5 dark:border-white/5 pt-8">
         {/* Branding Header */}
         <div className="bg-black dark:bg-white rounded-2xl p-6 sm:p-8 mb-6">

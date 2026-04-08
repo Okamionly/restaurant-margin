@@ -212,6 +212,157 @@ export default function BlogFoodCost() {
             <li>5. <strong>En continu :</strong> Suivi mercuriale hebdomadaire de vos ingredients cles.</li>
           </ol>
         </div>
+
+        {/* ── Guide pas a pas : calculer votre food cost ── */}
+        <h2>Guide pas a pas : calculer le food cost d'un plat</h2>
+        <p>Voici la methode en 6 etapes pour calculer le food cost reel d'un plat, en tenant compte des rendements et des pertes.</p>
+
+        <div className="space-y-4 my-6">
+          {[
+            { step: '1', title: 'Listez tous les ingredients', desc: 'Pour chaque plat, dressez la liste exhaustive des ingredients, y compris huile de cuisson, assaisonnement, garniture et sauce.' },
+            { step: '2', title: 'Pesez les quantites nettes', desc: 'Utilisez une balance de precision. Notez le poids net (apres epluchage, parage, desossage). Un kilo de carottes brutes donne environ 800 g net.' },
+            { step: '3', title: 'Relevez les prix fournisseurs', desc: 'Recuperez le prix unitaire de chaque ingredient sur votre derniere facture. Attention : utilisez le prix au kilo net, pas au kilo brut.' },
+            { step: '4', title: 'Calculez le cout par ingredient', desc: 'Multipliez la quantite nette par le prix unitaire. Exemple : 200 g de saumon a 22 EUR/kg = 4,40 EUR.' },
+            { step: '5', title: 'Additionnez pour obtenir le cout total', desc: 'La somme de tous les couts ingredients donne le cout matiere total du plat. N\'oubliez pas les petits ingredients (epices, beurre, herbes).' },
+            { step: '6', title: 'Divisez par le prix de vente HT', desc: 'Food cost (%) = (Cout matiere total / Prix de vente HT) x 100. Si le resultat depasse votre objectif, ajustez les portions ou le prix.' },
+          ].map((item) => (
+            <div key={item.step} className="flex gap-4 bg-white border border-slate-200 rounded-xl p-4">
+              <div className="w-9 h-9 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0 text-teal-700 font-bold text-sm">
+                {item.step}
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 !mt-0 !mb-1">{item.title}</h3>
+                <p className="text-sm text-slate-600 !mb-0">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Exemple interactif ── */}
+        <h2>Exemple concret : plat de saumon grille</h2>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Ingredient</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Quantite nette</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Prix/kg</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Cout</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Pave de saumon','180 g','22,00 EUR','3,96 EUR'],
+                ['Riz basmati','120 g','2,50 EUR','0,30 EUR'],
+                ['Beurre','20 g','12,00 EUR','0,24 EUR'],
+                ['Citron','1/4 piece','3,00 EUR/kg','0,15 EUR'],
+                ['Haricots verts','80 g','4,50 EUR','0,36 EUR'],
+                ['Epices + sel','5 g','—','0,10 EUR'],
+              ].map(([ing, qty, prix, cout]) => (
+                <tr key={ing} className="border-t border-slate-100">
+                  <td className="px-4 py-2.5 font-medium text-slate-900">{ing}</td>
+                  <td className="px-4 py-2.5 text-slate-700">{qty}</td>
+                  <td className="px-4 py-2.5 text-slate-700">{prix}</td>
+                  <td className="px-4 py-2.5 text-slate-700">{cout}</td>
+                </tr>
+              ))}
+              <tr className="border-t-2 border-slate-300 bg-teal-50">
+                <td className="px-4 py-2.5 font-bold text-slate-900" colSpan={3}>Cout matiere total</td>
+                <td className="px-4 py-2.5 font-bold text-teal-700">5,11 EUR</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="bg-teal-50 border border-teal-200 rounded-xl p-5 my-6">
+          <p className="text-center text-sm text-teal-800 mb-1"><strong>Prix de vente HT :</strong> 17,00 EUR</p>
+          <p className="text-center text-lg font-bold text-teal-800">Food cost = 5,11 / 17,00 x 100 = 30,1 %</p>
+          <p className="text-center text-sm text-teal-600">Coefficient multiplicateur : 3,33 — Marge brute : 11,89 EUR (69,9 %)</p>
+        </div>
+
+        {/* ── Benchmarks food cost par type de cuisine ── */}
+        <h2>Benchmarks du food cost par type de cuisine</h2>
+        <p>Les objectifs de food cost varient selon le type d'etablissement. Voici les fourchettes recommandees en France en 2026 :</p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Type d'etablissement</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Food cost cible</th>
+                <th className="text-left px-4 py-2.5 font-semibold text-slate-600">Explication</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['Pizzeria / Creperie','20-25 %','Ingredients de base peu couteux (farine, oeufs)'],
+                ['Fast-food / Snack','25-30 %','Produits standardises, gros volumes'],
+                ['Bistrot / Brasserie','28-33 %','Carte variee, produits de marche'],
+                ['Restaurant traditionnel','30-35 %','Produits frais, travail de preparation'],
+                ['Gastronomique','32-40 %','Produits premium, portions travaillees'],
+                ['Dark kitchen','28-35 %','Commissions plateformes a ajouter (25-35 %)'],
+                ['Traiteur / Evenementiel','30-38 %','Economies d\'echelle mais logistique'],
+              ].map(([type, fc, expl]) => (
+                <tr key={type} className="border-t border-slate-100">
+                  <td className="px-4 py-2.5 font-medium text-slate-900">{type}</td>
+                  <td className="px-4 py-2.5 text-teal-700 font-semibold">{fc}</td>
+                  <td className="px-4 py-2.5 text-slate-500">{expl}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── CTA intermediaire ── */}
+        <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-xl p-6 my-8 text-center">
+          <h3 className="text-lg font-bold text-white mb-2">Calculez votre food cost en 2 minutes</h3>
+          <p className="text-teal-100 text-sm mb-4">Notre calculateur gratuit fait le travail pour vous. Ajoutez vos ingredients et obtenez instantanement votre food cost, votre marge et votre coefficient.</p>
+          <Link
+            to="/outils/calculateur-food-cost"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-teal-700 font-semibold rounded-lg hover:bg-teal-50 transition-colors text-sm"
+          >
+            Utiliser le calculateur gratuit
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* ── Articles complementaires ── */}
+        <h2>Articles complementaires</h2>
+        <div className="grid sm:grid-cols-3 gap-4 my-6">
+          <Link to="/blog/calcul-marge-restaurant" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Calcul de marge restaurant : guide complet 2026</h3>
+            <p className="text-xs text-slate-500 !mb-0">Formules, benchmarks et erreurs courantes.</p>
+          </Link>
+          <Link to="/blog/coefficient-multiplicateur" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">Coefficient multiplicateur en restauration</h3>
+            <p className="text-xs text-slate-500 !mb-0">Tableaux complets par categorie de plat.</p>
+          </Link>
+          <Link to="/blog/ia-restauration" className="bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-teal-300 hover:shadow-sm transition-all group">
+            <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-teal-700 transition-colors !mt-0">L'IA en restauration</h3>
+            <p className="text-xs text-slate-500 !mb-0">Comment l'IA optimise vos couts automatiquement.</p>
+          </Link>
+        </div>
+
+        {/* ── FAQ ── */}
+        <h2>Questions frequentes sur le food cost</h2>
+        <div className="space-y-3 my-6">
+          {[
+            { q: 'Qu\'est-ce que le food cost en restauration ?', a: 'Le food cost est le ratio entre le cout des matieres premieres et le chiffre d\'affaires HT. Il s\'exprime en pourcentage. Un food cost de 30 % signifie que pour chaque euro de vente, 30 centimes vont aux ingredients. C\'est l\'indicateur numero un pour piloter la rentabilite d\'un restaurant.' },
+            { q: 'Comment calculer le food cost d\'un plat ?', a: 'Additionnez le cout de tous les ingredients (quantites nettes x prix unitaire), puis divisez par le prix de vente HT du plat et multipliez par 100. Formule : Food cost (%) = (Cout matiere total / Prix de vente HT) x 100.' },
+            { q: 'Quel food cost viser pour etre rentable ?', a: 'En restauration traditionnelle, visez un food cost entre 28 % et 33 %. Pour une pizzeria, 20-25 % est atteignable. Pour le gastronomique, 32-40 % est courant. L\'essentiel est que le food cost + le ratio personnel (prime cost) ne depasse pas 65-70 % du CA.' },
+            { q: 'Quelle est la difference entre food cost theorique et food cost reel ?', a: 'Le food cost theorique est calcule a partir des fiches techniques (quantites ideales). Le food cost reel est calcule a partir des achats effectifs. La difference revele le gaspillage, les sur-portions, le vol ou les erreurs d\'inventaire. Idealement, l\'ecart ne devrait pas depasser 2 points.' },
+            { q: 'Comment reduire son food cost sans baisser la qualite ?', a: 'Cinq leviers principaux : 1) fiches techniques avec grammages precis, 2) negociation fournisseurs, 3) reduction du gaspillage (FIFO, pesee des dechets), 4) menu engineering pour promouvoir les plats rentables, 5) suivi mercuriale pour acheter au meilleur moment.' },
+            { q: 'Quelle est la formule du coefficient multiplicateur ?', a: 'Coefficient = 1 / Food cost cible. Pour un food cost de 30 %, le coefficient est 3,33. Multipliez le cout matiere par ce coefficient pour obtenir le prix de vente HT. Consultez notre guide complet du coefficient multiplicateur pour plus de details.' },
+            { q: 'A quelle frequence recalculer le food cost ?', a: 'Le food cost global doit etre suivi chaque semaine minimum. Les fiches techniques doivent etre mises a jour a chaque changement de prix fournisseur. Avec un outil comme RestauMargin, ce suivi est automatise en temps reel grace au scan des factures.' },
+            { q: 'Le food cost inclut-il les boissons ?', a: 'En general, on distingue le food cost (nourriture seule) du beverage cost (boissons). Le food cost se situe entre 25-35 % tandis que le beverage cost est plus bas (18-25 % pour les boissons, 20-30 % pour les vins). Pour une vision globale, calculez le cost of goods sold (COGS) qui combine les deux.' },
+          ].map((item) => (
+            <details key={item.q} className="bg-slate-50 border border-slate-200 rounded-xl group">
+              <summary className="px-5 py-4 font-semibold text-slate-900 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors text-sm">
+                {item.q}
+                <ArrowRight className="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0 ml-2" />
+              </summary>
+              <p className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
       </article>
 
       {/* ── CTA ── */}

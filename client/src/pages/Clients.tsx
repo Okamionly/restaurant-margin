@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
   Tag, Filter, LayoutGrid, List, ChevronDown, ChevronUp, Eye, FileText,
@@ -238,6 +238,7 @@ export default function Clients() {
 
   // State
   const [clients, setClients] = useState<Client[]>(initClients);
+  const csvFileRef = useRef<HTMLInputElement>(null);
   useEffect(() => { saveClientsToStorage(clients); }, [clients]);
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState<ClientType | ''>('');
@@ -547,7 +548,7 @@ export default function Clients() {
   }
 
   function handleCSVImport() {
-    showToast(t('clients.csvImportSoon') || 'Import CSV bientot disponible', 'info');
+    csvFileRef.current?.click();
   }
 
   function handleCSVExport() {
@@ -858,10 +859,6 @@ export default function Clients() {
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
             <StickyNote className="w-3.5 h-3.5" /> Ajouter note
           </button>
-          <button onClick={(e) => { e.stopPropagation(); showToast('Programme de fidelite bientot disponible', 'info'); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors">
-            <Award className="w-3.5 h-3.5" /> Creer fidelite
-          </button>
         </div>
       </div>
     );
@@ -919,6 +916,56 @@ export default function Clients() {
 
   return (
     <div className="flex gap-0">
+      {/* Hidden CSV file input */}
+      <input type="file" ref={csvFileRef} accept=".csv" className="hidden" onChange={(e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const text = evt.target?.result as string;
+            const lines = text.split('\n').filter(l => l.trim());
+            if (lines.length < 2) { showToast('Le fichier CSV est vide ou invalide', 'error'); return; }
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
+            const prenomIdx = headers.findIndex(h => h === 'prenom' || h === 'firstname' || h === 'first_name');
+            const nomIdx = headers.findIndex(h => h === 'nom' || h === 'lastname' || h === 'last_name' || h === 'name');
+            const emailIdx = headers.findIndex(h => h === 'email' || h === 'mail');
+            const telIdx = headers.findIndex(h => h.includes('tel') || h.includes('phone'));
+            if (nomIdx === -1 && prenomIdx === -1) { showToast('Colonne "Nom" ou "Prenom" introuvable dans le CSV', 'error'); return; }
+            let importCount = 0;
+            for (let i = 1; i < lines.length; i++) {
+              const cols = lines[i].split(',').map(c => c.replace(/"/g, '').trim());
+              const nom = nomIdx !== -1 ? cols[nomIdx] : '';
+              const prenom = prenomIdx !== -1 ? cols[prenomIdx] : '';
+              if (!nom && !prenom) continue;
+              const newClient: Client = {
+                id: `csv-${Date.now()}-${i}`,
+                prenom: prenom || '',
+                nom: nom || '',
+                email: emailIdx !== -1 ? cols[emailIdx] || '' : '',
+                telephone: telIdx !== -1 ? cols[telIdx] || '' : '',
+                entreprise: '',
+                type: 'Particulier' as ClientType,
+                tags: ['Nouveau' as ClientTag],
+                notes: '',
+                caTotal: 0,
+                nbCommandes: 0,
+                derniereVisite: '',
+                dateNaissance: '',
+                dateCreation: new Date().toISOString().split('T')[0],
+                allergies: [],
+                preferences: [],
+                loyaltyPoints: 0,
+              };
+              setClients(prev => [...prev, newClient]);
+              importCount++;
+            }
+            showToast(`${importCount} client${importCount > 1 ? 's' : ''} importe${importCount > 1 ? 's' : ''} avec succes`, 'success');
+          } catch { showToast('Erreur lors de la lecture du fichier CSV', 'error'); }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+      }} />
       {/* Main content area */}
       <div className={`flex-1 space-y-6 transition-all duration-300 ${sidebarClient ? 'mr-0' : ''}`}>
         {/* Header */}
@@ -1391,10 +1438,6 @@ export default function Clients() {
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
                 <Eye className="w-4 h-4" /> Voir fiche complete
               </button>
-              <button onClick={() => showToast('Programme de fidelite bientot disponible', 'info')}
-                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors border border-amber-200 dark:border-amber-800">
-                <Award className="w-4 h-4" /> Creer fidelite
-              </button>
               <button onClick={() => handleDelete(sidebarClient.id)}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
                 <Trash2 className="w-4 h-4" /> Supprimer
@@ -1446,10 +1489,6 @@ export default function Clients() {
                   <button onClick={() => { setShowDetail(false); openEdit(selectedClient); }}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#333] transition-colors">
                     <Edit2 className="w-3.5 h-3.5" /> Modifier
-                  </button>
-                  <button onClick={() => showToast('Programme de fidelite bientot disponible', 'info')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors border border-amber-200 dark:border-amber-800">
-                    <Award className="w-3.5 h-3.5" /> Creer fidelite
                   </button>
                   <button onClick={() => handleDelete(selectedClient.id)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors">

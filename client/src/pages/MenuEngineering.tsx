@@ -1055,7 +1055,7 @@ export default function MenuEngineering() {
               <Printer className="w-4 h-4" /> {t('menuEngineering.print')}
             </button>
             <button
-              onClick={() => showToast('Export PDF en cours de developpement. Bientot disponible !', 'info')}
+              onClick={() => window.print()}
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] dark:text-white rounded-xl font-medium text-sm transition-all no-print"
             >
               <FileDown className="w-4 h-4" /> Exporter la carte

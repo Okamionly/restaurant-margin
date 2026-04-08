@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, AlertTriangle, BarChart3, ShoppingBasket, ArrowRight, Lock, Eye, Percent, DollarSign, UtensilsCrossed } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════
-   Demo Page — Mode demo pour les prospects
-   Restaurant fictif "Le Bistrot de Marie" avec donnees pre-remplies
-   Read-only, pas d'API calls, route publique /demo
+   Demo Page — Mode demo pour les prospects (route publique /demo)
+   DONNEES FICTIVES — Restaurant fictif "Le Bistrot de Marie"
+   Toutes les donnees ci-dessous sont inventees a des fins de
+   demonstration. Aucune API n'est appelee. Read-only.
    ═══════════════════════════════════════════════════════════════ */
 
+// DEMO DATA — Donnees fictives pour le restaurant "Le Bistrot de Marie"
 const FAKE_RECIPES = [
   {
     name: 'Risotto aux champignons et parmesan',
@@ -44,6 +46,7 @@ const FAKE_RECIPES = [
   },
 ];
 
+// DEMO DATA — Ingredients fictifs
 const FAKE_INGREDIENTS = [
   { name: 'Riz arborio', unit: 'kg', price: 3.20, stock: 8.5 },
   { name: 'Champignons de Paris', unit: 'kg', price: 4.50, stock: 3.2 },
@@ -55,6 +58,7 @@ const FAKE_INGREDIENTS = [
   { name: 'Vanille Bourbon', unit: 'gousse', price: 4.50, stock: 15 },
 ];
 
+// DEMO DATA — KPIs fictifs
 const FAKE_KPIS = {
   foodCostGlobal: 26.8,
   foodCostTarget: 28.0,

@@ -808,8 +808,7 @@ export default function Ingredients() {
   }
 
   function handleImportClick() {
-    showToast('Import CSV bientot disponible. Telechargez le template pour preparer vos donnees.', 'success');
-    downloadCSVTemplate();
+    fileInputRef.current?.click();
   }
 
   // Check if any advanced filter is active
@@ -1193,7 +1192,47 @@ export default function Ingredients() {
       <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
 
       {/* Hidden file input for CSV import */}
-      <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={() => { showToast('Import CSV en cours de developpement', 'success'); }} />
+      <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={(e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const text = evt.target?.result as string;
+            const lines = text.split('\n').filter(l => l.trim());
+            if (lines.length < 2) { showToast('Le fichier CSV est vide ou invalide', 'error'); return; }
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim().toLowerCase());
+            const nameIdx = headers.findIndex(h => h === 'nom' || h === 'name');
+            const catIdx = headers.findIndex(h => h === 'categorie' || h === 'category');
+            const unitIdx = headers.findIndex(h => h === 'unite' || h === 'unit');
+            const priceIdx = headers.findIndex(h => h.includes('prix') || h.includes('price') || h.includes('cout') || h.includes('cost'));
+            const supplierIdx = headers.findIndex(h => h.includes('fournisseur') || h.includes('supplier'));
+            if (nameIdx === -1) { showToast('Colonne "Nom" introuvable dans le CSV', 'error'); return; }
+            let importCount = 0;
+            for (let i = 1; i < lines.length; i++) {
+              const cols = lines[i].split(',').map(c => c.replace(/"/g, '').trim());
+              const name = cols[nameIdx];
+              if (!name) continue;
+              const newIngredient = {
+                id: Date.now() + i,
+                name,
+                category: catIdx !== -1 ? cols[catIdx] || 'Autre' : 'Autre',
+                unit: unitIdx !== -1 ? cols[unitIdx] || 'kg' : 'kg',
+                price: priceIdx !== -1 ? parseFloat(cols[priceIdx]) || 0 : 0,
+                supplier: supplierIdx !== -1 ? cols[supplierIdx] || '' : '',
+                stock: 0,
+                alertThreshold: 5,
+                lastUpdated: new Date().toISOString().split('T')[0],
+              };
+              setIngredients(prev => [...prev, newIngredient as any]);
+              importCount++;
+            }
+            showToast(`${importCount} ingredient${importCount > 1 ? 's' : ''} importe${importCount > 1 ? 's' : ''} avec succes`, 'success');
+          } catch { showToast('Erreur lors de la lecture du fichier CSV', 'error'); }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+      }} />
 
       {/* ── Bulk Actions Floating Bar ──────────────────────────────────── */}
       {selectedIds.size > 0 && (

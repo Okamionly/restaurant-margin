@@ -773,20 +773,6 @@ export default function MenuBuilder() {
         />
         <div className="flex-1" />
         <button
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors"
-          title="Bientot disponible"
-        >
-          <Share2 className="w-4 h-4" />
-          Partager
-        </button>
-        <button
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors"
-          title="Bientot disponible"
-        >
-          <FileDown className="w-4 h-4" />
-          Exporter PDF
-        </button>
-        <button
           onClick={handleSave}
           disabled={saving}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-sm font-medium transition-colors disabled:opacity-50"

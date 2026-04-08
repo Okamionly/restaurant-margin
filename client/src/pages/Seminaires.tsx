@@ -1115,11 +1115,32 @@ export default function Seminaires() {
             </div>
           </div>
 
-          {/* Budget */}
+          {/* Budget Calculator */}
           <div>
             <h4 className="text-sm font-bold text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-2">
-              <Euro className="w-4 h-4" /> Budget
+              <Euro className="w-4 h-4" /> Budget Calculator
             </h4>
+
+            {/* Live calculation display */}
+            <div className="bg-emerald-50 dark:bg-emerald-900/15 rounded-xl p-4 mb-4 border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center justify-center gap-3 text-sm">
+                <div className="text-center">
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Cout/pers.</div>
+                  <div className="text-lg font-bold text-emerald-700 dark:text-emerald-300">{formatEuro(form.prixParPersonne)}</div>
+                </div>
+                <span className="text-emerald-400 dark:text-emerald-600 text-lg font-bold">x</span>
+                <div className="text-center">
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Participants</div>
+                  <div className="text-lg font-bold text-emerald-700 dark:text-emerald-300">{form.nbConvivesMax}</div>
+                </div>
+                <span className="text-emerald-400 dark:text-emerald-600 text-lg font-bold">=</span>
+                <div className="text-center">
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Total</div>
+                  <div className="text-xl font-bold text-emerald-700 dark:text-emerald-300">{formatEuro(form.prixParPersonne * form.nbConvivesMax)}</div>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Prix / personne (€)</label>
@@ -1127,12 +1148,12 @@ export default function Seminaires() {
                   type="number"
                   value={form.prixParPersonne}
                   onChange={e => setForm(f => ({ ...f, prixParPersonne: +e.target.value }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:ring-white"
+                  className="w-full px-3 py-2 bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm text-[#111111] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#111111] dark:ring-white"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Total estimé</label>
-                <div className="px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] dark:bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm font-bold text-[#111111] dark:text-white dark:text-white">
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Total estime</label>
+                <div className="px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-sm font-bold text-[#111111] dark:text-white">
                   {formatEuro(form.prixParPersonne * form.nbConvivesMax)}
                 </div>
               </div>

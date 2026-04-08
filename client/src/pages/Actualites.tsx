@@ -99,7 +99,7 @@ interface MercurialeSummary {
   topBaisses: { ingredient_name: string; trend_detail: string | null }[];
 }
 
-// ── Product Updates Mock Data ───────────────────────────────────────────────
+// ── Product Updates (RestauMargin changelog — static, our own content) ──────
 
 const PRODUCT_UPDATES: ProductUpdate[] = [
   {

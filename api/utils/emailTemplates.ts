@@ -1128,72 +1128,248 @@ export function buildCampaignEmail(restaurant: CampaignRestaurant, cuisineType?:
     ? `Bonjour ${esc(restaurant.contactName)},`
     : `Bonjour,`;
 
-  // Uses the SAME design as supplier order emails (wrapper + header + footer)
-  const content = `
-    ${header('Votre cuisine m&eacute;rite mieux')}
-    <tr><td style="padding:30px;">
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 18px;">${greeting}</p>
+  const html = `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f4f4f5;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f4f5;">
+<tr><td align="center" style="padding:32px 16px;">
+<table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
 
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 18px;">
-        ${esc(cuisine.hook)}
+<!-- ======== PREMIUM HEADER ======== -->
+<tr><td style="background:linear-gradient(135deg,#0d9488 0%,#065f53 50%,#111111 100%);padding:40px 30px;text-align:center;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr><td align="center">
+      <span style="font-size:36px;">&#127860;</span>
+    </td></tr>
+    <tr><td align="center" style="padding:8px 0 0;">
+      <h1 style="color:#ffffff;font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:0;font-size:28px;font-weight:800;letter-spacing:-0.5px;">RestauMargin</h1>
+    </td></tr>
+    <tr><td align="center" style="padding:8px 0 0;">
+      <p style="color:rgba(255,255,255,0.75);font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:0;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;">La technologie au service de votre cuisine</p>
+    </td></tr>
+  </table>
+</td></tr>
+
+<!-- ======== HERO SECTION ======== -->
+<tr><td style="padding:0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr><td style="background:linear-gradient(180deg,#f0fdfa 0%,#ffffff 100%);padding:36px 30px 28px;text-align:center;">
+      <h2 style="color:#111111;font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:0 0 12px;font-size:24px;font-weight:800;line-height:1.3;">
+        Ma&icirc;trisez vos co&ucirc;ts.<br>Maximisez vos marges.
+      </h2>
+      <p style="color:#6b7280;font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:0;font-size:15px;line-height:1.6;">
+        L'outil n&deg;1 des restaurateurs pour piloter food cost,<br>fiches techniques et commandes fournisseurs.
       </p>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 18px;">
-        ${esc(cuisine.pain)}
-      </p>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 24px;">
-        ${esc(cuisine.benefit)}
-      </p>
-
-      <div style="border-top:1px solid ${BORDER};margin:24px 0;"></div>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
-        RestauMargin est n&eacute; d'un constat simple : les restaurateurs passent des heures &agrave; calculer leurs co&ucirc;ts sur Excel ou sur un coin de nappe, alors que la technologie pourrait le faire en quelques secondes.
-      </p>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
-        Aujourd'hui, notre intelligence artificielle permet de <strong>cr&eacute;er une fiche technique par la voix</strong>, en plein service. Vous dites &laquo; risotto aux c&egrave;pes, 4 portions, 19 euros &raquo; &mdash; et le food cost s'affiche en 10 secondes.
-      </p>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
-        Votre livreur d&eacute;pose une facture ? <strong>Photographiez-la.</strong> L'IA lit les prix et met &agrave; jour vos co&ucirc;ts automatiquement. Plus de saisie manuelle.
-      </p>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
-        Vos stocks baissent ? <strong>La commande part en 1 clic</strong> &mdash; par email ou WhatsApp &mdash; directement &agrave; votre fournisseur. Et si vous avez une balance Bluetooth, le stock se met &agrave; jour &agrave; chaque pes&eacute;e.
-      </p>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 14px;">
-        Un fournisseur augmente ses prix ? <strong>Vous &ecirc;tes alert&eacute; imm&eacute;diatement</strong>, avant que &ccedil;a impacte vos marges.
-      </p>
-
-      <div style="border-top:1px solid ${BORDER};margin:24px 0;"></div>
-
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0 0 24px;">
-        Nous proposons un essai gratuit de 7 jours, sans carte bancaire et sans engagement. En 5 minutes, vous savez exactement ce que chaque plat vous co&ucirc;te et ce qu'il vous rapporte.
-      </p>
-
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-        <tr><td align="center" style="padding:8px 0 24px;">
-          <a href="https://www.restaumargin.fr/login?mode=register" style="display:inline-block;padding:14px 36px;background:${TEAL};color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700;font-size:15px;font-family:${FONT};">
-            Essayer gratuitement &rarr;
-          </a>
-        </td></tr>
+      <!-- Food-themed visual band -->
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0 0;">
+        <tr>
+          <td width="25%" align="center" style="padding:8px 0;">
+            <span style="font-size:32px;">&#127859;</span><br>
+            <span style="color:#0d9488;font-size:11px;font-weight:600;">Recettes</span>
+          </td>
+          <td width="25%" align="center" style="padding:8px 0;">
+            <span style="font-size:32px;">&#128200;</span><br>
+            <span style="color:#0d9488;font-size:11px;font-weight:600;">Marges</span>
+          </td>
+          <td width="25%" align="center" style="padding:8px 0;">
+            <span style="font-size:32px;">&#128176;</span><br>
+            <span style="color:#0d9488;font-size:11px;font-weight:600;">Rentabilit&eacute;</span>
+          </td>
+          <td width="25%" align="center" style="padding:8px 0;">
+            <span style="font-size:32px;">&#128230;</span><br>
+            <span style="color:#0d9488;font-size:11px;font-weight:600;">Commandes</span>
+          </td>
+        </tr>
       </table>
+    </td></tr>
+  </table>
+</td></tr>
 
-      <p style="color:${MUTED};font-family:${FONT};font-size:13px;text-align:center;margin:0 0 24px;">
-        29&euro;/mois apr&egrave;s l'essai &mdash; Sans engagement
+<!-- ======== GREETING + HOOK ======== -->
+<tr><td style="padding:28px 30px 0;">
+  <p style="color:#111111;font-size:15px;line-height:1.8;margin:0 0 16px;">${greeting}</p>
+  <p style="color:#111111;font-size:15px;line-height:1.8;margin:0 0 12px;">${esc(cuisine.hook)}</p>
+  <p style="color:#111111;font-size:15px;line-height:1.8;margin:0 0 12px;">${esc(cuisine.pain)}</p>
+  <p style="color:#111111;font-size:15px;line-height:1.8;margin:0;">${esc(cuisine.benefit)}</p>
+</td></tr>
+
+<!-- ======== 3 FEATURE CARDS ======== -->
+<tr><td style="padding:28px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <!-- Card 1 -->
+    <tr><td style="padding:0 0 12px;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f0fdfa;border-radius:12px;border:1px solid #ccfbf1;">
+        <tr>
+          <td width="56" style="padding:16px 0 16px 16px;vertical-align:top;">
+            <div style="width:44px;height:44px;background:#0d9488;border-radius:10px;text-align:center;line-height:44px;">
+              <span style="font-size:20px;">&#128203;</span>
+            </div>
+          </td>
+          <td style="padding:16px 16px 16px 12px;vertical-align:top;">
+            <strong style="color:#111111;font-size:14px;display:block;margin:0 0 4px;">Fiches techniques automatiques</strong>
+            <span style="color:#6b7280;font-size:13px;line-height:1.5;">Dictez votre recette, l'IA calcule le food cost en 10 secondes. Fini les tableaux Excel.</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+    <!-- Card 2 -->
+    <tr><td style="padding:0 0 12px;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f0fdfa;border-radius:12px;border:1px solid #ccfbf1;">
+        <tr>
+          <td width="56" style="padding:16px 0 16px 16px;vertical-align:top;">
+            <div style="width:44px;height:44px;background:#0d9488;border-radius:10px;text-align:center;line-height:44px;">
+              <span style="font-size:20px;">&#128200;</span>
+            </div>
+          </td>
+          <td style="padding:16px 16px 16px 12px;vertical-align:top;">
+            <strong style="color:#111111;font-size:14px;display:block;margin:0 0 4px;">Food cost en temps r&eacute;el</strong>
+            <span style="color:#6b7280;font-size:13px;line-height:1.5;">Suivez vos marges plat par plat. Alertes automatiques si un fournisseur augmente ses prix.</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+    <!-- Card 3 -->
+    <tr><td style="padding:0 0 0;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f0fdfa;border-radius:12px;border:1px solid #ccfbf1;">
+        <tr>
+          <td width="56" style="padding:16px 0 16px 16px;vertical-align:top;">
+            <div style="width:44px;height:44px;background:#0d9488;border-radius:10px;text-align:center;line-height:44px;">
+              <span style="font-size:20px;">&#128722;</span>
+            </div>
+          </td>
+          <td style="padding:16px 16px 16px 12px;vertical-align:top;">
+            <strong style="color:#111111;font-size:14px;display:block;margin:0 0 4px;">Commandes fournisseurs en 1 clic</strong>
+            <span style="color:#6b7280;font-size:13px;line-height:1.5;">Stock bas ? La commande part par email ou WhatsApp directement &agrave; votre fournisseur.</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</td></tr>
+
+<!-- ======== SOCIAL PROOF BAR ======== -->
+<tr><td style="padding:28px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#111111;border-radius:12px;">
+    <tr><td align="center" style="padding:20px 16px;">
+      <span style="color:#fbbf24;font-size:18px;letter-spacing:2px;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+      <p style="color:#ffffff;font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:8px 0 0;font-size:15px;font-weight:700;">Rejoint par 150+ restaurants en France</p>
+      <p style="color:rgba(255,255,255,0.6);font-family:'Segoe UI',Roboto,Arial,sans-serif;margin:4px 0 0;font-size:12px;">Brasseries, bistrots, pizzerias, gastronomiques, dark kitchens&hellip;</p>
+    </td></tr>
+  </table>
+</td></tr>
+
+<!-- ======== TESTIMONIAL ======== -->
+<tr><td style="padding:24px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#fafafa;border-radius:12px;border-left:4px solid #0d9488;">
+    <tr><td style="padding:20px 24px;">
+      <p style="color:#111111;font-size:14px;line-height:1.7;margin:0 0 12px;font-style:italic;">
+        &laquo; Depuis qu'on utilise RestauMargin, on a r&eacute;duit notre food cost de 32% &agrave; 26%. On voit enfin ce que chaque plat nous rapporte vraiment. L'IA qui g&eacute;n&egrave;re les fiches techniques nous fait gagner 2h par semaine. &raquo;
       </p>
+      <table role="presentation" cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="vertical-align:middle;padding-right:10px;">
+            <div style="width:36px;height:36px;background:#0d9488;border-radius:50%;text-align:center;line-height:36px;color:#ffffff;font-weight:700;font-size:14px;">MC</div>
+          </td>
+          <td style="vertical-align:middle;">
+            <strong style="color:#111111;font-size:13px;display:block;">Marc C.</strong>
+            <span style="color:#6b7280;font-size:12px;">Chef-propri&eacute;taire, Le Comptoir du March&eacute; &mdash; Lyon</span>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</td></tr>
 
-      <p style="color:${DARK};font-family:${FONT};font-size:15px;line-height:1.8;margin:0;">
-        &Agrave; bient&ocirc;t,<br>
-        L'&eacute;quipe RestauMargin<br>
-        <span style="color:${MUTED};">Montpellier</span>
+<!-- ======== CTA SECTION ======== -->
+<tr><td style="padding:32px 30px 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+    <tr><td align="center">
+      <a href="https://www.restaumargin.fr/login?mode=register" style="display:inline-block;padding:18px 48px;background:linear-gradient(135deg,#0d9488,#06b6d4);color:#ffffff;text-decoration:none;border-radius:12px;font-weight:800;font-size:17px;font-family:'Segoe UI',Roboto,Arial,sans-serif;letter-spacing:-0.3px;box-shadow:0 4px 16px rgba(13,148,136,0.35);">
+        Commencer mon essai gratuit &rarr;
+      </a>
+    </td></tr>
+    <tr><td align="center" style="padding:14px 0 0;">
+      <p style="color:#6b7280;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;margin:0;line-height:1.6;">
+        7 jours gratuits &bull; Sans carte bancaire &bull; Annulation libre
       </p>
     </td></tr>
-    ${footer('Vous recevez cet email car votre restaurant est r&eacute;f&eacute;renc&eacute; publiquement.')}
-  `;
+    <tr><td align="center" style="padding:6px 0 0;">
+      <p style="color:#9ca3af;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;margin:0;">
+        Puis 29&euro;/mois &mdash; sans engagement
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
 
-  return { subject: cuisine.subject, html: wrapper(content) };
+<!-- ======== CLOSING ======== -->
+<tr><td style="padding:28px 30px 0;">
+  <p style="color:#111111;font-size:15px;line-height:1.8;margin:0;">
+    &Agrave; bient&ocirc;t,<br>
+    L'&eacute;quipe RestauMargin<br>
+    <span style="color:#6b7280;">Montpellier, France</span>
+  </p>
+</td></tr>
+
+<!-- ======== PREMIUM FOOTER ======== -->
+<tr><td style="padding:28px 0 0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#111111;border-radius:0 0 16px 16px;">
+    <tr><td align="center" style="padding:28px 30px 16px;">
+      <span style="font-size:24px;">&#127860;</span>
+      <span style="color:#ffffff;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:18px;font-weight:700;vertical-align:middle;margin-left:6px;">RestauMargin</span>
+    </td></tr>
+    <tr><td align="center" style="padding:0 30px 16px;">
+      <table role="presentation" cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding:0 12px;">
+            <a href="https://www.restaumargin.fr" style="color:#9ca3af;font-size:12px;text-decoration:none;font-family:'Segoe UI',Roboto,Arial,sans-serif;">Site web</a>
+          </td>
+          <td style="color:#4b5563;">|</td>
+          <td style="padding:0 12px;">
+            <a href="mailto:contact@restaumargin.fr" style="color:#9ca3af;font-size:12px;text-decoration:none;font-family:'Segoe UI',Roboto,Arial,sans-serif;">Contact</a>
+          </td>
+          <td style="color:#4b5563;">|</td>
+          <td style="padding:0 12px;">
+            <a href="https://www.restaumargin.fr/blog" style="color:#9ca3af;font-size:12px;text-decoration:none;font-family:'Segoe UI',Roboto,Arial,sans-serif;">Blog</a>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+    <!-- Social icons placeholders -->
+    <tr><td align="center" style="padding:0 30px 16px;">
+      <table role="presentation" cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding:0 8px;">
+            <a href="https://www.instagram.com/restaumargin" style="display:inline-block;width:32px;height:32px;background:#1f2937;border-radius:50%;text-align:center;line-height:32px;text-decoration:none;font-size:14px;">&#128247;</a>
+          </td>
+          <td style="padding:0 8px;">
+            <a href="https://www.linkedin.com/company/restaumargin" style="display:inline-block;width:32px;height:32px;background:#1f2937;border-radius:50%;text-align:center;line-height:32px;text-decoration:none;font-size:14px;">&#128188;</a>
+          </td>
+          <td style="padding:0 8px;">
+            <a href="https://www.facebook.com/restaumargin" style="display:inline-block;width:32px;height:32px;background:#1f2937;border-radius:50%;text-align:center;line-height:32px;text-decoration:none;font-size:14px;">&#128172;</a>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+    <tr><td align="center" style="padding:0 30px 24px;">
+      <p style="color:#6b7280;font-size:11px;line-height:1.6;margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        Vous recevez cet email car votre restaurant est r&eacute;f&eacute;renc&eacute; publiquement sur Internet.<br>
+        <a href="mailto:contact@restaumargin.fr?subject=Desabonnement" style="color:#6b7280;text-decoration:underline;">Se d&eacute;sabonner</a>
+        &nbsp;|&nbsp;
+        <a href="https://www.restaumargin.fr/privacy" style="color:#6b7280;text-decoration:underline;">Politique de confidentialit&eacute;</a>
+      </p>
+      <p style="color:#4b5563;font-size:10px;margin:8px 0 0;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+        &copy; 2026 RestauMargin SAS &mdash; Montpellier, France &mdash; Tous droits r&eacute;serv&eacute;s.
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  return { subject: cuisine.subject, html };
 }

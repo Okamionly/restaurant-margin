@@ -376,10 +376,7 @@ export default function Messagerie() {
     setTimeout(() => inputRef.current?.focus(), 100);
   }
 
-  // ── Attachment toast ───────────────────────────────────────────────
-  function handleAttachment() {
-    showToast('Joindre un fichier (bientot disponible)', 'info');
-  }
+  // ── Attachment (removed — was placeholder) ───────────────────────
 
   // ── Send message ────────────────────────────────────────────────────
   async function handleSend() {
@@ -795,13 +792,6 @@ export default function Messagerie() {
                   >
                     <MessageCircle className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => showToast('Fonctionnalite appel bientot disponible', 'info')}
-                    className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#525252] hover:text-[#111111] dark:hover:text-white transition-all"
-                    title="Appeler"
-                  >
-                    <Phone className="w-4 h-4" />
-                  </button>
                   <div className="w-px h-5 bg-[#E5E7EB] dark:bg-[#262626] mx-1" />
                   <button
                     onClick={() => handleToggleStar(activeConv.id)}
@@ -937,15 +927,6 @@ export default function Messagerie() {
               {/* Input area */}
               <div className="border-t border-[#E5E7EB] dark:border-[#262626] bg-white dark:bg-black p-3 flex-shrink-0">
                 <div className="flex items-end gap-2">
-                  {/* Attachment */}
-                  <button
-                    onClick={handleAttachment}
-                    className="p-2 rounded-xl text-[#9CA3AF] dark:text-[#525252] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-all flex-shrink-0 mb-0.5"
-                    title="Joindre un fichier"
-                  >
-                    <Paperclip className="w-4 h-4" />
-                  </button>
-
                   {/* Quick replies toggle */}
                   <button
                     onClick={() => setShowQuickReplies(!showQuickReplies)}
@@ -1062,13 +1043,6 @@ export default function Messagerie() {
 
             {/* Actions */}
             <div className="flex items-center justify-between px-5 py-4 border-t border-[#E5E7EB] dark:border-[#262626]">
-              <button
-                onClick={handleAttachment}
-                className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#525252] hover:text-[#6B7280] transition-colors"
-                title="Joindre un fichier"
-              >
-                <Paperclip className="w-4 h-4" />
-              </button>
               <button
                 onClick={handleComposeSend}
                 disabled={!composeTo.trim() || !composeBody.trim() || sending}

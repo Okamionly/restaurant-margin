@@ -421,9 +421,9 @@ export default function Analytics() {
     window.print();
   };
 
-  // ── Generate Report (placeholder) ──
+  // ── Generate Report ──
   const handleGenerateReport = () => {
-    showToast('Bientot disponible — Generation de rapport PDF en cours de developpement', 'info');
+    window.print();
   };
 
   if (loading) {

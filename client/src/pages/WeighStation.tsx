@@ -559,14 +559,10 @@ export default function WeighStation() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowCameraPlaceholder(false)}>
           <div className="bg-white dark:bg-[#111111] rounded-2xl p-6 max-w-sm mx-4 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]" onClick={e => e.stopPropagation()}>
             <Camera className="w-16 h-16 text-teal-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Scanner un code-barres</h3>
+            <h3 className="text-lg font-bold text-[#111111] dark:text-white mb-2">Scanner code-barres</h3>
             <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
               Cette fonctionnalite utilisera la camera de votre tablette pour scanner les codes-barres
               des ingredients et les selectionner automatiquement.
-            </p>
-            <p className="text-xs text-amber-500 mb-4 flex items-center justify-center gap-1.5">
-              <AlertTriangle className="w-4 h-4" />
-              Disponible dans une prochaine mise a jour
             </p>
             <button
               onClick={() => setShowCameraPlaceholder(false)}

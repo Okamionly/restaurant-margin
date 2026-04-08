@@ -15,6 +15,7 @@
     "scrape": "npx tsx scripts/scrape-restaurants.ts",
     "scrape:pj": "npx tsx scripts/scrape-pagesjaunes.ts",
     "scrape:gmaps": "npx tsx scripts/scrape-gmaps.ts",
+    "scrape:national": "npx tsx scripts/scrape-gmaps.ts --all",
     "campaign": "npx tsx scripts/send-campaign.ts",
     "campaign:dry": "npx tsx scripts/send-campaign.ts --dry-run"
   },

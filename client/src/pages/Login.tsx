@@ -72,6 +72,14 @@ export default function Login() {
       if (isRegisterMode) {
         await register({ email, password, name });
         trackEvent('sign_up');
+        // Google Ads conversion tracking
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'sign_up', { method: 'email' });
+        }
+        // Meta Pixel conversion tracking
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+          (window as any).fbq('track', 'Lead');
+        }
         // Apply referral code if present
         if (referralCode) {
           try {

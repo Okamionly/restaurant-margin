@@ -783,7 +783,7 @@ export default function Dashboard() {
     { key: 'margins', label: t("dashboard.tabMargins"), desc: t("dashboard.tabMarginsDesc"), icon: TAB_ICONS.margins },
     { key: 'costs', label: t("dashboard.tabCosts"), desc: t("dashboard.tabCostsDesc"), icon: TAB_ICONS.costs },
     { key: 'profitability', label: t("dashboard.tabProfitability"), desc: t("dashboard.tabProfitabilityDesc"), icon: TAB_ICONS.profitability },
-    { key: 'pnl', label: t("dashboard.tabPnl"), desc: t("dashboard.tabPnlDesc"), icon: TAB_ICONS.pnl },
+    { key: 'pnl', label: 'Compte de Resultat', desc: 'P&L et rentabilite', icon: TAB_ICONS.pnl },
   ];
 
   useEffect(() => {
@@ -1877,69 +1877,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {/* SECTION 5: Activite recente (timeline)                        */}
-      {/* ══════════════════════════════════════════════════════════════ */}
-      {recentActivity.length > 0 && (
-        <div className="stagger-3">
-          <div className="bg-white dark:bg-black rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-5 sm:p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]">
-                <Activity className="w-5 h-5 text-[#111111] dark:text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi">Activite recente</h3>
-              <span className="ml-auto text-xs text-[#9CA3AF] dark:text-[#737373]">Dernieres actions</span>
-            </div>
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-[15px] top-2 bottom-2 w-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
-              <div className="space-y-0">
-                {recentActivity.map((item, i) => {
-                  const iconMap: Record<string, React.ReactNode> = {
-                    chef: <ChefHat className="w-3.5 h-3.5" />,
-                    plus: <Plus className="w-3.5 h-3.5" />,
-                    package: <Package className="w-3.5 h-3.5" />,
-                    scale: <Scale className="w-3.5 h-3.5" />,
-                    cart: <ShoppingCart className="w-3.5 h-3.5" />,
-                  };
-                  const colorMap: Record<string, string> = {
-                    recipe: 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
-                    'recipe-new': 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
-                    ingredient: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-                    weighing: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
-                    order: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
-                  };
-                  const timeAgo = (() => {
-                    const diff = Date.now() - new Date(item.time).getTime();
-                    const minutes = Math.floor(diff / 60000);
-                    if (minutes < 1) return 'A l\'instant';
-                    if (minutes < 60) return `Il y a ${minutes}min`;
-                    const hours = Math.floor(minutes / 60);
-                    if (hours < 24) return `Il y a ${hours}h`;
-                    const days = Math.floor(hours / 24);
-                    if (days < 7) return `Il y a ${days}j`;
-                    return new Date(item.time).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-                  })();
-                  return (
-                    <div key={item.id} className="relative flex items-start gap-3 py-2.5 group" style={{ animationDelay: `${i * 50}ms` }}>
-                      <div className={`relative z-10 flex-shrink-0 p-1.5 rounded-lg ${colorMap[item.type] || 'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF]'}`}>
-                        {iconMap[item.icon] || <Clock className="w-3.5 h-3.5" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{item.label}</p>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 tabular-nums">{timeAgo}</span>
-                        </div>
-                        <p className="text-xs text-[#9CA3AF] dark:text-[#737373] truncate">{item.detail}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Activite recente supprimee — deplacee dans les notifications */}
 
       {/* ── Top 5 Margin + Quick Alerts ────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-3">

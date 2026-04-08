@@ -191,7 +191,7 @@ router.get('/suggest', authWithRestaurant, async (req: any, res) => {
 
     // Step 1: Ask Claude for typical ingredients
     const response = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20250414',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 1024,
       system: `Tu es un chef cuisinier professionnel français. Pour une recette donnée, liste les ingrédients typiques avec les quantités pour 4 portions. Réponds UNIQUEMENT en JSON valide, sans texte avant ni après : [{"name": "nom ingrédient", "quantity": nombre, "unit": "kg|g|L|cl|pièce"}]`,
       messages: [{

@@ -105,8 +105,75 @@ app.use((req, res, next) => {
   next();
 });
 
-// ── CSRF Protection — temporarily disabled to fix login ──
-// TODO: Re-enable with proper SPA-compatible implementation
+// ── CSRF Protection (Double-Submit Cookie Pattern) ──
+// Stateless: works on Vercel serverless. No sessions needed.
+// The frontend fetches a token via GET /api/csrf-token, which sets a cookie
+// and returns the token. On state-changing requests (POST/PUT/DELETE/PATCH),
+// the frontend sends the token in the X-CSRF-Token header. The middleware
+// compares the header value to the cookie value.
+
+function generateCsrfToken(): string {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+// Endpoint to get a CSRF token (sets cookie + returns token in body)
+app.get('/api/csrf-token', (_req, res) => {
+  const token = generateCsrfToken();
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.cookie('csrf_token', token, {
+    httpOnly: false,       // Frontend JS needs to read this cookie
+    secure: isProduction,  // HTTPS only in production
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+  res.json({ csrfToken: token });
+});
+
+// CSRF validation middleware
+app.use((req, res, next) => {
+  // Skip safe HTTP methods (no state change)
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+    return next();
+  }
+
+  // Skip auth routes (login, register, reset-password, etc.)
+  if (req.path.startsWith('/api/auth/')) {
+    return next();
+  }
+
+  // Skip Stripe webhook (uses its own signature verification)
+  if (req.path === '/api/stripe/webhook') {
+    return next();
+  }
+
+  // Skip public routes
+  if (req.path.startsWith('/api/public/')) {
+    return next();
+  }
+
+  // Skip activation routes (use secret-based auth)
+  if (req.path.startsWith('/api/activation/')) {
+    return next();
+  }
+
+  // Skip health check
+  if (req.path === '/api/health') {
+    return next();
+  }
+
+  // Validate CSRF token: header must match cookie
+  const headerToken = req.headers['x-csrf-token'] as string | undefined;
+  const cookieHeader = req.headers.cookie || '';
+  const cookieMatch = cookieHeader.match(/(?:^|;\s*)csrf_token=([^;]+)/);
+  const cookieToken = cookieMatch ? cookieMatch[1] : undefined;
+
+  if (!headerToken || !cookieToken || headerToken !== cookieToken) {
+    return res.status(403).json({ error: 'CSRF token invalide ou manquant' });
+  }
+
+  next();
+});
 
 // ── Stripe Customer Portal ──
 app.post('/api/stripe/portal', authMiddleware, async (req: any, res) => {

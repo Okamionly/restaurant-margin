@@ -167,49 +167,67 @@ async function handleCookieConsent(page: Page): Promise<void> {
 }
 
 // ── Scroll the Google Maps results panel to load all results ──────
-async function scrollAndLoadAllResults(page: Page, maxScrolls: number = 80): Promise<number> {
+async function scrollAndLoadAllResults(page: Page, maxScrolls: number = 150): Promise<number> {
   console.log('  [Scroll] Loading all results...');
 
   let previousCount = 0;
   let sameCountStreak = 0;
-  const maxSameCount = 5; // Stop after 5 scrolls with no new results
+  const maxSameCount = 8; // Stop after 8 scrolls with no new results
 
   for (let i = 0; i < maxScrolls; i++) {
-    // Scroll the results feed panel
-    const scrolled = await page.evaluate(() => {
+    // Try ALL possible scroll containers (Google Maps changes DOM frequently)
+    await page.evaluate(() => {
+      // Method 1: role="feed"
       const feed = document.querySelector('[role="feed"]');
-      if (!feed) return false;
-      feed.scrollTop = feed.scrollHeight;
-      return true;
+      if (feed) { feed.scrollTop = feed.scrollHeight; }
+
+      // Method 2: .m6QErb containers
+      const containers = document.querySelectorAll('.m6QErb');
+      for (const c of containers) {
+        if (c.scrollHeight > c.clientHeight + 10) {
+          c.scrollTop = c.scrollHeight;
+        }
+      }
+
+      // Method 3: any scrollable div inside [role="main"]
+      const mainDivs = document.querySelectorAll('[role="main"] div');
+      for (const d of mainDivs) {
+        if (d.scrollHeight > d.clientHeight + 200 && d.clientHeight > 100) {
+          d.scrollTop = d.scrollHeight;
+        }
+      }
     });
 
-    if (!scrolled) {
-      // Try alternative scroll container
-      await page.evaluate(() => {
-        const containers = document.querySelectorAll('[role="main"] .m6QErb');
-        for (const container of containers) {
-          if (container.scrollHeight > container.clientHeight) {
-            container.scrollTop = container.scrollHeight;
-          }
-        }
-      });
-    }
+    // Wait longer for lazy loading
+    await sleep(2000 + Math.random() * 1500);
 
-    await sleep(1500 + Math.random() * 1000);
-
-    // Count current results
+    // Count current results with multiple selectors
     const currentCount = await page.evaluate(() => {
+      // Try multiple selectors to find restaurant listings
+      const selectors = [
+        '[role="feed"] > div > div > a[href*="/maps/place/"]',
+        '[role="feed"] a[href*="/maps/place/"]',
+        '.m6QErb a[href*="/maps/place/"]',
+        'a[href*="/maps/place/"]',
+      ];
+      for (const sel of selectors) {
+        const items = document.querySelectorAll(sel);
+        if (items.length > 0) return items.length;
+      }
+      // Fallback: count divs with restaurant-like content
       const feed = document.querySelector('[role="feed"]');
-      if (!feed) return 0;
-      return feed.querySelectorAll(':scope > div > div > a').length;
+      if (feed) return feed.children.length;
+      return 0;
     });
 
     // Check for "end of list" indicator
     const endReached = await page.evaluate(() => {
-      const endDiv = document.querySelector('.m6QErb .PbZDve');
-      const noMoreText = document.body.innerText.includes("Vous avez vu tous les résultats")
-        || document.body.innerText.includes("You've reached the end");
-      return !!endDiv || noMoreText;
+      const bodyText = document.body.innerText;
+      return bodyText.includes("Vous avez vu tous les résultats")
+        || bodyText.includes("You've reached the end")
+        || bodyText.includes("No more results")
+        || !!document.querySelector('.m6QErb .PbZDve')
+        || !!document.querySelector('.m6QErb .lXJj5c');
     });
 
     if (currentCount > previousCount) {
@@ -218,6 +236,15 @@ async function scrollAndLoadAllResults(page: Page, maxScrolls: number = 80): Pro
       sameCountStreak = 0;
     } else {
       sameCountStreak++;
+      // Try clicking "More results" button if it exists
+      await page.evaluate(() => {
+        const btns = document.querySelectorAll('button');
+        for (const b of btns) {
+          if (b.textContent?.includes('Plus de résultats') || b.textContent?.includes('More results')) {
+            b.click();
+          }
+        }
+      });
     }
 
     if (endReached) {

@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Thermometer, Plus, ShieldCheck, AlertTriangle, Clock,
   CheckCircle2, XCircle, Package, SprayCan, BarChart3, Search,
-  Wrench, Calendar, Download, ChevronRight
+  Wrench, Calendar, Download, ChevronRight, ChevronLeft, Printer,
+  TrendingUp, Bell, User, Flame, Snowflake, Droplets, HandMetal
 } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -77,7 +78,32 @@ interface ComplianceReport {
   correctiveActions: { total: number; open: number; inProgress: number; resolved: number };
 }
 
-type TabKey = 'dashboard' | 'temperatures' | 'lots' | 'alertes' | 'nettoyage' | 'conformite' | 'actions';
+interface DailyCheckItem {
+  id: string;
+  category: string;
+  label: string;
+  icon: string;
+  checked: boolean;
+  temperature: string;
+  timestamp: string;
+  agent: string;
+  zone?: 'frigo' | 'congelateur' | 'plat_chaud';
+  minTemp?: number;
+  maxTemp?: number;
+}
+
+interface TempAlert {
+  id: string;
+  zone: string;
+  temperature: number;
+  maxAllowed?: number;
+  minAllowed?: number;
+  message: string;
+  correctiveAction: string;
+  timestamp: string;
+}
+
+type TabKey = 'dashboard' | 'checklist' | 'temperatures' | 'lots' | 'alertes' | 'nettoyage' | 'conformite' | 'actions';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -118,6 +144,22 @@ const ACTION_TYPE_LABELS: Record<string, string> = {
   traceability: 'Tracabilite',
   other: 'Autre',
 };
+
+const DAILY_CHECK_TEMPLATE: Omit<DailyCheckItem, 'checked' | 'temperature' | 'timestamp' | 'agent'>[] = [
+  { id: 'frigo-matin', category: 'Temperatures frigo', label: 'Frigo - Matin (ouverture)', icon: 'snowflake', zone: 'frigo', maxTemp: 4 },
+  { id: 'frigo-midi', category: 'Temperatures frigo', label: 'Frigo - Midi (service)', icon: 'snowflake', zone: 'frigo', maxTemp: 4 },
+  { id: 'frigo-soir', category: 'Temperatures frigo', label: 'Frigo - Soir (fermeture)', icon: 'snowflake', zone: 'frigo', maxTemp: 4 },
+  { id: 'congel-matin', category: 'Temperatures congelateur', label: 'Congelateur - Matin', icon: 'snowflake', zone: 'congelateur', maxTemp: -18 },
+  { id: 'congel-soir', category: 'Temperatures congelateur', label: 'Congelateur - Soir', icon: 'snowflake', zone: 'congelateur', maxTemp: -18 },
+  { id: 'plat-chaud-midi', category: 'Temperature plats chauds', label: 'Plats chauds - Service midi', icon: 'flame', zone: 'plat_chaud', minTemp: 63 },
+  { id: 'plat-chaud-soir', category: 'Temperature plats chauds', label: 'Plats chauds - Service soir', icon: 'flame', zone: 'plat_chaud', minTemp: 63 },
+  { id: 'nettoyage-plan', category: 'Nettoyage surfaces', label: 'Plans de travail et surfaces', icon: 'spray' },
+  { id: 'nettoyage-sol', category: 'Nettoyage surfaces', label: 'Sols cuisine et reserve', icon: 'spray' },
+  { id: 'nettoyage-equip', category: 'Nettoyage surfaces', label: 'Equipements (trancheur, mixeur...)', icon: 'spray' },
+  { id: 'hygiene-mains', category: 'Hygiene personnel', label: 'Lavage des mains verifie', icon: 'hand' },
+  { id: 'hygiene-tenue', category: 'Hygiene personnel', label: 'Tenues propres et conformes', icon: 'hand' },
+  { id: 'hygiene-blessures', category: 'Hygiene personnel', label: 'Verification blessures / maladies', icon: 'hand' },
+];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -168,6 +210,51 @@ function getDeadlineBg(deadline: string): string {
   return '';
 }
 
+function dateKey(d: Date): string {
+  return d.toISOString().split('T')[0];
+}
+
+function getWeekDates(refDate: Date): Date[] {
+  const d = new Date(refDate);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  const dates: Date[] = [];
+  for (let i = 0; i < 7; i++) {
+    dates.push(new Date(d));
+    d.setDate(d.getDate() + 1);
+  }
+  return dates;
+}
+
+const WEEKDAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+function isTempOutOfRange(zone: string | undefined, temp: number): { outOfRange: boolean; message: string; correction: string } {
+  if (!zone) return { outOfRange: false, message: '', correction: '' };
+  if (zone === 'frigo' && temp > 4) {
+    return {
+      outOfRange: true,
+      message: `ALERTE: Frigo a ${temp}°C (max 4°C)`,
+      correction: 'Verifier la fermeture de la porte, controler le thermostat, deplacer les produits sensibles vers un frigo conforme.',
+    };
+  }
+  if (zone === 'congelateur' && temp > -18) {
+    return {
+      outOfRange: true,
+      message: `ALERTE: Congelateur a ${temp}°C (max -18°C)`,
+      correction: 'Verifier le compresseur, ne pas ouvrir la porte, appeler le technicien si > -15°C. Verifier l\'etat des produits congeles.',
+    };
+  }
+  if (zone === 'plat_chaud' && temp < 63) {
+    return {
+      outOfRange: true,
+      message: `ALERTE: Plat chaud a ${temp}°C (min 63°C)`,
+      correction: 'Remonter en temperature immediatement (>63°C en <1h). Si impossible, refroidir rapidement et stocker au froid. Jeter si maintien > 2h entre 10-63°C.',
+    };
+  }
+  return { outOfRange: false, message: '', correction: '' };
+}
+
 // ─── API helpers ────────────────────────────────────────────────────────────
 
 function getAuthHeaders(): Record<string, string> {
@@ -179,25 +266,64 @@ function getAuthHeaders(): Record<string, string> {
   return headers;
 }
 
-// ─── Compliance Score Ring ──────────────────────────────────────────────────
+// ─── localStorage helpers for daily checklist ───────────────────────────────
 
-function ScoreRing({ score, size = 160 }: { score: number; size?: number }) {
-  const radius = (size - 16) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (score / 100) * circumference;
+function getChecklistStorageKey(date: string): string {
+  const rid = localStorage.getItem('activeRestaurantId') || 'default';
+  return `haccp_checklist_${rid}_${date}`;
+}
+
+function loadDailyChecklist(date: string): DailyCheckItem[] {
+  try {
+    const raw = localStorage.getItem(getChecklistStorageKey(date));
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return DAILY_CHECK_TEMPLATE.map(t => ({ ...t, checked: false, temperature: '', timestamp: '', agent: '' }));
+}
+
+function saveDailyChecklist(date: string, items: DailyCheckItem[]) {
+  localStorage.setItem(getChecklistStorageKey(date), JSON.stringify(items));
+}
+
+function loadWeeklyData(): Record<string, DailyCheckItem[]> {
+  const data: Record<string, DailyCheckItem[]> = {};
+  const dates = getWeekDates(new Date());
+  for (const d of dates) {
+    const key = dateKey(d);
+    data[key] = loadDailyChecklist(key);
+  }
+  return data;
+}
+
+// ─── Compliance Score Ring (CSS conic-gradient) ─────────────────────────────
+
+function ComplianceScoreWidget({ score, size = 180 }: { score: number; size?: number }) {
   const color = score >= 80 ? '#10b981' : score >= 50 ? '#f59e0b' : '#ef4444';
+  const bgColor = score >= 80 ? 'rgba(16,185,129,0.1)' : score >= 50 ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)';
+  const label = score >= 80 ? 'Excellent' : score >= 50 ? 'A ameliorer' : 'Critique';
+  const angle = (score / 100) * 360;
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#1A1A1A" strokeWidth="8" />
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
-          strokeDasharray={circumference} strokeDashoffset={offset}
-          className="transition-all duration-1000 ease-out" />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold text-[#111111] dark:text-white">{score}%</span>
-        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Conformite</span>
+    <div className="flex flex-col items-center">
+      <div
+        className="relative rounded-full flex items-center justify-center"
+        style={{
+          width: size,
+          height: size,
+          background: `conic-gradient(${color} ${angle}deg, #1A1A1A ${angle}deg 360deg)`,
+          padding: 10,
+        }}
+      >
+        <div
+          className="w-full h-full rounded-full flex flex-col items-center justify-center"
+          style={{ backgroundColor: bgColor, backdropFilter: 'blur(8px)' }}
+        >
+          <div className="bg-white dark:bg-black rounded-full w-[85%] h-[85%] flex flex-col items-center justify-center shadow-inner">
+            <span className="text-4xl font-black" style={{ color }}>{score}%</span>
+            <span className="text-xs font-semibold mt-0.5" style={{ color }}>{label}</span>
+            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">Conformite HACCP</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -209,11 +335,20 @@ const PRINT_STYLES = `
 @media print {
   body * { visibility: hidden !important; }
   .print-report, .print-report * { visibility: visible !important; }
-  .print-report { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; padding: 24px; }
+  .print-report {
+    position: absolute; left: 0; top: 0; width: 100%;
+    background: white !important; color: black !important; padding: 24px;
+    font-size: 11px;
+  }
+  .print-report h1, .print-report h2, .print-report h3 { color: black !important; }
+  .print-report table { border-collapse: collapse; width: 100%; }
+  .print-report th, .print-report td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+  .print-report th { background: #f3f4f6 !important; font-weight: 600; }
   .print-report .dark\\:bg-black\\/50 { background: white !important; border-color: #e5e7eb !important; }
   .print-report .dark\\:text-white, .print-report .text-white { color: black !important; }
   .print-report .dark\\:text-\\[\\#737373\\], .print-report .text-\\[\\#9CA3AF\\] { color: #666 !important; }
   .no-print { display: none !important; }
+  @page { margin: 1cm; }
 }
 `;
 
@@ -237,6 +372,17 @@ export default function HACCP() {
 
   const [showActionForm, setShowActionForm] = useState(false);
   const [actionForm, setActionForm] = useState({ type: 'temperature' as CorrectiveAction['type'], description: '', responsiblePerson: '', deadline: '' });
+
+  // Daily checklist state
+  const today = dateKey(new Date());
+  const [checklistDate, setChecklistDate] = useState(today);
+  const [dailyChecklist, setDailyChecklist] = useState<DailyCheckItem[]>(() => loadDailyChecklist(today));
+  const [tempAlerts, setTempAlerts] = useState<TempAlert[]>([]);
+
+  // Weekly calendar state
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [selectedWeekDay, setSelectedWeekDay] = useState<string | null>(null);
+  const [weeklyData, setWeeklyData] = useState<Record<string, DailyCheckItem[]>>(() => loadWeeklyData());
 
   // ─── API: Load data on mount ──────────────────────────────────────────
 
@@ -308,6 +454,18 @@ export default function HACCP() {
     loadCorrectiveActions();
   }, [loadTemperatures, loadCleanings, loadReport, loadCorrectiveActions]);
 
+  // Sync checklist to localStorage when it changes
+  useEffect(() => {
+    saveDailyChecklist(checklistDate, dailyChecklist);
+    // Also update weekly data
+    setWeeklyData(prev => ({ ...prev, [checklistDate]: dailyChecklist }));
+  }, [dailyChecklist, checklistDate]);
+
+  // Load checklist when date changes
+  useEffect(() => {
+    setDailyChecklist(loadDailyChecklist(checklistDate));
+  }, [checklistDate]);
+
   // ─── Stats ───────────────────────────────────────────────────────────────
 
   const stats = useMemo(() => {
@@ -327,6 +485,65 @@ export default function HACCP() {
     const lotsKo = lots.filter(l => l.status === 'non_conforme').length;
     return { rate, total, activeAlerts, expired, cleanRate, cleanDone, cleanTotal: cleaning.length, lotsOk, lotsKo };
   }, [temperatures, dluoAlerts, cleaning, lots]);
+
+  // ─── Quick Stats (consecutive days, last NC, pending actions) ─────────
+
+  const quickStats = useMemo(() => {
+    // Consecutive compliant days from today backwards
+    let consecutiveDays = 0;
+    const todayDate = new Date();
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(todayDate);
+      d.setDate(d.getDate() - i);
+      const dk = dateKey(d);
+      const checks = loadDailyChecklist(dk);
+      const totalItems = checks.length;
+      const checkedItems = checks.filter(c => c.checked).length;
+      if (totalItems > 0 && checkedItems === totalItems) {
+        consecutiveDays++;
+      } else if (i === 0 && checkedItems < totalItems) {
+        // Today not yet complete, skip
+        continue;
+      } else {
+        break;
+      }
+    }
+
+    // Last non-conformity
+    let lastNCDaysAgo = -1;
+    const nonConformeTemps = temperatures.filter(t => {
+      if (t.zone === 'frigo') return t.temperature > 4;
+      if (t.zone === 'congelateur') return t.temperature > -18;
+      if (t.zone === 'plat_chaud') return t.temperature < 63;
+      return false;
+    });
+    if (nonConformeTemps.length > 0) {
+      const sorted = [...nonConformeTemps].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      const lastNC = new Date(sorted[0].timestamp);
+      lastNCDaysAgo = Math.floor((todayDate.getTime() - lastNC.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    // Pending corrective actions
+    const pendingActions = correctiveActions.filter(a => a.status !== 'resolu').length;
+
+    return { consecutiveDays, lastNCDaysAgo, pendingActions };
+  }, [temperatures, correctiveActions]);
+
+  // ─── Compliance Score (based on daily checklist) ──────────────────────
+
+  const complianceScore = useMemo(() => {
+    // Combine API report score with local checklist
+    if (complianceReport?.compliance.score !== undefined) {
+      // Blend API score with local daily progress
+      const localChecked = dailyChecklist.filter(c => c.checked).length;
+      const localTotal = dailyChecklist.length;
+      const localRate = localTotal > 0 ? (localChecked / localTotal) * 100 : 0;
+      return Math.round((complianceReport.compliance.score + localRate) / 2);
+    }
+    const checked = dailyChecklist.filter(c => c.checked).length;
+    const total = dailyChecklist.length;
+    return total > 0 ? Math.round((checked / total) * 100) : 0;
+  }, [complianceReport, dailyChecklist]);
 
   // ─── Chart data: temperature trend (last 7 days) ────────────────────────
 
@@ -396,6 +613,27 @@ export default function HACCP() {
     );
   };
 
+  // ─── Weekly Calendar Data ─────────────────────────────────────────────
+
+  const weekDates = useMemo(() => {
+    const ref = new Date();
+    ref.setDate(ref.getDate() + weekOffset * 7);
+    return getWeekDates(ref);
+  }, [weekOffset]);
+
+  const weekCalendarData = useMemo(() => {
+    return weekDates.map(d => {
+      const dk = dateKey(d);
+      const checks = weeklyData[dk] || loadDailyChecklist(dk);
+      const total = checks.length;
+      const done = checks.filter(c => c.checked).length;
+      const status: 'complete' | 'partial' | 'missing' =
+        total > 0 && done === total ? 'complete' :
+        done > 0 ? 'partial' : 'missing';
+      return { date: d, dateStr: dk, total, done, status };
+    });
+  }, [weekDates, weeklyData]);
+
   // ─── Handlers ────────────────────────────────────────────────────────────
 
   async function addTemp() {
@@ -419,6 +657,48 @@ export default function HACCP() {
       agent: tempForm.agent,
       notes: tempForm.notes,
     };
+
+    // Check for temperature alerts
+    const alertCheck = isTempOutOfRange(tempForm.zone, parseFloat(tempForm.temperature));
+    if (alertCheck.outOfRange) {
+      const alert: TempAlert = {
+        id: `alert-${Date.now()}`,
+        zone: ZONE_LABELS[tempForm.zone] || tempForm.zone,
+        temperature: parseFloat(tempForm.temperature),
+        message: alertCheck.message,
+        correctiveAction: alertCheck.correction,
+        timestamp: now.toISOString(),
+      };
+      setTempAlerts(prev => [alert, ...prev]);
+
+      // Auto-create corrective action
+      const autoAction: CorrectiveAction = {
+        id: Date.now(),
+        type: 'temperature',
+        description: alertCheck.message,
+        responsiblePerson: tempForm.agent,
+        deadline: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        status: 'ouvert',
+        resolution: alertCheck.correction,
+        createdAt: now.toISOString(),
+      };
+      setCorrectiveActions(prev => [autoAction, ...prev]);
+
+      // Try to persist corrective action to API
+      try {
+        await fetch('/api/haccp/corrective-action', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+            type: 'temperature',
+            description: alertCheck.message,
+            responsiblePerson: tempForm.agent,
+            deadline: autoAction.deadline,
+          }),
+        });
+      } catch { /* local fallback already applied */ }
+    }
+
     try {
       const res = await fetch('/api/haccp/temperatures', {
         method: 'POST',
@@ -444,7 +724,6 @@ export default function HACCP() {
     }
     setTempForm({ zone: 'frigo', temperature: '', agent: '', notes: '' });
     setShowTempForm(false);
-    // Refresh report after adding temp
     loadReport();
   }
 
@@ -495,7 +774,6 @@ export default function HACCP() {
         setCorrectiveActions(prev => [saved, ...prev]);
       }
     } catch {
-      // Fallback: add locally
       setCorrectiveActions(prev => [{ id: Date.now(), ...actionForm, status: 'ouvert', createdAt: new Date().toISOString() } as CorrectiveAction, ...prev]);
     }
     setActionForm({ type: 'temperature', description: '', responsiblePerson: '', deadline: '' });
@@ -521,18 +799,108 @@ export default function HACCP() {
     window.print();
   }
 
+  // ─── Daily Checklist Handlers ─────────────────────────────────────────
+
+  function toggleCheckItem(id: string) {
+    setDailyChecklist(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const now = new Date();
+      return {
+        ...item,
+        checked: !item.checked,
+        timestamp: !item.checked ? now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
+        agent: !item.checked ? 'Moi' : '',
+      };
+    }));
+  }
+
+  function updateCheckItemTemp(id: string, temp: string) {
+    setDailyChecklist(prev => prev.map(item => {
+      if (item.id !== id) return item;
+      const updated = { ...item, temperature: temp };
+
+      // Check for temperature alerts in real-time
+      if (temp && item.zone) {
+        const tempVal = parseFloat(temp);
+        if (!isNaN(tempVal)) {
+          const alertCheck = isTempOutOfRange(item.zone, tempVal);
+          if (alertCheck.outOfRange) {
+            // Add alert if not already showing for this item
+            setTempAlerts(prev => {
+              const exists = prev.some(a => a.id === `checklist-${id}`);
+              if (exists) {
+                return prev.map(a => a.id === `checklist-${id}` ? {
+                  ...a,
+                  temperature: tempVal,
+                  message: alertCheck.message,
+                  correctiveAction: alertCheck.correction,
+                } : a);
+              }
+              return [{
+                id: `checklist-${id}`,
+                zone: ZONE_LABELS[item.zone!] || item.zone || '',
+                temperature: tempVal,
+                message: alertCheck.message,
+                correctiveAction: alertCheck.correction,
+                timestamp: new Date().toISOString(),
+              }, ...prev];
+            });
+          } else {
+            // Remove alert if temp is now OK
+            setTempAlerts(prev => prev.filter(a => a.id !== `checklist-${id}`));
+          }
+        }
+      }
+
+      return updated;
+    }));
+  }
+
+  function dismissAlert(alertId: string) {
+    setTempAlerts(prev => prev.filter(a => a.id !== alertId));
+  }
+
   const filteredLots = useMemo(() => {
     if (!searchLots) return lots;
     const q = searchLots.toLowerCase();
     return lots.filter(l => l.lotNumber.toLowerCase().includes(q) || l.product.toLowerCase().includes(q) || l.supplier.toLowerCase().includes(q));
   }, [lots, searchLots]);
 
-  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+  // ─── Checklist grouped by category ────────────────────────────────────
+
+  const checklistByCategory = useMemo(() => {
+    const cats: Record<string, DailyCheckItem[]> = {};
+    dailyChecklist.forEach(item => {
+      if (!cats[item.category]) cats[item.category] = [];
+      cats[item.category].push(item);
+    });
+    return cats;
+  }, [dailyChecklist]);
+
+  const checklistProgress = useMemo(() => {
+    const total = dailyChecklist.length;
+    const done = dailyChecklist.filter(c => c.checked).length;
+    return { total, done, pct: total > 0 ? Math.round((done / total) * 100) : 0 };
+  }, [dailyChecklist]);
+
+  // ─── Category icon helper ─────────────────────────────────────────────
+
+  function getCategoryIcon(category: string) {
+    if (category.includes('frigo')) return <Snowflake className="w-5 h-5 text-blue-400" />;
+    if (category.includes('congelateur')) return <Snowflake className="w-5 h-5 text-violet-400" />;
+    if (category.includes('chaud')) return <Flame className="w-5 h-5 text-orange-400" />;
+    if (category.includes('Nettoyage')) return <SprayCan className="w-5 h-5 text-teal-400" />;
+    if (category.includes('Hygiene')) return <HandMetal className="w-5 h-5 text-pink-400" />;
+    return <CheckCircle2 className="w-5 h-5 text-[#9CA3AF]" />;
+  }
+
+  const tabs: { key: TabKey; label: string; icon: React.ReactNode; badge?: number }[] = [
     { key: 'dashboard', label: t('haccp.tabDashboard'), icon: <BarChart3 className="w-4 h-4" /> },
+    { key: 'checklist', label: 'Checklist du jour', icon: <CheckCircle2 className="w-4 h-4" />, badge: checklistProgress.total - checklistProgress.done > 0 ? checklistProgress.total - checklistProgress.done : undefined },
     { key: 'temperatures', label: t('haccp.tabTemperatures'), icon: <Thermometer className="w-4 h-4" /> },
     { key: 'nettoyage', label: t('haccp.tabCleaning'), icon: <SprayCan className="w-4 h-4" /> },
     { key: 'conformite', label: 'Conformite', icon: <ShieldCheck className="w-4 h-4" /> },
-    { key: 'actions', label: 'Actions correctives', icon: <Wrench className="w-4 h-4" /> },
+    { key: 'actions', label: 'Actions correctives', icon: <Wrench className="w-4 h-4" />, badge: quickStats.pendingActions > 0 ? quickStats.pendingActions : undefined },
     { key: 'lots', label: t('haccp.tabTraceability'), icon: <Package className="w-4 h-4" /> },
     { key: 'alertes', label: t('haccp.tabAlerts'), icon: <AlertTriangle className="w-4 h-4" /> },
   ];
@@ -542,8 +910,38 @@ export default function HACCP() {
       {/* Print styles */}
       <style dangerouslySetInnerHTML={{ __html: PRINT_STYLES }} />
 
+      {/* ─── Temperature Alerts Banner ──────────────────────────────────── */}
+      {tempAlerts.length > 0 && (
+        <div className="space-y-2 no-print">
+          {tempAlerts.map(alert => (
+            <div key={alert.id} className="bg-red-950/60 border-2 border-red-500/60 rounded-2xl p-4 animate-pulse-slow">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                  <Bell className="w-5 h-5 text-red-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-red-300 font-bold text-sm">{alert.message}</h4>
+                    <button onClick={() => dismissAlert(alert.id)} className="text-red-400/60 hover:text-red-300 transition-colors flex-shrink-0">
+                      <XCircle className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="mt-1.5 bg-red-900/30 rounded-xl px-3 py-2">
+                    <p className="text-xs text-red-200 font-medium">Action corrective recommandee :</p>
+                    <p className="text-xs text-red-300/80 mt-0.5">{alert.correctiveAction}</p>
+                  </div>
+                  <div className="mt-1.5 text-[10px] text-red-400/60">
+                    {new Date(alert.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - Action corrective auto-creee
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Header */}
-      <div className="flex items-center justify-between no-print">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
         <div>
           <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
             <ShieldCheck className="w-7 h-7 text-emerald-400" />
@@ -552,9 +950,9 @@ export default function HACCP() {
           <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">{t('haccp.subtitle')}</p>
         </div>
         <button onClick={handlePrint}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors no-print">
-          <Download className="w-4 h-4" />
-          Exporter rapport HACCP
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+          <Printer className="w-4 h-4" />
+          Imprimer le registre
         </button>
       </div>
 
@@ -562,15 +960,111 @@ export default function HACCP() {
       <div className="flex gap-1 bg-white dark:bg-black/50 p-1 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto no-print">
         {tabs.map(tab => (
           <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-lg' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'}`}>
+            className={`relative flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.key ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-lg' : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'}`}>
             {tab.icon}{tab.label}
+            {tab.badge && (
+              <span className={`ml-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold ${activeTab === tab.key ? 'bg-red-500 text-white' : 'bg-red-500/80 text-white'}`}>
+                {tab.badge}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* ═══ DASHBOARD ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           DASHBOARD
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'dashboard' && (
-        <div className="space-y-6">
+        <div className="space-y-6 print-report">
+          {/* Top row: Compliance Score + Quick Stats */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Compliance Score Widget */}
+            <div className="lg:col-span-4 bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center">
+              <ComplianceScoreWidget score={complianceScore} />
+              <div className="mt-4 w-full">
+                <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
+                  <span>Progression du jour</span>
+                  <span>{checklistProgress.done}/{checklistProgress.total}</span>
+                </div>
+                <div className="h-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${checklistProgress.pct}%`,
+                      backgroundColor: checklistProgress.pct >= 80 ? '#10b981' : checklistProgress.pct >= 50 ? '#f59e0b' : '#ef4444',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats Cards */}
+            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {/* Consecutive compliant days */}
+              <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[#9CA3AF] dark:text-[#737373] text-xs font-medium uppercase tracking-wider">Jours consecutifs conforme</span>
+                </div>
+                <div className="flex items-end gap-2">
+                  <span className="text-4xl font-black text-emerald-400">{quickStats.consecutiveDays}</span>
+                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">jours</span>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-emerald-400">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  <span>Continuez ainsi !</span>
+                </div>
+              </div>
+
+              {/* Last non-conformity */}
+              <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[#9CA3AF] dark:text-[#737373] text-xs font-medium uppercase tracking-wider">Derniere non-conformite</span>
+                </div>
+                <div className="flex items-end gap-2">
+                  {quickStats.lastNCDaysAgo >= 0 ? (
+                    <>
+                      <span className={`text-4xl font-black ${quickStats.lastNCDaysAgo <= 1 ? 'text-red-400' : quickStats.lastNCDaysAgo <= 3 ? 'text-amber-400' : 'text-[#111111] dark:text-white'}`}>
+                        {quickStats.lastNCDaysAgo}
+                      </span>
+                      <span className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">jour{quickStats.lastNCDaysAgo !== 1 ? 's' : ''}</span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-bold text-emerald-400">Aucune</span>
+                  )}
+                </div>
+                <div className="mt-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  {quickStats.lastNCDaysAgo < 0 ? 'Aucune non-conformite enregistree' :
+                    quickStats.lastNCDaysAgo === 0 ? 'Aujourd\'hui' :
+                    `Il y a ${quickStats.lastNCDaysAgo} jour${quickStats.lastNCDaysAgo !== 1 ? 's' : ''}`}
+                </div>
+              </div>
+
+              {/* Pending corrective actions */}
+              <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[#9CA3AF] dark:text-[#737373] text-xs font-medium uppercase tracking-wider">Actions correctives en cours</span>
+                </div>
+                <div className="flex items-end gap-2">
+                  <span className={`text-4xl font-black ${quickStats.pendingActions > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                    {quickStats.pendingActions}
+                  </span>
+                  <span className="text-sm text-[#9CA3AF] dark:text-[#737373] mb-1">action{quickStats.pendingActions !== 1 ? 's' : ''}</span>
+                </div>
+                {quickStats.pendingActions > 0 ? (
+                  <button onClick={() => setActiveTab('actions')} className="mt-3 flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 transition-colors">
+                    Voir les actions <ChevronRight className="w-3 h-3" />
+                  </button>
+                ) : (
+                  <div className="mt-3 flex items-center gap-2 text-xs text-emerald-400">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Tout est en ordre</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Summary stat cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Conformite */}
             <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
@@ -619,6 +1113,67 @@ export default function HACCP() {
                   Voir les actions <ChevronRight className="w-3 h-3" />
                 </button>
               )}
+            </div>
+          </div>
+
+          {/* Weekly Calendar View */}
+          <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-teal-400" />
+                Vue hebdomadaire
+              </h3>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setWeekOffset(o => o - 1)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                  <ChevronLeft className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                </button>
+                <button onClick={() => setWeekOffset(0)} className="px-3 py-1 rounded-lg text-xs font-medium text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                  Aujourd'hui
+                </button>
+                <button onClick={() => setWeekOffset(o => o + 1)} className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 gap-2">
+              {weekCalendarData.map((day, i) => {
+                const isToday = day.dateStr === today;
+                const isSelected = selectedWeekDay === day.dateStr;
+                const statusColor = day.status === 'complete' ? 'border-emerald-500/60 bg-emerald-500/10' :
+                  day.status === 'partial' ? 'border-amber-500/60 bg-amber-500/10' :
+                  'border-red-500/40 bg-red-500/5';
+                const dotColor = day.status === 'complete' ? 'bg-emerald-500' :
+                  day.status === 'partial' ? 'bg-amber-500' : 'bg-red-500/50';
+
+                return (
+                  <button
+                    key={day.dateStr}
+                    onClick={() => {
+                      setSelectedWeekDay(day.dateStr === selectedWeekDay ? null : day.dateStr);
+                      setChecklistDate(day.dateStr);
+                      setActiveTab('checklist');
+                    }}
+                    className={`relative flex flex-col items-center p-3 rounded-xl border-2 transition-all ${statusColor} ${isSelected ? 'ring-2 ring-teal-400/50' : ''} ${isToday ? 'shadow-lg' : ''} hover:scale-105`}
+                  >
+                    <span className="text-[10px] font-bold uppercase text-[#9CA3AF] dark:text-[#737373]">{WEEKDAY_NAMES[i]}</span>
+                    <span className={`text-lg font-bold mt-0.5 ${isToday ? 'text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                      {day.date.getDate()}
+                    </span>
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+                      {day.done}/{day.total}
+                    </span>
+                    <div className={`w-2 h-2 rounded-full mt-1.5 ${dotColor}`} />
+                    {isToday && (
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-teal-400 rounded-full border-2 border-white dark:border-black" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex gap-4 mt-3 text-xs">
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-emerald-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">Complet</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-[#9CA3AF] dark:text-[#737373]">Partiel</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-red-500/50" /><span className="text-[#9CA3AF] dark:text-[#737373]">Manquant</span></div>
             </div>
           </div>
 
@@ -689,7 +1244,144 @@ export default function HACCP() {
         </div>
       )}
 
-      {/* ═══ TEMPERATURES ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           DAILY CHECKLIST
+         ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'checklist' && (
+        <div className="space-y-4">
+          {/* Date selector + progress */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-teal-400" />
+                Checklist HACCP
+              </h3>
+              <input
+                type="date"
+                value={checklistDate}
+                onChange={(e) => setChecklistDate(e.target.value)}
+                className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white"
+              />
+              {checklistDate !== today && (
+                <button onClick={() => setChecklistDate(today)} className="text-xs text-teal-400 hover:text-teal-300 font-medium">
+                  Aujourd'hui
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-sm font-medium">
+                <span className={checklistProgress.pct >= 80 ? 'text-emerald-400' : checklistProgress.pct >= 50 ? 'text-amber-400' : 'text-red-400'}>
+                  {checklistProgress.done}/{checklistProgress.total}
+                </span>
+                <span className="text-[#9CA3AF] dark:text-[#737373] ml-1">controles</span>
+              </div>
+              <div className="w-32 h-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: `${checklistProgress.pct}%`,
+                    backgroundColor: checklistProgress.pct >= 80 ? '#10b981' : checklistProgress.pct >= 50 ? '#f59e0b' : '#ef4444',
+                  }}
+                />
+              </div>
+              <span className={`text-sm font-bold ${checklistProgress.pct >= 80 ? 'text-emerald-400' : checklistProgress.pct >= 50 ? 'text-amber-400' : 'text-red-400'}`}>
+                {checklistProgress.pct}%
+              </span>
+            </div>
+          </div>
+
+          {/* Checklist by category */}
+          {Object.entries(checklistByCategory).map(([category, items]) => {
+            const catDone = items.filter(i => i.checked).length;
+            const catTotal = items.length;
+            const hasTemps = items.some(i => i.zone);
+
+            return (
+              <div key={category} className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center gap-2">
+                    {getCategoryIcon(category)}
+                    <span className="text-[#111111] dark:text-white font-semibold text-sm">{category}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-medium ${catDone === catTotal ? 'text-emerald-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                      {catDone}/{catTotal}
+                    </span>
+                    {catDone === catTotal && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                  </div>
+                </div>
+                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                  {items.map(item => {
+                    // Check if temp is out of range
+                    let tempWarning = false;
+                    if (item.temperature && item.zone) {
+                      const tempVal = parseFloat(item.temperature);
+                      if (!isNaN(tempVal)) {
+                        const check = isTempOutOfRange(item.zone, tempVal);
+                        tempWarning = check.outOfRange;
+                      }
+                    }
+
+                    return (
+                      <div key={item.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${item.checked ? 'bg-emerald-500/5' : 'hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/30'} ${tempWarning ? 'bg-red-500/5 border-l-4 border-red-500' : ''}`}>
+                        {/* Checkbox */}
+                        <button
+                          onClick={() => toggleCheckItem(item.id)}
+                          className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#E5E7EB] dark:border-[#333] hover:border-emerald-400'}`}
+                        >
+                          {item.checked && <CheckCircle2 className="w-4 h-4" />}
+                        </button>
+
+                        {/* Label */}
+                        <div className="flex-1 min-w-0">
+                          <span className={`text-sm ${item.checked ? 'text-[#9CA3AF] dark:text-[#737373] line-through' : 'text-[#111111] dark:text-white'}`}>
+                            {item.label}
+                          </span>
+                        </div>
+
+                        {/* Temperature input (for temp items) */}
+                        {hasTemps && item.zone && (
+                          <div className="flex items-center gap-1.5">
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={item.temperature}
+                              onChange={(e) => updateCheckItemTemp(item.id, e.target.value)}
+                              placeholder="°C"
+                              className={`w-20 bg-[#FAFAFA] dark:bg-[#0A0A0A] border rounded-lg px-2 py-1.5 text-sm text-center font-mono font-bold ${tempWarning ? 'border-red-500 text-red-400' : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white'} placeholder:text-[#6B7280]`}
+                            />
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">°C</span>
+                          </div>
+                        )}
+
+                        {/* Timestamp */}
+                        {item.timestamp && (
+                          <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                            <Clock className="w-3 h-3" />
+                            <span>{item.timestamp}</span>
+                          </div>
+                        )}
+
+                        {/* Agent */}
+                        {item.agent && (
+                          <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                            <User className="w-3 h-3" />
+                            <span>{item.agent}</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+           TEMPERATURES
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'temperatures' && (
         <div className="space-y-4">
           {/* Legend */}
@@ -723,6 +1415,23 @@ export default function HACCP() {
                 <div><label className="block text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t('haccp.notes')}</label>
                   <input type="text" value={tempForm.notes} onChange={e => setTempForm(f => ({ ...f, notes: e.target.value }))} placeholder={t('haccp.optional')} className="w-full bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" /></div>
               </div>
+
+              {/* Live temperature alert preview */}
+              {tempForm.temperature && (() => {
+                const check = isTempOutOfRange(tempForm.zone, parseFloat(tempForm.temperature));
+                if (!check.outOfRange) return null;
+                return (
+                  <div className="bg-red-950/40 border border-red-500/40 rounded-xl p-3 flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-red-300">{check.message}</p>
+                      <p className="text-xs text-red-400/80 mt-1">{check.correction}</p>
+                      <p className="text-[10px] text-red-400/50 mt-1">Une action corrective sera automatiquement creee a l'enregistrement</p>
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div className="flex gap-3">
                 <button onClick={addTemp} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">{t('haccp.save')}</button>
                 <button onClick={() => setShowTempForm(false)} className="px-4 py-2 bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">{t('haccp.cancel')}</button>
@@ -753,7 +1462,9 @@ export default function HACCP() {
         </div>
       )}
 
-      {/* ═══ NETTOYAGE ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           NETTOYAGE
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'nettoyage' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -789,7 +1500,9 @@ export default function HACCP() {
         </div>
       )}
 
-      {/* ═══ CONFORMITE ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           CONFORMITE
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'conformite' && (
         <div className="space-y-6 print-report">
           {/* Score + Summary row */}
@@ -800,7 +1513,7 @@ export default function HACCP() {
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 Score de conformite
               </h3>
-              <ScoreRing score={complianceReport?.compliance.score || 0} />
+              <ComplianceScoreWidget score={complianceReport?.compliance.score || complianceScore} size={160} />
               <div className="mt-4 text-center text-sm text-[#9CA3AF] dark:text-[#737373]">
                 {complianceReport?.compliance.completedChecks || 0} / {complianceReport?.compliance.requiredChecks || 0} controles effectues
               </div>
@@ -852,9 +1565,8 @@ export default function HACCP() {
                 {(() => {
                   const heatmap = complianceReport?.calendarHeatmap || [];
                   if (heatmap.length === 0) return null;
-                  // Pad start to align with day of week
                   const firstDate = new Date(heatmap[0]?.date || new Date());
-                  const startDay = firstDate.getDay() === 0 ? 6 : firstDate.getDay() - 1; // Monday = 0
+                  const startDay = firstDate.getDay() === 0 ? 6 : firstDate.getDay() - 1;
                   const pads = Array.from({ length: startDay }, (_, i) => (
                     <div key={`pad-${i}`} className="w-full aspect-square" />
                   ));
@@ -964,7 +1676,9 @@ export default function HACCP() {
         </div>
       )}
 
-      {/* ═══ ACTIONS CORRECTIVES ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           ACTIONS CORRECTIVES
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'actions' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
@@ -1050,7 +1764,12 @@ export default function HACCP() {
                         {ACTION_TYPE_LABELS[a.type] || a.type}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs">{a.description}</td>
+                    <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs">
+                      <div>{a.description}</div>
+                      {a.resolution && (
+                        <div className="mt-1 text-xs text-[#9CA3AF] dark:text-[#737373] italic">Action: {a.resolution}</div>
+                      )}
+                    </td>
                     <td className="py-3 px-4 text-[#9CA3AF] dark:text-[#737373]">{a.responsiblePerson}</td>
                     <td className={`py-3 px-4 font-medium ${getDeadlineColor(a.deadline)}`}>{new Date(a.deadline).toLocaleDateString('fr-FR')}</td>
                     <td className="py-3 px-4">
@@ -1086,7 +1805,9 @@ export default function HACCP() {
         </div>
       )}
 
-      {/* ═══ TRACABILITE ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           TRACABILITE
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'lots' && (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-3 justify-between">
@@ -1139,7 +1860,9 @@ export default function HACCP() {
         </div>
       )}
 
-      {/* ═══ ALERTES DLUO ═══ */}
+      {/* ═══════════════════════════════════════════════════════════════════
+           ALERTES DLUO
+         ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'alertes' && (
         <div className="space-y-4">
           <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">

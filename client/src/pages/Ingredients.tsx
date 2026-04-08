@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare, BarChart3, Bell, AlertTriangle, Minus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, ChevronUp, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare, BarChart3, Bell, AlertTriangle, Minus, Flame, CheckCircle, Download, Upload, SlidersHorizontal, Filter, Percent } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
@@ -55,12 +56,79 @@ interface PriceHistoryResponse {
   supplierPrices: { supplierId: number | null; supplierName: string; price: number }[];
 }
 
+// ── Category color mapping ─────────────────────────────────────────────
+const CATEGORY_COLORS: Record<string, { border: string; bg: string; text: string; darkBorder: string; darkBg: string }> = {
+  'Viandes': { border: 'border-red-400', bg: 'bg-red-50', text: 'text-red-700', darkBorder: 'dark:border-red-800', darkBg: 'dark:bg-red-950/30' },
+  'Poissons & Fruits de mer': { border: 'border-blue-400', bg: 'bg-blue-50', text: 'text-blue-700', darkBorder: 'dark:border-blue-800', darkBg: 'dark:bg-blue-950/30' },
+  'Légumes': { border: 'border-green-400', bg: 'bg-green-50', text: 'text-green-700', darkBorder: 'dark:border-green-800', darkBg: 'dark:bg-green-950/30' },
+  'Fruits': { border: 'border-orange-400', bg: 'bg-orange-50', text: 'text-orange-700', darkBorder: 'dark:border-orange-800', darkBg: 'dark:bg-orange-950/30' },
+  'Produits laitiers': { border: 'border-yellow-400', bg: 'bg-yellow-50', text: 'text-yellow-700', darkBorder: 'dark:border-yellow-800', darkBg: 'dark:bg-yellow-950/30' },
+  'Épices & Condiments': { border: 'border-amber-400', bg: 'bg-amber-50', text: 'text-amber-700', darkBorder: 'dark:border-amber-800', darkBg: 'dark:bg-amber-950/30' },
+  'Féculents & Céréales': { border: 'border-lime-400', bg: 'bg-lime-50', text: 'text-lime-700', darkBorder: 'dark:border-lime-800', darkBg: 'dark:bg-lime-950/30' },
+  'Huiles & Matières grasses': { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-700', darkBorder: 'dark:border-yellow-700', darkBg: 'dark:bg-yellow-950/30' },
+  'Boissons': { border: 'border-cyan-400', bg: 'bg-cyan-50', text: 'text-cyan-700', darkBorder: 'dark:border-cyan-800', darkBg: 'dark:bg-cyan-950/30' },
+  'Autres': { border: 'border-gray-400', bg: 'bg-gray-50', text: 'text-gray-700', darkBorder: 'dark:border-gray-700', darkBg: 'dark:bg-gray-900/30' },
+};
+
+// ── Supplier badge colors (hash-based) ─────────────────────────────────
+const SUPPLIER_BADGE_COLORS = [
+  { bg: 'bg-violet-100 dark:bg-violet-900/30', text: 'text-violet-700 dark:text-violet-300', hover: 'hover:bg-violet-200 dark:hover:bg-violet-900/50' },
+  { bg: 'bg-sky-100 dark:bg-sky-900/30', text: 'text-sky-700 dark:text-sky-300', hover: 'hover:bg-sky-200 dark:hover:bg-sky-900/50' },
+  { bg: 'bg-rose-100 dark:bg-rose-900/30', text: 'text-rose-700 dark:text-rose-300', hover: 'hover:bg-rose-200 dark:hover:bg-rose-900/50' },
+  { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-700 dark:text-emerald-300', hover: 'hover:bg-emerald-200 dark:hover:bg-emerald-900/50' },
+  { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300', hover: 'hover:bg-amber-200 dark:hover:bg-amber-900/50' },
+  { bg: 'bg-teal-100 dark:bg-teal-900/30', text: 'text-teal-700 dark:text-teal-300', hover: 'hover:bg-teal-200 dark:hover:bg-teal-900/50' },
+  { bg: 'bg-indigo-100 dark:bg-indigo-900/30', text: 'text-indigo-700 dark:text-indigo-300', hover: 'hover:bg-indigo-200 dark:hover:bg-indigo-900/50' },
+  { bg: 'bg-pink-100 dark:bg-pink-900/30', text: 'text-pink-700 dark:text-pink-300', hover: 'hover:bg-pink-200 dark:hover:bg-pink-900/50' },
+];
+
+function getSupplierBadgeColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return SUPPLIER_BADGE_COLORS[Math.abs(hash) % SUPPLIER_BADGE_COLORS.length];
+}
+
+// ── CSS-only Sparkline Component ───────────────────────────────────────
+function PriceSparkline({ prices }: { prices: number[] }) {
+  if (prices.length < 2) return null;
+  // Take last 6 values
+  const pts = prices.slice(-6);
+  const min = Math.min(...pts);
+  const max = Math.max(...pts);
+  const range = max - min || 1;
+  const trending = pts[pts.length - 1] > pts[0] ? 'up' : pts[pts.length - 1] < pts[0] ? 'down' : 'stable';
+  const color = trending === 'up' ? '#EF4444' : trending === 'down' ? '#10B981' : '#9CA3AF';
+
+  // Generate SVG path
+  const width = 60;
+  const height = 20;
+  const stepX = width / (pts.length - 1);
+  const points = pts.map((p, i) => ({
+    x: i * stepX,
+    y: height - ((p - min) / range) * (height - 4) - 2,
+  }));
+
+  const pathD = points.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(' ');
+
+  return (
+    <svg width={width} height={height} className="inline-block ml-1.5 align-middle" viewBox={`0 0 ${width} ${height}`}>
+      <path d={pathD} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      {points.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="2" fill={color} />
+      ))}
+    </svg>
+  );
+}
+
 const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[], barcode: '' };
 
 type SortKey = 'name' | 'category' | 'pricePerUnit' | 'unit' | 'supplier';
 type SortDir = 'asc' | 'desc';
 
 export default function Ingredients() {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
@@ -80,6 +148,11 @@ export default function Ingredients() {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkCategoryOpen, setBulkCategoryOpen] = useState(false);
   const [bulkSupplierOpen, setBulkSupplierOpen] = useState(false);
+
+  // Bulk price update
+  const [showBulkPriceModal, setShowBulkPriceModal] = useState(false);
+  const [bulkPricePercent, setBulkPricePercent] = useState('');
+  const [bulkPriceDirection, setBulkPriceDirection] = useState<'increase' | 'decrease'>('increase');
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
@@ -113,6 +186,16 @@ export default function Ingredients() {
   const [trackerPeriod, setTrackerPeriod] = useState<30 | 90 | 365>(30);
   const [alertInput, setAlertInput] = useState('');
   const [alertsChecked, setAlertsChecked] = useState(false);
+
+  // Advanced filters
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [filterSupplier, setFilterSupplier] = useState('');
+  const [filterPriceMin, setFilterPriceMin] = useState('');
+  const [filterPriceMax, setFilterPriceMax] = useState('');
+  const [filterUnit, setFilterUnit] = useState('');
+
+  // All-ingredient price histories for sparklines (simple simulation from updatedAt)
+  const [allPriceHistories, setAllPriceHistories] = useState<Record<number, number[]>>({});
 
   // Last price for edited ingredient
   const lastPrice = useMemo(() => {
@@ -148,14 +231,13 @@ export default function Ingredients() {
     const avgPrice = total > 0
       ? ingredients.reduce((sum, i) => sum + i.pricePerUnit, 0) / total
       : 0;
-    // Category with highest average price
     const catPrices: Record<string, { sum: number; count: number }> = {};
     ingredients.forEach((i) => {
       if (!catPrices[i.category]) catPrices[i.category] = { sum: 0, count: 0 };
       catPrices[i.category].sum += i.pricePerUnit;
       catPrices[i.category].count += 1;
     });
-    let expensiveCat = '—';
+    let expensiveCat = '\u2014';
     let maxAvg = 0;
     Object.entries(catPrices).forEach(([cat, { sum, count }]) => {
       const avg = sum / count;
@@ -173,6 +255,42 @@ export default function Ingredients() {
     });
     return counts;
   }, [ingredients]);
+
+  // Category summary cards data
+  const categorySummaries = useMemo(() => {
+    const data: Record<string, { count: number; totalSpend: number; avgPrice: number }> = {};
+    ingredients.forEach((i) => {
+      if (!data[i.category]) data[i.category] = { count: 0, totalSpend: 0, avgPrice: 0 };
+      data[i.category].count += 1;
+      data[i.category].totalSpend += i.pricePerUnit;
+    });
+    Object.keys(data).forEach((cat) => {
+      data[cat].avgPrice = data[cat].count > 0 ? data[cat].totalSpend / data[cat].count : 0;
+    });
+    return data;
+  }, [ingredients]);
+
+  // Cost alert: detect ingredients with >10% price increase (simulated via updatedAt recency)
+  const costAlertIds = useMemo(() => {
+    const alertSet = new Set<number>();
+    const stableSet = new Set<number>();
+    ingredients.forEach((ing) => {
+      const history = allPriceHistories[ing.id];
+      if (history && history.length >= 2) {
+        const oldest = history[0];
+        const latest = history[history.length - 1];
+        const pctChange = oldest > 0 ? ((latest - oldest) / oldest) * 100 : 0;
+        if (pctChange > 10) {
+          alertSet.add(ing.id);
+        } else {
+          stableSet.add(ing.id);
+        }
+      } else {
+        stableSet.add(ing.id);
+      }
+    });
+    return { alertIds: alertSet, stableIds: stableSet };
+  }, [ingredients, allPriceHistories]);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -211,6 +329,31 @@ export default function Ingredients() {
       .catch(() => setPriceHistory([]))
       .finally(() => setPriceHistoryLoading(false));
   }, [editingId]);
+
+  // Load sparkline data for all ingredients
+  useEffect(() => {
+    if (ingredients.length === 0) return;
+    const token = localStorage.getItem('token');
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    // Fetch price histories for all ingredients in batch (or individually)
+    const histories: Record<number, number[]> = {};
+    const promises = ingredients.map((ing) =>
+      fetch(`/api/price-history?ingredientId=${ing.id}&period=90`, { headers })
+        .then(res => res.ok ? res.json() : null)
+        .then((data) => {
+          if (data && Array.isArray(data.data) && data.data.length > 0) {
+            histories[ing.id] = data.data.map((d: { price: number }) => d.price);
+          } else if (data && Array.isArray(data) && data.length > 0) {
+            histories[ing.id] = data.map((d: { price: number }) => d.price);
+          }
+        })
+        .catch(() => {})
+    );
+    Promise.all(promises).then(() => {
+      setAllPriceHistories(histories);
+    });
+  }, [ingredients]);
 
   async function loadIngredients() {
     try {
@@ -294,9 +437,15 @@ export default function Ingredients() {
       const q = search.toLowerCase();
       const matchSearch = i.name.toLowerCase().includes(q) ||
         (i.supplier && i.supplier.toLowerCase().includes(q)) ||
-        (i.supplierRef?.name && i.supplierRef.name.toLowerCase().includes(q));
+        (i.supplierRef?.name && i.supplierRef.name.toLowerCase().includes(q)) ||
+        i.category.toLowerCase().includes(q);
       const matchCategory = !filterCategory || i.category === filterCategory;
-      return matchSearch && matchCategory;
+      // Advanced filters
+      const matchSupplier = !filterSupplier || (i.supplierRef?.name || i.supplier || '').toLowerCase().includes(filterSupplier.toLowerCase());
+      const matchPriceMin = !filterPriceMin || i.pricePerUnit >= parseFloat(filterPriceMin);
+      const matchPriceMax = !filterPriceMax || i.pricePerUnit <= parseFloat(filterPriceMax);
+      const matchUnit = !filterUnit || i.unit === filterUnit;
+      return matchSearch && matchCategory && matchSupplier && matchPriceMin && matchPriceMax && matchUnit;
     });
     result.sort((a, b) => {
       let aVal: string | number = a[sortKey as keyof typeof a] as string | number;
@@ -308,7 +457,7 @@ export default function Ingredients() {
       return 0;
     });
     return result;
-  }, [ingredients, search, filterCategory, sortKey, sortDir]);
+  }, [ingredients, search, filterCategory, sortKey, sortDir, filterSupplier, filterPriceMin, filterPriceMax, filterUnit]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -403,7 +552,6 @@ export default function Ingredients() {
 
   function handleSupplierInputChange(value: string) {
     setSupplierQuery(value);
-    // If cleared or changed from the selected supplier, clear supplierId
     const match = suppliers.find((s) => s.name.toLowerCase() === value.toLowerCase());
     setForm({ ...form, supplier: value, supplierId: match ? match.id : null });
     setShowSupplierDropdown(true);
@@ -507,7 +655,6 @@ export default function Ingredients() {
       const valueStr = weighTarget.pricePerUnit > 0
         ? ` (${formatCurrency(data.weight * weighTarget.pricePerUnit)})`
         : '';
-      // Find existing inventory item for this ingredient
       const invItem = inventoryItems.find(i => i.ingredientId === weighTarget.id);
       if (invItem) {
         if (data.mode === 'set') {
@@ -518,7 +665,6 @@ export default function Ingredients() {
           showToast(t('ingredients.stockUpdated').replace('{weight}', String(data.weight)).replace('{unit}', weighTarget.unit).replace('{value}', valueStr), 'success');
         }
       } else {
-        // Create new inventory entry
         await addToInventory({
           ingredientId: weighTarget.id,
           currentStock: data.weight,
@@ -590,6 +736,92 @@ export default function Ingredients() {
     }
   }
 
+  // ── Bulk Price Update ─────────────────────────────────────────────
+  function openBulkPriceUpdate() {
+    setBulkPricePercent('');
+    setBulkPriceDirection('increase');
+    setShowBulkPriceModal(true);
+  }
+
+  const bulkPricePreview = useMemo(() => {
+    const pct = parseFloat(bulkPricePercent);
+    if (isNaN(pct) || pct <= 0) return [];
+    const ids = Array.from(selectedIds);
+    return ids.map((id) => {
+      const ing = ingredients.find(i => i.id === id);
+      if (!ing) return null;
+      const multiplier = bulkPriceDirection === 'increase' ? (1 + pct / 100) : (1 - pct / 100);
+      const newPrice = Math.max(0, ing.pricePerUnit * multiplier);
+      return { id: ing.id, name: ing.name, oldPrice: ing.pricePerUnit, newPrice, unit: ing.unit };
+    }).filter(Boolean) as { id: number; name: string; oldPrice: number; newPrice: number; unit: string }[];
+  }, [selectedIds, ingredients, bulkPricePercent, bulkPriceDirection]);
+
+  async function applyBulkPriceUpdate() {
+    if (bulkPricePreview.length === 0) return;
+    try {
+      await Promise.all(bulkPricePreview.map(item =>
+        updateIngredient(item.id, { pricePerUnit: Math.round(item.newPrice * 100) / 100 })
+      ));
+      showToast(`Prix mis a jour pour ${bulkPricePreview.length} ingredient(s)`, 'success');
+      setShowBulkPriceModal(false);
+      setSelectedIds(new Set());
+      loadIngredients();
+    } catch {
+      showToast(t('ingredients.saveError'), 'error');
+    }
+  }
+
+  // ── Export CSV ────────────────────────────────────────────────────
+  function exportCSV() {
+    const header = ['Nom', 'Categorie', 'Prix unitaire', 'Unite', 'Fournisseur', 'Allergenes', 'Code-barres'];
+    const rows = ingredients.map(ing => [
+      ing.name,
+      ing.category,
+      ing.pricePerUnit.toFixed(2),
+      ing.unit,
+      ing.supplierRef?.name || ing.supplier || '',
+      (ing.allergens || []).join('; '),
+      ing.barcode || '',
+    ]);
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ingredients_restaumargin_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${ingredients.length} ingredients exportes en CSV`, 'success');
+  }
+
+  function downloadCSVTemplate() {
+    const header = ['Nom', 'Categorie', 'Prix unitaire', 'Unite', 'Fournisseur', 'Allergenes', 'Code-barres'];
+    const exampleRow = ['Tomate cerise', 'Legumes', '3.50', 'kg', 'Metro', 'Aucun', ''];
+    const csvContent = [header, exampleRow].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'template_ingredients_restaumargin.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImportClick() {
+    showToast('Import CSV bientot disponible. Telechargez le template pour preparer vos donnees.', 'success');
+    downloadCSVTemplate();
+  }
+
+  // Check if any advanced filter is active
+  const hasAdvancedFilters = !!filterSupplier || !!filterPriceMin || !!filterPriceMax || !!filterUnit;
+
+  function clearAdvancedFilters() {
+    setFilterSupplier('');
+    setFilterPriceMin('');
+    setFilterPriceMax('');
+    setFilterUnit('');
+  }
+
   function SortHeader({ label, field }: { label: string; field: SortKey }) {
     return (
       <button onClick={() => toggleSort(field)} className="flex items-center gap-1 font-medium hover:text-[#111111] dark:hover:text-white">
@@ -603,9 +835,16 @@ export default function Ingredients() {
 
   return (
     <div>
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+          <button onClick={exportCSV} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title="Exporter CSV">
+            <Download className="w-4 h-4" /> Exporter CSV
+          </button>
+          <button onClick={handleImportClick} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title="Importer CSV">
+            <Upload className="w-4 h-4" /> Importer CSV
+          </button>
           <button onClick={() => window.print()} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title={t('ingredients.printTooltip')}>
             <Printer className="w-4 h-4" /> {t('ingredients.print')}
           </button>
@@ -613,6 +852,28 @@ export default function Ingredients() {
             <Plus className="w-4 h-4" /> {t('ingredients.add')}
           </button>
         </div>
+      </div>
+
+      {/* ── Category Summary Cards ──────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
+        {INGREDIENT_CATEGORIES.filter(cat => categorySummaries[cat]).map((cat) => {
+          const summary = categorySummaries[cat];
+          const colors = CATEGORY_COLORS[cat] || CATEGORY_COLORS['Autres'];
+          return (
+            <button
+              key={cat}
+              onClick={() => setFilterCategory(filterCategory === cat ? '' : cat)}
+              className={`${colors.bg} ${colors.darkBg} rounded-2xl border-l-4 ${colors.border} ${colors.darkBorder} p-3 text-left transition-all hover:scale-[1.02] ${filterCategory === cat ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}
+            >
+              <p className={`text-xs font-semibold ${colors.text} dark:text-white/70 truncate`}>{cat}</p>
+              <p className="text-lg font-bold text-[#111111] dark:text-white mt-0.5">{summary.count}</p>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">Moy. {summary.avgPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Tot. {summary.totalSpend.toFixed(0)}{getCurrencySymbol()}</span>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       {/* KPI Summary Cards */}
@@ -655,16 +916,103 @@ export default function Ingredients() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-3">
-        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
-        <input
-          type="text"
-          placeholder={t('ingredients.searchPlaceholder')}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="input pl-10 w-full"
-        />
+      {/* ── Smart Search + Advanced Filters ─────────────────────────── */}
+      <div className="mb-3 space-y-2">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
+            <input
+              type="text"
+              placeholder={t('ingredients.searchPlaceholder') + ', categorie, fournisseur...'}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="input pl-10 w-full"
+            />
+          </div>
+          <button
+            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+              showAdvancedFilters || hasAdvancedFilters
+                ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white'
+                : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+            }`}
+          >
+            <SlidersHorizontal className="w-4 h-4" />
+            Filtres
+            {hasAdvancedFilters && <span className="w-2 h-2 rounded-full bg-red-500 ml-1" />}
+          </button>
+        </div>
+
+        {/* Advanced Filters Panel */}
+        {showAdvancedFilters && (
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 animate-in slide-in-from-top-2">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+                <Filter className="w-4 h-4" /> Filtres avances
+              </h3>
+              {hasAdvancedFilters && (
+                <button onClick={clearAdvancedFilters} className="text-xs text-red-500 hover:text-red-400 font-medium">
+                  Effacer les filtres
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Supplier filter */}
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Fournisseur</label>
+                <select
+                  value={filterSupplier}
+                  onChange={(e) => setFilterSupplier(e.target.value)}
+                  className="input w-full text-sm"
+                >
+                  <option value="">Tous</option>
+                  {suppliers.map(s => (
+                    <option key={s.id} value={s.name}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+              {/* Price range */}
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Prix min ({getCurrencySymbol()})</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={filterPriceMin}
+                  onChange={(e) => setFilterPriceMin(e.target.value)}
+                  className="input w-full text-sm"
+                  placeholder="0.00"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Prix max ({getCurrencySymbol()})</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={filterPriceMax}
+                  onChange={(e) => setFilterPriceMax(e.target.value)}
+                  className="input w-full text-sm"
+                  placeholder="999.99"
+                />
+              </div>
+              {/* Unit filter */}
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Unite</label>
+                <select
+                  value={filterUnit}
+                  onChange={(e) => setFilterUnit(e.target.value)}
+                  className="input w-full text-sm"
+                >
+                  <option value="">Toutes</option>
+                  {UNITS.map(u => (
+                    <option key={u} value={u}>{u}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Category pill filters */}
@@ -694,9 +1042,19 @@ export default function Ingredients() {
         ))}
       </div>
 
+      {/* ── Import/Export bar (mobile) ──────────────────────────────── */}
+      <div className="flex sm:hidden gap-2 mb-3">
+        <button onClick={exportCSV} className="flex-1 btn-secondary flex items-center justify-center gap-2 text-xs">
+          <Download className="w-3.5 h-3.5" /> Exporter
+        </button>
+        <button onClick={handleImportClick} className="flex-1 btn-secondary flex items-center justify-center gap-2 text-xs">
+          <Upload className="w-3.5 h-3.5" /> Importer
+        </button>
+      </div>
+
       {/* Table */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow overflow-x-auto border border-[#E5E7EB] dark:border-[#1A1A1A] -mx-4 sm:mx-0">
-        <table className="w-full text-sm min-w-[640px]">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl shadow overflow-x-auto border border-[#E5E7EB] dark:border-[#1A1A1A] -mx-4 sm:mx-0">
+        <table className="w-full text-sm min-w-[740px]">
           <thead className="bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-left">
             <tr>
               <th className="px-4 py-3 w-10">
@@ -711,93 +1069,122 @@ export default function Ingredients() {
               <th className="px-4 py-3"><SortHeader label={t('ingredients.nameColumn')} field="name" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.categoryColumn')} field="category" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.unitPriceColumn')} field="pricePerUnit" /></th>
+              <th className="px-3 py-3 font-medium text-xs">Tendance</th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.unitColumn')} field="unit" /></th>
-              <th className="px-4 py-3 font-medium">{t('ingredients.allergensColumn')}</th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.supplierColumn')} field="supplier" /></th>
+              <th className="px-3 py-3 font-medium text-xs">Statut</th>
               <th className="px-4 py-3 font-medium w-24">{t('ingredients.actionsColumn')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
+                <td colSpan={9} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
                   {ingredients.length === 0 ? t('ingredients.noIngredients') : t('ingredients.noResults')}
                 </td>
               </tr>
             ) : (
-              filtered.map((ing) => (
-                <tr key={ing.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] ${selectedIds.has(ing.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
-                  <td className="px-4 py-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(ing.id)}
-                      onChange={() => toggleSelectOne(ing.id)}
-                      className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
-                      aria-label={`Selectionner ${ing.name}`}
-                    />
-                  </td>
-                  <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
-                    <div className="flex items-center gap-2.5">
-                      <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
-                      <span>
-                        {ing.name}
-                        {isInSeason(ing.name) && (
-                          <span className="ml-1 text-xs text-emerald-500" title="Produit de saison">🌿</span>
-                        )}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="px-2 py-1 rounded-full text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white">{ing.category}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => openPriceTracker(ing)}
-                      className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors group"
-                      title="Voir l'historique des prix"
-                    >
-                      {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
-                      <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      {getAlertForIngredient(ing.id) !== null && (
-                        <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
-                      )}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{ing.unit}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {(ing.allergens || []).map((a) => (
-                        <span key={a} className="px-1.5 py-0.5 rounded text-[10px] bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white font-medium">
-                          {a}
+              filtered.map((ing) => {
+                const supplierName = ing.supplierRef?.name || ing.supplier || '';
+                const badgeColor = supplierName ? getSupplierBadgeColor(supplierName) : null;
+                const sparklinePrices = allPriceHistories[ing.id];
+                const isAlert = costAlertIds.alertIds.has(ing.id);
+                const isStable = costAlertIds.stableIds.has(ing.id);
+
+                return (
+                  <tr key={ing.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] ${selectedIds.has(ing.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
+                    <td className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(ing.id)}
+                        onChange={() => toggleSelectOne(ing.id)}
+                        className="w-4 h-4 rounded accent-[#111111] dark:accent-white cursor-pointer"
+                        aria-label={`Selectionner ${ing.name}`}
+                      />
+                    </td>
+                    <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
+                      <div className="flex items-center gap-2.5">
+                        <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
+                        <span>
+                          {ing.name}
+                          {isInSeason(ing.name) && (
+                            <span className="ml-1 text-xs text-emerald-500" title="Produit de saison">&#127807;</span>
+                          )}
                         </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    {ing.supplierRef?.name || ing.supplier ? (
-                      <span className="inline-flex items-center gap-1.5 text-[#6B7280] dark:text-[#A3A3A3]">
-                        <Truck className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3] flex-shrink-0" />
-                        {ing.supplierRef?.name || ing.supplier}
-                      </span>
-                    ) : (
-                      <span className="text-[#9CA3AF] dark:text-[#737373] italic text-xs">{t('ingredients.notAssigned')}</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingrédient">
-                        <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="px-2 py-1 rounded-full text-xs bg-[#F3F4F6] dark:bg-[#171717] text-[#111111] dark:text-white">{ing.category}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => openPriceTracker(ing)}
+                        className="inline-flex items-center gap-1.5 font-mono text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors group"
+                        title="Voir l'historique des prix"
+                      >
+                        {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
+                        <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {getAlertForIngredient(ing.id) !== null && (
+                          <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                        )}
                       </button>
-                      <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingrédient">
-                        <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
-                      </button>
-                      <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingrédient">
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                    </td>
+                    {/* Sparkline */}
+                    <td className="px-3 py-3">
+                      {sparklinePrices && sparklinePrices.length >= 2 ? (
+                        <PriceSparkline prices={sparklinePrices} />
+                      ) : (
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">--</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{ing.unit}</td>
+                    {/* Supplier Badge */}
+                    <td className="px-4 py-3">
+                      {supplierName && badgeColor ? (
+                        <button
+                          onClick={() => navigate('/suppliers')}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${badgeColor.bg} ${badgeColor.text} ${badgeColor.hover}`}
+                          title={`Voir le fournisseur : ${supplierName}`}
+                        >
+                          <Truck className="w-3 h-3 flex-shrink-0" />
+                          {supplierName}
+                        </button>
+                      ) : (
+                        <span className="text-[#9CA3AF] dark:text-[#737373] italic text-xs">{t('ingredients.notAssigned')}</span>
+                      )}
+                    </td>
+                    {/* Cost Alert */}
+                    <td className="px-3 py-3">
+                      {isAlert ? (
+                        <span className="inline-flex items-center gap-1 text-red-500" title="Prix en hausse >10%">
+                          <Flame className="w-4 h-4" />
+                        </span>
+                      ) : isStable ? (
+                        <span className="inline-flex items-center gap-1 text-emerald-500" title="Prix stable">
+                          <CheckCircle className="w-4 h-4" />
+                        </span>
+                      ) : (
+                        <span className="text-[#9CA3AF] dark:text-[#737373]">
+                          <Minus className="w-4 h-4" />
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1">
+                        <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingredient">
+                          <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        </button>
+                        <button onClick={() => openEdit(ing)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t('ingredients.editTooltip')} aria-label="Modifier l'ingredient">
+                          <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                        </button>
+                        <button onClick={() => setDeleteTarget(ing.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t('ingredients.deleteTooltip')} aria-label="Supprimer l'ingredient">
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
@@ -805,14 +1192,27 @@ export default function Ingredients() {
 
       <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-3">{t('ingredients.ingredientCount').replace('{count}', String(filtered.length))}</p>
 
+      {/* Hidden file input for CSV import */}
+      <input type="file" ref={fileInputRef} accept=".csv" className="hidden" onChange={() => { showToast('Import CSV en cours de developpement', 'success'); }} />
+
       {/* ── Bulk Actions Floating Bar ──────────────────────────────────── */}
       {selectedIds.size > 0 && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-6 py-3 flex items-center gap-4 animate-in slide-in-from-bottom-4">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 animate-in slide-in-from-bottom-4 max-w-[95vw]">
           <span className="text-sm font-medium flex items-center gap-2">
             <CheckSquare className="w-4 h-4" />
             {selectedIds.size} selectionne{selectedIds.size > 1 ? 's' : ''}
           </span>
-          <div className="w-px h-6 bg-white/20 dark:bg-black/20" />
+          <div className="w-px h-6 bg-white/20 dark:bg-black/20 hidden sm:block" />
+
+          {/* Bulk price update */}
+          <button
+            onClick={openBulkPriceUpdate}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-amber-600 hover:bg-amber-500 text-white transition-colors"
+          >
+            <Percent className="w-4 h-4" />
+            <span className="hidden sm:inline">Mettre a jour les prix</span>
+            <span className="sm:hidden">Prix</span>
+          </button>
 
           {/* Bulk delete */}
           <button
@@ -820,7 +1220,8 @@ export default function Ingredients() {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
           >
             <Trash2 className="w-4 h-4" />
-            Supprimer ({selectedIds.size})
+            <span className="hidden sm:inline">Supprimer ({selectedIds.size})</span>
+            <span className="sm:hidden">{selectedIds.size}</span>
           </button>
 
           {/* Bulk change category */}
@@ -830,7 +1231,7 @@ export default function Ingredients() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
             >
               <Tag className="w-4 h-4" />
-              Changer categorie
+              <span className="hidden sm:inline">Changer categorie</span>
               <ChevronDown className="w-3 h-3" />
             </button>
             {bulkCategoryOpen && (
@@ -855,7 +1256,7 @@ export default function Ingredients() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
             >
               <Truck className="w-4 h-4" />
-              Changer fournisseur
+              <span className="hidden sm:inline">Changer fournisseur</span>
               <ChevronDown className="w-3 h-3" />
             </button>
             {bulkSupplierOpen && (
@@ -885,6 +1286,89 @@ export default function Ingredients() {
           </button>
         </div>
       )}
+
+      {/* ── Bulk Price Update Modal ──────────────────────────────────── */}
+      <Modal isOpen={showBulkPriceModal} onClose={() => setShowBulkPriceModal(false)} title="Mettre a jour les prix en lot">
+        <div className="space-y-4">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Appliquer un ajustement de prix a <strong className="text-[#111111] dark:text-white">{selectedIds.size}</strong> ingredient(s) selectionne(s).
+          </p>
+
+          <div className="flex items-center gap-3">
+            <div className="flex rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+              <button
+                onClick={() => setBulkPriceDirection('increase')}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'increase' ? 'bg-red-500 text-white' : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3]'}`}
+              >
+                <TrendingUp className="w-4 h-4 inline mr-1" /> Hausse
+              </button>
+              <button
+                onClick={() => setBulkPriceDirection('decrease')}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${bulkPriceDirection === 'decrease' ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3]'}`}
+              >
+                <TrendingDown className="w-4 h-4 inline mr-1" /> Baisse
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                value={bulkPricePercent}
+                onChange={(e) => setBulkPricePercent(e.target.value)}
+                className="input w-24 text-center"
+                placeholder="5"
+              />
+              <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3] font-medium">%</span>
+            </div>
+          </div>
+
+          {/* Preview table */}
+          {bulkPricePreview.length > 0 && (
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden max-h-64 overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-[#F3F4F6] dark:bg-[#171717]">
+                  <tr>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">Ingredient</th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">Avant</th>
+                    <th className="px-3 py-2 text-center text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]"></th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">Apres</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                  {bulkPricePreview.map((item) => (
+                    <tr key={item.id}>
+                      <td className="px-3 py-2 font-medium text-[#111111] dark:text-white">{item.name}</td>
+                      <td className="px-3 py-2 text-right font-mono text-[#6B7280] dark:text-[#A3A3A3]">{item.oldPrice.toFixed(2)}{getCurrencySymbol()}/{item.unit}</td>
+                      <td className="px-3 py-2 text-center">
+                        {bulkPriceDirection === 'increase'
+                          ? <TrendingUp className="w-3.5 h-3.5 text-red-500 mx-auto" />
+                          : <TrendingDown className="w-3.5 h-3.5 text-emerald-500 mx-auto" />
+                        }
+                      </td>
+                      <td className={`px-3 py-2 text-right font-mono font-semibold ${bulkPriceDirection === 'increase' ? 'text-red-500' : 'text-emerald-500'}`}>
+                        {item.newPrice.toFixed(2)}{getCurrencySymbol()}/{item.unit}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-3 pt-2">
+            <button onClick={() => setShowBulkPriceModal(false)} className="btn-secondary">Annuler</button>
+            <button
+              onClick={applyBulkPriceUpdate}
+              disabled={bulkPricePreview.length === 0}
+              className="btn-primary flex items-center gap-2 disabled:opacity-50"
+            >
+              <Check className="w-4 h-4" /> Appliquer les changements
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Form Modal */}
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title={editingId ? t('ingredients.editModalTitle') : t('ingredients.newModalTitle')}>
@@ -985,7 +1469,7 @@ export default function Ingredients() {
               autoComplete="off"
             />
             {formErrors.name && <p className="text-xs text-red-500 mt-1">{t('ingredients.nameRequired')}</p>}
-            {/* Name suggestions dropdown — existing + catalog */}
+            {/* Name suggestions dropdown */}
             {showNameSuggestions && (nameSuggestions.length > 0 || catalogSuggestions.length > 0) && (
               <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-[#0A0A0A] rounded-lg shadow-xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-h-64 overflow-y-auto">
                 {nameSuggestions.length > 0 && (
@@ -1029,7 +1513,7 @@ export default function Ingredients() {
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{product.category}</span>
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">|</span>
                           <span className="text-xs text-green-600">{product.prixMin.toFixed(2)}{getCurrencySymbol()}</span>
-                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">—</span>
+                          <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">&mdash;</span>
                           <span className="text-xs text-red-500">{product.prixMax.toFixed(2)}{getCurrencySymbol()}</span>
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-auto">{product.fournisseurs.join(', ')}</span>
                         </div>
@@ -1238,7 +1722,7 @@ export default function Ingredients() {
       <Modal
         isOpen={!!trackerIngredient}
         onClose={() => { setTrackerIngredient(null); setTrackerData(null); }}
-        title={trackerIngredient ? `Historique des prix — ${trackerIngredient.name}` : 'Historique des prix'}
+        title={trackerIngredient ? `Historique des prix \u2014 ${trackerIngredient.name}` : 'Historique des prix'}
         className="max-w-2xl"
       >
         {trackerIngredient && (

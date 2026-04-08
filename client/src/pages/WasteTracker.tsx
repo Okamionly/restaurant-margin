@@ -1,9 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Trash2, Plus, TrendingDown, AlertTriangle, Lightbulb,
   Target, PieChart as PieChartIcon, BarChart3, Leaf, Search,
   ChevronDown, ChevronUp, Calendar, ArrowDown, Loader2,
-  Brain, Zap, Clock, TrendingUp, CalendarDays, Sparkles
+  Brain, Zap, Clock, TrendingUp, CalendarDays, Sparkles,
+  Award, CheckCircle, Flame, ArrowUpRight, ArrowDownRight,
+  FileText, Package
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -34,9 +36,7 @@ type WasteReason = 'expired' | 'spoiled' | 'overproduction' | 'damaged' | 'other
 interface WasteEntry {
   id: number;
   date: string;
-  /** Display name of the ingredient */
   ingredientName: string;
-  /** FK to ingredients table */
   ingredientId: number;
   quantity: number;
   unit: string;
@@ -45,7 +45,6 @@ interface WasteEntry {
   notes: string;
 }
 
-// Shape returned by GET /api/waste/summary
 interface WasteSummary {
   totalCost: number;
   itemCount: number;
@@ -53,47 +52,6 @@ interface WasteSummary {
   wasteByReason: Record<string, number>;
   trend: { date: string; cost: number }[];
 }
-
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
-
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
-  const rid = localStorage.getItem('activeRestaurantId');
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  if (rid) headers['X-Restaurant-Id'] = rid;
-  return headers;
-}
-
-type Period = 'jour' | 'semaine' | 'mois';
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const REASON_LABELS: Record<WasteReason, string> = {
-  expired: 'Périmé',
-  spoiled: 'Avarié',
-  overproduction: 'Surproduction',
-  damaged: 'Endommagé',
-  other: 'Autre',
-};
-
-const REASON_COLORS: Record<WasteReason, string> = {
-  expired: '#dc2626',
-  spoiled: '#d97706',
-  overproduction: '#7c3aed',
-  damaged: '#0891b2',
-  other: '#6b7280',
-};
-
-const REASON_BADGE: Record<WasteReason, string> = {
-  expired: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-  spoiled: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-  overproduction: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
-  damaged: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
-  other: 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300',
-};
-
-// ─── AI Analysis Types ──────────────────────────────────────────────────────
 
 interface AiRecommendation {
   action: string;
@@ -124,47 +82,136 @@ interface AiWasteAnalysis {
   prediction: WastePrediction[];
 }
 
-// (ingredients are loaded from the API — no static catalog needed)
+// ── Reduction Goal stored in localStorage ────────────────────────────────
+interface ReductionGoal {
+  targetPercent: number; // e.g. 15 means -15%
+  baselineCost: number;  // last month cost at time of setting goal
+  month: string;         // YYYY-MM
+}
 
-// ─── AI Suggestions ──────────────────────────────────────────────────────────
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-function generateSuggestions(entries: WasteEntry[]): string[] {
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  const rid = localStorage.getItem('activeRestaurantId');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (rid) headers['X-Restaurant-Id'] = rid;
+  return headers;
+}
+
+type Period = 'jour' | 'semaine' | 'mois';
+
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const REASON_LABELS: Record<WasteReason, string> = {
+  expired: 'Perime',
+  spoiled: 'Avarie',
+  overproduction: 'Surproduction',
+  damaged: 'Erreur preparation',
+  other: 'Autre',
+};
+
+const REASON_COLORS: Record<WasteReason, string> = {
+  expired: '#dc2626',
+  spoiled: '#d97706',
+  overproduction: '#7c3aed',
+  damaged: '#0891b2',
+  other: '#6b7280',
+};
+
+const REASON_BADGE: Record<WasteReason, string> = {
+  expired: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+  spoiled: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  overproduction: 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300',
+  damaged: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
+  other: 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-300',
+};
+
+const CATEGORY_COLORS: Record<string, string> = {
+  'Viandes': '#dc2626',
+  'Poissons': '#2563eb',
+  'Legumes': '#16a34a',
+  'Fruits': '#ea580c',
+  'Produits laitiers': '#8b5cf6',
+  'Epicerie': '#d97706',
+  'Boulangerie': '#a16207',
+  'Boissons': '#0891b2',
+  'Condiments': '#65a30d',
+  'Surgeles': '#6366f1',
+};
+
+function getCategoryColor(cat: string): string {
+  return CATEGORY_COLORS[cat] || '#6b7280';
+}
+
+// ─── AI Suggestions Generator ────────────────────────────────────────────────
+
+function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): string[] {
   const tips: string[] = [];
   const byReason: Record<WasteReason, number> = { expired: 0, spoiled: 0, overproduction: 0, damaged: 0, other: 0 };
-  const byIngredient: Record<string, number> = {};
+  const byIngredient: Record<string, { cost: number; name: string }> = {};
 
   entries.forEach(e => {
     const cost = e.quantity * e.costPerUnit;
     byReason[e.reason] += cost;
-    byIngredient[e.ingredientName] = (byIngredient[e.ingredientName] || 0) + cost;
+    if (!byIngredient[e.ingredientName]) byIngredient[e.ingredientName] = { cost: 0, name: e.ingredientName };
+    byIngredient[e.ingredientName].cost += cost;
   });
 
   const topReason = (Object.entries(byReason) as [WasteReason, number][]).sort((a, b) => b[1] - a[1])[0];
-  const topIngredients = Object.entries(byIngredient).sort((a, b) => b[1] - a[1]).slice(0, 3);
-
-  if (topReason[0] === 'expired') {
-    tips.push('📦 Appliquez le FIFO (First In, First Out) pour réduire les pertes par péremption. Vérifiez les DLC chaque matin.');
-    tips.push('🔄 Réduisez les volumes de commande pour les produits fréquemment périmés et passez à des livraisons plus fréquentes.');
-  }
-  if (topReason[0] === 'overproduction') {
-    tips.push('📊 Analysez vos données de fréquentation pour ajuster les quantités préparées. Utilisez les prévisions du planning.');
-    tips.push('🍽️ Proposez un "plat du jour" avec les surplus de la veille pour valoriser les excédents.');
-  }
-  if (topReason[0] === 'damaged') {
-    tips.push('👨‍🍳 Renforcez la formation des équipes sur les fiches techniques. Affichez les procédures clés en cuisine.');
-    tips.push('⚖️ Utilisez la station balance pour un dosage précis et réduire les erreurs de préparation.');
-  }
-  if (topReason[0] === 'spoiled') {
-    tips.push('🎯 Analysez les conditions de stockage — température, humidité, rotation des stocks.');
-    tips.push('💬 Formez le service en salle à mieux décrire les plats pour éviter les commandes inadaptées.');
-  }
+  const topIngredients = Object.entries(byIngredient).sort((a, b) => b[1].cost - a[1].cost).slice(0, 3);
+  const totalCost = entries.reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
 
   if (topIngredients.length > 0) {
-    tips.push(`🔍 ${topIngredients[0][0]} représente votre plus grosse perte (${topIngredients[0][1].toFixed(0)}€). Envisagez un fournisseur avec conditionnement adapté.`);
+    const top = topIngredients[0];
+    const saving10 = top[1].cost * 0.1;
+    tips.push(
+      `L'IA suggere : Reduisez les portions de ${top[1].name} de 10% pour economiser ${saving10.toFixed(0)} EUR/mois`
+    );
+  }
+  if (topIngredients.length > 1) {
+    tips.push(
+      `L'IA suggere : Commandez ${topIngredients[1][1].name} plus frequemment en plus petites quantites pour reduire les pertes`
+    );
+  }
+  if (topReason && topReason[0] === 'expired') {
+    tips.push(
+      'L\'IA suggere : Appliquez le FIFO (First In, First Out) pour reduire les pertes par peremption. Verifiez les DLC chaque matin.'
+    );
+  }
+  if (topReason && topReason[0] === 'overproduction') {
+    tips.push(
+      'L\'IA suggere : Analysez vos donnees de frequentation pour ajuster les quantites preparees. Utilisez les previsions du planning.'
+    );
+  }
+  if (topReason && topReason[0] === 'damaged') {
+    tips.push(
+      'L\'IA suggere : Renforcez la formation des equipes sur les fiches techniques. Utilisez la station balance pour un dosage precis.'
+    );
+  }
+  if (totalCost > 500) {
+    tips.push(
+      `L'IA suggere : Votre gaspillage mensuel depasse 500 EUR. Mettez en place un "plat du jour" avec les surplus pour valoriser les excedents.`
+    );
   }
 
-  tips.push('📱 Utilisez une app anti-gaspi (Too Good To Go) pour vendre les invendus en fin de service.');
-  tips.push('🥗 Créez un menu "zéro déchet" hebdomadaire utilisant les ingrédients en fin de DLC.');
+  // Category-based suggestions
+  const ingByCategory: Record<string, number> = {};
+  entries.forEach(e => {
+    const ing = ingredients.find(i => i.id === e.ingredientId);
+    if (ing && ing.category) {
+      ingByCategory[ing.category] = (ingByCategory[ing.category] || 0) + e.quantity * e.costPerUnit;
+    }
+  });
+  const topCat = Object.entries(ingByCategory).sort((a, b) => b[1] - a[1])[0];
+  if (topCat) {
+    tips.push(
+      `L'IA suggere : La categorie "${topCat[0]}" represente votre plus grosse source de gaspillage (${topCat[1].toFixed(0)} EUR). Negociez des conditionnements plus petits.`
+    );
+  }
+
+  tips.push('L\'IA suggere : Utilisez une app anti-gaspi (Too Good To Go) pour vendre les invendus en fin de service.');
 
   return tips;
 }
@@ -180,6 +227,58 @@ function getWeekNumber(d: Date): number {
   return Math.ceil(((d.getTime() - oneJan.getTime()) / 86400000 + oneJan.getDay() + 1) / 7);
 }
 
+// ── Animated Counter Hook ────────────────────────────────────────────────────
+function useAnimatedCounter(target: number, duration = 1200): number {
+  const [value, setValue] = useState(0);
+  const prevTarget = useRef(0);
+
+  useEffect(() => {
+    const start = prevTarget.current;
+    const diff = target - start;
+    if (Math.abs(diff) < 0.01) { setValue(target); return; }
+    const startTime = performance.now();
+    let rafId: number;
+
+    function animate(now: number) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(start + diff * eased);
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      } else {
+        prevTarget.current = target;
+      }
+    }
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
+  }, [target, duration]);
+
+  return value;
+}
+
+// ─── Calendar Heatmap Helpers ────────────────────────────────────────────────
+function getLast30Days(): string[] {
+  const days: string[] = [];
+  const now = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  return days;
+}
+
+function getHeatColor(value: number, max: number): { bg: string; text: string } {
+  if (value === 0) return { bg: '#16a34a22', text: '#16a34a' };
+  const ratio = max > 0 ? value / max : 0;
+  if (ratio < 0.25) return { bg: '#16a34a44', text: '#16a34a' };
+  if (ratio < 0.5) return { bg: '#eab30866', text: '#a16207' };
+  if (ratio < 0.75) return { bg: '#f97316aa', text: '#c2410c' };
+  return { bg: '#dc2626cc', text: '#ffffff' };
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function WasteTracker() {
@@ -190,7 +289,7 @@ export default function WasteTracker() {
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [period, setPeriod] = useState<Period>('semaine');
+  const [period, setPeriod] = useState<Period>('mois');
   const [search, setSearch] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showTips, setShowTips] = useState(true);
@@ -200,13 +299,65 @@ export default function WasteTracker() {
   const [aiLoading, setAiLoading] = useState(false);
   const [showAiPanel, setShowAiPanel] = useState(false);
 
+  // Calendar heatmap
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+
+  // Reduction Goal
+  const [reductionGoal, setReductionGoal] = useState<ReductionGoal | null>(null);
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [goalInput, setGoalInput] = useState('15');
+
+  // Inline form (not modal) state
+  const [showInlineForm, setShowInlineForm] = useState(false);
+  const [ingredientSearch, setIngredientSearch] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+
   // Form state
   const [form, setForm] = useState({
     ingredientId: '',
+    ingredientName: '',
     quantity: '',
     reason: 'expired' as WasteReason,
     notes: '',
   });
+
+  // ─── Reduction Goal persistence ──────────────────────────────────────────
+  useEffect(() => {
+    const stored = localStorage.getItem('wasteReductionGoal');
+    if (stored) {
+      try {
+        setReductionGoal(JSON.parse(stored));
+      } catch { /* ignore */ }
+    }
+  }, []);
+
+  function saveGoal() {
+    const pct = parseInt(goalInput);
+    if (!pct || pct <= 0 || pct > 100) {
+      showToast('Entrez un pourcentage valide (1-100)', 'error');
+      return;
+    }
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    // Baseline = last month cost
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+    const lastMonthCost = entries
+      .filter(e => {
+        const d = new Date(e.date);
+        return d >= lastMonthStart && d <= lastMonthEnd;
+      })
+      .reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
+
+    // If no last month data, use current month as baseline
+    const baseline = lastMonthCost > 0 ? lastMonthCost : thisMonthCost;
+    const goal: ReductionGoal = { targetPercent: pct, baselineCost: baseline, month: monthKey };
+    setReductionGoal(goal);
+    localStorage.setItem('wasteReductionGoal', JSON.stringify(goal));
+    setShowGoalModal(false);
+    showToast(`Objectif fixe : -${pct}% de gaspillage ce mois`, 'success');
+  }
 
   // ─── Data fetching ────────────────────────────────────────────────────────
 
@@ -228,11 +379,10 @@ export default function WasteTracker() {
     try {
       const res = await fetch(`${API_BASE}/waste/summary`, { headers: authHeaders() });
       if (res.ok) {
-        // summary data is computed locally from entries — kept for future enrichment
         await res.json() as WasteSummary;
       }
     } catch {
-      // non-blocking — summary enrichment is optional
+      // non-blocking
     }
   }
 
@@ -264,9 +414,20 @@ export default function WasteTracker() {
     loadSummary();
     fetchIngredients()
       .then(setIngredients)
-      .catch(() => showToast('Impossible de charger les ingrédients', 'error'));
+      .catch(() => showToast('Impossible de charger les ingredients', 'error'));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRestaurant, restaurantLoading]);
+
+  // Close ingredient suggestions when clicking outside
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   // ─── Computed data ───────────────────────────────────────────────────────
 
@@ -294,6 +455,29 @@ export default function WasteTracker() {
     [filteredByPeriod]
   );
 
+  // This month cost (for the big counter + goal)
+  const thisMonthCost = useMemo(() => {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    return entries
+      .filter(e => new Date(e.date) >= monthStart)
+      .reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
+  }, [entries]);
+
+  // Last month cost (for trend comparison)
+  const lastMonthCost = useMemo(() => {
+    const now = new Date();
+    const lastStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+    return entries
+      .filter(e => { const d = new Date(e.date); return d >= lastStart && d <= lastEnd; })
+      .reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
+  }, [entries]);
+
+  const monthTrend = lastMonthCost > 0
+    ? ((thisMonthCost - lastMonthCost) / lastMonthCost * 100)
+    : 0;
+
   const previousPeriodCost = useMemo(() => {
     const now = new Date();
     let start: Date, end: Date;
@@ -318,6 +502,9 @@ export default function WasteTracker() {
 
   const entryCount = filteredByPeriod.length;
 
+  // Animated counter
+  const animatedCost = useAnimatedCounter(thisMonthCost);
+
   // Pie chart: waste by reason
   const pieData = useMemo(() => {
     const byReason: Record<WasteReason, number> = { expired: 0, spoiled: 0, overproduction: 0, damaged: 0, other: 0 };
@@ -331,10 +518,24 @@ export default function WasteTracker() {
       }));
   }, [filteredByPeriod]);
 
+  // Waste by Category (horizontal bar)
+  const categoryData = useMemo(() => {
+    const byCat: Record<string, number> = {};
+    filteredByPeriod.forEach(e => {
+      const ing = ingredients.find(i => i.id === e.ingredientId);
+      const cat = ing?.category || 'Autre';
+      byCat[cat] = (byCat[cat] || 0) + e.quantity * e.costPerUnit;
+    });
+    return Object.entries(byCat)
+      .sort((a, b) => b[1] - a[1])
+      .map(([category, cost]) => ({ category, cost }));
+  }, [filteredByPeriod, ingredients]);
+
+  const maxCategoryCost = categoryData.length > 0 ? categoryData[0].cost : 1;
+
   // Bar chart: waste trend over time
   const barData = useMemo(() => {
     if (period === 'jour') {
-      // Show hourly is not realistic, show last 7 days
       const days: Record<string, number> = {};
       const now = new Date();
       for (let i = 6; i >= 0; i--) {
@@ -353,7 +554,6 @@ export default function WasteTracker() {
       return Object.entries(days).map(([name, value]) => ({ name, value: parseFloat(value.toFixed(2)) }));
     }
     if (period === 'semaine') {
-      // Last 4 weeks
       const weeks: Record<string, number> = {};
       for (let i = 3; i >= 0; i--) {
         const d = new Date(); d.setDate(d.getDate() - i * 7);
@@ -367,7 +567,6 @@ export default function WasteTracker() {
       });
       return Object.entries(weeks).map(([name, value]) => ({ name, value: parseFloat(value.toFixed(2)) }));
     }
-    // Month: last 30 days grouped by day
     const days: Record<string, number> = {};
     for (let i = 29; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i);
@@ -382,19 +581,39 @@ export default function WasteTracker() {
     return Object.entries(days).map(([name, value]) => ({ name, value: parseFloat(value.toFixed(2)) }));
   }, [entries, period]);
 
-  // Top 5 most wasted ingredients
+  // Top 5 most wasted ingredients (enhanced with % of total)
   const topWasted = useMemo(() => {
-    const byIng: Record<string, { cost: number; qty: number; unit: string }> = {};
+    const byIng: Record<string, { cost: number; qty: number; unit: string; ingredientId: number }> = {};
     filteredByPeriod.forEach(e => {
-      if (!byIng[e.ingredientName]) byIng[e.ingredientName] = { cost: 0, qty: 0, unit: e.unit };
+      if (!byIng[e.ingredientName]) byIng[e.ingredientName] = { cost: 0, qty: 0, unit: e.unit, ingredientId: e.ingredientId };
       byIng[e.ingredientName].cost += e.quantity * e.costPerUnit;
       byIng[e.ingredientName].qty += e.quantity;
     });
     return Object.entries(byIng)
       .sort((a, b) => b[1].cost - a[1].cost)
       .slice(0, 5)
-      .map(([name, data]) => ({ name, ...data }));
-  }, [filteredByPeriod]);
+      .map(([name, data]) => ({ name, ...data, pctOfTotal: totalCost > 0 ? (data.cost / totalCost * 100) : 0 }));
+  }, [filteredByPeriod, totalCost]);
+
+  // Calendar heatmap data
+  const calendarData = useMemo(() => {
+    const last30 = getLast30Days();
+    const byDay: Record<string, number> = {};
+    last30.forEach(d => { byDay[d] = 0; });
+    entries.forEach(e => {
+      if (e.date in byDay) {
+        byDay[e.date] += e.quantity * e.costPerUnit;
+      }
+    });
+    const maxVal = Math.max(...Object.values(byDay), 1);
+    return { byDay, maxVal, days: last30 };
+  }, [entries]);
+
+  // Entries for selected calendar day
+  const selectedDayEntries = useMemo(() => {
+    if (!selectedDay) return [];
+    return entries.filter(e => e.date === selectedDay);
+  }, [entries, selectedDay]);
 
   // Zero waste progress (target: reduce by 20% from month average)
   const monthlyTarget = useMemo(() => {
@@ -404,15 +623,34 @@ export default function WasteTracker() {
       return d >= monthAgo;
     });
     const total = monthEntries.reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
-    const target = total * 0.80; // target: 20% reduction
+    const target = total * 0.80;
     return { actual: total, target, percentage: total > 0 ? Math.min(100, Math.max(0, ((total - target) / total) * 100)) : 0 };
   }, [entries]);
 
-  // Zero waste score (inverted: lower waste = higher score)
   const zeroWasteScore = Math.max(0, Math.min(100, 100 - monthlyTarget.percentage * 5));
 
+  // Reduction goal progress
+  const goalProgress = useMemo(() => {
+    if (!reductionGoal) return null;
+    const targetCost = reductionGoal.baselineCost * (1 - reductionGoal.targetPercent / 100);
+    const currentSaving = reductionGoal.baselineCost - thisMonthCost;
+    const requiredSaving = reductionGoal.baselineCost - targetCost;
+    const pct = requiredSaving > 0 ? Math.min(100, Math.max(0, (currentSaving / requiredSaving) * 100)) : 0;
+    const met = thisMonthCost <= targetCost;
+    return { targetCost, currentSaving, requiredSaving, pct, met };
+  }, [reductionGoal, thisMonthCost]);
+
   // AI suggestions
-  const suggestions = useMemo(() => generateSuggestions(entries), [entries]);
+  const suggestions = useMemo(() => generateSuggestions(entries, ingredients), [entries, ingredients]);
+
+  // Filtered ingredient suggestions for autocomplete
+  const filteredIngredients = useMemo(() => {
+    if (!ingredientSearch.trim()) return ingredients.slice(0, 20);
+    const s = ingredientSearch.toLowerCase();
+    return ingredients
+      .filter(i => i.name.toLowerCase().includes(s))
+      .slice(0, 10);
+  }, [ingredients, ingredientSearch]);
 
   // Recent entries
   const recentEntries = useMemo(() => {
@@ -428,11 +666,17 @@ export default function WasteTracker() {
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
 
+  function selectIngredient(ing: Ingredient) {
+    setForm(f => ({ ...f, ingredientId: String(ing.id), ingredientName: ing.name }));
+    setIngredientSearch(ing.name);
+    setShowSuggestions(false);
+  }
+
   async function handleAddWaste() {
     const ing = ingredients.find(i => i.id === parseInt(form.ingredientId));
-    if (!ing) { showToast('Sélectionnez un ingrédient', 'error'); return; }
+    if (!ing) { showToast('Selectionnez un ingredient', 'error'); return; }
     const qty = parseFloat(form.quantity);
-    if (!qty || qty <= 0) { showToast('Quantité invalide', 'error'); return; }
+    if (!qty || qty <= 0) { showToast('Quantite invalide', 'error'); return; }
 
     setSubmitting(true);
     try {
@@ -452,14 +696,16 @@ export default function WasteTracker() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { error?: string };
-        throw new Error(body.error || 'Erreur lors de la déclaration');
+        throw new Error(body.error || 'Erreur lors de la declaration');
       }
-      setForm({ ingredientId: '', quantity: '', reason: 'expired', notes: '' });
+      setForm({ ingredientId: '', ingredientName: '', quantity: '', reason: 'expired', notes: '' });
+      setIngredientSearch('');
       setShowAddModal(false);
-      showToast(`Perte déclarée : ${qty} ${ing.unit} de ${ing.name} (${formatEuro((qty / getUnitDivisor(ing.unit)) * ing.pricePerUnit)})`, 'success');
+      setShowInlineForm(false);
+      showToast(`Perte declaree : ${qty} ${ing.unit} de ${ing.name} (${formatEuro((qty / getUnitDivisor(ing.unit)) * ing.pricePerUnit)})`, 'success');
       await loadEntries();
     } catch (err: unknown) {
-      showToast(err instanceof Error ? err.message : 'Erreur déclaration', 'error');
+      showToast(err instanceof Error ? err.message : 'Erreur declaration', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -472,10 +718,10 @@ export default function WasteTracker() {
         headers: authHeaders(),
       });
       if (!res.ok) throw new Error('Erreur suppression');
-      showToast('Déclaration supprimée', 'success');
+      showToast('Declaration supprimee', 'success');
       await loadEntries();
     } catch {
-      showToast('Impossible de supprimer la déclaration', 'error');
+      showToast('Impossible de supprimer la declaration', 'error');
     }
   }
 
@@ -496,7 +742,7 @@ export default function WasteTracker() {
             {t('wasteTracker.subtitle')}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {/* Period selector */}
           <div className="flex rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
             {(['jour', 'semaine', 'mois'] as Period[]).map(p => (
@@ -531,10 +777,51 @@ export default function WasteTracker() {
         </div>
       </div>
 
+      {/* ═══════════════════════════════════════════════════════════════════════
+          1. BIG ANIMATED WASTE COST COUNTER
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-48 h-48 opacity-5">
+          <Flame className="w-full h-full text-red-600" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <Flame className="w-5 h-5 text-red-500" />
+            <span className="text-sm font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">
+              Cout total gaspillage -- ce mois
+            </span>
+          </div>
+          <div className="flex items-end gap-4 flex-wrap">
+            <span
+              className="text-5xl sm:text-6xl font-black tabular-nums"
+              style={{ color: '#dc2626' }}
+            >
+              {animatedCost.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
+            {lastMonthCost > 0 && (
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold ${
+                monthTrend > 0
+                  ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                  : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+              }`}>
+                {monthTrend > 0 ? (
+                  <ArrowUpRight className="w-4 h-4" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4" />
+                )}
+                {monthTrend > 0 ? '+' : ''}{monthTrend.toFixed(1)}% vs mois dernier
+              </div>
+            )}
+          </div>
+          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-2">
+            Mois dernier : {formatEuro(lastMonthCost)} | Ecart : {formatEuro(thisMonthCost - lastMonthCost)}
+          </p>
+        </div>
+      </div>
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total waste cost */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.totalLosses')}</span>
             <div className="p-2 rounded-lg bg-red-50 dark:bg-red-900/30">
@@ -555,8 +842,7 @@ export default function WasteTracker() {
           </div>
         </div>
 
-        {/* Number of waste events */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.incidents')}</span>
             <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/30">
@@ -567,8 +853,7 @@ export default function WasteTracker() {
           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.declarations')}</span>
         </div>
 
-        {/* Avg cost per incident */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.avgCost')}</span>
             <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-900/30">
@@ -576,13 +861,12 @@ export default function WasteTracker() {
             </div>
           </div>
           <div className="text-2xl font-bold text-[#111111] dark:text-white">
-            {entryCount > 0 ? formatEuro(totalCost / entryCount) : '—'}
+            {entryCount > 0 ? formatEuro(totalCost / entryCount) : '--'}
           </div>
           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.perIncident')}</span>
         </div>
 
-        {/* Zero waste score */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.antiWasteScore')}</span>
             <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/30">
@@ -594,39 +878,451 @@ export default function WasteTracker() {
         </div>
       </div>
 
-      {/* Zero Waste Progress Bar */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
-        <div className="flex items-center justify-between mb-3">
+      {/* ═══════════════════════════════════════════════════════════════════════
+          3. DAILY WASTE LOG (inline form)
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-[#111111] dark:text-white" />
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">Journal de gaspillage quotidien</h2>
+          </div>
+          <button
+            onClick={() => setShowInlineForm(!showInlineForm)}
+            className="flex items-center gap-2 px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Ajouter
+          </button>
+        </div>
+
+        {showInlineForm && (
+          <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-4 mb-4 border border-[#E5E7EB] dark:border-[#1A1A1A] space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Ingredient autocomplete */}
+              <div className="relative" ref={suggestionsRef}>
+                <label className="block text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase">Ingredient</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                  <input
+                    type="text"
+                    value={ingredientSearch}
+                    onChange={e => {
+                      setIngredientSearch(e.target.value);
+                      setShowSuggestions(true);
+                      setForm(f => ({ ...f, ingredientId: '', ingredientName: '' }));
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    placeholder="Rechercher un ingredient..."
+                    className="w-full pl-9 pr-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#1F2937] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                  />
+                </div>
+                {showSuggestions && filteredIngredients.length > 0 && (
+                  <div className="absolute z-20 w-full mt-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    {filteredIngredients.map(ing => (
+                      <button
+                        key={ing.id}
+                        onClick={() => selectIngredient(ing)}
+                        className="w-full text-left px-3 py-2 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors flex items-center justify-between"
+                      >
+                        <span className="text-[#1F2937] dark:text-white">{ing.name}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatEuro(ing.pricePerUnit)}/{ing.unit}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Quantity */}
+              <div>
+                <label className="block text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase">Quantite</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.quantity}
+                    onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))}
+                    placeholder="0.00"
+                    className="flex-1 px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#1F2937] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                  />
+                  {form.ingredientId && (
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-medium">
+                      {ingredients.find(i => i.id === parseInt(form.ingredientId))?.unit}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Reason dropdown */}
+              <div>
+                <label className="block text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase">Raison</label>
+                <select
+                  value={form.reason}
+                  onChange={e => setForm(f => ({ ...f, reason: e.target.value as WasteReason }))}
+                  className="w-full px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#1F2937] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                >
+                  {(Object.entries(REASON_LABELS) as [WasteReason, string][]).map(([key, label]) => (
+                    <option key={key} value={key}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="block text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase">Note (optionnel)</label>
+                <input
+                  type="text"
+                  value={form.notes}
+                  onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                  placeholder="Details supplementaires..."
+                  className="w-full px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#1F2937] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                />
+              </div>
+            </div>
+
+            {/* Cost preview + save */}
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              {form.ingredientId && form.quantity && (() => {
+                const ing = ingredients.find(i => i.id === parseInt(form.ingredientId));
+                return ing ? (
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-lg px-4 py-2 text-sm">
+                    <span className="text-[#6B7280] dark:text-[#A3A3A3]">Cout estime : </span>
+                    <span className="font-bold text-red-600 dark:text-red-400">
+                      {formatEuro((parseFloat(form.quantity || '0') / getUnitDivisor(ing.unit)) * ing.pricePerUnit)}
+                    </span>
+                  </div>
+                ) : null;
+              })()}
+              <div className="flex gap-2 ml-auto">
+                <button
+                  onClick={() => {
+                    setShowInlineForm(false);
+                    setForm({ ingredientId: '', ingredientName: '', quantity: '', reason: 'expired', notes: '' });
+                    setIngredientSearch('');
+                  }}
+                  className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A] rounded-lg transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleAddWaste}
+                  disabled={submitting || !form.ingredientId || !form.quantity}
+                  className="flex items-center gap-2 px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors disabled:opacity-50"
+                >
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  Enregistrer la perte
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          4. WASTE CALENDAR HEATMAP (30 days)
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <CalendarDays className="w-5 h-5 text-[#111111] dark:text-white" />
+          <h2 className="font-semibold text-[#1F2937] dark:text-white">Calendrier du gaspillage -- 30 derniers jours</h2>
+        </div>
+
+        <div className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-15 gap-1.5">
+          {calendarData.days.map(day => {
+            const cost = calendarData.byDay[day] || 0;
+            const { bg, text } = getHeatColor(cost, calendarData.maxVal);
+            const d = new Date(day);
+            const dayNum = d.getDate();
+            const isSelected = selectedDay === day;
+            const isToday = day === todayStr;
+
+            return (
+              <button
+                key={day}
+                onClick={() => setSelectedDay(selectedDay === day ? null : day)}
+                className={`relative flex flex-col items-center justify-center rounded-lg p-1.5 min-h-[48px] transition-all ${
+                  isSelected
+                    ? 'ring-2 ring-[#111111] dark:ring-white scale-105'
+                    : 'hover:scale-105'
+                }`}
+                style={{ backgroundColor: bg }}
+                title={`${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} : ${formatEuro(cost)}`}
+              >
+                <span className="text-[10px] font-medium" style={{ color: text }}>
+                  {d.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 2)}
+                </span>
+                <span className="text-sm font-bold" style={{ color: text }}>
+                  {dayNum}
+                </span>
+                {isToday && (
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#111111] dark:bg-white" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Legend */}
+        <div className="flex items-center gap-3 mt-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
+          <span>Legende :</span>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#16a34a22' }} />
+            <span>0 EUR</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#16a34a44' }} />
+            <span>Bas</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#eab30866' }} />
+            <span>Moyen</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#f97316aa' }} />
+            <span>Eleve</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#dc2626cc' }} />
+            <span>Critique</span>
+          </div>
+        </div>
+
+        {/* Day detail overlay */}
+        {selectedDay && (
+          <div className="mt-4 bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-[#1F2937] dark:text-white">
+                {new Date(selectedDay).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </h3>
+              <span className="text-lg font-bold text-red-600 dark:text-red-400">
+                {formatEuro(calendarData.byDay[selectedDay] || 0)}
+              </span>
+            </div>
+            {selectedDayEntries.length > 0 ? (
+              <div className="space-y-2">
+                {selectedDayEntries.map(e => (
+                  <div key={e.id} className="flex items-center justify-between text-sm py-1.5 px-3 rounded-lg bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-[#1F2937] dark:text-white">{e.ingredientName}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${REASON_BADGE[e.reason]}`}>
+                        {REASON_LABELS[e.reason]}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[#9CA3AF] dark:text-[#737373]">{e.quantity} {e.unit}</span>
+                      <span className="font-semibold text-red-600 dark:text-red-400">{formatEuro(e.quantity * e.costPerUnit)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune perte enregistree ce jour</p>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          2. WASTE BY CATEGORY (horizontal bar chart) + 5. TOP 5 MOST WASTED
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Waste by Category */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Package className="w-5 h-5 text-[#111111] dark:text-white" />
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">Gaspillage par categorie</h2>
+          </div>
+          {categoryData.length > 0 ? (
+            <div className="space-y-3">
+              {categoryData.map(item => {
+                const pct = (item.cost / maxCategoryCost) * 100;
+                const color = getCategoryColor(item.category);
+                return (
+                  <div key={item.category}>
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span className="font-medium text-[#374151] dark:text-white">{item.category}</span>
+                      <span className="font-bold" style={{ color }}>{formatEuro(item.cost)}</span>
+                    </div>
+                    <div className="w-full h-4 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor: color,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.noDataForPeriod')}</p>
+          )}
+        </div>
+
+        {/* Top 5 most wasted (enhanced with % of total) */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <ArrowDown className="w-5 h-5 text-red-500" />
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.top5Wasted')}</h2>
+          </div>
+          {topWasted.length > 0 ? (
+            <div className="space-y-3">
+              {topWasted.map((item, i) => {
+                const maxCost = topWasted[0].cost;
+                const pct = (item.cost / maxCost) * 100;
+                return (
+                  <div key={item.name}>
+                    <div className="flex items-center justify-between text-sm mb-1">
+                      <span className="font-medium text-[#374151] dark:text-white flex items-center gap-2">
+                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-600 text-white text-[10px] font-bold">
+                          {i + 1}
+                        </span>
+                        {item.name}
+                      </span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                          {item.pctOfTotal.toFixed(1)}% du total
+                        </span>
+                        <span className="font-bold text-red-600 dark:text-red-400">{formatEuro(item.cost)}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-red-500 rounded-full transition-all duration-500"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-20 text-right">
+                        {item.qty.toFixed(1)} {item.unit}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.noDataForPeriod')}</p>
+          )}
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          6. REDUCTION GOALS
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-green-500" />
-            <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.zeroWasteObjective')}</h2>
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">Objectif de reduction mensuel</h2>
           </div>
-          <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">
-            Objectif : réduire de 20% ({formatEuro(monthlyTarget.target)})
-          </span>
+          <button
+            onClick={() => setShowGoalModal(true)}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+          >
+            <Target className="w-4 h-4" />
+            {reductionGoal ? 'Modifier l\'objectif' : 'Definir un objectif'}
+          </button>
         </div>
-        <div className="relative w-full h-6 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
-          <div
-            className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${
-              zeroWasteScore >= 70 ? 'bg-green-500' : zeroWasteScore >= 40 ? 'bg-amber-500' : 'bg-red-500'
-            }`}
-            style={{ width: `${zeroWasteScore}%` }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#9CA3AF] dark:text-white">
-            {zeroWasteScore.toFixed(0)}% — {formatEuro(monthlyTarget.actual)} / {formatEuro(monthlyTarget.target)} objectif
+
+        {reductionGoal && goalProgress ? (
+          <div>
+            <div className="flex items-center justify-between mb-2 text-sm">
+              <span className="text-[#6B7280] dark:text-[#A3A3A3]">
+                Objectif : -{reductionGoal.targetPercent}% par rapport au mois dernier ({formatEuro(reductionGoal.baselineCost)})
+              </span>
+              <span className="font-bold text-[#111111] dark:text-white">
+                Cible : {formatEuro(goalProgress.targetCost)}
+              </span>
+            </div>
+            <div className="relative w-full h-8 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden mb-2">
+              <div
+                className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${
+                  goalProgress.met
+                    ? 'bg-green-500'
+                    : goalProgress.pct >= 60
+                    ? 'bg-amber-500'
+                    : 'bg-red-500'
+                }`}
+                style={{ width: `${goalProgress.pct}%` }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#374151] dark:text-white">
+                {goalProgress.pct.toFixed(0)}% de l'objectif atteint
+              </div>
+            </div>
+            <div className="flex items-center justify-between text-xs text-[#9CA3AF] dark:text-[#737373]">
+              <span>Ce mois : {formatEuro(thisMonthCost)}</span>
+              <span>Economie : {formatEuro(goalProgress.currentSaving)}</span>
+            </div>
+
+            {/* Congratulations message */}
+            {goalProgress.met && (
+              <div className="mt-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 rounded-xl p-4 flex items-center gap-3">
+                <div className="p-2 bg-green-500 rounded-full">
+                  <Award className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-bold text-green-700 dark:text-green-300">Objectif atteint !</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    Vous avez reduit votre gaspillage de {((1 - thisMonthCost / reductionGoal.baselineCost) * 100).toFixed(1)}% ce mois.
+                    Continuez ainsi !
+                  </p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-green-500 ml-auto flex-shrink-0" />
+              </div>
+            )}
           </div>
-        </div>
-        <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
-          <span>{t('wasteTracker.critical')}</span>
-          <span>{t('wasteTracker.good')}</span>
-          <span>{t('wasteTracker.excellent')}</span>
-        </div>
+        ) : (
+          <div className="text-center py-6">
+            <Target className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+              Aucun objectif defini. Definissez un objectif de reduction pour suivre vos progres.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          7. AI SUGGESTIONS
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <button
+          onClick={() => setShowTips(!showTips)}
+          className="flex items-center justify-between w-full mb-3"
+        >
+          <div className="flex items-center gap-2">
+            <Brain className="w-5 h-5 text-[#111111] dark:text-white" />
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">Suggestions de l'IA</h2>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#111111] dark:bg-white text-white dark:text-black uppercase">
+              Smart
+            </span>
+          </div>
+          {showTips ? <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
+        </button>
+        {showTips && (
+          <div className="space-y-3">
+            {suggestions.map((tip, i) => (
+              <div
+                key={i}
+                className="flex gap-3 p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#171717] hover:border-[#111111] dark:hover:border-white transition-colors"
+              >
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center">
+                  <Lightbulb className="w-4 h-4 text-white dark:text-black" />
+                </div>
+                <span className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed">{tip}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pie chart: by reason */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
           <div className="flex items-center gap-2 mb-4">
             <PieChartIcon className="w-5 h-5 text-[#374151] dark:text-[#D4D4D4]" />
             <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.lossesByCause')}</h2>
@@ -657,7 +1353,7 @@ export default function WasteTracker() {
         </div>
 
         {/* Bar chart: trend */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-5 h-5 text-emerald-500" />
             <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.lossTrend')}</h2>
@@ -666,80 +1362,40 @@ export default function WasteTracker() {
             <BarChart data={barData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
               <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={period === 'mois' ? 4 : 0} />
-              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}€`} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}EUR`} />
               <Tooltip formatter={(val: unknown) => formatEuro(Number(val))} labelStyle={{ color: '#1e293b' }} />
-              <Bar dataKey="value" fill="#dc2626" radius={[4, 4, 0, 0]} name="Pertes (€)" />
+              <Bar dataKey="value" fill="#dc2626" radius={[4, 4, 0, 0]} name="Pertes (EUR)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Top 5 + Tips Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top 5 most wasted */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <ArrowDown className="w-5 h-5 text-red-500" />
-            <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.top5Wasted')}</h2>
+      {/* Zero Waste Progress Bar */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Leaf className="w-5 h-5 text-green-500" />
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.zeroWasteObjective')}</h2>
           </div>
-          {topWasted.length > 0 ? (
-            <div className="space-y-3">
-              {topWasted.map((item, i) => {
-                const maxCost = topWasted[0].cost;
-                const pct = (item.cost / maxCost) * 100;
-                return (
-                  <div key={item.name}>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="font-medium text-[#9CA3AF] dark:text-white">
-                        <span className="text-[#9CA3AF] dark:text-[#737373] mr-2">#{i + 1}</span>
-                        {item.name}
-                      </span>
-                      <span className="font-semibold text-red-600 dark:text-red-400">{formatEuro(item.cost)}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-red-500 rounded-full transition-all duration-500"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-20 text-right">
-                        {item.qty.toFixed(1)} {item.unit}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.noDataForPeriod')}</p>
-          )}
+          <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+            Objectif : reduire de 20% ({formatEuro(monthlyTarget.target)})
+          </span>
         </div>
-
-        {/* AI Tips */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
-          <button
-            onClick={() => setShowTips(!showTips)}
-            className="flex items-center justify-between w-full mb-3"
-          >
-            <div className="flex items-center gap-2">
-              <Lightbulb className="w-5 h-5 text-amber-500" />
-              <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.aiTips')}</h2>
-            </div>
-            {showTips ? <ChevronUp className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />}
-          </button>
-          {showTips && (
-            <div className="space-y-3">
-              {suggestions.map((tip, i) => (
-                <div
-                  key={i}
-                  className="flex gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40"
-                >
-                  <span className="text-sm text-[#9CA3AF] dark:text-white leading-relaxed">{tip}</span>
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="relative w-full h-6 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+          <div
+            className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${
+              zeroWasteScore >= 70 ? 'bg-green-500' : zeroWasteScore >= 40 ? 'bg-amber-500' : 'bg-red-500'
+            }`}
+            style={{ width: `${zeroWasteScore}%` }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#9CA3AF] dark:text-white">
+            {zeroWasteScore.toFixed(0)}% -- {formatEuro(monthlyTarget.actual)} / {formatEuro(monthlyTarget.target)} objectif
+          </div>
+        </div>
+        <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <span>{t('wasteTracker.critical')}</span>
+          <span>{t('wasteTracker.good')}</span>
+          <span>{t('wasteTracker.excellent')}</span>
         </div>
       </div>
 
@@ -747,7 +1403,7 @@ export default function WasteTracker() {
       {showAiPanel && aiAnalysis && (
         <div className="space-y-6">
           {/* AI Analysis Header */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded-xl bg-[#111111] dark:bg-white">
@@ -766,7 +1422,6 @@ export default function WasteTracker() {
               </button>
             </div>
 
-            {/* AI Analysis Text */}
             <div className="prose prose-sm max-w-none">
               <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-lg p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
                 <p className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed whitespace-pre-line">
@@ -778,8 +1433,7 @@ export default function WasteTracker() {
 
           {/* AI Top Waste Items + Pattern Detection Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Top 5 AI-identified waste items */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Zap className="w-5 h-5 text-[#111111] dark:text-white" />
                 <h3 className="font-semibold text-[#1F2937] dark:text-white">Top 5 ingredients gaspilles</h3>
@@ -819,14 +1473,12 @@ export default function WasteTracker() {
               </div>
             </div>
 
-            {/* Pattern Detection */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-[#111111] dark:text-white" />
                 <h3 className="font-semibold text-[#1F2937] dark:text-white">Patterns detectes</h3>
               </div>
               <div className="space-y-4">
-                {/* By Day of Week */}
                 <div>
                   <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase mb-2">Par jour de la semaine</h4>
                   <div className="grid grid-cols-7 gap-1">
@@ -856,7 +1508,6 @@ export default function WasteTracker() {
                   </div>
                 </div>
 
-                {/* By Reason */}
                 <div>
                   <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase mb-2">Par cause</h4>
                   <div className="space-y-1.5">
@@ -878,7 +1529,6 @@ export default function WasteTracker() {
                   </div>
                 </div>
 
-                {/* By Category */}
                 <div>
                   <h4 className="text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase mb-2">Par categorie</h4>
                   <div className="flex flex-wrap gap-2">
@@ -901,7 +1551,7 @@ export default function WasteTracker() {
           </div>
 
           {/* Recommendations */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Lightbulb className="w-5 h-5 text-[#111111] dark:text-white" />
@@ -960,8 +1610,7 @@ export default function WasteTracker() {
 
           {/* Trend Chart with Target Line + Prediction Card Row */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Trend Chart (2 cols) */}
-            <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-5 h-5 text-[#111111] dark:text-white" />
                 <h3 className="font-semibold text-[#1F2937] dark:text-white">Tendance du gaspillage (30j)</h3>
@@ -1020,8 +1669,7 @@ export default function WasteTracker() {
               )}
             </div>
 
-            {/* Prediction Card (1 col) */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <CalendarDays className="w-5 h-5 text-[#111111] dark:text-white" />
                 <h3 className="font-semibold text-[#1F2937] dark:text-white">Prediction semaine prochaine</h3>
@@ -1084,7 +1732,7 @@ export default function WasteTracker() {
       )}
 
       {/* Recent waste entries table */}
-      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <h2 className="font-semibold text-[#1F2937] dark:text-white flex items-center gap-2">
             <Calendar className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
@@ -1097,7 +1745,7 @@ export default function WasteTracker() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder={t('wasteTracker.search')}
-              className="pl-9 pr-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-sm text-[#1F2937] dark:text-white placeholder:text-[#6B7280] dark:text-[#A3A3A3] w-full sm:w-64 focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-transparent"
+              className="pl-9 pr-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-sm text-[#1F2937] dark:text-white placeholder:text-[#6B7280] w-full sm:w-64 focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-transparent"
             />
           </div>
         </div>
@@ -1165,22 +1813,52 @@ export default function WasteTracker() {
         </div>
       </div>
 
-      {/* Add Waste Modal */}
+      {/* Add Waste Modal (kept for button compatibility) */}
       <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title={t('wasteTracker.declareWasteTitle')}>
         <div className="space-y-4">
-          {/* Ingredient */}
-          <div>
+          {/* Ingredient with autocomplete */}
+          <div className="relative">
             <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('wasteTracker.ingredient')}</label>
-            <select
-              value={form.ingredientId}
-              onChange={e => setForm(f => ({ ...f, ingredientId: e.target.value }))}
-              className="w-full px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white"
-            >
-              <option value="">{t('wasteTracker.selectIngredient')}</option>
-              {ingredients.map(ing => (
-                <option key={ing.id} value={ing.id}>{ing.name} ({formatEuro(ing.pricePerUnit)}/{ing.unit})</option>
-              ))}
-            </select>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+              <input
+                type="text"
+                value={ingredientSearch}
+                onChange={e => {
+                  setIngredientSearch(e.target.value);
+                  setShowSuggestions(true);
+                  setForm(f => ({ ...f, ingredientId: '', ingredientName: '' }));
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                placeholder="Tapez pour rechercher..."
+                className="w-full pl-9 pr-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+              />
+            </div>
+            {showSuggestions && filteredIngredients.length > 0 && (
+              <div className="absolute z-30 w-full mt-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                {filteredIngredients.map(ing => (
+                  <button
+                    key={ing.id}
+                    onClick={() => selectIngredient(ing)}
+                    className="w-full text-left px-3 py-2 text-sm hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors flex items-center justify-between"
+                  >
+                    <div>
+                      <span className="text-[#1F2937] dark:text-white">{ing.name}</span>
+                      {ing.category && (
+                        <span className="ml-2 text-xs text-[#9CA3AF] dark:text-[#737373]">{ing.category}</span>
+                      )}
+                    </div>
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatEuro(ing.pricePerUnit)}/{ing.unit}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {form.ingredientId && (
+              <div className="mt-1 text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" />
+                {form.ingredientName} selectionne
+              </div>
+            )}
           </div>
 
           {/* Quantity */}
@@ -1194,7 +1872,7 @@ export default function WasteTracker() {
                 value={form.quantity}
                 onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))}
                 placeholder="0.00"
-                className="flex-1 px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white"
+                className="flex-1 px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
               />
               {form.ingredientId && (
                 <span className="text-sm text-[#9CA3AF] dark:text-[#737373] font-medium">
@@ -1204,7 +1882,7 @@ export default function WasteTracker() {
             </div>
           </div>
 
-          {/* Reason */}
+          {/* Reason - styled buttons */}
           <div>
             <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">{t('wasteTracker.cause')}</label>
             <div className="grid grid-cols-2 gap-2">
@@ -1214,7 +1892,7 @@ export default function WasteTracker() {
                   onClick={() => setForm(f => ({ ...f, reason: key }))}
                   className={`px-3 py-2.5 rounded-lg text-sm font-medium border-2 transition-colors ${
                     form.reason === key
-                      ? 'border-[#111111] bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#737373]'
+                      ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#171717] text-[#111111] dark:text-white'
                       : 'border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#6B7280]'
                   }`}
                 >
@@ -1232,7 +1910,7 @@ export default function WasteTracker() {
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={2}
               placeholder={t('wasteTracker.additionalDetails')}
-              className="w-full px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white focus:ring-2 focus:ring-[#111111] dark:ring-white resize-none"
+              className="w-full px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white resize-none"
             />
           </div>
 
@@ -1265,6 +1943,54 @@ export default function WasteTracker() {
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
               {t('wasteTracker.declareWaste')}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Goal Modal */}
+      <Modal isOpen={showGoalModal} onClose={() => setShowGoalModal(false)} title="Definir l'objectif de reduction">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">
+              Reduction souhaitee (%)
+            </label>
+            <div className="flex items-center gap-3">
+              <span className="text-lg font-bold text-[#111111] dark:text-white">-</span>
+              <input
+                type="number"
+                min="1"
+                max="100"
+                value={goalInput}
+                onChange={e => setGoalInput(e.target.value)}
+                className="w-24 px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#171717] text-[#1F2937] dark:text-white text-lg font-bold text-center focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+              />
+              <span className="text-lg font-bold text-[#111111] dark:text-white">%</span>
+            </div>
+          </div>
+          <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-lg p-3 text-sm">
+            <p className="text-[#6B7280] dark:text-[#A3A3A3]">
+              Reference (mois dernier) : <span className="font-bold text-[#111111] dark:text-white">{formatEuro(lastMonthCost || thisMonthCost)}</span>
+            </p>
+            <p className="text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+              Objectif ce mois : <span className="font-bold text-green-600 dark:text-green-400">
+                {formatEuro((lastMonthCost || thisMonthCost) * (1 - parseInt(goalInput || '0') / 100))}
+              </span>
+            </p>
+          </div>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setShowGoalModal(false)}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              onClick={saveGoal}
+              className="flex items-center gap-2 px-5 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              <Target className="w-4 h-4" />
+              Valider l'objectif
             </button>
           </div>
         </div>

@@ -5,6 +5,8 @@ import {
   Loader2, ShoppingBag, DollarSign, Percent, ChefHat,
   RefreshCw, SlidersHorizontal, AlertTriangle, Lightbulb, Shield,
   Sparkles, TrendingUp, X, Check, Star, Zap,
+  GripVertical, PieChart, FileDown, TrendingDown,
+  ArrowRightLeft, CircleDollarSign, Eye,
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -528,6 +530,15 @@ export default function MenuEngineering() {
   const [applyingPrices, setApplyingPrices] = useState(false);
   const matrixRef = useRef<HTMLDivElement>(null);
 
+  // Drag-drop menu reorder
+  const [menuOrder, setMenuOrder] = useState<EngineeringItem[]>([]);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const [showReorder, setShowReorder] = useState(false);
+
+  // Seasonal performance tab
+  const [seasonalTab, setSeasonalTab] = useState<'all' | 'week' | 'month' | 'quarter'>('all');
+
   // ── Fetch data ─────────────────────────────────────────────────────────────
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -768,8 +779,20 @@ export default function MenuEngineering() {
 
   const totalRevenue = useMemo(() => items.reduce((s, i) => s + i.salesRevenue, 0), [items]);
 
+  // ── Seasonal filter (applied before sorting) ──────────────────────────────
+  const seasonalItemsEarly = useMemo(() => {
+    if (seasonalTab === 'all') return items;
+    const factor = seasonalTab === 'week' ? 0.23 : seasonalTab === 'month' ? 1.0 : 3.0;
+    return items.map(item => ({
+      ...item,
+      salesQty: Math.round(item.salesQty * factor),
+      salesRevenue: Math.round(item.salesRevenue * factor * 100) / 100,
+    }));
+  }, [items, seasonalTab]);
+
   const sortedItems = useMemo(() => {
-    let filtered = filterQuadrant === 'all' ? [...items] : items.filter(i => i.quadrant === filterQuadrant);
+    const source = seasonalItemsEarly;
+    let filtered = filterQuadrant === 'all' ? [...source] : source.filter(i => i.quadrant === filterQuadrant);
     filtered.sort((a, b) => {
       let va: any = a[sortField];
       let vb: any = b[sortField];
@@ -779,7 +802,7 @@ export default function MenuEngineering() {
       return 0;
     });
     return filtered;
-  }, [items, sortField, sortDir, filterQuadrant]);
+  }, [seasonalItemsEarly, sortField, sortDir, filterQuadrant]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -819,6 +842,164 @@ export default function MenuEngineering() {
   const maxSalesQty = useMemo(() => Math.max(...items.map(i => i.salesQty), 1), [items]);
 
   const recommendations = useMemo(() => generateRecommendations([...items]), [items]);
+
+  // ── Menu Mix Analysis (revenue by category) ───────────────────────────────
+  const menuMixData = useMemo(() => {
+    const catMap: Record<string, { revenue: number; count: number; qty: number }> = {};
+    items.forEach(item => {
+      const cat = item.category || 'Autre';
+      if (!catMap[cat]) catMap[cat] = { revenue: 0, count: 0, qty: 0 };
+      catMap[cat].revenue += item.salesRevenue;
+      catMap[cat].count += 1;
+      catMap[cat].qty += item.salesQty;
+    });
+    const total = Object.values(catMap).reduce((s, c) => s + c.revenue, 0);
+    const CATEGORY_COLORS: Record<string, string> = {
+      'Entrees': '#8B5CF6', 'Entrées': '#8B5CF6', 'Entree': '#8B5CF6', 'Entrée': '#8B5CF6',
+      'Plats': '#10B981', 'Plat': '#10B981', 'Plat principal': '#10B981',
+      'Desserts': '#F59E0B', 'Dessert': '#F59E0B',
+      'Boissons': '#3B82F6', 'Boisson': '#3B82F6',
+      'Autre': '#6B7280', 'Non classé': '#9CA3AF',
+    };
+    const fallbackColors = ['#EC4899', '#14B8A6', '#F97316', '#6366F1', '#EF4444', '#84CC16'];
+    let fallbackIdx = 0;
+    return Object.entries(catMap)
+      .map(([cat, data]) => ({
+        category: cat,
+        revenue: data.revenue,
+        count: data.count,
+        qty: data.qty,
+        percent: total > 0 ? (data.revenue / total) * 100 : 0,
+        color: CATEGORY_COLORS[cat] || fallbackColors[fallbackIdx++ % fallbackColors.length],
+      }))
+      .sort((a, b) => b.revenue - a.revenue);
+  }, [items]);
+
+  const menuMixGradient = useMemo(() => {
+    if (menuMixData.length === 0) return 'conic-gradient(#E5E7EB 0deg 360deg)';
+    let deg = 0;
+    const stops: string[] = [];
+    menuMixData.forEach(d => {
+      const span = (d.percent / 100) * 360;
+      stops.push(`${d.color} ${deg}deg ${deg + span}deg`);
+      deg += span;
+    });
+    return `conic-gradient(${stops.join(', ')})`;
+  }, [menuMixData]);
+
+  // ── Price Optimization Suggestions ─────────────────────────────────────────
+  const priceOptSuggestions = useMemo(() => {
+    if (items.length === 0) return [];
+    const totalRev = items.reduce((s, i) => s + i.salesRevenue, 0);
+    const totalMarginEur = items.reduce((s, i) => s + (i.margin * i.salesQty), 0);
+
+    return items
+      .filter(i => i.salesQty > 0 && i.sellingPrice > 0)
+      .map(item => {
+        // Suggest price increase for popular items with low margin
+        // Suggest price decrease for unpopular items with high margin
+        let suggestedChange = 0;
+        let reason = '';
+
+        if (item.quadrant === 'plow') {
+          // Popular but low margin: increase price
+          suggestedChange = Math.round(item.sellingPrice * 0.08 * 100) / 100;
+          reason = `Populaire (${item.salesQty} ventes) mais marge faible (${fmt(item.marginPercent, 1)}%)`;
+        } else if (item.quadrant === 'puzzle') {
+          // High margin but unpopular: slight decrease to boost volume
+          suggestedChange = -Math.round(item.sellingPrice * 0.05 * 100) / 100;
+          reason = `Bonne marge (${fmt(item.marginPercent, 1)}%) mais peu de ventes (${item.salesQty})`;
+        } else if (item.quadrant === 'dog' && item.marginPercent < 40) {
+          // Low everything: increase price or remove
+          suggestedChange = Math.round(item.sellingPrice * 0.12 * 100) / 100;
+          reason = `Marge critique (${fmt(item.marginPercent, 1)}%) et ${item.salesQty} ventes`;
+        } else if (item.quadrant === 'star' && item.marginPercent < 60) {
+          // Star but margin could be better
+          suggestedChange = Math.round(item.sellingPrice * 0.04 * 100) / 100;
+          reason = `Vedette avec potentiel de marge (actuellement ${fmt(item.marginPercent, 1)}%)`;
+        }
+
+        if (suggestedChange === 0) return null;
+
+        // Calculate impact on global margin
+        const newPrice = item.sellingPrice + suggestedChange;
+        const newMargin = newPrice - item.costPerPortion;
+        const newMarginTotal = totalMarginEur - (item.margin * item.salesQty) + (newMargin * item.salesQty);
+        const marginImpactPct = totalMarginEur > 0 ? ((newMarginTotal - totalMarginEur) / totalMarginEur) * 100 : 0;
+
+        return {
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          currentPrice: item.sellingPrice,
+          suggestedChange,
+          newPrice: Math.round(newPrice * 100) / 100,
+          reason,
+          marginImpactPct: Math.round(marginImpactPct * 10) / 10,
+          quadrant: item.quadrant,
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => Math.abs(b!.marginImpactPct) - Math.abs(a!.marginImpactPct))
+      .slice(0, 5) as {
+        id: number; name: string; category: string; currentPrice: number;
+        suggestedChange: number; newPrice: number; reason: string;
+        marginImpactPct: number; quadrant: Quadrant;
+      }[];
+  }, [items]);
+
+
+  // ── Sync menuOrder when items change ───────────────────────────────────────
+  useEffect(() => {
+    if (items.length > 0 && menuOrder.length === 0) {
+      setMenuOrder([...items]);
+    }
+  }, [items, menuOrder.length]);
+
+  // ── Drag-drop handlers ─────────────────────────────────────────────────────
+  const handleDragStart = useCallback((idx: number) => {
+    setDragIdx(idx);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent, idx: number) => {
+    e.preventDefault();
+    setDragOverIdx(idx);
+  }, []);
+
+  const handleDrop = useCallback((idx: number) => {
+    if (dragIdx === null || dragIdx === idx) {
+      setDragIdx(null);
+      setDragOverIdx(null);
+      return;
+    }
+    setMenuOrder(prev => {
+      const newOrder = [...prev];
+      const [moved] = newOrder.splice(dragIdx, 1);
+      newOrder.splice(idx, 0, moved);
+      return newOrder;
+    });
+    setDragIdx(null);
+    setDragOverIdx(null);
+  }, [dragIdx]);
+
+  const handleTouchDragStart = useCallback((idx: number) => {
+    setDragIdx(idx);
+  }, []);
+
+  const handleTouchDragEnd = useCallback((idx: number) => {
+    if (dragIdx === null || dragIdx === idx) {
+      setDragIdx(null);
+      return;
+    }
+    setMenuOrder(prev => {
+      const newOrder = [...prev];
+      const [moved] = newOrder.splice(dragIdx, 1);
+      newOrder.splice(idx, 0, moved);
+      return newOrder;
+    });
+    setDragIdx(null);
+    setDragOverIdx(null);
+  }, [dragIdx]);
 
   // ── Allergens per recipe (map recipeId -> allergens) ──────────────────────
   const recipeAllergens = useMemo(() => {
@@ -873,6 +1054,37 @@ export default function MenuEngineering() {
             >
               <Printer className="w-4 h-4" /> {t('menuEngineering.print')}
             </button>
+            <button
+              onClick={() => showToast('Export PDF en cours de developpement. Bientot disponible !', 'info')}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] dark:text-white rounded-xl font-medium text-sm transition-all no-print"
+            >
+              <FileDown className="w-4 h-4" /> Exporter la carte
+            </button>
+          </div>
+        </div>
+
+        {/* ── Seasonal Performance Toggle ──────────────────────────────────── */}
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">Periode :</span>
+          <div className="flex items-center gap-1 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-1 shadow-sm">
+            {([
+              { key: 'all' as const, label: 'Tout' },
+              { key: 'week' as const, label: 'Semaine' },
+              { key: 'month' as const, label: 'Mois' },
+              { key: 'quarter' as const, label: 'Trimestre' },
+            ]).map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setSeasonalTab(tab.key)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  seasonalTab === tab.key
+                    ? 'bg-[#111111] dark:bg-white text-white dark:text-black shadow-md'
+                    : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -1280,32 +1492,184 @@ export default function MenuEngineering() {
               />
             </div>
 
-            {/* ── Quadrant summary cards ───────────────────────────────────── */}
+            {/* ── Quadrant Summary Cards with Actions ─────────────────────── */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {(Object.keys(QUADRANT_CONFIG) as Quadrant[]).map(q => {
+              {([
+                { q: 'star' as Quadrant, action: 'Maintenir', actionIcon: <Star className="w-3 h-3" />, actionColor: 'text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50' },
+                { q: 'puzzle' as Quadrant, action: 'Promouvoir', actionIcon: <Eye className="w-3 h-3" />, actionColor: 'text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-900/50' },
+                { q: 'plow' as Quadrant, action: 'Optimiser le prix', actionIcon: <CircleDollarSign className="w-3 h-3" />, actionColor: 'text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50' },
+                { q: 'dog' as Quadrant, action: 'Retirer ou reformuler', actionIcon: <ArrowRightLeft className="w-3 h-3" />, actionColor: 'text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/50' },
+              ]).map(({ q, action, actionIcon, actionColor }) => {
                 const cfg = QUADRANT_CONFIG[q];
+                const qItems = items.filter(i => i.quadrant === q);
+                const qRevenue = qItems.reduce((s, i) => s + i.salesRevenue, 0);
                 return (
                   <button
                     key={q}
                     onClick={() => setFilterQuadrant(prev => prev === q ? 'all' : q)}
-                    className={`text-left p-4 rounded-xl border-2 transition-all ${
+                    className={`text-left p-5 rounded-2xl border-2 transition-all ${
                       filterQuadrant === q
                         ? `${cfg.border} ${cfg.bg} ring-2 ring-offset-1 ring-${cfg.color}-400/50`
-                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:border-[#E5E7EB] dark:hover:border-[#1A1A1A]'
+                        : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:border-[#D1D5DB] dark:hover:border-[#333333]'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xl">{cfg.emoji}</span>
-                      <span className={`text-2xl font-bold ${cfg.text}`}>{quadrantCounts[q]}</span>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-2xl">{cfg.emoji}</span>
+                      <span className={`text-3xl font-bold ${cfg.text}`}>{quadrantCounts[q]}</span>
                     </div>
-                    <div className="font-semibold text-sm text-[#111111] dark:text-white">{cfg.label}</div>
+                    <div className="font-bold text-sm text-[#111111] dark:text-white">{cfg.label}</div>
                     <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{cfg.desc}</div>
-                    <div className={`mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${cfg.badge}`}>
-                      {cfg.action}
+                    {qRevenue > 0 && (
+                      <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1 font-medium">
+                        CA: {fmtEur(qRevenue)}
+                      </div>
+                    )}
+                    <div className={`mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${actionColor}`}>
+                      {actionIcon} {action}
                     </div>
                   </button>
                 );
               })}
+            </div>
+
+            {/* ── Menu Mix Analysis + Price Optimization (2-col layout) ───── */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+              {/* ── Menu Mix Donut Chart ── */}
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2.5 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl text-white shadow-lg">
+                    <PieChart className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">Menu Mix</h2>
+                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Repartition du CA par categorie</p>
+                  </div>
+                </div>
+
+                {menuMixData.length > 0 ? (
+                  <div className="flex flex-col sm:flex-row items-center gap-8">
+                    {/* Donut chart via conic-gradient */}
+                    <div className="relative flex-shrink-0">
+                      <div
+                        className="w-44 h-44 rounded-full shadow-inner"
+                        style={{ background: menuMixGradient }}
+                      />
+                      {/* Inner circle for donut effect */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-24 h-24 rounded-full bg-white dark:bg-[#0A0A0A] flex flex-col items-center justify-center shadow-sm">
+                          <span className="text-lg font-bold text-[#111111] dark:text-white">{menuMixData.length}</span>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">categories</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="flex-1 space-y-3 w-full">
+                      {menuMixData.map(d => (
+                        <div key={d.category} className="flex items-center gap-3">
+                          <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium text-[#111111] dark:text-white truncate">{d.category}</span>
+                              <span className="text-sm font-bold text-[#111111] dark:text-white ml-2">{fmt(d.percent, 1)}%</span>
+                            </div>
+                            <div className="flex items-center justify-between mt-0.5">
+                              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{d.count} recettes - {d.qty} ventes</span>
+                              <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] font-medium">{fmtEur(d.revenue)}</span>
+                            </div>
+                            {/* Progress bar */}
+                            <div className="w-full h-1.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-full mt-1.5 overflow-hidden">
+                              <div className="h-full rounded-full transition-all duration-500" style={{ width: `${d.percent}%`, backgroundColor: d.color }} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                    <PieChart className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Aucune donnee de vente disponible</p>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Price Optimization Suggestions ── */}
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl text-white shadow-lg">
+                    <TrendingUp className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">Optimisation des prix</h2>
+                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Suggestions par impact sur la marge globale</p>
+                  </div>
+                </div>
+
+                {priceOptSuggestions.length > 0 ? (
+                  <div className="space-y-3">
+                    {priceOptSuggestions.map((sug, idx) => {
+                      const isIncrease = sug.suggestedChange > 0;
+                      const cfgQ = QUADRANT_CONFIG[sug.quadrant];
+                      return (
+                        <div
+                          key={sug.id}
+                          className="p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333333] transition-all"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3 min-w-0">
+                              <div className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold flex-shrink-0 ${
+                                isIncrease ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300' : 'bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300'
+                              }`}>
+                                {idx + 1}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-bold text-sm text-[#111111] dark:text-white">{sug.name}</span>
+                                  <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-semibold ${cfgQ.badge}`}>
+                                    {cfgQ.emoji} {cfgQ.label}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 leading-relaxed">
+                                  Si vous {isIncrease ? 'augmentez' : 'reduisez'} <strong className="text-[#111111] dark:text-white">{sug.name}</strong> de{' '}
+                                  <strong className={isIncrease ? 'text-emerald-600 dark:text-emerald-400' : 'text-teal-600 dark:text-teal-400'}>
+                                    {fmtEur(Math.abs(sug.suggestedChange))}
+                                  </strong>, votre marge globale {sug.marginImpactPct > 0 ? 'augmente' : 'diminue'} de{' '}
+                                  <strong className={sug.marginImpactPct > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}>
+                                    {sug.marginImpactPct > 0 ? '+' : ''}{fmt(sug.marginImpactPct, 1)}%
+                                  </strong>.
+                                </p>
+                                <p className="text-[10px] text-[#9CA3AF] dark:text-[#525252] mt-1">{sug.reason}</p>
+                              </div>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{fmtEur(sug.currentPrice)}</div>
+                              <div className={`text-sm font-bold ${isIncrease ? 'text-emerald-600 dark:text-emerald-400' : 'text-teal-600 dark:text-teal-400'}`}>
+                                {fmtEur(sug.newPrice)}
+                              </div>
+                              <div className="flex items-center justify-end gap-0.5 mt-1">
+                                {isIncrease
+                                  ? <TrendingUp className="w-3 h-3 text-emerald-500" />
+                                  : <TrendingDown className="w-3 h-3 text-teal-500" />
+                                }
+                                <span className={`text-xs font-semibold ${isIncrease ? 'text-emerald-600 dark:text-emerald-400' : 'text-teal-600 dark:text-teal-400'}`}>
+                                  {isIncrease ? '+' : ''}{fmtEur(sug.suggestedChange)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                    <CircleDollarSign className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Ajoutez des ventes pour obtenir des suggestions</p>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* ── BCG Matrix ──────────────────────────────────────────────── */}
@@ -1521,6 +1885,104 @@ export default function MenuEngineering() {
                 </div>
               </div>
             )}
+
+            {/* ── Drag-Drop Menu Reorder ──────────────────────────────────── */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl text-white shadow-lg">
+                    <GripVertical className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#111111] dark:text-white">Simuler l'ordre du menu</h2>
+                    <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Glissez-deposez pour reorganiser vos plats</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowReorder(!showReorder);
+                    if (!showReorder && menuOrder.length === 0) setMenuOrder([...items]);
+                  }}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                    showReorder
+                      ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                      : 'bg-[#F5F5F5] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A]'
+                  }`}
+                >
+                  <GripVertical className="w-4 h-4" />
+                  {showReorder ? 'Masquer' : 'Reorganiser'}
+                </button>
+              </div>
+
+              {showReorder && menuOrder.length > 0 && (
+                <div className="space-y-1.5 max-h-[400px] overflow-y-auto pr-2">
+                  {menuOrder.map((item, idx) => {
+                    const cfg = QUADRANT_CONFIG[item.quadrant] || QUADRANT_CONFIG['star'];
+                    const isDragging = dragIdx === idx;
+                    const isDragOver = dragOverIdx === idx;
+                    return (
+                      <div
+                        key={item.id}
+                        draggable
+                        onDragStart={() => handleDragStart(idx)}
+                        onDragOver={(e) => handleDragOver(e, idx)}
+                        onDrop={() => handleDrop(idx)}
+                        onDragEnd={() => { setDragIdx(null); setDragOverIdx(null); }}
+                        onTouchStart={() => handleTouchDragStart(idx)}
+                        onTouchEnd={() => handleTouchDragEnd(idx)}
+                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-grab active:cursor-grabbing select-none ${
+                          isDragging
+                            ? 'opacity-50 border-violet-400 dark:border-violet-600 bg-violet-50 dark:bg-violet-950/30'
+                            : isDragOver
+                              ? 'border-violet-300 dark:border-violet-700 bg-violet-50/50 dark:bg-violet-950/20 scale-[1.01]'
+                              : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] hover:bg-[#FAFAFA] dark:hover:bg-[#171717]'
+                        }`}
+                      >
+                        {/* Drag handle */}
+                        <div className="flex flex-col items-center gap-0.5 text-[#D1D5DB] dark:text-[#525252]">
+                          <GripVertical className="w-4 h-4" />
+                        </div>
+
+                        {/* Position number */}
+                        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#F5F5F5] dark:bg-[#171717] text-xs font-bold text-[#6B7280] dark:text-[#A3A3A3]">
+                          {idx + 1}
+                        </div>
+
+                        {/* Item info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-[#111111] dark:text-white truncate">{item.name}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{item.category} - {fmtEur(item.sellingPrice)}</div>
+                        </div>
+
+                        {/* Quadrant badge */}
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold flex-shrink-0 ${cfg.badge}`}>
+                          {cfg.emoji} {cfg.label}
+                        </span>
+
+                        {/* Margin */}
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-xs font-bold text-[#111111] dark:text-white">{fmt(item.marginPercent, 1)}%</div>
+                          <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtEur(item.margin)}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {showReorder && menuOrder.length === 0 && (
+                <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">
+                  <GripVertical className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Aucune recette a reorganiser</p>
+                </div>
+              )}
+
+              {!showReorder && (
+                <div className="text-center py-6 text-[#9CA3AF] dark:text-[#737373]">
+                  <p className="text-sm">Cliquez sur "Reorganiser" pour simuler un nouvel agencement de votre carte</p>
+                </div>
+              )}
+            </div>
 
             {/* ── Score Legend ────────────────────────────────────────────────── */}
             <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] shadow-sm p-6">

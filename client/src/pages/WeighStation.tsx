@@ -4,6 +4,7 @@ import {
   AlertTriangle, Wifi, Plus, Minus, ArrowLeft, Trash2,
   ClipboardList, Package, ChefHat, Zap, CircleDot, Euro, PlusCircle, X,
   Maximize, Minimize, Camera, RefreshCw, Settings, WifiOff,
+  ArrowDownToLine, ArrowUpFromLine, Replace,
 } from 'lucide-react';
 import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
@@ -20,6 +21,8 @@ function authHeaders() {
 
 type Ingredient = { id: number; name: string; unit: string; category: string; pricePerUnit: number };
 
+type StockMode = 'remove' | 'add' | 'set';
+
 type HistoryEntry = {
   ingredientName: string;
   ingredientCategory: string;
@@ -27,6 +30,9 @@ type HistoryEntry = {
   unit: string;
   timestamp: string;
   status: 'success' | 'error';
+  stockAction?: StockMode;
+  stockBefore?: number;
+  stockAfter?: number;
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -73,7 +79,8 @@ const STEPS = [
   { num: 1, label: 'Ingredient', icon: Search },
   { num: 2, label: 'Tare', icon: RotateCcw },
   { num: 3, label: 'Peser', icon: Scale },
-  { num: 4, label: 'Valider', icon: Check },
+  { num: 4, label: 'Action', icon: Package },
+  { num: 5, label: 'Valider', icon: Check },
 ];
 
 type DisplayUnit = 'g' | 'kg' | 'L' | 'piece';
@@ -109,6 +116,7 @@ export default function WeighStation() {
   const [loadingStock, setLoadingStock] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showCameraPlaceholder, setShowCameraPlaceholder] = useState(false);
+  const [stockMode, setStockMode] = useState<StockMode>('remove');
 
   const searchRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -185,7 +193,7 @@ export default function WeighStation() {
   const netConverted = selected ? convertWeight(netWeight, selected.unit) : (displayUnit === 'g' ? Math.round(netWeight * 1000) : Math.round(netWeight * 1000) / 1000);
 
   // Current step calculation
-  const currentStep = !selected && !quickMode ? 1 : tare === 0 && currentWeight <= 0 ? 2 : netWeight <= 0 ? 3 : 4;
+  const currentStep = !selected && !quickMode ? 1 : tare === 0 && currentWeight <= 0 ? 2 : netWeight <= 0 ? 3 : netConverted > 0 && selected ? 5 : 4;
 
   const filteredIngredients = ingredients.filter(i =>
     i.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -228,22 +236,79 @@ export default function WeighStation() {
     try {
       const invRes = await fetch(`${API}/api/inventory`, { headers: authHeaders() });
       let entryStatus: 'success' | 'error' = 'success';
+      let stockBefore = 0;
+      let stockAfter = 0;
+
       if (invRes.ok) {
         const invItems = await invRes.json();
         const item = invItems.find((i: any) => i.ingredientId === selected.id);
+
         if (item) {
-          const newStock = Math.max(0, item.currentStock - netConverted);
-          await fetch(`${API}/api/inventory/${item.id}`, {
-            method: 'PUT',
-            headers: authHeaders(),
-            body: JSON.stringify({ currentStock: newStock }),
-          });
+          stockBefore = item.currentStock;
+          let newStock: number;
+
+          if (stockMode === 'add') {
+            // Ajouter au stock (restock / livraison)
+            newStock = item.currentStock + netConverted;
+            await fetch(`${API}/api/inventory/${item.id}/restock`, {
+              method: 'POST',
+              headers: authHeaders(),
+              body: JSON.stringify({ quantity: netConverted }),
+            });
+          } else if (stockMode === 'set') {
+            // Definir le stock (inventaire exact)
+            newStock = netConverted;
+            await fetch(`${API}/api/inventory/${item.id}`, {
+              method: 'PUT',
+              headers: authHeaders(),
+              body: JSON.stringify({ currentStock: netConverted }),
+            });
+          } else {
+            // Retirer du stock (consommation)
+            newStock = Math.max(0, item.currentStock - netConverted);
+            await fetch(`${API}/api/inventory/${item.id}`, {
+              method: 'PUT',
+              headers: authHeaders(),
+              body: JSON.stringify({ currentStock: newStock }),
+            });
+          }
+
+          stockAfter = newStock;
           setIngredientStock({ stock: newStock, unit: item.unit || selected.unit, itemId: item.id });
-          showToast(`Stock mis a jour : -${netConverted} ${selected.unit} de ${selected.name} (reste ${newStock.toFixed(2)} ${selected.unit})`, 'success');
+
+          const actionLabel = stockMode === 'add' ? '+' : stockMode === 'set' ? '=' : '-';
+          showToast(
+            `Stock ${selected.name} : ${actionLabel}${netConverted} ${selected.unit} → ${newStock.toFixed(2)} ${selected.unit}`,
+            'success'
+          );
         } else {
-          showToast(`Pesee enregistree (pas de stock pour ${selected.name})`, 'info');
+          // No inventory entry yet — create one
+          if (stockMode === 'remove') {
+            showToast(`Pas de stock pour ${selected.name} — impossible de retirer`, 'error');
+            entryStatus = 'error';
+          } else {
+            const createRes = await fetch(`${API}/api/inventory`, {
+              method: 'POST',
+              headers: authHeaders(),
+              body: JSON.stringify({
+                ingredientId: selected.id,
+                currentStock: netConverted,
+                minStock: 0,
+                unit: selected.unit,
+              }),
+            });
+            if (createRes.ok) {
+              const created = await createRes.json();
+              stockAfter = netConverted;
+              setIngredientStock({ stock: netConverted, unit: selected.unit, itemId: created.id });
+              showToast(`Stock cree pour ${selected.name} : ${netConverted} ${selected.unit}`, 'success');
+            } else {
+              throw new Error('Erreur creation stock');
+            }
+          }
         }
       }
+
       const entry: HistoryEntry = {
         ingredientName: selected.name,
         ingredientCategory: selected.category,
@@ -251,6 +316,9 @@ export default function WeighStation() {
         unit: selected.unit,
         timestamp: new Date().toISOString(),
         status: entryStatus,
+        stockAction: stockMode,
+        stockBefore,
+        stockAfter,
       };
       const updated = [entry, ...history].slice(0, 50);
       setHistory(updated);
@@ -259,7 +327,7 @@ export default function WeighStation() {
       setSelected(null);
       setSearch('');
     } catch {
-      showToast('Erreur sauvegarde', 'error');
+      showToast('Erreur sauvegarde stock', 'error');
       const entry: HistoryEntry = {
         ingredientName: selected.name,
         ingredientCategory: selected.category,
@@ -267,6 +335,7 @@ export default function WeighStation() {
         unit: selected.unit,
         timestamp: new Date().toISOString(),
         status: 'error',
+        stockAction: stockMode,
       };
       const updated = [entry, ...history].slice(0, 50);
       setHistory(updated);
@@ -946,6 +1015,81 @@ export default function WeighStation() {
             </div>
           )}
 
+          {/* Stock mode selector — visible only when ingredient selected */}
+          {selected && !quickMode && (
+            <div className={`flex items-center gap-1 p-1 rounded-xl border ${kioskMode ? '' : ''} ${
+              stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/30' :
+              stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/30' :
+              'bg-red-900/10 border-red-500/20'
+            }`}>
+              <button
+                onClick={() => setStockMode('remove')}
+                className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                  stockMode === 'remove'
+                    ? 'bg-red-600 text-white shadow-md'
+                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 hover:bg-red-900/20'
+                }`}
+              >
+                <ArrowUpFromLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                Retirer
+              </button>
+              <button
+                onClick={() => setStockMode('add')}
+                className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                  stockMode === 'add'
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-400 hover:bg-emerald-900/20'
+                }`}
+              >
+                <ArrowDownToLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                Ajouter
+              </button>
+              <button
+                onClick={() => setStockMode('set')}
+                className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                  stockMode === 'set'
+                    ? 'bg-teal-600 text-white shadow-md'
+                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-teal-400 hover:bg-teal-900/20'
+                }`}
+              >
+                <Replace className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                Definir
+              </button>
+            </div>
+          )}
+
+          {/* Stock change preview */}
+          {selected && !quickMode && netConverted > 0 && ingredientStock && (
+            <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border text-sm ${kioskMode ? 'px-6 py-3 text-base' : ''} ${
+              stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/20 text-emerald-400' :
+              stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/20 text-teal-400' :
+              'bg-red-900/10 border-red-500/20 text-red-400'
+            }`}>
+              <Package className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+              <span className="font-medium">
+                {ingredientStock.stock.toFixed(2)} {selected.unit}
+              </span>
+              <span className="text-[#9CA3AF] dark:text-[#737373]">→</span>
+              <span className="font-bold">
+                {stockMode === 'add'
+                  ? (ingredientStock.stock + netConverted).toFixed(2)
+                  : stockMode === 'set'
+                  ? netConverted.toFixed(2)
+                  : Math.max(0, ingredientStock.stock - netConverted).toFixed(2)
+                } {selected.unit}
+              </span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                stockMode === 'add' ? 'bg-emerald-600/30 text-emerald-300' :
+                stockMode === 'set' ? 'bg-teal-600/30 text-teal-300' :
+                'bg-red-600/30 text-red-300'
+              }`}>
+                {stockMode === 'add' ? `+${netConverted.toFixed(2)}` :
+                 stockMode === 'set' ? `= ${netConverted.toFixed(2)}` :
+                 `-${netConverted.toFixed(2)}`}
+              </span>
+            </div>
+          )}
+
           {/* Action buttons */}
           <div className={`flex flex-wrap justify-center gap-2 sm:gap-3 w-full px-1 ${kioskMode ? 'max-w-2xl gap-4' : 'max-w-lg'}`}>
             <button
@@ -961,12 +1105,30 @@ export default function WeighStation() {
             <button
               onClick={handleValidate}
               disabled={(!selected && !quickMode) || netConverted <= 0 || saving}
-              className={`flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white transition-all active:scale-95 shadow-lg shadow-emerald-900/30 border border-emerald-500/30 ${
+              className={`flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white transition-all active:scale-95 shadow-lg border ${
+                selected && !quickMode ? (
+                  stockMode === 'add' ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30 border-emerald-500/30' :
+                  stockMode === 'set' ? 'bg-teal-600 hover:bg-teal-500 shadow-teal-900/30 border-teal-500/30' :
+                  'bg-red-600 hover:bg-red-500 shadow-red-900/30 border-red-500/30'
+                ) : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30 border-emerald-500/30'
+              } ${
                 kioskMode ? 'px-14 py-5 min-h-[64px] text-2xl' : 'px-6 sm:px-10 py-4 min-h-[56px] text-base sm:text-lg'
               }`}
             >
-              <Check className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
-              {saving ? 'Sauvegarde...' : 'Valider'}
+              {selected && !quickMode ? (
+                stockMode === 'add' ? <ArrowDownToLine className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} /> :
+                stockMode === 'set' ? <Replace className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} /> :
+                <ArrowUpFromLine className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
+              ) : (
+                <Check className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
+              )}
+              {saving ? 'Sauvegarde...' : (
+                selected && !quickMode ? (
+                  stockMode === 'add' ? 'Ajouter au stock' :
+                  stockMode === 'set' ? 'Definir le stock' :
+                  'Retirer du stock'
+                ) : 'Valider'
+              )}
             </button>
 
             <button
@@ -1024,18 +1186,43 @@ export default function WeighStation() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0 flex-1">
                       <p className="text-[#111111] dark:text-white text-sm font-medium truncate">{entry.ingredientName}</p>
-                      {entry.ingredientCategory && (
-                        <span className={`inline-block text-[9px] px-1 py-0.5 rounded border mt-0.5 ${getCategoryColor(entry.ingredientCategory)}`}>
-                          {entry.ingredientCategory}
-                        </span>
-                      )}
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {entry.ingredientCategory && (
+                          <span className={`inline-block text-[9px] px-1 py-0.5 rounded border ${getCategoryColor(entry.ingredientCategory)}`}>
+                            {entry.ingredientCategory}
+                          </span>
+                        )}
+                        {entry.stockAction && (
+                          <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${
+                            entry.stockAction === 'add' ? 'bg-emerald-900/30 text-emerald-400' :
+                            entry.stockAction === 'set' ? 'bg-teal-900/30 text-teal-400' :
+                            'bg-red-900/30 text-red-400'
+                          }`}>
+                            {entry.stockAction === 'add' ? '+ Stock' : entry.stockAction === 'set' ? '= Stock' : '- Stock'}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className={`text-lg font-bold tabular-nums ${entry.status === 'error' ? 'text-red-400' : 'text-emerald-400'}`}>
-                        {entry.weight} {entry.unit}
+                      <p className={`text-lg font-bold tabular-nums ${
+                        entry.status === 'error' ? 'text-red-400' :
+                        entry.stockAction === 'add' ? 'text-emerald-400' :
+                        entry.stockAction === 'remove' ? 'text-red-400' :
+                        'text-teal-400'
+                      }`}>
+                        {entry.stockAction === 'add' ? '+' : entry.stockAction === 'remove' ? '-' : ''}{entry.weight} {entry.unit}
                       </p>
                     </div>
                   </div>
+                  {/* Stock before → after */}
+                  {entry.stockAction && entry.stockBefore !== undefined && entry.stockAfter !== undefined && entry.status === 'success' && (
+                    <div className="flex items-center gap-1.5 mt-1 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      <Package className="w-3 h-3" />
+                      <span>{entry.stockBefore.toFixed(1)}</span>
+                      <span>→</span>
+                      <span className="font-semibold text-[#111111] dark:text-white">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between mt-1.5">
                     <p className="text-[#6B7280] dark:text-[#A3A3A3] text-[10px]">
                       {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}

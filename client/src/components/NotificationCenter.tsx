@@ -262,7 +262,7 @@ export default function NotificationCenter() {
     const parts: string[] = [];
     if (stockCritical.length > 0) parts.push(`${stockCritical.length} rupture${stockCritical.length > 1 ? 's' : ''} de stock`);
     if (priceChanges.length > 0) parts.push(`${priceChanges.length} variation${priceChanges.length > 1 ? 's' : ''} de prix`);
-    if (lowestMargin) parts.push(`marge min. ${lowestMargin.margin.toFixed(0)}% (${lowestMargin.name})`);
+    if (lowestMargin) parts.push(`marge min. ${Number(lowestMargin.margin || 0).toFixed(0)}% (${lowestMargin.name})`);
 
     setBriefing({
       lowestMarginRecipe: lowestMargin,
@@ -407,7 +407,7 @@ export default function NotificationCenter() {
       <div
         ref={panelRef}
         className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-black border-l border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl shadow-black/20 z-[80] flex flex-col transition-transform duration-300 ease-out ${
-          open ? 'translate-x-0' : 'translate-x-full'
+          open ? 'translate-x-0' : 'translate-x-full pointer-events-none'
         }`}
       >
         {/* ── Header ── */}
@@ -516,7 +516,7 @@ export default function NotificationCenter() {
               {briefing.lowestMarginRecipe && (
                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-purple-500/20">
                   <AlertTriangle className="w-3 h-3 text-purple-400" />
-                  <span className="text-[10px] font-bold text-purple-400">{briefing.lowestMarginRecipe.margin.toFixed(0)}%</span>
+                  <span className="text-[10px] font-bold text-purple-400">{Number(briefing.lowestMarginRecipe.margin || 0).toFixed(0)}%</span>
                 </div>
               )}
             </div>

@@ -794,8 +794,8 @@ export default function ServiceTracker() {
                           <div className="text-sm font-medium text-[#111111] dark:text-white truncate">{recipe.name}</div>
                           <div className="text-[11px] text-[#A3A3A3] mt-0.5">{recipe.category}</div>
                           <div className="flex items-center justify-between mt-1.5">
-                            <span className="text-xs font-semibold text-emerald-400">{price.toFixed(2)} \u20AC</span>
-                            <span className="text-[10px] text-[#737373]">cout {cost.toFixed(2)} \u20AC</span>
+                            <span className="text-xs font-semibold text-emerald-400">{price.toFixed(2)} EUR</span>
+                            <span className="text-[10px] text-[#737373]">cout {cost.toFixed(2)} EUR</span>
                           </div>
                           {isSelected && (
                             <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center">
@@ -896,10 +896,10 @@ export default function ServiceTracker() {
                           </div>
                           <div className="text-right">
                             <div className="text-sm font-semibold text-emerald-400">
-                              +{(order.quantity * order.unitSellingPrice).toFixed(2)} \u20AC
+                              +{(order.quantity * order.unitSellingPrice).toFixed(2)} EUR
                             </div>
                             <div className="text-[10px] text-red-400/60">
-                              cout {(order.quantity * order.unitCost).toFixed(2)} \u20AC
+                              cout {(order.quantity * order.unitCost).toFixed(2)} EUR
                             </div>
                           </div>
                           <button

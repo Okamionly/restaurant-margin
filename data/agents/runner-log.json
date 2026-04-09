@@ -1,0 +1,24 @@
+{
+  "lastUpdated": "2026-04-09T20:19:58.119Z",
+  "totalRuns": 2,
+  "runs": [
+    {
+      "agent": "health-check",
+      "startedAt": "2026-04-09T20:19:37.266Z",
+      "completedAt": "2026-04-09T20:19:39.319Z",
+      "durationMs": 2053,
+      "exitCode": 1,
+      "status": "failure",
+      "output": "\r\nnode:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\nError [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\\Users\\mrgue\\CLAUDE' imported from C:\\Users\\mrgue\\CLAUDE CODE\\restaurant-margin\\\r\n    at finalizeResolution (node:internal/modules/esm/resolve:274:11)\r\n    at moduleResolve (node:internal/modules/esm/resolve:864:10)\r\n    at defaultResolve (node:internal/modules/esm/resolve:990:11)\r\n    at nextResolve (node:internal/modules/esm/hooks:785:28)\r\n    at resolveBase (file:///C:/Users/mrgue/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1775765979202:2:3744)\r\n    at resolveDirectory (file:///C:/Users/mrgue/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1775765979202:2:4243)\r\n    at resolveTsPaths (file:///C:/Users/mrgue/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1775765979202:2:4984)\r\n    at resolve (file:///C:/Users/mrgue/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1775765979202:2:5361)\r\n    at nextResolve (node:internal/modules/esm/hooks:785:28)\r\n    at AsyncLoaderHooksOnLoaderHookWorker.resolve (node:internal/modules/esm/hooks:269:30) {\r\n  code: 'ERR_MODULE_NOT_FOUND',\r\n  url: 'file:///C:/Users/mrgue/CLAUDE'\r\n}\r\n\r\nNode.js v24.13.0\r\n"
+    },
+    {
+      "agent": "health-check",
+      "startedAt": "2026-04-09T20:19:55.948Z",
+      "completedAt": "2026-04-09T20:19:58.119Z",
+      "durationMs": 2170,
+      "exitCode": 0,
+      "status": "success",
+      "output": "[2026-04-09T20:19:57.345Z] [health-check] Starting Health Check run...\n[2026-04-09T20:19:57.345Z] [health-check] Running checks...\n[2026-04-09T20:19:58.080Z] [health-check]   [OK] site-reachable: Site reachable (409ms)\n[2026-04-09T20:19:58.080Z] [health-check]   [OK] api-health: OK (689ms)\n[2026-04-09T20:19:58.080Z] [health-check]   [OK] response-time: 364ms (under 2000ms threshold)\n[2026-04-09T20:19:58.080Z] [health-check]   [--] vercel-deployment: VERCEL_TOKEN or VERCEL_PROJECT_ID not set — skipping\n[2026-04-09T20:19:58.080Z] [health-check]   [--] supabase-connectivity: SUPABASE_URL not set — skipping\n[2026-04-09T20:19:58.081Z] [health-check] --- Summary ---\n[2026-04-09T20:19:58.081Z] [health-check] Overall: HEALTHY\n[2026-04-09T20:19:58.081Z] [health-check] Checks — Pass: 3 | Warn: 0 | Fail: 0 | Skip: 2\n[2026-04-09T20:19:58.081Z] [health-check] Consecutive failures: 0\n[2026-04-09T20:19:58.081Z] [health-check] Alert sent: false\n"
+    }
+  ]
+}

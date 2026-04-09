@@ -1,0 +1,45 @@
+[
+  {
+    "timestamp": "2026-04-09T20:19:58.080Z",
+    "overallStatus": "healthy",
+    "checks": [
+      {
+        "name": "site-reachable",
+        "status": "pass",
+        "responseTimeMs": 409,
+        "message": "Site reachable (409ms)",
+        "timestamp": "2026-04-09T20:19:57.754Z"
+      },
+      {
+        "name": "api-health",
+        "status": "pass",
+        "responseTimeMs": 689,
+        "message": "OK (689ms)",
+        "timestamp": "2026-04-09T20:19:58.080Z"
+      },
+      {
+        "name": "response-time",
+        "status": "pass",
+        "responseTimeMs": 364,
+        "message": "364ms (under 2000ms threshold)",
+        "timestamp": "2026-04-09T20:19:57.756Z"
+      },
+      {
+        "name": "vercel-deployment",
+        "status": "skip",
+        "responseTimeMs": 0,
+        "message": "VERCEL_TOKEN or VERCEL_PROJECT_ID not set — skipping",
+        "timestamp": "2026-04-09T20:19:57.393Z"
+      },
+      {
+        "name": "supabase-connectivity",
+        "status": "skip",
+        "responseTimeMs": 0,
+        "message": "SUPABASE_URL not set — skipping",
+        "timestamp": "2026-04-09T20:19:57.393Z"
+      }
+    ],
+    "alertSent": false,
+    "consecutiveFailures": 0
+  }
+]

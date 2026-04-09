@@ -17,7 +17,16 @@
     "scrape:gmaps": "npx tsx scripts/scrape-gmaps.ts",
     "scrape:national": "npx tsx scripts/scrape-gmaps.ts --all",
     "campaign": "npx tsx scripts/send-campaign.ts",
-    "campaign:dry": "npx tsx scripts/send-campaign.ts --dry-run"
+    "campaign:dry": "npx tsx scripts/send-campaign.ts --dry-run",
+    "agent": "npx tsx scripts/agents/runner.ts --agent",
+    "agent:all": "npx tsx scripts/agents/runner.ts --all",
+    "agent:status": "npx tsx scripts/agents/runner.ts --status",
+    "agent:health": "npx tsx scripts/agents/runner.ts --agent health-check",
+    "agent:sentry": "npx tsx scripts/agents/runner.ts --agent sentry-monitor",
+    "agent:leads": "npx tsx scripts/agents/runner.ts --agent lead-finder",
+    "agent:market": "npx tsx scripts/agents/runner.ts --agent market-intelligence",
+    "agent:emails": "npx tsx scripts/agents/runner.ts --agent email-sequence",
+    "agent:emails:dry": "npx tsx scripts/agents/email-sequence.ts --dry-run"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

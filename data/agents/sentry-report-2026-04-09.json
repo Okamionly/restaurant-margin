@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-04-09T20:20:12.304Z",
+  "totalIssues": 0,
+  "newIssues": 0,
+  "categories": {
+    "frontend": 0,
+    "backend": 0,
+    "network": 0,
+    "unknown": 0
+  },
+  "criticalCount": 0,
+  "alertSent": false,
+  "issues": []
+}

@@ -708,14 +708,14 @@ export default function ServiceTracker() {
                   <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 border border-emerald-500/20 rounded-xl p-4 text-center">
                     <DollarSign className="w-5 h-5 mx-auto mb-1 text-emerald-400" />
                     <div className="text-2xl font-bold text-[#111111] dark:text-white tabular-nums">
-                      <AnimatedValue value={liveStats.ca} suffix=" \u20AC" />
+                      <AnimatedValue value={liveStats.ca} suffix=" EUR" />
                     </div>
                     <div className="text-[11px] text-emerald-300">CA en temps reel</div>
                   </div>
                   <div className="bg-gradient-to-br from-red-600/20 to-red-900/20 border border-red-500/20 rounded-xl p-4 text-center">
                     <TrendingUp className="w-5 h-5 mx-auto mb-1 text-red-400" />
                     <div className="text-2xl font-bold text-[#111111] dark:text-white tabular-nums">
-                      <AnimatedValue value={liveStats.cout} suffix=" \u20AC" />
+                      <AnimatedValue value={liveStats.cout} suffix=" EUR" />
                     </div>
                     <div className="text-[11px] text-red-300">Cout matieres cumule</div>
                   </div>

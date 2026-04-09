@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AnimatedTutorial from './AnimatedTutorial';
 import {
   Plus, X, Mic, Timer, HelpCircle, Brain, Scale, FileText,
-  ShoppingCart, BarChart3, Keyboard, MessageSquare
+  ShoppingCart, BarChart3, Keyboard, MessageSquare, Play
 } from 'lucide-react';
 
 const ACTIONS = [
@@ -21,6 +22,7 @@ export default function FloatingActionBubble() {
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [showHelp, setShowHelp] = useState(false);
+  const [activeTutorial, setActiveTutorial] = useState<string | null>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const recognitionRef = useRef<any>(null);
@@ -99,39 +101,40 @@ export default function FloatingActionBubble() {
             </button>
           </div>
           <div className="p-3 space-y-2 max-h-[50vh] overflow-y-auto">
-            {/* Animated tutorial cards (CSS-only "videos") */}
+            {/* Animated CSS tutorial cards */}
             {[
-              { title: 'Creer une fiche technique', desc: 'Ajoutez ingredients + prix = marge auto', emoji: '📋', steps: ['Cliquez "Nouvelle recette"', 'Ajoutez vos ingredients', 'Le cout se calcule automatiquement'], route: '/recipes?action=new' },
-              { title: 'Peser un ingredient', desc: 'Bluetooth ou simulation', emoji: '⚖️', steps: ['Allez sur Station Balance', 'Selectionnez un ingredient', 'Posez sur la balance'], route: '/station' },
-              { title: 'Commander un fournisseur', desc: 'En 1 clic ou via WhatsApp', emoji: '🛒', steps: ['Allez sur Commandes', 'Selectionnez les items', 'Envoyez par email ou WhatsApp'], route: '/commandes' },
-              { title: 'Analyser vos marges', desc: 'Dashboard + IA predictive', emoji: '📊', steps: ['Ouvrez le Dashboard', 'Consultez le P&L', 'L\'IA vous conseille'], route: '/dashboard' },
-              { title: 'Scanner une facture', desc: 'L\'IA extrait tout automatiquement', emoji: '🧾', steps: ['Allez sur Scanner Factures', 'Glissez votre PDF/photo', 'Verifiez et validez'], route: '/scanner-factures' },
-              { title: 'Gerer le stock', desc: 'Alertes et restock rapide', emoji: '📦', steps: ['Ouvrez Inventaire', 'Voyez les alertes stock bas', 'Restockez en 1 clic'], route: '/inventaire' },
+              { title: 'Creer une fiche technique', desc: 'Ajoutez ingredients + prix = marge auto', emoji: '📋', tutorialId: 'fiche-technique', route: '/recipes?action=new' },
+              { title: 'Peser un ingredient', desc: 'Bluetooth ou simulation', emoji: '⚖️', tutorialId: 'pesee', route: '/station' },
+              { title: 'Commander un fournisseur', desc: 'En 1 clic ou via WhatsApp', emoji: '🛒', tutorialId: 'commande', route: '/commandes' },
+              { title: 'Analyser vos marges', desc: 'Dashboard + IA predictive', emoji: '📊', route: '/dashboard' },
+              { title: 'Scanner une facture', desc: 'L\'IA extrait tout', emoji: '🧾', route: '/scanner-factures' },
+              { title: 'Gerer le stock', desc: 'Alertes et restock rapide', emoji: '📦', route: '/inventaire' },
             ].map((tuto) => (
-              <button
-                key={tuto.title}
-                onClick={() => { navigate(tuto.route); setOpen(false); setShowHelp(false); }}
-                className="w-full text-left p-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors group"
-              >
-                <div className="flex items-start gap-3">
-                  {/* Animated "video" placeholder */}
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500/20 to-purple-500/20 flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
-                    {tuto.emoji}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#111111] dark:text-white">{tuto.title}</p>
-                    <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{tuto.desc}</p>
-                    <div className="mt-1.5 space-y-0.5">
-                      {tuto.steps.map((step, i) => (
-                        <p key={i} className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
-                          <span className="w-3.5 h-3.5 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center text-[8px] font-bold flex-shrink-0">{i + 1}</span>
-                          {step}
-                        </p>
-                      ))}
+              <div key={tuto.title} className="flex items-center gap-2">
+                <button
+                  onClick={() => { navigate(tuto.route); setOpen(false); setShowHelp(false); }}
+                  className="flex-1 text-left p-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500/20 to-purple-500/20 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-110 transition-transform">
+                      {tuto.emoji}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#111111] dark:text-white">{tuto.title}</p>
+                      <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{tuto.desc}</p>
                     </div>
                   </div>
-                </div>
-              </button>
+                </button>
+                {tuto.tutorialId && (
+                  <button
+                    onClick={() => { setActiveTutorial(tuto.tutorialId!); setShowHelp(false); setOpen(false); }}
+                    className="w-10 h-10 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 flex items-center justify-center flex-shrink-0 transition-colors"
+                    title="Voir la demo animee"
+                  >
+                    <Play className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  </button>
+                )}
+              </div>
             ))}
             {/* Contact support */}
             <button
@@ -200,6 +203,11 @@ export default function FloatingActionBubble() {
       >
         {open ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
       </button>
+
+      {/* Animated tutorial overlay */}
+      {activeTutorial && (
+        <AnimatedTutorial tutorialId={activeTutorial} onClose={() => setActiveTutorial(null)} />
+      )}
 
       <style>{`
         @keyframes fadeSlideIn {

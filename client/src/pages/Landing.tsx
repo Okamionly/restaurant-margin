@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense, useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   ChefHat, ClipboardList, Truck, BarChart3,
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
@@ -8,7 +8,7 @@ import {
   XCircle, Brain, Thermometer, Newspaper,
   Check, Plus, Minus, Sparkles, MessageCircle,
   ShieldCheck, Globe, Headphones, FileCheck, CreditCard,
-  Package, Calculator,
+  Package, Calculator, Eye, Play, MapPin, ChevronRight,
 } from 'lucide-react';
 
 /* <!-- HERO SAUVEGARDE -->
@@ -271,12 +271,70 @@ const faqItems = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  Live Demo Data                                                     */
+/* ------------------------------------------------------------------ */
+
+const demoRecipes = [
+  {
+    name: 'Risotto aux cepes',
+    category: 'Plat',
+    prixVente: 18.50,
+    foodCost: 5.85,
+    ingredients: [
+      { nom: 'Riz arborio', qte: '250g', cout: 1.20 },
+      { nom: 'Cepes frais', qte: '150g', cout: 2.80 },
+      { nom: 'Parmesan', qte: '50g', cout: 0.95 },
+      { nom: 'Beurre', qte: '30g', cout: 0.25 },
+      { nom: 'Bouillon', qte: '500ml', cout: 0.40 },
+      { nom: 'Echalotes', qte: '40g', cout: 0.25 },
+    ],
+  },
+  {
+    name: 'Filet de bar, beurre blanc',
+    category: 'Poisson',
+    prixVente: 24.00,
+    foodCost: 8.40,
+    ingredients: [
+      { nom: 'Filet de bar', qte: '180g', cout: 5.40 },
+      { nom: 'Beurre', qte: '60g', cout: 0.50 },
+      { nom: 'Echalotes', qte: '30g', cout: 0.20 },
+      { nom: 'Vin blanc', qte: '100ml', cout: 0.80 },
+      { nom: 'Creme', qte: '50ml', cout: 0.35 },
+      { nom: 'Legumes', qte: '120g', cout: 1.15 },
+    ],
+  },
+  {
+    name: 'Tiramisu classique',
+    category: 'Dessert',
+    prixVente: 9.50,
+    foodCost: 2.10,
+    ingredients: [
+      { nom: 'Mascarpone', qte: '125g', cout: 0.95 },
+      { nom: 'Oeufs', qte: '2 pcs', cout: 0.40 },
+      { nom: 'Biscuits', qte: '60g', cout: 0.30 },
+      { nom: 'Cafe', qte: '80ml', cout: 0.15 },
+      { nom: 'Cacao', qte: '5g', cout: 0.10 },
+      { nom: 'Sucre', qte: '40g', cout: 0.20 },
+    ],
+  },
+];
+
+const socialProofCities = [
+  'Lyon', 'Paris', 'Marseille', 'Bordeaux', 'Lille', 'Toulouse',
+  'Nantes', 'Strasbourg', 'Nice', 'Rennes', 'Montpellier', 'Grenoble',
+  'Dijon', 'Angers', 'Rouen', 'Avignon', 'Aix-en-Provence', 'Brest',
+];
+
+/* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export default function Landing() {
+  const [searchParams] = useSearchParams();
+  const heroVariant = searchParams.get('variant') === 'b' ? 'b' : 'a';
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [heroSlide, setHeroSlide] = useState(0);
@@ -301,6 +359,19 @@ export default function Landing() {
   // Floating CTA
   const [showFloatingCTA, setShowFloatingCTA] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+
+  // Scroll Progress CTA (appears past 50%)
+  const [showScrollCTA, setShowScrollCTA] = useState(false);
+
+  // Social Proof notification
+  const [socialNotif, setSocialNotif] = useState<string | null>(null);
+
+  // Live Demo
+  const [demoActiveRecipe, setDemoActiveRecipe] = useState<number | null>(null);
+
+  // Exit Intent food cost calculator
+  const [exitCalcForm, setExitCalcForm] = useState({ nom: '', ing1: '', ing2: '', ing3: '', prix: '' });
+  const [exitCalcResult, setExitCalcResult] = useState<{ foodCost: number; margin: number } | null>(null);
 
   /* ---- side-effects ---- */
 
@@ -348,6 +419,50 @@ export default function Landing() {
   useEffect(() => {
     const timer = setInterval(() => setHeroSlide(s => (s + 1) % 3), 4000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Speed optimization — preconnect to API and fonts
+  useEffect(() => {
+    const links = [
+      { rel: 'preconnect', href: window.location.origin },
+      { rel: 'dns-prefetch', href: window.location.origin },
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    ];
+    const created: HTMLLinkElement[] = [];
+    links.forEach(({ rel, href }) => {
+      if (!document.querySelector(`link[rel="${rel}"][href="${href}"]`)) {
+        const link = document.createElement('link');
+        link.rel = rel;
+        link.href = href;
+        document.head.appendChild(link);
+        created.push(link);
+      }
+    });
+    return () => created.forEach(l => l.remove());
+  }, []);
+
+  // Scroll progress CTA — show when past 50%, hide when back above
+  useEffect(() => {
+    const handleScroll = () => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docH > 0 ? window.scrollY / docH : 0;
+      setShowScrollCTA(pct > 0.5);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Social proof notification — cycle random cities every 30s
+  useEffect(() => {
+    const show = () => {
+      const city = socialProofCities[Math.floor(Math.random() * socialProofCities.length)];
+      setSocialNotif(city);
+      setTimeout(() => setSocialNotif(null), 5000);
+    };
+    const timer = setInterval(show, 30000);
+    // First one at 8s
+    const first = setTimeout(show, 8000);
+    return () => { clearInterval(timer); clearTimeout(first); };
   }, []);
 
   /* ---- handlers ---- */
@@ -472,6 +587,7 @@ export default function Landing() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
+            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Demo</button>
             <button onClick={() => scrollTo('features')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Fonctionnalites</button>
             <button onClick={() => scrollTo('pricing')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Tarifs</button>
             <button onClick={() => scrollTo('faq')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">FAQ</button>
@@ -492,6 +608,7 @@ export default function Landing() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-[#FFFFFF] border-t border-[#E5E7EB]">
             <div className="px-4 py-4 space-y-3">
+              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Demo</button>
               <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Fonctionnalites</button>
               <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Tarifs</button>
               <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
@@ -503,7 +620,7 @@ export default function Landing() {
         )}
       </nav>
 
-      {/* ═══════════════ 1. HERO (KEPT AS-IS) ═══════════════ */}
+      {/* ═══════════════ 1. HERO — A/B TEST READY ═══════════════ */}
       <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.05] rounded-full blur-[120px] animate-pulse" />
@@ -522,18 +639,34 @@ export default function Landing() {
                 PLATEFORME #1 DES RESTAURATEURS
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                <span className="text-gray-900">Maitrisez vos marges.</span>
-                <br />
-                <span className="text-gray-900">Augmentez vos </span>
-                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
-                  profits.
-                </span>
-              </h1>
-
-              <p className="mt-6 text-lg sm:text-xl text-gray-500 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
-              </p>
+              {heroVariant === 'a' ? (
+                <>
+                  <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
+                    <span className="text-[#111111]">Calculez le cout reel</span>
+                    <br />
+                    <span className="text-[#111111]">de chaque plat </span>
+                    <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
+                      en 2 clics.
+                    </span>
+                  </h1>
+                  <p className="mt-6 text-lg sm:text-xl text-[#6B7280] max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+                    La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
+                    <span className="text-[#111111]">Les restaurants qui utilisent RestauMargin economisent </span>
+                    <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
+                      340EUR/mois
+                    </span>
+                    <span className="text-[#111111]"> en moyenne.</span>
+                  </h1>
+                  <p className="mt-6 text-lg sm:text-xl text-[#6B7280] max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+                    Fiches techniques automatiques, alertes fournisseurs, IA cuisine — tout pour reduire votre food cost des le premier jour.
+                  </p>
+                </>
+              )}
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
@@ -542,8 +675,14 @@ export default function Landing() {
                 >
                   Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
                 </Link>
+                <button
+                  onClick={() => document.getElementById('live-demo')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border-2 border-[#111111] text-[#111111] font-semibold transition-all text-base hover:bg-[#111111] hover:text-white"
+                >
+                  <Play className="w-4 h-4" /> Voir la demo
+                </button>
               </div>
-              <p className="mt-3 text-sm text-gray-500 text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+              <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
                 <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise
               </p>
             </div>
@@ -552,12 +691,12 @@ export default function Landing() {
             <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.07] to-emerald-500/[0.07] rounded-3xl blur-2xl" />
-                <div className="relative bg-white border border-gray-200 shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
+                <div className="relative bg-white border border-[#E5E7EB] shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
                   <div className="relative overflow-hidden rounded-2xl">
                     <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
-                      <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" className="w-full h-auto flex-shrink-0" loading="eager" />
-                      <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" className="w-full h-auto flex-shrink-0" loading="eager" />
-                      <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" className="w-full h-auto flex-shrink-0" loading="eager" />
+                      <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" className="w-full h-auto flex-shrink-0" loading="eager" fetchPriority="high" />
+                      <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" className="w-full h-auto flex-shrink-0" loading="lazy" />
+                      <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" className="w-full h-auto flex-shrink-0" loading="lazy" />
                     </div>
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
                       {[0, 1, 2].map(i => (
@@ -582,8 +721,8 @@ export default function Landing() {
 
           {/* Stats bar */}
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-            <div className="bg-white border border-gray-200 shadow-sm rounded-2xl py-8 px-4">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 divide-gray-200 md:divide-x">
+            <div className="bg-white border border-[#E5E7EB] shadow-sm rounded-2xl py-8 px-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 divide-[#E5E7EB] md:divide-x">
                 <StatCounter value={150} suffix="+" label="Restaurants equipes" />
                 <StatCounter value={12400} suffix="" label="Fiches techniques creees" />
                 <StatCounter value={340} suffix="k" label="Euros economises en food cost" />
@@ -648,6 +787,120 @@ export default function Landing() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ LIVE DEMO WIDGET ═══════════════ */}
+      <section id="live-demo" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Demo interactive</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+                Testez en 10 secondes
+              </h2>
+              <p className="mt-4 text-lg text-[#6B7280]">
+                Cliquez sur une recette pour voir sa fiche technique complete. Aucun compte necessaire.
+              </p>
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={100}>
+            <div className="grid md:grid-cols-3 gap-6">
+              {demoRecipes.map((recipe, idx) => {
+                const margin = ((recipe.prixVente - recipe.foodCost) / recipe.prixVente * 100);
+                const isActive = demoActiveRecipe === idx;
+                return (
+                  <div key={idx}>
+                    <button
+                      onClick={() => setDemoActiveRecipe(isActive ? null : idx)}
+                      className={`w-full text-left bg-[#FFFFFF] border-2 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg ${
+                        isActive ? 'border-[#111111] shadow-lg' : 'border-[#E5E7EB] hover:border-[#111111]/30'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <span className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">{recipe.category}</span>
+                          <h3 className="text-lg font-bold text-[#111111]">{recipe.name}</h3>
+                        </div>
+                        <div className="w-10 h-10 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center">
+                          <Eye className="w-5 h-5 text-[#111111]" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                          <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold">Prix</p>
+                          <p className="text-sm font-bold text-[#111111]">{recipe.prixVente.toFixed(2)}EUR</p>
+                        </div>
+                        <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                          <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold">Food Cost</p>
+                          <p className="text-sm font-bold text-[#111111]">{recipe.foodCost.toFixed(2)}EUR</p>
+                        </div>
+                        <div className="bg-[#111111] rounded-lg p-2.5 text-center">
+                          <p className="text-[10px] text-white/60 uppercase font-semibold">Marge</p>
+                          <p className="text-sm font-bold text-white">{margin.toFixed(1)}%</p>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-xs text-teal-600 font-semibold flex items-center gap-1">
+                        {isActive ? 'Cliquez pour fermer' : 'Cliquez pour voir la fiche technique'} <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isActive ? 'rotate-90' : ''}`} />
+                      </p>
+                    </button>
+
+                    {/* Expanded fiche technique */}
+                    <div className={`overflow-hidden transition-all duration-500 ${isActive ? 'max-h-[500px] mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-6">
+                        <h4 className="text-sm font-bold text-[#111111] mb-4 flex items-center gap-2">
+                          <ClipboardList className="w-4 h-4" /> Fiche technique — {recipe.name}
+                        </h4>
+                        <div className="space-y-2">
+                          {recipe.ingredients.map((ing, i) => (
+                            <div key={i} className="flex items-center justify-between py-2 px-3 bg-[#F9FAFB] rounded-lg">
+                              <div className="flex items-center gap-3">
+                                <div className="w-6 h-6 rounded-full bg-[#111111] flex items-center justify-center">
+                                  <span className="text-[10px] text-white font-bold">{ing.nom.charAt(0)}</span>
+                                </div>
+                                <span className="text-sm text-[#111111] font-medium">{ing.nom}</span>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <span className="text-xs text-[#9CA3AF]">{ing.qte}</span>
+                                <span className="text-sm font-bold text-[#111111]">{ing.cout.toFixed(2)}EUR</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-4 pt-4 border-t border-[#E5E7EB] flex items-center justify-between">
+                          <div>
+                            <span className="text-xs text-[#9CA3AF]">Cout total</span>
+                            <p className="text-lg font-bold text-[#111111]">{recipe.foodCost.toFixed(2)}EUR</p>
+                          </div>
+                          <div>
+                            <span className="text-xs text-[#9CA3AF]">Coefficient</span>
+                            <p className="text-lg font-bold text-[#111111]">{(recipe.prixVente / recipe.foodCost).toFixed(2)}x</p>
+                          </div>
+                          <div className="bg-[#111111] rounded-xl px-4 py-2 text-center">
+                            <span className="text-[10px] text-white/60">Marge brute</span>
+                            <p className="text-lg font-bold text-white">{margin.toFixed(1)}%</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* CTA */}
+            <div className="mt-12 text-center">
+              <p className="text-lg font-bold text-[#111111] mb-4">Impressionnant ? Essayez avec VOS recettes.</p>
+              <Link
+                to="/login?mode=register"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-base transition-all shadow-lg"
+              >
+                Creer mon compte gratuit <ArrowRight className="w-4 h-4" />
+              </Link>
+              <p className="mt-3 text-sm text-[#9CA3AF]">7 jours gratuits -- Sans carte bancaire</p>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -904,6 +1157,49 @@ export default function Landing() {
               </FadeIn>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════ VIDEO TESTIMONIAL — ANIMATED TUTORIALS ═══════════════ */}
+      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+          <FadeIn>
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Tutoriels animes</p>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+                Voyez le produit en action
+              </h2>
+              <p className="mt-4 text-lg text-[#6B7280]">
+                Trois scenarios animes qui montrent la puissance de RestauMargin.
+              </p>
+            </div>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { id: 'fiche-technique', title: 'Creer une fiche technique', desc: 'De la recette a la marge en 4 etapes simples.', icon: ClipboardList },
+              { id: 'pesee', title: 'Peser un ingredient', desc: 'Connectez votre balance et pesez en temps reel.', icon: Scale },
+              { id: 'commande', title: 'Commander un fournisseur', desc: 'L\'IA suggere, vous envoyez en 1 clic.', icon: Truck },
+            ].map((tut, i) => {
+              const Icon = tut.icon;
+              return (
+                <FadeIn key={tut.id} delay={i * 120}>
+                  <AnimatedTutorialCard tutorialId={tut.id} title={tut.title} description={tut.desc} icon={Icon} />
+                </FadeIn>
+              );
+            })}
+          </div>
+
+          <FadeIn delay={400}>
+            <div className="mt-12 text-center">
+              <Link
+                to="/login?mode=register"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all"
+              >
+                Essayer maintenant <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -1368,40 +1664,174 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* ═══════════════ EXIT-INTENT POPUP ═══════════════ */}
+      {/* ═══════════════ EXIT-INTENT POPUP — FOOD COST CALCULATOR ═══════════════ */}
       {showExitPopup && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50">
-          <div className="relative mx-4 w-full max-w-md bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl shadow-2xl p-8 text-center">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative mx-4 w-full max-w-lg bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl shadow-2xl overflow-hidden">
             <button
               onClick={() => setShowExitPopup(false)}
-              className="absolute top-4 right-4 text-[#9CA3AF] hover:text-[#111111] transition-colors"
+              className="absolute top-4 right-4 z-10 text-[#9CA3AF] hover:text-[#111111] transition-colors"
               aria-label="Fermer"
             >
               <XIcon className="w-5 h-5" />
             </button>
 
-            <h3 className="text-2xl font-bold text-[#111111] mb-2">Attendez !</h3>
-            <p className="text-lg font-semibold text-[#111111] mb-1">
-              Essayez RestauMargin gratuitement pendant 7 jours
-            </p>
-            <p className="text-sm text-[#9CA3AF] mb-6">Pas de carte bancaire requise</p>
+            <div className="bg-[#111111] px-6 py-5">
+              <h3 className="text-xl font-bold text-white">Attendez ! Calculez GRATUITEMENT le food cost de votre plat star</h3>
+              <p className="text-sm text-white/60 mt-1">Remplissez 4 champs, obtenez votre marge instantanement.</p>
+            </div>
 
-            <Link
-              to="/login?mode=register"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#111111] text-white font-semibold rounded-lg hover:bg-[#333333] transition-colors"
-            >
-              Commencer mon essai gratuit <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="p-6">
+              {exitCalcResult ? (
+                <div className="text-center">
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4">
+                      <p className="text-xs text-[#9CA3AF] uppercase font-semibold">Food Cost</p>
+                      <p className="text-2xl font-extrabold text-[#111111]">{exitCalcResult.foodCost.toFixed(2)}EUR</p>
+                    </div>
+                    <div className="bg-[#111111] rounded-xl p-4">
+                      <p className="text-xs text-white/60 uppercase font-semibold">Marge brute</p>
+                      <p className="text-2xl font-extrabold text-white">{exitCalcResult.margin.toFixed(1)}%</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-[#6B7280] mb-4">
+                    {exitCalcResult.margin >= 70 ? 'Excellente marge ! RestauMargin peut vous aider a la maintenir.' :
+                     exitCalcResult.margin >= 60 ? 'Bonne marge. RestauMargin peut vous aider a l\'ameliorer.' :
+                     'Votre marge peut etre optimisee. RestauMargin vous montre comment.'}
+                  </p>
+                  <Link
+                    to="/login?mode=register"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg transition-colors"
+                  >
+                    Voir plus de details — Creer un compte gratuit <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-[#111111] mb-1 block">Nom du plat</label>
+                    <input
+                      type="text"
+                      value={exitCalcForm.nom}
+                      onChange={e => setExitCalcForm({ ...exitCalcForm, nom: e.target.value })}
+                      placeholder="Ex: Risotto aux cepes"
+                      className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-xs font-medium text-[#111111] mb-1 block">Ingredient 1 (EUR)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={exitCalcForm.ing1}
+                        onChange={e => setExitCalcForm({ ...exitCalcForm, ing1: e.target.value })}
+                        placeholder="2.50"
+                        className="w-full px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-[#111111] mb-1 block">Ingredient 2 (EUR)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={exitCalcForm.ing2}
+                        onChange={e => setExitCalcForm({ ...exitCalcForm, ing2: e.target.value })}
+                        placeholder="1.80"
+                        className="w-full px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-[#111111] mb-1 block">Ingredient 3 (EUR)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={exitCalcForm.ing3}
+                        onChange={e => setExitCalcForm({ ...exitCalcForm, ing3: e.target.value })}
+                        placeholder="0.90"
+                        className="w-full px-3 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-[#111111] mb-1 block">Prix de vente (EUR)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={exitCalcForm.prix}
+                      onChange={e => setExitCalcForm({ ...exitCalcForm, prix: e.target.value })}
+                      placeholder="18.50"
+                      className="w-full px-4 py-2.5 rounded-lg bg-[#FFFFFF] border border-[#E5E7EB] text-[#111111] placeholder-[#9CA3AF] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] focus:border-transparent"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      const i1 = parseFloat(exitCalcForm.ing1) || 0;
+                      const i2 = parseFloat(exitCalcForm.ing2) || 0;
+                      const i3 = parseFloat(exitCalcForm.ing3) || 0;
+                      const prix = parseFloat(exitCalcForm.prix) || 0;
+                      if (prix <= 0) return;
+                      const fc = i1 + i2 + i3;
+                      const margin = ((prix - fc) / prix) * 100;
+                      setExitCalcResult({ foodCost: fc, margin: Math.max(0, margin) });
+                    }}
+                    className="w-full py-3.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Calculator className="w-5 h-5" /> Calculer ma marge
+                  </button>
+                </div>
+              )}
 
-            <button
-              onClick={() => setShowExitPopup(false)}
-              className="block mx-auto mt-4 text-sm text-[#9CA3AF] hover:text-[#111111] transition-colors"
-            >
-              Non merci
-            </button>
+              <button
+                onClick={() => setShowExitPopup(false)}
+                className="block mx-auto mt-4 text-sm text-[#9CA3AF] hover:text-[#111111] transition-colors"
+              >
+                Non merci
+              </button>
+            </div>
           </div>
         </div>
       )}
+
+      {/* ═══════════════ SCROLL PROGRESS CTA ═══════════════ */}
+      <div
+        className={`fixed bottom-16 inset-x-0 z-[70] transition-all duration-500 ease-out pointer-events-none ${
+          showScrollCTA && !showFloatingCTA ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+        }`}
+      >
+        <div className="max-w-[700px] mx-auto px-4 pointer-events-auto">
+          <div className="bg-teal-600 rounded-2xl shadow-xl px-6 py-3.5 flex items-center justify-between gap-4">
+            <p className="text-sm sm:text-base font-semibold text-white">
+              Pret a transformer votre gestion ?
+            </p>
+            <Link
+              to="/login?mode=register"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white text-teal-700 font-semibold text-sm hover:bg-teal-50 transition-colors whitespace-nowrap shrink-0"
+            >
+              Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════════════ SOCIAL PROOF NOTIFICATION ═══════════════ */}
+      <div
+        className={`fixed bottom-24 left-6 z-[60] transition-all duration-500 ease-out ${
+          socialNotif ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl shadow-lg px-5 py-3.5 flex items-center gap-3 max-w-xs">
+          <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0">
+            <MapPin className="w-4 h-4 text-teal-600" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-[#111111]">
+              Un restaurant de {socialNotif} vient de s'inscrire
+            </p>
+            <p className="text-xs text-[#9CA3AF]">Il y a quelques instants</p>
+          </div>
+        </div>
+      </div>
 
       {/* ═══════════════ JSON-LD ═══════════════ */}
       <script
@@ -1569,6 +1999,88 @@ function ROICalculator() {
             </Link>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Animated Tutorial Card (inline, CSS-only animation for landing)    */
+/* ------------------------------------------------------------------ */
+
+const TUTORIAL_META: Record<string, { steps: string[] }> = {
+  'fiche-technique': {
+    steps: ['Cliquez "Nouvelle recette"', 'Nommez votre plat', 'Ajoutez les ingredients', 'Marge calculee !'],
+  },
+  'pesee': {
+    steps: ['Ouvrez la Station Balance', 'Selectionnez un ingredient', 'Posez sur la balance', 'Poids valide !'],
+  },
+  'commande': {
+    steps: ['Ouvrez les commandes', 'L\'IA suggere quoi commander', 'Envoyez par WhatsApp'],
+  },
+};
+
+function AnimatedTutorialCard({ tutorialId, title, description, icon: Icon }: {
+  tutorialId: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+}) {
+  const meta = TUTORIAL_META[tutorialId];
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    if (!meta) return;
+    const timer = setInterval(() => {
+      setActiveStep(s => (s + 1) % meta.steps.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, [meta]);
+
+  if (!meta) return null;
+
+  return (
+    <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl overflow-hidden hover:shadow-lg hover:border-[#111111]/20 transition-all duration-500">
+      {/* Animated viewport */}
+      <div className="relative h-48 bg-[#111111] overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          {meta.steps.map((step, i) => (
+            <div
+              key={i}
+              className={`absolute inset-0 flex items-center justify-center px-6 transition-all duration-700 ${
+                i === activeStep ? 'opacity-100 translate-y-0' : i < activeStep ? 'opacity-0 -translate-y-8' : 'opacity-0 translate-y-8'
+              }`}
+            >
+              <div className="text-center">
+                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3 border border-white/20">
+                  <span className="text-sm font-bold text-white">{i + 1}</span>
+                </div>
+                <p className="text-sm font-semibold text-white">{step}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* Progress dots */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {meta.steps.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                i === activeStep ? 'w-6 bg-teal-400' : 'w-1.5 bg-white/30'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+      {/* Info */}
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center">
+            <Icon className="w-5 h-5 text-[#111111]" />
+          </div>
+          <h3 className="text-lg font-bold text-[#111111]">{title}</h3>
+        </div>
+        <p className="text-sm text-[#6B7280] leading-relaxed">{description}</p>
       </div>
     </div>
   );

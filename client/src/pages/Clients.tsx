@@ -1015,6 +1015,8 @@ export default function Clients() {
                 email: emailIdx !== -1 ? cols[emailIdx] || '' : '',
                 telephone: telIdx !== -1 ? cols[telIdx] || '' : '',
                 entreprise: '',
+                siret: '',
+                adresse: '',
                 type: 'Particulier' as ClientType,
                 tags: ['Nouveau' as ClientTag],
                 notes: '',
@@ -1023,9 +1025,12 @@ export default function Clients() {
                 derniereVisite: '',
                 dateNaissance: '',
                 dateCreation: new Date().toISOString().split('T')[0],
-                allergies: [],
-                preferences: [],
-                loyaltyPoints: 0,
+                allergenes: [],
+                regime: [],
+                platsFavoris: [],
+                historique: [],
+                documents: [],
+                consentementRGPD: '',
               };
               setClients(prev => [...prev, newClient]);
               importCount++;

@@ -120,8 +120,8 @@ authRouter.post('/register', validate(registerSchema), async (req: AuthRequest, 
     // Send verification email via Resend
     const resendApiKey = process.env.RESEND_API_KEY;
     if (resendApiKey) {
+      const resend = new Resend(resendApiKey);
       try {
-        const resend = new Resend(resendApiKey);
         const frontendUrl = process.env.FRONTEND_URL || 'https://restaumargin.vercel.app';
         const verifyLink = `${frontendUrl}/login?verify=${verificationToken}`;
 

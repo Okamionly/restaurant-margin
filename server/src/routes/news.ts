@@ -249,7 +249,7 @@ Personnalise les actualités selon les ingrédients réels du restaurant. Si le 
 // PATCH /api/news/:id/dismiss — rejeter une actualité
 newsRouter.patch('/:id/dismiss', authWithRestaurant, async (req: AuthRequest, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.id as string);
     if (isNaN(id)) {
       res.status(400).json({ error: 'ID invalide' });
       return;

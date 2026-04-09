@@ -136,10 +136,10 @@ export default function PublicMenu() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          <p className="text-slate-400 dark:text-slate-400 text-sm">Chargement du menu...</p>
+          <p className="text-[#A3A3A3] dark:text-[#A3A3A3] text-sm">Chargement du menu...</p>
         </div>
       </div>
     );
@@ -147,36 +147,36 @@ export default function PublicMenu() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-          <p className="text-slate-300 dark:text-slate-400">{error}</p>
+          <p className="text-[#D4D4D4] dark:text-[#A3A3A3]">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors">
+    <div className="min-h-screen bg-gradient-to-b from-[#FAFAFA] via-white to-[#FAFAFA] dark:from-black dark:via-[#0A0A0A] dark:to-black transition-colors">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60">
+      <header className="sticky top-0 z-20 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-[#E5E7EB]/60 dark:border-[#1A1A1A]/60">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
               <ChefHat className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
+              <h1 className="text-lg font-bold text-[#111111] dark:text-white leading-tight">
                 Notre Carte
               </h1>
-              <p className="text-xs text-slate-400 dark:text-slate-400">
+              <p className="text-xs text-[#A3A3A3] dark:text-[#A3A3A3]">
                 {lang === 'en' ? 'Our Menu' : lang === 'es' ? 'Nuestra Carta' : 'Decouvrez nos plats'}
               </p>
             </div>
           </div>
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-300 dark:text-slate-300 transition-colors"
+            className="p-2.5 rounded-xl bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#D4D4D4] dark:text-[#D4D4D4] transition-colors"
             aria-label="Toggle theme"
           >
             {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -189,8 +189,8 @@ export default function PublicMenu() {
         {sortedCategories.map((category) => (
           <section key={category} className="space-y-3">
             {/* Category Header */}
-            <div className={`relative overflow-hidden rounded-xl bg-gradient-to-r ${CATEGORY_DECORATIONS[category] || 'from-slate-500/10 to-transparent'} p-4`}>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <div className={`relative overflow-hidden rounded-xl bg-gradient-to-r ${CATEGORY_DECORATIONS[category] || 'from-[#737373]/10 to-transparent'} p-4`}>
+              <h2 className="text-xl font-bold text-[#111111] dark:text-white tracking-tight">
                 {labelMap[category] || category}
               </h2>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 text-4xl opacity-10">
@@ -210,17 +210,17 @@ export default function PublicMenu() {
                 return (
                   <div
                     key={recipe.id}
-                    className={`group bg-white dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/50 p-4 hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 transition-all border-l-4 ${getCategoryBorderColor(normalizeCategory(recipe.category))}`}
+                    className={`group bg-white dark:bg-[#262626]/60 rounded-xl border border-[#F5F5F5] dark:border-[#262626]/50 p-4 hover:shadow-md hover:border-[#E5E7EB] dark:hover:border-[#404040] transition-all border-l-4 ${getCategoryBorderColor(normalizeCategory(recipe.category))}`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
                         <FoodIllustration recipeName={recipe.name} category={normalizeCategory(recipe.category)} size="sm" animated />
                         <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-slate-900 dark:text-white leading-snug">
+                        <h3 className="text-base font-semibold text-[#111111] dark:text-white leading-snug">
                           {recipe.name}
                         </h3>
                         {!hideDesc && recipe.description && (
-                          <p className="text-sm text-slate-400 dark:text-slate-400 mt-1 leading-relaxed">
+                          <p className="text-sm text-[#A3A3A3] dark:text-[#A3A3A3] mt-1 leading-relaxed">
                             {recipe.description}
                           </p>
                         )}
@@ -228,7 +228,7 @@ export default function PublicMenu() {
                         {/* Meta info */}
                         <div className="flex flex-wrap items-center gap-2 mt-2">
                           {totalTime > 0 && (
-                            <span className="inline-flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+                            <span className="inline-flex items-center gap-1 text-xs text-[#A3A3A3] dark:text-[#A3A3A3]">
                               <Clock className="w-3 h-3" />
                               {totalTime} min
                             </span>
@@ -238,7 +238,7 @@ export default function PublicMenu() {
                             <div className="flex flex-wrap gap-1">
                               {allergens.map((a) => {
                                 const normalized = a.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                                const info = ALLERGEN_ICONS[normalized] || { icon: <AlertTriangle className="w-3 h-3" />, color: 'bg-slate-100 text-slate-300 dark:bg-slate-700 dark:text-slate-300' };
+                                const info = ALLERGEN_ICONS[normalized] || { icon: <AlertTriangle className="w-3 h-3" />, color: 'bg-[#F5F5F5] text-[#D4D4D4] dark:bg-[#262626] dark:text-[#D4D4D4]' };
                                 return (
                                   <span
                                     key={a}
@@ -259,9 +259,9 @@ export default function PublicMenu() {
                       {/* Price */}
                       {!hidePrices && (
                         <div className="flex-shrink-0 text-right">
-                          <span className="text-lg font-bold text-slate-900 dark:text-white">
+                          <span className="text-lg font-bold text-[#111111] dark:text-white">
                             {recipe.sellingPrice.toFixed(2)}
-                            <span className="text-sm font-normal text-slate-400 ml-0.5">&euro;</span>
+                            <span className="text-sm font-normal text-[#A3A3A3] ml-0.5">&euro;</span>
                           </span>
                         </div>
                       )}
@@ -275,8 +275,8 @@ export default function PublicMenu() {
 
         {recipes.length === 0 && (
           <div className="text-center py-16">
-            <ChefHat className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 dark:text-slate-400 text-lg">
+            <ChefHat className="w-16 h-16 text-[#D4D4D4] dark:text-[#737373] mx-auto mb-4" />
+            <p className="text-[#A3A3A3] dark:text-[#A3A3A3] text-lg">
               {lang === 'en' ? 'The menu is being prepared...' : lang === 'es' ? 'El menu se esta preparando...' : 'Le menu est en cours de preparation...'}
             </p>
           </div>
@@ -284,11 +284,11 @@ export default function PublicMenu() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200/60 dark:border-slate-800/60 mt-12">
+      <footer className="border-t border-[#E5E7EB]/60 dark:border-[#1A1A1A]/60 mt-12">
         <div className="max-w-2xl mx-auto px-4 py-6 text-center">
-          <div className="flex items-center justify-center gap-2 text-xs text-slate-400 dark:text-slate-500">
+          <div className="flex items-center justify-center gap-2 text-xs text-[#A3A3A3] dark:text-[#A3A3A3]">
             <ChefHat className="w-3.5 h-3.5" />
-            <span>Propulse par <span className="font-semibold text-slate-400 dark:text-slate-400">RestauMargin</span></span>
+            <span>Propulse par <span className="font-semibold text-[#A3A3A3] dark:text-[#A3A3A3]">RestauMargin</span></span>
           </div>
         </div>
       </footer>

@@ -125,7 +125,7 @@ export default function AlertsBell() {
       {/* Bell button */}
       <button
         onClick={() => { setOpen(!open); if (!open) fetchAlerts(); }}
-        className="relative p-2 rounded-lg hover:bg-slate-700/50 text-slate-400 hover:text-white transition-colors"
+        className="relative p-2 rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#404040]/50 text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition-colors"
         aria-label={`Alertes prix${totalCount > 0 ? ` (${totalCount} alertes)` : ''}`}
       >
         <TrendingUp className="w-5 h-5" />
@@ -143,10 +143,10 @@ export default function AlertsBell() {
           style={{ animation: 'slideDown 0.2s ease-out' }}
         >
           {/* Header */}
-          <div className="px-4 py-3 border-b border-slate-700/50 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#262626]/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-teal-400" />
-              <span className="text-sm font-semibold text-white">Alertes prix</span>
+              <span className="text-sm font-semibold text-[#111111] dark:text-white">Alertes prix</span>
             </div>
             <div className="flex items-center gap-2">
               {criticalCount > 0 && (
@@ -154,7 +154,7 @@ export default function AlertsBell() {
                   {criticalCount} critique{criticalCount > 1 ? 's' : ''}
                 </span>
               )}
-              <span className="text-[10px] font-bold bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-bold bg-[#E5E7EB] dark:bg-[#404040] text-[#525252] dark:text-[#D4D4D4] px-2 py-0.5 rounded-full">
                 {totalCount} total
               </span>
             </div>
@@ -163,16 +163,16 @@ export default function AlertsBell() {
           {/* Alerts list */}
           <div className="max-h-[420px] overflow-y-auto">
             {loading && alerts.length === 0 && (
-              <div className="px-4 py-8 text-center text-slate-500 text-sm">
+              <div className="px-4 py-8 text-center text-[#737373] text-sm">
                 Chargement...
               </div>
             )}
 
             {!loading && alerts.length === 0 && (
               <div className="px-4 py-8 text-center">
-                <TrendingUp className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                <p className="text-sm text-slate-500">Aucune alerte prix</p>
-                <p className="text-xs text-slate-600 mt-1">Les prix sont stables ces 30 derniers jours</p>
+                <TrendingUp className="w-8 h-8 text-[#525252] mx-auto mb-2" />
+                <p className="text-sm text-[#737373]">Aucune alerte prix</p>
+                <p className="text-xs text-[#525252] mt-1">Les prix sont stables ces 30 derniers jours</p>
               </div>
             )}
 
@@ -184,7 +184,7 @@ export default function AlertsBell() {
               return (
                 <div
                   key={alert.id}
-                  className={`${config.border} ${config.bg} hover:bg-slate-700/30 transition-colors`}
+                  className={`${config.border} ${config.bg} hover:bg-[#404040]/30 transition-colors`}
                 >
                   {/* Main alert row */}
                   <div className="px-4 py-3">
@@ -202,7 +202,7 @@ export default function AlertsBell() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-sm text-white font-medium truncate">
+                          <p className="text-sm text-[#111111] dark:text-white font-medium truncate">
                             {alert.ingredient.name}
                           </p>
                           <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${config.badge}`}>
@@ -211,17 +211,17 @@ export default function AlertsBell() {
                         </div>
 
                         {alert.supplierName && (
-                          <p className="text-xs text-slate-500 mt-0.5 truncate">
+                          <p className="text-xs text-[#737373] mt-0.5 truncate">
                             {alert.supplierName}
                           </p>
                         )}
 
                         {/* Price change */}
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-[#A3A3A3]">
                             {alert.oldPrice.toFixed(2)}&euro;
                           </span>
-                          <ChevronRight className="w-3 h-3 text-slate-600" />
+                          <ChevronRight className="w-3 h-3 text-[#525252]" />
                           <span className={`text-xs font-semibold ${isUp ? 'text-red-400' : 'text-emerald-400'}`}>
                             {alert.newPrice.toFixed(2)}&euro;
                           </span>
@@ -232,7 +232,7 @@ export default function AlertsBell() {
 
                         {/* Affected recipes count */}
                         {alert.affectedRecipesCount > 0 && (
-                          <p className="text-[11px] text-slate-500 mt-1">
+                          <p className="text-[11px] text-[#737373] mt-1">
                             {alert.affectedRecipesCount} recette{alert.affectedRecipesCount > 1 ? 's' : ''} impactee{alert.affectedRecipesCount > 1 ? 's' : ''}
                           </p>
                         )}
@@ -245,7 +245,7 @@ export default function AlertsBell() {
                             e.stopPropagation();
                             setExpandedAlert(isExpanded ? null : alert.id);
                           }}
-                          className="p-1.5 rounded-lg hover:bg-slate-600/50 text-slate-500 hover:text-teal-400 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[#525252]/50 text-[#737373] hover:text-teal-400 transition-colors"
                           title="Voir details"
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -255,7 +255,7 @@ export default function AlertsBell() {
                             e.stopPropagation();
                             dismissAlert(alert.ingredientId);
                           }}
-                          className="p-1.5 rounded-lg hover:bg-slate-600/50 text-slate-500 hover:text-red-400 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[#525252]/50 text-[#737373] hover:text-red-400 transition-colors"
                           title="Ignorer"
                         >
                           <X className="w-3.5 h-3.5" />
@@ -266,17 +266,17 @@ export default function AlertsBell() {
 
                   {/* Expanded details */}
                   {isExpanded && alert.affectedRecipes.length > 0 && (
-                    <div className="px-4 pb-3 border-t border-slate-700/30">
-                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-2 mb-1.5">
+                    <div className="px-4 pb-3 border-t border-[#262626]/30">
+                      <p className="text-[11px] font-semibold text-[#A3A3A3] uppercase tracking-wider mt-2 mb-1.5">
                         Recettes impactees
                       </p>
                       <div className="space-y-1">
                         {alert.affectedRecipes.map((recipe: AffectedRecipe) => (
                           <div
                             key={recipe.id}
-                            className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-slate-700/30"
+                            className="flex items-center justify-between px-2 py-1.5 rounded-lg bg-[#404040]/30"
                           >
-                            <span className="text-xs text-slate-300 truncate flex-1">
+                            <span className="text-xs text-[#D4D4D4] truncate flex-1">
                               {recipe.name}
                             </span>
                             <span className={`text-xs font-semibold ml-2 ${
@@ -296,7 +296,7 @@ export default function AlertsBell() {
 
           {/* Footer */}
           {alerts.length > 0 && (
-            <div className="px-4 py-2.5 border-t border-slate-700/50 text-center">
+            <div className="px-4 py-2.5 border-t border-[#262626]/50 text-center">
               <a
                 href="/mercuriale"
                 className="text-xs text-teal-400 hover:text-teal-300 font-medium transition-colors"

@@ -37,13 +37,13 @@ export default function Modal({ isOpen, onClose, title, children, className = ''
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="modal-title" onClick={onClose}>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm animate-fade-in" />
       <div
-        className={`relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl my-8 animate-modal-in ${className}`}
+        className={`relative bg-white dark:bg-[#262626] rounded-2xl shadow-2xl w-full max-w-2xl my-8 animate-modal-in ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/80 dark:border-slate-700/80">
-          <h3 id="modal-title" className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50">{title}</h3>
-          <button onClick={onClose} aria-label="Fermer" className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-            <X className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]/80 dark:border-[#262626]/80">
+          <h3 id="modal-title" className="text-lg font-bold tracking-tight text-[#111111] dark:text-white">{title}</h3>
+          <button onClick={onClose} aria-label="Fermer" className="p-1.5 rounded-lg hover:bg-[#F5F5F5] dark:hover:bg-[#262626] transition-colors">
+            <X className="w-5 h-5 text-[#737373] dark:text-[#A3A3A3]" />
           </button>
         </div>
         <div className={`p-6 max-h-[70vh] overflow-y-auto ${contentClassName}`}>{children}</div>

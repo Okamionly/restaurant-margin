@@ -19,11 +19,11 @@ export default function ConnectivityBar() {
 
   if (collapsed) {
     return (
-      <div className="bg-slate-100 dark:bg-slate-800/50 border-b dark:border-slate-700 no-print">
+      <div className="bg-[#F5F5F5] dark:bg-[#262626]/50 border-b dark:border-[#262626] no-print">
         <div className="max-w-7xl mx-auto px-4">
           <button
             onClick={() => setCollapsed(false)}
-            className="flex items-center gap-1.5 py-1 text-[11px] text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 py-1 text-[11px] text-[#A3A3A3] dark:text-[#A3A3A3] hover:text-[#525252] dark:hover:text-[#D4D4D4] transition-colors"
           >
             <span
               className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}
@@ -37,7 +37,7 @@ export default function ConnectivityBar() {
   }
 
   return (
-    <div className="bg-slate-100 dark:bg-slate-800/50 border-b dark:border-slate-700 no-print">
+    <div className="bg-[#F5F5F5] dark:bg-[#262626]/50 border-b dark:border-[#262626] no-print">
       <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between">
         {/* Status indicators */}
         <div className="flex items-center gap-4 text-[11px]">
@@ -70,9 +70,9 @@ export default function ConnectivityBar() {
               </>
             ) : (
               <>
-                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500" />
-                <BluetoothOff className="w-3 h-3 text-slate-400 dark:text-slate-500" />
-                <span className="text-slate-500 dark:text-slate-500 hidden sm:inline">
+                <span className="w-2 h-2 rounded-full bg-[#A3A3A3] dark:bg-[#525252]" />
+                <BluetoothOff className="w-3 h-3 text-[#A3A3A3] dark:text-[#A3A3A3]" />
+                <span className="text-[#737373] dark:text-[#A3A3A3] hidden sm:inline">
                   Balance d&eacute;connect&eacute;e
                 </span>
               </>
@@ -80,12 +80,12 @@ export default function ConnectivityBar() {
           </div>
 
           {/* Sync status */}
-          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+          <div className="flex items-center gap-1.5 text-[#737373] dark:text-[#A3A3A3]">
             <span>Derni&egrave;re sync :</span>
             <span className="font-medium">{formatTimeSince(lastSync)}</span>
             <button
               onClick={refreshSync}
-              className="p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
               title="Rafra&icirc;chir la synchronisation"
             >
               <RefreshCw className="w-3 h-3" />
@@ -96,7 +96,7 @@ export default function ConnectivityBar() {
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(true)}
-          className="p-0.5 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-slate-400 dark:text-slate-500"
+          className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors text-[#A3A3A3] dark:text-[#A3A3A3]"
           title="Masquer la barre"
         >
           <ChevronUp className="w-3.5 h-3.5" />

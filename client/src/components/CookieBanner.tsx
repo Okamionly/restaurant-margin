@@ -25,14 +25,14 @@ export default function CookieBanner() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[9999] p-4 animate-slide-up">
-      <div className="max-w-4xl mx-auto bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl shadow-black/50 p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#262626] rounded-2xl shadow-2xl shadow-black/20 dark:shadow-black/50 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           {/* Icon + text */}
           <div className="flex items-start gap-3 flex-1">
             <Cookie className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-white text-sm font-medium mb-1">Ce site utilise des cookies</p>
-              <p className="text-slate-400 text-xs leading-relaxed">
+              <p className="text-[#111111] dark:text-white text-sm font-medium mb-1">Ce site utilise des cookies</p>
+              <p className="text-[#737373] dark:text-[#A3A3A3] text-xs leading-relaxed">
                 Nous utilisons des cookies essentiels pour le fonctionnement du site et des cookies
                 analytiques pour ameliorer votre experience. Consultez notre{' '}
                 <a
@@ -50,7 +50,7 @@ export default function CookieBanner() {
           <div className="flex items-center gap-3 flex-shrink-0 w-full sm:w-auto">
             <button
               onClick={handleRefuse}
-              className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl transition-colors"
+              className="flex-1 sm:flex-none px-4 py-2 text-sm font-medium text-[#525252] dark:text-[#D4D4D4] bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#404040] border border-[#E5E7EB] dark:border-[#404040] rounded-xl transition-colors"
             >
               Refuser
             </button>
@@ -65,7 +65,7 @@ export default function CookieBanner() {
           {/* Close button (mobile alternative) */}
           <button
             onClick={handleRefuse}
-            className="absolute top-3 right-3 sm:hidden p-1 text-slate-500 hover:text-white transition-colors"
+            className="absolute top-3 right-3 sm:hidden p-1 text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

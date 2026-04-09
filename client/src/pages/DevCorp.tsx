@@ -352,12 +352,12 @@ export default function DevCorp() {
   });
 
   return (
-    <div className="h-screen flex flex-col bg-slate-950 text-white overflow-hidden">
+    <div className="h-screen flex flex-col bg-white dark:bg-black text-[#111111] dark:text-white overflow-hidden">
       {/* ── Top Bar ── */}
-      <div className="h-12 bg-slate-900 border-b border-slate-800 flex items-center px-4 gap-3 shrink-0">
+      <div className="h-12 bg-[#FAFAFA] dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center px-4 gap-3 shrink-0">
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-bold">DC</div>
         <span className="font-semibold text-sm hidden sm:inline">RestauMargin Dev Corp</span>
-        <span className="text-slate-400 text-xs hidden md:inline">Bureau virtuel</span>
+        <span className="text-[#737373] dark:text-[#A3A3A3] text-xs hidden md:inline">Bureau virtuel</span>
 
         <div className="ml-auto flex items-center gap-3 text-xs">
           {/* Alerts */}
@@ -365,11 +365,11 @@ export default function DevCorp() {
             <div key={a.id} className="flex items-center gap-1 px-2 py-0.5 rounded-full animate-pulse"
               style={{ backgroundColor: a.color + '25', border: `1px solid ${a.color}50` }}>
               <span style={{ color: a.color }} className="font-semibold">{a.agent}</span>
-              <span className="text-slate-300">{a.text}</span>
+              <span className="text-[#525252] dark:text-[#D4D4D4]">{a.text}</span>
             </div>
           ))}
 
-          <div className="flex items-center gap-1 text-slate-400">
+          <div className="flex items-center gap-1 text-[#737373] dark:text-[#A3A3A3]">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>{activeCount} actifs</span>
           </div>
@@ -377,12 +377,12 @@ export default function DevCorp() {
           <span className="font-mono text-blue-400">{formatTime(time)}</span>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400">Sprint:</span>
-            <div className="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <span className="text-[#737373] dark:text-[#A3A3A3]">Sprint:</span>
+            <div className="w-20 h-1.5 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 transition-all duration-500"
                 style={{ width: `${globalProgress}%` }} />
             </div>
-            <span className="text-slate-400">{globalProgress}%</span>
+            <span className="text-[#737373] dark:text-[#A3A3A3]">{globalProgress}%</span>
           </div>
         </div>
       </div>
@@ -623,11 +623,11 @@ export default function DevCorp() {
         </div>
 
         {/* ── Right Panel ── */}
-        <div className="w-80 bg-slate-900 border-l border-slate-800 flex flex-col shrink-0">
+        <div className="w-80 bg-[#FAFAFA] dark:bg-[#0A0A0A] border-l border-[#E5E7EB] dark:border-[#1A1A1A] flex flex-col shrink-0">
 
           {/* Agent Detail Panel (when selected) */}
           {selected ? (
-            <div className="border-b border-slate-800 p-3 max-h-[45%] overflow-y-auto">
+            <div className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] p-3 max-h-[45%] overflow-y-auto">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"
                   style={{ backgroundColor: selected.color }}>
@@ -635,9 +635,9 @@ export default function DevCorp() {
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-bold">{selected.name}</div>
-                  <div className="text-[10px] text-slate-400">{selected.role} — {selected.description}</div>
+                  <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">{selected.role} — {selected.description}</div>
                 </div>
-                <button onClick={() => setSelectedAgent(null)} className="text-slate-400 hover:text-white text-xs">X</button>
+                <button onClick={() => setSelectedAgent(null)} className="text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white text-xs">X</button>
               </div>
 
               {/* Status + mood + energy */}
@@ -645,46 +645,46 @@ export default function DevCorp() {
                 <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ backgroundColor: selected.color + '25', color: selected.color }}>
                   {STATUS_ICONS[selected.status]} {STATUS_LABELS[selected.status]}
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] dark:bg-[#262626] text-[#525252] dark:text-[#D4D4D4]">
                   Moral: {Math.floor(selected.mood)}%
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F5F5F5] dark:bg-[#262626] text-[#525252] dark:text-[#D4D4D4]">
                   Energie: {Math.floor(selected.energy)}%
                 </span>
               </div>
 
               {/* Current task */}
-              <div className="bg-slate-800/50 rounded-lg p-2 mb-2">
-                <div className="text-[10px] text-slate-400 mb-1">Tache en cours</div>
+              <div className="bg-[#F5F5F5] dark:bg-[#262626]/50 rounded-lg p-2 mb-2">
+                <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3] mb-1">Tache en cours</div>
                 <div className="text-xs font-semibold" style={{ color: selected.color }}>{selected.currentTask}</div>
-                <div className="w-full h-1.5 bg-slate-700 rounded-full mt-1.5 overflow-hidden">
+                <div className="w-full h-1.5 bg-[#404040] rounded-full mt-1.5 overflow-hidden">
                   <div className="h-full rounded-full transition-all duration-500" style={{ width: `${selected.progress}%`, backgroundColor: selected.color }} />
                 </div>
-                <div className="text-[9px] text-slate-400 mt-0.5 text-right">{Math.floor(selected.progress)}%</div>
+                <div className="text-[9px] text-[#737373] dark:text-[#A3A3A3] mt-0.5 text-right">{Math.floor(selected.progress)}%</div>
               </div>
 
               {/* All tasks */}
               <div className="mb-2">
-                <div className="text-[10px] text-slate-400 mb-1">Taches du sprint</div>
+                <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3] mb-1">Taches du sprint</div>
                 {selected.tasks.map((t, i) => (
                   <div key={i} className="flex items-center gap-1.5 text-[10px] py-0.5">
                     <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] ${
                       i < selected.taskIndex ? 'bg-emerald-500/20 text-emerald-400' :
-                      i === selected.taskIndex ? 'text-white' : 'bg-slate-800 text-slate-300'
+                      i === selected.taskIndex ? 'text-[#111111] dark:text-white' : 'bg-[#F5F5F5] dark:bg-[#262626] text-[#525252] dark:text-[#D4D4D4]'
                     }`} style={i === selected.taskIndex ? { backgroundColor: selected.color + '30', color: selected.color } : {}}>
                       {i < selected.taskIndex ? 'V' : i === selected.taskIndex ? '>' : '-'}
                     </span>
-                    <span className={i < selected.taskIndex ? 'text-slate-400 line-through' : i === selected.taskIndex ? 'text-white font-medium' : 'text-slate-400'}>{t}</span>
+                    <span className={i < selected.taskIndex ? 'text-[#737373] dark:text-[#A3A3A3] line-through' : i === selected.taskIndex ? 'text-[#111111] dark:text-white font-medium' : 'text-[#737373] dark:text-[#A3A3A3]'}>{t}</span>
                   </div>
                 ))}
               </div>
 
               {/* History */}
               <div className="mb-2">
-                <div className="text-[10px] text-slate-400 mb-1">Historique</div>
+                <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3] mb-1">Historique</div>
                 {selected.history.slice(-4).map((h, i) => (
-                  <div key={i} className="text-[10px] text-slate-400 py-0.5 flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-slate-600" />
+                  <div key={i} className="text-[10px] text-[#737373] dark:text-[#A3A3A3] py-0.5 flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-[#525252]" />
                     {h}
                   </div>
                 ))}
@@ -700,19 +700,19 @@ export default function DevCorp() {
             </div>
           ) : (
             /* Status overview when no agent selected */
-            <div className="border-b border-slate-800 p-3">
+            <div className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] p-3">
               <div className="text-xs font-semibold mb-2">Centre de controle</div>
               <div className="grid grid-cols-3 gap-1.5">
                 {agents.map(a => (
                   <button key={a.id} onClick={() => setSelectedAgent(a.id)}
-                    className="flex items-center gap-1 p-1.5 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors text-left">
+                    className="flex items-center gap-1 p-1.5 rounded-lg bg-[#F5F5F5] dark:bg-[#262626]/50 hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors text-left">
                     <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white shrink-0"
                       style={{ backgroundColor: a.color }}>
                       {a.name[0]}
                     </div>
                     <div className="min-w-0">
                       <div className="text-[8px] font-medium truncate">{a.name}</div>
-                      <div className="text-[7px] text-slate-400">{Math.floor(a.progress)}%</div>
+                      <div className="text-[7px] text-[#737373] dark:text-[#A3A3A3]">{Math.floor(a.progress)}%</div>
                     </div>
                   </button>
                 ))}
@@ -721,9 +721,9 @@ export default function DevCorp() {
           )}
 
           {/* Chat header */}
-          <div className="px-3 py-2 border-b border-slate-800 flex items-center justify-between">
+          <div className="px-3 py-2 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
             <span className="text-xs font-semibold">Chat d'equipe</span>
-            <span className="text-[9px] text-slate-400">{chat.length} messages</span>
+            <span className="text-[9px] text-[#737373] dark:text-[#A3A3A3]">{chat.length} messages</span>
           </div>
 
           {/* Chat messages */}
@@ -731,11 +731,11 @@ export default function DevCorp() {
             {chat.map((msg, i) => (
               <div key={i} className={`flex flex-col ${msg.isUser ? 'items-end' : 'items-start'}`}>
                 <div className="flex items-center gap-1 mb-0.5">
-                  <span className="text-[8px] text-slate-300">{msg.time}</span>
+                  <span className="text-[8px] text-[#525252] dark:text-[#D4D4D4]">{msg.time}</span>
                   <span className="text-[10px] font-medium" style={{ color: msg.isUser ? '#60a5fa' : msg.color }}>{msg.from}</span>
                 </div>
                 <div className={`px-3 py-1.5 rounded-xl text-[11px] max-w-[230px] leading-relaxed ${
-                  msg.isUser ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-slate-800 text-slate-200 rounded-bl-sm'
+                  msg.isUser ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-[#F5F5F5] dark:bg-[#262626] text-[#111111] dark:text-[#E5E7EB] rounded-bl-sm'
                 }`}>
                   {msg.text}
                 </div>
@@ -745,14 +745,14 @@ export default function DevCorp() {
           </div>
 
           {/* Chat input */}
-          <div className="p-3 border-t border-slate-800">
+          <div className="p-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="flex gap-2">
               <input
                 value={chatInput}
                 onChange={e => setChatInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && sendChat()}
                 placeholder="Parler a l'equipe..."
-                className="flex-1 bg-slate-800 text-white text-xs rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 placeholder-slate-500 border border-slate-700"
+                className="flex-1 bg-[#F5F5F5] dark:bg-[#262626] text-[#111111] dark:text-white text-xs rounded-lg px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500 placeholder-[#A3A3A3] dark:placeholder-[#737373] border border-[#E5E7EB] dark:border-[#262626]"
               />
               <button onClick={sendChat} className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-lg transition-colors font-bold">
                 &gt;
@@ -761,7 +761,7 @@ export default function DevCorp() {
             <div className="mt-2 flex gap-1 flex-wrap">
               {['status', 'bugs?', 'securite', 'prix', 'planning', 'emails'].map(q => (
                 <button key={q} onClick={() => setChatInput(q)}
-                  className="text-[9px] bg-slate-800 hover:bg-slate-700 text-slate-400 px-2 py-0.5 rounded-full transition-colors border border-slate-700/50">
+                  className="text-[9px] bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#404040] text-[#737373] dark:text-[#A3A3A3] px-2 py-0.5 rounded-full transition-colors border border-[#E5E7EB] dark:border-[#262626]/50">
                   {q}
                 </button>
               ))}

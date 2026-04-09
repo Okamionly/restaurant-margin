@@ -305,7 +305,7 @@ export default function ChatbotAssistant() {
     <>
       {/* Chat window */}
       {open && (
-        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] flex flex-col bg-white dark:bg-[#262626] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#262626] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white flex-shrink-0">
             <ChefHat className="w-6 h-6 flex-shrink-0" />
@@ -345,7 +345,7 @@ export default function ChatbotAssistant() {
                   className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-sm whitespace-pre-line ${
                     msg.role === 'user'
                       ? 'bg-blue-600 text-white rounded-br-md'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-md'
+                      : 'bg-[#F5F5F5] dark:bg-[#262626] text-[#262626] dark:text-[#E5E7EB] rounded-bl-md'
                   }`}
                 >
                   {msg.text}
@@ -359,9 +359,9 @@ export default function ChatbotAssistant() {
                 <div className="flex-shrink-0 w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mt-0.5">
                   <Bot className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="bg-slate-100 dark:bg-slate-700 rounded-2xl rounded-bl-md px-4 py-2.5 flex items-center gap-1">
+                <div className="bg-[#F5F5F5] dark:bg-[#262626] rounded-2xl rounded-bl-md px-4 py-2.5 flex items-center gap-1">
                   <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                  <span className="text-xs text-slate-400 ml-1">Recherche...</span>
+                  <span className="text-xs text-[#A3A3A3] ml-1">Recherche...</span>
                 </div>
               </div>
             )}
@@ -369,7 +369,7 @@ export default function ChatbotAssistant() {
           </div>
 
           {/* Input */}
-          <div className="flex-shrink-0 border-t border-slate-200 dark:border-slate-700 px-3 py-2.5 bg-white dark:bg-slate-800">
+          <div className="flex-shrink-0 border-t border-[#E5E7EB] dark:border-[#262626] px-3 py-2.5 bg-white dark:bg-[#262626]">
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
@@ -378,7 +378,7 @@ export default function ChatbotAssistant() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Posez une question..."
-                className="flex-1 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-3 py-2 rounded-xl bg-[#F5F5F5] dark:bg-[#262626] text-sm text-[#262626] dark:text-[#E5E7EB] placeholder-[#A3A3A3] dark:placeholder-[#737373] border-0 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 onClick={handleSend}
@@ -397,7 +397,7 @@ export default function ChatbotAssistant() {
         onClick={() => setOpen(!open)}
         className={`fixed bottom-4 right-4 sm:right-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 no-print ${
           open
-            ? 'bg-slate-600 hover:bg-slate-700 rotate-0'
+            ? 'bg-[#525252] hover:bg-[#404040] rotate-0'
             : 'bg-blue-600 hover:bg-blue-700 animate-bounce-subtle'
         }`}
         title={open ? 'Fermer le chat' : 'Assistant Chef IA'}

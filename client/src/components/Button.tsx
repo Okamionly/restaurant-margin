@@ -15,9 +15,9 @@ interface ButtonProps {
 
 const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
   primary: 'bg-teal-600 hover:bg-teal-500 text-white',
-  secondary: 'bg-slate-700 hover:bg-slate-600 text-white',
+  secondary: 'bg-[#404040] hover:bg-[#525252] text-white',
   danger: 'bg-red-600 hover:bg-red-500 text-white',
-  ghost: 'bg-transparent hover:bg-slate-800 text-slate-300',
+  ghost: 'bg-transparent hover:bg-[#262626] text-[#D4D4D4]',
   success: 'bg-emerald-600 hover:bg-emerald-500 text-white',
 };
 

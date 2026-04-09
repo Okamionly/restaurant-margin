@@ -120,11 +120,11 @@ export function InlineWeighPanel({
             <span className={`text-3xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
               netWeight > 0 ? 'text-teal-300' :
-              'text-slate-600'
+              'text-[#525252]'
             }`}>
               {displayGrams}
             </span>
-            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-slate-400' : 'text-slate-700'}`}>g</span>
+            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>g</span>
             {netWeight > 0 && isStable && (
               <Check className="w-5 h-5 text-emerald-400" />
             )}
@@ -428,11 +428,11 @@ export function BatchWeighingPanel({
             <span className={`text-4xl font-black tabular-nums tracking-tight transition-colors ${
               netWeight > 0 && isStable ? 'text-emerald-400' :
               netWeight > 0 ? 'text-teal-300' :
-              'text-slate-600'
+              'text-[#525252]'
             }`}>
               {Math.round(netWeight * 1000)}
             </span>
-            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-slate-400' : 'text-slate-700'}`}>g</span>
+            <span className={`text-sm font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>g</span>
             {netWeight > 0 && isStable && <Check className="w-5 h-5 text-emerald-400" />}
           </div>
 
@@ -617,11 +617,11 @@ export function QuickWeighAdd({
                 <span className={`text-3xl font-black tabular-nums tracking-tight transition-colors ${
                   netWeight > 0 && isStable ? 'text-emerald-400' :
                   netWeight > 0 ? 'text-teal-300' :
-                  'text-slate-600'
+                  'text-[#525252]'
                 }`}>
                   {Math.round(netWeight * 1000)}
                 </span>
-                <span className={`text-sm font-bold ${netWeight > 0 ? 'text-slate-400' : 'text-slate-700'}`}>g</span>
+                <span className={`text-sm font-bold ${netWeight > 0 ? 'text-[#A3A3A3]' : 'text-[#404040]'}`}>g</span>
                 {netWeight > 0 && isStable && <Check className="w-5 h-5 text-emerald-400" />}
               </div>
 

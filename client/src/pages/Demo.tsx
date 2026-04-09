@@ -76,7 +76,7 @@ function statusLabel(s: string) {
     case 'puzzle': return { text: 'Puzzle', color: 'bg-amber-100 text-amber-700' };
     case 'workhorse': return { text: 'Cheval de labour', color: 'bg-blue-100 text-blue-700' };
     case 'dog': return { text: 'Poids mort', color: 'bg-red-100 text-red-700' };
-    default: return { text: s, color: 'bg-slate-100 text-slate-700' };
+    default: return { text: s, color: 'bg-[#F5F5F5] text-[#404040]' };
   }
 }
 
@@ -109,17 +109,17 @@ export default function Demo() {
       </div>
 
       {/* ── Navbar ── */}
-      <nav className="bg-white border-b border-slate-200">
+      <nav className="bg-white border-b border-[#E5E7EB]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+          <div className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
-            <span className="ml-2 text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">DEMO</span>
+            <span className="ml-2 text-xs font-medium text-[#A3A3A3] bg-[#F5F5F5] px-2 py-0.5 rounded-full">DEMO</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/pricing"
-              className="text-sm font-medium text-slate-500 hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-[#737373] hover:text-teal-600 transition-colors"
             >
               Tarifs
             </Link>
@@ -134,17 +134,17 @@ export default function Demo() {
       </nav>
 
       {/* ── Restaurant Header ── */}
-      <header className="bg-gradient-to-b from-slate-50 to-white pt-8 pb-6 px-4 border-b border-slate-100">
+      <header className="bg-gradient-to-b from-[#FAFAFA] to-white pt-8 pb-6 px-4 border-b border-[#F5F5F5]">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
               <UtensilsCrossed className="w-5 h-5 text-teal-600" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+              <h1 className="text-xl font-bold text-[#111111]" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
                 Le Bistrot de Marie
               </h1>
-              <p className="text-sm text-slate-500">Bistrot traditionnel — Paris 11e</p>
+              <p className="text-sm text-[#737373]">Bistrot traditionnel — Paris 11e</p>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function Demo() {
 
         {/* ── KPI Cards ── */}
         <section>
-          <h2 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
             Tableau de bord
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -190,46 +190,46 @@ export default function Demo() {
 
         {/* ── Recipes ── */}
         <section>
-          <h2 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
             Fiches techniques (3 exemples)
           </h2>
           <div className="grid md:grid-cols-3 gap-5">
             {FAKE_RECIPES.map((r) => {
               const st = statusLabel(r.status);
               return (
-                <div key={r.name} className="bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-md transition-shadow relative group">
+                <div key={r.name} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 hover:shadow-md transition-shadow relative group">
                   <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10 pointer-events-none">
-                    <span className="flex items-center gap-2 text-slate-500 font-medium text-sm bg-white/90 px-4 py-2 rounded-full shadow">
+                    <span className="flex items-center gap-2 text-[#737373] font-medium text-sm bg-white/90 px-4 py-2 rounded-full shadow">
                       <Lock className="w-4 h-4" />
                       Lecture seule en demo
                     </span>
                   </div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{r.category}</span>
+                    <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">{r.category}</span>
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${st.color}`}>{st.text}</span>
                   </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-2">{r.name}</h3>
+                  <h3 className="text-base font-bold text-[#111111] mb-2">{r.name}</h3>
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div>
-                      <p className="text-xs text-slate-400">Food cost</p>
-                      <p className="text-lg font-bold text-slate-900">{r.foodCost} %</p>
+                      <p className="text-xs text-[#A3A3A3]">Food cost</p>
+                      <p className="text-lg font-bold text-[#111111]">{r.foodCost} %</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-400">Marge / portion</p>
+                      <p className="text-xs text-[#A3A3A3]">Marge / portion</p>
                       <p className="text-lg font-bold text-emerald-600">{r.margin.toFixed(2)} EUR</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-400">Cout matiere</p>
-                      <p className="text-sm font-semibold text-slate-700">{r.costPerServing.toFixed(2)} EUR</p>
+                      <p className="text-xs text-[#A3A3A3]">Cout matiere</p>
+                      <p className="text-sm font-semibold text-[#404040]">{r.costPerServing.toFixed(2)} EUR</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-400">Prix de vente TTC</p>
-                      <p className="text-sm font-semibold text-slate-700">{r.sellingPrice.toFixed(2)} EUR</p>
+                      <p className="text-xs text-[#A3A3A3]">Prix de vente TTC</p>
+                      <p className="text-sm font-semibold text-[#404040]">{r.sellingPrice.toFixed(2)} EUR</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {r.ingredients.map((ing) => (
-                      <span key={ing} className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">{ing}</span>
+                      <span key={ing} className="text-[11px] bg-[#F5F5F5] text-[#525252] px-2 py-0.5 rounded-full">{ing}</span>
                     ))}
                   </div>
                 </div>
@@ -240,14 +240,14 @@ export default function Demo() {
 
         {/* ── Ingredients ── */}
         <section>
-          <h2 className="text-lg font-bold text-slate-900 mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
             Ingredients (extrait)
           </h2>
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="bg-white border border-[#E5E7EB] rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
+                  <tr className="bg-[#FAFAFA] text-[#737373] text-xs uppercase tracking-wider">
                     <th className="text-left px-5 py-3 font-semibold">Ingredient</th>
                     <th className="text-right px-5 py-3 font-semibold">Prix unitaire</th>
                     <th className="text-right px-5 py-3 font-semibold">Unite</th>
@@ -256,11 +256,11 @@ export default function Demo() {
                 </thead>
                 <tbody>
                   {FAKE_INGREDIENTS.map((ing) => (
-                    <tr key={ing.name} className="border-t border-slate-100 hover:bg-slate-50/50 transition-colors">
-                      <td className="px-5 py-3 font-medium text-slate-900">{ing.name}</td>
-                      <td className="px-5 py-3 text-right text-slate-700">{ing.price.toFixed(2)} EUR</td>
-                      <td className="px-5 py-3 text-right text-slate-500">{ing.unit}</td>
-                      <td className="px-5 py-3 text-right text-slate-700">{ing.stock}</td>
+                    <tr key={ing.name} className="border-t border-[#F5F5F5] hover:bg-[#FAFAFA]/50 transition-colors">
+                      <td className="px-5 py-3 font-medium text-[#111111]">{ing.name}</td>
+                      <td className="px-5 py-3 text-right text-[#404040]">{ing.price.toFixed(2)} EUR</td>
+                      <td className="px-5 py-3 text-right text-[#737373]">{ing.unit}</td>
+                      <td className="px-5 py-3 text-right text-[#404040]">{ing.stock}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -272,10 +272,10 @@ export default function Demo() {
         {/* ── CTA Section ── */}
         <section className="text-center py-12 px-4">
           <div className="max-w-lg mx-auto">
-            <h2 className="text-2xl font-bold text-slate-900 mb-3" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-2xl font-bold text-[#111111] mb-3" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
               Pret a gerer VOS marges ?
             </h2>
-            <p className="text-slate-500 mb-6">
+            <p className="text-[#737373] mb-6">
               Ce que vous voyez ici avec des donnees fictives, RestauMargin le fait avec les donnees reelles de votre restaurant. Essayez gratuitement.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -288,7 +288,7 @@ export default function Demo() {
               </Link>
               <Link
                 to="/pricing"
-                className="inline-flex items-center gap-2 px-7 py-3 border border-slate-300 hover:border-slate-400 text-slate-700 font-semibold rounded-xl transition-colors"
+                className="inline-flex items-center gap-2 px-7 py-3 border border-[#D4D4D4] hover:border-[#A3A3A3] text-[#404040] font-semibold rounded-xl transition-colors"
               >
                 Voir les tarifs
               </Link>
@@ -298,7 +298,7 @@ export default function Demo() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-slate-200 py-8 text-center text-sm text-slate-400">
+      <footer className="border-t border-[#E5E7EB] py-8 text-center text-sm text-[#A3A3A3]">
         <p>&copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.</p>
       </footer>
     </div>
@@ -315,15 +315,15 @@ function KPICard({ label, value, sub, icon, good, warning }: {
   warning?: boolean;
 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
+    <div className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">{label}</span>
         {icon}
       </div>
-      <p className={`text-2xl font-bold ${warning ? 'text-amber-500' : good ? 'text-slate-900' : 'text-slate-900'}`}>
+      <p className={`text-2xl font-bold ${warning ? 'text-amber-500' : good ? 'text-[#111111]' : 'text-[#111111]'}`}>
         {value}
       </p>
-      <p className="text-xs text-slate-400 mt-1">{sub}</p>
+      <p className="text-xs text-[#A3A3A3] mt-1">{sub}</p>
     </div>
   );
 }

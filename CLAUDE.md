@@ -5,7 +5,7 @@
 - **Backend** : Node.js + Express + TypeScript
 - **ORM** : Prisma
 - **BDD** : PostgreSQL (Supabase)
-- **UI** : Tailwind CSS, dark theme (bg-slate-950, text-white)
+- **UI** : Tailwind CSS, theme W&B (bg-white/dark:bg-black, zero slate, hex directs)
 - **Fonts** : Satoshi (titres, headings) + General Sans (corps, body text)
 - **Icônes** : lucide-react uniquement
 - **Pas de librairies UI externes** (pas de shadcn, pas de MUI, pas de Chakra)
@@ -45,13 +45,18 @@
 - Ajouter le lien dans la section appropriée (PRINCIPAL, GESTION, INTELLIGENCE, OPERATIONS, COMMUNICATION, BUSINESS)
 - Format : `{ to: '/path', icon: IconName, label: 'Label' }`
 
-## Style
-- Dark theme : `bg-slate-950`, `bg-slate-900`, `text-white`, `text-slate-400`
-- Cards : `bg-slate-900/50 border border-slate-800 rounded-2xl`
+## Style (W&B — White & Black)
+- **Zero slate** : utiliser des hex directs, jamais `slate-*`
+- Light mode : `bg-white`, `text-[#111111]`, borders `border-[#E5E7EB]`
+- Dark mode : `dark:bg-black` ou `dark:bg-[#0A0A0A]`, `dark:text-white`, `dark:border-[#1A1A1A]`
+- Cards : `bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl`
 - Boutons primaires : `bg-teal-600 hover:bg-teal-500 rounded-xl`
 - Boutons success : `bg-emerald-500 hover:bg-emerald-400 rounded-xl`
-- Inputs : `bg-slate-800 border-slate-700 rounded-lg`
-- Couleur principale : `teal-600` (remplace blue-600), hover : `teal-500` (remplace blue-700)
+- Boutons CTA : `bg-[#111111] dark:bg-white text-white dark:text-[#111111]`
+- Inputs : `bg-[#F5F5F5] dark:bg-[#262626] border-[#E5E7EB] dark:border-[#262626] rounded-lg`
+- Texte secondaire : `text-[#737373] dark:text-[#A3A3A3]`
+- Couleur principale : `teal-600`, hover : `teal-500`
+- Chaque element doit avoir light ET dark mode
 - Animations : transitions Tailwind, pas de librairies d'animation
 
 ## API

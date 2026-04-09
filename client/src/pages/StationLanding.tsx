@@ -163,25 +163,25 @@ export default function StationLanding() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white dark:bg-black text-[#111111] dark:text-white overflow-x-hidden">
       {/* ═══ NAVBAR ═══ */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-slate-950/95 backdrop-blur-md border-b border-slate-800' : ''}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-[#E5E7EB] dark:border-[#1A1A1A]' : ''}`}>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center">
-              <Scale className="w-5 h-5 text-white" />
+              <Scale className="w-5 h-5 text-[#111111] dark:text-white" />
             </div>
             <span className="text-lg font-bold">RestauMargin <span className="text-emerald-400">Station</span></span>
           </div>
-          <div className="hidden md:flex items-center gap-8 text-sm text-slate-400">
-            <a href="#features" className="hover:text-white transition">Fonctionnalités</a>
-            <a href="#how" className="hover:text-white transition">Comment ça marche</a>
-            <a href="#specs" className="hover:text-white transition">Specs</a>
-            <a href="#pricing" className="hover:text-white transition">Tarifs</a>
-            <a href="#faq" className="hover:text-white transition">FAQ</a>
+          <div className="hidden md:flex items-center gap-8 text-sm text-[#737373] dark:text-[#A3A3A3]">
+            <a href="#features" className="hover:text-[#111111] dark:hover:text-white transition">Fonctionnalités</a>
+            <a href="#how" className="hover:text-[#111111] dark:hover:text-white transition">Comment ça marche</a>
+            <a href="#specs" className="hover:text-[#111111] dark:hover:text-white transition">Specs</a>
+            <a href="#pricing" className="hover:text-[#111111] dark:hover:text-white transition">Tarifs</a>
+            <a href="#faq" className="hover:text-[#111111] dark:hover:text-white transition">FAQ</a>
           </div>
           <div className="flex items-center gap-3">
-            <Link to="/login" className="text-sm text-slate-400 hover:text-white transition">Connexion</Link>
+            <Link to="/login" className="text-sm text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white transition">Connexion</Link>
             <a href="#pricing" className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 rounded-lg text-sm font-semibold transition">
               Commander
             </a>
@@ -221,7 +221,7 @@ export default function StationLanding() {
                 </span>
               </h1>
 
-              <p className="text-lg text-slate-400 mb-8 max-w-lg">
+              <p className="text-lg text-[#737373] dark:text-[#A3A3A3] mb-8 max-w-lg">
                 La première station de pesée connectée conçue pour la restauration.
                 Balance intégrée + tablette + logiciel de gestion des marges en un seul kit.
               </p>
@@ -231,7 +231,7 @@ export default function StationLanding() {
                   Commander le Kit
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </a>
-                <a href="#how" className="px-6 py-3 border border-slate-700 hover:border-slate-500 rounded-xl font-medium transition text-slate-300">
+                <a href="#how" className="px-6 py-3 border border-[#E5E7EB] dark:border-[#262626] hover:border-[#737373] rounded-xl font-medium transition text-[#525252] dark:text-[#D4D4D4]">
                   Voir la démo
                 </a>
               </div>
@@ -240,15 +240,15 @@ export default function StationLanding() {
               <div className="grid grid-cols-3 gap-6">
                 <div>
                   <div className="text-2xl font-bold text-emerald-400">{animatedStats.restaurants}+</div>
-                  <div className="text-xs text-slate-400">Restaurants équipés</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">Restaurants équipés</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-blue-400">-{animatedStats.margin}%</div>
-                  <div className="text-xs text-slate-400">Coût matière moyen</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">Coût matière moyen</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-purple-400">{(animatedStats.ingredients / 1000).toFixed(0)}k</div>
-                  <div className="text-xs text-slate-400">Pesées par mois</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">Pesées par mois</div>
                 </div>
               </div>
             </div>
@@ -256,7 +256,7 @@ export default function StationLanding() {
             {/* Right — Product Image */}
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-blue-500/20 rounded-3xl blur-2xl" />
-              <div className="relative bg-slate-900/50 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm">
+              <div className="relative bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-3xl p-8 backdrop-blur-sm">
                 <img
                   src="/images/restaumargin-station-opt.webp"
                   alt="RestauMargin Station — Kit Balance + Tablette"
@@ -264,9 +264,9 @@ export default function StationLanding() {
                   loading="eager"
                 />
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                  <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300">Balance 5kg</span>
-                  <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300">BLE 5.0</span>
-                  <span className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-xs text-slate-300">Inox 304L</span>
+                  <span className="px-3 py-1 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-full text-xs text-[#525252] dark:text-[#D4D4D4]">Balance 5kg</span>
+                  <span className="px-3 py-1 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-full text-xs text-[#525252] dark:text-[#D4D4D4]">BLE 5.0</span>
+                  <span className="px-3 py-1 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-full text-xs text-[#525252] dark:text-[#D4D4D4]">Inox 304L</span>
                 </div>
               </div>
             </div>
@@ -279,16 +279,16 @@ export default function StationLanding() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Tout ce qu'il faut pour maîtriser vos coûts</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">Un kit complet conçu par des restaurateurs, pour des restaurateurs.</p>
+            <p className="text-[#737373] dark:text-[#A3A3A3] max-w-2xl mx-auto">Un kit complet conçu par des restaurateurs, pour des restaurateurs.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((f, i) => (
-              <div key={i} className="group p-6 bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1">
+              <div key={i} className="group p-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1">
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:bg-emerald-500/20 transition">
                   <f.icon className="w-6 h-6 text-emerald-400" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -296,11 +296,11 @@ export default function StationLanding() {
       </section>
 
       {/* ═══ HOW IT WORKS ═══ */}
-      <section id="how" className="py-20 px-6 bg-slate-900/30">
+      <section id="how" className="py-20 px-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">3 étapes, c'est tout.</h2>
-            <p className="text-slate-400">De l'ouverture du carton à la première pesée en moins de 5 minutes.</p>
+            <p className="text-[#737373] dark:text-[#A3A3A3]">De l'ouverture du carton à la première pesée en moins de 5 minutes.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {STEPS.map((s, i) => (
@@ -309,9 +309,9 @@ export default function StationLanding() {
                   {s.num}
                 </div>
                 <h3 className="text-lg font-semibold mb-3">{s.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{s.desc}</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">{s.desc}</p>
                 {i < 2 && (
-                  <ArrowRight className="hidden md:block absolute top-8 -right-4 w-8 h-8 text-slate-400" />
+                  <ArrowRight className="hidden md:block absolute top-8 -right-4 w-8 h-8 text-[#737373] dark:text-[#A3A3A3]" />
                 )}
               </div>
             ))}
@@ -328,7 +328,7 @@ export default function StationLanding() {
                 Conçu pour la
                 <span className="text-emerald-400"> cuisine pro</span>
               </h2>
-              <p className="text-slate-400 mb-8">
+              <p className="text-[#737373] dark:text-[#A3A3A3] mb-8">
                 Le support EST la balance. Plateau inox alimentaire encastré, bras solidaire,
                 moule silicone pour glisser la tablette. Un seul produit, zéro câble.
               </p>
@@ -344,14 +344,14 @@ export default function StationLanding() {
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
-                    <span className="text-sm text-slate-300">{item}</span>
+                    <span className="text-sm text-[#525252] dark:text-[#D4D4D4]">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
-              <div className="aspect-video bg-slate-800 rounded-xl flex items-center justify-center text-slate-300 mb-4 overflow-hidden">
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+              <div className="aspect-video bg-[#F5F5F5] dark:bg-[#262626] rounded-xl flex items-center justify-center text-[#525252] dark:text-[#D4D4D4] mb-4 overflow-hidden">
                 <img
                   src="/images/restaumargin-station-opt.webp"
                   alt="Vue détaillée RestauMargin Station"
@@ -359,19 +359,19 @@ export default function StationLanding() {
                 />
               </div>
               <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="p-3 bg-slate-800/50 rounded-xl">
+                <div className="p-3 bg-[#F5F5F5] dark:bg-[#262626]/50 rounded-xl">
                   <Package className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
-                  <div className="text-xs text-slate-400">3 pièces</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">3 pièces</div>
                   <div className="text-sm font-semibold">Monobloc</div>
                 </div>
-                <div className="p-3 bg-slate-800/50 rounded-xl">
+                <div className="p-3 bg-[#F5F5F5] dark:bg-[#262626]/50 rounded-xl">
                   <Scale className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                  <div className="text-xs text-slate-400">Capacité</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">Capacité</div>
                   <div className="text-sm font-semibold">5 kg</div>
                 </div>
-                <div className="p-3 bg-slate-800/50 rounded-xl">
+                <div className="p-3 bg-[#F5F5F5] dark:bg-[#262626]/50 rounded-xl">
                   <Bluetooth className="w-5 h-5 text-purple-400 mx-auto mb-1" />
-                  <div className="text-xs text-slate-400">Connexion</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">Connexion</div>
                   <div className="text-sm font-semibold">BLE 5.0</div>
                 </div>
               </div>
@@ -381,13 +381,13 @@ export default function StationLanding() {
       </section>
 
       {/* ═══ SPECS ═══ */}
-      <section id="specs" className="py-20 px-6 bg-slate-900/30">
+      <section id="specs" className="py-20 px-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/30">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Caractéristiques techniques</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {SPECS.map((s, i) => (
-              <div key={i} className="p-4 bg-slate-900/80 border border-slate-800 rounded-xl text-center">
-                <div className="text-xs text-slate-400 mb-1">{s.label}</div>
+              <div key={i} className="p-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-center">
+                <div className="text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">{s.label}</div>
                 <div className="text-sm font-semibold text-emerald-400">{s.value}</div>
               </div>
             ))}
@@ -401,16 +401,16 @@ export default function StationLanding() {
           <h2 className="text-3xl font-bold text-center mb-12">Ils l'utilisent au quotidien</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-6 bg-slate-900/50 border border-slate-800 rounded-2xl">
+              <div key={i} className="p-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl">
                 <div className="flex gap-0.5 mb-4">
                   {Array.from({ length: 5 }).map((_, si) => (
-                    <Star key={si} className={`w-4 h-4 ${si < t.stars ? 'text-yellow-400 fill-yellow-400' : 'text-slate-400'}`} />
+                    <Star key={si} className={`w-4 h-4 ${si < t.stars ? 'text-yellow-400 fill-yellow-400' : 'text-[#737373] dark:text-[#A3A3A3]'}`} />
                   ))}
                 </div>
-                <p className="text-sm text-slate-300 mb-4 italic">"{t.text}"</p>
+                <p className="text-sm text-[#525252] dark:text-[#D4D4D4] mb-4 italic">"{t.text}"</p>
                 <div>
                   <div className="text-sm font-semibold">{t.name}</div>
-                  <div className="text-xs text-slate-400">{t.role}</div>
+                  <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">{t.role}</div>
                 </div>
               </div>
             ))}
@@ -419,17 +419,17 @@ export default function StationLanding() {
       </section>
 
       {/* ═══ PRICING ═══ */}
-      <section id="pricing" className="py-20 px-6 bg-slate-900/30">
+      <section id="pricing" className="py-20 px-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/30">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Tarifs transparents</h2>
-            <p className="text-slate-400">Rentabilisé dès le premier mois grâce aux économies sur vos coûts matière.</p>
+            <p className="text-[#737373] dark:text-[#A3A3A3]">Rentabilisé dès le premier mois grâce aux économies sur vos coûts matière.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {PRICING.map((p, i) => (
               <div key={i} className={`p-6 rounded-2xl border ${p.highlight
-                ? 'bg-gradient-to-b from-emerald-500/10 to-slate-900 border-emerald-500/30 ring-1 ring-emerald-500/20'
-                : 'bg-slate-900/50 border-slate-800'
+                ? 'bg-gradient-to-b from-emerald-500/10 to-[#0A0A0A] border-emerald-500/30 ring-1 ring-emerald-500/20'
+                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-[#E5E7EB] dark:border-[#1A1A1A]'
               }`}>
                 {p.highlight && (
                   <div className="text-xs font-semibold text-emerald-400 mb-3 flex items-center gap-1">
@@ -437,14 +437,14 @@ export default function StationLanding() {
                   </div>
                 )}
                 <h3 className="text-lg font-bold mb-1">{p.name}</h3>
-                <p className="text-xs text-slate-400 mb-4">{p.desc}</p>
+                <p className="text-xs text-[#737373] dark:text-[#A3A3A3] mb-4">{p.desc}</p>
                 <div className="flex items-baseline gap-1 mb-6">
                   <span className="text-4xl font-bold">{p.price}</span>
-                  <span className="text-sm text-slate-400">€ {p.period}</span>
+                  <span className="text-sm text-[#737373] dark:text-[#A3A3A3]">€ {p.period}</span>
                 </div>
                 <ul className="space-y-3 mb-6">
                   {p.features.map((f, fi) => (
-                    <li key={fi} className="flex items-center gap-2 text-sm text-slate-300">
+                    <li key={fi} className="flex items-center gap-2 text-sm text-[#525252] dark:text-[#D4D4D4]">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                       {f}
                     </li>
@@ -452,7 +452,7 @@ export default function StationLanding() {
                 </ul>
                 <button className={`w-full py-3 rounded-xl font-semibold text-sm transition ${p.highlight
                   ? 'bg-emerald-500 hover:bg-emerald-400 text-white'
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                  : 'bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#404040] text-[#525252] dark:text-[#D4D4D4]'
                 }`}>
                   {p.highlight ? 'Commander maintenant' : 'En savoir plus'}
                 </button>
@@ -462,23 +462,23 @@ export default function StationLanding() {
 
           {/* ═══ FORMULAIRE DE COMMANDE ═══ */}
           <div id="order-form" className="mt-16 max-w-2xl mx-auto scroll-mt-24">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-8">
+            <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8">
               <div className="text-center mb-8">
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
                   <Send className="w-6 h-6 text-emerald-400" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Commander votre kit</h3>
-                <p className="text-sm text-slate-400">Remplissez le formulaire, nous vous recontactons sous 24h pour finaliser votre commande.</p>
+                <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">Remplissez le formulaire, nous vous recontactons sous 24h pour finaliser votre commande.</p>
               </div>
 
               {orderStatus === 'success' ? (
                 <div className="text-center py-8">
                   <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
                   <h4 className="text-xl font-bold mb-2">Demande envoyée !</h4>
-                  <p className="text-slate-400 text-sm">Nous vous recontactons sous 24h pour finaliser votre commande.</p>
+                  <p className="text-[#737373] dark:text-[#A3A3A3] text-sm">Nous vous recontactons sous 24h pour finaliser votre commande.</p>
                   <button
                     onClick={() => setOrderStatus('idle')}
-                    className="mt-6 px-6 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm transition"
+                    className="mt-6 px-6 py-2 bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#404040] rounded-lg text-sm transition"
                   >
                     Nouvelle commande
                   </button>
@@ -487,30 +487,30 @@ export default function StationLanding() {
                 <form onSubmit={handleOrderSubmit} className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-slate-400 mb-1.5">Nom complet *</label>
+                      <label className="block text-sm text-[#737373] dark:text-[#A3A3A3] mb-1.5">Nom complet *</label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                         <input
                           type="text"
                           required
                           value={orderForm.name}
                           onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
                           placeholder="Votre nom"
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition"
+                          className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#A3A3A3] dark:placeholder:text-[#737373] focus:outline-none focus:border-emerald-500 transition"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm text-slate-400 mb-1.5">Email *</label>
+                      <label className="block text-sm text-[#737373] dark:text-[#A3A3A3] mb-1.5">Email *</label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                         <input
                           type="email"
                           required
                           value={orderForm.email}
                           onChange={(e) => setOrderForm({ ...orderForm, email: e.target.value })}
                           placeholder="jean@restaurant.fr"
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition"
+                          className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#A3A3A3] dark:placeholder:text-[#737373] focus:outline-none focus:border-emerald-500 transition"
                         />
                       </div>
                     </div>
@@ -518,22 +518,22 @@ export default function StationLanding() {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-slate-400 mb-1.5">Téléphone</label>
+                      <label className="block text-sm text-[#737373] dark:text-[#A3A3A3] mb-1.5">Téléphone</label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                         <input
                           type="tel"
                           value={orderForm.phone}
                           onChange={(e) => setOrderForm({ ...orderForm, phone: e.target.value })}
                           placeholder="06 12 34 56 78"
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition"
+                          className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#A3A3A3] dark:placeholder:text-[#737373] focus:outline-none focus:border-emerald-500 transition"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm text-slate-400 mb-1.5">Nombre de kits *</label>
+                      <label className="block text-sm text-[#737373] dark:text-[#A3A3A3] mb-1.5">Nombre de kits *</label>
                       <div className="relative">
-                        <Package className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <Package className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                         <input
                           type="number"
                           required
@@ -541,22 +541,22 @@ export default function StationLanding() {
                           max={50}
                           value={orderForm.quantity}
                           onChange={(e) => setOrderForm({ ...orderForm, quantity: parseInt(e.target.value) || 1 })}
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition"
+                          className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#A3A3A3] dark:placeholder:text-[#737373] focus:outline-none focus:border-emerald-500 transition"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm text-slate-400 mb-1.5">Message (optionnel)</label>
+                    <label className="block text-sm text-[#737373] dark:text-[#A3A3A3] mb-1.5">Message (optionnel)</label>
                     <div className="relative">
-                      <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                      <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                       <textarea
                         value={orderForm.message}
                         onChange={(e) => setOrderForm({ ...orderForm, message: e.target.value })}
                         placeholder="Précisions sur votre commande, besoin spécifique..."
                         rows={3}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500 transition resize-none"
+                        className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-sm text-[#111111] dark:text-white placeholder:text-[#A3A3A3] dark:placeholder:text-[#737373] focus:outline-none focus:border-emerald-500 transition resize-none"
                       />
                     </div>
                   </div>
@@ -585,7 +585,7 @@ export default function StationLanding() {
                     )}
                   </button>
 
-                  <p className="text-xs text-slate-300 text-center">
+                  <p className="text-xs text-[#D4D4D4] text-center">
                     En soumettant ce formulaire, vous acceptez d'être recontacté par notre équipe commerciale.
                   </p>
                 </form>
@@ -600,7 +600,7 @@ export default function StationLanding() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="p-12 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-3xl">
             <h2 className="text-3xl font-bold mb-4">Prêt à maîtriser vos marges ?</h2>
-            <p className="text-slate-400 mb-8">
+            <p className="text-[#737373] dark:text-[#A3A3A3] mb-8">
               Commandez votre kit RestauMargin Station et commencez à économiser dès la première semaine.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -608,7 +608,7 @@ export default function StationLanding() {
                 <Package className="w-5 h-5" />
                 Commander le Kit — 1 200€ HT
               </a>
-              <a href="#order-form" className="px-8 py-3 border border-slate-700 hover:border-slate-500 rounded-xl font-medium transition flex items-center gap-2 text-slate-300">
+              <a href="#order-form" className="px-8 py-3 border border-[#262626] hover:border-[#737373] rounded-xl font-medium transition flex items-center gap-2 text-[#D4D4D4]">
                 <Mail className="w-5 h-5" />
                 Nous contacter
               </a>
@@ -618,30 +618,30 @@ export default function StationLanding() {
       </section>
 
       {/* ═══ FAQ ═══ */}
-      <section id="faq" className="py-20 px-6 bg-slate-900/30">
+      <section id="faq" className="py-20 px-6 bg-[#FAFAFA] dark:bg-[#0A0A0A]/30">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
               <HelpCircle className="w-6 h-6 text-blue-400" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Questions fréquentes</h2>
-            <p className="text-slate-400">Tout ce que vous devez savoir sur le kit RestauMargin Station.</p>
+            <p className="text-[#737373] dark:text-[#A3A3A3]">Tout ce que vous devez savoir sur le kit RestauMargin Station.</p>
           </div>
           <div className="space-y-3">
             {FAQ_ITEMS.map((faq, i) => (
               <div
                 key={i}
-                className="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden transition-all duration-300"
+                className="bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden transition-all duration-300"
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-800/30 transition"
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-[#F5F5F5] dark:hover:bg-[#262626]/30 transition"
                 >
                   <span className="text-sm font-medium pr-4">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-5 h-5 text-[#737373] dark:text-[#A3A3A3] shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-60' : 'max-h-0'}`}>
-                  <div className="px-5 pb-5 text-sm text-slate-400 leading-relaxed">
+                  <div className="px-5 pb-5 text-sm text-[#737373] dark:text-[#A3A3A3] leading-relaxed">
                     {faq.a}
                   </div>
                 </div>
@@ -652,18 +652,18 @@ export default function StationLanding() {
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-slate-800 py-10 px-6">
+      <footer className="border-t border-[#1A1A1A] py-10 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <Scale className="w-5 h-5 text-emerald-400" />
             <span className="font-semibold">RestauMargin Station</span>
           </div>
-          <div className="text-xs text-slate-400">
+          <div className="text-xs text-[#737373] dark:text-[#A3A3A3]">
             © 2026 RestauMargin — Solution de gestion de marge pour la restauration
           </div>
-          <div className="flex gap-6 text-xs text-slate-400">
-            <a href="#order-form" className="hover:text-white transition">Contact</a>
-            <Link to="/landing" className="hover:text-white transition">App RestauMargin</Link>
+          <div className="flex gap-6 text-xs text-[#737373] dark:text-[#A3A3A3]">
+            <a href="#order-form" className="hover:text-[#111111] dark:hover:text-white transition">Contact</a>
+            <Link to="/landing" className="hover:text-[#111111] dark:hover:text-white transition">App RestauMargin</Link>
           </div>
         </div>
       </footer>

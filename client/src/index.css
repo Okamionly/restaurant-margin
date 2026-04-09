@@ -605,13 +605,13 @@ body::before {
     color: black !important;
   }
   .dark .text-white,
-  .dark .text-slate-100,
-  .dark .text-slate-200,
-  .dark .text-slate-300 {
+  .dark .text-\[\#F5F5F5\],
+  .dark .text-\[\#E5E7EB\],
+  .dark .text-\[\#D4D4D4\] {
     color: #1e293b !important;
   }
-  .dark .text-slate-400,
-  .dark .text-slate-500 {
+  .dark .text-\[\#A3A3A3\],
+  .dark .text-\[\#737373\] {
     color: #475569 !important;
   }
 

@@ -25,9 +25,9 @@ export default function BlogCalcMarge() {
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/landing" className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+          <Link to="/landing" className="flex items-center gap-2 text-[#111111] font-bold text-lg">
             <ChefHat className="w-7 h-7 text-teal-600" />
             <span style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>RestauMargin</span>
           </Link>
@@ -41,7 +41,7 @@ export default function BlogCalcMarge() {
             </Link>
             <Link
               to="/login"
-              className="text-sm font-medium text-slate-600 hover:text-teal-600 transition-colors"
+              className="text-sm font-medium text-[#525252] hover:text-teal-600 transition-colors"
             >
               Connexion
             </Link>
@@ -56,16 +56,16 @@ export default function BlogCalcMarge() {
             <BookOpen className="w-3.5 h-3.5" />
             Guide complet 2026
           </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111] leading-tight mb-6">
             Comment calculer la marge <br className="hidden sm:block" />
             de votre restaurant en 2026
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-[#525252] max-w-2xl mx-auto leading-relaxed">
             Le calcul de marge restaurant est la clef de voute de votre rentabilite.
             Decouvrez les formules, les benchmarks par type d'etablissement et les erreurs
             qui plombent vos benefices.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-[#737373]">
             <span className="flex items-center gap-1"><Users className="w-4 h-4" /> Par l'equipe RestauMargin</span>
             <span>|</span>
             <span>Mis a jour : avril 2026</span>
@@ -79,12 +79,12 @@ export default function BlogCalcMarge() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
 
         {/* ── Table des matieres ── */}
-        <nav className="my-12 bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-teal-600" />
             Sommaire
           </h2>
-          <ol className="space-y-2 text-sm sm:text-base text-slate-700">
+          <ol className="space-y-2 text-sm sm:text-base text-[#404040]">
             {[
               { href: '#pourquoi', label: 'Pourquoi la marge est critique pour votre restaurant' },
               { href: '#trois-marges', label: 'Les 3 types de marges a connaitre' },
@@ -215,16 +215,16 @@ export default function BlogCalcMarge() {
           </div>
 
           {/* Exemple concret */}
-          <div className="mt-8 bg-slate-50 border border-slate-200 rounded-2xl p-6 sm:p-8">
-            <h3 className="font-bold text-slate-900 mb-4 text-lg">Exemple : Entrecote grillee</h3>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm text-slate-700 mb-6">
+          <div className="mt-8 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
+            <h3 className="font-bold text-[#111111] mb-4 text-lg">Exemple : Entrecote grillee</h3>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm text-[#404040] mb-6">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-teal-500 rounded-full" />
-                Prix de vente HT : <strong className="text-slate-900">24,00 EUR</strong>
+                Prix de vente HT : <strong className="text-[#111111]">24,00 EUR</strong>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-amber-500 rounded-full" />
-                Cout matieres premieres : <strong className="text-slate-900">7,20 EUR</strong>
+                Cout matieres premieres : <strong className="text-[#111111]">7,20 EUR</strong>
               </div>
             </div>
 
@@ -265,7 +265,7 @@ export default function BlogCalcMarge() {
           </div>
 
           <div className="prose-content mt-8">
-            <h3 className="text-xl font-bold text-slate-900 mb-3">
+            <h3 className="text-xl font-bold text-[#111111] mb-3">
               La methode du coefficient multiplicateur
             </h3>
             <p>
@@ -283,7 +283,7 @@ export default function BlogCalcMarge() {
               mais attention a ne pas deconnecter vos prix du marche et des attentes clients.
             </p>
 
-            <h3 className="text-xl font-bold text-slate-900 mb-3 mt-8">
+            <h3 className="text-xl font-bold text-[#111111] mb-3 mt-8">
               Le calcul de marge sur l'ensemble du menu
             </h3>
             <p>
@@ -320,7 +320,7 @@ export default function BlogCalcMarge() {
           <div className="mt-8 overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="bg-slate-100 text-slate-700">
+                <tr className="bg-[#F5F5F5] text-[#404040]">
                   <th className="text-left py-3 px-4 font-semibold rounded-tl-xl">Type de restaurant</th>
                   <th className="text-center py-3 px-4 font-semibold">Food Cost cible</th>
                   <th className="text-center py-3 px-4 font-semibold">Marge brute cible</th>
@@ -328,7 +328,7 @@ export default function BlogCalcMarge() {
                   <th className="text-center py-3 px-4 font-semibold rounded-tr-xl">Marge nette</th>
                 </tr>
               </thead>
-              <tbody className="text-slate-700">
+              <tbody className="text-[#404040]">
                 {[
                   { type: 'Restauration rapide / Fast-food', fc: '25 - 30 %', mb: '70 - 75 %', coef: '3,3 - 4,0', mn: '8 - 15 %' },
                   { type: 'Bistrot / Brasserie', fc: '28 - 33 %', mb: '67 - 72 %', coef: '3,0 - 3,6', mn: '5 - 12 %' },
@@ -338,8 +338,8 @@ export default function BlogCalcMarge() {
                   { type: 'Dark kitchen / Livraison', fc: '28 - 35 %', mb: '65 - 72 %', coef: '2,9 - 3,6', mn: '5 - 12 %' },
                   { type: 'Traiteur / Banquet', fc: '30 - 38 %', mb: '62 - 70 %', coef: '2,6 - 3,3', mn: '8 - 15 %' },
                 ].map((row, i) => (
-                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                    <td className="py-3 px-4 font-medium text-slate-900">{row.type}</td>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-[#FAFAFA]'}>
+                    <td className="py-3 px-4 font-medium text-[#111111]">{row.type}</td>
                     <td className="py-3 px-4 text-center">{row.fc}</td>
                     <td className="py-3 px-4 text-center">{row.mb}</td>
                     <td className="py-3 px-4 text-center">{row.coef}</td>
@@ -354,7 +354,7 @@ export default function BlogCalcMarge() {
             <p>
               Quelques observations cles sur ce tableau :
             </p>
-            <ul className="list-disc list-inside space-y-2 text-slate-700 mt-4">
+            <ul className="list-disc list-inside space-y-2 text-[#404040] mt-4">
               <li>
                 <strong>Les pizzerias et creperies</strong> ont le meilleur food cost car les
                 ingredients de base (farine, oeufs, tomates) sont tres peu couteux. Leur marge
@@ -468,12 +468,12 @@ export default function BlogCalcMarge() {
                 desc: 'Testez l\'impact d\'un changement de prix ou de fournisseur sur votre marge avant de prendre la decision.'
               },
             ].map((feat, i) => (
-              <div key={i} className="bg-white border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
+              <div key={i} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all">
                 <div className="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center text-teal-600 mb-3">
                   {feat.icon}
                 </div>
-                <h3 className="font-semibold text-slate-900 mb-1.5">{feat.title}</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">{feat.desc}</p>
+                <h3 className="font-semibold text-[#111111] mb-1.5">{feat.title}</h3>
+                <p className="text-sm text-[#525252] leading-relaxed">{feat.desc}</p>
               </div>
             ))}
           </div>
@@ -526,26 +526,26 @@ export default function BlogCalcMarge() {
 
         {/* ═════════════ Articles complementaires ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Pour aller plus loin</h2>
+          <h2 className="text-2xl font-bold text-[#111111] mb-6">Pour aller plus loin</h2>
           <div className="grid sm:grid-cols-3 gap-4">
-            <Link to="/blog/reduire-food-cost" className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-slate-900 mb-1.5 group-hover:text-teal-700 transition-colors">5 methodes pour reduire votre food cost de 15 %</h3>
-              <p className="text-sm text-slate-500">Fiches techniques, negociation, gaspillage, menu engineering et mercuriale.</p>
+            <Link to="/blog/reduire-food-cost" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">5 methodes pour reduire votre food cost de 15 %</h3>
+              <p className="text-sm text-[#737373]">Fiches techniques, negociation, gaspillage, menu engineering et mercuriale.</p>
             </Link>
-            <Link to="/blog/coefficient-multiplicateur" className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-slate-900 mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur : le guide complet</h3>
-              <p className="text-sm text-slate-500">Tableaux par categorie, erreurs courantes et cas pratique d'un menu a 35 EUR.</p>
+            <Link to="/blog/coefficient-multiplicateur" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">Coefficient multiplicateur : le guide complet</h3>
+              <p className="text-sm text-[#737373]">Tableaux par categorie, erreurs courantes et cas pratique d'un menu a 35 EUR.</p>
             </Link>
-            <Link to="/blog/ia-restauration" className="bg-slate-50 border border-slate-200 rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
-              <h3 className="font-semibold text-slate-900 mb-1.5 group-hover:text-teal-700 transition-colors">L'IA en restauration : gadget ou revolution ?</h3>
-              <p className="text-sm text-slate-500">Ce que l'IA peut vraiment faire pour votre restaurant (et ses limites).</p>
+            <Link to="/blog/ia-restauration" className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl p-5 hover:border-teal-300 hover:shadow-sm transition-all group">
+              <h3 className="font-semibold text-[#111111] mb-1.5 group-hover:text-teal-700 transition-colors">L'IA en restauration : gadget ou revolution ?</h3>
+              <p className="text-sm text-[#737373]">Ce que l'IA peut vraiment faire pour votre restaurant (et ses limites).</p>
             </Link>
           </div>
         </section>
 
         {/* ═════════════ FAQ Schema ═════════════ */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Questions frequentes</h2>
+          <h2 className="text-2xl font-bold text-[#111111] mb-6">Questions frequentes</h2>
           <div className="space-y-4">
             <FAQItem
               q="Quel est le food cost ideal pour un restaurant ?"
@@ -585,22 +585,22 @@ export default function BlogCalcMarge() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-slate-50 border-t border-slate-200 py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center text-sm text-slate-500">
-          <Link to="/landing" className="flex items-center justify-center gap-2 text-slate-900 font-bold text-lg mb-4">
+      <footer className="bg-[#FAFAFA] border-t border-[#E5E7EB] py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center text-sm text-[#737373]">
+          <Link to="/landing" className="flex items-center justify-center gap-2 text-[#111111] font-bold text-lg mb-4">
             <ChefHat className="w-6 h-6 text-teal-600" />
             RestauMargin
           </Link>
           <p className="mb-4">
             La plateforme de gestion de marge pour les restaurateurs.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#A3A3A3]">
             <Link to="/mentions-legales" className="hover:text-teal-600 transition-colors">Mentions legales</Link>
             <Link to="/cgv" className="hover:text-teal-600 transition-colors">CGV</Link>
             <Link to="/cgu" className="hover:text-teal-600 transition-colors">CGU</Link>
             <Link to="/politique-confidentialite" className="hover:text-teal-600 transition-colors">Confidentialite</Link>
           </div>
-          <p className="mt-6 text-xs text-slate-400">
+          <p className="mt-6 text-xs text-[#A3A3A3]">
             &copy; {new Date().getFullYear()} RestauMargin. Tous droits reserves.
           </p>
         </div>
@@ -716,7 +716,7 @@ function SectionHeading({ icon, number, children }: { icon: React.ReactNode; num
       <div className="w-10 h-10 bg-teal-100 text-teal-700 rounded-xl flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <h2 className="text-2xl font-bold text-slate-900">{children}</h2>
+      <h2 className="text-2xl font-bold text-[#111111]">{children}</h2>
     </div>
   );
 }
@@ -732,19 +732,19 @@ function MargeCard({ icon, title, color, desc, formula, target }: {
   const c = colors[color] || colors.emerald;
 
   return (
-    <div className={`${c.bg} rounded-2xl p-6 border border-slate-100`}>
+    <div className={`${c.bg} rounded-2xl p-6 border border-[#F5F5F5]`}>
       <div className={`w-10 h-10 ${c.badge} rounded-lg flex items-center justify-center mb-3`}>
         {icon}
       </div>
-      <h3 className="font-bold text-slate-900 mb-2">{title}</h3>
-      <p className="text-sm text-slate-600 leading-relaxed mb-4">{desc}</p>
+      <h3 className="font-bold text-[#111111] mb-2">{title}</h3>
+      <p className="text-sm text-[#525252] leading-relaxed mb-4">{desc}</p>
       <div className="space-y-1.5 text-xs">
         <div className="flex items-center gap-2">
-          <span className="text-slate-500 font-medium">Formule :</span>
-          <code className="bg-white/70 px-2 py-0.5 rounded text-slate-700">{formula}</code>
+          <span className="text-[#737373] font-medium">Formule :</span>
+          <code className="bg-white/70 px-2 py-0.5 rounded text-[#404040]">{formula}</code>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-slate-500 font-medium">Objectif :</span>
+          <span className="text-[#737373] font-medium">Objectif :</span>
           <span className={`${c.badge} px-2 py-0.5 rounded font-semibold`}>{target}</span>
         </div>
       </div>
@@ -757,16 +757,16 @@ function FormulaBlock({ label, formula, calcul, resultat, verdict, color }: {
 }) {
   const verdictColor = color === 'emerald' ? 'text-emerald-600' : 'text-amber-600';
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5">
-      <h4 className="font-semibold text-slate-900 mb-2">{label}</h4>
-      <div className="text-sm text-slate-500 mb-1">
+    <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 sm:p-5">
+      <h4 className="font-semibold text-[#111111] mb-2">{label}</h4>
+      <div className="text-sm text-[#737373] mb-1">
         <span className="font-medium">Formule :</span> {formula}
       </div>
-      <div className="text-sm text-slate-500 mb-2">
+      <div className="text-sm text-[#737373] mb-2">
         <span className="font-medium">Calcul :</span> {calcul}
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-xl font-extrabold text-slate-900">{resultat}</span>
+        <span className="text-xl font-extrabold text-[#111111]">{resultat}</span>
         <span className={`text-sm font-semibold ${verdictColor} flex items-center gap-1`}>
           <CheckCircle className="w-4 h-4" />
           {verdict}
@@ -778,13 +778,13 @@ function FormulaBlock({ label, formula, calcul, resultat, verdict, color }: {
 
 function ErreurCard({ number, title, desc }: { number: number; title: string; desc: string }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 flex gap-4">
+    <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 sm:p-6 flex gap-4">
       <div className="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center shrink-0 font-bold text-lg">
         {number}
       </div>
       <div>
-        <h3 className="font-semibold text-slate-900 mb-1.5">{title}</h3>
-        <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>
+        <h3 className="font-semibold text-[#111111] mb-1.5">{title}</h3>
+        <p className="text-sm text-[#525252] leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -805,12 +805,12 @@ function Callout({ type, children }: { type: 'info' | 'warning'; children: React
 
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="bg-slate-50 border border-slate-200 rounded-xl group">
-      <summary className="px-5 py-4 font-semibold text-slate-900 cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
+    <details className="bg-[#FAFAFA] border border-[#E5E7EB] rounded-xl group">
+      <summary className="px-5 py-4 font-semibold text-[#111111] cursor-pointer select-none flex items-center justify-between hover:text-teal-700 transition-colors">
         {q}
-        <ArrowRight className="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-[#A3A3A3] group-open:rotate-90 transition-transform" />
       </summary>
-      <p className="px-5 pb-4 text-sm text-slate-600 leading-relaxed">{a}</p>
+      <p className="px-5 pb-4 text-sm text-[#525252] leading-relaxed">{a}</p>
     </details>
   );
 }

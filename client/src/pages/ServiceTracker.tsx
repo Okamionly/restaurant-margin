@@ -454,19 +454,19 @@ export default function ServiceTracker() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white font-satoshi flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi flex items-center gap-2">
             <Timer className="w-7 h-7 text-teal-400" />
             Suivi de Service
           </h1>
-          <p className="text-sm text-slate-400 mt-0.5">Suivi en temps reel des couts et marges pendant le service</p>
+          <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mt-0.5">Suivi en temps reel des couts et marges pendant le service</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-slate-900/80 rounded-xl p-1 gap-1">
+        <div className="flex bg-[#F5F5F5] dark:bg-[#0A0A0A]/80 rounded-xl p-1 gap-1">
           <button
             onClick={() => setTab('live')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              tab === 'live' ? 'bg-teal-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'
+              tab === 'live' ? 'bg-teal-600 text-white shadow-lg' : 'text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
             }`}
           >
             <Play className="w-4 h-4 inline mr-1.5" />
@@ -475,7 +475,7 @@ export default function ServiceTracker() {
           <button
             onClick={() => setTab('history')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              tab === 'history' ? 'bg-teal-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'
+              tab === 'history' ? 'bg-teal-600 text-white shadow-lg' : 'text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
             }`}
           >
             <CalendarDays className="w-4 h-4 inline mr-1.5" />
@@ -491,21 +491,21 @@ export default function ServiceTracker() {
         <>
           {/* ── Live P&L Bar ─────────────────────────────────────────── */}
           {session && (
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">P&L en temps reel</span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs font-semibold text-[#737373] dark:text-[#A3A3A3] uppercase tracking-wider">P&L en temps reel</span>
+                <span className="text-xs text-[#737373]">
                   Objectif marge: 70%
                 </span>
               </div>
-              <div className="relative h-8 rounded-full overflow-hidden bg-slate-800">
+              <div className="relative h-8 rounded-full overflow-hidden bg-[#E5E7EB] dark:bg-[#262626]">
                 {/* Green = marge */}
                 <div
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-600 to-emerald-500 transition-all duration-700 ease-out flex items-center justify-center"
                   style={{ width: `${plBarPercent.marge}%` }}
                 >
                   {plBarPercent.marge > 15 && (
-                    <span className="text-[11px] font-bold text-white drop-shadow">
+                    <span className="text-[11px] font-bold text-[#111111] dark:text-white drop-shadow">
                       Marge {plBarPercent.marge.toFixed(1)}%
                     </span>
                   )}
@@ -516,7 +516,7 @@ export default function ServiceTracker() {
                   style={{ width: `${plBarPercent.cout}%` }}
                 >
                   {plBarPercent.cout > 15 && (
-                    <span className="text-[11px] font-bold text-white drop-shadow">
+                    <span className="text-[11px] font-bold text-[#111111] dark:text-white drop-shadow">
                       Cout {plBarPercent.cout.toFixed(1)}%
                     </span>
                   )}
@@ -538,14 +538,14 @@ export default function ServiceTracker() {
           )}
 
           {/* ── Service Status Panel ────────────────────────────────── */}
-          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5">
             {!session && !showSummary && (
               <div className="text-center py-12">
                 <div className="w-20 h-20 mx-auto rounded-full bg-teal-500/10 flex items-center justify-center mb-4">
                   <Play className="w-10 h-10 text-teal-400" />
                 </div>
-                <h2 className="text-xl font-bold text-white mb-2">Aucun service en cours</h2>
-                <p className="text-slate-400 mb-6 max-w-md mx-auto">
+                <h2 className="text-xl font-bold text-[#111111] dark:text-white mb-2">Aucun service en cours</h2>
+                <p className="text-[#737373] dark:text-[#A3A3A3] mb-6 max-w-md mx-auto">
                   Demarrez un service pour suivre les commandes, le CA et la marge en temps reel.
                 </p>
                 <button
@@ -562,15 +562,15 @@ export default function ServiceTracker() {
             {showSummary && summaryData && (
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
                     <Award className="w-6 h-6 text-yellow-400" />
                     Bilan du Service {summaryData.type === 'midi' ? 'du Midi' : 'du Soir'}
                   </h2>
                   <button
                     onClick={() => { setShowSummary(false); setSummaryData(null); }}
-                    className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
+                    className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#262626] rounded-lg transition-colors"
                   >
-                    <X className="w-5 h-5 text-slate-400" />
+                    <X className="w-5 h-5 text-[#A3A3A3]" />
                   </button>
                 </div>
 
@@ -582,10 +582,10 @@ export default function ServiceTracker() {
                     { label: 'Marge brute', value: formatCurrency(summaryData.margeBrute), icon: BarChart3, color: 'text-teal-400' },
                     { label: 'Marge %', value: `${summaryData.margePercent.toFixed(1)}%`, icon: TrendingUp, color: summaryData.margePercent >= 70 ? 'text-emerald-400' : 'text-amber-400' },
                   ].map(s => (
-                    <div key={s.label} className="bg-slate-800/60 rounded-xl p-3 text-center">
+                    <div key={s.label} className="bg-[#F5F5F5] dark:bg-[#262626]/60 rounded-xl p-3 text-center">
                       <s.icon className={`w-5 h-5 mx-auto mb-1 ${s.color}`} />
-                      <div className="text-lg font-bold text-white">{s.value}</div>
-                      <div className="text-[11px] text-slate-400">{s.label}</div>
+                      <div className="text-lg font-bold text-[#111111] dark:text-white">{s.value}</div>
+                      <div className="text-[11px] text-[#737373] dark:text-[#A3A3A3]">{s.label}</div>
                     </div>
                   ))}
                 </div>
@@ -593,13 +593,13 @@ export default function ServiceTracker() {
                 {/* Top 3 plats */}
                 {summaryData.topPlats.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-300 mb-2">Top 3 plats vendus</h3>
+                    <h3 className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4] mb-2">Top 3 plats vendus</h3>
                     <div className="space-y-2">
                       {summaryData.topPlats.map((p, i) => (
-                        <div key={p.name} className="flex items-center gap-3 bg-slate-800/40 rounded-lg px-3 py-2">
+                        <div key={p.name} className="flex items-center gap-3 bg-[#F5F5F5] dark:bg-[#262626]/40 rounded-lg px-3 py-2">
                           <span className="text-lg font-bold text-yellow-400 w-6">#{i + 1}</span>
-                          <span className="flex-1 text-white font-medium">{p.name}</span>
-                          <span className="text-slate-300 text-sm">{p.qty}x</span>
+                          <span className="flex-1 text-[#111111] dark:text-white font-medium">{p.name}</span>
+                          <span className="text-[#525252] dark:text-[#D4D4D4] text-sm">{p.qty}x</span>
                           <span className="text-emerald-400 text-sm font-semibold">{formatCurrency(p.ca)}</span>
                         </div>
                       ))}
@@ -609,26 +609,26 @@ export default function ServiceTracker() {
 
                 {/* Last week comparison */}
                 {lastWeekComparison && (
-                  <div className="bg-slate-800/40 rounded-xl p-4">
-                    <h3 className="text-sm font-semibold text-slate-300 mb-2">vs. meme jour semaine derniere</h3>
+                  <div className="bg-[#F5F5F5] dark:bg-[#262626]/40 rounded-xl p-4">
+                    <h3 className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4] mb-2">vs. meme jour semaine derniere</h3>
                     <div className="grid grid-cols-3 gap-3 text-center">
                       <div>
                         <div className={`text-lg font-bold ${lastWeekComparison.caDiff >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                           {lastWeekComparison.caDiff >= 0 ? '+' : ''}{lastWeekComparison.caDiffPercent.toFixed(1)}%
                         </div>
-                        <div className="text-[11px] text-slate-400">CA</div>
+                        <div className="text-[11px] text-[#737373] dark:text-[#A3A3A3]">CA</div>
                       </div>
                       <div>
                         <div className={`text-lg font-bold ${lastWeekComparison.couvertsDiff >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                           {lastWeekComparison.couvertsDiff >= 0 ? '+' : ''}{lastWeekComparison.couvertsDiff}
                         </div>
-                        <div className="text-[11px] text-slate-400">Couverts</div>
+                        <div className="text-[11px] text-[#737373] dark:text-[#A3A3A3]">Couverts</div>
                       </div>
                       <div>
                         <div className={`text-lg font-bold ${lastWeekComparison.margeDiff >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                           {lastWeekComparison.margeDiff >= 0 ? '+' : ''}{lastWeekComparison.margeDiff.toFixed(1)}pt
                         </div>
-                        <div className="text-[11px] text-slate-400">Marge</div>
+                        <div className="text-[11px] text-[#737373] dark:text-[#A3A3A3]">Marge</div>
                       </div>
                     </div>
                   </div>
@@ -638,7 +638,7 @@ export default function ServiceTracker() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => exportService(summaryData)}
-                    className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+                    className="px-4 py-2.5 bg-[#262626] hover:bg-[#404040] text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
                   >
                     <Download className="w-4 h-4" />
                     Exporter
@@ -660,14 +660,14 @@ export default function ServiceTracker() {
                 {/* Service header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
                       <span className="relative flex h-3 w-3">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
                       </span>
                       Service {session.type === 'midi' ? 'du Midi' : 'du Soir'}
                     </h2>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-slate-400">
+                    <div className="flex items-center gap-4 mt-1 text-sm text-[#737373] dark:text-[#A3A3A3]">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
                         En cours depuis {formatDuration(now - session.startTime)}
@@ -681,7 +681,7 @@ export default function ServiceTracker() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => navigate('/kitchen-mode')}
-                      className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-1.5"
+                      className="px-3 py-2 bg-[#262626] hover:bg-[#404040] text-white rounded-xl text-sm font-medium transition-all flex items-center gap-1.5"
                     >
                       <Monitor className="w-4 h-4" />
                       Afficher en cuisine
@@ -700,21 +700,21 @@ export default function ServiceTracker() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="bg-gradient-to-br from-blue-600/20 to-blue-900/20 border border-blue-500/20 rounded-xl p-4 text-center">
                     <Users className="w-5 h-5 mx-auto mb-1 text-blue-400" />
-                    <div className="text-2xl font-bold text-white tabular-nums">
+                    <div className="text-2xl font-bold text-[#111111] dark:text-white tabular-nums">
                       <AnimatedValue value={liveStats.couverts} decimals={0} />
                     </div>
                     <div className="text-[11px] text-blue-300">Couverts servis</div>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 border border-emerald-500/20 rounded-xl p-4 text-center">
                     <DollarSign className="w-5 h-5 mx-auto mb-1 text-emerald-400" />
-                    <div className="text-2xl font-bold text-white tabular-nums">
+                    <div className="text-2xl font-bold text-[#111111] dark:text-white tabular-nums">
                       <AnimatedValue value={liveStats.ca} suffix=" \u20AC" />
                     </div>
                     <div className="text-[11px] text-emerald-300">CA en temps reel</div>
                   </div>
                   <div className="bg-gradient-to-br from-red-600/20 to-red-900/20 border border-red-500/20 rounded-xl p-4 text-center">
                     <TrendingUp className="w-5 h-5 mx-auto mb-1 text-red-400" />
-                    <div className="text-2xl font-bold text-white tabular-nums">
+                    <div className="text-2xl font-bold text-[#111111] dark:text-white tabular-nums">
                       <AnimatedValue value={liveStats.cout} suffix=" \u20AC" />
                     </div>
                     <div className="text-[11px] text-red-300">Cout matieres cumule</div>
@@ -725,7 +725,7 @@ export default function ServiceTracker() {
                       : 'from-amber-600/20 to-amber-900/20 border-amber-500/20'
                   } border rounded-xl p-4 text-center`}>
                     <BarChart3 className={`w-5 h-5 mx-auto mb-1 ${liveStats.margePercent >= 70 ? 'text-teal-400' : 'text-amber-400'}`} />
-                    <div className="text-2xl font-bold text-white tabular-nums">
+                    <div className="text-2xl font-bold text-[#111111] dark:text-white tabular-nums">
                       <AnimatedValue value={liveStats.margePercent} suffix="%" decimals={1} />
                     </div>
                     <div className={`text-[11px] ${liveStats.margePercent >= 70 ? 'text-teal-300' : 'text-amber-300'}`}>Marge live</div>
@@ -734,7 +734,7 @@ export default function ServiceTracker() {
 
                 {/* ── Order Entry ────────────────────────────────────── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4] mb-3 flex items-center gap-2">
                     <ChefHat className="w-4 h-4 text-teal-400" />
                     Ajouter une commande
                   </h3>
@@ -742,20 +742,20 @@ export default function ServiceTracker() {
                   {/* Search & filter bar */}
                   <div className="flex flex-col sm:flex-row gap-2 mb-3">
                     <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#737373]" />
                       <input
                         type="text"
                         value={searchRecipe}
                         onChange={e => setSearchRecipe(e.target.value)}
                         placeholder="Rechercher une recette..."
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                        className="w-full pl-9 pr-3 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-[#111111] dark:text-white text-sm placeholder:text-[#737373] focus:outline-none focus:ring-2 focus:ring-teal-500/50"
                       />
                     </div>
                     <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
                       <button
                         onClick={() => setSelectedCategory(null)}
                         className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-                          !selectedCategory ? 'bg-teal-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
+                          !selectedCategory ? 'bg-teal-600 text-white' : 'bg-[#262626] text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
                         }`}
                       >
                         Tous
@@ -765,7 +765,7 @@ export default function ServiceTracker() {
                           key={cat}
                           onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
                           className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
-                            selectedCategory === cat ? 'bg-teal-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
+                            selectedCategory === cat ? 'bg-teal-600 text-white' : 'bg-[#262626] text-[#737373] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white'
                           }`}
                         >
                           {getCategoryEmoji(cat)} {cat}
@@ -787,15 +787,15 @@ export default function ServiceTracker() {
                           className={`relative p-3 rounded-xl text-left transition-all active:scale-95 ${
                             isSelected
                               ? 'bg-teal-600/30 border-2 border-teal-500 ring-2 ring-teal-500/30'
-                              : 'bg-slate-800/60 border border-slate-700/50 hover:border-slate-600'
+                              : 'bg-[#F5F5F5] dark:bg-[#262626]/60 border border-[#E5E7EB] dark:border-[#262626]/50 hover:border-[#D4D4D4] dark:hover:border-[#404040]'
                           }`}
                         >
                           <div className="text-2xl mb-1">{getCategoryEmoji(recipe.category)}</div>
-                          <div className="text-sm font-medium text-white truncate">{recipe.name}</div>
-                          <div className="text-[11px] text-slate-400 mt-0.5">{recipe.category}</div>
+                          <div className="text-sm font-medium text-[#111111] dark:text-white truncate">{recipe.name}</div>
+                          <div className="text-[11px] text-[#A3A3A3] mt-0.5">{recipe.category}</div>
                           <div className="flex items-center justify-between mt-1.5">
                             <span className="text-xs font-semibold text-emerald-400">{price.toFixed(2)} \u20AC</span>
-                            <span className="text-[10px] text-slate-500">cout {cost.toFixed(2)} \u20AC</span>
+                            <span className="text-[10px] text-[#737373]">cout {cost.toFixed(2)} \u20AC</span>
                           </div>
                           {isSelected && (
                             <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center">
@@ -806,7 +806,7 @@ export default function ServiceTracker() {
                       );
                     })}
                     {filteredRecipes.length === 0 && (
-                      <div className="col-span-full text-center py-8 text-slate-500 text-sm">
+                      <div className="col-span-full text-center py-8 text-[#737373] text-sm">
                         Aucune recette trouvee
                       </div>
                     )}
@@ -814,39 +814,39 @@ export default function ServiceTracker() {
 
                   {/* Quantity & table input + add button */}
                   {selectedRecipeId && (
-                    <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-slate-800/40 rounded-xl p-3 border border-teal-500/20 animate-in slide-in-from-bottom-2">
+                    <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-[#F5F5F5] dark:bg-[#262626]/40 rounded-xl p-3 border border-teal-500/20 animate-in slide-in-from-bottom-2">
                       <div className="flex-1 flex items-center gap-2">
-                        <span className="text-sm text-white font-medium truncate">
+                        <span className="text-sm text-[#111111] dark:text-white font-medium truncate">
                           {recipes.find(r => r.id === selectedRecipeId)?.name}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         {/* Quantity */}
-                        <div className="flex items-center bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+                        <div className="flex items-center bg-[#F5F5F5] dark:bg-[#262626] rounded-lg border border-[#E5E7EB] dark:border-[#262626] overflow-hidden">
                           <button
                             onClick={() => setOrderQty(Math.max(1, orderQty - 1))}
-                            className="p-2 hover:bg-slate-700 transition-colors"
+                            className="p-2 hover:bg-[#E5E7EB] dark:hover:bg-[#404040] transition-colors"
                           >
-                            <Minus className="w-4 h-4 text-slate-400" />
+                            <Minus className="w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                           </button>
-                          <span className="w-8 text-center text-white font-bold text-sm tabular-nums">{orderQty}</span>
+                          <span className="w-8 text-center text-[#111111] dark:text-white font-bold text-sm tabular-nums">{orderQty}</span>
                           <button
                             onClick={() => setOrderQty(orderQty + 1)}
-                            className="p-2 hover:bg-slate-700 transition-colors"
+                            className="p-2 hover:bg-[#E5E7EB] dark:hover:bg-[#404040] transition-colors"
                           >
-                            <Plus className="w-4 h-4 text-slate-400" />
+                            <Plus className="w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                           </button>
                         </div>
 
                         {/* Table number */}
                         <div className="relative">
-                          <Hash className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                          <Hash className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#737373]" />
                           <input
                             type="number"
                             value={orderTable}
                             onChange={e => setOrderTable(e.target.value)}
                             placeholder="Table"
-                            className="w-20 pl-7 pr-2 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                            className="w-20 pl-7 pr-2 py-2 bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg text-[#111111] dark:text-white text-sm placeholder:text-[#737373] focus:outline-none focus:ring-2 focus:ring-teal-500/50"
                           />
                         </div>
 
@@ -867,12 +867,12 @@ export default function ServiceTracker() {
                 {session.orders.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                      <h3 className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4] flex items-center gap-2">
                         <Utensils className="w-4 h-4 text-teal-400" />
                         Commandes ({session.orders.length})
                       </h3>
                       {topPlats.length > 0 && (
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-[#737373]">
                           Top: {topPlats[0].name} ({topPlats[0].qty}x)
                         </span>
                       )}
@@ -881,15 +881,15 @@ export default function ServiceTracker() {
                       {[...session.orders].reverse().map(order => (
                         <div
                           key={order.id}
-                          className="flex items-center gap-3 bg-slate-800/40 rounded-lg px-3 py-2 group transition-all hover:bg-slate-800/60"
+                          className="flex items-center gap-3 bg-[#F5F5F5] dark:bg-[#262626]/40 rounded-lg px-3 py-2 group transition-all hover:bg-[#F5F5F5] dark:hover:bg-[#262626]/60"
                         >
                           <span className="text-lg">{getCategoryEmoji(order.recipeCategory)}</span>
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-white truncate">
+                            <div className="text-sm font-medium text-[#111111] dark:text-white truncate">
                               {order.recipeName}
-                              <span className="text-slate-400 font-normal"> x{order.quantity}</span>
+                              <span className="text-[#737373] dark:text-[#A3A3A3] font-normal"> x{order.quantity}</span>
                             </div>
-                            <div className="text-[11px] text-slate-500 flex items-center gap-2">
+                            <div className="text-[11px] text-[#737373] flex items-center gap-2">
                               <span>{formatTime(order.timestamp)}</span>
                               {order.tableNumber && <span>Table {order.tableNumber}</span>}
                             </div>
@@ -926,18 +926,18 @@ export default function ServiceTracker() {
       {tab === 'history' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Calendar */}
-          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
             <div className="flex items-center justify-between mb-3">
               <button
                 onClick={() => setCalendarMonth(prev => {
                   const d = new Date(prev.year, prev.month - 1, 1);
                   return { year: d.getFullYear(), month: d.getMonth() };
                 })}
-                className="p-1.5 hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-[#F5F5F5] dark:hover:bg-[#262626] rounded-lg transition-colors"
               >
-                <ChevronLeft className="w-4 h-4 text-slate-400" />
+                <ChevronLeft className="w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
               </button>
-              <span className="text-sm font-semibold text-white capitalize">
+              <span className="text-sm font-semibold text-[#111111] dark:text-white capitalize">
                 {new Date(calendarMonth.year, calendarMonth.month).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
               </span>
               <button
@@ -945,16 +945,16 @@ export default function ServiceTracker() {
                   const d = new Date(prev.year, prev.month + 1, 1);
                   return { year: d.getFullYear(), month: d.getMonth() };
                 })}
-                className="p-1.5 hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-[#F5F5F5] dark:hover:bg-[#262626] rounded-lg transition-colors"
               >
-                <ChevronRight className="w-4 h-4 text-slate-400" />
+                <ChevronRight className="w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
               </button>
             </div>
 
             {/* Day headers */}
             <div className="grid grid-cols-7 gap-1 mb-1">
               {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d, i) => (
-                <div key={i} className="text-center text-[10px] text-slate-500 font-medium py-1">{d}</div>
+                <div key={i} className="text-center text-[10px] text-[#737373] font-medium py-1">{d}</div>
               ))}
             </div>
 
@@ -975,10 +975,10 @@ export default function ServiceTracker() {
                       isSelected
                         ? 'bg-teal-600 text-white'
                         : isToday
-                          ? 'bg-slate-700 text-white'
+                          ? 'bg-[#E5E7EB] dark:bg-[#404040] text-[#111111] dark:text-white'
                           : hasService
-                            ? 'bg-slate-800/60 text-white hover:bg-slate-700'
-                            : 'text-slate-500 hover:bg-slate-800/40'
+                            ? 'bg-[#F5F5F5] dark:bg-[#262626]/60 text-[#111111] dark:text-white hover:bg-[#E5E7EB] dark:hover:bg-[#404040]'
+                            : 'text-[#737373] hover:bg-[#F5F5F5] dark:hover:bg-[#262626]/40'
                     }`}
                   >
                     {day}
@@ -991,7 +991,7 @@ export default function ServiceTracker() {
             </div>
 
             {/* Legend */}
-            <div className="flex items-center gap-3 mt-3 text-[10px] text-slate-500">
+            <div className="flex items-center gap-3 mt-3 text-[10px] text-[#737373]">
               <span className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-400" /> Service enregistre
               </span>
@@ -1002,57 +1002,57 @@ export default function ServiceTracker() {
           <div className="lg:col-span-2 space-y-3">
             {selectedHistoryDate ? (
               <>
-                <h3 className="text-sm font-semibold text-slate-300">
+                <h3 className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4]">
                   Services du {formatDate(selectedHistoryDate)}
                 </h3>
                 {servicesForDate.length === 0 ? (
-                  <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center">
-                    <CalendarDays className="w-10 h-10 mx-auto text-slate-600 mb-2" />
-                    <p className="text-slate-500 text-sm">Aucun service enregistre pour cette date</p>
+                  <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 text-center">
+                    <CalendarDays className="w-10 h-10 mx-auto text-[#525252] mb-2" />
+                    <p className="text-[#737373] text-sm">Aucun service enregistre pour cette date</p>
                   </div>
                 ) : (
                   servicesForDate.map(svc => (
-                    <div key={svc.id} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4">
+                    <div key={svc.id} className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div>
-                          <h4 className="text-white font-semibold flex items-center gap-2">
+                          <h4 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
                             {svc.type === 'midi' ? '\u2600\uFE0F' : '\uD83C\uDF19'} Service {svc.type === 'midi' ? 'du Midi' : 'du Soir'}
                           </h4>
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">
                             {formatTime(svc.startTime)} - {formatTime(svc.endTime)} ({formatDuration(svc.endTime - svc.startTime)})
                           </span>
                         </div>
                         <button
                           onClick={() => exportService(svc)}
-                          className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
+                          className="p-2 hover:bg-[#F5F5F5] dark:hover:bg-[#262626] rounded-lg transition-colors"
                           title="Exporter"
                         >
-                          <Download className="w-4 h-4 text-slate-400" />
+                          <Download className="w-4 h-4 text-[#737373] dark:text-[#A3A3A3]" />
                         </button>
                       </div>
 
                       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                        <div className="bg-slate-800/60 rounded-lg p-2.5 text-center">
-                          <div className="text-lg font-bold text-white">{svc.totalCouverts}</div>
-                          <div className="text-[10px] text-slate-400">Couverts</div>
+                        <div className="bg-[#F5F5F5] dark:bg-[#262626]/60 rounded-lg p-2.5 text-center">
+                          <div className="text-lg font-bold text-[#111111] dark:text-white">{svc.totalCouverts}</div>
+                          <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">Couverts</div>
                         </div>
-                        <div className="bg-slate-800/60 rounded-lg p-2.5 text-center">
+                        <div className="bg-[#F5F5F5] dark:bg-[#262626]/60 rounded-lg p-2.5 text-center">
                           <div className="text-lg font-bold text-emerald-400">{formatCurrency(svc.totalCA)}</div>
-                          <div className="text-[10px] text-slate-400">CA</div>
+                          <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">CA</div>
                         </div>
-                        <div className="bg-slate-800/60 rounded-lg p-2.5 text-center">
+                        <div className="bg-[#F5F5F5] dark:bg-[#262626]/60 rounded-lg p-2.5 text-center">
                           <div className="text-lg font-bold text-red-400">{formatCurrency(svc.totalCout)}</div>
-                          <div className="text-[10px] text-slate-400">Cout</div>
+                          <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">Cout</div>
                         </div>
-                        <div className="bg-slate-800/60 rounded-lg p-2.5 text-center">
+                        <div className="bg-[#F5F5F5] dark:bg-[#262626]/60 rounded-lg p-2.5 text-center">
                           <div className="text-lg font-bold text-teal-400">{formatCurrency(svc.margeBrute)}</div>
-                          <div className="text-[10px] text-slate-400">Marge</div>
+                          <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">Marge</div>
                         </div>
-                        <div className="bg-slate-800/60 rounded-lg p-2.5 text-center">
+                        <div className="bg-[#F5F5F5] dark:bg-[#262626]/60 rounded-lg p-2.5 text-center">
                           <div className={`text-lg font-bold ${svc.margePercent >= 70 ? 'text-emerald-400' : 'text-amber-400'}`}>
                             {svc.margePercent.toFixed(1)}%
                           </div>
-                          <div className="text-[10px] text-slate-400">Marge %</div>
+                          <div className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">Marge %</div>
                         </div>
                       </div>
 
@@ -1060,7 +1060,7 @@ export default function ServiceTracker() {
                       {svc.topPlats.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">
                           {svc.topPlats.map((p, i) => (
-                            <span key={p.name} className="text-xs bg-slate-800/80 text-slate-300 rounded-full px-2.5 py-1">
+                            <span key={p.name} className="text-xs bg-[#262626]/80 text-[#D4D4D4] rounded-full px-2.5 py-1">
                               #{i + 1} {p.name} ({p.qty}x)
                             </span>
                           ))}
@@ -1072,19 +1072,19 @@ export default function ServiceTracker() {
               </>
             ) : (
               <>
-                <h3 className="text-sm font-semibold text-slate-300">Derniers services</h3>
+                <h3 className="text-sm font-semibold text-[#404040] dark:text-[#D4D4D4]">Derniers services</h3>
                 {history.length === 0 ? (
-                  <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center">
-                    <Timer className="w-10 h-10 mx-auto text-slate-600 mb-2" />
-                    <p className="text-slate-500 text-sm">Aucun service enregistre</p>
-                    <p className="text-slate-600 text-xs mt-1">Demarrez un service pour commencer le suivi</p>
+                  <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 text-center">
+                    <Timer className="w-10 h-10 mx-auto text-[#525252] mb-2" />
+                    <p className="text-[#737373] text-sm">Aucun service enregistre</p>
+                    <p className="text-[#525252] text-xs mt-1">Demarrez un service pour commencer le suivi</p>
                   </div>
                 ) : (
                   history.slice(0, 10).map(svc => (
                     <button
                       key={svc.id}
                       onClick={() => setSelectedHistoryDate(svc.date)}
-                      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl p-3 text-left hover:border-slate-700 transition-all group"
+                      className="w-full bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-3 text-left hover:border-[#262626] transition-all group"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -1093,7 +1093,7 @@ export default function ServiceTracker() {
                             <div className="text-sm font-medium text-white">
                               {formatDate(svc.date)} — {svc.type === 'midi' ? 'Midi' : 'Soir'}
                             </div>
-                            <div className="text-[11px] text-slate-500">
+                            <div className="text-[11px] text-[#737373]">
                               {svc.totalCouverts} couverts | {formatDuration(svc.endTime - svc.startTime)}
                             </div>
                           </div>
@@ -1104,7 +1104,7 @@ export default function ServiceTracker() {
                             {svc.margePercent.toFixed(1)}% marge
                           </div>
                         </div>
-                        <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors ml-2" />
+                        <ArrowRight className="w-4 h-4 text-[#525252] group-hover:text-[#A3A3A3] transition-colors ml-2" />
                       </div>
                     </button>
                   ))

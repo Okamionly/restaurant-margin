@@ -69,7 +69,7 @@ export const ALLERGEN_COLORS: Record<string, string> = {
 
 /** Séminaires – event status → Tailwind classes */
 export const EVENT_STATUS_COLORS: Record<string, { bg: string; text: string; border: string; dot: string }> = {
-  'Demande':       { bg: 'bg-slate-100 dark:bg-slate-700/50',    text: 'text-slate-400 dark:text-slate-300',   border: 'border-slate-300 dark:border-slate-600',   dot: 'bg-slate-400' },
+  'Demande':       { bg: 'bg-[#F5F5F5] dark:bg-[#404040]/50',    text: 'text-[#A3A3A3] dark:text-[#D4D4D4]',   border: 'border-[#D4D4D4] dark:border-[#404040]',   dot: 'bg-[#A3A3A3]' },
   'Devis envoyé':  { bg: 'bg-amber-100 dark:bg-amber-900/40',    text: 'text-amber-700 dark:text-amber-300',   border: 'border-amber-300 dark:border-amber-700',   dot: 'bg-amber-400' },
   'Confirmé':      { bg: 'bg-teal-100 dark:bg-teal-900/40',      text: 'text-teal-700 dark:text-teal-300',     border: 'border-teal-300 dark:border-teal-700',     dot: 'bg-teal-400' },
   'En cours':      { bg: 'bg-emerald-100 dark:bg-emerald-900/40', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-300 dark:border-emerald-700', dot: 'bg-emerald-400' },
@@ -82,5 +82,5 @@ export const EVENT_TYPE_COLORS: Record<string, string> = {
   'Mariage':      'bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300',
   'Anniversaire': 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
   'Corporate':    'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300',
-  'Autre':        'bg-slate-100 text-slate-400 dark:bg-slate-700/40 dark:text-slate-300',
+  'Autre':        'bg-[#F5F5F5] text-[#A3A3A3] dark:bg-[#404040]/40 dark:text-[#D4D4D4]',
 };

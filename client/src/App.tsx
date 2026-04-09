@@ -496,8 +496,8 @@ function AppLayout() {
       {/* Gamification Level Badge */}
       {!collapsed && <SidebarLevelBadge />}
 
-      {/* Station Balance button */}
-      <div className={`px-3 mb-3 ${collapsed ? 'mt-4' : ''}`}>
+      {/* Station Balance + Cuisine KDS buttons */}
+      <div className={`px-3 mb-3 space-y-2 ${collapsed ? 'mt-4' : ''}`}>
         <NavLink
           to="/station"
           title={collapsed ? 'Station Balance' : undefined}
@@ -505,6 +505,14 @@ function AppLayout() {
         >
           <Scale className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span className="sidebar-label">Station Balance</span>}
+        </NavLink>
+        <NavLink
+          to="/kitchen-mode"
+          title={collapsed ? 'Cuisine KDS' : undefined}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-semibold transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+        >
+          <ChefHat className="w-5 h-5 flex-shrink-0" />
+          {!collapsed && <span className="sidebar-label">Cuisine KDS</span>}
         </NavLink>
       </div>
 

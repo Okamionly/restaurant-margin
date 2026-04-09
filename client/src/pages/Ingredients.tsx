@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, ChevronUp, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare, BarChart3, Bell, AlertTriangle, Minus, Flame, CheckCircle, Download, Upload, SlidersHorizontal, Filter, Percent } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUpDown, Printer, Loader2, Check, ChevronDown, ChevronUp, X, BookOpen, Scale, Package, Euro, Tag, Truck, TrendingUp, TrendingDown, CheckSquare, BarChart3, Bell, AlertTriangle, Minus, Flame, CheckCircle, Download, Upload, SlidersHorizontal, Filter, Percent, ShoppingBasket } from 'lucide-react';
+import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
+import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { searchCatalog, type CatalogProduct } from '../data/productCatalog';
 import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient, fetchSuppliers, createSupplier, fetchInventory, addToInventory, restockInventoryItem, updateInventoryItem } from '../services/api';
@@ -188,12 +190,13 @@ export default function Ingredients() {
   const [alertInput, setAlertInput] = useState('');
   const [alertsChecked, setAlertsChecked] = useState(false);
 
-  // Advanced filters
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [filterSupplier, setFilterSupplier] = useState('');
-  const [filterPriceMin, setFilterPriceMin] = useState('');
-  const [filterPriceMax, setFilterPriceMax] = useState('');
-  const [filterUnit, setFilterUnit] = useState('');
+  // Advanced filters (via FilterPanel)
+  const [advancedFilters, setAdvancedFilters] = useState<FilterValues>({
+    supplier: '',
+    price: { min: '', max: '' },
+    unit: '',
+    allergen: [],
+  });
 
   // All-ingredient price histories for sparklines (simple simulation from updatedAt)
   const [allPriceHistories, setAllPriceHistories] = useState<Record<number, number[]>>({});
@@ -433,7 +436,60 @@ export default function Ingredients() {
     }
   }
 
+  // Smart search suggestions
+  const searchSuggestions = useMemo<SearchSuggestion[]>(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    return ingredients
+      .filter((i) => i.name.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((i) => ({
+        id: `ing-${i.id}`,
+        label: i.name,
+        category: 'Ingredients',
+        icon: ShoppingBasket,
+        onSelect: () => setSearch(i.name),
+      }));
+  }, [search, ingredients]);
+
+  // Filter definitions for FilterPanel
+  const ingredientFilterDefs = useMemo<FilterDef[]>(() => [
+    {
+      key: 'supplier',
+      label: 'Fournisseur',
+      type: 'select',
+      placeholder: 'Tous les fournisseurs',
+      options: suppliers.map((s) => ({ value: s.name, label: s.name })),
+    },
+    {
+      key: 'price',
+      label: 'Fourchette de prix',
+      type: 'range',
+      step: 0.01,
+      unit: getCurrencySymbol(),
+    },
+    {
+      key: 'unit',
+      label: 'Unite',
+      type: 'select',
+      placeholder: 'Toutes les unites',
+      options: UNITS.map((u) => ({ value: u, label: u })),
+    },
+    {
+      key: 'allergen',
+      label: 'Allergenes',
+      type: 'tags',
+      options: ALLERGENS.map((a) => ({ value: a, label: a })),
+    },
+  ], [suppliers]);
+
   const filtered = useMemo(() => {
+    const filterSupplier = advancedFilters.supplier || '';
+    const filterPriceMin = advancedFilters.price?.min || '';
+    const filterPriceMax = advancedFilters.price?.max || '';
+    const filterUnit = advancedFilters.unit || '';
+    const filterAllergens: string[] = advancedFilters.allergen || [];
+
     let result = ingredients.filter((i) => {
       const q = search.toLowerCase();
       const matchSearch = i.name.toLowerCase().includes(q) ||
@@ -441,12 +497,12 @@ export default function Ingredients() {
         (i.supplierRef?.name && i.supplierRef.name.toLowerCase().includes(q)) ||
         i.category.toLowerCase().includes(q);
       const matchCategory = !filterCategory || i.category === filterCategory;
-      // Advanced filters
       const matchSupplier = !filterSupplier || (i.supplierRef?.name || i.supplier || '').toLowerCase().includes(filterSupplier.toLowerCase());
       const matchPriceMin = !filterPriceMin || i.pricePerUnit >= parseFloat(filterPriceMin);
       const matchPriceMax = !filterPriceMax || i.pricePerUnit <= parseFloat(filterPriceMax);
       const matchUnit = !filterUnit || i.unit === filterUnit;
-      return matchSearch && matchCategory && matchSupplier && matchPriceMin && matchPriceMax && matchUnit;
+      const matchAllergen = filterAllergens.length === 0 || filterAllergens.some((a) => (i as any).allergens?.includes(a));
+      return matchSearch && matchCategory && matchSupplier && matchPriceMin && matchPriceMax && matchUnit && matchAllergen;
     });
     result.sort((a, b) => {
       let aVal: string | number = a[sortKey as keyof typeof a] as string | number;
@@ -458,7 +514,7 @@ export default function Ingredients() {
       return 0;
     });
     return result;
-  }, [ingredients, search, filterCategory, sortKey, sortDir, filterSupplier, filterPriceMin, filterPriceMax, filterUnit]);
+  }, [ingredients, search, filterCategory, sortKey, sortDir, advancedFilters]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -813,14 +869,11 @@ export default function Ingredients() {
     fileInputRef.current?.click();
   }
 
-  // Check if any advanced filter is active
-  const hasAdvancedFilters = !!filterSupplier || !!filterPriceMin || !!filterPriceMax || !!filterUnit;
+  // Check if any advanced filter is active (kept for backward compat)
+  const hasAdvancedFilters = !!(advancedFilters.supplier || advancedFilters.price?.min || advancedFilters.price?.max || advancedFilters.unit || (advancedFilters.allergen?.length > 0));
 
   function clearAdvancedFilters() {
-    setFilterSupplier('');
-    setFilterPriceMin('');
-    setFilterPriceMax('');
-    setFilterUnit('');
+    setAdvancedFilters({ supplier: '', price: { min: '', max: '' }, unit: '', allergen: [] });
   }
 
   function SortHeader({ label, field }: { label: string; field: SortKey }) {
@@ -920,100 +973,21 @@ export default function Ingredients() {
       {/* ── Smart Search + Advanced Filters ─────────────────────────── */}
       <div className="mb-3 space-y-2">
         <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
-            <input
-              type="text"
-              placeholder={t('ingredients.searchPlaceholder') + ', categorie, fournisseur...'}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="input pl-10 w-full"
-            />
-          </div>
-          <button
-            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-              showAdvancedFilters || hasAdvancedFilters
-                ? 'bg-[#111111] dark:bg-white text-white dark:text-black border-[#111111] dark:border-white'
-                : 'bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
-            }`}
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            Filtres
-            {hasAdvancedFilters && <span className="w-2 h-2 rounded-full bg-red-500 ml-1" />}
-          </button>
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={t('ingredients.searchPlaceholder') + ', categorie, fournisseur...'}
+            pageKey="ingredients"
+            suggestions={searchSuggestions}
+            className="flex-1"
+          />
         </div>
-
-        {/* Advanced Filters Panel */}
-        {showAdvancedFilters && (
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 animate-in slide-in-from-top-2">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
-                <Filter className="w-4 h-4" /> Filtres avances
-              </h3>
-              {hasAdvancedFilters && (
-                <button onClick={clearAdvancedFilters} className="text-xs text-red-500 hover:text-red-400 font-medium">
-                  Effacer les filtres
-                </button>
-              )}
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* Supplier filter */}
-              <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Fournisseur</label>
-                <select
-                  value={filterSupplier}
-                  onChange={(e) => setFilterSupplier(e.target.value)}
-                  className="input w-full text-sm"
-                >
-                  <option value="">Tous</option>
-                  {suppliers.map(s => (
-                    <option key={s.id} value={s.name}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
-              {/* Price range */}
-              <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Prix min ({getCurrencySymbol()})</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={filterPriceMin}
-                  onChange={(e) => setFilterPriceMin(e.target.value)}
-                  className="input w-full text-sm"
-                  placeholder="0.00"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Prix max ({getCurrencySymbol()})</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={filterPriceMax}
-                  onChange={(e) => setFilterPriceMax(e.target.value)}
-                  className="input w-full text-sm"
-                  placeholder="999.99"
-                />
-              </div>
-              {/* Unit filter */}
-              <div>
-                <label className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1 block">Unite</label>
-                <select
-                  value={filterUnit}
-                  onChange={(e) => setFilterUnit(e.target.value)}
-                  className="input w-full text-sm"
-                >
-                  <option value="">Toutes</option>
-                  {UNITS.map(u => (
-                    <option key={u} value={u}>{u}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
+        <FilterPanel
+          filters={ingredientFilterDefs}
+          values={advancedFilters}
+          onFilterChange={setAdvancedFilters}
+          presetKey="ingredients"
+        />
       </div>
 
       {/* Category pill filters */}

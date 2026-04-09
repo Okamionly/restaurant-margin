@@ -5,6 +5,8 @@ import {
   PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash, ScanBarcode, Camera, XOctagon,
   ShoppingCart, ChevronDown, ChevronUp, Timer, Flame, BarChart3, CheckSquare, Square
 } from 'lucide-react';
+import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
+import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import {
   fetchInventory, fetchInventoryAlerts, fetchInventoryValue, fetchInventorySuggestions,
   addToInventory, updateInventoryItem, restockInventoryItem, deleteInventoryItem,
@@ -28,6 +30,7 @@ declare global {
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
+import { ProgressRing } from '../components/Charts';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import { useTranslation } from '../hooks/useTranslation';
@@ -183,6 +186,13 @@ export default function Inventory() {
   const [sortKey, setSortKey] = useState<SortKey>('name');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
 
+  // Advanced filters (via FilterPanel)
+  const [inventoryFilters, setInventoryFilters] = useState<FilterValues>({
+    stockLevel: [],
+    category: '',
+    expiry: { from: '', to: '' },
+  });
+
   // Low stock banner
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
@@ -291,6 +301,49 @@ export default function Inventory() {
       .sort((a, b) => (a.days ?? 999) - (b.days ?? 999));
   }, [items]);
 
+  // Smart search suggestions for inventory
+  const inventorySearchSuggestions = useMemo<SearchSuggestion[]>(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    return items
+      .filter((item) => item.ingredient?.name?.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((item) => ({
+        id: `inv-${item.id}`,
+        label: item.ingredient.name,
+        category: 'Inventaire',
+        icon: Package,
+        onSelect: () => setSearch(item.ingredient.name),
+      }));
+  }, [search, items]);
+
+  // Filter definitions for inventory FilterPanel
+  const inventoryFilterDefs = useMemo<FilterDef[]>(() => [
+    {
+      key: 'stockLevel',
+      label: 'Niveau de stock',
+      type: 'checkbox-group',
+      options: [
+        { value: 'critical', label: 'Critique' },
+        { value: 'low', label: 'Bas' },
+        { value: 'ok', label: 'OK' },
+        { value: 'over', label: 'Excedentaire' },
+      ],
+    },
+    {
+      key: 'category',
+      label: 'Categorie',
+      type: 'select',
+      placeholder: 'Toutes les categories',
+      options: Object.keys(CATEGORY_EMOJIS).map((c) => ({ value: c, label: c })),
+    },
+    {
+      key: 'expiry',
+      label: 'Date d\'expiration',
+      type: 'date-range',
+    },
+  ], []);
+
   // Filtered and sorted items
   const filteredItems = useMemo(() => {
     let result = [...items];
@@ -311,6 +364,31 @@ export default function Inventory() {
       result = result.filter(item => {
         const status = getStatus(item);
         return status === 'critical' || status === 'low';
+      });
+    }
+
+    // Advanced filters
+    const fStockLevel: string[] = inventoryFilters.stockLevel || [];
+    const fCategory = inventoryFilters.category || '';
+    const fExpiry = inventoryFilters.expiry || { from: '', to: '' };
+
+    if (fStockLevel.length > 0) {
+      result = result.filter(item => {
+        const status = getStatus(item);
+        return fStockLevel.includes(status);
+      });
+    }
+    if (fCategory) {
+      result = result.filter(item => item.ingredient?.category === fCategory);
+    }
+    if (fExpiry.from || fExpiry.to) {
+      result = result.filter(item => {
+        const meta = parseMeta(item.notes);
+        if (!meta.expirationDate) return false;
+        const d = new Date(meta.expirationDate);
+        if (fExpiry.from && d < new Date(fExpiry.from)) return false;
+        if (fExpiry.to && d > new Date(fExpiry.to)) return false;
+        return true;
       });
     }
 
@@ -340,7 +418,7 @@ export default function Inventory() {
       return sortDir === 'asc' ? cmp : -cmp;
     });
     return result;
-  }, [items, search, filterCategory, filterLocation, filterAlertOnly, sortKey, sortDir]);
+  }, [items, search, filterCategory, filterLocation, filterAlertOnly, sortKey, sortDir, inventoryFilters]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
@@ -1147,35 +1225,41 @@ export default function Inventory() {
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-          <input
-            type="text"
-            placeholder="Rechercher un ingredient..."
+      <div className="space-y-2">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <SearchBar
             value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+            onChange={setSearch}
+            placeholder="Rechercher un ingredient..."
+            pageKey="inventory"
+            suggestions={inventorySearchSuggestions}
+            className="flex-1"
           />
-        </div>
-        <select
-          value={filterLocation}
-          onChange={e => setFilterLocation(e.target.value as LocationType)}
-          className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
-        >
-          <option value="">Tous emplacements</option>
-          {LOCATIONS.map(loc => (
-            <option key={loc} value={loc}>{loc}</option>
-          ))}
-        </select>
-        {filterAlertOnly && (
-          <button
-            onClick={() => setFilterAlertOnly(false)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+          <select
+            value={filterLocation}
+            onChange={e => setFilterLocation(e.target.value as LocationType)}
+            className="px-3 py-2 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] text-sm focus:ring-2 focus:ring-teal-500 outline-none"
           >
-            <X className="w-3.5 h-3.5" /> Alertes uniquement
-          </button>
-        )}
+            <option value="">Tous emplacements</option>
+            {LOCATIONS.map(loc => (
+              <option key={loc} value={loc}>{loc}</option>
+            ))}
+          </select>
+          {filterAlertOnly && (
+            <button
+              onClick={() => setFilterAlertOnly(false)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" /> Alertes uniquement
+            </button>
+          )}
+        </div>
+        <FilterPanel
+          filters={inventoryFilterDefs}
+          values={inventoryFilters}
+          onFilterChange={setInventoryFilters}
+          presetKey="inventory"
+        />
       </div>
 
       {/* ══════ 7. BULK ACTIONS BAR ══════ */}
@@ -1323,18 +1407,20 @@ export default function Inventory() {
                       )}
                     </td>
 
-                    {/* ══════ 1. VISUAL STOCK BAR ══════ */}
+                    {/* ══════ 1. VISUAL STOCK RING ══════ */}
                     <td className="px-3 py-3">
-                      <div className="space-y-1">
-                        <div className={`w-full h-3 rounded-full overflow-hidden ${getStockBarTrack(stockPct)}`}>
-                          <div
-                            className={`h-full rounded-full transition-all duration-500 ${getStockBarColor(stockPct)}`}
-                            style={{ width: `${stockPct}%` }}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ProgressRing
+                          value={stockPct}
+                          max={100}
+                          size={40}
+                          strokeWidth={4}
+                          animated={true}
+                          showPercent={true}
+                        />
+                        <div className="flex flex-col">
                           <span className={`text-[10px] font-semibold ${stockPct < 20 ? 'text-red-600 dark:text-red-400' : stockPct < 50 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                            {Math.round(stockPct)}%
+                            {status === 'critical' ? 'Critique' : status === 'low' ? 'Bas' : 'OK'}
                           </span>
                           {/* ══════ 4. QUICK RESTOCK BUTTON ══════ */}
                           {quickRestockId === item.id ? (

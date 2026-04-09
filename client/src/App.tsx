@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
@@ -98,6 +98,7 @@ const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'))
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
+const ServiceTracker = lazyRetry(() => import('./pages/ServiceTracker'));
 const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));
 const Analytics = lazyRetry(() => import('./pages/Analytics'));
 const FinancialIntelligence = lazyRetry(() => import('./pages/FinancialIntelligence'));
@@ -112,6 +113,7 @@ const Demo = lazyRetry(() => import('./pages/Demo'));
 const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));
 const BlogFoodCost = lazyRetry(() => import('./pages/BlogFoodCost'));
 const BlogIA = lazyRetry(() => import('./pages/BlogIA'));
+const NegociationIA = lazyRetry(() => import('./pages/NegociationIA'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -354,11 +356,13 @@ function AppLayout() {
         { to: '/menu-engineering', icon: Target, label: 'Menu Engineering' },
         { to: '/allergen-matrix', icon: Shield, label: 'Matrice allergenes' },
         { to: '/recettes-semaine', icon: ChefHat, label: 'Recettes semaine' },
+        { to: '/negociation-ia', icon: Handshake, label: 'Negociation IA' },
       ],
     },
     {
       title: 'OPERATIONS',
       items: [
+        { to: '/service-tracker', icon: Timer, label: 'Suivi Service' },
         { to: '/commandes', icon: ShoppingCart, label: 'Commandes' },
         { to: '/planning', icon: CalendarDays, label: 'Planning' },
         { to: '/seminaires', icon: PartyPopper, label: 'Séminaires' },
@@ -409,9 +413,10 @@ function AppLayout() {
           key={item.to}
           type="button"
           title={collapsed ? item.label : 'Cette fonctionnalité sera disponible prochainement'}
+          data-tooltip={collapsed ? item.label : undefined}
           onClick={() => alert('Cette fonctionnalité sera disponible prochainement')}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group w-full opacity-50 cursor-not-allowed ${
-            collapsed ? 'justify-center' : ''
+            collapsed ? 'justify-center nav-tooltip-premium' : ''
           } text-[#9CA3AF] dark:text-[#737373]`}
         >
           <span className="relative flex-shrink-0">
@@ -437,17 +442,18 @@ function AppLayout() {
         to={item.to}
         end={item.to === '/dashboard'}
         title={collapsed ? item.label : undefined}
+        data-tooltip={!collapsed ? item.label : undefined}
         className={({ isActive }) =>
-          `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group ${
+          `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group nav-item-premium nav-tooltip-premium ${
             collapsed ? 'justify-center' : ''
           } ${
             isActive
-              ? 'bg-[#111111] text-white dark:bg-white dark:text-[#000000] border-l-[2px] border-[#111111] dark:border-white pl-[10px]'
-              : 'text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white hover:translate-x-0.5'
+              ? 'bg-[#111111] text-white dark:bg-white dark:text-[#000000] nav-item-active'
+              : 'text-[#6B7280] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'
           }`
         }
       >
-        <span className="relative flex-shrink-0">
+        <span className="relative flex-shrink-0 nav-icon-bounce">
           <item.icon className="w-5 h-5" />
           {item.badge && item.badge > 0 && (
             <span className="absolute -top-1.5 -right-2.5 px-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full">
@@ -464,20 +470,20 @@ function AppLayout() {
   // Sidebar content (shared between desktop and mobile)
   const sidebarContent = (collapsed = false) => (
     <div className="flex flex-col h-full">
-      {/* Accent line */}
-      <div className="h-[1px] bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+      {/* Premium accent gradient line */}
+      <div className="premium-top-line" />
 
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] ${collapsed ? 'justify-center px-2' : ''}`}>
+      <div className={`flex items-center gap-3 px-4 py-5 border-b border-white/10 dark:border-white/5 ${collapsed ? 'justify-center px-2' : ''}`}>
         <ChefHat className="w-8 h-8 text-[#111111] dark:text-white flex-shrink-0" />
-        {!collapsed && <span className="text-lg font-bold text-[#111111] dark:text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
+        {!collapsed && <span className="text-lg font-bold logo-shimmer sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
         <NotificationCenter />
 
       </div>
 
       {/* Restaurant selector */}
       {!collapsed && (
-        <div className="pt-4">
+        <div className="pt-3">
           <SidebarRestaurantSelector />
         </div>
       )}
@@ -507,13 +513,13 @@ function AppLayout() {
       <nav aria-label="Navigation principale" className="flex-1 overflow-y-auto px-3 space-y-1.5 pb-4 sidebar-scroll">
         {navSections.map((section, idx) => (
           <div key={section.title} className={idx > 0 ? 'pt-4' : ''}>
-            {!collapsed && idx > 0 && <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] mb-3" />}
+            {!collapsed && idx > 0 && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 mb-3" />}
             {!collapsed && (
-              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#9CA3AF] dark:text-[#737373] uppercase sidebar-label font-satoshi">
+              <div className="px-3 py-1.5 text-[9px] font-semibold tracking-[0.18em] text-[#9CA3AF] dark:text-[#525252] uppercase sidebar-label font-satoshi">
                 {section.title}
               </div>
             )}
-            {collapsed && <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] my-2" />}
+            {collapsed && <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 my-2" />}
             <div className="space-y-0.5">
               {section.items.map((item) => renderNavItem(item, collapsed))}
             </div>
@@ -522,18 +528,20 @@ function AppLayout() {
       </nav>
 
       {/* Bottom section */}
-      <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] px-3 py-3 space-y-1">
+      <div className="border-t border-[#E5E7EB]/60 dark:border-white/5 px-3 py-3 space-y-1">
         {/* Bottom nav items */}
         {bottomNavItems.map((item) => renderNavItem(item, collapsed))}
 
-        {/* Dark mode toggle */}
+        {/* Dark mode toggle with rotation animation */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           title={darkMode ? 'Mode clair' : 'Mode sombre'}
           aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
-          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-[#6B7280] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] hover:text-[#111111] dark:hover:text-white transition-colors w-full nav-item-premium ${collapsed ? 'justify-center' : ''}`}
         >
-          {darkMode ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+          <span className="dark-mode-icon flex-shrink-0" key={darkMode ? 'sun' : 'moon'}>
+            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </span>
           {!collapsed && <span className="sidebar-label">{darkMode ? 'Mode clair' : 'Mode sombre'}</span>}
         </button>
 
@@ -549,8 +557,18 @@ function AppLayout() {
           </button>
         )}
 
+        {/* Status bar */}
+        {!collapsed && (
+          <div className="flex items-center gap-2 px-4 py-2 text-[10px] text-[#9CA3AF] dark:text-[#525252] font-medium tracking-wide">
+            <span className="status-dot-online flex-shrink-0" />
+            <span>Connecte</span>
+            <span className="mx-1 text-[#D1D5DB] dark:text-[#333333]">&middot;</span>
+            <span>v2.0</span>
+          </div>
+        )}
+
         {/* User profile */}
-        <div className={`flex items-center gap-3 px-3 py-3 mt-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] ${collapsed ? 'justify-center' : ''}`}>
+        <div className={`flex items-center gap-3 px-3 py-3 mt-1 rounded-xl bg-[#F3F4F6]/80 dark:bg-[#171717]/80 border border-[#E5E7EB] dark:border-[#1A1A1A] backdrop-blur-sm ${collapsed ? 'justify-center' : ''}`}>
           <div className="w-10 h-10 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black text-sm font-bold flex-shrink-0">
             {userInitials}
           </div>
@@ -577,16 +595,18 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen flex bg-white dark:bg-black text-[#111111] dark:text-white">
+      {/* Premium top gradient line */}
+      <div className="fixed top-0 left-0 right-0 z-[60] premium-top-line" />
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
         Aller au contenu principal
       </a>
-      {/* Desktop sidebar (>= 1024px): full width */}
-      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-[#FAFAFA] border-r border-[#E5E7EB] dark:bg-[#0A0A0A] dark:border-r dark:border-[#1A1A1A] z-30 no-print">
+      {/* Desktop sidebar (>= 1024px): full width — glassmorphism */}
+      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 sidebar-glass z-30 no-print" style={{ top: '2px' }}>
         {sidebarContent(false)}
       </aside>
 
-      {/* Tablet sidebar (768-1024px): icons only */}
-      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 bg-[#FAFAFA] border-r border-[#E5E7EB] dark:bg-[#0A0A0A] dark:border-r dark:border-[#1A1A1A] z-30 no-print">
+      {/* Tablet sidebar (768-1024px): icons only — glassmorphism */}
+      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 sidebar-glass z-30 no-print" style={{ top: '2px' }}>
         {sidebarContent(true)}
       </aside>
 
@@ -595,11 +615,11 @@ function AppLayout() {
         <>
           {/* Backdrop */}
           <div
-            className="md:hidden fixed inset-0 bg-black/50 z-40"
+            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             onClick={() => setMobileMenuOpen(false)}
           />
           {/* Sidebar panel */}
-          <aside className="md:hidden fixed inset-y-0 left-0 w-72 bg-[#FAFAFA] border-r border-[#E5E7EB] dark:bg-[#0A0A0A] dark:border-r dark:border-[#1A1A1A] z-50 no-print animate-slide-in">
+          <aside className="md:hidden fixed inset-y-0 left-0 w-72 sidebar-glass z-50 no-print animate-slide-in" style={{ top: '2px' }}>
             <button
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Fermer le menu"
@@ -613,9 +633,9 @@ function AppLayout() {
       )}
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-56 md:ml-16 ml-0">
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-56 md:ml-16 ml-0" style={{ paddingTop: '2px' }}>
         {/* Mobile top bar */}
-        <header className="md:hidden bg-white dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-3 flex items-center justify-between no-print">
+        <header className="md:hidden bg-white/90 dark:bg-[#0A0A0A]/90 backdrop-blur-lg border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-3 flex items-center justify-between no-print">
           <button
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Ouvrir le menu"
@@ -771,9 +791,10 @@ function AppLayout() {
         })()}
 
         {/* Content */}
-        <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+        <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 premium-content">
           <Breadcrumbs />
           <WorkingIndicator />
+          <div key={location.pathname} className="animate-premium-page-in">
           <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-teal-500" /></div>}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
@@ -796,10 +817,12 @@ function AppLayout() {
               <Route path="/allergen-matrix" element={<AllergenMatrix />} />
               <Route path="/qr-menu" element={<QRMenu />} />
               <Route path="/commandes" element={<AutoOrders />} />
+              <Route path="/service-tracker" element={<ServiceTracker />} />
               <Route path="/planning" element={<Planning />} />
               <Route path="/seminaires" element={<Seminaires />} />
               <Route path="/haccp" element={<HACCPPage />} />
               <Route path="/recettes-semaine" element={<EditorialRecipes />} />
+              <Route path="/negociation-ia" element={<NegociationIA />} />
               <Route path="/assistant" element={<AIAssistant />} />
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/feedback" element={<FeedbackPage />} />
@@ -819,10 +842,11 @@ function AppLayout() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          </div>
         </main>
 
         {/* Footer */}
-        <footer className="bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] py-3 text-center text-xs text-[#9CA3AF] dark:text-[#737373] no-print">
+        <footer className="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-sm border-t border-[#E5E7EB] dark:border-[#1A1A1A] py-3 text-center text-xs text-[#9CA3AF] dark:text-[#737373] no-print">
           RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
         </footer>
       </div>

@@ -17,6 +17,7 @@ import {
   Tooltip, ResponsiveContainer, Legend, LineChart, Line, AreaChart, Area,
 } from 'recharts';
 import { fetchRecipes, fetchIngredients, fetchAlerts, fetchInventoryAlerts, fetchInventory } from '../services/api';
+import { AnimatedDonut, ProgressRing } from '../components/Charts';
 import type { InventoryItem } from '../types';
 import type { Recipe, Ingredient } from '../types';
 import { ALLERGENS } from '../types';
@@ -1569,48 +1570,49 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Ingredient category donut (when ingredients exist) */}
+        {/* Animated Donut — category breakdown + ProgressRings for KPIs */}
         {partialCategoryData.length > 0 && (
           <div className="relative rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 bg-white/80 dark:bg-[#0A0A0A]/40 backdrop-blur-xl shadow-sm p-5 stagger-4">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-5">
               <PieChartIcon className="w-5 h-5 text-teal-600" />
               <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">
                 {recipes.length > 0 ? 'Répartition par catégorie' : 'Ingrédients par catégorie'}
               </h3>
             </div>
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie
-                  data={partialCategoryData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={100}
-                  paddingAngle={3}
-                  dataKey="count"
-                  nameKey="name"
-                  label={(props: unknown) => {
-                    const { cx, cy, midAngle, outerRadius, name, count, percent } = props as { cx: number; cy: number; midAngle: number; outerRadius: number; name: string; count: number; percent: number };
-                    const RADIAN = Math.PI / 180;
-                    const radius = (outerRadius || 0) + 20;
-                    const x = (cx || 0) + radius * Math.cos(-(midAngle || 0) * RADIAN);
-                    const y = (cy || 0) + radius * Math.sin(-(midAngle || 0) * RADIAN);
-                    if ((percent || 0) < 0.05) return null;
-                    return (
-                      <text x={x} y={y} fill="currentColor" textAnchor={x > (cx || 0) ? 'start' : 'end'} dominantBaseline="central" className="text-xs fill-[#6B7280] dark:fill-[#A3A3A3]">
-                        {String(name || '').slice(0, 15)} ({count})
-                      </text>
-                    );
-                  }}
-                  labelLine={true}
-                >
-                  {partialCategoryData.map((_entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip content={<ChartTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <AnimatedDonut
+                data={partialCategoryData.map((d, i) => ({
+                  label: d.name,
+                  value: d.count,
+                  color: COLORS[i % COLORS.length],
+                }))}
+                size={200}
+                showLegend={true}
+                animated={true}
+                centerLabel={recipes.length > 0 ? 'recettes' : 'ingrédients'}
+              />
+              {/* KPI Progress Rings */}
+              {recipes.length > 0 && (
+                <div className="flex sm:flex-col gap-6 sm:gap-4 items-center">
+                  <ProgressRing
+                    value={avgFoodCostPct <= 35 ? 100 : Math.max(0, 100 - (avgFoodCostPct - 35) * 5)}
+                    max={100}
+                    size={72}
+                    strokeWidth={6}
+                    label="Food Cost"
+                    formatValue={() => `${avgFoodCostPct.toFixed(0)}%`}
+                  />
+                  <ProgressRing
+                    value={avgMarginPct}
+                    max={100}
+                    size={72}
+                    strokeWidth={6}
+                    label="Marge"
+                    formatValue={() => `${avgMarginPct.toFixed(0)}%`}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         )}
 

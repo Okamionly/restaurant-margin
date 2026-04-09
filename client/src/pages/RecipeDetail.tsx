@@ -7,6 +7,7 @@ import type { AllergenCheckResult, NutritionEstimateResult } from '../services/a
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 import RecipePlaceholder, { getMarginBadgeColor } from '../components/RecipePlaceholder';
+import FoodIllustration from '../components/FoodIllustration';
 
 // ─── Category emoji map ───
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ───
@@ -407,7 +408,12 @@ export default function RecipeDetail() {
         ) : (
           /* ─── Hero banner placeholder (no photos uploaded) ─── */
           <div className="relative rounded-xl overflow-hidden shadow-md">
-            <RecipePlaceholder category={recipe.category} name={recipe.name} size="lg" />
+            <div className="relative h-48 bg-gradient-to-br from-[#F9FAFB] to-[#F3F4F6] dark:from-[#0A0A0A] dark:to-[#171717] flex items-center justify-center">
+              <FoodIllustration recipeName={recipe.name} category={recipe.category} size="xl" animated />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-5 py-3">
+                <p className="text-white font-bold text-base leading-tight drop-shadow-md">{recipe.name}</p>
+              </div>
+            </div>
             {/* Overlay badges */}
             <div className="absolute top-3 left-3 flex items-center gap-2 z-10">
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${(() => { const mb = getMarginBadgeColor(recipe.margin.marginPercent); return mb.bg + ' ' + mb.text; })()}`}>

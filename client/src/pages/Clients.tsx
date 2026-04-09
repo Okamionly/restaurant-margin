@@ -8,6 +8,8 @@ import {
   Cake, Award, Calendar, StickyNote, ChevronRight, ArrowUpRight,
   Gift, Target, Activity, ChevronsRight,
 } from 'lucide-react';
+import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
+import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
@@ -247,6 +249,13 @@ export default function Clients() {
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [activeSegment, setActiveSegment] = useState<SegmentId>('tous');
 
+  // Advanced filters (via FilterPanel)
+  const [clientFilters, setClientFilters] = useState<FilterValues>({
+    segment: [],
+    spend: { min: '', max: '' },
+    lastVisit: { from: '', to: '' },
+  });
+
   // Segment data
   const [segments, setSegments] = useState<SegmentsResponse | null>(null);
   const [loadingSegments, setLoadingSegments] = useState(false);
@@ -346,6 +355,52 @@ export default function Clients() {
     })).sort((a, b) => a.daysAway - b.daysAway);
   }, [clients]);
 
+  // Smart search suggestions for clients
+  const clientSearchSuggestions = useMemo<SearchSuggestion[]>(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    return clients
+      .filter((c) => c.nom.toLowerCase().includes(q) || c.prenom.toLowerCase().includes(q) || c.entreprise.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((c) => ({
+        id: `cli-${c.id}`,
+        label: `${c.prenom} ${c.nom}${c.entreprise ? ` (${c.entreprise})` : ''}`,
+        category: 'Clients',
+        icon: Users,
+        onSelect: () => setSearch(`${c.prenom} ${c.nom}`),
+      }));
+  }, [search, clients]);
+
+  // Filter definitions for clients FilterPanel
+  const clientFilterDefs = useMemo<FilterDef[]>(() => [
+    {
+      key: 'segment',
+      label: 'Tags / Segment',
+      type: 'tags',
+      options: [
+        { value: 'VIP', label: 'VIP' },
+        { value: 'Regulier', label: 'Regulier' },
+        { value: 'Nouveau', label: 'Nouveau' },
+        { value: 'Inactif', label: 'Inactif' },
+        { value: 'Fidele', label: 'Fidele' },
+        { value: 'Premium', label: 'Premium' },
+        { value: 'Professionnel', label: 'Professionnel' },
+      ],
+    },
+    {
+      key: 'spend',
+      label: 'CA Total',
+      type: 'range',
+      step: 10,
+      unit: '\u20AC',
+    },
+    {
+      key: 'lastVisit',
+      label: 'Derniere visite',
+      type: 'date-range',
+    },
+  ], []);
+
   // ── Filtering & sorting ───────────────────────────────────────────────
 
   const filtered = useMemo(() => {
@@ -385,6 +440,21 @@ export default function Clients() {
     }
     if (filterType) result = result.filter(c => c.type === filterType);
 
+    // Advanced filters
+    const fSegment: string[] = clientFilters.segment || [];
+    const fSpend = clientFilters.spend || { min: '', max: '' };
+    const fLastVisit = clientFilters.lastVisit || { from: '', to: '' };
+
+    if (fSegment.length > 0) {
+      result = result.filter(c => {
+        return fSegment.some(s => c.tags.map(t => t.toLowerCase()).includes(s.toLowerCase()));
+      });
+    }
+    if (fSpend.min) result = result.filter(c => c.caTotal >= parseFloat(fSpend.min));
+    if (fSpend.max) result = result.filter(c => c.caTotal <= parseFloat(fSpend.max));
+    if (fLastVisit.from) result = result.filter(c => c.derniereVisite >= fLastVisit.from);
+    if (fLastVisit.to) result = result.filter(c => c.derniereVisite <= fLastVisit.to);
+
     result.sort((a, b) => {
       let cmp = 0;
       if (sortField === 'nom') cmp = a.nom.localeCompare(b.nom);
@@ -393,7 +463,7 @@ export default function Clients() {
       return sortAsc ? cmp : -cmp;
     });
     return result;
-  }, [clients, search, filterType, sortField, sortAsc, activeSegment, segments]);
+  }, [clients, search, filterType, sortField, sortAsc, activeSegment, segments, clientFilters]);
 
   // ── Local segment counts (for when server segments are unavailable) ──
 
@@ -1097,15 +1167,17 @@ export default function Clients() {
         </div>
 
         {/* Filters bar */}
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 space-y-3">
           <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
             {/* Search */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-              <input type="text" placeholder="Rechercher un client..."
-                value={search} onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-black text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:ring-2 focus:ring-[#111111] dark:ring-white focus:border-transparent" />
-            </div>
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              placeholder="Rechercher un client..."
+              pageKey="clients"
+              suggestions={clientSearchSuggestions}
+              className="flex-1"
+            />
 
             {/* Type filter */}
             <select value={filterType} onChange={e => setFilterType(e.target.value as ClientType | '')}
@@ -1150,6 +1222,12 @@ export default function Clients() {
               </button>
             </div>
           </div>
+          <FilterPanel
+            filters={clientFilterDefs}
+            values={clientFilters}
+            onFilterChange={setClientFilters}
+            presetKey="clients"
+          />
         </div>
 
         {/* Results count */}

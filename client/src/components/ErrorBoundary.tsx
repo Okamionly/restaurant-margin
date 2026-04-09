@@ -30,11 +30,11 @@ export default class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
-          <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 max-w-md text-center">
+        <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-6">
+          <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 max-w-md text-center">
             <AlertTriangle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-white mb-2">Une erreur est survenue</h2>
-            <p className="text-slate-400 mb-6 text-sm">
+            <h2 className="text-xl font-bold text-[#111111] dark:text-white mb-2">Une erreur est survenue</h2>
+            <p className="text-[#737373] mb-6 text-sm">
               {this.state.error?.message || 'Erreur inattendue. Veuillez rafraîchir la page.'}
             </p>
             <button

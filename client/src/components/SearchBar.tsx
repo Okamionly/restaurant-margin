@@ -1,43 +1,351 @@
-import { Search, X } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Search, X, Clock, ArrowRight } from 'lucide-react';
+import { useDebounce } from '../hooks/useDebounce';
 
+// ── Search history helpers ──────────────────────────────────────────────
+const MAX_HISTORY = 5;
+
+function getSearchHistory(pageKey: string): string[] {
+  try {
+    const raw = localStorage.getItem(`rm-search-history-${pageKey}`);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function addSearchHistory(pageKey: string, query: string) {
+  if (!query.trim()) return;
+  const current = getSearchHistory(pageKey).filter((h) => h !== query);
+  current.unshift(query);
+  localStorage.setItem(
+    `rm-search-history-${pageKey}`,
+    JSON.stringify(current.slice(0, MAX_HISTORY))
+  );
+}
+
+function clearSearchHistory(pageKey: string) {
+  localStorage.removeItem(`rm-search-history-${pageKey}`);
+}
+
+// ── Suggestion types ────────────────────────────────────────────────────
+export interface SearchSuggestion {
+  id: string;
+  label: string;
+  category: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  onSelect: () => void;
+}
+
+// ── Props ───────────────────────────────────────────────────────────────
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
+  onDebouncedChange?: (value: string) => void;
   placeholder?: string;
   className?: string;
+  pageKey?: string;
+  suggestions?: SearchSuggestion[];
+  debounceMs?: number;
+  showShortcutHint?: boolean;
+}
+
+// ── Highlight match helper ──────────────────────────────────────────────
+function HighlightMatch({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>;
+  const idx = text.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <span className="bg-teal-500/20 text-teal-700 dark:text-teal-300 font-semibold rounded px-0.5">
+        {text.slice(idx, idx + query.length)}
+      </span>
+      {text.slice(idx + query.length)}
+    </>
+  );
 }
 
 export default function SearchBar({
   value,
   onChange,
+  onDebouncedChange,
   placeholder = 'Rechercher...',
   className = '',
+  pageKey = 'global',
+  suggestions = [],
+  debounceMs = 300,
+  showShortcutHint = true,
 }: SearchBarProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [history, setHistory] = useState<string[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const debouncedValue = useDebounce(value, debounceMs);
+
+  // Notify parent of debounced value
+  useEffect(() => {
+    onDebouncedChange?.(debouncedValue);
+  }, [debouncedValue, onDebouncedChange]);
+
+  // Load history on focus
+  useEffect(() => {
+    if (isFocused) {
+      setHistory(getSearchHistory(pageKey));
+    }
+  }, [isFocused, pageKey]);
+
+  // Global "/" shortcut to focus
+  useEffect(() => {
+    function handleSlash(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if ((e.target as HTMLElement)?.isContentEditable) return;
+      if (e.key === '/') {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    }
+    window.addEventListener('keydown', handleSlash);
+    return () => window.removeEventListener('keydown', handleSlash);
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsFocused(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Group suggestions by category
+  const groupedSuggestions = useMemo(() => {
+    if (!value.trim() || suggestions.length === 0) return [];
+    const groups = new Map<string, SearchSuggestion[]>();
+    for (const s of suggestions) {
+      const list = groups.get(s.category) || [];
+      list.push(s);
+      groups.set(s.category, list);
+    }
+    return Array.from(groups.entries()).map(([category, items]) => ({ category, items }));
+  }, [suggestions, value]);
+
+  // Show recent history when focused with empty query
+  const showHistory = isFocused && !value.trim() && history.length > 0;
+  const showSuggestions = isFocused && value.trim() && groupedSuggestions.length > 0;
+  const showDropdown = showHistory || showSuggestions;
+
+  // Flat list for keyboard nav
+  const flatItems = useMemo(() => {
+    if (showHistory) return history.map((h, i) => ({ type: 'history' as const, value: h, id: `h-${i}` }));
+    if (showSuggestions) return groupedSuggestions.flatMap((g) => g.items.map((s) => ({ type: 'suggestion' as const, value: s.label, id: s.id, suggestion: s })));
+    return [];
+  }, [showHistory, showSuggestions, history, groupedSuggestions]);
+
+  // Reset active index when list changes
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [flatItems.length, value]);
+
+  const handleSubmit = useCallback(() => {
+    if (value.trim()) {
+      addSearchHistory(pageKey, value.trim());
+    }
+    setIsFocused(false);
+  }, [value, pageKey]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!showDropdown) {
+        if (e.key === 'Enter') handleSubmit();
+        return;
+      }
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setActiveIndex((i) => Math.min(i + 1, flatItems.length - 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setActiveIndex((i) => Math.max(i - 1, -1));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (activeIndex >= 0 && activeIndex < flatItems.length) {
+            const item = flatItems[activeIndex];
+            if (item.type === 'history') {
+              onChange(item.value);
+            } else if (item.type === 'suggestion' && 'suggestion' in item) {
+              item.suggestion!.onSelect();
+              setIsFocused(false);
+            }
+          } else {
+            handleSubmit();
+          }
+          break;
+        case 'Escape':
+          e.preventDefault();
+          setIsFocused(false);
+          inputRef.current?.blur();
+          break;
+      }
+    },
+    [showDropdown, flatItems, activeIndex, onChange, handleSubmit]
+  );
+
+  const handleClearHistory = useCallback(() => {
+    clearSearchHistory(pageKey);
+    setHistory([]);
+  }, [pageKey]);
+
   return (
-    <div className={`relative ${className}`}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+    <div ref={containerRef} className={`relative ${className}`}>
+      {/* Input */}
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] dark:text-[#737373] pointer-events-none z-10" />
       <input
+        ref={inputRef}
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="
-          w-full pl-10 pr-9 py-2 text-sm
-          bg-slate-800 border border-slate-700 rounded-lg
-          text-white placeholder-slate-500
-          focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500
-          transition-colors duration-150
-        "
+        autoComplete="off"
+        spellCheck={false}
+        className={`
+          w-full pl-10 pr-20 py-2.5 text-sm
+          bg-[#F9FAFB] dark:bg-[#0A0A0A]
+          border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl
+          text-[#111111] dark:text-white
+          placeholder-[#9CA3AF] dark:placeholder-[#525252]
+          outline-none
+          transition-all duration-200
+          ${isFocused
+            ? 'ring-2 ring-[#111111] dark:ring-white border-transparent shadow-sm'
+            : 'hover:border-[#D1D5DB] dark:hover:border-[#2A2A2A]'
+          }
+        `}
       />
-      {value && (
-        <button
-          type="button"
-          onClick={() => onChange('')}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
+
+      {/* Right side: clear button + shortcut hint */}
+      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+        {value && (
+          <button
+            type="button"
+            onClick={() => {
+              onChange('');
+              inputRef.current?.focus();
+            }}
+            className="p-1 rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#1A1A1A] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {showShortcutHint && !isFocused && !value && (
+          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium text-[#9CA3AF] dark:text-[#525252] bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#262626] rounded-md">
+            /
+          </kbd>
+        )}
+      </div>
+
+      {/* Dropdown */}
+      {showDropdown && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-50 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-xl shadow-black/5 dark:shadow-black/30 overflow-hidden animate-[sbSlideDown_150ms_ease-out]">
+          {/* Recent searches */}
+          {showHistory && (
+            <>
+              <div className="flex items-center justify-between px-3.5 py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-[#525252]">
+                  Recherches recentes
+                </span>
+                <button
+                  onClick={handleClearHistory}
+                  className="text-[10px] text-[#9CA3AF] dark:text-[#525252] hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                >
+                  Effacer
+                </button>
+              </div>
+              {history.map((h, i) => {
+                const isActive = activeIndex === i;
+                return (
+                  <button
+                    key={`h-${i}`}
+                    onClick={() => {
+                      onChange(h);
+                      setIsFocused(false);
+                    }}
+                    onMouseEnter={() => setActiveIndex(i)}
+                    className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left text-sm transition-colors ${
+                      isActive
+                        ? 'bg-[#F3F4F6] dark:bg-[#171717]'
+                        : 'hover:bg-[#F9FAFB] dark:hover:bg-[#111111]'
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#525252] flex-shrink-0" />
+                    <span className="text-[#374151] dark:text-[#A3A3A3] truncate">{h}</span>
+                    <ArrowRight className={`w-3 h-3 ml-auto flex-shrink-0 transition-opacity ${isActive ? 'opacity-100 text-[#111111] dark:text-white' : 'opacity-0'}`} />
+                  </button>
+                );
+              })}
+            </>
+          )}
+
+          {/* Suggestions */}
+          {showSuggestions && (
+            <>
+              {groupedSuggestions.map((group) => (
+                <div key={group.category}>
+                  <div className="px-3.5 py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+                    <span className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF] dark:text-[#525252]">
+                      {group.category}
+                    </span>
+                  </div>
+                  {group.items.map((item) => {
+                    const flatIdx = flatItems.findIndex((f) => f.id === item.id);
+                    const isActive = flatIdx === activeIndex;
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          item.onSelect();
+                          setIsFocused(false);
+                        }}
+                        onMouseEnter={() => setActiveIndex(flatIdx)}
+                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-left text-sm transition-colors ${
+                          isActive
+                            ? 'bg-[#F3F4F6] dark:bg-[#171717]'
+                            : 'hover:bg-[#F9FAFB] dark:hover:bg-[#111111]'
+                        }`}
+                      >
+                        {Icon && <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-[#9CA3AF] dark:text-[#525252]'}`} />}
+                        <span className="text-[#374151] dark:text-[#A3A3A3] truncate">
+                          <HighlightMatch text={item.label} query={value} />
+                        </span>
+                        {isActive && <ArrowRight className="w-3 h-3 ml-auto flex-shrink-0 text-[#111111] dark:text-white" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       )}
+
+      {/* Animation keyframes */}
+      <style>{`
+        @keyframes sbSlideDown {
+          from { opacity: 0; transform: translateY(-4px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

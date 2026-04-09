@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList } from 'lucide-react';
+import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
+import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
 import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -14,7 +16,10 @@ import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type 
 import { trackEvent } from '../utils/analytics';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 import RecipePlaceholder from '../components/RecipePlaceholder';
+import FoodIllustration from '../components/FoodIllustration';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
+import { useScale } from '../hooks/useScale';
+import { InlineWeighPanel, ModePeseeBar, BatchWeighingPanel, QuickWeighAdd } from '../components/RecipeWeighingPanel';
 
 // ── Unit conversion divisor ─────────────────────────────────────────────
 // pricePerUnit is ALWAYS per the bulk unit (kg for weight, L for volume).
@@ -606,10 +611,18 @@ function IngredientCombobox({
   );
 }
 
-/** Category-based photo placeholder */
-// RecipePhotoPlaceholder now uses the reusable component
+/** Category-based photo placeholder — now uses CSS art food illustration */
 function RecipePhotoPlaceholder({ category, name }: { category: string; name?: string }) {
-  return <RecipePlaceholder category={category} name={name} size="md" />;
+  return (
+    <div className="relative h-36 bg-gradient-to-br from-[#F9FAFB] to-[#F3F4F6] dark:from-[#0A0A0A] dark:to-[#171717] flex items-center justify-center overflow-hidden group/photo">
+      <FoodIllustration recipeName={name} category={category} size="lg" animated />
+      {name && (
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/40 to-transparent px-4 py-2">
+          <p className="text-white font-bold text-sm leading-tight drop-shadow-md truncate">{name}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ── Category coefficients (shared with Settings) ──────────────────────
@@ -651,6 +664,14 @@ export default function Recipes() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortColumn, setSortColumn] = useState<string>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  // Advanced filters (via FilterPanel)
+  const [recipeFilters, setRecipeFilters] = useState<FilterValues>({
+    category: '',
+    margin: { min: '', max: '' },
+    cost: { min: '', max: '' },
+    ingredientCount: { min: '', max: '' },
+  });
 
   const [form, setForm] = useState({
     name: '',
@@ -714,6 +735,16 @@ export default function Recipes() {
   const [ingredientSearch, setIngredientSearch] = useState('');
   const [templateApplyInfo, setTemplateApplyInfo] = useState<{ found: number; total: number; missing: string[] } | null>(null);
 
+  // ── Weighing state ─────────────────────────────────────────────────────
+  const scaleHook = useScale();
+  const [modePesee, setModePesee] = useState(false);
+  const [weighingLineIdx, setWeighingLineIdx] = useState<number | null>(null);
+  const [showBatchWeighing, setShowBatchWeighing] = useState(false);
+  const [showQuickWeighAdd, setShowQuickWeighAdd] = useState(false);
+  const [useSimulation, setUseSimulation] = useState(false);
+  const [simWeight, setSimWeight] = useState(0);
+  const [weighedLines, setWeighedLines] = useState<Set<number>>(new Set());
+
   useEffect(() => {
     if (restaurantLoading || !selectedRestaurant) return;
     loadData();
@@ -768,6 +799,53 @@ export default function Recipes() {
     return templates;
   }, [templatesByCategory, templateCategoryFilter, templateSearch]);
 
+  // Smart search suggestions for recipes
+  const recipeSearchSuggestions = useMemo<SearchSuggestion[]>(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    return recipes
+      .filter((r) => r.name.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((r) => ({
+        id: `rec-${r.id}`,
+        label: r.name,
+        category: 'Recettes',
+        icon: ClipboardList,
+        onSelect: () => setSearch(r.name),
+      }));
+  }, [search, recipes]);
+
+  // Filter definitions for FilterPanel
+  const recipeFilterDefs = useMemo<FilterDef[]>(() => [
+    {
+      key: 'category',
+      label: 'Categorie',
+      type: 'select',
+      placeholder: 'Toutes les categories',
+      options: RECIPE_CATEGORIES.map((c) => ({ value: c, label: c })),
+    },
+    {
+      key: 'margin',
+      label: 'Marge (%)',
+      type: 'range',
+      step: 1,
+      unit: '%',
+    },
+    {
+      key: 'cost',
+      label: 'Cout portion',
+      type: 'range',
+      step: 0.1,
+      unit: '\u20AC',
+    },
+    {
+      key: 'ingredientCount',
+      label: 'Nombre d\'ingredients',
+      type: 'range',
+      step: 1,
+    },
+  ], []);
+
   const filtered = recipes.filter((r) => {
     const q = search.toLowerCase();
     const matchesName = r.name.toLowerCase().includes(q);
@@ -777,7 +855,22 @@ export default function Recipes() {
     );
     const matchesSearch = !q || matchesName || matchesCat || matchesIngredient;
     const matchesCategory = selectedCategory === 'all' || r.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+
+    // Advanced filters
+    const fCat = recipeFilters.category;
+    const fMargin = recipeFilters.margin || { min: '', max: '' };
+    const fCost = recipeFilters.cost || { min: '', max: '' };
+    const fIngCount = recipeFilters.ingredientCount || { min: '', max: '' };
+    const matchFilterCat = !fCat || r.category === fCat;
+    const matchMarginMin = !fMargin.min || (r.margin?.marginPercent || 0) >= parseFloat(fMargin.min);
+    const matchMarginMax = !fMargin.max || (r.margin?.marginPercent || 0) <= parseFloat(fMargin.max);
+    const matchCostMin = !fCost.min || (r.margin?.costPerPortion || 0) >= parseFloat(fCost.min);
+    const matchCostMax = !fCost.max || (r.margin?.costPerPortion || 0) <= parseFloat(fCost.max);
+    const ingCount = r.ingredients?.length || 0;
+    const matchIngMin = !fIngCount.min || ingCount >= parseFloat(fIngCount.min);
+    const matchIngMax = !fIngCount.max || ingCount <= parseFloat(fIngCount.max);
+
+    return matchesSearch && matchesCategory && matchFilterCat && matchMarginMin && matchMarginMax && matchCostMin && matchCostMax && matchIngMin && matchIngMax;
   });
 
   // ── Table sort logic ────────────────────────────────────────────────
@@ -941,6 +1034,7 @@ export default function Recipes() {
     setEditingId(null);
     setTemplateApplyInfo(null);
     setIngredientSearch('');
+    setWeighingLineIdx(null); setShowBatchWeighing(false); setShowQuickWeighAdd(false); setWeighedLines(new Set()); setSimWeight(0);
     setShowForm(true);
   }
 
@@ -969,6 +1063,7 @@ export default function Recipes() {
     setEditingId(recipe.id);
     setTemplateApplyInfo(null);
     setIngredientSearch('');
+    setWeighingLineIdx(null); setShowBatchWeighing(false); setShowQuickWeighAdd(false); setWeighedLines(new Set()); setSimWeight(0);
     setShowForm(true);
   }
 
@@ -1108,6 +1203,20 @@ export default function Recipes() {
 
   function removeIngredientLine(index: number) {
     setFormIngredients(formIngredients.filter((_, i) => i !== index));
+    setWeighedLines(prev => { const next = new Set(prev); next.delete(index); return next; });
+  }
+
+  function handleWeighComplete(lineIdx: number, quantity: number) {
+    const updated = [...formIngredients]; updated[lineIdx] = { ...updated[lineIdx], quantity: String(quantity) }; setFormIngredients(updated); setWeighedLines(prev => new Set(prev).add(lineIdx)); setSimWeight(0);
+    if (modePesee) { const nextIdx = formIngredients.findIndex((_, i) => i > lineIdx && !weighedLines.has(i)); if (nextIdx >= 0) { setWeighingLineIdx(nextIdx); } else { setWeighingLineIdx(null); } } else { setWeighingLineIdx(null); }
+  }
+  function handleBatchWeighComplete(lineIdx: number, quantity: number) {
+    const updated = [...formIngredients]; updated[lineIdx] = { ...updated[lineIdx], quantity: String(quantity) }; setFormIngredients(updated); setWeighedLines(prev => new Set(prev).add(lineIdx)); setSimWeight(0);
+  }
+  function handleQuickWeighAdd(ingredientId: number, quantity: number) {
+    const ing = ingredients.find(i => i.id === ingredientId); if (!ing) return;
+    setFormIngredients(prev => [...prev, { ingredientId, quantity: String(quantity), wastePercent: '0', newName: '', newUnit: ing.unit || 'kg', newPrice: '', newCategory: '' }]);
+    setWeighedLines(prev => new Set(prev).add(formIngredients.length)); setSimWeight(0);
   }
 
   // Real-time cost calculation with unit conversion
@@ -1383,17 +1492,16 @@ export default function Recipes() {
       {activeTab === 'recipes' ? (
       <>
       {/* ── Search bar + Sort + View toggle ─────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="relative flex-1 sm:max-w-md">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
-          <input
-            type="text"
-            placeholder={t("recipes.searchPlaceholder")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="input pl-10 w-full"
-          />
-        </div>
+      <div className="space-y-2 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3">
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder={t("recipes.searchPlaceholder")}
+          pageKey="recipes"
+          suggestions={recipeSearchSuggestions}
+          className="flex-1 sm:max-w-md"
+        />
 
         {/* Sort dropdown for grid view */}
         {viewMode === 'grid' && (
@@ -1456,6 +1564,13 @@ export default function Recipes() {
             <List className="w-4 h-4" />
           </button>
         </div>
+      </div>
+      <FilterPanel
+        filters={recipeFilterDefs}
+        values={recipeFilters}
+        onFilterChange={setRecipeFilters}
+        presetKey="recipes"
+      />
       </div>
 
       {/* ── Category filter pills ──────────────────────────────────────── */}
@@ -1530,7 +1645,12 @@ export default function Recipes() {
                       aria-label={`Selectionner ${recipe.name}`}
                     />
                   </td>
-                  <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">{recipe.name}</td>
+                  <td className="px-4 py-3 font-medium text-[#111111] dark:text-white">
+                    <span className="inline-flex items-center gap-2">
+                      <FoodIllustration recipeName={recipe.name} category={recipe.category} size="sm" animated={false} />
+                      {recipe.name}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-[#6B7280] dark:text-[#A3A3A3]">{recipe.category}</td>
                   <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</td>
                   <td className="px-4 py-3 font-mono text-[#6B7280] dark:text-[#A3A3A3]">{recipe.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</td>
@@ -2224,14 +2344,77 @@ export default function Recipes() {
             )}
           </div>
 
+          {/* Mode Pesee Bar */}
+          <ModePeseeBar
+            enabled={modePesee}
+            onToggle={() => { setModePesee(p => !p); if (!modePesee) setUseSimulation(true); }}
+            scaleStatus={scaleHook.status}
+            reading={scaleHook.reading}
+            connect={scaleHook.connect}
+            disconnect={scaleHook.disconnect}
+            useSimulation={useSimulation}
+            onToggleSimulation={() => setUseSimulation(s => !s)}
+          />
+
           {/* Ingredients */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="label mb-0">{t("recipes.ingredientsLabel")}</label>
-              <button type="button" onClick={addIngredientLine} className="text-sm text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium">
-                {t("recipes.addIngredient")}
-              </button>
+              <div className="flex items-center gap-2">
+                {formIngredients.length > 0 && (
+                  <button type="button" onClick={() => { setShowBatchWeighing(true); setShowQuickWeighAdd(false); }} className="flex items-center gap-1 text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <Scale className="w-3 h-3" /> Peser tous
+                  </button>
+                )}
+                <button type="button" onClick={() => { setShowQuickWeighAdd(true); setShowBatchWeighing(false); }} className="flex items-center gap-1 text-xs text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium px-2 py-1 rounded-lg bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <Scale className="w-3 h-3" /> <Plus className="w-3 h-3" /> Peser et ajouter
+                </button>
+                <button type="button" onClick={addIngredientLine} className="text-sm text-[#111111] dark:text-white hover:text-[#333] dark:hover:text-[#E5E5E5] font-medium">
+                  {t("recipes.addIngredient")}
+                </button>
+              </div>
             </div>
+
+            {/* Quick Weigh Add Panel */}
+            {showQuickWeighAdd && (
+              <div className="mb-3">
+                <QuickWeighAdd
+                  ingredients={ingredients}
+                  onAddIngredient={handleQuickWeighAdd}
+                  onClose={() => setShowQuickWeighAdd(false)}
+                  scaleStatus={scaleHook.status}
+                  reading={scaleHook.reading}
+                  scaleError={scaleHook.error}
+                  connect={scaleHook.connect}
+                  disconnect={scaleHook.disconnect}
+                  useSimulation={useSimulation}
+                  simWeight={simWeight}
+                  setSimWeight={setSimWeight}
+                />
+              </div>
+            )}
+
+            {/* Batch Weighing Panel */}
+            {showBatchWeighing && formIngredients.length > 0 && (
+              <div className="mb-3">
+                <BatchWeighingPanel
+                  ingredientItems={formIngredients.map((fi, idx) => {
+                    const ing = fi.ingredientId ? ingredients.find(i => i.id === fi.ingredientId) : null;
+                    return { index: idx, name: ing?.name || fi.newName || `Ingredient ${idx + 1}`, unit: fi.unit || ing?.unit || fi.newUnit || 'kg', targetQty: parseFloat(fi.quantity) || undefined, done: weighedLines.has(idx) };
+                  })}
+                  onWeighComplete={handleBatchWeighComplete}
+                  onClose={() => setShowBatchWeighing(false)}
+                  scaleStatus={scaleHook.status}
+                  reading={scaleHook.reading}
+                  scaleError={scaleHook.error}
+                  connect={scaleHook.connect}
+                  disconnect={scaleHook.disconnect}
+                  useSimulation={useSimulation}
+                  simWeight={simWeight}
+                  setSimWeight={setSimWeight}
+                />
+              </div>
+            )}
 
             {formIngredients.length === 0 ? (
               <p className="text-sm text-[#9CA3AF] dark:text-[#737373] py-2">{t("recipes.noIngredients")}</p>
@@ -2323,21 +2506,41 @@ export default function Recipes() {
                         </div>
                       )}
 
-                      {/* Row 3: Quantity, waste %, line total */}
+                      {/* Row 3: Quantity, waste %, line total + Peser button */}
                       <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          step="0.001"
-                          min="0"
-                          placeholder={t("recipes.qtyPlaceholder")}
-                          className="input w-24"
-                          value={fi.quantity}
-                          onChange={(e) => {
-                            const updated = [...formIngredients];
-                            updated[idx].quantity = e.target.value;
-                            setFormIngredients(updated);
-                          }}
-                        />
+                        <div className="relative flex items-center">
+                          <input
+                            type="number"
+                            step="0.001"
+                            min="0"
+                            placeholder={t("recipes.qtyPlaceholder")}
+                            className={`input w-24 ${weighedLines.has(idx) ? 'border-green-400 dark:border-green-600' : ''}`}
+                            value={fi.quantity}
+                            onChange={(e) => {
+                              const updated = [...formIngredients];
+                              updated[idx].quantity = e.target.value;
+                              setFormIngredients(updated);
+                            }}
+                          />
+                          {weighedLines.has(idx) && (
+                            <Check className="absolute right-1 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-green-500" />
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { setWeighingLineIdx(weighingLineIdx === idx ? null : idx); setSimWeight(0); }}
+                          className={`flex items-center gap-1 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors flex-shrink-0 ${
+                            weighingLineIdx === idx
+                              ? 'bg-[#111111] dark:bg-white text-white dark:text-black'
+                              : weighedLines.has(idx)
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
+                              : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                          }`}
+                          title="Peser cet ingredient"
+                        >
+                          <Scale className="w-3 h-3" />
+                          {weighedLines.has(idx) ? <Check className="w-3 h-3" /> : 'Peser'}
+                        </button>
                         <span className="text-xs text-[#9CA3AF] dark:text-[#737373] w-10">{unitLabel}</span>
                         <input
                           type="number"
@@ -2360,6 +2563,24 @@ export default function Recipes() {
                         </span>
                         <span className={`text-sm font-mono w-20 text-right font-bold ${lineTotal > 0 ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>{lineTotal.toFixed(2)} {getCurrencySymbol()}</span>
                       </div>
+
+                      {/* Inline Weighing Panel */}
+                      {weighingLineIdx === idx && (
+                        <InlineWeighPanel
+                          ingredientName={ing?.name || fi.newName || `Ingredient ${idx + 1}`}
+                          ingredientUnit={unitLabel || 'kg'}
+                          onWeighComplete={(qty) => handleWeighComplete(idx, qty)}
+                          onClose={() => setWeighingLineIdx(null)}
+                          scaleStatus={scaleHook.status}
+                          reading={scaleHook.reading}
+                          scaleError={scaleHook.error}
+                          connect={scaleHook.connect}
+                          disconnect={scaleHook.disconnect}
+                          useSimulation={useSimulation}
+                          simWeight={simWeight}
+                          setSimWeight={setSimWeight}
+                        />
+                      )}
                     </div>
                   );
                 })}

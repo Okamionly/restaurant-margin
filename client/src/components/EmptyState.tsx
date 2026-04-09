@@ -72,7 +72,7 @@ function EmptyIllustration({ type }: { type: string }) {
       bg: 'from-[#F9FAFB] to-[#F3F4F6] dark:from-[#111111]/40 dark:to-[#171717]/40',
       shapes: [
         { color: 'bg-gray-200/50 dark:bg-gray-800/30', size: 'w-14 h-14', pos: 'top-3 left-6' },
-        { color: 'bg-slate-200/40 dark:bg-slate-800/20', size: 'w-10 h-10', pos: 'bottom-2 right-8' },
+        { color: 'bg-[#E5E7EB]/40 dark:bg-[#262626]/20', size: 'w-10 h-10', pos: 'bottom-2 right-8' },
         { color: 'bg-zinc-200/30 dark:bg-zinc-800/20', size: 'w-6 h-6', pos: 'top-8 right-4' },
       ],
     },

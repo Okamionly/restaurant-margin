@@ -16,6 +16,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { useToast } from '../hooks/useToast';
 import { getToken } from '../services/api';
+import { CSSBarChart, AnimatedDonut, TrendIndicator } from '../components/Charts';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -952,44 +953,35 @@ export default function Analytics() {
         <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
           <h2 className="text-sm font-semibold text-[#111111] dark:text-white mb-4">Performance par categorie</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Bar chart */}
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={categoryPerformance} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke={chartGrid} horizontal={false} />
-                  <XAxis type="number" tick={{ fill: chartText, fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={v => `${v}%`} />
-                  <YAxis type="category" dataKey="category" tick={{ fill: chartText, fontSize: 11 }} tickLine={false} axisLine={false} width={100} />
-                  <Tooltip
-                    contentStyle={{ background: chartBg, border: `1px solid ${chartGrid}`, borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: any) => [`${value}%`, 'Marge']}
-                  />
-                  <Bar dataKey="avgMarginPercent" fill={chartStroke} radius={[0, 4, 4, 0]} barSize={20} />
-                </BarChart>
-              </ResponsiveContainer>
+            {/* CSS Bar chart — margin by category */}
+            <div>
+              <h3 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-3 font-general-sans">Marge moyenne par categorie</h3>
+              <CSSBarChart
+                data={categoryPerformance.map((cat, i) => ({
+                  label: cat.category,
+                  value: cat.avgMarginPercent,
+                  color: chartColors[i % chartColors.length],
+                  suffix: '%',
+                }))}
+                animated={true}
+                sorted={true}
+                showValues={true}
+                formatValue={(v) => v.toFixed(1)}
+              />
             </div>
-            {/* Pie chart */}
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryPerformance}
-                    dataKey="recipeCount"
-                    nameKey="category"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label={({ name, value }: any) => `${name} (${value})`}
-                    labelLine={false}
-                  >
-                    {categoryPerformance.map((_, i) => (
-                      <Cell key={i} fill={chartColors[i % chartColors.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ background: chartBg, border: `1px solid ${chartGrid}`, borderRadius: 8, fontSize: 12 }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+            {/* Animated Donut — recipe count by category */}
+            <div className="flex items-center justify-center">
+              <AnimatedDonut
+                data={categoryPerformance.map((cat, i) => ({
+                  label: cat.category,
+                  value: cat.recipeCount,
+                  color: ['#0d9488', '#2563eb', '#7c3aed', '#d97706', '#dc2626', '#059669', '#e11d48', '#0891b2'][i % 8],
+                }))}
+                size={180}
+                showLegend={true}
+                animated={true}
+                centerLabel="recettes"
+              />
             </div>
           </div>
           {/* Category table */}

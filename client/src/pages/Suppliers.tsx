@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
+import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import {
   Truck, Package, Search, ExternalLink, Check, X, Filter, Globe, MapPin,
   Tag, Building2, Plus, Edit2, Trash2, Link2, Phone, Mail, ChevronDown, ShoppingBag,
@@ -31,6 +33,11 @@ import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
+import {
+  reorderMessage,
+  priceInquiryMessage,
+  openWhatsApp,
+} from '../utils/whatsappTemplates';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -337,6 +344,13 @@ export default function Suppliers() {
   const [filterRegion, setFilterRegion] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
 
+  // Advanced filters (via FilterPanel)
+  const [supplierFilters, setSupplierFilters] = useState<FilterValues>({
+    rating: { min: '', max: '' },
+    productCount: { min: '', max: '' },
+    city: '',
+  });
+
   // Form / delete
   const [modalOpen, setModalOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
@@ -457,14 +471,64 @@ export default function Suppliers() {
 
   // ── Mes fournisseurs: filtering ────────────────────────────────────────────
 
+  // Smart search suggestions for suppliers
+  const supplierSearchSuggestions = useMemo<SearchSuggestion[]>(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    return suppliers
+      .filter((s) => s.name.toLowerCase().includes(q))
+      .slice(0, 8)
+      .map((s) => ({
+        id: `sup-${s.id}`,
+        label: s.name,
+        category: 'Fournisseurs',
+        icon: Truck,
+        onSelect: () => setSearch(s.name),
+      }));
+  }, [search, suppliers]);
+
+  // Filter definitions for FilterPanel
+  const supplierFilterDefs = useMemo<FilterDef[]>(() => [
+    {
+      key: 'rating',
+      label: 'Note fournisseur',
+      type: 'range',
+      step: 0.5,
+      unit: '/5',
+    },
+    {
+      key: 'productCount',
+      label: 'Nombre de produits',
+      type: 'range',
+      step: 1,
+    },
+    {
+      key: 'city',
+      label: 'Ville',
+      type: 'text',
+      placeholder: 'Rechercher une ville...',
+    },
+  ], []);
+
   const filtered = useMemo(() => {
     return suppliers.filter((s) => {
       if (search && !s.name.toLowerCase().includes(search.toLowerCase())) return false;
       if (filterRegion && s.region !== filterRegion) return false;
       if (filterCategory && !(s.categories || []).includes(filterCategory)) return false;
+      // Advanced filters
+      const fRating = supplierFilters.rating || { min: '', max: '' };
+      const fProdCount = supplierFilters.productCount || { min: '', max: '' };
+      const fCity = supplierFilters.city || '';
+      const supplierScore = (s as any).score || 0;
+      if (fRating.min && supplierScore < parseFloat(fRating.min)) return false;
+      if (fRating.max && supplierScore > parseFloat(fRating.max)) return false;
+      const prodCount = s._count?.ingredients ?? 0;
+      if (fProdCount.min && prodCount < parseFloat(fProdCount.min)) return false;
+      if (fProdCount.max && prodCount > parseFloat(fProdCount.max)) return false;
+      if (fCity && !(s.city || '').toLowerCase().includes(fCity.toLowerCase())) return false;
       return true;
     });
-  }, [suppliers, search, filterRegion, filterCategory]);
+  }, [suppliers, search, filterRegion, filterCategory, supplierFilters]);
 
   // ── CRUD handlers ──────────────────────────────────────────────────────────
 
@@ -849,6 +913,55 @@ export default function Suppliers() {
       return urgencyOrder[a.urgency] - urgencyOrder[b.urgency];
     }).slice(0, 5);
   }, [ingredients, suppliers]);
+
+  // ── WhatsApp Reorder: take supplier ingredients and send reorder message ──
+
+  function handleWhatsAppReorder(supplier: Supplier) {
+    const supplierIngs = ingredients.filter((ing) => ing.supplierId === supplier.id);
+    if (supplierIngs.length === 0) {
+      showToast('Aucun ingredient lie a ce fournisseur', 'error');
+      return;
+    }
+
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+    const items = supplierIngs.map((ing) => ({
+      name: ing.name,
+      quantity: Math.max(1, Math.ceil(((ing.id * 13 + 5) % 20) + 1)), // Deterministic reorder qty
+      unit: ing.unit,
+      pricePerUnit: ing.pricePerUnit,
+    }));
+
+    const totalHT = items.reduce((s, i) => s + i.quantity * (i.pricePerUnit || 0), 0);
+
+    const message = reorderMessage({
+      supplierName: supplier.name,
+      restaurantName,
+      items,
+      totalHT,
+      originalDate: new Date().toISOString(),
+    });
+
+    const phone = supplier.whatsappPhone || supplier.phone;
+    openWhatsApp(phone, message);
+    showToast(`Commande renouvelée pour ${supplier.name} via WhatsApp`, 'success');
+  }
+
+  function handleWhatsAppPriceInquiry(supplier: Supplier, ingredientNames: string[]) {
+    if (ingredientNames.length === 0) {
+      showToast('Selectionnez des ingredients', 'error');
+      return;
+    }
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+    const items = ingredientNames.map((name) => ({ name, quantity: 0, unit: '' }));
+    const message = priceInquiryMessage({
+      supplierName: supplier.name,
+      restaurantName,
+      items,
+    });
+    const phone = supplier.whatsappPhone || supplier.phone;
+    openWhatsApp(phone, message);
+    showToast(`Demande de prix envoyée à ${supplier.name}`, 'success');
+  }
 
   // ── Supplier star scores (5-star system from backend scores) ────────────
 
@@ -1298,17 +1411,14 @@ export default function Suppliers() {
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373]" />
-                <input
-                  type="text"
-                  placeholder={t('suppliers.searchByName')}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="input pl-10 w-full"
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+              <SearchBar
+                value={search}
+                onChange={setSearch}
+                placeholder={t('suppliers.searchByName')}
+                pageKey="suppliers"
+                suggestions={supplierSearchSuggestions}
+              />
               <div className="relative">
                 <MapPin className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
                 <select
@@ -1336,6 +1446,12 @@ export default function Suppliers() {
                 </select>
               </div>
             </div>
+            <FilterPanel
+              filters={supplierFilterDefs}
+              values={supplierFilters}
+              onFilterChange={setSupplierFilters}
+              presetKey="suppliers"
+            />
           </div>
 
           {/* View toggle */}
@@ -1774,6 +1890,43 @@ export default function Suppliers() {
                         </button>
                       )}
                     </div>
+
+                    {/* WhatsApp Smart Reorder */}
+                    {ingredients.filter((ing) => ing.supplierId === detailSupplier.id).length > 0 && (
+                      <div className="bg-[#25D366]/5 border border-[#25D366]/20 rounded-xl p-4">
+                        <div className="flex items-center justify-between gap-3 mb-2">
+                          <div className="flex items-center gap-2">
+                            <RefreshCw className="w-4 h-4 text-[#25D366]" />
+                            <h4 className="text-sm font-bold text-[#111111] dark:text-white">Renouveler la commande</h4>
+                          </div>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#25D366]/10 text-[#25D366] font-bold border border-[#25D366]/30">
+                            {ingredients.filter((ing) => ing.supplierId === detailSupplier.id).length} articles
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mb-3">
+                          Envoyez une commande WhatsApp avec tous les ingredients liés à ce fournisseur
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            onClick={() => handleWhatsAppReorder(detailSupplier)}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-lg text-sm font-semibold transition"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            Commander via WhatsApp
+                          </button>
+                          <button
+                            onClick={() => {
+                              const ingNames = ingredients.filter((ing) => ing.supplierId === detailSupplier.id).map((ing) => ing.name);
+                              handleWhatsAppPriceInquiry(detailSupplier, ingNames);
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-lg text-sm font-semibold transition border border-[#25D366]/30"
+                          >
+                            <DollarSign className="w-4 h-4" />
+                            Demander les prix
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Categories */}
                     {detailSupplier.categories.length > 0 && (

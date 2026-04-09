@@ -7,7 +7,23 @@ import {
   MessageCircle, XCircle, AlertOctagon, BarChart3, Calendar,
   ClipboardCheck, ThumbsDown, TrendingUp, TrendingDown, Brain,
   Timer, Target, Wallet, ArrowRight, Sparkles, Phone,
+  Bell, Eye, CheckCheck, SendHorizonal,
 } from 'lucide-react';
+import {
+  standardOrderMessage,
+  urgentOrderMessage,
+  complaintMessage,
+  reorderMessage,
+  buildWhatsAppUrl,
+  openWhatsApp,
+  openBulkWhatsApp,
+  getConfirmationStatusConfig,
+  estimateViewStatus,
+  needsReminder,
+  type WhatsAppOrderTracking,
+  type WhatsAppConfirmationStatus,
+  type BulkWhatsAppOrder,
+} from '../utils/whatsappTemplates';
 import { fetchIngredients, fetchSuppliers, fetchInventoryAlerts } from '../services/api';
 import type { Ingredient, Supplier, InventoryItem } from '../types';
 import Modal from '../components/Modal';
@@ -799,6 +815,32 @@ export default function AutoOrders() {
   // Budget
   const monthlyBudget = 5000; // Could be from settings
 
+  // WhatsApp order tracking
+  const [waTrackingList, setWaTrackingList] = useState<WhatsAppOrderTracking[]>(() => {
+    try {
+      const stored = localStorage.getItem('wa_order_tracking');
+      return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+  });
+  const [bulkSending, setBulkSending] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ sent: 0, total: 0 });
+  const cancelBulkRef = useRef<(() => void) | null>(null);
+
+  // Persist tracking to localStorage
+  useEffect(() => {
+    localStorage.setItem('wa_order_tracking', JSON.stringify(waTrackingList));
+  }, [waTrackingList]);
+
+  // Update estimated statuses every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWaTrackingList((prev) =>
+        prev.map((t) => ({ ...t, status: t.status === 'confirmee' ? 'confirmee' : estimateViewStatus(t) }))
+      );
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   // ── fetch data ─────────────────────────────────────────────────────────────
 
   const loadData = useCallback(async () => {
@@ -1437,39 +1479,196 @@ export default function AutoOrders() {
     }
   }
 
-  function handleWhatsAppOrder(order: Order) {
+  function handleWhatsAppOrder(order: Order, isUrgent?: boolean) {
     const supplier = suppliers.find((s) => s.id === order.supplierId);
     const phone = supplier?.whatsappPhone || supplier?.phone;
-    const cleanPhone = phone ? phone.replace(/[\s+\-()]/g, '') : '';
     const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
-    const today = new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-    const lines = order.lines
-      .filter((l) => l.name.trim())
-      .map((l) => `- ${l.name} : ${l.quantity} ${l.unit}`)
-      .join('\n');
+    const items = order.lines.filter((l) => l.name.trim()).map((l) => ({
+      name: l.name,
+      quantity: l.quantity,
+      unit: l.unit,
+      pricePerUnit: l.pricePerUnit,
+    }));
 
-    const message = [
-      `Bonjour ${order.supplierName},`,
-      '',
-      `Commande RestauMargin - ${restaurantName}`,
-      `Date: ${today}`,
-      '',
-      'Articles:',
-      lines,
-      '',
-      `Total HT: ${fmtEuro(order.totalHT)}`,
-      '',
-      'Merci de confirmer la reception.',
-      `Cordialement, ${restaurantName}`,
-    ].join('\n');
+    const templateParams = {
+      supplierName: order.supplierName,
+      restaurantName,
+      items,
+      deliveryDate: order.expectedDelivery || undefined,
+      totalHT: order.totalHT,
+    };
 
-    const encoded = encodeURIComponent(message);
-    if (cleanPhone) {
-      window.open(`https://wa.me/${cleanPhone}?text=${encoded}`, '_blank');
-    } else {
-      window.open(`https://web.whatsapp.com/send?text=${encoded}`, '_blank');
+    const message = isUrgent
+      ? urgentOrderMessage(templateParams)
+      : standardOrderMessage(templateParams);
+
+    openWhatsApp(phone, message);
+
+    // Mark as sent
+    if (order.status === 'brouillon') {
+      changeStatus(order.id, 'envoyé');
     }
+
+    // Track the WhatsApp send
+    setWaTrackingList((prev) => {
+      const existing = prev.find((t) => t.orderId === order.id);
+      if (existing) return prev;
+      return [...prev, {
+        orderId: order.id,
+        supplierName: order.supplierName,
+        sentAt: new Date().toISOString(),
+        status: 'envoyee' as WhatsAppConfirmationStatus,
+      }];
+    });
+
+    showToast('Commande envoyee via WhatsApp', 'success');
+  }
+
+  function handleWhatsAppComplaint(order: Order, issue: string) {
+    const supplier = suppliers.find((s) => s.id === order.supplierId);
+    const phone = supplier?.whatsappPhone || supplier?.phone;
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+
+    const message = complaintMessage({
+      supplierName: order.supplierName,
+      restaurantName,
+      deliveryDateForComplaint: order.receivedAt || order.date,
+      issueDescription: issue,
+    });
+
+    openWhatsApp(phone, message);
+  }
+
+  function handleWhatsAppReorder(order: Order) {
+    const supplier = suppliers.find((s) => s.id === order.supplierId);
+    const phone = supplier?.whatsappPhone || supplier?.phone;
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+
+    const items = order.lines.filter((l) => l.name.trim()).map((l) => ({
+      name: l.name,
+      quantity: l.quantity,
+      unit: l.unit,
+      pricePerUnit: l.pricePerUnit,
+    }));
+
+    const message = reorderMessage({
+      supplierName: order.supplierName,
+      restaurantName,
+      items,
+      totalHT: order.totalHT,
+      originalDate: order.date,
+    });
+
+    openWhatsApp(phone, message);
+
+    // Create the reorder as draft
+    handleReorder(order);
+    showToast('Commande renouvelee via WhatsApp', 'success');
+  }
+
+  // ── Bulk WhatsApp Orders ──────────────────────────────────────────────────
+
+  function handleBulkWhatsApp() {
+    const draftOrders = orders.filter((o) => o.status === 'brouillon');
+    if (draftOrders.length === 0) {
+      showToast('Aucune commande en brouillon a envoyer', 'error');
+      return;
+    }
+
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+
+    // Group by supplier
+    const supplierMap = new Map<string, { orders: Order[]; supplier: Supplier | undefined }>();
+    draftOrders.forEach((o) => {
+      if (!supplierMap.has(o.supplierName)) {
+        supplierMap.set(o.supplierName, { orders: [], supplier: suppliers.find((s) => s.id === o.supplierId) });
+      }
+      supplierMap.get(o.supplierName)!.orders.push(o);
+    });
+
+    const bulkOrders: BulkWhatsAppOrder[] = [];
+    supplierMap.forEach(({ orders: supplierOrders, supplier }, supplierName) => {
+      const allItems = supplierOrders.flatMap((o) =>
+        o.lines.filter((l) => l.name.trim()).map((l) => ({
+          name: l.name,
+          quantity: l.quantity,
+          unit: l.unit,
+          pricePerUnit: l.pricePerUnit,
+        }))
+      );
+      const totalHT = supplierOrders.reduce((s, o) => s + o.totalHT, 0);
+      const phone = supplier?.whatsappPhone || supplier?.phone;
+
+      const message = standardOrderMessage({
+        supplierName,
+        restaurantName,
+        items: allItems,
+        totalHT,
+      });
+
+      bulkOrders.push({ supplierName, phone, message });
+    });
+
+    setBulkSending(true);
+    setBulkProgress({ sent: 0, total: bulkOrders.length });
+
+    const cancel = openBulkWhatsApp(
+      bulkOrders,
+      (sent, total) => setBulkProgress({ sent, total }),
+      () => {
+        setBulkSending(false);
+        // Mark all drafts as sent
+        draftOrders.forEach((o) => changeStatus(o.id, 'envoyé'));
+        // Track all
+        setWaTrackingList((prev) => {
+          const newItems = draftOrders
+            .filter((o) => !prev.find((t) => t.orderId === o.id))
+            .map((o) => ({
+              orderId: o.id,
+              supplierName: o.supplierName,
+              sentAt: new Date().toISOString(),
+              status: 'envoyee' as WhatsAppConfirmationStatus,
+            }));
+          return [...prev, ...newItems];
+        });
+        showToast(`${bulkOrders.length} commande(s) envoyee(s) via WhatsApp`, 'success');
+      },
+    );
+    cancelBulkRef.current = cancel;
+  }
+
+  function handleCancelBulk() {
+    if (cancelBulkRef.current) {
+      cancelBulkRef.current();
+      cancelBulkRef.current = null;
+    }
+    setBulkSending(false);
+  }
+
+  // ── WhatsApp confirmation toggle ──────────────────────────────────────────
+
+  function toggleWaConfirmation(orderId: number) {
+    setWaTrackingList((prev) =>
+      prev.map((t) =>
+        t.orderId === orderId
+          ? {
+              ...t,
+              status: t.status === 'confirmee' ? 'envoyee' : 'confirmee',
+              confirmedAt: t.status === 'confirmee' ? undefined : new Date().toISOString(),
+            }
+          : t
+      )
+    );
+  }
+
+  function handleWaReminder(order: Order) {
+    const supplier = suppliers.find((s) => s.id === order.supplierId);
+    const phone = supplier?.whatsappPhone || supplier?.phone;
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+    const message = `Bonjour ${order.supplierName},\n\nJe me permets de relancer concernant ma commande envoyee hier.\nMerci de confirmer sa prise en charge.\n\nCordialement,\n${restaurantName}`;
+    openWhatsApp(phone, message);
+    showToast('Relance envoyee via WhatsApp', 'success');
   }
 
   // ── History with filters ──────────────────────────────────────────────────
@@ -1627,15 +1826,147 @@ export default function AutoOrders() {
             </div>
           </div>
 
-          {/* Supplier Order Cards */}
-          <SupplierOrderCards
-            orders={orders}
-            suppliers={suppliers}
-            onWhatsApp={handleWhatsAppOrder}
-            onSendEmail={openEmailModal}
-            onExpand={setExpandedSupplier}
-            expandedSupplier={expandedSupplier}
-          />
+          {/* Bulk WhatsApp + Supplier Order Cards */}
+          <div className="space-y-4">
+            {/* Bulk WhatsApp Send Bar */}
+            {orders.filter((o) => o.status === 'brouillon').length > 0 && (
+              <div className="bg-white dark:bg-black/50 border border-[#25D366]/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#25D366]/10 flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-[#111111] dark:text-white">Envoi groupé WhatsApp</p>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                      {orders.filter((o) => o.status === 'brouillon').length} commande(s) en brouillon prêtes à envoyer
+                    </p>
+                  </div>
+                </div>
+                {bulkSending ? (
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 text-sm font-medium text-[#25D366]">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {bulkProgress.sent}/{bulkProgress.total} commandes envoyées
+                    </div>
+                    <div className="w-32 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#25D366] rounded-full transition-all"
+                        style={{ width: `${bulkProgress.total > 0 ? (bulkProgress.sent / bulkProgress.total) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <button onClick={handleCancelBulk} className="px-3 py-1.5 text-xs font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition">
+                      Annuler
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleBulkWhatsApp}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl text-sm font-semibold transition shadow-sm"
+                  >
+                    <SendHorizonal className="w-4 h-4" />
+                    Envoyer tout via WhatsApp
+                  </button>
+                )}
+              </div>
+            )}
+
+            <SupplierOrderCards
+              orders={orders}
+              suppliers={suppliers}
+              onWhatsApp={handleWhatsAppOrder}
+              onSendEmail={openEmailModal}
+              onExpand={setExpandedSupplier}
+              expandedSupplier={expandedSupplier}
+            />
+          </div>
+
+          {/* WhatsApp Order Confirmation Tracker */}
+          {waTrackingList.length > 0 && (
+            <div className="bg-white dark:bg-black/50 border border-[#E5E7EB] dark:border-[#262626] rounded-2xl overflow-hidden">
+              <div className="px-6 py-4 border-b border-[#E5E7EB] dark:border-[#262626] flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-[#25D366]/10">
+                    <CheckCheck className="w-4 h-4 text-[#25D366]" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-[#111111] dark:text-white">Suivi confirmations WhatsApp</h2>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                      {waTrackingList.filter((t) => t.status === 'confirmee').length}/{waTrackingList.length} confirmées
+                    </p>
+                  </div>
+                </div>
+                {waTrackingList.filter((t) => needsReminder(t)).length > 0 && (
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 text-red-500 rounded-full text-xs font-bold border border-red-500/30">
+                    <Bell className="w-3 h-3" />
+                    {waTrackingList.filter((t) => needsReminder(t)).length} relance(s) nécessaire(s)
+                  </span>
+                )}
+              </div>
+              <div className="p-4 space-y-2">
+                {waTrackingList.slice().reverse().slice(0, 10).map((tracking) => {
+                  const updatedStatus = tracking.status === 'confirmee' ? tracking.status : estimateViewStatus(tracking);
+                  const cfg = getConfirmationStatusConfig(updatedStatus);
+                  const matchedOrder = orders.find((o) => o.id === tracking.orderId);
+                  const shouldRemind = needsReminder(tracking);
+
+                  return (
+                    <div
+                      key={tracking.orderId}
+                      className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-all ${
+                        shouldRemind
+                          ? 'border-red-500/30 bg-red-500/5'
+                          : tracking.status === 'confirmee'
+                            ? 'border-emerald-500/30 bg-emerald-500/5'
+                            : 'border-[#E5E7EB] dark:border-[#262626]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-lg bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black font-bold text-xs shrink-0">
+                          {tracking.supplierName.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm text-[#111111] dark:text-white truncate">{tracking.supplierName}</p>
+                          <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                            Envoyée {fmtDate(tracking.sentAt)}
+                            {matchedOrder ? ` - ${fmtEuro(matchedOrder.totalHT)} HT` : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${cfg.bgColor} ${cfg.color} ${cfg.borderColor}`}>
+                          {updatedStatus === 'envoyee' && <Send className="w-2.5 h-2.5" />}
+                          {updatedStatus === 'vue' && <Eye className="w-2.5 h-2.5" />}
+                          {updatedStatus === 'confirmee' && <Check className="w-2.5 h-2.5" />}
+                          {updatedStatus === 'non_confirmee' && <AlertTriangle className="w-2.5 h-2.5" />}
+                          {cfg.label}
+                        </span>
+                        {shouldRemind && matchedOrder && (
+                          <button
+                            onClick={() => handleWaReminder(matchedOrder)}
+                            className="flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/20 rounded-lg transition border border-[#25D366]/30"
+                          >
+                            <Bell className="w-3 h-3" />
+                            Relancer
+                          </button>
+                        )}
+                        <button
+                          onClick={() => toggleWaConfirmation(tracking.orderId)}
+                          className={`px-2 py-1 text-[10px] font-bold rounded-lg transition border ${
+                            tracking.status === 'confirmee'
+                              ? 'text-emerald-500 bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20'
+                              : 'text-[#6B7280] dark:text-[#A3A3A3] bg-[#F3F4F6] dark:bg-[#171717] border-[#E5E7EB] dark:border-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#262626]'
+                          }`}
+                          title={tracking.status === 'confirmee' ? 'Marquer non confirmée' : 'Marquer confirmée'}
+                        >
+                          {tracking.status === 'confirmee' ? 'Confirmée' : 'Confirmer'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Low-stock alert banner */}
           {lowStockItems.length > 0 && (
@@ -1739,6 +2070,8 @@ export default function AutoOrders() {
                   onReorder={() => handleReorder(order)}
                   onDirectSend={() => handleSendOrderEmail(order)}
                   onWhatsApp={() => handleWhatsAppOrder(order)}
+                  onWhatsAppUrgent={() => handleWhatsAppOrder(order, true)}
+                  onWhatsAppReorder={() => handleWhatsAppReorder(order)}
                   onRelance={() => handleRelanceFournisseur(order)}
                   isSending={sendingEmail === order.id}
                   isRelancing={relancingId === order.id}
@@ -1850,15 +2183,26 @@ export default function AutoOrders() {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-center">
-                          {/* One-Click Reorder */}
-                          <button
-                            onClick={() => handleReorder(order)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] rounded-lg transition border border-[#E5E7EB] dark:border-[#262626]"
-                            title="Recommander les memes articles"
-                          >
-                            <RefreshCw className="w-3.5 h-3.5" />
-                            Recommander
-                          </button>
+                          <div className="flex items-center justify-center gap-1.5">
+                            {/* One-Click Reorder */}
+                            <button
+                              onClick={() => handleReorder(order)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#111111] dark:text-white bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] rounded-lg transition border border-[#E5E7EB] dark:border-[#262626]"
+                              title="Recommander les memes articles"
+                            >
+                              <RefreshCw className="w-3.5 h-3.5" />
+                              Recommander
+                            </button>
+                            {/* Reorder via WhatsApp */}
+                            <button
+                              onClick={() => handleWhatsAppReorder(order)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/20 rounded-lg transition border border-[#25D366]/30"
+                              title="Renouveler via WhatsApp"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                              WhatsApp
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -2300,6 +2644,8 @@ function OrderRow({
   onReorder,
   onDirectSend,
   onWhatsApp,
+  onWhatsAppUrgent,
+  onWhatsAppReorder,
   onRelance,
   isSending,
   isRelancing,
@@ -2316,6 +2662,8 @@ function OrderRow({
   onReorder: () => void;
   onDirectSend?: () => void;
   onWhatsApp?: () => void;
+  onWhatsAppUrgent?: () => void;
+  onWhatsAppReorder?: () => void;
   onRelance?: () => void;
   isSending?: boolean;
   isRelancing?: boolean;
@@ -2339,8 +2687,15 @@ function OrderRow({
       );
       if (onWhatsApp) {
         buttons.push(
-          <button key="wa" onClick={onWhatsApp} title="Commander via WhatsApp" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#25D366] hover:bg-[#25D366]/10 rounded-lg transition">
+          <button key="wa" onClick={onWhatsApp} title="Commander via WhatsApp" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#25D366] bg-[#25D366]/5 hover:bg-[#25D366]/15 rounded-lg transition border border-[#25D366]/20">
             <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+          </button>,
+        );
+      }
+      if (onWhatsAppUrgent) {
+        buttons.push(
+          <button key="wa-urgent" onClick={onWhatsAppUrgent} title="Commande URGENTE via WhatsApp" className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-red-500 hover:bg-red-500/10 rounded-lg transition">
+            <AlertTriangle className="w-3.5 h-3.5" /> Urgent
           </button>,
         );
       }

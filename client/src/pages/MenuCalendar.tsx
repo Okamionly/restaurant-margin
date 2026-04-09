@@ -31,6 +31,7 @@ import { getToken, getActiveRestaurantId } from '../services/api';
 import { useToast } from '../hooks/useToast';
 import { useRestaurant } from '../hooks/useRestaurant';
 import type { Recipe } from '../types';
+import FoodIllustration from '../components/FoodIllustration';
 
 // ── Types ──
 
@@ -591,6 +592,7 @@ export default function MenuCalendar() {
           <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${marginColor.indicator}`} />
         )}
         <GripVertical className="w-3 h-3 flex-shrink-0 opacity-30 group-hover/pill:opacity-70" />
+        <FoodIllustration recipeName={entry.recipe.name} category={entry.recipe.category} size="sm" animated={false} className="flex-shrink-0 scale-75" />
         <span className="truncate flex-1">{entry.recipe.name}</span>
         {!compact && margin !== undefined && (
           <span className="text-[9px] font-mono opacity-70 flex-shrink-0">{margin.toFixed(0)}%</span>

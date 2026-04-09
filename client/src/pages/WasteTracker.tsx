@@ -16,6 +16,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import { useTranslation } from '../hooks/useTranslation';
 import Modal from '../components/Modal';
 import { fetchIngredients } from '../services/api';
+import { HeatmapGrid, CSSBarChart, ProgressRing } from '../components/Charts';
 
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
 function getUnitDivisor(unit: string): number {
@@ -1020,73 +1021,30 @@ export default function WasteTracker() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
-          4. WASTE CALENDAR HEATMAP (30 days)
+          4. WASTE CALENDAR HEATMAP (30 days) — Premium HeatmapGrid
           ═══════════════════════════════════════════════════════════════════════ */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
         <div className="flex items-center gap-2 mb-4">
           <CalendarDays className="w-5 h-5 text-[#111111] dark:text-white" />
-          <h2 className="font-semibold text-[#1F2937] dark:text-white">Calendrier du gaspillage -- 30 derniers jours</h2>
+          <h2 className="font-semibold text-[#1F2937] dark:text-white">Calendrier du gaspillage -- 35 derniers jours</h2>
         </div>
 
-        <div className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-15 gap-1.5">
-          {calendarData.days.map(day => {
-            const cost = calendarData.byDay[day] || 0;
-            const { bg, text } = getHeatColor(cost, calendarData.maxVal);
-            const d = new Date(day);
-            const dayNum = d.getDate();
-            const isSelected = selectedDay === day;
-            const isToday = day === todayStr;
-
-            return (
-              <button
-                key={day}
-                onClick={() => setSelectedDay(selectedDay === day ? null : day)}
-                className={`relative flex flex-col items-center justify-center rounded-lg p-1.5 min-h-[48px] transition-all ${
-                  isSelected
-                    ? 'ring-2 ring-[#111111] dark:ring-white scale-105'
-                    : 'hover:scale-105'
-                }`}
-                style={{ backgroundColor: bg }}
-                title={`${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} : ${formatEuro(cost)}`}
-              >
-                <span className="text-[10px] font-medium" style={{ color: text }}>
-                  {d.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 2)}
-                </span>
-                <span className="text-sm font-bold" style={{ color: text }}>
-                  {dayNum}
-                </span>
-                {isToday && (
-                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#111111] dark:bg-white" />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Legend */}
-        <div className="flex items-center gap-3 mt-3 text-xs text-[#9CA3AF] dark:text-[#737373]">
-          <span>Legende :</span>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#16a34a22' }} />
-            <span>0 EUR</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#16a34a44' }} />
-            <span>Bas</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#eab30866' }} />
-            <span>Moyen</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#f97316aa' }} />
-            <span>Eleve</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#dc2626cc' }} />
-            <span>Critique</span>
-          </div>
-        </div>
+        <HeatmapGrid
+          data={calendarData.days.map(day => ({
+            date: day,
+            value: calendarData.byDay[day] || 0,
+          }))}
+          colorScale={['#16a34a11', '#16a34a44', '#eab30866', '#f97316aa', '#dc2626cc']}
+          cellSize={44}
+          cellGap={4}
+          showLabels={true}
+          formatTooltip={(date, value) => {
+            const d = new Date(date);
+            return `${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })} : ${formatEuro(value)}`;
+          }}
+          onCellClick={(date) => setSelectedDay(selectedDay === date ? null : date)}
+          selectedDate={selectedDay}
+        />
 
         {/* Day detail overlay */}
         {selectedDay && (
@@ -1134,29 +1092,18 @@ export default function WasteTracker() {
             <h2 className="font-semibold text-[#1F2937] dark:text-white">Gaspillage par categorie</h2>
           </div>
           {categoryData.length > 0 ? (
-            <div className="space-y-3">
-              {categoryData.map(item => {
-                const pct = (item.cost / maxCategoryCost) * 100;
-                const color = getCategoryColor(item.category);
-                return (
-                  <div key={item.category}>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="font-medium text-[#374151] dark:text-white">{item.category}</span>
-                      <span className="font-bold" style={{ color }}>{formatEuro(item.cost)}</span>
-                    </div>
-                    <div className="w-full h-4 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${pct}%`,
-                          backgroundColor: color,
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <CSSBarChart
+              data={categoryData.map(item => ({
+                label: item.category,
+                value: item.cost,
+                color: getCategoryColor(item.category),
+                suffix: ' EUR',
+              }))}
+              animated={true}
+              sorted={true}
+              showValues={true}
+              formatValue={(v) => v.toFixed(2)}
+            />
           ) : (
             <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.noDataForPeriod')}</p>
           )}
@@ -1370,9 +1317,9 @@ export default function WasteTracker() {
         </div>
       </div>
 
-      {/* Zero Waste Progress Bar */}
+      {/* Zero Waste Progress — ProgressRing */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Leaf className="w-5 h-5 text-green-500" />
             <h2 className="font-semibold text-[#1F2937] dark:text-white">{t('wasteTracker.zeroWasteObjective')}</h2>
@@ -1381,21 +1328,39 @@ export default function WasteTracker() {
             Objectif : reduire de 20% ({formatEuro(monthlyTarget.target)})
           </span>
         </div>
-        <div className="relative w-full h-6 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
-          <div
-            className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${
-              zeroWasteScore >= 70 ? 'bg-green-500' : zeroWasteScore >= 40 ? 'bg-amber-500' : 'bg-red-500'
-            }`}
-            style={{ width: `${zeroWasteScore}%` }}
+        <div className="flex items-center gap-6">
+          <ProgressRing
+            value={zeroWasteScore}
+            max={100}
+            size={88}
+            strokeWidth={7}
+            animated={true}
+            showPercent={true}
+            label="Score zero dechet"
           />
-          <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-[#9CA3AF] dark:text-white">
-            {zeroWasteScore.toFixed(0)}% -- {formatEuro(monthlyTarget.actual)} / {formatEuro(monthlyTarget.target)} objectif
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-[#6B7280] dark:text-[#A3A3A3]">Depense actuelle</span>
+              <span className="font-bold text-[#111111] dark:text-white">{formatEuro(monthlyTarget.actual)}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-[#6B7280] dark:text-[#A3A3A3]">Objectif</span>
+              <span className="font-bold text-green-600 dark:text-green-400">{formatEuro(monthlyTarget.target)}</span>
+            </div>
+            <div className="relative w-full h-3 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+              <div
+                className={`absolute inset-y-0 left-0 rounded-full transition-all duration-700 ${
+                  zeroWasteScore >= 70 ? 'bg-green-500' : zeroWasteScore >= 40 ? 'bg-amber-500' : 'bg-red-500'
+                }`}
+                style={{ width: `${zeroWasteScore}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+              <span>{t('wasteTracker.critical')}</span>
+              <span>{t('wasteTracker.good')}</span>
+              <span>{t('wasteTracker.excellent')}</span>
+            </div>
           </div>
-        </div>
-        <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
-          <span>{t('wasteTracker.critical')}</span>
-          <span>{t('wasteTracker.good')}</span>
-          <span>{t('wasteTracker.excellent')}</span>
         </div>
       </div>
 

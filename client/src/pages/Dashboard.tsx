@@ -776,7 +776,7 @@ export default function Dashboard() {
             <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi mb-4">
               Distribution des marges
             </h3>
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-5 gap-1.5 sm:gap-3">
               {[
                 { label: '< 50%', count: recipes.filter(r => r.margin.marginPercent < 50).length, color: '#dc2626' },
                 { label: '50-60%', count: recipes.filter(r => r.margin.marginPercent >= 50 && r.margin.marginPercent < 60).length, color: '#ea580c' },

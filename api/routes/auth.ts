@@ -19,7 +19,7 @@ router.get('/first-user', async (_req, res) => {
 // ── Register with activation code ──
 router.post('/register', async (req: any, res) => {
   try {
-    const { email: rawEmail, password, name, activationCode } = req.body;
+    const { email: rawEmail, password, name, restaurantName, activationCode } = req.body;
     if (!rawEmail || !password || !name) return res.status(400).json({ error: 'Email, mot de passe et nom requis' });
     if (password.length < 6) return res.status(400).json({ error: 'Min. 6 caractères' });
     const email = rawEmail.toLowerCase().trim();
@@ -40,7 +40,8 @@ router.post('/register', async (req: any, res) => {
         plan = activation.plan;
         await prisma.activationCode.update({ where: { code: activation.code }, data: { used: true, usedBy: email, usedAt: new Date() } });
       } else {
-        plan = 'pro';
+        // Free trial: basic plan with 7-day trial period
+        plan = 'basic';
         trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       }
     }
@@ -52,7 +53,7 @@ router.post('/register', async (req: any, res) => {
     const user = await prisma.user.create({ data: { email, passwordHash, name, role, plan, ...(trialEndsAt ? { trialEndsAt } : {}) } });
 
     const restaurant = await prisma.restaurant.create({
-      data: { name: 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },
+      data: { name: restaurantName?.trim() || 'Mon Restaurant', ownerId: user.id, members: { create: { userId: user.id, role: 'owner' } } },
     });
 
     // Send welcome onboarding email (non-blocking)
@@ -72,7 +73,7 @@ router.post('/register', async (req: any, res) => {
     }
 
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
-    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan }, restaurantId: restaurant.id });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan, trialEndsAt: user.trialEndsAt || null }, restaurantId: restaurant.id });
   } catch (e) { console.error(e); res.status(500).json({ error: "Erreur inscription" }); }
 });
 
@@ -85,13 +86,13 @@ router.post('/login', async (req, res) => {
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
-    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'pro' } });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'pro', trialEndsAt: (user as any).trialEndsAt || null } });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur connexion' }); }
 });
 
 router.get('/me', authMiddleware, async (req: any, res) => {
   try {
-    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { id: true, email: true, name: true, role: true, createdAt: true } });
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { id: true, email: true, name: true, role: true, plan: true, trialEndsAt: true, createdAt: true } });
     if (!user) return res.status(404).json({ error: 'Non trouvé' });
     res.json(user);
   } catch { res.status(500).json({ error: 'Erreur serveur' }); }

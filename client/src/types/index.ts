@@ -3,6 +3,7 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  plan?: string;
   emailVerified?: boolean;
   trialEndsAt?: string | null;
 }
@@ -16,6 +17,7 @@ export interface RegisterData {
   email: string;
   password: string;
   name: string;
+  restaurantName?: string;
   invitationCode?: string;
   role?: string;
 }

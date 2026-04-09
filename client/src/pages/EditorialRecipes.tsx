@@ -172,7 +172,7 @@ export default function EditorialRecipes() {
           {/* Header image */}
           {r.image_url ? (
             <div className="relative h-48 sm:h-64">
-              <img src={r.image_url} alt={r.title} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <img src={r.image_url} alt={r.title} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
               <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-black to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <h1 className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">{r.title}</h1>
@@ -226,7 +226,7 @@ export default function EditorialRecipes() {
                 <div key={ing.id} className="flex items-center gap-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 rounded-xl p-3">
                   <div className="w-10 h-10 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex-shrink-0 overflow-hidden">
                     {ing.image_url ? (
-                      <img src={ing.image_url} alt={ing.ingredient_name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).parentElement!.innerHTML = '<span class="text-lg flex items-center justify-center w-full h-full">🥘</span>'; }} />
+                      <img src={ing.image_url} alt={ing.ingredient_name} className="w-full h-full object-cover" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.innerHTML = '<span class="text-lg flex items-center justify-center w-full h-full">🥘</span>'; }} />
                     ) : (
                       <span className="text-lg flex items-center justify-center w-full h-full">🥘</span>
                     )}

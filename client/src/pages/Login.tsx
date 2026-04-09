@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ChefHat, Mail, Lock, User, ArrowLeft, TrendingUp, Brain, Shield, Clock, CheckCircle2, Users } from 'lucide-react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { ChefHat, Mail, Lock, User, ArrowLeft, TrendingUp, Brain, Shield, Clock, CheckCircle2, Users, Store, Eye, ArrowRight } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { checkFirstUser } from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
+import { useToast } from '../hooks/useToast';
 import { trackEvent } from '../utils/analytics';
 
 export default function Login() {
@@ -11,6 +12,7 @@ export default function Login() {
   const { login, register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { showToast } = useToast();
 
   const [isRegisterMode, setIsRegisterMode] = useState(searchParams.get('mode') === 'register');
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -23,6 +25,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
   const [acceptCgu, setAcceptCgu] = useState(false);
   const [referralCode] = useState(searchParams.get('ref') || '');
 
@@ -70,7 +73,7 @@ export default function Login() {
     setLoading(true);
     try {
       if (isRegisterMode) {
-        await register({ email, password, name });
+        await register({ email, password, name: restaurantName || name || email.split('@')[0], restaurantName: restaurantName || undefined });
         trackEvent('sign_up');
         // Google Ads conversion tracking
         if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -94,6 +97,7 @@ export default function Login() {
             console.warn('Referral apply failed (non-blocking):', err);
           }
         }
+        showToast('Bienvenue ! Votre essai gratuit de 7 jours commence maintenant.', 'success');
       } else {
         await login({ email, password });
         trackEvent('login');
@@ -137,8 +141,8 @@ export default function Login() {
       <div className="hidden md:flex md:w-1/2 lg:w-[55%] bg-[#000000] border-r border-[#222222] flex-col justify-center items-center p-12">
         <div className="max-w-md text-center">
           <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center">
-              <ChefHat className="w-7 h-7 text-[#000000]" />
+            <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center">
+              <ChefHat className="w-8 h-8 text-[#000000]" />
             </div>
             <h1 className="text-4xl font-bold text-white">RestauMargin</h1>
           </div>
@@ -177,32 +181,35 @@ export default function Login() {
 
           {/* Social proof */}
           <div className="mt-12 pt-8 border-t border-white/10">
-            <p className="text-white/40 text-sm">{t('login.socialProof')}</p>
+            <div className="flex items-center justify-center gap-2 text-white/50 text-sm">
+              <Users className="w-4 h-4" />
+              <span>150+ restaurants nous font confiance</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Right panel - form */}
       <div className="flex-1 flex flex-col justify-center items-center p-6 md:p-12 bg-[#000000]">
-        {/* Mobile logo */}
-        <div className="md:hidden flex items-center gap-2 mb-8">
-          <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
-            <ChefHat className="w-5 h-5 text-[#000000]" />
+        {/* Large logo at top - always visible */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center">
+            <ChefHat className="w-6 h-6 text-[#000000]" />
           </div>
           <span className="text-2xl font-bold text-white">RestauMargin</span>
         </div>
 
         <div className="w-full max-w-md">
-          {/* Prominent free trial badge for register mode */}
-          {isRegisterMode && !isForgotPassword && !isFirstUser && (
-            <div className="mb-6 text-center">
+          {/* Prominent badges - always visible */}
+          {!isForgotPassword && (
+            <div className="mb-6 text-center space-y-3">
               <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-[#000000] text-sm font-bold">
                 <Clock className="w-4 h-4" />
                 Essai gratuit 7 jours
               </div>
-              <div className="mt-3 flex items-center justify-center gap-2 text-white/50 text-sm">
+              <div className="flex items-center justify-center gap-2 text-white/50 text-sm">
                 <Users className="w-4 h-4" />
-                <span>Rejoint par 150+ restaurateurs</span>
+                <span>150+ restaurants nous font confiance</span>
               </div>
             </div>
           )}
@@ -282,25 +289,6 @@ export default function Login() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {isRegisterMode && (
-                    <div>
-                      <label htmlFor="register-name" className="block text-sm font-medium text-white/70 mb-1">{t('login.name')}</label>
-                      <div className="relative">
-                        <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-                        <input
-                          id="register-name"
-                          type="text"
-                          required
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          aria-label="Nom complet"
-                          className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
-                          placeholder={t('login.yourName')}
-                        />
-                      </div>
-                    </div>
-                  )}
-
                   <div>
                     <label htmlFor="login-email" className="block text-sm font-medium text-white/70 mb-1">{t('login.email')}</label>
                     <div className="relative">
@@ -346,6 +334,26 @@ export default function Login() {
                       </div>
                     )}
                   </div>
+
+                  {/* Restaurant name — only in register mode */}
+                  {isRegisterMode && (
+                    <div>
+                      <label htmlFor="register-restaurant" className="block text-sm font-medium text-white/70 mb-1">Nom du restaurant</label>
+                      <div className="relative">
+                        <Store className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                        <input
+                          id="register-restaurant"
+                          type="text"
+                          required
+                          value={restaurantName}
+                          onChange={(e) => setRestaurantName(e.target.value)}
+                          aria-label="Nom du restaurant"
+                          className="w-full bg-[#000000] border border-[#333333] rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent"
+                          placeholder="Le Bistrot de Marie"
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {/* CGU checkbox - only in register mode */}
                   {isRegisterMode && (
@@ -405,6 +413,18 @@ export default function Login() {
                 )}
               </>
             )}
+          </div>
+
+          {/* Demo CTA */}
+          <div className="mt-5">
+            <Link
+              to="/demo"
+              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[#333333] text-white/70 hover:text-white hover:border-white/40 font-medium text-sm transition-all"
+            >
+              <Eye className="w-4 h-4" />
+              Voir la demo sans compte
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
           {/* Footer links */}

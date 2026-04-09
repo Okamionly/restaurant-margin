@@ -203,6 +203,22 @@ body::before {
   animation: slide-in-left 0.2s ease-out;
 }
 
+/* Mobile bottom nav drawer slide-up */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.25s ease-out;
+}
+
 /* Sidebar scrollbar styling (premium teal accent) */
 .sidebar-scroll::-webkit-scrollbar {
   width: 4px;
@@ -626,5 +642,14 @@ body::before {
   }
   .print-only {
     display: block !important;
+  }
+}
+
+/* ── Mobile-first: push Crisp chat widget above bottom nav ──────────── */
+@media (max-width: 767px) {
+  #crisp-chatbox .cc-1m2mf,
+  #crisp-chatbox [data-chat-status],
+  .crisp-client .cc-1m2mf {
+    bottom: 70px !important;
   }
 }

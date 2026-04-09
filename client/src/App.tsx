@@ -18,6 +18,8 @@ import WorkingIndicator from './components/WorkingIndicator';
 import { SidebarLevelBadge } from './components/Gamification';
 import ContextualTooltips from './components/ContextualTooltips';
 import OnboardingProgress from './components/OnboardingProgress';
+import MobileBottomNav from './components/MobileBottomNav';
+import TrialPaywallGuard from './components/TrialPaywallGuard';
 // HelpButton, KitchenTimer, VoiceCommand merged into FloatingActionBubble
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
@@ -255,13 +257,17 @@ function AppLayout() {
     }
   }
 
-  // PWA Install prompt
+  // PWA Install prompt -- show after 30s on site, only once per week
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
     const handler = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e as BeforeInstallPromptEvent);
-      if (!localStorage.getItem('pwa-install-dismissed')) {
-        setShowInstallBanner(true);
+      const lastDismissed = localStorage.getItem('pwa-install-dismissed-at');
+      const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+      const canShow = !lastDismissed || (Date.now() - parseInt(lastDismissed, 10)) > oneWeekMs;
+      if (canShow) {
+        timer = setTimeout(() => { setShowInstallBanner(true); }, 30000);
       }
     };
     window.addEventListener('beforeinstallprompt', handler);
@@ -273,7 +279,10 @@ function AppLayout() {
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setIsInstalled(true);
     }
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   async function handleInstall() {
@@ -289,7 +298,8 @@ function AppLayout() {
 
   function dismissInstallBanner() {
     setShowInstallBanner(false);
-    localStorage.setItem('pwa-install-dismissed', '1');
+    // Store timestamp so banner only hides for 1 week
+    localStorage.setItem('pwa-install-dismissed-at', String(Date.now()));
   }
 
   useEffect(() => {
@@ -693,11 +703,11 @@ function AppLayout() {
             <div className="bg-[#111111] dark:bg-[#0A0A0A] border-b border-[#333333] dark:border-[#1A1A1A] text-white px-4 py-3 text-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-                    <Download className="w-4 h-4 text-black" />
+                  <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-teal-600/20">
+                    <ChefHat className="w-5 h-5 text-white" />
                   </div>
                   <div className="min-w-0">
-                    <div className="font-semibold truncate">{message}</div>
+                    <div className="font-semibold truncate">Installer RestauMargin</div>
                     {subMessage && (
                       <div className="text-xs text-[#A3A3A3] mt-0.5">{subMessage}</div>
                     )}
@@ -745,55 +755,59 @@ function AppLayout() {
         {/* Trial expiry banner */}
         {(() => {
           if (trialBannerDismissed || !user?.trialEndsAt) return null;
+          // Skip for paying users (pro/business)
+          if (user.plan === 'pro' || user.plan === 'business') return null;
           const trialEnd = new Date(user.trialEndsAt);
           const now = new Date();
           const diffMs = trialEnd.getTime() - now.getTime();
           const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
           const isExpired = diffDays <= 0;
-          const isExpiring = diffDays > 0 && diffDays <= 2;
+          const isUrgent = diffDays > 0 && diffDays <= 3;
 
-          if (!isExpired && !isExpiring) return null;
+          if (!isExpired && !isUrgent) return null;
 
           return (
-            <div className={`border-b px-4 py-2.5 flex items-center justify-between text-sm ${
+            <div className={`border-b px-4 py-3 flex items-center justify-between text-sm font-medium ${
               isExpired
                 ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                : 'bg-amber-500/15 border-amber-500/30 text-amber-300'
             }`}>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 animate-pulse" />
                 <span>
                   {isExpired
-                    ? 'Votre essai gratuit est terminé — Passez au plan Pro'
-                    : `Votre essai gratuit se termine dans ${diffDays} jour${diffDays > 1 ? 's' : ''}`
+                    ? 'Essai termine'
+                    : `Votre essai expire dans ${diffDays} jour${diffDays > 1 ? 's' : ''}`
                   }
                 </span>
               </div>
               <div className="flex items-center gap-3 ml-4 flex-shrink-0">
                 <button
                   onClick={() => navigate('/abonnement')}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm ${
                     isExpired
                       ? 'bg-red-500 hover:bg-red-400 text-white'
                       : 'bg-amber-500 hover:bg-amber-400 text-white'
                   }`}
                 >
-                  Voir les plans
+                  Passer au Pro
                 </button>
-                <button
-                  onClick={() => { setTrialBannerDismissed(true); localStorage.setItem('trial-banner-dismissed', '1'); }}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                  aria-label="Fermer"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
+                {!isExpired && (
+                  <button
+                    onClick={() => { setTrialBannerDismissed(true); localStorage.setItem('trial-banner-dismissed', '1'); }}
+                    className="p-1 hover:bg-white/10 rounded transition-colors"
+                    aria-label="Fermer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             </div>
           );
         })()}
 
         {/* Content */}
-        <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 premium-content">
+        <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-20 md:pb-6 premium-content">
           <Breadcrumbs />
           <WorkingIndicator />
           <div key={location.pathname} className="animate-premium-page-in">
@@ -811,7 +825,7 @@ function AppLayout() {
               <Route path="/menu-calendar" element={<MenuCalendar />} />
               <Route path="/rfqs" element={<RFQPage />} />
               <Route path="/analytics" element={<Analytics />} />
-              <Route path="/financial-intelligence" element={<FinancialIntelligence />} />
+              <Route path="/financial-intelligence" element={<TrialPaywallGuard feature="Intelligence financiere"><FinancialIntelligence /></TrialPaywallGuard>} />
               <Route path="/scanner-factures" element={<InvoiceScanner />} />
               <Route path="/actualites" element={<Actualites />} />
               <Route path="/mercuriale" element={<Mercuriale />} />
@@ -825,8 +839,8 @@ function AppLayout() {
               <Route path="/seminaires" element={<Seminaires />} />
               <Route path="/haccp" element={<HACCPPage />} />
               <Route path="/recettes-semaine" element={<EditorialRecipes />} />
-              <Route path="/negociation-ia" element={<NegociationIA />} />
-              <Route path="/assistant" element={<AIAssistant />} />
+              <Route path="/negociation-ia" element={<TrialPaywallGuard feature="Negociation IA"><NegociationIA /></TrialPaywallGuard>} />
+              <Route path="/assistant" element={<TrialPaywallGuard feature="Assistant IA"><AIAssistant /></TrialPaywallGuard>} />
               <Route path="/messagerie" element={<Messagerie />} />
               <Route path="/feedback" element={<FeedbackPage />} />
               <Route path="/clients" element={<Clients />} />
@@ -835,7 +849,7 @@ function AppLayout() {
               <Route path="/integrations" element={<Integrations />} />
               <Route path="/comptabilite" element={<Comptabilite />} />
               <Route path="/devis" element={<DevisPage />} />
-              <Route path="/restaurants" element={<Restaurants />} />
+              <Route path="/restaurants" element={<TrialPaywallGuard feature="Multi-restaurant"><Restaurants /></TrialPaywallGuard>} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/abonnement" element={<Subscription />} />
               <Route path="/settings" element={<SettingsPage />} />
@@ -849,7 +863,7 @@ function AppLayout() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-sm border-t border-[#E5E7EB] dark:border-[#1A1A1A] py-3 text-center text-xs text-[#9CA3AF] dark:text-[#737373] no-print">
+        <footer className="bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-sm border-t border-[#E5E7EB] dark:border-[#1A1A1A] py-3 pb-16 md:pb-3 text-center text-xs text-[#9CA3AF] dark:text-[#737373] no-print">
           RestauMargin &copy; {new Date().getFullYear()} &mdash; Gestion de marge pour la restauration
         </footer>
       </div>
@@ -862,6 +876,9 @@ function AppLayout() {
 
       {/* Floating FAB bubble — single button that expands */}
       <FloatingActionBubble />
+
+      {/* Mobile bottom navigation bar */}
+      <MobileBottomNav />
 
       {/* Onboarding Wizard for new users */}
       {showOnboarding && (

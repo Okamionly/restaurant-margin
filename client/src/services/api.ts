@@ -3,6 +3,69 @@ import { saveToOffline, getFromOffline, addPendingAction, isOffline, type Offlin
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
+// --- In-memory GET cache (60s TTL) ---
+
+interface CacheEntry {
+  data: unknown;
+  timestamp: number;
+}
+
+const apiCache = new Map<string, CacheEntry>();
+const CACHE_TTL_MS = 60_000; // 60 seconds
+
+/** Paths that should never be cached */
+function shouldSkipCache(url: string): boolean {
+  return url.includes('/auth/') || url.includes('/ai/');
+}
+
+/** Build a stable cache key from URL + params */
+function buildCacheKey(url: string, params?: Record<string, string>): string {
+  if (!params) return url;
+  const sorted = Object.keys(params).sort().map(k => `${k}=${params[k]}`).join('&');
+  return `${url}?${sorted}`;
+}
+
+/** Read from GET cache if still fresh */
+function getFromCache<T>(key: string): T | null {
+  const entry = apiCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    apiCache.delete(key);
+    return null;
+  }
+  return entry.data as T;
+}
+
+/** Write to GET cache */
+function setCache(key: string, data: unknown): void {
+  apiCache.set(key, { data, timestamp: Date.now() });
+}
+
+/** Invalidate all cache entries matching a base path (on write operations) */
+function invalidateCacheByPath(url: string): void {
+  // Extract the base resource path, e.g. /api/ingredients/5 -> /api/ingredients
+  const basePath = url.replace(/\/\d+(?:\/.*)?$/, '');
+  for (const key of apiCache.keys()) {
+    if (key.startsWith(basePath)) {
+      apiCache.delete(key);
+    }
+  }
+}
+
+/** Cached GET: check in-memory cache, fetch if miss, store result */
+async function cachedGet<T>(url: string, options: RequestInit): Promise<T> {
+  if (!shouldSkipCache(url)) {
+    const hit = getFromCache<T>(url);
+    if (hit !== null) return hit;
+  }
+  const res = await fetch(url, options);
+  const data = await handleResponse<T>(res);
+  if (!shouldSkipCache(url)) {
+    setCache(url, data);
+  }
+  return data;
+}
+
 // --- Offline-aware helpers ---
 
 /** Map URL paths to IndexedDB store names for caching */
@@ -14,12 +77,22 @@ function urlToStore(url: string): OfflineStoreName | null {
   return null;
 }
 
-/** Wrap a GET fetch: cache on success, return cache on network error */
+/** Wrap a GET fetch: in-memory cache (60s) + IndexedDB fallback on network error */
 async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T> {
+  // Check in-memory cache first (skip for auth/ai paths)
+  if (!shouldSkipCache(url)) {
+    const cached = getFromCache<T>(url);
+    if (cached !== null) return cached;
+  }
+
   const store = urlToStore(url);
   try {
     const res = await fetch(url, options);
     const data = await handleResponse<T>(res);
+    // Write to in-memory cache
+    if (!shouldSkipCache(url)) {
+      setCache(url, data);
+    }
     // Cache list responses (arrays only) in IndexedDB
     if (store && Array.isArray(data)) {
       saveToOffline(store, data).catch(() => {});
@@ -28,16 +101,16 @@ async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T>
   } catch (err) {
     // Network error — try to return cached data
     if (store) {
-      const cached = await getFromOffline(store);
-      if (cached.length > 0) {
-        return cached as unknown as T;
+      const offlineCached = await getFromOffline(store);
+      if (offlineCached.length > 0) {
+        return offlineCached as unknown as T;
       }
     }
     throw err;
   }
 }
 
-/** Wrap a write fetch (POST/PUT/DELETE): queue if offline */
+/** Wrap a write fetch (POST/PUT/DELETE): queue if offline, invalidate cache on success */
 async function offlineAwareWrite<T>(url: string, options: RequestInit): Promise<T> {
   if (isOffline()) {
     // Queue the action for later sync
@@ -52,7 +125,10 @@ async function offlineAwareWrite<T>(url: string, options: RequestInit): Promise<
     throw new Error('Action enregistrée hors-ligne. Elle sera synchronisée automatiquement.');
   }
   const res = await fetch(url, options);
-  return handleResponse<T>(res);
+  const data = await handleResponse<T>(res);
+  // Invalidate in-memory GET cache for the same resource path
+  invalidateCacheByPath(url);
+  return data;
 }
 
 // --- Token Management ---
@@ -156,34 +232,42 @@ export interface RestaurantResponse {
 }
 
 export async function fetchRestaurants(): Promise<RestaurantResponse[]> {
-  const res = await fetch(`${API_BASE}/restaurants`, { headers: authHeaders() });
-  return handleResponse<RestaurantResponse[]>(res);
+  return cachedGet<RestaurantResponse[]>(`${API_BASE}/restaurants`, { headers: authHeaders() });
 }
 
 export async function createRestaurantAPI(data: { name: string; address?: string; cuisineType?: string; phone?: string; coversPerDay?: number }): Promise<RestaurantResponse> {
-  const res = await fetch(`${API_BASE}/restaurants`, {
+  const url = `${API_BASE}/restaurants`;
+  const res = await fetch(url, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<RestaurantResponse>(res);
+  const result = await handleResponse<RestaurantResponse>(res);
+  invalidateCacheByPath(url);
+  return result;
 }
 
 export async function updateRestaurantAPI(id: number, data: Partial<{ name: string; address: string; cuisineType: string; phone: string; coversPerDay: number }>): Promise<RestaurantResponse> {
-  const res = await fetch(`${API_BASE}/restaurants/${id}`, {
+  const url = `${API_BASE}/restaurants/${id}`;
+  const res = await fetch(url, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse<RestaurantResponse>(res);
+  const result = await handleResponse<RestaurantResponse>(res);
+  invalidateCacheByPath(url);
+  return result;
 }
 
 export async function deleteRestaurantAPI(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/restaurants/${id}`, {
+  const url = `${API_BASE}/restaurants/${id}`;
+  const res = await fetch(url, {
     method: 'DELETE',
     headers: authHeaders(),
   });
-  return handleResponse<void>(res);
+  const result = await handleResponse<void>(res);
+  invalidateCacheByPath(url);
+  return result;
 }
 
 export interface RestaurantOverviewStat {
@@ -214,8 +298,7 @@ export interface RestaurantOverview {
 }
 
 export async function fetchRestaurantsOverview(): Promise<RestaurantOverview> {
-  const res = await fetch(`${API_BASE}/restaurants/overview`, { headers: authHeaders() });
-  return handleResponse<RestaurantOverview>(res);
+  return cachedGet<RestaurantOverview>(`${API_BASE}/restaurants/overview`, { headers: authHeaders() });
 }
 
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -294,8 +377,7 @@ export interface AlertItem {
 }
 
 export async function fetchAlerts(): Promise<{ alerts: AlertItem[]; count: number }> {
-  const res = await fetch(`${API_BASE}/alerts`, { headers: authHeaders() });
-  return handleResponse(res);
+  return cachedGet<{ alerts: AlertItem[]; count: number }>(`${API_BASE}/alerts`, { headers: authHeaders() });
 }
 
 // --- Ingredients ---
@@ -334,8 +416,7 @@ export async function fetchRecipes(): Promise<Recipe[]> {
 }
 
 export async function fetchRecipe(id: number): Promise<Recipe> {
-  const res = await fetch(`${API_BASE}/recipes/${id}`, { headers: authHeaders() });
-  return handleResponse<Recipe>(res);
+  return cachedGet<Recipe>(`${API_BASE}/recipes/${id}`, { headers: authHeaders() });
 }
 
 export async function createRecipe(data: {
@@ -503,8 +584,7 @@ export async function fetchSuppliers(): Promise<Supplier[]> {
 }
 
 export async function fetchSupplier(id: number): Promise<Supplier> {
-  const res = await fetch(`${API_BASE}/suppliers/${id}`, { headers: authHeaders() });
-  return handleResponse<Supplier>(res);
+  return cachedGet<Supplier>(`${API_BASE}/suppliers/${id}`, { headers: authHeaders() });
 }
 
 export async function createSupplier(data: Omit<Supplier, 'id' | 'createdAt' | 'updatedAt' | '_count' | 'ingredients'>): Promise<Supplier> {
@@ -563,13 +643,11 @@ export interface SupplierScoreBreakdown {
 }
 
 export async function fetchSupplierScore(id: number): Promise<SupplierScoreBreakdown> {
-  const res = await fetch(`${API_BASE}/suppliers/${id}/score`, { headers: authHeaders() });
-  return handleResponse<SupplierScoreBreakdown>(res);
+  return cachedGet<SupplierScoreBreakdown>(`${API_BASE}/suppliers/${id}/score`, { headers: authHeaders() });
 }
 
 export async function fetchAllSupplierScores(): Promise<SupplierScoreBreakdown[]> {
-  const res = await fetch(`${API_BASE}/suppliers/scores/all`, { headers: authHeaders() });
-  return handleResponse<SupplierScoreBreakdown[]>(res);
+  return cachedGet<SupplierScoreBreakdown[]>(`${API_BASE}/suppliers/scores/all`, { headers: authHeaders() });
 }
 
 export interface ImportPricesResult {
@@ -595,13 +673,11 @@ export async function fetchInventory(): Promise<InventoryItem[]> {
 }
 
 export async function fetchInventoryAlerts(): Promise<InventoryItem[]> {
-  const res = await fetch(`${API_BASE}/inventory/alerts`, { headers: authHeaders() });
-  return handleResponse<InventoryItem[]>(res);
+  return cachedGet<InventoryItem[]>(`${API_BASE}/inventory/alerts`, { headers: authHeaders() });
 }
 
 export async function fetchInventoryValue(): Promise<InventoryValue> {
-  const res = await fetch(`${API_BASE}/inventory/value`, { headers: authHeaders() });
-  return handleResponse<InventoryValue>(res);
+  return cachedGet<InventoryValue>(`${API_BASE}/inventory/value`, { headers: authHeaders() });
 }
 
 export async function fetchInventorySuggestions(): Promise<Ingredient[]> {
@@ -676,8 +752,7 @@ export interface AutoReorderGroup {
 }
 
 export async function fetchAutoReorderSuggestions(): Promise<AutoReorderGroup[]> {
-  const res = await fetch(`${API_BASE}/inventory/auto-reorder`, { headers: authHeaders() });
-  return handleResponse<AutoReorderGroup[]>(res);
+  return cachedGet<AutoReorderGroup[]>(`${API_BASE}/inventory/auto-reorder`, { headers: authHeaders() });
 }
 
 export async function confirmAutoReorder(orders: {

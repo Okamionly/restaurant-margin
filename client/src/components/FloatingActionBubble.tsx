@@ -89,7 +89,7 @@ export default function FloatingActionBubble() {
   }
 
   return (
-    <div ref={bubbleRef} className="fixed bottom-20 right-4 z-[90] no-print">
+    <div ref={bubbleRef} className="fixed bottom-[5.5rem] md:bottom-20 right-4 z-[90] no-print">
 
       {/* Help panel */}
       {showHelp && (

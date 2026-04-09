@@ -13,7 +13,7 @@ import exportRoutes from './routes/export';
 import adminRoutes from './routes/admin';
 import { getUnitDivisor } from './utils/unitConversion';
 import { sanitizeInput, validatePrice, validatePositiveNumber, logAudit } from './middleware';
-import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail } from './utils/emailTemplates';
+import { buildActivationCodeEmail, buildDigestEmail, buildCampaignEmail, buildTrialExpiringEmail, buildTrialLastDayEmail, buildTrialExpiredEmail } from './utils/emailTemplates';
 
 
 const app = express();
@@ -63,16 +63,13 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       // Update user subscription in database if userId is available
       const metaUserId = session.metadata?.userId ? parseInt(session.metadata.userId) : null;
       if (metaUserId) {
-        const trialEnd = new Date();
-        trialEnd.setDate(trialEnd.getDate() + 7); // 7-day trial from checkout
-
         await prisma.user.update({
           where: { id: metaUserId },
           data: {
             plan,
             stripeCustomerId: session.customer || null,
             stripeSubId: session.subscription || null,
-            trialEndsAt: trialEnd,
+            trialEndsAt: null, // Clear trial — user is now paying
           },
         });
         console.log(`[STRIPE WEBHOOK] User ${metaUserId} upgraded to ${plan}, stripeCustomer=${session.customer}`);
@@ -80,16 +77,13 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
         // Fallback: find user by email
         const user = await prisma.user.findUnique({ where: { email: customerEmail } });
         if (user) {
-          const trialEnd = new Date();
-          trialEnd.setDate(trialEnd.getDate() + 7);
-
           await prisma.user.update({
             where: { id: user.id },
             data: {
               plan,
               stripeCustomerId: session.customer || null,
               stripeSubId: session.subscription || null,
-              trialEndsAt: trialEnd,
+              trialEndsAt: null, // Clear trial — user is now paying
             },
           });
           console.log(`[STRIPE WEBHOOK] User ${user.id} (by email) upgraded to ${plan}`);
@@ -646,6 +640,127 @@ app.get('/api/cron/daily-report', async (req: any, res) => {
     res.json({ status: 'sent', users: userCount, recipes: recipeCount, ingredients: ingredientCount, timestamp: new Date().toISOString() });
   } catch (e: any) {
     console.error('[CRON REPORT]', e.message);
+    res.json({ error: e.message });
+  }
+});
+
+// 7. TRIAL EXPIRY EMAILS — daily at 9h
+app.get('/api/cron/trial-expiry', async (req: any, res) => {
+  if (!verifyCron(req, res)) return;
+  try {
+    if (!process.env.RESEND_API_KEY) return res.json({ skipped: true, reason: 'No RESEND_API_KEY' });
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // J+5: trial ends in 2 days
+    const in2Days = new Date(today);
+    in2Days.setDate(in2Days.getDate() + 2);
+    const in2DaysEnd = new Date(in2Days);
+    in2DaysEnd.setDate(in2DaysEnd.getDate() + 1);
+
+    // J+6: trial ends in 1 day (tomorrow)
+    const in1Day = new Date(today);
+    in1Day.setDate(in1Day.getDate() + 1);
+    const in1DayEnd = new Date(in1Day);
+    in1DayEnd.setDate(in1DayEnd.getDate() + 1);
+
+    // J+7: trial ends today
+    const todayEnd = new Date(today);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    // Find users for each category
+    const [usersJ5, usersJ6, usersJ7] = await Promise.all([
+      prisma.user.findMany({
+        where: { trialEndsAt: { gte: in2Days, lt: in2DaysEnd }, plan: 'basic' },
+        select: { id: true, email: true, name: true },
+      }),
+      prisma.user.findMany({
+        where: { trialEndsAt: { gte: in1Day, lt: in1DayEnd }, plan: 'basic' },
+        select: { id: true, email: true, name: true },
+      }),
+      prisma.user.findMany({
+        where: { trialEndsAt: { gte: today, lt: todayEnd }, plan: 'basic' },
+        select: { id: true, email: true, name: true },
+      }),
+    ]);
+
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const results: string[] = [];
+
+    // J+5: 2 days left
+    for (const u of usersJ5) {
+      try {
+        // Count user data via their restaurants
+        const membership = await prisma.restaurantMember.findFirst({ where: { userId: u.id }, select: { restaurantId: true } });
+        let recipesCount = 0, ingredientsCount = 0;
+        if (membership) {
+          [recipesCount, ingredientsCount] = await Promise.all([
+            prisma.recipe.count({ where: { restaurantId: membership.restaurantId } }),
+            prisma.ingredient.count({ where: { restaurantId: membership.restaurantId } }),
+          ]);
+        }
+
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: u.email,
+          subject: 'Votre essai se termine dans 2 jours',
+          html: buildTrialExpiringEmail({ userName: u.name, daysLeft: 2, recipesCount, ingredientsCount }),
+        });
+        results.push(`J+5: ${u.email}`);
+      } catch (err: any) {
+        results.push(`J+5 FAIL: ${u.email} - ${err.message}`);
+      }
+    }
+
+    // J+6: 1 day left (last day)
+    for (const u of usersJ6) {
+      try {
+        const membership = await prisma.restaurantMember.findFirst({ where: { userId: u.id }, select: { restaurantId: true } });
+        let recipesCount = 0, ingredientsCount = 0;
+        if (membership) {
+          [recipesCount, ingredientsCount] = await Promise.all([
+            prisma.recipe.count({ where: { restaurantId: membership.restaurantId } }),
+            prisma.ingredient.count({ where: { restaurantId: membership.restaurantId } }),
+          ]);
+        }
+
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: u.email,
+          subject: 'Dernier jour d\'essai — ne perdez pas vos donnees',
+          html: buildTrialLastDayEmail({ userName: u.name, recipesCount, ingredientsCount }),
+        });
+        results.push(`J+6: ${u.email}`);
+      } catch (err: any) {
+        results.push(`J+6 FAIL: ${u.email} - ${err.message}`);
+      }
+    }
+
+    // J+7: expired today
+    for (const u of usersJ7) {
+      try {
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: u.email,
+          subject: 'Votre essai est termine — Passez au Pro',
+          html: buildTrialExpiredEmail({ userName: u.name }),
+        });
+        results.push(`J+7: ${u.email}`);
+      } catch (err: any) {
+        results.push(`J+7 FAIL: ${u.email} - ${err.message}`);
+      }
+    }
+
+    res.json({
+      status: 'done',
+      sent: { j5: usersJ5.length, j6: usersJ6.length, j7: usersJ7.length },
+      details: results,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (e: any) {
+    console.error('[CRON TRIAL-EXPIRY]', e.message);
     res.json({ error: e.message });
   }
 });

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList, Package, Download } from 'lucide-react';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
@@ -12,7 +12,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type RecipeTemplate } from '../data/recipeTemplates';
+import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type RecipeTemplate, recipePacks, type RecipePack } from '../data/recipeTemplates';
 import { trackEvent } from '../utils/analytics';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 import RecipePlaceholder from '../components/RecipePlaceholder';
@@ -658,7 +658,7 @@ export default function Recipes() {
 
   // View & filter state
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
-  const [activeTab, setActiveTab] = useState<'recipes' | 'templates'>('recipes');
+  const [activeTab, setActiveTab] = useState<'recipes' | 'templates' | 'modeles'>('recipes');
   const [templateCategoryFilter, setTemplateCategoryFilter] = useState<string>('all');
   const [templateSearch, setTemplateSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -1131,6 +1131,87 @@ export default function Recipes() {
     setShowForm(true);
   }
 
+  // ── Import a full recipe pack (creates ingredients + recipes) ──────
+  const [importingPack, setImportingPack] = useState<string | null>(null);
+  const [importResult, setImportResult] = useState<{ packName: string; created: number; total: number } | null>(null);
+
+  async function importPack(pack: RecipePack) {
+    setImportingPack(pack.id);
+    setImportResult(null);
+    let created = 0;
+
+    try {
+      for (const recipe of pack.recipes) {
+        // Resolve each ingredient: find in DB or create
+        const resolvedIngredients: { ingredientId: number; quantity: number; wastePercent: number }[] = [];
+
+        for (const ing of recipe.ingredients) {
+          // Try to find by exact name (case-insensitive)
+          let found = ingredients.find(
+            (i) => i.name.toLowerCase() === ing.name.toLowerCase()
+          );
+
+          if (!found) {
+            // Create the ingredient
+            const newIng = await createIngredient({
+              name: ing.name,
+              unit: ing.unit,
+              pricePerUnit: ing.pricePerUnit,
+              category: ing.category,
+              supplier: null,
+              supplierId: null,
+              allergens: [],
+            });
+            found = newIng;
+            // Update local state so subsequent recipes can find it
+            setIngredients((prev) => {
+              // Avoid duplicates if another recipe in the pack uses the same ingredient
+              if (prev.find((p) => p.id === newIng.id)) return prev;
+              return [...prev, newIng];
+            });
+            // Also update the local reference for the current loop
+            ingredients.push(newIng);
+          }
+
+          resolvedIngredients.push({
+            ingredientId: found.id,
+            quantity: ing.quantity,
+            wastePercent: ing.wastePercent,
+          });
+        }
+
+        // Check if recipe already exists by name
+        const existingRecipe = recipes.find(
+          (r) => r.name.toLowerCase() === recipe.name.toLowerCase()
+        );
+        if (existingRecipe) continue; // Skip duplicates
+
+        // Create the recipe
+        await createRecipe({
+          name: recipe.name,
+          category: recipe.category,
+          sellingPrice: recipe.sellingPrice,
+          nbPortions: recipe.nbPortions,
+          description: recipe.description,
+          prepTimeMinutes: recipe.prepTimeMinutes,
+          cookTimeMinutes: recipe.cookTimeMinutes,
+          ingredients: resolvedIngredients,
+        });
+        created++;
+        trackEvent('recipe_created');
+      }
+
+      setImportResult({ packName: pack.name, created, total: pack.recipes.length });
+      showToast(`Pack "${pack.name}" importe : ${created} recette(s) creee(s)`, 'success');
+      updateOnboardingStep('recipeCreated', true);
+      loadData();
+    } catch (err) {
+      showToast(`Erreur lors de l'import du pack "${pack.name}"`, 'error');
+    } finally {
+      setImportingPack(null);
+    }
+  }
+
   // AI Mercuriale: suggest ingredients for recipe
   async function handleAiSuggest() {
     if (!form.name.trim() || form.name.trim().length < 2) {
@@ -1487,9 +1568,16 @@ export default function Recipes() {
           <BookOpen className="w-4 h-4" />
           Templates
         </button>
+        <button
+          onClick={() => setActiveTab('modeles')}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'modeles' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+        >
+          <Package className="w-4 h-4" />
+          Modeles
+        </button>
       </div>
 
-      {activeTab === 'recipes' ? (
+      {activeTab === 'recipes' && (
       <>
       {/* ── Search bar + Sort + View toggle ─────────────────────────────── */}
       <div className="space-y-2 mb-4">
@@ -1863,7 +1951,9 @@ export default function Recipes() {
       )}
 
       </>
-      ) : (
+      )}
+
+      {activeTab === 'templates' && (
       /* ── Templates Library Tab ──────────────────────────────────────── */
       <div>
         {/* Template search + category filter */}
@@ -1995,6 +2085,145 @@ export default function Recipes() {
             })}
           </div>
         )}
+      </div>
+      )}
+
+      {/* ── Modeles (Recipe Packs) Tab ─────────────────────────────────── */}
+      {activeTab === 'modeles' && (
+      <div>
+        {/* Import result banner */}
+        {importResult && (
+          <div className="mb-4 rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
+                <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                  Pack "{importResult.packName}" importe avec succes
+                </p>
+                <p className="text-xs text-green-600 dark:text-green-400">
+                  {importResult.created} recette(s) creee(s) sur {importResult.total}
+                  {importResult.created < importResult.total && ' (les doublons ont ete ignores)'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => { setImportResult(null); setActiveTab('recipes'); }}
+              className="px-3 py-1.5 text-sm font-medium bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors"
+            >
+              Voir mes recettes
+            </button>
+          </div>
+        )}
+
+        {/* Pack description */}
+        <div className="mb-6">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Importez un pack complet de recettes en un clic. Chaque pack cree automatiquement les ingredients et les recettes avec des quantites et prix realistes.
+          </p>
+        </div>
+
+        {/* Pack cards grid */}
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {recipePacks.map((pack) => {
+            const isImporting = importingPack === pack.id;
+            const totalIngredients = new Set(pack.recipes.flatMap((r) => r.ingredients.map((i) => i.name))).size;
+            const estimatedCost = pack.recipes.reduce((sum, r) => {
+              const recipeCost = r.ingredients.reduce((s, ing) => {
+                const effectiveQty = ing.quantity * (1 + ing.wastePercent / 100);
+                if (ing.unit === 'piece') return s + ing.pricePerUnit * effectiveQty;
+                return s + ing.pricePerUnit * effectiveQty;
+              }, 0);
+              return sum + recipeCost;
+            }, 0);
+            const totalRevenue = pack.recipes.reduce((sum, r) => sum + r.sellingPrice, 0);
+            const avgMargin = totalRevenue > 0 ? ((totalRevenue - estimatedCost) / totalRevenue) * 100 : 0;
+
+            return (
+              <div
+                key={pack.id}
+                className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden hover:border-[#111111] dark:hover:border-white transition-all hover:shadow-lg group"
+              >
+                {/* Pack Header */}
+                <div className="p-5 pb-4">
+                  <div className="flex items-start gap-3 mb-3">
+                    <span className="text-4xl">{pack.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-bold text-[#111111] dark:text-white">{pack.name}</h3>
+                      <span className="inline-block mt-0.5 px-2 py-0.5 text-xs font-medium rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300">
+                        Cuisine {pack.cuisine}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2">{pack.description}</p>
+                </div>
+
+                {/* Stats row */}
+                <div className="px-5 pb-3">
+                  <div className="flex items-center gap-4 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    <span className="flex items-center gap-1">
+                      <UtensilsCrossed className="w-3 h-3" /> {pack.recipes.length} recettes
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Tag className="w-3 h-3" /> {totalIngredients} ingredients
+                    </span>
+                    <span className={`flex items-center gap-1 font-medium ${avgMargin >= 70 ? 'text-green-600 dark:text-green-400' : avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                      ~{avgMargin.toFixed(0)}% marge
+                    </span>
+                  </div>
+                </div>
+
+                {/* Recipe list */}
+                <div className="px-5 pb-4">
+                  <div className="space-y-2">
+                    {pack.recipes.map((recipe, idx) => {
+                      const alreadyExists = recipes.find((r) => r.name.toLowerCase() === recipe.name.toLowerCase());
+                      return (
+                        <div
+                          key={idx}
+                          className={`flex items-center justify-between py-1.5 px-2.5 rounded-lg text-sm ${alreadyExists ? 'bg-green-50 dark:bg-green-900/10' : 'bg-[#F5F5F5] dark:bg-[#171717]'}`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-[#6B7280] dark:text-[#A3A3A3] text-xs font-mono w-5 flex-shrink-0">{recipe.category === 'Entrée' ? 'E' : recipe.category === 'Plat' ? 'P' : recipe.category === 'Dessert' ? 'D' : recipe.category === 'Accompagnement' ? 'A' : 'B'}</span>
+                            <span className={`truncate ${alreadyExists ? 'text-green-700 dark:text-green-400' : 'text-[#111111] dark:text-white'}`}>
+                              {recipe.name}
+                            </span>
+                            {alreadyExists && <Check className="w-3 h-3 text-green-500 flex-shrink-0" />}
+                          </div>
+                          <span className="text-xs font-mono text-[#9CA3AF] dark:text-[#737373] flex-shrink-0 ml-2">
+                            {recipe.sellingPrice}{getCurrencySymbol()}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Import action */}
+                <div className="px-5 py-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <button
+                    onClick={() => importPack(pack)}
+                    disabled={isImporting}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isImporting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Import en cours...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4" />
+                        Importer ce pack
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
       )}
 

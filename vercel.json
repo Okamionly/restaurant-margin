@@ -6,7 +6,8 @@
     { "path": "/api/cron/email-sequence", "schedule": "0 10 * * *" },
     { "path": "/api/cron/lead-finder", "schedule": "0 8 * * *" },
     { "path": "/api/cron/market-intel", "schedule": "0 7 * * *" },
-    { "path": "/api/cron/daily-report", "schedule": "30 8 * * *" }
+    { "path": "/api/cron/daily-report", "schedule": "30 8 * * *" },
+    { "path": "/api/cron/trial-expiry", "schedule": "0 9 * * *" }
   ],
   "buildCommand": "npx prisma generate && cd client && npx vite build",
   "outputDirectory": "client/dist",

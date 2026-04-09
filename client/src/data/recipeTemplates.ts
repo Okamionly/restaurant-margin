@@ -672,3 +672,298 @@ export function getTemplatesByCategory(): Record<string, RecipeTemplate[]> {
 
 // Category display order for the template library
 export const TEMPLATE_CATEGORY_ORDER = ['Entrée', 'Plat', 'Dessert', 'Accompagnement', 'Boisson'] as const;
+
+// =============================================
+// RECIPE PACKS — Cuisine-based starter packs
+// =============================================
+
+export interface PackIngredient {
+  name: string;
+  quantity: number;
+  unit: string;
+  wastePercent: number;
+  pricePerUnit: number; // price per bulk unit (kg, L, piece)
+  category: string;
+}
+
+export interface PackRecipe {
+  name: string;
+  category: 'Entrée' | 'Plat' | 'Dessert' | 'Boisson' | 'Accompagnement';
+  sellingPrice: number;
+  nbPortions: number;
+  description: string;
+  prepTimeMinutes: number;
+  cookTimeMinutes: number;
+  ingredients: PackIngredient[];
+}
+
+export interface RecipePack {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  cuisine: string;
+  recipes: PackRecipe[];
+}
+
+export const recipePacks: RecipePack[] = [
+  // ── Pack Brasserie Francaise ──────────────────────────────────────
+  {
+    id: 'brasserie-francaise',
+    name: 'Brasserie Francaise',
+    emoji: '🇫🇷',
+    description: 'Les classiques incontournables de la brasserie : steak frites, croque monsieur, salade nicoise et plus.',
+    cuisine: 'Francaise',
+    recipes: [
+      {
+        name: 'Steak frites',
+        category: 'Plat',
+        sellingPrice: 18,
+        nbPortions: 1,
+        description: 'Steak de boeuf grille accompagne de frites maison et salade verte',
+        prepTimeMinutes: 10,
+        cookTimeMinutes: 15,
+        ingredients: [
+          { name: 'Steak de boeuf (bavette)', quantity: 0.2, unit: 'kg', wastePercent: 5, pricePerUnit: 22, category: 'Viandes' },
+          { name: 'Pomme de terre (frites)', quantity: 0.25, unit: 'kg', wastePercent: 15, pricePerUnit: 1.5, category: 'Legumes' },
+          { name: 'Salade verte (batavia)', quantity: 0.5, unit: 'piece', wastePercent: 15, pricePerUnit: 1.2, category: 'Legumes' },
+          { name: 'Sauce poivre (maison)', quantity: 0.04, unit: 'L', wastePercent: 0, pricePerUnit: 8, category: 'Sauces' },
+        ],
+      },
+      {
+        name: 'Croque monsieur',
+        category: 'Plat',
+        sellingPrice: 11,
+        nbPortions: 1,
+        description: 'Croque monsieur gratine au gruyere avec bechamel maison',
+        prepTimeMinutes: 10,
+        cookTimeMinutes: 10,
+        ingredients: [
+          { name: 'Pain de mie (tranches)', quantity: 2, unit: 'piece', wastePercent: 0, pricePerUnit: 0.15, category: 'Boulangerie' },
+          { name: 'Jambon blanc (tranche)', quantity: 2, unit: 'piece', wastePercent: 0, pricePerUnit: 0.45, category: 'Charcuterie' },
+          { name: 'Gruyere rape', quantity: 0.06, unit: 'kg', wastePercent: 0, pricePerUnit: 14, category: 'Produits laitiers' },
+          { name: 'Bechamel (maison)', quantity: 0.05, unit: 'L', wastePercent: 0, pricePerUnit: 4, category: 'Sauces' },
+        ],
+      },
+      {
+        name: 'Salade nicoise',
+        category: 'Entrée',
+        sellingPrice: 14,
+        nbPortions: 1,
+        description: 'Salade composee : thon, oeufs durs, olives noires, haricots verts et vinaigrette',
+        prepTimeMinutes: 20,
+        cookTimeMinutes: 10,
+        ingredients: [
+          { name: 'Thon en boite (miettes)', quantity: 0.1, unit: 'kg', wastePercent: 0, pricePerUnit: 18, category: 'Poissons' },
+          { name: 'Oeufs (calibre L)', quantity: 2, unit: 'piece', wastePercent: 0, pricePerUnit: 0.35, category: 'Produits laitiers' },
+          { name: 'Olives noires', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 8, category: 'Epicerie' },
+          { name: 'Haricots verts', quantity: 0.1, unit: 'kg', wastePercent: 5, pricePerUnit: 4.5, category: 'Legumes' },
+        ],
+      },
+      {
+        name: 'Soupe a l\'oignon gratinee',
+        category: 'Entrée',
+        sellingPrice: 9,
+        nbPortions: 1,
+        description: 'Soupe traditionnelle a l\'oignon avec croutons et gruyere gratine',
+        prepTimeMinutes: 15,
+        cookTimeMinutes: 45,
+        ingredients: [
+          { name: 'Oignon jaune', quantity: 0.3, unit: 'kg', wastePercent: 10, pricePerUnit: 1.8, category: 'Legumes' },
+          { name: 'Bouillon de boeuf', quantity: 0.4, unit: 'L', wastePercent: 0, pricePerUnit: 3, category: 'Epicerie' },
+          { name: 'Gruyere rape', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 14, category: 'Produits laitiers' },
+          { name: 'Pain de campagne', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 4, category: 'Boulangerie' },
+        ],
+      },
+      {
+        name: 'Tarte tatin',
+        category: 'Dessert',
+        sellingPrice: 10,
+        nbPortions: 1,
+        description: 'Tarte aux pommes caramelisees renversee, pate feuilletee maison',
+        prepTimeMinutes: 25,
+        cookTimeMinutes: 35,
+        ingredients: [
+          { name: 'Pomme (Golden)', quantity: 0.25, unit: 'kg', wastePercent: 15, pricePerUnit: 3, category: 'Fruits' },
+          { name: 'Pate feuilletee', quantity: 0.12, unit: 'kg', wastePercent: 5, pricePerUnit: 6, category: 'Boulangerie' },
+          { name: 'Beurre doux', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 10, category: 'Produits laitiers' },
+          { name: 'Sucre en poudre', quantity: 0.06, unit: 'kg', wastePercent: 0, pricePerUnit: 1.5, category: 'Epicerie' },
+        ],
+      },
+    ],
+  },
+
+  // ── Pack Pizzeria ─────────────────────────────────────────────────
+  {
+    id: 'pizzeria',
+    name: 'Pizzeria',
+    emoji: '🍕',
+    description: 'Pizzas artisanales, tiramisu et bruschetta : le meilleur de la cuisine italienne.',
+    cuisine: 'Italienne',
+    recipes: [
+      {
+        name: 'Pizza Margherita',
+        category: 'Plat',
+        sellingPrice: 12,
+        nbPortions: 1,
+        description: 'Pizza classique : sauce tomate, mozzarella et basilic frais',
+        prepTimeMinutes: 15,
+        cookTimeMinutes: 12,
+        ingredients: [
+          { name: 'Pate a pizza (boule)', quantity: 0.25, unit: 'kg', wastePercent: 5, pricePerUnit: 2.5, category: 'Boulangerie' },
+          { name: 'Sauce tomate (pizza)', quantity: 0.08, unit: 'L', wastePercent: 0, pricePerUnit: 3, category: 'Sauces' },
+          { name: 'Mozzarella (fior di latte)', quantity: 0.125, unit: 'kg', wastePercent: 0, pricePerUnit: 9, category: 'Produits laitiers' },
+          { name: 'Basilic frais', quantity: 0.005, unit: 'kg', wastePercent: 20, pricePerUnit: 30, category: 'Herbes' },
+        ],
+      },
+      {
+        name: 'Pizza 4 Fromages',
+        category: 'Plat',
+        sellingPrice: 15,
+        nbPortions: 1,
+        description: 'Pizza gourmande : mozzarella, gorgonzola, chevre et parmesan',
+        prepTimeMinutes: 15,
+        cookTimeMinutes: 12,
+        ingredients: [
+          { name: 'Pate a pizza (boule)', quantity: 0.25, unit: 'kg', wastePercent: 5, pricePerUnit: 2.5, category: 'Boulangerie' },
+          { name: 'Sauce tomate (pizza)', quantity: 0.06, unit: 'L', wastePercent: 0, pricePerUnit: 3, category: 'Sauces' },
+          { name: 'Mozzarella (fior di latte)', quantity: 0.07, unit: 'kg', wastePercent: 0, pricePerUnit: 9, category: 'Produits laitiers' },
+          { name: 'Gorgonzola', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 16, category: 'Produits laitiers' },
+          { name: 'Chevre frais', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 12, category: 'Produits laitiers' },
+          { name: 'Parmesan AOP', quantity: 0.02, unit: 'kg', wastePercent: 0, pricePerUnit: 28, category: 'Produits laitiers' },
+        ],
+      },
+      {
+        name: 'Calzone',
+        category: 'Plat',
+        sellingPrice: 14,
+        nbPortions: 1,
+        description: 'Pizza pliee garnie de jambon, champignons et mozzarella',
+        prepTimeMinutes: 15,
+        cookTimeMinutes: 15,
+        ingredients: [
+          { name: 'Pate a pizza (boule)', quantity: 0.28, unit: 'kg', wastePercent: 5, pricePerUnit: 2.5, category: 'Boulangerie' },
+          { name: 'Sauce tomate (pizza)', quantity: 0.06, unit: 'L', wastePercent: 0, pricePerUnit: 3, category: 'Sauces' },
+          { name: 'Jambon blanc (tranche)', quantity: 3, unit: 'piece', wastePercent: 0, pricePerUnit: 0.45, category: 'Charcuterie' },
+          { name: 'Champignons de Paris', quantity: 0.08, unit: 'kg', wastePercent: 10, pricePerUnit: 5, category: 'Legumes' },
+          { name: 'Mozzarella (fior di latte)', quantity: 0.1, unit: 'kg', wastePercent: 0, pricePerUnit: 9, category: 'Produits laitiers' },
+        ],
+      },
+      {
+        name: 'Tiramisu',
+        category: 'Dessert',
+        sellingPrice: 9,
+        nbPortions: 1,
+        description: 'Dessert italien au mascarpone, cafe expresso et cacao',
+        prepTimeMinutes: 20,
+        cookTimeMinutes: 0,
+        ingredients: [
+          { name: 'Mascarpone', quantity: 0.08, unit: 'kg', wastePercent: 0, pricePerUnit: 10, category: 'Produits laitiers' },
+          { name: 'Cafe expresso (liquide)', quantity: 0.05, unit: 'L', wastePercent: 0, pricePerUnit: 15, category: 'Boissons' },
+          { name: 'Biscuits cuillere', quantity: 0.04, unit: 'kg', wastePercent: 0, pricePerUnit: 8, category: 'Epicerie' },
+          { name: 'Cacao en poudre', quantity: 0.005, unit: 'kg', wastePercent: 0, pricePerUnit: 18, category: 'Epicerie' },
+        ],
+      },
+      {
+        name: 'Bruschetta',
+        category: 'Entrée',
+        sellingPrice: 8,
+        nbPortions: 1,
+        description: 'Tartines de pain grille garnies de tomates, ail et basilic a l\'huile d\'olive',
+        prepTimeMinutes: 10,
+        cookTimeMinutes: 5,
+        ingredients: [
+          { name: 'Pain ciabatta', quantity: 0.1, unit: 'kg', wastePercent: 0, pricePerUnit: 5, category: 'Boulangerie' },
+          { name: 'Tomate', quantity: 0.15, unit: 'kg', wastePercent: 10, pricePerUnit: 3.5, category: 'Legumes' },
+          { name: 'Ail (gousse)', quantity: 2, unit: 'piece', wastePercent: 10, pricePerUnit: 0.1, category: 'Legumes' },
+          { name: 'Basilic frais', quantity: 0.005, unit: 'kg', wastePercent: 20, pricePerUnit: 30, category: 'Herbes' },
+          { name: 'Huile d\'olive extra vierge', quantity: 0.02, unit: 'L', wastePercent: 0, pricePerUnit: 12, category: 'Epicerie' },
+        ],
+      },
+    ],
+  },
+
+  // ── Pack Burger ───────────────────────────────────────────────────
+  {
+    id: 'burger',
+    name: 'Burger',
+    emoji: '🍔',
+    description: 'Burgers gourmands, frites maison et milkshake : le trio gagnant du fast casual.',
+    cuisine: 'Americaine',
+    recipes: [
+      {
+        name: 'Classic Burger',
+        category: 'Plat',
+        sellingPrice: 14,
+        nbPortions: 1,
+        description: 'Burger boeuf 150g, salade, tomate, oignon et sauce maison',
+        prepTimeMinutes: 10,
+        cookTimeMinutes: 10,
+        ingredients: [
+          { name: 'Pain burger (bun)', quantity: 1, unit: 'piece', wastePercent: 0, pricePerUnit: 0.6, category: 'Boulangerie' },
+          { name: 'Steak hache boeuf (150g)', quantity: 1, unit: 'piece', wastePercent: 0, pricePerUnit: 1.8, category: 'Viandes' },
+          { name: 'Salade verte (feuilles)', quantity: 0.02, unit: 'kg', wastePercent: 15, pricePerUnit: 6, category: 'Legumes' },
+          { name: 'Tomate', quantity: 0.06, unit: 'kg', wastePercent: 10, pricePerUnit: 3.5, category: 'Legumes' },
+          { name: 'Oignon rouge', quantity: 0.03, unit: 'kg', wastePercent: 10, pricePerUnit: 2.5, category: 'Legumes' },
+        ],
+      },
+      {
+        name: 'Chicken Burger',
+        category: 'Plat',
+        sellingPrice: 13,
+        nbPortions: 1,
+        description: 'Burger au poulet croustillant, salade et sauce moutarde-miel',
+        prepTimeMinutes: 10,
+        cookTimeMinutes: 12,
+        ingredients: [
+          { name: 'Pain burger (bun)', quantity: 1, unit: 'piece', wastePercent: 0, pricePerUnit: 0.6, category: 'Boulangerie' },
+          { name: 'Filet de poulet (pane)', quantity: 0.15, unit: 'kg', wastePercent: 5, pricePerUnit: 9, category: 'Viandes' },
+          { name: 'Salade verte (feuilles)', quantity: 0.02, unit: 'kg', wastePercent: 15, pricePerUnit: 6, category: 'Legumes' },
+          { name: 'Sauce moutarde-miel', quantity: 0.03, unit: 'L', wastePercent: 0, pricePerUnit: 6, category: 'Sauces' },
+        ],
+      },
+      {
+        name: 'Veggie Burger',
+        category: 'Plat',
+        sellingPrice: 13,
+        nbPortions: 1,
+        description: 'Burger vegetarien avec galette de legumes maison et salade',
+        prepTimeMinutes: 15,
+        cookTimeMinutes: 12,
+        ingredients: [
+          { name: 'Pain burger (bun)', quantity: 1, unit: 'piece', wastePercent: 0, pricePerUnit: 0.6, category: 'Boulangerie' },
+          { name: 'Galette legumes (maison)', quantity: 1, unit: 'piece', wastePercent: 0, pricePerUnit: 1.2, category: 'Legumes' },
+          { name: 'Salade verte (feuilles)', quantity: 0.02, unit: 'kg', wastePercent: 15, pricePerUnit: 6, category: 'Legumes' },
+        ],
+      },
+      {
+        name: 'Frites maison',
+        category: 'Accompagnement',
+        sellingPrice: 5,
+        nbPortions: 1,
+        description: 'Frites maison croustillantes, pommes de terre fraiches',
+        prepTimeMinutes: 10,
+        cookTimeMinutes: 8,
+        ingredients: [
+          { name: 'Pomme de terre (frites)', quantity: 0.2, unit: 'kg', wastePercent: 15, pricePerUnit: 1.5, category: 'Legumes' },
+          { name: 'Huile de friture', quantity: 0.05, unit: 'L', wastePercent: 0, pricePerUnit: 3, category: 'Epicerie' },
+          { name: 'Sel fin', quantity: 0.003, unit: 'kg', wastePercent: 0, pricePerUnit: 1, category: 'Epicerie' },
+        ],
+      },
+      {
+        name: 'Milkshake vanille',
+        category: 'Boisson',
+        sellingPrice: 7,
+        nbPortions: 1,
+        description: 'Milkshake onctueux a la vanille avec glace artisanale',
+        prepTimeMinutes: 5,
+        cookTimeMinutes: 0,
+        ingredients: [
+          { name: 'Lait entier', quantity: 0.2, unit: 'L', wastePercent: 0, pricePerUnit: 1.2, category: 'Produits laitiers' },
+          { name: 'Glace vanille', quantity: 0.1, unit: 'kg', wastePercent: 0, pricePerUnit: 12, category: 'Desserts' },
+          { name: 'Sirop de vanille', quantity: 0.02, unit: 'L', wastePercent: 0, pricePerUnit: 15, category: 'Boissons' },
+        ],
+      },
+    ],
+  },
+];

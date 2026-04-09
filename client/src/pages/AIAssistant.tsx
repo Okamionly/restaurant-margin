@@ -1324,7 +1324,7 @@ export default function AIAssistant() {
           {/* Pending image preview */}
           {pendingImage && (
             <div className="flex items-center gap-3 mb-2 py-2 px-3 bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl">
-              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]" />
+              <img src={pendingImage} alt="Apercu" className="w-12 h-12 object-cover rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]" loading="lazy" />
               <span className="text-sm text-[#6B7280] flex-1">Photo prete a envoyer</span>
               <button
                 onClick={() => setPendingImage(null)}

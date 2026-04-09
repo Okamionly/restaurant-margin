@@ -675,12 +675,12 @@ export default function Landing() {
                 >
                   Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
                 </Link>
-                <button
-                  onClick={() => document.getElementById('live-demo')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  to="/demo"
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border-2 border-[#111111] text-[#111111] font-semibold transition-all text-base hover:bg-[#111111] hover:text-white"
                 >
                   <Play className="w-4 h-4" /> Voir la demo
-                </button>
+                </Link>
               </div>
               <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
                 <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise

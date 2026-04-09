@@ -725,6 +725,64 @@ ${footer()}`;
   return wrapper(content);
 }
 
+// ---------- Template I-bis : Dernier jour d'essai (J+6) ----------
+
+export interface TrialLastDayData {
+  userName: string;
+  recipesCount: number;
+  ingredientsCount: number;
+  pricingUrl?: string;
+}
+
+export function buildTrialLastDayEmail(data: TrialLastDayData): string {
+  const pricingUrl = data.pricingUrl || 'https://www.restaumargin.fr/pricing';
+
+  const content = `
+${header('RestauMargin', 'Dernier jour d\'essai')}
+
+<tr><td style="padding:30px 25px 10px;">
+  <p style="font-size:18px;color:${DARK};margin:0;">Bonjour <strong>${esc(data.userName)}</strong>,</p>
+  <p style="font-size:15px;color:${MUTED};margin:10px 0 0;line-height:1.6;">
+    C'est votre <strong style="color:#dc2626;">dernier jour d'essai gratuit</strong>.
+    Demain, votre acc&egrave;s sera d&eacute;sactiv&eacute; et vos donn&eacute;es ne seront plus accessibles.
+  </p>
+</td></tr>
+
+<tr><td style="padding:10px 25px;">
+  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:20px;">
+    <p style="color:#991b1b;font-size:15px;font-weight:600;margin:0 0 12px;text-align:center;">
+      &#9888;&#65039; Ce que vous perdrez demain :
+    </p>
+    <table width="100%" cellspacing="0" cellpadding="0"><tr>
+      <td style="text-align:center;padding:8px;">
+        <p style="color:#dc2626;font-size:28px;font-weight:bold;margin:0;">${data.ingredientsCount}</p>
+        <p style="color:#991b1b;font-size:12px;margin:4px 0 0;">ingr&eacute;dients</p>
+      </td>
+      <td style="text-align:center;padding:8px;">
+        <p style="color:#dc2626;font-size:28px;font-weight:bold;margin:0;">${data.recipesCount}</p>
+        <p style="color:#991b1b;font-size:12px;margin:4px 0 0;">fiches techniques</p>
+      </td>
+    </tr></table>
+    <p style="color:#991b1b;font-size:13px;text-align:center;margin:12px 0 0;">
+      Vos marges, votre food cost, vos commandes fournisseurs... tout dispara&icirc;t.
+    </p>
+  </div>
+</td></tr>
+
+<tr><td style="padding:20px 25px;text-align:center;">
+  <a href="${pricingUrl}" style="display:inline-block;background:linear-gradient(135deg,#dc2626,#ef4444);color:white;padding:16px 40px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 4px 12px rgba(220,38,38,0.3);">
+    Ne perdez pas vos donn&eacute;es — Passez au Pro &#8594;
+  </a>
+  <p style="color:${MUTED};font-size:12px;margin:12px 0 0;">
+    A partir de 29&euro;/mois — Annulable &agrave; tout moment
+  </p>
+</td></tr>
+
+${footer()}`;
+
+  return wrapper(content);
+}
+
 // ---------- Template J : Essai expiré — passez au payant ----------
 
 export interface TrialExpiredData {

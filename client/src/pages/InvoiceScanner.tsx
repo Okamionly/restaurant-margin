@@ -1689,7 +1689,7 @@ export default function InvoiceScanner() {
                     {inv.type === 'pdf' ? (
                       <FileText className="w-12 h-12 text-red-400/80" />
                     ) : inv.previewUrl ? (
-                      <img src={inv.previewUrl} alt={inv.name} className="h-full w-full object-cover" />
+                      <img src={inv.previewUrl} alt={inv.name} className="h-full w-full object-cover" loading="lazy" />
                     ) : (
                       <Image className="w-12 h-12 text-blue-400/80" />
                     )}

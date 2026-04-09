@@ -14,4 +14,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </React.StrictMode>
 );
-// rebuild
+
+// Prefetch Dashboard and vendor-charts chunks during idle time
+// so they're ready when user navigates after login
+const prefetchIdleCallback = window.requestIdleCallback || ((cb: IdleRequestCallback) => setTimeout(cb, 2000));
+prefetchIdleCallback(() => {
+  import('./pages/Dashboard').catch(() => {});
+});

@@ -456,7 +456,7 @@ export default function RecipeDetail() {
                   onClick={() => setPhotoIndex(idx)}
                   className={`w-14 h-14 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-colors ${idx === photoIndex ? 'border-[#111111] dark:border-white' : 'border-transparent opacity-60 hover:opacity-100'}`}
                 >
-                  <img src={photo} alt={`Miniature ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={photo} alt={`Miniature ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
                 </button>
               ))}
               {(recipe.photos?.length ?? 0) < 5 && (

@@ -94,7 +94,8 @@ export default defineConfig({
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Only precache essential shell files (HTML + CSS + critical JS), not all 79 entries
+        globPatterns: ['**/*.html', '**/*.css', '**/vendor-react-*.js', '**/index-*.js'],
         // Force new SW to take over immediately on deploy
         skipWaiting: true,
         clientsClaim: true,
@@ -104,16 +105,48 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
+          // API GET requests: serve stale while revalidating
           {
-            urlPattern: /^https:\/\/restaumargin\.vercel\.app\/api\/.*/i,
-            handler: 'NetworkFirst',
+            urlPattern: /\/api\/(?!auth\/)(?!ai\/)(.*)/i,
+            handler: 'StaleWhileRevalidate',
+            method: 'GET',
             options: {
-              cacheName: 'api-cache',
+              cacheName: 'api-get-cache',
+              expiration: {
+                maxEntries: 150,
+                maxAgeSeconds: 60 * 5, // 5 min
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          // API POST/PUT/DELETE: always hit network
+          {
+            urlPattern: /\/api\/.*/i,
+            handler: 'NetworkOnly',
+            method: 'POST',
+          },
+          {
+            urlPattern: /\/api\/.*/i,
+            handler: 'NetworkOnly',
+            method: 'PUT',
+          },
+          {
+            urlPattern: /\/api\/.*/i,
+            handler: 'NetworkOnly',
+            method: 'DELETE',
+          },
+          // JS/CSS chunks loaded on demand (lazy routes)
+          {
+            urlPattern: /\.(?:js|css)$/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'static-assets',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24, // 24h
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
               },
-              networkTimeoutSeconds: 5,
             },
           },
           {
@@ -151,6 +184,10 @@ export default defineConfig({
           'vendor-charts': ['recharts'],
           'vendor-icons': ['lucide-react'],
         },
+        // Stable chunk names for better long-term caching
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
     },
   },

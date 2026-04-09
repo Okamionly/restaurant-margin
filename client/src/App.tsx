@@ -854,20 +854,8 @@ function AppLayout() {
       {/* Command Palette (Ctrl+K) — unified search + actions */}
       <CommandPalette />
       <ShortcutsModal open={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
-      <ChatbotAssistant />
-      {/* Kitchen Timer - floating bottom-left */}
-      <KitchenTimer />
-      {/* Voice Command - floating bottom-right, above Crisp chat */}
-      <VoiceCommandButton />
-
-      {/* Collaboration live toasts */}
-      <CollaborationToast />
-
       {/* Contextual tooltips for first-visit pages */}
       <ContextualTooltips />
-
-      {/* Floating help button */}
-      <HelpButton />
 
       {/* Onboarding Wizard for new users */}
       {showOnboarding && (

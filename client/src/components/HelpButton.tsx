@@ -94,7 +94,7 @@ export default function HelpButton() {
   ];
 
   return (
-    <div ref={panelRef} className="fixed bottom-6 right-6 z-[90] no-print">
+    <div ref={panelRef} className="relative no-print">
       {/* Help panel */}
       {open && (
         <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden animate-help-panel-in">
@@ -254,7 +254,7 @@ export default function HelpButton() {
       {/* Floating button */}
       <button
         onClick={() => setOpen(!open)}
-        className={`group flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg transition-all duration-300 ${
+        className={`group flex items-center gap-2 w-12 h-12 justify-center rounded-full shadow-lg transition-all duration-300 ${
           open
             ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] scale-95'
             : 'bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] hover:shadow-xl hover:scale-105'

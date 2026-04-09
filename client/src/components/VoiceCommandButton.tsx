@@ -386,7 +386,7 @@ export default function VoiceCommandButton() {
       <button
         onClick={toggleListening}
         disabled={isProcessing}
-        className={`fixed z-[9998] right-5 bottom-24 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
+        className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
           isListening
             ? 'bg-red-500 hover:bg-red-600 text-white scale-110'
             : isProcessing

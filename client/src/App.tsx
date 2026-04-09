@@ -857,6 +857,13 @@ function AppLayout() {
       {/* Contextual tooltips for first-visit pages */}
       <ContextualTooltips />
 
+      {/* Floating action buttons — stacked bottom-right, above Crisp */}
+      <div className="fixed bottom-20 right-4 z-[90] flex flex-col-reverse items-end gap-2 no-print">
+        <VoiceCommandButton />
+        <KitchenTimer />
+        <HelpButton />
+      </div>
+
       {/* Onboarding Wizard for new users */}
       {showOnboarding && (
         <OnboardingWizard onComplete={() => setShowOnboarding(false)} />

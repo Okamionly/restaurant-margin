@@ -272,7 +272,7 @@ export default function KitchenTimer() {
       {/* Floating button - bottom left, above potential cookie banners */}
       <button
         onClick={() => setIsOpen(o => !o)}
-        className={`fixed bottom-20 right-4 sm:right-6 z-40 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 no-print ${
+        className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 no-print ${
           isOpen
             ? 'bg-slate-700 hover:bg-slate-600 rotate-12'
             : finishedCount > 0

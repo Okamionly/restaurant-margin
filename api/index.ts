@@ -1918,7 +1918,7 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
     if (!imageBase64 || !mimeType) return res.status(400).json({ error: 'imageBase64 et mimeType requis' });
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       system: 'Tu es un expert comptable specialise en restauration. Analyse cette facture/bon de livraison et extrais toutes les donnees en JSON. Reponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans commentaire, sans explication.',
       messages: [

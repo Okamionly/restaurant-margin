@@ -6,8 +6,7 @@ import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import OnboardingWizard, { isOnboardingCompleted } from './components/OnboardingWizard';
-import KitchenTimer from './components/KitchenTimer';
-import VoiceCommandButton from './components/VoiceCommandButton';
+import FloatingActionBubble from './components/FloatingActionBubble';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
 import CommandPalette from './components/CommandPalette';
@@ -19,7 +18,7 @@ import WorkingIndicator from './components/WorkingIndicator';
 import { SidebarLevelBadge } from './components/Gamification';
 import ContextualTooltips from './components/ContextualTooltips';
 import OnboardingProgress from './components/OnboardingProgress';
-import HelpButton from './components/HelpButton';
+// HelpButton, KitchenTimer, VoiceCommand merged into FloatingActionBubble
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
 import { CollaborationProvider } from './hooks/useCollaboration';
@@ -857,12 +856,8 @@ function AppLayout() {
       {/* Contextual tooltips for first-visit pages */}
       <ContextualTooltips />
 
-      {/* Floating action buttons — stacked bottom-right, above Crisp */}
-      <div className="fixed bottom-20 right-4 z-[90] flex flex-col-reverse items-end gap-2 no-print">
-        <VoiceCommandButton />
-        <KitchenTimer />
-        <HelpButton />
-      </div>
+      {/* Floating FAB bubble — single button that expands */}
+      <FloatingActionBubble />
 
       {/* Onboarding Wizard for new users */}
       {showOnboarding && (

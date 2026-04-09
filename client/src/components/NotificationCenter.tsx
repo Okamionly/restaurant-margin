@@ -395,20 +395,19 @@ export default function NotificationCenter() {
         )}
       </button>
 
-      {/* ── Backdrop (mobile) ── */}
+      {/* ── Backdrop ── */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/30 z-[70] lg:bg-transparent"
+          className="fixed inset-0 z-[70]"
           onClick={() => { setOpen(false); setShowPrefs(false); }}
         />
       )}
 
-      {/* ── Slide-over Panel ── */}
+      {/* ── Dropdown Panel ── */}
+      {open && (
       <div
         ref={panelRef}
-        className={`fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white dark:bg-black border-l border-[#E5E7EB] dark:border-[#1A1A1A] shadow-2xl shadow-black/20 z-[80] flex flex-col transition-transform duration-300 ease-out ${
-          open ? 'translate-x-0' : 'translate-x-full pointer-events-none'
-        }`}
+        className="fixed top-14 right-4 w-[380px] max-h-[70vh] bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl shadow-black/20 z-[80] flex flex-col overflow-hidden"
       >
         {/* ── Header ── */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex-shrink-0">
@@ -683,6 +682,8 @@ export default function NotificationCenter() {
           )}
         </div>
       </div>
+
+      )}
 
       {/* ── Keyframe & utility styles ── */}
       <style>{`

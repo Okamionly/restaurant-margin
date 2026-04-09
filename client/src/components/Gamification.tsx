@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Trophy, Star, Award, Target, Flame, ChefHat, ShoppingBasket, ShieldCheck, Sparkles, Trash2, Zap, Package, TrendingUp, Lock, Crown, Medal, Users } from 'lucide-react';
+import { Trophy, Star, Award, Target, Flame, ChefHat, ShoppingBasket, ShieldCheck, Sparkles, Trash2, Zap, Package, TrendingUp, Lock, Crown, Medal, Users, BarChart3 } from 'lucide-react';
 import { getToken } from '../services/api';
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -704,75 +704,69 @@ export default function GamificationPage() {
         </div>
       </div>
 
-      {/* Leaderboard */}
+      {/* Classement — Donnees du restaurant */}
       <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
         <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-5 flex items-center gap-2">
           <Users className="w-5 h-5 text-blue-500" />
-          Classement
+          Performance de votre restaurant
         </h2>
         <div className="space-y-3">
-          {/* User's score vs average */}
-          <div className="flex items-center gap-4 p-4 rounded-xl border border-[#111111]/10 dark:border-white/10 bg-[#F9FAFB] dark:bg-[#0A0A0A]">
-            <div className="w-10 h-10 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center text-white dark:text-black text-sm font-bold flex-shrink-0">
-              1
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-[#111111] dark:text-white">Votre restaurant</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Score actuel</div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`text-lg font-bold ${level.textClass}`}>{scoreResult.total}</span>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">pts</span>
-            </div>
+          {/* Score breakdown — real restaurant metrics */}
+          {scoreResult.breakdown.map((metric) => {
+            const pct = metric.max > 0 ? (metric.points / metric.max) * 100 : 0;
+            const color = pct >= 75 ? 'text-emerald-500' : pct >= 50 ? 'text-amber-500' : 'text-red-500';
+            return (
+              <div key={metric.label} className="flex items-center gap-3 p-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium text-[#111111] dark:text-white">{metric.label}</span>
+                    <span className={`text-sm font-bold ${color}`}>{metric.points}/{metric.max} pts</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] overflow-hidden">
+                    <div className={`h-full rounded-full transition-all duration-700 ${pct >= 75 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${Math.min(pct, 100)}%` }} />
+                  </div>
+                  <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-1">{metric.detail}</p>
+                </div>
+              </div>
+            );
+          })}
+          {/* Total */}
+          <div className="flex items-center justify-between p-4 rounded-xl bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#111111]/10 dark:border-white/10">
+            <span className="text-base font-bold text-[#111111] dark:text-white">Score Total</span>
+            <span className={`text-2xl font-black ${level.textClass}`}>{scoreResult.total}/1000</span>
           </div>
-          {/* Average RestauMargin */}
-          <div className="flex items-center gap-4 p-4 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-            <div className="w-10 h-10 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] flex items-center justify-center text-[#6B7280] dark:text-[#737373] text-sm font-bold flex-shrink-0">
-              -
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">Moyenne RestauMargin</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">Tous les restaurants</div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-[#6B7280] dark:text-[#737373]">420</span>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">pts</span>
-            </div>
+        </div>
+      </div>
+
+      {/* Position vs communaute */}
+      <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-4 flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-teal-500" />
+          Votre position vs la communaute
+        </h2>
+        <div className="px-2 py-3">
+          <div className="flex items-center justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">
+            <span>{scoreResult.total} pts — {level.name}</span>
+            <span>
+              {scoreResult.total > 420 ? (
+                <span className="text-emerald-500 font-medium">Top 30% des restaurants</span>
+              ) : scoreResult.total > 250 ? (
+                <span className="text-amber-500 font-medium">Top 60% des restaurants</span>
+              ) : (
+                <span className="text-[#6B7280] font-medium">En progression</span>
+              )}
+            </span>
           </div>
-          {/* Comparison bar */}
-          <div className="px-4 py-3">
-            <div className="flex items-center justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-2">
-              <span>Votre position</span>
-              <span>
-                {scoreResult.total > 420 ? (
-                  <span className="text-emerald-500 font-medium">Au-dessus de la moyenne !</span>
-                ) : scoreResult.total === 420 ? (
-                  <span className="text-[#6B7280] dark:text-[#737373] font-medium">Dans la moyenne</span>
-                ) : (
-                  <span className="text-amber-500 font-medium">Continuez vos efforts !</span>
-                )}
-              </span>
-            </div>
-            <div className="relative w-full h-3 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] overflow-hidden">
-              {/* Average marker */}
-              <div
-                className="absolute top-0 bottom-0 w-0.5 bg-[#6B7280] dark:bg-[#737373] z-10"
-                style={{ left: '42%' }}
-              />
-              {/* User bar */}
-              <div
-                className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${Math.min((scoreResult.total / 1000) * 100, 100)}%`,
-                  backgroundColor: level.color,
-                }}
-              />
-            </div>
-            <div className="flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-[#737373] mt-1">
-              <span>0</span>
-              <span>500</span>
-              <span>1000</span>
-            </div>
+          <div className="relative w-full h-4 rounded-full bg-[#E5E7EB] dark:bg-[#1A1A1A] overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${Math.min((scoreResult.total / 1000) * 100, 100)}%`, backgroundColor: level.color }}
+            />
+          </div>
+          <div className="flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+            <span>0</span>
+            <span>500</span>
+            <span>1000</span>
           </div>
         </div>
       </div>

@@ -54,11 +54,49 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       const customerEmail = session.customer_details?.email || session.customer_email;
       const amountTotal = session.amount_total; // in cents
 
-      // Determine plan based on amount
-      let plan = 'pro';
-      if (amountTotal && amountTotal >= 7000) plan = 'business'; // 79€ = 7900 cents
+      // Determine plan from metadata (preferred) or fallback to amount
+      let plan = session.metadata?.planType || 'pro';
+      if (!session.metadata?.planType && amountTotal && amountTotal >= 7000) {
+        plan = 'business'; // 79€ = 7900 cents
+      }
 
-      // Generate activation code
+      // Update user subscription in database if userId is available
+      const metaUserId = session.metadata?.userId ? parseInt(session.metadata.userId) : null;
+      if (metaUserId) {
+        const trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 7); // 7-day trial from checkout
+
+        await prisma.user.update({
+          where: { id: metaUserId },
+          data: {
+            plan,
+            stripeCustomerId: session.customer || null,
+            stripeSubId: session.subscription || null,
+            trialEndsAt: trialEnd,
+          },
+        });
+        console.log(`[STRIPE WEBHOOK] User ${metaUserId} upgraded to ${plan}, stripeCustomer=${session.customer}`);
+      } else if (customerEmail) {
+        // Fallback: find user by email
+        const user = await prisma.user.findUnique({ where: { email: customerEmail } });
+        if (user) {
+          const trialEnd = new Date();
+          trialEnd.setDate(trialEnd.getDate() + 7);
+
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              plan,
+              stripeCustomerId: session.customer || null,
+              stripeSubId: session.subscription || null,
+              trialEndsAt: trialEnd,
+            },
+          });
+          console.log(`[STRIPE WEBHOOK] User ${user.id} (by email) upgraded to ${plan}`);
+        }
+      }
+
+      // Generate activation code (legacy flow, kept for compatibility)
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let code = 'RM-';
       for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
@@ -180,6 +218,73 @@ app.use((req, res, next) => {
   }
 
   next();
+});
+
+// ── Stripe Price IDs ──
+// Replace with real Stripe Price IDs from your dashboard
+const STRIPE_PRICES = {
+  PRO_MONTHLY: 'price_pro_monthly',
+  PRO_ANNUAL: 'price_pro_annual',
+  BUSINESS_MONTHLY: 'price_business_monthly',
+  BUSINESS_ANNUAL: 'price_business_annual',
+} as const;
+
+// ── Stripe Checkout Session ──
+app.post('/api/stripe/checkout', authMiddleware, async (req: any, res) => {
+  try {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) return res.status(503).json({ error: 'Stripe non configuré' });
+    const stripe = require('stripe')(stripeKey);
+
+    const { planId, annual } = req.body;
+    if (!planId || !['pro', 'business'].includes(planId)) {
+      return res.status(400).json({ error: 'planId invalide (pro ou business)' });
+    }
+
+    // Resolve the correct Stripe Price ID
+    let priceId: string;
+    if (planId === 'pro') {
+      priceId = annual ? STRIPE_PRICES.PRO_ANNUAL : STRIPE_PRICES.PRO_MONTHLY;
+    } else {
+      priceId = annual ? STRIPE_PRICES.BUSINESS_ANNUAL : STRIPE_PRICES.BUSINESS_MONTHLY;
+    }
+
+    // Get the authenticated user
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId } });
+    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé' });
+
+    // Find or reference the user's first restaurant for metadata
+    const membership = await prisma.restaurantMember.findFirst({
+      where: { userId: user.id },
+      select: { restaurantId: true },
+    });
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [{ price: priceId, quantity: 1 }],
+      customer_email: user.email,
+      success_url: 'https://www.restaumargin.fr/dashboard?subscription=success',
+      cancel_url: 'https://www.restaumargin.fr/abonnement',
+      metadata: {
+        userId: String(user.id),
+        restaurantId: membership ? String(membership.restaurantId) : '',
+        planType: planId,
+      },
+      subscription_data: {
+        metadata: {
+          userId: String(user.id),
+          planType: planId,
+        },
+      },
+    });
+
+    res.json({ url: session.url });
+  } catch (err: any) {
+    console.error('[STRIPE CHECKOUT ERROR]', err.message);
+    res.status(500).json({ error: 'Erreur création session Stripe', details: err.message });
+  }
 });
 
 // ── Stripe Customer Portal ──
@@ -1813,7 +1918,7 @@ app.post('/api/invoices/scan', authWithRestaurant, async (req, res) => {
     if (!imageBase64 || !mimeType) return res.status(400).json({ error: 'imageBase64 et mimeType requis' });
 
     const response = await anthropic.messages.create({
-      model: 'claude-3-5-haiku-20241022',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 2048,
       system: 'Tu es un expert comptable specialise en restauration. Analyse cette facture/bon de livraison et extrais toutes les donnees en JSON. Reponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans commentaire, sans explication.',
       messages: [

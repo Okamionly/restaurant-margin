@@ -817,6 +817,7 @@ function AppLayout() {
               <Route path="/qr-menu" element={<QRMenu />} />
               <Route path="/commandes" element={<AutoOrders />} />
               <Route path="/service-tracker" element={<ServiceTracker />} />
+              <Route path="/kitchen-mode" element={<KitchenMode />} />
               <Route path="/planning" element={<Planning />} />
               <Route path="/seminaires" element={<Seminaires />} />
               <Route path="/haccp" element={<HACCPPage />} />

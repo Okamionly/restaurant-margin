@@ -491,7 +491,7 @@ export default function Dashboard() {
         <div className="rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black p-6">
           <p className="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-2">Cout moyen / portion</p>
           <span className="text-4xl font-black font-satoshi tabular-nums text-[#111111] dark:text-white">
-            {stats ? formatCurrency(stats.avgTotalCost) : '--'}
+            {stats && stats.avgTotalCost > 0 ? formatCurrency(stats.avgTotalCost) : '--'}
           </span>
           <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
             {stats ? `Food cost : ${formatCurrency(stats.avgFoodCost)}` : 'Ajoutez des recettes'}

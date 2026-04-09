@@ -599,14 +599,9 @@ function AppLayout() {
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
         Aller au contenu principal
       </a>
-      {/* Desktop sidebar (>= 1024px): full width — glassmorphism */}
-      <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 sidebar-glass z-30 no-print" style={{ top: '2px' }}>
+      {/* Sidebar — always full width with labels (desktop + tablet) */}
+      <aside className="hidden md:flex flex-col fixed inset-y-0 left-0 w-64 sidebar-glass z-30 no-print" style={{ top: '2px' }}>
         {sidebarContent(false)}
-      </aside>
-
-      {/* Tablet sidebar (768-1024px): icons only — glassmorphism */}
-      <aside className="hidden md:flex lg:hidden flex-col fixed inset-y-0 left-0 w-16 sidebar-glass z-30 no-print" style={{ top: '2px' }}>
-        {sidebarContent(true)}
       </aside>
 
       {/* Mobile overlay sidebar */}
@@ -632,7 +627,7 @@ function AppLayout() {
       )}
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-h-screen lg:ml-56 md:ml-16 ml-0" style={{ paddingTop: '2px' }}>
+      <div className="flex-1 flex flex-col min-h-screen md:ml-64 ml-0" style={{ paddingTop: '2px' }}>
         {/* Mobile top bar */}
         <header className="md:hidden bg-white/90 dark:bg-[#0A0A0A]/90 backdrop-blur-lg border-b border-[#E5E7EB] dark:border-[#1A1A1A] px-4 py-3 flex items-center justify-between no-print">
           <button

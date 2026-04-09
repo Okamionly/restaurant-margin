@@ -23,6 +23,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import type { Recipe } from '../types';
 import { RECIPE_CATEGORIES } from '../types';
+import { updateOnboardingStep } from '../components/OnboardingWizard';
 
 // ── Types ──
 
@@ -385,6 +386,7 @@ export default function MenuBuilder() {
       };
       saveSavedMenu(menu);
       showToast('Menu enregistre avec succes', 'success');
+      updateOnboardingStep('menuCreated', true);
     } catch {
       showToast('Erreur lors de l\'enregistrement', 'error');
     }

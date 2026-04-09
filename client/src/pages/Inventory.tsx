@@ -31,6 +31,7 @@ import Modal from '../components/Modal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import { useTranslation } from '../hooks/useTranslation';
+import { updateOnboardingStep } from '../components/OnboardingWizard';
 
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ────────
 function getUnitDivisor(unit: string): number {
@@ -437,6 +438,7 @@ export default function Inventory() {
         notes: notesStr || undefined,
       });
       showToast('Ingredient ajoute a l\'inventaire', 'success');
+      updateOnboardingStep('stockConfigured', true);
       setShowAddModal(false);
       setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' });
       loadData();

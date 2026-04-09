@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChefHat, Moon, Sun, AlertTriangle, Loader2, Clock, Flame, Leaf, Fish, Egg, Milk, Nut } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { RecipeCategoryBadge, getCategoryBorderColor } from '../components/RecipePlaceholder';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -208,10 +209,12 @@ export default function PublicMenu() {
                 return (
                   <div
                     key={recipe.id}
-                    className="group bg-white dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/50 p-4 hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 transition-all"
+                    className={`group bg-white dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/50 p-4 hover:shadow-md hover:border-slate-200 dark:hover:border-slate-600 transition-all border-l-4 ${getCategoryBorderColor(normalizeCategory(recipe.category))}`}
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <RecipeCategoryBadge category={normalizeCategory(recipe.category)} />
+                        <div className="flex-1 min-w-0">
                         <h3 className="text-base font-semibold text-slate-900 dark:text-white leading-snug">
                           {recipe.name}
                         </h3>
@@ -249,6 +252,7 @@ export default function PublicMenu() {
                             </div>
                           )}
                         </div>
+                      </div>
                       </div>
 
                       {/* Price */}

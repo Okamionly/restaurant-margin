@@ -1,21 +1,28 @@
-import { useState, useEffect, useRef, lazy, Suspense, useCallback } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, Bell, AlertTriangle, Keyboard, Search } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
 import ChatbotAssistant from './components/ChatbotAssistant';
 import OnboardingWizard, { isOnboardingCompleted } from './components/OnboardingWizard';
 import KitchenTimer from './components/KitchenTimer';
+import VoiceCommandButton from './components/VoiceCommandButton';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
 import CommandPalette from './components/CommandPalette';
-import AlertsBell from './components/AlertsBell';
 import NotificationCenter from './components/NotificationCenter';
 import ShortcutsModal from './components/ShortcutsModal';
-import ActiveUsers from './components/ActiveUsers';
+import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
+import CollaborationToast from './components/CollaborationToast';
+import WorkingIndicator from './components/WorkingIndicator';
+import { SidebarLevelBadge } from './components/Gamification';
+import ContextualTooltips from './components/ContextualTooltips';
+import OnboardingProgress from './components/OnboardingProgress';
+import HelpButton from './components/HelpButton';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { ToastProvider } from './hooks/useToast';
+import { CollaborationProvider } from './hooks/useCollaboration';
 import { RestaurantProvider, useRestaurant } from './hooks/useRestaurant';
 import { getToken, fetchRecipes } from './services/api';
 
@@ -93,11 +100,13 @@ const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
 const EditorialRecipes = lazyRetry(() => import('./pages/EditorialRecipes'));
 const Analytics = lazyRetry(() => import('./pages/Analytics'));
+const FinancialIntelligence = lazyRetry(() => import('./pages/FinancialIntelligence'));
 const FeedbackPage = lazyRetry(() => import('./pages/Feedback'));
 const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
 const PublicRecipe = lazyRetry(() => import('./pages/PublicRecipe'));
 const MenuCalendar = lazyRetry(() => import('./pages/MenuCalendar'));
 const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));
+const GamificationPage = lazyRetry(() => import('./components/Gamification'));
 const Temoignages = lazyRetry(() => import('./pages/Temoignages'));
 const Demo = lazyRetry(() => import('./pages/Demo'));
 const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));
@@ -143,6 +152,7 @@ function SidebarRestaurantSelector() {
       >
         <Building2 className="w-4 h-4 flex-shrink-0 text-teal-400" />
         <span className="truncate flex-1 text-left sidebar-label">{selectedRestaurant.name}</span>
+        <ConnectedBadge />
         <ChevronDown className={`w-3.5 h-3.5 flex-shrink-0 transition-transform sidebar-label ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
@@ -202,213 +212,6 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 
-// Global Search Modal (Ctrl+K)
-interface SearchResult {
-  id: string;
-  name: string;
-  category: 'recettes' | 'ingredients' | 'fournisseurs' | 'pages';
-  path: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-function GlobalSearch() {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [recipes, setRecipes] = useState<any[]>([]);
-  const [ingredients, setIngredients] = useState<any[]>([]);
-  const [suppliers, setSuppliers] = useState<any[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
-
-  const pages: SearchResult[] = [
-    { id: 'p-dashboard', name: 'Tableau de bord', category: 'pages', path: '/dashboard', icon: BarChart3 },
-    { id: 'p-menu', name: 'La Carte', category: 'pages', path: '/menu', icon: BookOpen },
-    { id: 'p-ingredients', name: 'Ingredients', category: 'pages', path: '/ingredients', icon: ShoppingBasket },
-    { id: 'p-recipes', name: 'Fiches techniques', category: 'pages', path: '/recipes', icon: ClipboardList },
-    { id: 'p-inventory', name: 'Inventaire', category: 'pages', path: '/inventory', icon: Package },
-    { id: 'p-suppliers', name: 'Fournisseurs', category: 'pages', path: '/suppliers', icon: Truck },
-    { id: 'p-scanner', name: 'Factures', category: 'pages', path: '/scanner-factures', icon: Receipt },
-    { id: 'p-mercuriale', name: 'Mercuriale', category: 'pages', path: '/mercuriale', icon: TrendingUp },
-    { id: 'p-engineering', name: 'Menu Engineering', category: 'pages', path: '/menu-engineering', icon: Target },
-    { id: 'p-allergens', name: 'Matrice allergenes', category: 'pages', path: '/allergen-matrix', icon: Shield },
-    { id: 'p-commandes', name: 'Commandes', category: 'pages', path: '/commandes', icon: ShoppingCart },
-    { id: 'p-planning', name: 'Planning', category: 'pages', path: '/planning', icon: CalendarDays },
-    { id: 'p-messagerie', name: 'Messages', category: 'pages', path: '/messagerie', icon: MessageSquare },
-    { id: 'p-clients', name: 'Clients CRM', category: 'pages', path: '/clients', icon: Contact },
-    { id: 'p-comptabilite', name: 'Comptabilite', category: 'pages', path: '/comptabilite', icon: Calculator },
-    { id: 'p-devis', name: 'Devis & Factures', category: 'pages', path: '/devis', icon: FileText },
-    { id: 'p-marketplace', name: 'Marketplace', category: 'pages', path: '/marketplace', icon: Store },
-    { id: 'p-settings', name: 'Parametres', category: 'pages', path: '/settings', icon: Settings },
-    { id: 'p-gaspillage', name: 'Gaspillage', category: 'pages', path: '/gaspillage', icon: Trash2 },
-    { id: 'p-menu-calendar', name: 'Menu Calendrier', category: 'pages', path: '/menu-calendar', icon: Calendar },
-    { id: 'p-haccp', name: 'HACCP', category: 'pages', path: '/haccp', icon: ShieldCheck },
-    { id: 'p-assistant', name: 'Assistant IA', category: 'pages', path: '/assistant', icon: Sparkles },
-    { id: 'p-seminaires', name: 'Seminaires', category: 'pages', path: '/seminaires', icon: PartyPopper },
-    { id: 'p-qr', name: 'Menu QR Code', category: 'pages', path: '/qr-menu', icon: QrCode },
-    { id: 'p-abonnement', name: 'Mon abonnement', category: 'pages', path: '/abonnement', icon: CreditCard },
-    { id: 'p-station', name: 'Station Balance', category: 'pages', path: '/station', icon: Scale },
-    { id: 'p-feedback', name: 'Avis clients', category: 'pages', path: '/feedback', icon: MessageSquare },
-  ];
-
-  // Fetch data on open
-  useEffect(() => {
-    if (!open) return;
-    const token = getToken();
-    if (!token) return;
-    const headers = { Authorization: `Bearer ${token}` };
-    setLoading(true);
-    Promise.all([
-      fetch('/api/recipes', { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('/api/ingredients', { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('/api/suppliers', { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
-    ]).then(([rec, ing, sup]) => {
-      setRecipes(Array.isArray(rec) ? rec : []);
-      setIngredients(Array.isArray(ing) ? ing : []);
-      setSuppliers(Array.isArray(sup) ? sup : []);
-      setLoading(false);
-    });
-  }, [open]);
-
-  // Filter results
-  useEffect(() => {
-    if (!query.trim()) { setResults([]); setActiveIndex(0); return; }
-    const q = query.toLowerCase().trim();
-    const matched: SearchResult[] = [];
-    recipes.filter(r => r.name?.toLowerCase().includes(q)).slice(0, 5).forEach(r => {
-      matched.push({ id: 'r-' + r.id, name: r.name, category: 'recettes', path: '/recipes/' + r.id, icon: ClipboardList });
-    });
-    ingredients.filter(i => i.name?.toLowerCase().includes(q)).slice(0, 5).forEach(i => {
-      matched.push({ id: 'i-' + i.id, name: i.name, category: 'ingredients', path: '/ingredients', icon: ShoppingBasket });
-    });
-    suppliers.filter(s => (s.name || s.company)?.toLowerCase().includes(q)).slice(0, 5).forEach(s => {
-      matched.push({ id: 's-' + s.id, name: s.name || s.company, category: 'fournisseurs', path: '/suppliers', icon: Truck });
-    });
-    pages.filter(p => p.name.toLowerCase().includes(q)).forEach(p => matched.push(p));
-    setResults(matched);
-    setActiveIndex(0);
-  }, [query, recipes, ingredients, suppliers]);
-
-  // Ctrl+Shift+K shortcut (Ctrl+K now opens CommandPalette)
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'K') {
-        e.preventDefault();
-        setOpen(prev => !prev);
-      }
-    }
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, []);
-
-  // Focus input on open
-  useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 50);
-      setQuery('');
-      setResults([]);
-    }
-  }, [open]);
-
-  const handleSelect = useCallback((result: SearchResult) => {
-    setOpen(false);
-    navigate(result.path);
-  }, [navigate]);
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'ArrowDown') { e.preventDefault(); setActiveIndex(i => Math.min(i + 1, results.length - 1)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setActiveIndex(i => Math.max(i - 1, 0)); }
-    else if (e.key === 'Enter' && results[activeIndex]) { handleSelect(results[activeIndex]); }
-    else if (e.key === 'Escape') { setOpen(false); }
-  }
-
-  const categoryLabels: Record<string, string> = {
-    recettes: 'Recettes',
-    ingredients: 'Ingredients',
-    fournisseurs: 'Fournisseurs',
-    pages: 'Pages',
-  };
-
-  const grouped = results.reduce<Record<string, SearchResult[]>>((acc, r) => {
-    if (!acc[r.category]) acc[r.category] = [];
-    acc[r.category].push(r);
-    return acc;
-  }, {});
-
-  if (!open) return null;
-
-  let flatIndex = -1;
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh]" onClick={() => setOpen(false)}>
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-      <div
-        className="relative w-full max-w-lg mx-4 rounded-2xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5">
-          <Search className="w-5 h-5 text-[#737373] flex-shrink-0" />
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Rechercher recettes, ingredients, fournisseurs, pages..."
-            className="flex-1 bg-transparent text-white placeholder-[#64748b] text-sm outline-none"
-            autoComplete="off"
-          />
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium text-[#64748b] bg-[#171717] border border-[#1A1A1A] rounded">ESC</kbd>
-        </div>
-        <div className="max-h-[50vh] overflow-y-auto py-2">
-          {loading && (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-5 h-5 animate-spin text-teal-400" />
-            </div>
-          )}
-          {!loading && query && results.length === 0 && (
-            <div className="text-center py-8 text-sm text-[#64748b]">Aucun resultat pour &laquo; {query} &raquo;</div>
-          )}
-          {!loading && !query && (
-            <div className="text-center py-8 text-sm text-[#64748b]">Tapez pour rechercher...</div>
-          )}
-          {!loading && Object.keys(grouped).map(cat => (
-            <div key={cat}>
-              <div className="px-4 py-1.5 text-[10px] font-semibold tracking-wider text-[#64748b] uppercase">{categoryLabels[cat] || cat}</div>
-              {grouped[cat].map(result => {
-                flatIndex++;
-                const idx = flatIndex;
-                return (
-                  <button
-                    key={result.id}
-                    onClick={() => handleSelect(result)}
-                    onMouseEnter={() => setActiveIndex(idx)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
-                      idx === activeIndex
-                        ? 'bg-teal-500/10 text-teal-300'
-                        : 'text-[#cbd5e1] hover:bg-white/5'
-                    }`}
-                  >
-                    <result.icon className="w-4 h-4 flex-shrink-0 text-[#64748b]" />
-                    <span className="truncate">{result.name}</span>
-                    <span className="ml-auto text-[10px] text-[#475569]">{categoryLabels[result.category]}</span>
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-4 px-4 py-2 border-t border-white/5 text-[10px] text-[#475569]">
-          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-[#1e293b] border border-[#334155] rounded text-[#64748b]">{"\u2191\u2193"}</kbd> naviguer</span>
-          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-[#1e293b] border border-[#334155] rounded text-[#64748b]">{"\u23CE"}</kbd> ouvrir</span>
-          <span className="flex items-center gap-1"><kbd className="px-1 py-0.5 bg-[#1e293b] border border-[#334155] rounded text-[#64748b]">esc</kbd> fermer</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function AppLayout() {
   const { user, logout } = useAuth();
   const { selectedRestaurant } = useRestaurant();
@@ -418,13 +221,9 @@ function AppLayout() {
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
-  const [stockAlerts, setStockAlerts] = useState<{ name: string; quantity: number; unit: string }[]>([]);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [trialBannerDismissed, setTrialBannerDismissed] = useState(() => localStorage.getItem('trial-banner-dismissed') === '1');
-  const notifRef = useRef<HTMLDivElement>(null);
-  const notifTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -506,59 +305,6 @@ function AppLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Fetch low stock alerts
-  useEffect(() => {
-    async function checkLowStock() {
-      try {
-        const token = getToken();
-        if (!token) return;
-        const res = await fetch('/api/ingredients', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const ingredients = Array.isArray(data) ? data : data.ingredients || [];
-        const lowStock = ingredients
-          .filter((ing: any) => {
-            const qty = ing.currentStock ?? ing.quantity ?? 0;
-            const threshold = ing.minimumStock ?? ing.minStock ?? ing.threshold ?? 5;
-            return qty > 0 && qty < threshold;
-          })
-          .slice(0, 5)
-          .map((ing: any) => ({
-            name: ing.name,
-            quantity: ing.currentStock ?? ing.quantity ?? 0,
-            unit: ing.unit || 'kg',
-          }));
-        setStockAlerts(lowStock);
-      } catch {
-        // silently fail
-      }
-    }
-    checkLowStock();
-  }, [selectedRestaurant?.id]);
-
-  // Close notification dropdown on click outside
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setShowNotifications(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Auto-close notifications after 5s
-  useEffect(() => {
-    if (showNotifications && stockAlerts.length > 0) {
-      if (notifTimeoutRef.current) clearTimeout(notifTimeoutRef.current);
-      notifTimeoutRef.current = setTimeout(() => setShowNotifications(false), 5000);
-    }
-    return () => {
-      if (notifTimeoutRef.current) clearTimeout(notifTimeoutRef.current);
-    };
-  }, [showNotifications, stockAlerts.length]);
 
   // "?" key opens shortcuts modal (only when no input is focused)
   useEffect(() => {
@@ -574,60 +320,13 @@ function AppLayout() {
     window.addEventListener('keydown', handleShortcutKey);
     return () => window.removeEventListener('keydown', handleShortcutKey);
   }, []);
-
-  // Notification bell component (reusable for mobile & desktop)
-  const notificationBell = (
-    <div ref={notifRef} className="relative">
-      <button
-        onClick={() => setShowNotifications(!showNotifications)}
-        className="relative p-2 rounded-lg hover:bg-[#1A1A1A]/50 text-[#737373] hover:text-white transition-colors"
-        aria-label={`Notifications${stockAlerts.length > 0 ? ` (${stockAlerts.length} alertes)` : ''}`}
-      >
-        <Bell className="w-5 h-5" />
-        {stockAlerts.length > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold bg-red-500 text-white rounded-full px-1 animate-pulse">
-            {stockAlerts.length}
-          </span>
-        )}
-      </button>
-      {showNotifications && stockAlerts.length > 0 && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/50 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-semibold text-white">Alertes stock</span>
-            <span className="ml-auto text-[10px] font-bold bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full">
-              {stockAlerts.length}
-            </span>
-          </div>
-          <div className="max-h-64 overflow-y-auto">
-            {stockAlerts.map((alert, i) => (
-              <div
-                key={i}
-                className="px-4 py-3 flex items-start gap-3 hover:bg-[#171717]/50 transition-colors border-b border-[#171717]/50 last:border-b-0"
-              >
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Package className="w-4 h-4 text-amber-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white font-medium">Stock bas: {alert.name}</p>
-                  <p className="text-xs text-[#94a3b8] mt-0.5">
-                    {alert.quantity}{alert.unit} restant{alert.quantity > 1 ? 's' : ''}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-
   // Grouped navigation sections
   const navSections: NavSection[] = [
     {
       title: 'PRINCIPAL',
       items: [
         { to: '/dashboard', icon: BarChart3, label: 'Tableau de bord' },
+        { to: '/mon-score', icon: Trophy, label: 'Mon score' },
         { to: '/assistant', icon: Sparkles, label: 'Assistant IA' },
         { to: '/menu', icon: BookOpen, label: 'La Carte' },
         { to: '/qr-menu', icon: QrCode, label: 'Menu QR Code' },
@@ -647,6 +346,7 @@ function AppLayout() {
     {
       title: 'INTELLIGENCE',
       items: [
+        { to: '/financial-intelligence', icon: TrendingUp, label: 'Intelligence financiere' },
         { to: '/analytics', icon: BarChart3, label: 'Analytiques' },
         { to: '/scanner-factures', icon: Receipt, label: 'Factures' },
         { to: '/actualites', icon: Newspaper, label: 'Actualités IA' },
@@ -754,6 +454,7 @@ function AppLayout() {
               {item.badge}
             </span>
           )}
+          <PageActivityDot path={item.to} />
         </span>
         {!collapsed && <span className="sidebar-label truncate">{item.label}</span>}
       </NavLink>
@@ -770,9 +471,8 @@ function AppLayout() {
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] ${collapsed ? 'justify-center px-2' : ''}`}>
         <ChefHat className="w-8 h-8 text-[#111111] dark:text-white flex-shrink-0" />
         {!collapsed && <span className="text-lg font-bold text-[#111111] dark:text-white sidebar-label font-satoshi tracking-tight flex-1">RestauMargin</span>}
-        <AlertsBell />
         <NotificationCenter />
-        {!collapsed && notificationBell}
+
       </div>
 
       {/* Restaurant selector */}
@@ -784,6 +484,12 @@ function AppLayout() {
 
       {/* Active users (collaboration indicators) */}
       {!collapsed && <ActiveUsers />}
+
+      {/* Onboarding progress tracker */}
+      {!collapsed && <OnboardingProgress />}
+
+      {/* Gamification Level Badge */}
+      {!collapsed && <SidebarLevelBadge />}
 
       {/* Station Balance button */}
       <div className={`px-3 mb-3 ${collapsed ? 'mt-4' : ''}`}>
@@ -923,9 +629,7 @@ function AppLayout() {
           </div>
           <div className="flex items-center gap-1">
               <button onClick={() => { const e = new KeyboardEvent("keydown", { key: "k", ctrlKey: true }); window.dispatchEvent(e); }} aria-label="Rechercher" className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"><Search className="w-5 h-5 text-[#6B7280] dark:text-[#737373]" /></button>
-              <AlertsBell />
               <NotificationCenter />
-              {notificationBell}
             </div>
         </header>
 
@@ -1069,6 +773,7 @@ function AppLayout() {
         {/* Content */}
         <main id="main-content" key={selectedRestaurant?.id ?? 'no-restaurant'} className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
           <Breadcrumbs />
+          <WorkingIndicator />
           <Suspense fallback={<div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-teal-500" /></div>}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
@@ -1083,6 +788,7 @@ function AppLayout() {
               <Route path="/menu-calendar" element={<MenuCalendar />} />
               <Route path="/rfqs" element={<RFQPage />} />
               <Route path="/analytics" element={<Analytics />} />
+              <Route path="/financial-intelligence" element={<FinancialIntelligence />} />
               <Route path="/scanner-factures" element={<InvoiceScanner />} />
               <Route path="/actualites" element={<Actualites />} />
               <Route path="/mercuriale" element={<Mercuriale />} />
@@ -1109,6 +815,7 @@ function AppLayout() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/users" element={<UserManagement />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/mon-score" element={<GamificationPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
@@ -1120,13 +827,23 @@ function AppLayout() {
         </footer>
       </div>
 
-      {/* Command Palette (Ctrl+K) & Global Search (Ctrl+Shift+K) */}
+      {/* Command Palette (Ctrl+K) — unified search + actions */}
       <CommandPalette />
-      <GlobalSearch />
       <ShortcutsModal open={showShortcutsModal} onClose={() => setShowShortcutsModal(false)} />
       <ChatbotAssistant />
       {/* Kitchen Timer - floating bottom-left */}
       <KitchenTimer />
+      {/* Voice Command - floating bottom-right, above Crisp chat */}
+      <VoiceCommandButton />
+
+      {/* Collaboration live toasts */}
+      <CollaborationToast />
+
+      {/* Contextual tooltips for first-visit pages */}
+      <ContextualTooltips />
+
+      {/* Floating help button */}
+      <HelpButton />
 
       {/* Onboarding Wizard for new users */}
       {showOnboarding && (
@@ -1193,7 +910,9 @@ function App() {
             path="/*"
             element={
               <ProtectedRoute>
-                <AppLayout />
+                <CollaborationProvider>
+                  <AppLayout />
+                </CollaborationProvider>
               </ProtectedRoute>
             }
           />

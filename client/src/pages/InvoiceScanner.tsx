@@ -13,6 +13,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
 import { fetchIngredients, updateIngredient } from '../services/api';
 import type { Ingredient } from '../types';
+import { updateOnboardingStep } from '../components/OnboardingWizard';
 
 /* ─── Types ─── */
 
@@ -516,6 +517,7 @@ export default function InvoiceScanner() {
       setShowMetadataModal(false);
       setPendingFiles([]);
       showToast(t('invoiceScanner.invoiceAdded'), 'success');
+      updateOnboardingStep('invoiceScanned', true);
     }
   };
 

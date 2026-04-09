@@ -15,6 +15,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import WeighModal from '../components/WeighModal';
 import IngredientAvatar from '../components/IngredientAvatar';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
+import { updateOnboardingStep } from '../components/OnboardingWizard';
 
 // ── Price alert helpers (localStorage) ─────────────────────────────────
 interface PriceAlert {
@@ -616,6 +617,7 @@ export default function Ingredients() {
         await updateIngredient(editingId, data);
       } else {
         await createIngredient(data);
+        updateOnboardingStep('ingredientAdded', true);
       }
       setSaveSuccess(true);
       setTimeout(() => {

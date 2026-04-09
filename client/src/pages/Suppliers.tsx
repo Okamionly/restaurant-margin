@@ -30,6 +30,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
+import { updateOnboardingStep } from '../components/OnboardingWizard';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -508,6 +509,7 @@ export default function Suppliers() {
       } else {
         await createSupplier(payload as Omit<Supplier, 'id' | 'createdAt' | 'updatedAt' | '_count' | 'ingredients'>);
         showToast(t('suppliers.created'), 'success');
+        updateOnboardingStep('supplierAdded', true);
       }
       setModalOpen(false);
       await loadData();

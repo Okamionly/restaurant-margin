@@ -232,7 +232,12 @@ export default function Subscription() {
     }
   };
 
+  const [subscribeLoading, setSubscribeLoading] = useState<string | null>(null);
+  const [subscribeError, setSubscribeError] = useState<string | null>(null);
+
   const handleSubscribe = async (planId: string) => {
+    setSubscribeLoading(planId);
+    setSubscribeError(null);
     try {
       const token = localStorage.getItem('token');
       const res = await fetch('/api/stripe/checkout', {
@@ -241,9 +246,19 @@ export default function Subscription() {
         body: JSON.stringify({ planId, annual: isAnnual }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (!res.ok) {
+        setSubscribeError(data.error || 'Erreur lors de la creation de la session de paiement');
+        return;
+      }
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setSubscribeError('URL de paiement non disponible');
+      }
     } catch {
-      // silent
+      setSubscribeError('Erreur de connexion au serveur');
+    } finally {
+      setSubscribeLoading(null);
     }
   };
 
@@ -303,10 +318,11 @@ export default function Subscription() {
                 {currentPlanId === 'pro' && (
                   <button
                     onClick={() => handleSubscribe('business')}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-medium rounded-2xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5"
+                    disabled={subscribeLoading === 'business'}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-medium rounded-2xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-teal-500/30 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
                   >
                     <Zap className="w-4 h-4" />
-                    Passer au Business
+                    {subscribeLoading === 'business' ? 'Redirection...' : 'Passer au Business'}
                   </button>
                 )}
               </div>
@@ -478,7 +494,8 @@ export default function Subscription() {
                   {/* CTA */}
                   <button
                     onClick={() => isCurrentPlan ? handleStripePortal() : handleSubscribe(plan.id)}
-                    className={`mt-8 w-full py-3.5 px-4 rounded-2xl font-semibold text-sm transition-all duration-200 ${
+                    disabled={subscribeLoading === plan.id}
+                    className={`mt-8 w-full py-3.5 px-4 rounded-2xl font-semibold text-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-wait ${
                       isCurrentPlan
                         ? 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] cursor-default'
                         : plan.highlighted
@@ -487,10 +504,15 @@ export default function Subscription() {
                     }`}
                   >
                     <span className="inline-flex items-center gap-2">
-                      {isCurrentPlan ? 'Plan actuel' : plan.cta}
-                      {!isCurrentPlan && <ArrowRight className="w-4 h-4" />}
+                      {subscribeLoading === plan.id
+                        ? 'Redirection vers Stripe...'
+                        : isCurrentPlan ? 'Plan actuel' : plan.cta}
+                      {!isCurrentPlan && !subscribeLoading && <ArrowRight className="w-4 h-4" />}
                     </span>
                   </button>
+                  {subscribeError && !isCurrentPlan && (
+                    <p className="mt-2 text-xs text-red-500 text-center">{subscribeError}</p>
+                  )}
                 </div>
               </div>
             );

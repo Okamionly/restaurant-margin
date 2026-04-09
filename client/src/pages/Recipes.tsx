@@ -13,6 +13,8 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import { searchTemplates, getTemplatesByCategory, TEMPLATE_CATEGORY_ORDER, type RecipeTemplate } from '../data/recipeTemplates';
 import { trackEvent } from '../utils/analytics';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
+import RecipePlaceholder from '../components/RecipePlaceholder';
+import { updateOnboardingStep } from '../components/OnboardingWizard';
 
 // ── Unit conversion divisor ─────────────────────────────────────────────
 // pricePerUnit is ALWAYS per the bulk unit (kg for weight, L for volume).
@@ -329,14 +331,7 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
   );
 }
 
-// ── Category gradient colors for recipe photo placeholders ───────────────
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  'Entrée': 'from-emerald-400 to-green-600',
-  'Plat': 'from-teal-400 to-indigo-600',
-  'Dessert': 'from-pink-400 to-rose-600',
-  'Accompagnement': 'from-amber-400 to-orange-600',
-  'Boisson': 'from-cyan-400 to-teal-600',
-};
+// ── Category gradients (kept for backwards compat, new component imported) ──
 
 // ── SVG allergen icons ───────────────────────────────────────────────────
 const ALLERGEN_ICONS: Record<string, { svg: React.ReactNode; label: string }> = {
@@ -612,20 +607,9 @@ function IngredientCombobox({
 }
 
 /** Category-based photo placeholder */
-function RecipePhotoPlaceholder({ category }: { category: string }) {
-  const gradient = CATEGORY_GRADIENTS[category] || 'from-gray-400 to-gray-600';
-  return (
-    <div className={`relative h-32 rounded-t-lg bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
-      <div className="absolute inset-0 opacity-10">
-        <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <circle cx="20" cy="20" r="15" fill="white" />
-          <circle cx="80" cy="70" r="20" fill="white" />
-          <circle cx="50" cy="50" r="10" fill="white" />
-        </svg>
-      </div>
-      <UtensilsCrossed className="w-10 h-10 text-white/70" />
-    </div>
-  );
+// RecipePhotoPlaceholder now uses the reusable component
+function RecipePhotoPlaceholder({ category, name }: { category: string; name?: string }) {
+  return <RecipePlaceholder category={category} name={name} size="md" />;
 }
 
 // ── Category coefficients (shared with Settings) ──────────────────────
@@ -1237,6 +1221,7 @@ export default function Recipes() {
       } else {
         await createRecipe(data);
         trackEvent('recipe_created');
+        updateOnboardingStep('recipeCreated', true);
       }
       setSaveSuccess(true);
       setTimeout(() => {
@@ -1619,8 +1604,8 @@ export default function Recipes() {
                 </div>
               )}
 
-              {/* Photo placeholder */}
-              <RecipePhotoPlaceholder category={recipe.category} />
+              {/* Photo placeholder with name overlay */}
+              <RecipePhotoPlaceholder category={recipe.category} name={recipe.name} />
 
               <div className="p-4">
                 {/* Header: name + category + donut */}

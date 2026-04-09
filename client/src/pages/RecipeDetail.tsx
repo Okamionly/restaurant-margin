@@ -6,6 +6,7 @@ import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, get
 import type { AllergenCheckResult, NutritionEstimateResult } from '../services/api';
 import type { Recipe, RecipeOptimizationResult, OptimizationSuggestion } from '../types';
 import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
+import RecipePlaceholder, { getMarginBadgeColor } from '../components/RecipePlaceholder';
 
 // ─── Category emoji map ───
 // ── Unit conversion divisor (price is always per bulk unit: kg/L) ───
@@ -404,14 +405,43 @@ export default function RecipeDetail() {
             </div>
           </div>
         ) : (
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadingPhoto}
-            className="w-full py-8 rounded-xl border-2 border-dashed border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#0A0A0A] flex flex-col items-center gap-2 text-[#9CA3AF] hover:text-[#111111] dark:hover:text-white hover:border-[#111111] dark:hover:border-white transition-colors"
-          >
-            {uploadingPhoto ? <Loader2 className="w-6 h-6 animate-spin" /> : <Camera className="w-6 h-6" />}
-            <span className="text-sm font-medium">Ajouter une photo</span>
-          </button>
+          /* ─── Hero banner placeholder (no photos uploaded) ─── */
+          <div className="relative rounded-xl overflow-hidden shadow-md">
+            <RecipePlaceholder category={recipe.category} name={recipe.name} size="lg" />
+            {/* Overlay badges */}
+            <div className="absolute top-3 left-3 flex items-center gap-2 z-10">
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${(() => { const mb = getMarginBadgeColor(recipe.margin.marginPercent); return mb.bg + ' ' + mb.text; })()}`}>
+                {recipe.margin.marginPercent.toFixed(1)}% marge
+              </span>
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white backdrop-blur-sm">
+                {recipe.category}
+              </span>
+            </div>
+            {/* Time badges */}
+            {totalTime > 0 && (
+              <div className="absolute top-3 right-3 flex items-center gap-2 z-10">
+                {recipe.prepTimeMinutes && recipe.prepTimeMinutes > 0 && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
+                    <Clock className="w-3 h-3" /> Prep {recipe.prepTimeMinutes}min
+                  </span>
+                )}
+                {recipe.cookTimeMinutes && recipe.cookTimeMinutes > 0 && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 text-white backdrop-blur-sm">
+                    <Clock className="w-3 h-3" /> Cuisson {recipe.cookTimeMinutes}min
+                  </span>
+                )}
+              </div>
+            )}
+            {/* Add photo button overlaid */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingPhoto}
+              className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/20 backdrop-blur-sm text-white text-xs font-medium hover:bg-white/30 transition-colors"
+            >
+              {uploadingPhoto ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+              Ajouter une photo
+            </button>
+          </div>
         )}
         <input
           ref={fileInputRef}

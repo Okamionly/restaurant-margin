@@ -22,7 +22,24 @@ import {
   Target,
   Search,
   Command,
+  Scale,
+  MessageSquare,
+  Calendar,
+  Store,
+  Trash2,
+  QrCode,
+  FileText,
+  Calculator,
+  Contact,
+  CreditCard,
+  PartyPopper,
+  Shield,
+  Loader2,
+  Clock,
+  Printer,
+  ArrowRight,
 } from 'lucide-react';
+import { getToken } from '../services/api';
 
 // ----- Types -----
 interface CommandItem {
@@ -31,6 +48,7 @@ interface CommandItem {
   shortcut?: string;
   icon: React.ComponentType<{ className?: string }>;
   action: () => void;
+  category?: string;
 }
 
 interface CommandGroup {
@@ -43,9 +61,7 @@ interface CommandGroup {
 function fuzzyMatch(text: string, query: string): boolean {
   const t = text.toLowerCase();
   const q = query.toLowerCase();
-  // Simple substring first
   if (t.includes(q)) return true;
-  // Character-by-character fuzzy
   let qi = 0;
   for (let i = 0; i < t.length && qi < q.length; i++) {
     if (t[i] === q[qi]) qi++;
@@ -56,13 +72,30 @@ function fuzzyMatch(text: string, query: string): boolean {
 function fuzzyScore(text: string, query: string): number {
   const t = text.toLowerCase();
   const q = query.toLowerCase();
-  // Exact start → highest
   if (t.startsWith(q)) return 100;
-  // Contains substring → high
   const idx = t.indexOf(q);
   if (idx >= 0) return 80 - idx;
-  // Fuzzy → low
   return 20;
+}
+
+// ----- Recent Commands (localStorage) -----
+const RECENT_KEY = 'rm-command-palette-recent';
+const MAX_RECENT = 5;
+
+function getRecentIds(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as string[];
+  } catch {
+    return [];
+  }
+}
+
+function addRecent(id: string) {
+  const current = getRecentIds().filter((r) => r !== id);
+  current.unshift(id);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(current.slice(0, MAX_RECENT)));
 }
 
 // ----- Component -----
@@ -70,6 +103,10 @@ export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
+  const [recentIds, setRecentIds] = useState<string[]>([]);
+  const [recipes, setRecipes] = useState<any[]>([]);
+  const [ingredients, setIngredients] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -83,84 +120,298 @@ export default function CommandPalette() {
     [navigate]
   );
 
-  // ----- Command definitions -----
-  const groups: CommandGroup[] = useMemo(
+  // Execute and track a command
+  const exec = useCallback(
+    (item: CommandItem) => {
+      addRecent(item.id);
+      item.action();
+      setOpen(false);
+    },
+    []
+  );
+
+  // ----- Quick Action definitions -----
+  const quickActions: CommandItem[] = useMemo(
     () => [
       {
-        category: 'Navigation',
-        categoryIcon: Layout,
-        items: [
-          { id: 'nav-dashboard', name: 'Dashboard', icon: BarChart3, action: () => go('/dashboard') },
-          { id: 'nav-recettes', name: 'Recettes', icon: ClipboardList, action: () => go('/recipes') },
-          { id: 'nav-ingredients', name: 'Ingredients', icon: ShoppingBasket, action: () => go('/ingredients') },
-          { id: 'nav-fournisseurs', name: 'Fournisseurs', icon: Truck, action: () => go('/suppliers') },
-          { id: 'nav-inventaire', name: 'Inventaire', icon: Package, action: () => go('/inventory') },
-          { id: 'nav-planning', name: 'Planning', icon: CalendarDays, action: () => go('/planning') },
-          { id: 'nav-menu', name: 'Menu', icon: BookOpen, action: () => go('/menu') },
-          { id: 'nav-haccp', name: 'HACCP', icon: ShieldCheck, action: () => go('/haccp') },
-          { id: 'nav-assistant', name: 'IA Assistant', icon: Sparkles, action: () => go('/assistant') },
-          { id: 'nav-mercuriale', name: 'Mercuriale', icon: TrendingUp, action: () => go('/mercuriale') },
-          { id: 'nav-parametres', name: 'Parametres', icon: Settings, action: () => go('/settings') },
-        ],
+        id: 'qa-new-recipe',
+        name: 'Nouvelle recette',
+        icon: Plus,
+        shortcut: 'Ctrl+N',
+        action: () => go('/recipes?action=new'),
+        category: 'action',
       },
       {
-        category: 'Actions rapides',
-        categoryIcon: Zap,
-        items: [
-          { id: 'act-new-recipe', name: 'Nouvelle recette', icon: Plus, shortcut: 'N R', action: () => go('/recipes?new=1') },
-          { id: 'act-new-ingredient', name: 'Nouvel ingredient', icon: Plus, shortcut: 'N I', action: () => go('/ingredients?new=1') },
-          { id: 'act-new-supplier', name: 'Nouveau fournisseur', icon: Plus, action: () => go('/suppliers?new=1') },
-          { id: 'act-new-order', name: 'Nouvelle commande', icon: ShoppingCart, action: () => go('/commandes?new=1') },
-          { id: 'act-scan-invoice', name: 'Scanner facture', icon: ScanLine, shortcut: 'S F', action: () => go('/scanner-factures') },
-        ],
+        id: 'qa-new-ingredient',
+        name: 'Nouvel ingredient',
+        icon: Plus,
+        shortcut: 'Ctrl+I',
+        action: () => go('/ingredients?action=new'),
+        category: 'action',
       },
       {
-        category: 'IA',
-        categoryIcon: Brain,
-        items: [
-          { id: 'ai-assistant', name: "Ouvrir l'assistant IA", icon: Sparkles, shortcut: 'G A', action: () => go('/assistant') },
-          { id: 'ai-margins', name: 'Optimiser les marges', icon: Target, action: () => go('/assistant?prompt=optimiser-marges') },
-          { id: 'ai-foodcost', name: 'Analyser le food cost', icon: Receipt, action: () => go('/assistant?prompt=analyser-food-cost') },
-        ],
+        id: 'qa-new-pesee',
+        name: 'Nouvelle pesee',
+        icon: Scale,
+        action: () => go('/station'),
+        category: 'action',
+      },
+      {
+        id: 'qa-commande',
+        name: 'Commande fournisseur',
+        icon: ShoppingCart,
+        action: () => go('/commandes'),
+        category: 'action',
+      },
+      {
+        id: 'qa-ai-report',
+        name: 'Rapport IA',
+        icon: Brain,
+        action: () => go('/assistant?prompt=rapport-complet'),
+        category: 'action',
+      },
+      {
+        id: 'qa-scanner',
+        name: 'Scanner facture',
+        icon: ScanLine,
+        action: () => go('/scanner-factures'),
+        category: 'action',
+      },
+      {
+        id: 'qa-dashboard',
+        name: 'Voir le dashboard',
+        icon: BarChart3,
+        action: () => go('/dashboard'),
+        category: 'action',
+      },
+      {
+        id: 'qa-print',
+        name: 'Imprimer cette page',
+        icon: Printer,
+        shortcut: 'Ctrl+P',
+        action: () => {
+          setOpen(false);
+          window.print();
+        },
+        category: 'action',
       },
     ],
     [go]
   );
 
-  // ----- Filtered & flattened items -----
-  const filteredGroups = useMemo(() => {
-    if (!query.trim()) return groups;
+  // ----- Navigation pages -----
+  const pageItems: CommandItem[] = useMemo(
+    () => [
+      { id: 'p-dashboard', name: 'Tableau de bord', icon: BarChart3, action: () => go('/dashboard'), category: 'page' },
+      { id: 'p-menu', name: 'La Carte', icon: BookOpen, action: () => go('/menu'), category: 'page' },
+      { id: 'p-ingredients', name: 'Ingredients', icon: ShoppingBasket, action: () => go('/ingredients'), category: 'page' },
+      { id: 'p-recipes', name: 'Fiches techniques', icon: ClipboardList, action: () => go('/recipes'), category: 'page' },
+      { id: 'p-inventory', name: 'Inventaire', icon: Package, action: () => go('/inventory'), category: 'page' },
+      { id: 'p-suppliers', name: 'Fournisseurs', icon: Truck, action: () => go('/suppliers'), category: 'page' },
+      { id: 'p-scanner', name: 'Factures', icon: Receipt, action: () => go('/scanner-factures'), category: 'page' },
+      { id: 'p-mercuriale', name: 'Mercuriale', icon: TrendingUp, action: () => go('/mercuriale'), category: 'page' },
+      { id: 'p-engineering', name: 'Menu Engineering', icon: Target, action: () => go('/menu-engineering'), category: 'page' },
+      { id: 'p-allergens', name: 'Matrice allergenes', icon: Shield, action: () => go('/allergen-matrix'), category: 'page' },
+      { id: 'p-commandes', name: 'Commandes', icon: ShoppingCart, action: () => go('/commandes'), category: 'page' },
+      { id: 'p-planning', name: 'Planning', icon: CalendarDays, action: () => go('/planning'), category: 'page' },
+      { id: 'p-messagerie', name: 'Messages', icon: MessageSquare, action: () => go('/messagerie'), category: 'page' },
+      { id: 'p-clients', name: 'Clients CRM', icon: Contact, action: () => go('/clients'), category: 'page' },
+      { id: 'p-comptabilite', name: 'Comptabilite', icon: Calculator, action: () => go('/comptabilite'), category: 'page' },
+      { id: 'p-devis', name: 'Devis & Factures', icon: FileText, action: () => go('/devis'), category: 'page' },
+      { id: 'p-marketplace', name: 'Marketplace', icon: Store, action: () => go('/marketplace'), category: 'page' },
+      { id: 'p-settings', name: 'Parametres', icon: Settings, action: () => go('/settings'), category: 'page' },
+      { id: 'p-gaspillage', name: 'Gaspillage', icon: Trash2, action: () => go('/gaspillage'), category: 'page' },
+      { id: 'p-menu-calendar', name: 'Menu Calendrier', icon: Calendar, action: () => go('/menu-calendar'), category: 'page' },
+      { id: 'p-haccp', name: 'HACCP', icon: ShieldCheck, action: () => go('/haccp'), category: 'page' },
+      { id: 'p-assistant', name: 'Assistant IA', icon: Sparkles, action: () => go('/assistant'), category: 'page' },
+      { id: 'p-seminaires', name: 'Seminaires', icon: PartyPopper, action: () => go('/seminaires'), category: 'page' },
+      { id: 'p-qr', name: 'Menu QR Code', icon: QrCode, action: () => go('/qr-menu'), category: 'page' },
+      { id: 'p-abonnement', name: 'Mon abonnement', icon: CreditCard, action: () => go('/abonnement'), category: 'page' },
+      { id: 'p-station', name: 'Station Balance', icon: Scale, action: () => go('/station'), category: 'page' },
+      { id: 'p-feedback', name: 'Avis clients', icon: MessageSquare, action: () => go('/feedback'), category: 'page' },
+      { id: 'p-analytics', name: 'Analytics', icon: BarChart3, action: () => go('/analytics'), category: 'page' },
+    ],
+    [go]
+  );
 
-    return groups
-      .map((g) => ({
-        ...g,
-        items: g.items
-          .filter((item) => fuzzyMatch(item.name, query))
-          .sort((a, b) => fuzzyScore(b.name, query) - fuzzyScore(a.name, query)),
-      }))
-      .filter((g) => g.items.length > 0);
-  }, [query, groups]);
+  // ----- IA commands -----
+  const aiItems: CommandItem[] = useMemo(
+    () => [
+      { id: 'ai-assistant', name: "Ouvrir l'assistant IA", icon: Sparkles, action: () => go('/assistant'), category: 'ia' },
+      { id: 'ai-margins', name: 'Optimiser les marges', icon: Target, action: () => go('/assistant?prompt=optimiser-marges'), category: 'ia' },
+      { id: 'ai-foodcost', name: 'Analyser le food cost', icon: Receipt, action: () => go('/assistant?prompt=analyser-food-cost'), category: 'ia' },
+      { id: 'ai-report', name: 'Generer rapport complet', icon: Brain, action: () => go('/assistant?prompt=rapport-complet'), category: 'ia' },
+    ],
+    [go]
+  );
 
-  const flatItems = useMemo(() => filteredGroups.flatMap((g) => g.items), [filteredGroups]);
+  // All static commands combined
+  const allStaticItems = useMemo(
+    () => [...quickActions, ...pageItems, ...aiItems],
+    [quickActions, pageItems, aiItems]
+  );
 
-  // ----- Keyboard shortcut to open -----
+  // ----- Dynamic search results from API -----
+  const dynamicResults: CommandItem[] = useMemo(() => {
+    if (!query.trim()) return [];
+    const q = query.toLowerCase().trim();
+    const items: CommandItem[] = [];
+
+    recipes
+      .filter((r: any) => r.name?.toLowerCase().includes(q))
+      .slice(0, 5)
+      .forEach((r: any) => {
+        items.push({
+          id: 'recipe-' + r.id,
+          name: r.name,
+          icon: ClipboardList,
+          action: () => go('/recipes/' + r.id),
+          category: 'recette',
+        });
+      });
+
+    ingredients
+      .filter((i: any) => i.name?.toLowerCase().includes(q))
+      .slice(0, 5)
+      .forEach((i: any) => {
+        items.push({
+          id: 'ingredient-' + i.id,
+          name: i.name,
+          icon: ShoppingBasket,
+          action: () => go('/ingredients'),
+          category: 'ingredient',
+        });
+      });
+
+    return items;
+  }, [query, recipes, ingredients, go]);
+
+  // ----- Build recent items -----
+  const recentItems: CommandItem[] = useMemo(() => {
+    if (query.trim()) return []; // Don't show recent when searching
+    return recentIds
+      .map((id) => allStaticItems.find((item) => item.id === id))
+      .filter(Boolean) as CommandItem[];
+  }, [recentIds, allStaticItems, query]);
+
+  // ----- Filtered command groups for display -----
+  const displayGroups = useMemo(() => {
+    const groups: { label: string; icon: React.ComponentType<{ className?: string }>; items: CommandItem[] }[] = [];
+
+    if (!query.trim()) {
+      // No query: show recent, then quick actions, then pages (collapsed)
+      if (recentItems.length > 0) {
+        groups.push({ label: 'Recent', icon: Clock, items: recentItems });
+      }
+      groups.push({ label: 'Actions rapides', icon: Zap, items: quickActions });
+      groups.push({ label: 'Navigation', icon: Layout, items: pageItems.slice(0, 8) });
+      groups.push({ label: 'Intelligence IA', icon: Brain, items: aiItems });
+    } else {
+      // Has query: filter everything
+      const matchedActions = quickActions
+        .filter((item) => fuzzyMatch(item.name, query))
+        .sort((a, b) => fuzzyScore(b.name, query) - fuzzyScore(a.name, query));
+      const matchedPages = pageItems
+        .filter((item) => fuzzyMatch(item.name, query))
+        .sort((a, b) => fuzzyScore(b.name, query) - fuzzyScore(a.name, query));
+      const matchedAI = aiItems
+        .filter((item) => fuzzyMatch(item.name, query))
+        .sort((a, b) => fuzzyScore(b.name, query) - fuzzyScore(a.name, query));
+
+      if (matchedActions.length > 0) {
+        groups.push({ label: 'Actions', icon: Zap, items: matchedActions });
+      }
+      if (dynamicResults.length > 0) {
+        const recipeResults = dynamicResults.filter((d) => d.category === 'recette');
+        const ingredientResults = dynamicResults.filter((d) => d.category === 'ingredient');
+        if (recipeResults.length > 0) {
+          groups.push({ label: 'Recettes', icon: ClipboardList, items: recipeResults });
+        }
+        if (ingredientResults.length > 0) {
+          groups.push({ label: 'Ingredients', icon: ShoppingBasket, items: ingredientResults });
+        }
+      }
+      if (matchedPages.length > 0) {
+        groups.push({ label: 'Pages', icon: Layout, items: matchedPages });
+      }
+      if (matchedAI.length > 0) {
+        groups.push({ label: 'Intelligence IA', icon: Brain, items: matchedAI });
+      }
+    }
+
+    return groups;
+  }, [query, quickActions, pageItems, aiItems, recentItems, dynamicResults]);
+
+  const flatItems = useMemo(() => displayGroups.flatMap((g) => g.items), [displayGroups]);
+
+  // ----- Fetch data on open -----
+  useEffect(() => {
+    if (!open) return;
+    const token = getToken();
+    if (!token) return;
+    const headers = { Authorization: `Bearer ${token}` };
+    setLoadingData(true);
+    Promise.all([
+      fetch('/api/recipes', { headers }).then((r) => (r.ok ? r.json() : [])).catch(() => []),
+      fetch('/api/ingredients', { headers }).then((r) => (r.ok ? r.json() : [])).catch(() => []),
+    ]).then(([rec, ing]) => {
+      setRecipes(Array.isArray(rec) ? rec : []);
+      setIngredients(Array.isArray(ing) ? ing : []);
+      setLoadingData(false);
+    });
+  }, [open]);
+
+  // ----- Global keyboard shortcuts -----
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
+      // Ctrl+K / Cmd+K: toggle palette
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setOpen((prev) => !prev);
+        return;
+      }
+
+      // Don't fire shortcuts if palette is open (let it handle its own keys)
+      if (open) return;
+
+      // Don't fire shortcuts when typing in an input/textarea
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if ((e.target as HTMLElement)?.isContentEditable) return;
+
+      // Ctrl+N: new recipe
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault();
+        addRecent('qa-new-recipe');
+        navigate('/recipes?action=new');
+        return;
+      }
+
+      // Ctrl+I: new ingredient
+      if ((e.metaKey || e.ctrlKey) && e.key === 'i') {
+        e.preventDefault();
+        addRecent('qa-new-ingredient');
+        navigate('/ingredients?action=new');
+        return;
+      }
+
+      // Ctrl+P: print
+      if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
+        e.preventDefault();
+        window.print();
+        return;
       }
     }
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, []);
+  }, [open, navigate]);
 
   // ----- Focus on open -----
   useEffect(() => {
     if (open) {
       setQuery('');
       setActiveIndex(0);
-      // Small delay so the DOM is painted before focusing
+      setRecentIds(getRecentIds());
       requestAnimationFrame(() => {
         inputRef.current?.focus();
       });
@@ -196,7 +447,7 @@ export default function CommandPalette() {
         case 'Enter':
           e.preventDefault();
           if (flatItems[activeIndex]) {
-            flatItems[activeIndex].action();
+            exec(flatItems[activeIndex]);
           }
           break;
         case 'Escape':
@@ -205,7 +456,7 @@ export default function CommandPalette() {
           break;
       }
     },
-    [flatItems, activeIndex]
+    [flatItems, activeIndex, exec]
   );
 
   // ----- Don't render when closed -----
@@ -213,52 +464,68 @@ export default function CommandPalette() {
 
   let runningIndex = -1;
 
+  const isMac = navigator.platform?.toLowerCase().includes('mac');
+  const modKey = isMac ? '\u2318' : 'Ctrl';
+
   return (
     <div
       className="fixed inset-0 z-[200] flex items-start justify-center"
       onClick={() => setOpen(false)}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-[fadeIn_150ms_ease-out]" />
+      {/* Overlay with backdrop blur */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-md animate-[cpFadeIn_120ms_ease-out]" />
 
-      {/* Panel */}
+      {/* Panel - centered, responsive */}
       <div
-        className="relative w-full max-w-lg mx-4 mt-[20vh] rounded-xl border border-slate-700 bg-slate-900 shadow-2xl shadow-black/50 overflow-hidden animate-[slideDown_200ms_ease-out]"
+        className="
+          relative w-full max-w-[600px] mx-4 mt-[15vh]
+          sm:rounded-2xl rounded-none
+          border border-[#1A1A1A]
+          bg-[#0A0A0A]
+          shadow-2xl shadow-black/60
+          overflow-hidden
+          animate-[cpSlideDown_180ms_ease-out]
+          max-sm:fixed max-sm:inset-0 max-sm:mt-0 max-sm:mx-0 max-sm:max-w-none max-sm:rounded-none max-sm:border-0
+        "
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Search input */}
-        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-700/60">
-          <Search className="w-5 h-5 text-slate-400 flex-shrink-0" />
+        {/* Search input - large */}
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-[#1A1A1A]">
+          <Search className="w-5 h-5 text-[#737373] flex-shrink-0" />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Rechercher une commande..."
-            className="flex-1 bg-transparent text-white placeholder-slate-400 text-sm outline-none caret-teal-400"
+            placeholder="Tapez une commande ou recherchez..."
+            className="flex-1 bg-transparent text-white placeholder-[#525252] text-base outline-none caret-teal-400"
             autoComplete="off"
             spellCheck={false}
           />
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 bg-slate-800 border border-slate-700 rounded">
+          {loadingData && <Loader2 className="w-4 h-4 animate-spin text-teal-400 flex-shrink-0" />}
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-medium text-[#525252] bg-[#171717] border border-[#262626] rounded-lg">
             ESC
           </kbd>
         </div>
 
         {/* Results list */}
-        <div ref={listRef} className="max-h-[50vh] overflow-y-auto py-2 scroll-smooth">
-          {filteredGroups.length === 0 && (
-            <div className="py-10 text-center text-sm text-slate-500">
-              Aucun resultat pour &laquo;&nbsp;{query}&nbsp;&raquo;
+        <div ref={listRef} className="max-h-[60vh] max-sm:max-h-[calc(100vh-120px)] overflow-y-auto py-2 scroll-smooth">
+          {displayGroups.length === 0 && query.trim() && (
+            <div className="py-12 text-center">
+              <Search className="w-8 h-8 text-[#333333] mx-auto mb-3" />
+              <p className="text-sm text-[#525252]">
+                Aucun resultat pour &laquo;&nbsp;{query}&nbsp;&raquo;
+              </p>
             </div>
           )}
 
-          {filteredGroups.map((group) => (
-            <div key={group.category} className="mb-1">
+          {displayGroups.map((group) => (
+            <div key={group.label} className="mb-1">
               {/* Category header */}
-              <div className="flex items-center gap-2 px-4 py-2">
-                <group.categoryIcon className="w-3.5 h-3.5 text-slate-500" />
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                  {group.category}
+              <div className="flex items-center gap-2 px-5 py-2 mt-1">
+                <group.icon className="w-3.5 h-3.5 text-[#525252]" />
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-[#525252]">
+                  {group.label}
                 </span>
               </div>
 
@@ -270,42 +537,59 @@ export default function CommandPalette() {
 
                 return (
                   <button
-                    key={item.id}
+                    key={item.id + '-' + idx}
                     data-active={isActive}
-                    onClick={() => item.action()}
+                    onClick={() => exec(item)}
                     onMouseEnter={() => setActiveIndex(idx)}
                     className={`
-                      w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-all duration-100
+                      w-full flex items-center gap-3 px-5 py-3 text-left transition-all duration-75 group
                       ${
                         isActive
-                          ? 'bg-teal-500/20 border-l-2 border-teal-400'
-                          : 'border-l-2 border-transparent hover:bg-teal-500/10'
+                          ? 'bg-teal-500/10'
+                          : 'hover:bg-[#111111]'
                       }
                     `}
                   >
-                    <item.icon
-                      className={`w-4 h-4 flex-shrink-0 transition-colors duration-100 ${
-                        isActive ? 'text-teal-400' : 'text-slate-500'
-                      }`}
-                    />
+                    <div
+                      className={`
+                        w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-75
+                        ${isActive ? 'bg-teal-500/20' : 'bg-[#171717]'}
+                      `}
+                    >
+                      <item.icon
+                        className={`w-4 h-4 transition-colors duration-75 ${
+                          isActive ? 'text-teal-400' : 'text-[#737373]'
+                        }`}
+                      />
+                    </div>
                     <span
-                      className={`flex-1 truncate transition-colors duration-100 ${
-                        isActive ? 'text-white' : 'text-slate-300'
+                      className={`flex-1 truncate text-sm transition-colors duration-75 ${
+                        isActive ? 'text-white' : 'text-[#A3A3A3]'
                       }`}
                     >
                       {item.name}
                     </span>
                     {item.shortcut && (
-                      <span className="ml-auto flex items-center gap-1">
-                        {item.shortcut.split(' ').map((k, ki) => (
+                      <span className="ml-auto flex items-center gap-1 flex-shrink-0">
+                        {item.shortcut.split('+').map((k, ki) => (
                           <kbd
                             key={ki}
-                            className="inline-flex items-center justify-center min-w-[20px] px-1 py-0.5 text-[10px] font-medium text-slate-500 bg-slate-800 border border-slate-700 rounded"
+                            className={`
+                              inline-flex items-center justify-center min-w-[24px] px-1.5 py-0.5
+                              text-[10px] font-medium rounded-md
+                              ${isActive
+                                ? 'text-teal-300 bg-teal-500/15 border border-teal-500/20'
+                                : 'text-[#525252] bg-[#171717] border border-[#262626]'
+                              }
+                            `}
                           >
-                            {k}
+                            {k === 'Ctrl' ? modKey : k}
                           </kbd>
                         ))}
                       </span>
+                    )}
+                    {isActive && !item.shortcut && (
+                      <ArrowRight className="w-3.5 h-3.5 text-teal-400/60 flex-shrink-0" />
                     )}
                   </button>
                 );
@@ -315,38 +599,40 @@ export default function CommandPalette() {
         </div>
 
         {/* Footer hints */}
-        <div className="flex items-center gap-4 px-4 py-2.5 border-t border-slate-700/60 text-[10px] text-slate-500">
+        <div className="flex items-center gap-5 px-5 py-3 border-t border-[#1A1A1A] text-[11px] text-[#525252]">
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-500">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
               {'\u2191\u2193'}
             </kbd>
             naviguer
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-500">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
               {'\u23CE'}
             </kbd>
             ouvrir
           </span>
           <span className="flex items-center gap-1.5">
-            <kbd className="px-1 py-0.5 bg-slate-800 border border-slate-700 rounded text-slate-500">esc</kbd>
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
+              esc
+            </kbd>
             fermer
           </span>
-          <span className="ml-auto flex items-center gap-1.5">
+          <span className="ml-auto flex items-center gap-1.5 text-[#525252]">
             <Command className="w-3 h-3" />
-            <span>K</span>
+            <span className="text-[10px] font-medium">K</span>
           </span>
         </div>
       </div>
 
-      {/* Keyframe animations (injected once) */}
+      {/* Keyframe animations */}
       <style>{`
-        @keyframes fadeIn {
+        @keyframes cpFadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+        @keyframes cpSlideDown {
+          from { opacity: 0; transform: translateY(-16px) scale(0.97); }
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>

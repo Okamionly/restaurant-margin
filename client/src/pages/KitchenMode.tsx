@@ -6,7 +6,8 @@ import {
   CheckCircle2, Eye, Flame, Volume2, VolumeX, Printer,
   Star, Users, MicOff, Zap,
   SplitSquareHorizontal, BarChart3, TrendingUp, Award, Archive,
-  ShieldAlert, Megaphone, Undo2, ArrowDown, PauseCircle
+  ShieldAlert, Megaphone, Undo2, ArrowDown, PauseCircle,
+  Settings, Edit3, Scissors, LayoutGrid, MapPin, XCircle
 } from 'lucide-react';
 import { fetchRecipes } from '../services/api';
 import type { Recipe } from '../types';
@@ -48,6 +49,18 @@ interface Order {
   holdStatus: OrderHoldStatus;
 }
 
+type TableStatus = 'libre' | 'occupee' | 'attente';
+
+interface TableInfo {
+  number: number;
+  section: 'salle' | 'terrasse';
+}
+
+interface TableConfig {
+  tableCount: number;
+  tables: TableInfo[];
+}
+
 interface DailyStats {
   platsServis: number;
   tempsMoyenSeconds: number;
@@ -75,6 +88,7 @@ const KITCHEN_ARCHIVE_KEY = 'kitchen-mode-archived-count';
 const KITCHEN_ORDER_TIMESTAMPS_KEY = 'kitchen-mode-order-timestamps';
 const KITCHEN_ORDER_COUNTER_KEY = 'kitchen-mode-order-counter';
 const KITCHEN_BUMPED_KEY = 'kitchen-mode-bumped';
+const KITCHEN_TABLE_CONFIG_KEY = 'kitchen-mode-table-config';
 const AUTO_DIM_TIMEOUT = 30000;
 const AUTO_ARCHIVE_DELAY = 30000;
 const RUSH_WINDOW_MS = 10 * 60 * 1000;
@@ -331,6 +345,23 @@ function getOrderColumn(order: Order): 'new' | 'preparing' | 'ready' {
   const hasAnyPrep = order.dishes.some(d => d.status === 'preparation');
   if (hasAnyPrep) return 'preparing';
   return 'new';
+}
+
+function getDefaultTableConfig(count: number = 12): TableConfig {
+  const tables: TableInfo[] = [];
+  for (let i = 1; i <= count; i++) {
+    tables.push({ number: i, section: i <= Math.ceil(count * 0.75) ? 'salle' : 'terrasse' });
+  }
+  return { tableCount: count, tables };
+}
+
+function getTableStatus(tableNumber: number, orders: Order[]): { status: TableStatus; orderCount: number; firstOrderTime: number | null } {
+  const tableOrders = orders.filter(o => o.tableNumber === tableNumber && !o.bumpedAt && !o.dishes.every(d => d.status === 'servi'));
+  if (tableOrders.length === 0) return { status: 'libre', orderCount: 0, firstOrderTime: null };
+  const hasWaiting = tableOrders.some(o => o.dishes.some(d => d.status === 'attente'));
+  const firstOrderTime = Math.min(...tableOrders.map(o => o.createdAt));
+  if (hasWaiting) return { status: 'attente', orderCount: tableOrders.length, firstOrderTime };
+  return { status: 'occupee', orderCount: tableOrders.length, firstOrderTime };
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -734,6 +765,7 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
 // ══════════════════════════════════════════════════════════════════════════
 function OrderCard({
   order, now, column, onDishStatusChange, onDishView, onRemoveOrder, onPrint, onBump, onHold, isArchiving, isDragging, onDragStart, onDragEnd, onDrop,
+  onEditOrder, onDeleteOrder, onSplitOrder,
 }: {
   order: Order; now: number; column: 'new' | 'preparing' | 'ready';
   onDishStatusChange: (orderId: string, dishId: string) => void;
@@ -747,6 +779,9 @@ function OrderCard({
   onDragStart?: (e: React.DragEvent, orderId: string) => void;
   onDragEnd?: () => void;
   onDrop?: (e: React.DragEvent, targetColumn: 'new' | 'preparing' | 'ready') => void;
+  onEditOrder?: (order: Order) => void;
+  onDeleteOrder?: (orderId: string) => void;
+  onSplitOrder?: (order: Order) => void;
 }) {
   const elapsed = Math.floor((now - order.createdAt) / 1000);
   const elapsedMs = now - order.createdAt;
@@ -842,10 +877,28 @@ function OrderCard({
           <span className="text-[#71717a] text-lg font-mono">
             {order.dishes.filter(d => d.status === 'pret' || d.status === 'servi').length}/{order.dishes.length}
           </span>
+          {!allServed && !isBumped && onEditOrder && (
+            <button onClick={() => onEditOrder(order)} title="Modifier"
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              <Edit3 className="w-5 h-5" />
+            </button>
+          )}
+          {!allServed && !isBumped && onSplitOrder && order.dishes.length > 1 && (
+            <button onClick={() => onSplitOrder(order)} title="Scinder"
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              <Scissors className="w-5 h-5" />
+            </button>
+          )}
           <button onClick={() => onPrint(order)} title="Imprimer"
             className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-white kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
             <Printer className="w-5 h-5" />
           </button>
+          {!allServed && !isBumped && onDeleteOrder && (
+            <button onClick={() => { if (confirm('Supprimer cette commande ?')) onDeleteOrder(order.id); }} title="Supprimer"
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              <Trash2 className="w-5 h-5" />
+            </button>
+          )}
           {(allServed || isBumped) && (
             <button onClick={() => onRemoveOrder(order.id)}
               className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#525252] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
@@ -1393,6 +1446,386 @@ function StationViewTabs({ current, onChange }: { current: StationView; onChange
 }
 
 // ══════════════════════════════════════════════════════════════════════════
+// ██  TABLE PANEL  ████████████████████████████████████████████████████████
+// ══════════════════════════════════════════════════════════════════════════
+function TablePanel({
+  tableConfig, orders, now, onFilterTable, activeTableFilter, onFreeTable, onAddTable, onRemoveTable,
+}: {
+  tableConfig: TableConfig; orders: Order[]; now: number;
+  onFilterTable: (t: number | null) => void; activeTableFilter: number | null;
+  onFreeTable: (t: number) => void; onAddTable: () => void; onRemoveTable: () => void;
+}) {
+  const sections = useMemo(() => {
+    const salle = tableConfig.tables.filter(t => t.section === 'salle');
+    const terrasse = tableConfig.tables.filter(t => t.section === 'terrasse');
+    return { salle, terrasse };
+  }, [tableConfig]);
+
+  const renderTable = (table: TableInfo) => {
+    const { status, orderCount, firstOrderTime } = getTableStatus(table.number, orders);
+    const elapsed = firstOrderTime ? Math.floor((now - firstOrderTime) / 1000) : 0;
+    const isActive = activeTableFilter === table.number;
+
+    return (
+      <button key={table.number}
+        onClick={() => onFilterTable(isActive ? null : table.number)}
+        className={`relative rounded-xl p-3 min-h-[90px] flex flex-col items-center justify-center gap-1 kds-transition border-2
+          ${isActive ? 'ring-2 ring-[#14b8a6] border-[#14b8a6]' :
+            status === 'libre' ? 'border-[#064e3b]/50 bg-[#064e3b]/10 hover:bg-[#064e3b]/20' :
+            status === 'occupee' ? 'border-[#f59e0b]/50 bg-[#78350f]/20 hover:bg-[#78350f]/30' :
+            'border-[#ef4444]/50 bg-[#7f1d1d]/20 hover:bg-[#7f1d1d]/30'}`}>
+        <span className={`text-3xl font-black ${
+          status === 'libre' ? 'text-[#34d399]' :
+          status === 'occupee' ? 'text-[#fbbf24]' : 'text-[#ef4444]'
+        }`}>{table.number}</span>
+        <span className={`text-xs font-bold uppercase ${
+          status === 'libre' ? 'text-[#34d399]/70' :
+          status === 'occupee' ? 'text-[#fbbf24]/70' : 'text-[#ef4444]/70'
+        }`}>{status === 'libre' ? 'Libre' : status === 'occupee' ? 'Occupee' : 'Attente'}</span>
+        {orderCount > 0 && (
+          <span className="text-[10px] text-[#a1a1aa]">{orderCount} cmd - {formatElapsed(elapsed)}</span>
+        )}
+        {status !== 'libre' && (
+          <button
+            onClick={e => { e.stopPropagation(); onFreeTable(table.number); }}
+            className="absolute top-1 right-1 p-1 rounded-md bg-[#ef4444]/20 hover:bg-[#ef4444]/40 text-[#ef4444] kds-transition"
+            title="Liberer la table">
+            <XCircle className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </button>
+    );
+  };
+
+  const occupiedCount = tableConfig.tables.filter(t => getTableStatus(t.number, orders).status !== 'libre').length;
+
+  return (
+    <div className="bg-[#0a0a0a] border-b-2 border-[#262626] px-4 py-3">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <LayoutGrid className="w-5 h-5 text-[#14b8a6]" />
+          <span className="text-lg font-bold text-white">Tables</span>
+          <span className="text-sm text-[#a1a1aa]">{occupiedCount}/{tableConfig.tableCount} occupees</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {activeTableFilter && (
+            <button onClick={() => onFilterTable(null)}
+              className="px-3 py-1.5 rounded-lg bg-[#14b8a6]/20 text-[#14b8a6] text-sm font-bold kds-transition hover:bg-[#14b8a6]/30">
+              <X className="w-4 h-4 inline mr-1" />Filtre T{activeTableFilter}
+            </button>
+          )}
+          <button onClick={onAddTable}
+            className="px-3 py-1.5 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] text-sm font-bold kds-transition">
+            <Plus className="w-4 h-4 inline mr-1" />Table
+          </button>
+          <button onClick={onRemoveTable} disabled={tableConfig.tableCount <= 1}
+            className="px-3 py-1.5 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#a1a1aa] hover:text-[#ef4444] text-sm font-bold kds-transition disabled:opacity-30 disabled:cursor-not-allowed">
+            <Trash2 className="w-4 h-4 inline mr-1" />Table
+          </button>
+        </div>
+      </div>
+      {sections.salle.length > 0 && (
+        <div className="mb-2">
+          <span className="text-xs text-[#525252] font-bold uppercase tracking-wider mb-1 block"><MapPin className="w-3 h-3 inline mr-1" />Salle</span>
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+            {sections.salle.map(renderTable)}
+          </div>
+        </div>
+      )}
+      {sections.terrasse.length > 0 && (
+        <div>
+          <span className="text-xs text-[#525252] font-bold uppercase tracking-wider mb-1 block"><MapPin className="w-3 h-3 inline mr-1" />Terrasse</span>
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+            {sections.terrasse.map(renderTable)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ██  EDIT ORDER MODAL  ██████████████████████████████████████████████████
+// ══════════════════════════════════════════════════════════════════════════
+function EditOrderModal({ order, onSave, onClose }: {
+  order: Order;
+  onSave: (orderId: string, updates: { tableNumber?: number; notes?: string; priority?: OrderPriority }) => void;
+  onClose: () => void;
+}) {
+  const [tableNumber, setTableNumber] = useState(order.tableNumber);
+  const [notes, setNotes] = useState(order.notes);
+  const [priority, setPriority] = useState<OrderPriority>(order.priority);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-white">Modifier {formatOrderNumber(order.orderNumber)}</h2>
+          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-base text-[#a1a1aa] mb-2 block">Table N&deg;</label>
+            <div className="flex gap-2 flex-wrap">
+              {Array.from({ length: 20 }, (_, i) => i + 1).map(n => (
+                <button key={n} onClick={() => setTableNumber(n)}
+                  className={`min-w-[52px] min-h-[52px] rounded-xl text-xl font-bold kds-transition
+                    ${tableNumber === n ? 'bg-[#0d9488] text-white' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}>
+                  {n}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-base text-[#a1a1aa] mb-2 block">Priorite</label>
+            <div className="flex gap-2">
+              {(['normal', 'rush', 'vip'] as OrderPriority[]).map(p => (
+                <button key={p} onClick={() => setPriority(p)}
+                  className={`flex-1 min-h-[52px] rounded-xl text-lg font-bold kds-transition uppercase
+                    ${priority === p
+                      ? p === 'vip' ? 'bg-[#7c3aed] text-white' : p === 'rush' ? 'bg-[#ef4444] text-white' : 'bg-[#404040] text-white'
+                      : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626]'}`}>
+                  {p === 'vip' && <Star className="w-4 h-4 inline mr-1" />}{p}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-base text-[#a1a1aa] mb-2 block">Notes / Allergies</label>
+            <input value={notes} onChange={e => setNotes(e.target.value)} placeholder="Allergies, cuisson speciale..."
+              className="w-full bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 text-lg text-white placeholder-[#525252] focus:border-[#0d9488] focus:outline-none min-h-[52px]" />
+          </div>
+        </div>
+
+        <button onClick={() => { onSave(order.id, { tableNumber, notes, priority }); onClose(); }}
+          className="w-full mt-6 min-h-[60px] rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white text-xl font-bold kds-transition">
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ██  SPLIT ORDER MODAL  █████████████████████████████████████████████████
+// ══════════════════════════════════════════════════════════════════════════
+function SplitOrderModal({ order, onSplit, onClose }: {
+  order: Order;
+  onSplit: (orderId: string, dishIdsToMove: string[]) => void;
+  onClose: () => void;
+}) {
+  const [selectedDishIds, setSelectedDishIds] = useState<Set<string>>(new Set());
+
+  const toggleDish = (dishId: string) => {
+    setSelectedDishIds(prev => {
+      const next = new Set(prev);
+      if (next.has(dishId)) next.delete(dishId);
+      else next.add(dishId);
+      return next;
+    });
+  };
+
+  const canSplit = selectedDishIds.size > 0 && selectedDishIds.size < order.dishes.length;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg p-6" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-white">Scinder {formatOrderNumber(order.orderNumber)}</h2>
+          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <p className="text-[#a1a1aa] text-base mb-4">Selectionnez les plats a deplacer vers une nouvelle commande :</p>
+
+        <div className="space-y-2 mb-6 max-h-[40vh] overflow-y-auto">
+          {order.dishes.map(dish => (
+            <button key={dish.id} onClick={() => toggleDish(dish.id)}
+              className={`w-full flex items-center justify-between p-3 rounded-xl kds-transition border-2
+                ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]/10' : 'border-[#262626] bg-[#1a1a1a] hover:bg-[#262626]'}`}>
+              <div className="flex items-center gap-3">
+                <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center kds-transition
+                  ${selectedDishIds.has(dish.id) ? 'border-[#14b8a6] bg-[#14b8a6]' : 'border-[#404040]'}`}>
+                  {selectedDishIds.has(dish.id) && <CheckCircle2 className="w-4 h-4 text-white" />}
+                </div>
+                <span className="text-lg text-white font-semibold">
+                  {dish.quantity > 1 && <span className="text-[#fbbf24] mr-1">x{dish.quantity}</span>}
+                  {dish.recipeName}
+                </span>
+              </div>
+              <span className={`text-sm px-2 py-0.5 rounded ${getCourseColor(dish.course || 'autre').bg} ${getCourseColor(dish.course || 'autre').text}`}>
+                {getCourseColor(dish.course || 'autre').label}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3 mb-4 text-sm">
+          <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 text-center">
+            <span className="text-[#a1a1aa]">Commande originale: </span>
+            <span className="text-white font-bold">{order.dishes.length - selectedDishIds.size} plats</span>
+          </div>
+          <Scissors className="w-5 h-5 text-[#525252]" />
+          <div className="flex-1 bg-[#1a1a1a] rounded-lg p-2 text-center">
+            <span className="text-[#a1a1aa]">Nouvelle: </span>
+            <span className="text-[#14b8a6] font-bold">{selectedDishIds.size} plats</span>
+          </div>
+        </div>
+
+        <button onClick={() => { if (canSplit) { onSplit(order.id, Array.from(selectedDishIds)); onClose(); } }}
+          disabled={!canSplit}
+          className={`w-full min-h-[60px] rounded-xl text-xl font-bold kds-transition
+            ${canSplit ? 'bg-[#0d9488] hover:bg-[#14b8a6] text-white' : 'bg-[#1a1a1a] text-[#525252] cursor-not-allowed'}`}>
+          <Scissors className="w-5 h-5 inline mr-2" />Scinder la commande
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ██  TABLE CONFIG MODAL  ████████████████████████████████████████████████
+// ══════════════════════════════════════════════════════════════════════════
+function TableConfigModal({ config, onSave, onClose }: {
+  config: TableConfig;
+  onSave: (config: TableConfig) => void;
+  onClose: () => void;
+}) {
+  const [tableCount, setTableCount] = useState(config.tableCount);
+  const [tables, setTables] = useState<TableInfo[]>(config.tables);
+
+  const updateCount = (count: number) => {
+    const clamped = Math.max(1, Math.min(50, count));
+    setTableCount(clamped);
+    const newTables: TableInfo[] = [];
+    for (let i = 1; i <= clamped; i++) {
+      const existing = tables.find(t => t.number === i);
+      newTables.push(existing || { number: i, section: i <= Math.ceil(clamped * 0.75) ? 'salle' : 'terrasse' });
+    }
+    setTables(newTables);
+  };
+
+  const toggleSection = (num: number) => {
+    setTables(prev => prev.map(t => t.number === num ? { ...t, section: t.section === 'salle' ? 'terrasse' : 'salle' } : t));
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-[#0a0a0a] border-2 border-[#333333] rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Settings className="w-7 h-7 text-[#14b8a6]" />
+            <h2 className="text-2xl font-bold text-white">Configuration Tables</h2>
+          </div>
+          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white kds-transition min-w-[52px] min-h-[52px] flex items-center justify-center">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="mb-6">
+          <label className="text-base text-[#a1a1aa] mb-2 block">Nombre de tables</label>
+          <div className="flex items-center gap-3">
+            <button onClick={() => updateCount(tableCount - 1)}
+              className="min-w-[52px] min-h-[52px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-white text-2xl font-bold kds-transition">-</button>
+            <span className="text-4xl font-black text-white font-mono w-20 text-center">{tableCount}</span>
+            <button onClick={() => updateCount(tableCount + 1)}
+              className="min-w-[52px] min-h-[52px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-white text-2xl font-bold kds-transition">+</button>
+          </div>
+          <div className="flex gap-2 mt-3">
+            {[8, 10, 12, 15, 20].map(n => (
+              <button key={n} onClick={() => updateCount(n)}
+                className={`px-3 py-2 rounded-lg text-sm font-bold kds-transition
+                  ${tableCount === n ? 'bg-[#0d9488] text-white' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626]'}`}>
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="text-base text-[#a1a1aa] mb-2 block">Disposition (cliquer pour changer Salle/Terrasse)</label>
+          <div className="grid grid-cols-5 gap-2">
+            {tables.map(t => (
+              <button key={t.number} onClick={() => toggleSection(t.number)}
+                className={`p-2 rounded-lg text-center kds-transition border
+                  ${t.section === 'salle' ? 'border-[#14b8a6]/30 bg-[#14b8a6]/10 text-[#14b8a6]' : 'border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316]'}`}>
+                <span className="text-lg font-bold block">{t.number}</span>
+                <span className="text-[10px] uppercase font-bold">{t.section === 'salle' ? 'Salle' : 'Terr.'}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <button onClick={() => { onSave({ tableCount, tables }); onClose(); }}
+          className="w-full min-h-[60px] rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white text-xl font-bold kds-transition">
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ██  QUICK ACTIONS BAR  █████████████████████████████████████████████████
+// ══════════════════════════════════════════════════════════════════════════
+function QuickActionsBar({
+  orders, tableConfig, onClearAll, onLoadDemo, onOpenTableConfig,
+}: {
+  orders: Order[];
+  tableConfig: TableConfig;
+  onClearAll: () => void;
+  onLoadDemo: () => void;
+  onOpenTableConfig: () => void;
+}) {
+  const [confirmClear, setConfirmClear] = useState(false);
+  const activeOrders = orders.filter(o => !o.dishes.every(d => d.status === 'servi') && !o.bumpedAt).length;
+  const occupiedTables = tableConfig.tables.filter(t => getTableStatus(t.number, orders).status !== 'libre').length;
+
+  useEffect(() => {
+    if (confirmClear) { const t = setTimeout(() => setConfirmClear(false), 3000); return () => clearTimeout(t); }
+  }, [confirmClear]);
+
+  return (
+    <div className="bg-[#0a0a0a]/80 border-b border-[#262626] px-4 py-2 flex items-center gap-3 shrink-0 overflow-x-auto">
+      {/* Clear all */}
+      <button onClick={() => { if (confirmClear) { onClearAll(); setConfirmClear(false); } else setConfirmClear(true); }}
+        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold kds-transition shrink-0
+          ${confirmClear ? 'bg-[#ef4444] text-white animate-pulse' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#ef4444]/10 hover:text-[#ef4444]'}`}>
+        <Trash2 className="w-4 h-4" />{confirmClear ? 'Confirmer ?' : 'Vider tout'}
+      </button>
+      {/* Load demo */}
+      <button onClick={onLoadDemo}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-[#1a1a1a] text-[#71717a] hover:bg-[#78350f]/30 hover:text-[#fbbf24] kds-transition shrink-0">
+        <Flame className="w-4 h-4" />Charger demo
+      </button>
+      {/* Table counter */}
+      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1a1a1a] text-sm shrink-0">
+        <LayoutGrid className="w-4 h-4 text-[#14b8a6]" />
+        <span className="text-[#14b8a6] font-bold">{occupiedTables}/{tableConfig.tableCount}</span>
+        <span className="text-[#71717a]">tables occupees</span>
+      </div>
+      {/* Order counter */}
+      <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1a1a1a] text-sm shrink-0">
+        <ChefHat className="w-4 h-4 text-[#fbbf24]" />
+        <span className="text-[#fbbf24] font-bold">{activeOrders}</span>
+        <span className="text-[#71717a]">commandes actives</span>
+      </div>
+      {/* Settings gear */}
+      <button onClick={onOpenTableConfig}
+        className="ml-auto flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-white kds-transition shrink-0">
+        <Settings className="w-4 h-4" />Config
+      </button>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════
 // ██  MAIN PAGE  ██████████████████████████████████████████████████████████
 // ══════════════════════════════════════════════════════════════════════════
 export default function KitchenMode() {
@@ -1421,6 +1854,18 @@ export default function KitchenMode() {
   const [orderTimestamps, setOrderTimestamps] = useState<OrderTimestamp[]>([]);
   const [orderCounter, setOrderCounter] = useState(0);
   const [draggedOrderId, setDraggedOrderId] = useState<string | null>(null);
+  const [showTablePanel, setShowTablePanel] = useState(false);
+  const [tableFilter, setTableFilter] = useState<number | null>(null);
+  const [tableConfig, setTableConfig] = useState<TableConfig>(() => {
+    try {
+      const saved = localStorage.getItem(KITCHEN_TABLE_CONFIG_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return getDefaultTableConfig(12);
+  });
+  const [showTableConfig, setShowTableConfig] = useState(false);
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null);
+  const [splittingOrder, setSplittingOrder] = useState<Order | null>(null);
   const dimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevOrderCountRef = useRef(0);
   const prevReadyTablesRef = useRef<Set<string>>(new Set());
@@ -1478,6 +1923,7 @@ export default function KitchenMode() {
   useEffect(() => { if (loaded) localStorage.setItem(KITCHEN_ORDER_TIMESTAMPS_KEY, JSON.stringify(orderTimestamps)); }, [orderTimestamps, loaded]);
   useEffect(() => { if (loaded) localStorage.setItem(KITCHEN_ORDER_COUNTER_KEY, String(orderCounter)); }, [orderCounter, loaded]);
   useEffect(() => { if (loaded) localStorage.setItem(KITCHEN_BUMPED_KEY, JSON.stringify(bumpedOrders)); }, [bumpedOrders, loaded]);
+  useEffect(() => { localStorage.setItem(KITCHEN_TABLE_CONFIG_KEY, JSON.stringify(tableConfig)); }, [tableConfig]);
 
   // ── Live clock ────────────────────────────────────────────────────
   useEffect(() => {
@@ -1766,6 +2212,83 @@ export default function KitchenMode() {
     setArchivedCount(c => c + servedCount);
   }, [orders]);
 
+  // ── Clear ALL orders (with confirmation handled in QuickActionsBar) ──
+  const clearAllOrders = useCallback(() => {
+    const count = orders.length;
+    setOrders([]);
+    setArchivedCount(c => c + count);
+  }, [orders]);
+
+  // ── Free a table: mark all its active orders as served + archive ──
+  const freeTable = useCallback((tableNumber: number) => {
+    setOrders(prev => prev.map(order => {
+      if (order.tableNumber !== tableNumber) return order;
+      if (order.bumpedAt || order.dishes.every(d => d.status === 'servi')) return order;
+      const updatedDishes = order.dishes.map(dish => {
+        if (dish.status === 'servi') return dish;
+        setStats(s => ({ ...s, platsServis: s.platsServis + 1 }));
+        return { ...dish, status: 'servi' as DishStatus, completedAt: dish.completedAt || Date.now(), servedAt: Date.now() };
+      });
+      return { ...order, dishes: updatedDishes, bumpedAt: Date.now() };
+    }));
+  }, []);
+
+  // ── Add / Remove table ────────────────────────────────────────────
+  const addTable = useCallback(() => {
+    setTableConfig(prev => {
+      const newNum = prev.tableCount + 1;
+      return { tableCount: newNum, tables: [...prev.tables, { number: newNum, section: 'salle' }] };
+    });
+  }, []);
+
+  const removeTable = useCallback(() => {
+    setTableConfig(prev => {
+      if (prev.tableCount <= 1) return prev;
+      return { tableCount: prev.tableCount - 1, tables: prev.tables.filter(t => t.number !== prev.tableCount) };
+    });
+  }, []);
+
+  // ── Edit order (change table, notes, priority) ────────────────────
+  const updateOrder = useCallback((orderId: string, updates: { tableNumber?: number; notes?: string; priority?: OrderPriority }) => {
+    setOrders(prev => prev.map(order => {
+      if (order.id !== orderId) return order;
+      return {
+        ...order,
+        tableNumber: updates.tableNumber ?? order.tableNumber,
+        notes: updates.notes ?? order.notes,
+        priority: updates.priority ?? order.priority,
+      };
+    }));
+  }, []);
+
+  // ── Delete order with confirmation (handled at call-site) ─────────
+  const deleteOrder = useCallback((orderId: string) => {
+    setOrders(prev => prev.filter(o => o.id !== orderId));
+  }, []);
+
+  // ── Split order ───────────────────────────────────────────────────
+  const splitOrder = useCallback((orderId: string, dishIdsToMove: string[]) => {
+    setOrders(prev => {
+      const original = prev.find(o => o.id === orderId);
+      if (!original) return prev;
+      const movingDishes = original.dishes.filter(d => dishIdsToMove.includes(d.id));
+      const remainingDishes = original.dishes.filter(d => !dishIdsToMove.includes(d.id));
+      if (movingDishes.length === 0 || remainingDishes.length === 0) return prev;
+      const newCounter = orderCounter + 1;
+      setOrderCounter(newCounter);
+      const newOrder: Order = {
+        id: uid(), orderNumber: newCounter, tableNumber: original.tableNumber,
+        serverName: original.serverName, createdAt: Date.now(), notes: original.notes,
+        priority: original.priority, source: original.source, holdStatus: 'active',
+        dishes: movingDishes.map(d => ({ ...d, id: uid() })),
+      };
+      return [
+        ...prev.map(o => o.id === orderId ? { ...o, dishes: remainingDishes } : o),
+        newOrder,
+      ];
+    });
+  }, [orderCounter]);
+
   // ── Drag & Drop ───────────────────────────────────────────────────
   const handleDragStart = useCallback((e: React.DragEvent, orderId: string) => {
     e.dataTransfer.setData('text/plain', orderId);
@@ -1803,6 +2326,11 @@ export default function KitchenMode() {
   const { newOrders, preparingOrders, readyOrders } = useMemo(() => {
     let active = orders.filter(o => !o.bumpedAt || (now - (o.bumpedAt || 0)) < AUTO_ARCHIVE_DELAY);
 
+    // Apply table filter
+    if (tableFilter !== null) {
+      active = active.filter(o => o.tableNumber === tableFilter);
+    }
+
     const sort = (arr: Order[]) => [...arr].sort((a, b) => {
       // Hold orders go to bottom
       if (a.holdStatus !== b.holdStatus) return a.holdStatus === 'hold' ? 1 : -1;
@@ -1820,7 +2348,7 @@ export default function KitchenMode() {
     }
 
     return { newOrders: sort(n), preparingOrders: sort(p), readyOrders: sort(r) };
-  }, [orders, now]);
+  }, [orders, now, tableFilter]);
 
   // ── Station View Filtering ────────────────────────────────────────
   const filterByStation = useCallback((orderList: Order[]): Order[] => {
@@ -1865,6 +2393,9 @@ export default function KitchenMode() {
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             onDrop={handleDrop}
+            onEditOrder={o => setEditingOrder(o)}
+            onDeleteOrder={deleteOrder}
+            onSplitOrder={o => setSplittingOrder(o)}
           />
         ))}
         {ordersList.length === 0 && (
@@ -1920,6 +2451,18 @@ export default function KitchenMode() {
             <button onClick={() => setShowNewOrder(true)}
               className="min-w-[64px] min-h-[64px] rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white flex items-center justify-center gap-2 px-4 kds-transition">
               <Plus className="w-6 h-6" /><span className="hidden sm:inline text-lg font-bold">Commande</span>
+            </button>
+
+            <button onClick={() => setShowTablePanel(v => !v)}
+              className={`relative min-w-[64px] min-h-[64px] rounded-xl flex items-center justify-center gap-2 px-4 kds-transition
+                ${showTablePanel ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}
+              title="Gestion des tables">
+              <LayoutGrid className="w-6 h-6" /><span className="hidden sm:inline text-lg font-bold">Tables</span>
+              {tableFilter !== null && (
+                <span className="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full bg-[#14b8a6] text-white">
+                  T{tableFilter}
+                </span>
+              )}
             </button>
 
             {!hasAnyOrders && (
@@ -2010,6 +2553,41 @@ export default function KitchenMode() {
         )}
       </div>
 
+      {/* ── QUICK ACTIONS BAR ── */}
+      <QuickActionsBar
+        orders={orders}
+        tableConfig={tableConfig}
+        onClearAll={clearAllOrders}
+        onLoadDemo={addDemoOrders}
+        onOpenTableConfig={() => setShowTableConfig(true)}
+      />
+
+      {/* ── TABLE PANEL ── */}
+      {showTablePanel && (
+        <TablePanel
+          tableConfig={tableConfig}
+          orders={orders}
+          now={now}
+          onFilterTable={setTableFilter}
+          activeTableFilter={tableFilter}
+          onFreeTable={freeTable}
+          onAddTable={addTable}
+          onRemoveTable={removeTable}
+        />
+      )}
+
+      {/* ── TABLE FILTER INDICATOR ── */}
+      {tableFilter !== null && (
+        <div className="bg-[#14b8a6]/10 border-b border-[#14b8a6]/30 px-4 py-2 flex items-center justify-center gap-3 shrink-0">
+          <LayoutGrid className="w-5 h-5 text-[#14b8a6]" />
+          <span className="text-[#14b8a6] text-lg font-bold">Filtre actif: Table {tableFilter}</span>
+          <button onClick={() => setTableFilter(null)}
+            className="px-3 py-1 rounded-lg bg-[#14b8a6]/20 hover:bg-[#14b8a6]/30 text-[#14b8a6] text-sm font-bold kds-transition">
+            <X className="w-4 h-4 inline mr-1" />Retirer le filtre
+          </button>
+        </div>
+      )}
+
       {/* ── 3-COLUMN KDS BOARD ── */}
       <div className="flex-1 overflow-hidden">
         {!hasAnyOrders ? (
@@ -2077,6 +2655,9 @@ export default function KitchenMode() {
       {showTimer && <StandaloneTimer onClose={() => setShowTimer(false)} />}
       {showStats && <PerformanceStatsModal stats={stats} orders={orders} onClose={() => setShowStats(false)} />}
       {recipeToView && <RecipeQuickView recipe={recipeToView} onClose={() => setViewRecipeId(null)} />}
+      {editingOrder && <EditOrderModal order={editingOrder} onSave={updateOrder} onClose={() => setEditingOrder(null)} />}
+      {splittingOrder && <SplitOrderModal order={splittingOrder} onSplit={splitOrder} onClose={() => setSplittingOrder(null)} />}
+      {showTableConfig && <TableConfigModal config={tableConfig} onSave={setTableConfig} onClose={() => setShowTableConfig(false)} />}
     </div>
   );
 }

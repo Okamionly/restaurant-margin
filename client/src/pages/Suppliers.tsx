@@ -1008,6 +1008,28 @@ export default function Suppliers() {
     return map;
   }, [suppliers]);
 
+  // ── "Meilleur fournisseur pour X" — count per supplier ────────────────────
+
+  const bestForIngredients = useMemo(() => {
+    const map: Record<number, string[]> = {};
+    Object.entries(bestPriceMap).forEach(([ingredientKey, data]) => {
+      if (data.otherPrices.length > 0) {
+        if (!map[data.bestSupplierId]) map[data.bestSupplierId] = [];
+        // Find the display name
+        for (const s of suppliers) {
+          for (const ing of (s.ingredients || [])) {
+            if (ing.name.toLowerCase().trim() === ingredientKey) {
+              map[data.bestSupplierId].push(ing.name);
+              break;
+            }
+          }
+          if (map[data.bestSupplierId]?.includes(ingredientKey)) break;
+        }
+      }
+    });
+    return map;
+  }, [bestPriceMap, suppliers]);
+
   // ── Supplier catalogue: ingredients grouped by category ───────────────────
 
   const supplierCatalogMap = useMemo(() => {
@@ -1645,6 +1667,11 @@ export default function Suppliers() {
                                   <Award className="w-2.5 h-2.5" /> Top
                                 </span>
                               )}
+                              {(bestForIngredients[supplier.id]?.length ?? 0) > 0 && (
+                                <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold" title={`Meilleur prix pour: ${bestForIngredients[supplier.id].join(', ')}`}>
+                                  <DollarSign className="w-2.5 h-2.5" /> Meilleur prix x{bestForIngredients[supplier.id].length}
+                                </span>
+                              )}
                             </div>
                             <div className="flex items-center gap-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
                               {supplier.city && <span>{supplier.city}</span>}
@@ -1765,8 +1792,39 @@ export default function Suppliers() {
                           <Zap className="w-3.5 h-3.5" />
                           Brief IA
                         </button>
+                        <button
+                          onClick={() => setActiveTab('comparateur')}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-800/40 text-amber-800 dark:text-amber-300 text-xs font-medium transition-colors"
+                          title="Comparer les prix de ce fournisseur"
+                        >
+                          <ArrowRightLeft className="w-3.5 h-3.5" />
+                          Comparer les prix
+                        </button>
                       </div>
                     </div>
+
+                    {/* Best price badges for this supplier */}
+                    {(bestForIngredients[detailSupplier.id]?.length ?? 0) > 0 && (
+                      <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Award className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                          <span className="text-sm font-bold text-black dark:text-white">
+                            Meilleur fournisseur pour {bestForIngredients[detailSupplier.id].length} ingredient{bestForIngredients[detailSupplier.id].length > 1 ? 's' : ''}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {bestForIngredients[detailSupplier.id].map((ingName, i) => (
+                            <span
+                              key={i}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40"
+                            >
+                              <DollarSign className="w-2.5 h-2.5" />
+                              {ingName}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Scoring Dashboard with Star Ratings */}
                     <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">

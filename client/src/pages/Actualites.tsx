@@ -3,7 +3,7 @@ import {
   Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X,
   Clock, ChevronRight, ArrowRight, CalendarDays, Sparkles, Rocket, Star,
   ChevronDown, ChevronUp, Mail, Check, Bell, Zap, Gift, Tag, BookOpen,
-  MessageCircle, Megaphone
+  MessageCircle, Megaphone, ExternalLink, Globe, BarChart3, Loader2
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useNavigate } from 'react-router-dom';
@@ -97,6 +97,30 @@ interface MercurialeSummary {
   week_date: string;
   topHausses: { ingredient_name: string; trend_detail: string | null }[];
   topBaisses: { ingredient_name: string; trend_detail: string | null }[];
+}
+
+interface MarketIntelArticle {
+  title: string;
+  url: string;
+  snippet: string;
+}
+
+interface MarketIntelData {
+  articles: number;
+  answer?: string;
+  results: MarketIntelArticle[];
+  timestamp: string;
+  error?: string;
+}
+
+interface IngredientTrend {
+  name: string;
+  category: string;
+  currentPrice: number;
+  previousPrice: number;
+  change: number;
+  changePercent: number;
+  unit: string;
 }
 
 // ── Product Updates (RestauMargin changelog — static, our own content) ──────
@@ -238,6 +262,11 @@ export default function Actualites() {
   const [activeNewsFilter, setActiveNewsFilter] = useState<string>('all');
   const [mercurialeSummary, setMercurialeSummary] = useState<MercurialeSummary | null>(null);
 
+  // Market intel state (from Tavily / cron endpoint)
+  const [marketIntel, setMarketIntel] = useState<MarketIntelData | null>(null);
+  const [marketIntelLoading, setMarketIntelLoading] = useState(false);
+  const [ingredientTrends, setIngredientTrends] = useState<IngredientTrend[]>([]);
+
   // Product updates state
   const [activeUpdateCategory, setActiveUpdateCategory] = useState<UpdateCategory>('all');
   const [changelogExpanded, setChangelogExpanded] = useState(false);
@@ -326,6 +355,62 @@ export default function Actualites() {
     setNewsletterSubscribed(true);
     addToast('Inscription a la newsletter confirmee', 'success');
   };
+
+  // ── Market Intelligence (Tavily) ──────────────────────────────────────────
+
+  async function fetchMarketIntel() {
+    setMarketIntelLoading(true);
+    try {
+      const res = await fetch('/api/cron/market-intel', {
+        headers: { ...authHeaders(), Authorization: `Bearer ${process.env.CRON_SECRET || 'cron-secret'}` },
+      });
+      const data = await res.json();
+      if (data.error) {
+        addToast('Erreur lors du chargement des donnees marche', 'error');
+      } else {
+        setMarketIntel(data);
+        addToast(`${data.articles || 0} articles de marche charges`, 'success');
+      }
+    } catch {
+      addToast('Impossible de charger les donnees marche', 'error');
+    } finally {
+      setMarketIntelLoading(false);
+    }
+  }
+
+  // ── Ingredient Trends (computed from real data) ──────────────────────────
+
+  useEffect(() => {
+    async function loadIngredientTrends() {
+      try {
+        const res = await fetch('/api/ingredients', { headers: authHeaders() });
+        if (!res.ok) return;
+        const ingredients = await res.json();
+        if (!Array.isArray(ingredients)) return;
+
+        const trends: IngredientTrend[] = ingredients
+          .filter((ing: any) => ing.pricePerUnit > 0 && ing.previousPrice && ing.previousPrice > 0)
+          .map((ing: any) => {
+            const change = ing.pricePerUnit - ing.previousPrice;
+            const changePercent = (change / ing.previousPrice) * 100;
+            return {
+              name: ing.name,
+              category: ing.category || 'Autre',
+              currentPrice: ing.pricePerUnit,
+              previousPrice: ing.previousPrice,
+              change,
+              changePercent,
+              unit: ing.unit || 'kg',
+            };
+          })
+          .sort((a: IngredientTrend, b: IngredientTrend) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
+          .slice(0, 10);
+
+        setIngredientTrends(trends);
+      } catch {}
+    }
+    loadIngredientTrends();
+  }, []);
 
   // ── Computed ──────────────────────────────────────────────────────────────
 
@@ -636,6 +721,139 @@ export default function Actualites() {
           </div>
         )}
       </section>
+
+      {/* ── Market Intelligence (Tavily AI) ────────────────────────────────── */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-black dark:text-white flex items-center gap-2">
+            <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            Actualites du marche
+          </h2>
+          <button
+            onClick={fetchMarketIntel}
+            disabled={marketIntelLoading}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
+          >
+            {marketIntelLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <RefreshCw className="w-4 h-4" />
+            )}
+            Rafraichir les actualites
+          </button>
+        </div>
+
+        {marketIntel ? (
+          <div className="space-y-4">
+            {/* AI Summary */}
+            {marketIntel.answer && (
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border border-blue-200 dark:border-blue-800/50 rounded-2xl p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <h3 className="text-sm font-bold text-black dark:text-white">Resume IA du marche</h3>
+                </div>
+                <p className="text-sm text-[#374151] dark:text-[#D4D4D4] leading-relaxed">
+                  {marketIntel.answer}
+                </p>
+                <p className="text-[10px] text-[#9CA3AF] mt-3">
+                  Genere le {new Date(marketIntel.timestamp).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+            )}
+
+            {/* Articles */}
+            {marketIntel.results && marketIntel.results.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {marketIntel.results.map((article, i) => (
+                  <a
+                    key={i}
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all group"
+                  >
+                    <h4 className="text-sm font-semibold text-black dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {article.title}
+                    </h4>
+                    <p className="text-xs text-[#737373] dark:text-[#A3A3A3] leading-relaxed line-clamp-3 mb-3">
+                      {article.snippet}
+                    </p>
+                    <div className="flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 font-medium">
+                      <ExternalLink className="w-3 h-3" />
+                      Lire l'article
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-8 text-center">
+            <Globe className="w-10 h-10 text-[#D1D5DB] dark:text-[#333] mx-auto mb-3" />
+            <p className="text-sm text-[#737373] dark:text-[#A3A3A3] mb-1">Aucune donnee marche disponible</p>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+              Cliquez sur "Rafraichir les actualites" pour charger les dernieres tendances du marche
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* ── Tendances des prix ingredients ─────────────────────────────────── */}
+      {ingredientTrends.length > 0 && (
+        <section>
+          <h2 className="text-lg font-bold text-black dark:text-white flex items-center gap-2 mb-4">
+            <BarChart3 className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            Tendances de vos ingredients
+          </h2>
+          <div className="bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Ingredient</th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Categorie</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Prix actuel</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Prix precedent</th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-[#737373] dark:text-[#A3A3A3]">Evolution</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ingredientTrends.map((trend, i) => (
+                    <tr key={i} className="border-b border-[#E5E7EB]/50 dark:border-[#1A1A1A]/50 last:border-0 hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors">
+                      <td className="px-4 py-3 font-medium text-black dark:text-white">{trend.name}</td>
+                      <td className="px-4 py-3 text-[#737373] dark:text-[#A3A3A3]">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F5F5F5] dark:bg-[#1A1A1A] text-[#737373] dark:text-[#A3A3A3]">
+                          {trend.category}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium text-black dark:text-white">
+                        {trend.currentPrice.toFixed(2)} EUR/{trend.unit}
+                      </td>
+                      <td className="px-4 py-3 text-right text-[#737373] dark:text-[#A3A3A3]">
+                        {trend.previousPrice.toFixed(2)} EUR/{trend.unit}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+                          trend.change > 0
+                            ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                            : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                        }`}>
+                          {trend.change > 0 ? (
+                            <TrendingUp className="w-3 h-3" />
+                          ) : (
+                            <TrendingDown className="w-3 h-3" />
+                          )}
+                          {trend.change > 0 ? '+' : ''}{trend.changePercent.toFixed(1)}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Expandable Changelog ───────────────────────────────────────────── */}
       <section className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden">

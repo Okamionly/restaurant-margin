@@ -101,10 +101,24 @@ const PROMPT_CARDS: PromptCard[] = [
   },
   {
     icon: TrendingUp,
-    title: 'Analyse mes marges',
-    description: 'Vue complete de vos marges avec recommandations',
-    prompt: 'Analyse mes marges globales et identifie les points d\'amelioration. Donne-moi un rapport detaille avec des recommandations concretes',
+    title: 'Analyse de marche',
+    description: 'Tendances des prix et actualites du secteur restauration',
+    prompt: 'Fais une analyse de marche complete : quelles sont les tendances actuelles des prix des matieres premieres en restauration ? Quels ingredients risquent d\'augmenter ? Quelles opportunites d\'achat existent en ce moment ? Base-toi sur les donnees de la mercuriale et du marche.',
+    gradient: 'from-blue-500/10 to-indigo-500/10',
+  },
+  {
+    icon: Scale,
+    title: 'Optimiser mes fournisseurs',
+    description: 'Analyse des prix et recommandations de changement',
+    prompt: 'Analyse mes fournisseurs et leurs prix : identifie les ingredients pour lesquels je paie trop cher par rapport aux alternatives. Compare les prix entre fournisseurs pour chaque categorie et propose un plan d\'optimisation concret avec les economies estimees.',
     gradient: 'from-emerald-500/10 to-teal-500/10',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Previsions de la semaine',
+    description: 'Forecast hebdomadaire avec commandes et alertes',
+    prompt: 'Genere les previsions pour la semaine prochaine : estime les besoins en ingredients en fonction de mon historique, identifie les commandes a passer maintenant, signale les risques de rupture de stock, et propose un planning d\'approvisionnement optimal.',
+    gradient: 'from-violet-500/10 to-purple-500/10',
   },
   {
     icon: Lightbulb,
@@ -133,6 +147,13 @@ const PROMPT_CARDS: PromptCard[] = [
     description: 'Synthese de la semaine avec KPIs et alertes',
     prompt: 'Genere un rapport hebdomadaire complet : KPIs, alertes stock, evolution des marges, actions recommandees pour la semaine prochaine',
     gradient: 'from-rose-500/10 to-red-500/10',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Analyse mes marges',
+    description: 'Vue complete de vos marges avec recommandations',
+    prompt: 'Analyse mes marges globales et identifie les points d\'amelioration. Donne-moi un rapport detaille avec des recommandations concretes',
+    gradient: 'from-amber-500/10 to-orange-500/10',
   },
 ];
 
@@ -196,6 +217,30 @@ function generateConversationTitle(messages: Message[]): string {
   return text.length < firstUser.content.length ? text + '...' : text;
 }
 
+const AI_CACHE_PREFIX = 'rm_ai_cache_';
+const AI_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+function getCachedResponse(cacheKey: string): { response: string; actions?: ActionResult[] } | null {
+  try {
+    const raw = sessionStorage.getItem(AI_CACHE_PREFIX + cacheKey);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (Date.now() - cached.timestamp > AI_CACHE_TTL_MS) {
+      sessionStorage.removeItem(AI_CACHE_PREFIX + cacheKey);
+      return null;
+    }
+    return { response: cached.response, actions: cached.actions };
+  } catch { return null; }
+}
+
+function setCachedResponse(cacheKey: string, response: string, actions?: ActionResult[]) {
+  try {
+    sessionStorage.setItem(AI_CACHE_PREFIX + cacheKey, JSON.stringify({
+      response, actions, timestamp: Date.now(),
+    }));
+  } catch {}
+}
+
 async function getAIResponse(message: string, history: Message[], image?: string, mode?: AIMode): Promise<{ response: string; actions?: ActionResult[] }> {
   const token = localStorage.getItem('token');
   const restaurantId = localStorage.getItem('activeRestaurantId');
@@ -205,6 +250,13 @@ async function getAIResponse(message: string, history: Message[], image?: string
   }));
 
   const prefixedMessage = mode ? `${MODE_PREFIXES[mode]} ${message}` : message;
+
+  // Check sessionStorage cache (skip if image is attached)
+  if (!image) {
+    const cacheKey = btoa(unescape(encodeURIComponent(prefixedMessage.slice(0, 200) + '_' + recentHistory.length)));
+    const cached = getCachedResponse(cacheKey);
+    if (cached) return cached;
+  }
 
   const body: any = { message: prefixedMessage, history: recentHistory };
   if (image) body.image = image;
@@ -219,8 +271,17 @@ async function getAIResponse(message: string, history: Message[], image?: string
   });
   const data = await res.json();
   if (!res.ok) {
-    throw new Error(data.error || `Erreur ${res.status}`);
+    const errorDetail = data.error || data.message || '';
+    const statusText = res.status === 429 ? 'Quota depasse' : res.status === 503 ? 'Service IA indisponible' : res.status === 401 ? 'Session expiree, reconnectez-vous' : `Erreur serveur (${res.status})`;
+    throw new Error(errorDetail || statusText);
   }
+
+  // Cache the response
+  if (!image) {
+    const cacheKey = btoa(unescape(encodeURIComponent(prefixedMessage.slice(0, 200) + '_' + recentHistory.length)));
+    setCachedResponse(cacheKey, data.response, data.actions);
+  }
+
   return { response: data.response, actions: data.actions };
 }
 
@@ -641,8 +702,22 @@ export default function AIAssistant() {
         }
       );
     } catch (err: any) {
-      const errMsg = err?.message || "Desole, une erreur s'est produite. Veuillez reessayer.";
-      if (errMsg.includes('Quota')) setQuotaReached(true);
+      const rawMsg = err?.message || '';
+      let errMsg: string;
+      if (rawMsg.includes('Quota') || rawMsg.includes('429')) {
+        setQuotaReached(true);
+        errMsg = '**Quota mensuel atteint.** Vous avez utilise toutes vos requetes IA pour ce mois. Passez au plan Business pour un acces illimite, ou attendez le 1er du mois prochain.';
+      } else if (rawMsg.includes('503') || rawMsg.includes('indisponible')) {
+        errMsg = '**Service IA temporairement indisponible.** Le serveur est en maintenance ou surcharge. Reessayez dans quelques minutes.';
+      } else if (rawMsg.includes('401') || rawMsg.includes('Session')) {
+        errMsg = '**Session expiree.** Veuillez vous reconnecter pour continuer a utiliser l\'assistant IA.';
+      } else if (rawMsg.includes('fetch') || rawMsg.includes('NetworkError') || rawMsg.includes('Failed')) {
+        errMsg = '**Erreur de connexion.** Verifiez votre connexion internet et reessayez.';
+      } else if (rawMsg) {
+        errMsg = `**Erreur :** ${rawMsg}`;
+      } else {
+        errMsg = "**Une erreur inattendue s'est produite.** Veuillez reessayer. Si le probleme persiste, contactez le support.";
+      }
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -1067,9 +1142,9 @@ export default function AIAssistant() {
                 </p>
               </div>
 
-              {/* 6 Prompt Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-2xl px-2">
-                {PROMPT_CARDS.map((card) => {
+              {/* Prompt Cards Grid (show first 9, 3 cols) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-3xl px-2">
+                {PROMPT_CARDS.slice(0, 9).map((card) => {
                   const Icon = card.icon;
                   return (
                     <button

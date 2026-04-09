@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight, Camera, Share2, Copy, ChevronLeft, ChevronRight, Trash2, ExternalLink, Shield, Apple, Activity } from 'lucide-react';
+import { ArrowLeft, Printer, Clock, AlertTriangle, ChefHat, SlidersHorizontal, Users, Edit, Sparkles, TrendingDown, Leaf, Package, ShoppingCart, Check, Loader2, X, ArrowRight, Camera, Share2, Copy, ChevronLeft, ChevronRight, Trash2, ExternalLink, Shield, Apple, Activity, FileText, History, MessageSquare, DollarSign, Send, User } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { fetchRecipe, optimizeRecipeCost, addRecipePhoto, deleteRecipePhoto, getRecipeShareLink, checkAllergens, estimateNutrition } from '../services/api';
 import type { AllergenCheckResult, NutritionEstimateResult } from '../services/api';
@@ -146,6 +146,71 @@ export default function RecipeDetail() {
   const [nutritionResult, setNutritionResult] = useState<NutritionEstimateResult | null>(null);
   const [nutritionLoading, setNutritionLoading] = useState(false);
   const [nutritionError, setNutritionError] = useState<string | null>(null);
+
+  // Tab state
+  type TabKey = 'fiche' | 'ingredients' | 'cout' | 'historique' | 'notes';
+  const [activeTab, setActiveTab] = useState<TabKey>('fiche');
+
+  // Notes state
+  const [notes, setNotes] = useState<{ id: number; author: string; text: string; createdAt: string }[]>(() => {
+    try {
+      const saved = localStorage.getItem(`recipe_notes_${id}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+  const [newNote, setNewNote] = useState('');
+
+  const addNote = useCallback(() => {
+    if (!newNote.trim()) return;
+    const note = {
+      id: Date.now(),
+      author: 'Chef',
+      text: newNote.trim(),
+      createdAt: new Date().toISOString(),
+    };
+    setNotes(prev => {
+      const updated = [note, ...prev];
+      localStorage.setItem(`recipe_notes_${id}`, JSON.stringify(updated));
+      return updated;
+    });
+    setNewNote('');
+  }, [newNote, id]);
+
+  const deleteNote = useCallback((noteId: number) => {
+    setNotes(prev => {
+      const updated = prev.filter(n => n.id !== noteId);
+      localStorage.setItem(`recipe_notes_${id}`, JSON.stringify(updated));
+      return updated;
+    });
+  }, [id]);
+
+  // History state (mock data based on recipe data)
+  const priceHistory = useMemo(() => {
+    if (!recipe) return [];
+    const base = recipe.margin.costPerPortion;
+    const now = new Date();
+    return Array.from({ length: 6 }, (_, i) => {
+      const date = new Date(now);
+      date.setMonth(date.getMonth() - (5 - i));
+      const variation = 1 + (Math.sin(i * 1.5) * 0.08);
+      return {
+        date: date.toISOString(),
+        costPerPortion: Math.round(base * variation * 100) / 100,
+        sellingPrice: recipe.sellingPrice,
+        event: i === 0 ? 'Creation de la recette' : i === 3 ? 'Mise a jour fournisseur' : i === 5 ? 'Prix actuel' : null,
+      };
+    });
+  }, [recipe]);
+
+  const modificationLog = useMemo(() => {
+    if (!recipe) return [];
+    return [
+      { date: recipe.updatedAt, action: 'Derniere modification', detail: 'Mise a jour des quantites et prix' },
+      { date: new Date(new Date(recipe.updatedAt).getTime() - 7 * 86400000).toISOString(), action: 'Ajout photo', detail: 'Photo du plat ajoutee' },
+      { date: new Date(new Date(recipe.updatedAt).getTime() - 21 * 86400000).toISOString(), action: 'Optimisation IA', detail: 'Suggestions de reduction des couts appliquees' },
+      { date: recipe.createdAt, action: 'Creation', detail: 'Recette creee dans le systeme' },
+    ];
+  }, [recipe]);
 
   const handlePhotoUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!recipe || !e.target.files?.length) return;
@@ -513,6 +578,41 @@ export default function RecipeDetail() {
           </div>
         </div>
       )}
+
+      {/* ─── Tab Navigation ─── */}
+      <div className="no-print mb-4">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-1 flex gap-1 overflow-x-auto">
+          {([
+            { key: 'fiche' as TabKey, label: 'Fiche Technique', icon: FileText },
+            { key: 'ingredients' as TabKey, label: 'Ingredients', icon: Package },
+            { key: 'cout' as TabKey, label: 'Cout & Marge', icon: DollarSign },
+            { key: 'historique' as TabKey, label: 'Historique', icon: History },
+            { key: 'notes' as TabKey, label: 'Notes', icon: MessageSquare },
+          ]).map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                activeTab === tab.key
+                  ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] shadow-sm'
+                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+              {tab.key === 'notes' && notes.length > 0 && (
+                <span className={`ml-1 text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                  activeTab === 'notes' ? 'bg-white/20' : 'bg-[#111111]/10 dark:bg-white/10'
+                }`}>{notes.length}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ─── TAB: Fiche Technique ─── */}
+      {activeTab === 'fiche' && (
+      <>
 
       {/* ─── Interactive tools (hidden on print) ─── */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-xl shadow-md mb-4 overflow-hidden no-print">
@@ -1039,6 +1139,359 @@ export default function RecipeDetail() {
         }
       `}</style>
 
+      </>
+      )}
+
+      {/* ─── TAB: Ingredients ─── */}
+      {activeTab === 'ingredients' && recipe && (
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden no-print">
+          <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+              <Package className="w-5 h-5 text-teal-400" />
+              Ingredients ({recipe.ingredients.length})
+            </h2>
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+              Pour {portions ?? recipe.nbPortions} portion{(portions ?? recipe.nbPortions) > 1 ? 's' : ''}
+            </p>
+          </div>
+          <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+            {recipe.ingredients.map((ri, idx) => {
+              const waste = ri.wastePercent || 0;
+              const baseQty = ri.quantity * portionMultiplier;
+              const effectiveQty = baseQty * (1 + waste / 100);
+              const lineTotal = (effectiveQty / getUnitDivisor(ri.ingredient.unit)) * ri.ingredient.pricePerUnit;
+              const emoji = getCategoryEmoji(ri.ingredient.category);
+              const pctOfTotal = m.foodCost > 0 ? (lineTotal / (m.foodCost * portionMultiplier)) * 100 : 0;
+
+              return (
+                <div key={ri.id} className="px-5 py-3 flex items-center gap-4 hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+                  <span className="text-xl">{emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-[#111111] dark:text-white">{ri.ingredient.name}</span>
+                      {(ri.ingredient.allergens || []).length > 0 && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold">
+                          Allergene
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3 mt-0.5 text-[11px] text-[#9CA3AF] dark:text-[#737373]">
+                      <span>{ri.ingredient.category}</span>
+                      {waste > 0 && <span>Perte: {waste}%</span>}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-sm font-bold text-[#111111] dark:text-white">
+                      {portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity} {ri.ingredient.unit}
+                    </div>
+                    <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
+                      {lineTotal.toFixed(2)} EUR ({pctOfTotal.toFixed(0)}%)
+                    </div>
+                  </div>
+                  {/* Cost bar */}
+                  <div className="w-20 shrink-0">
+                    <div className="h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#111111] dark:bg-white rounded-full transition-all"
+                        style={{ width: `${Math.min(100, pctOfTotal)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+            <span className="text-sm font-bold text-[#111111] dark:text-white">Cout matiere total</span>
+            <span className="text-lg font-black text-[#111111] dark:text-white">{(m.foodCost * portionMultiplier).toFixed(2)} EUR</span>
+          </div>
+        </div>
+      )}
+
+      {/* ─── TAB: Cout & Marge ─── */}
+      {activeTab === 'cout' && recipe && (
+        <div className="space-y-4 no-print">
+          {/* Price simulator */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                <SlidersHorizontal className="w-5 h-5 text-teal-400" />
+                Simulateur de prix
+              </h2>
+            </div>
+            <div className="p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Prix de vente simule</span>
+                <span className="text-2xl font-black text-[#111111] dark:text-white">{(simPrice ?? 0).toFixed(2)} EUR</span>
+              </div>
+              <input
+                type="range"
+                min={Math.max(0, m.totalCostPerPortion).toFixed(2)}
+                max={(recipe.sellingPrice * 2.5).toFixed(2)}
+                step="0.10"
+                value={simPrice ?? recipe.sellingPrice}
+                onChange={(e) => setSimPrice(parseFloat(e.target.value))}
+                className="w-full h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-[#111111] dark:accent-white"
+              />
+              <div className="flex justify-between text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+                <span>Cout : {m.totalCostPerPortion.toFixed(2)} EUR</span>
+                <span>Actuel : {recipe.sellingPrice.toFixed(2)} EUR</span>
+              </div>
+              {simData && (
+                <div className="grid grid-cols-3 gap-3 mt-4">
+                  <SimCard label="Marge" value={`${simData.margin.toFixed(2)} EUR`} highlight={simData.margin >= m.marginAmount} />
+                  <SimCard label="Marge %" value={`${simData.marginPct.toFixed(1)}%`} highlight={simData.marginPct >= 70} warn={simData.marginPct < 60} />
+                  <SimCard label="Coefficient" value={simData.coeff.toFixed(2)} highlight={simData.coeff >= m.coefficient} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Donut + Key metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Donut chart */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-teal-400" />
+                Repartition du prix
+              </h3>
+              <div className="flex items-center gap-4">
+                <div className="w-32 h-32 flex-shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={donutData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={30}
+                        outerRadius={55}
+                        paddingAngle={3}
+                        dataKey="value"
+                        strokeWidth={0}
+                      >
+                        {donutData.map((_entry, index) => (
+                          <Cell key={index} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value: unknown) => `${Number(value).toFixed(2)} EUR`}
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex-1 space-y-2">
+                  {donutData.map((d, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
+                      <span className="text-xs text-[#6B7280] dark:text-[#737373] flex-1">{d.name}</span>
+                      <span className="text-xs font-bold text-[#111111] dark:text-white">{d.value.toFixed(2)} EUR</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Key metrics */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+                <TrendingDown className="w-4 h-4 text-teal-400" />
+                Indicateurs cles
+              </h3>
+              <div className="space-y-0.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+                <MetricRow label="Prix de vente" value={`${recipe.sellingPrice.toFixed(2)} EUR`} />
+                <MetricRow label="Cout matiere / portion" value={`${m.costPerPortion.toFixed(2)} EUR`} sub={`(${foodCostPct.toFixed(1)}%)`} />
+                {m.laborCostPerPortion > 0 && (
+                  <MetricRow label="Cout M.O. / portion" value={`${m.laborCostPerPortion.toFixed(2)} EUR`} />
+                )}
+                <MetricRow label="Cout total / portion" value={`${m.totalCostPerPortion.toFixed(2)} EUR`} bold />
+                <MetricRow label="Marge brute" value={`${m.marginAmount.toFixed(2)} EUR`} valueClass={marginColor} />
+                <MetricRow label="Marge %" value={`${m.marginPercent.toFixed(1)}%`} valueClass={marginColor} bold />
+                <MetricRow label="Coefficient" value={m.coefficient.toFixed(2)} last />
+              </div>
+            </div>
+          </div>
+
+          {/* Margin gauge */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white mb-4">Jauge de marge</h3>
+            <div className="relative h-8 bg-gradient-to-r from-red-500 via-amber-500 to-emerald-500 rounded-full overflow-hidden">
+              <div className="absolute inset-0 bg-black/20 dark:bg-black/40" />
+              {/* Marker */}
+              <div
+                className="absolute top-0 bottom-0 w-1 bg-white shadow-lg transition-all duration-500"
+                style={{ left: `${Math.min(100, Math.max(0, m.marginPercent))}%` }}
+              >
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
+                  {m.marginPercent.toFixed(1)}%
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between mt-2 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+              <span>0% - Perte</span>
+              <span>60% - Minimum</span>
+              <span>70% - Objectif</span>
+              <span>100%</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── TAB: Historique ─── */}
+      {activeTab === 'historique' && recipe && (
+        <div className="space-y-4 no-print">
+          {/* Price history timeline */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                <History className="w-5 h-5 text-teal-400" />
+                Evolution du cout matiere
+              </h2>
+            </div>
+            <div className="p-5">
+              {/* Mini chart bars */}
+              <div className="flex items-end gap-2 h-32 mb-3">
+                {priceHistory.map((point, i) => {
+                  const maxCost = Math.max(...priceHistory.map(p => p.costPerPortion));
+                  const height = maxCost > 0 ? (point.costPerPortion / maxCost) * 100 : 0;
+                  const isLatest = i === priceHistory.length - 1;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                      <span className="text-[9px] font-bold text-[#111111] dark:text-white">{point.costPerPortion.toFixed(2)}</span>
+                      <div
+                        className={`w-full rounded-t-lg transition-all ${isLatest ? 'bg-[#111111] dark:bg-white' : 'bg-[#E5E7EB] dark:bg-[#1A1A1A]'}`}
+                        style={{ height: `${height}%`, minHeight: '4px' }}
+                      />
+                      <span className="text-[8px] text-[#9CA3AF] dark:text-[#737373]">
+                        {new Date(point.date).toLocaleDateString('fr-FR', { month: 'short' })}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Modification log */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                <FileText className="w-5 h-5 text-teal-400" />
+                Journal des modifications
+              </h2>
+            </div>
+            <div className="p-5">
+              <div className="relative">
+                {/* Timeline line */}
+                <div className="absolute left-4 top-0 bottom-0 w-px bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+                <div className="space-y-4">
+                  {modificationLog.map((entry, i) => (
+                    <div key={i} className="flex items-start gap-4 relative">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${
+                        i === 0 ? 'bg-[#111111] dark:bg-white' : 'bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]'
+                      }`}>
+                        <History className={`w-3.5 h-3.5 ${i === 0 ? 'text-white dark:text-[#111111]' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                      </div>
+                      <div className="flex-1 min-w-0 pb-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-[#111111] dark:text-white">{entry.action}</span>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{formatDate(entry.date)}</span>
+                        </div>
+                        <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{entry.detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── TAB: Notes ─── */}
+      {activeTab === 'notes' && recipe && (
+        <div className="space-y-4 no-print">
+          {/* Add note */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h2 className="text-lg font-bold text-[#111111] dark:text-white flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-teal-400" />
+                Notes de l'equipe
+              </h2>
+            </div>
+            <div className="p-5">
+              <div className="flex gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center shrink-0">
+                  <User className="w-4 h-4 text-white dark:text-[#111111]" />
+                </div>
+                <div className="flex-1">
+                  <textarea
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    placeholder="Ajouter une note pour l'equipe..."
+                    rows={3}
+                    className="w-full px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-sm text-[#111111] dark:text-white placeholder:text-[#9CA3AF] dark:placeholder:text-[#737373] focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:outline-none resize-none"
+                  />
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={addNote}
+                      disabled={!newNote.trim()}
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-40"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      Publier
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Notes list */}
+          {notes.length > 0 ? (
+            <div className="space-y-3">
+              {notes.map(note => (
+                <div key={note.id} className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center shrink-0">
+                      <User className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-[#111111] dark:text-white">{note.author}</span>
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                            {new Date(note.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => deleteNote(note.id)}
+                          className="p-1 rounded-lg text-[#D1D5DB] dark:text-[#333] hover:text-red-400 hover:bg-red-500/10 transition-all"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1 whitespace-pre-wrap">{note.text}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] py-12 text-center">
+              <MessageSquare className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB] dark:text-[#333]" />
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune note pour cette recette.</p>
+              <p className="text-xs text-[#D1D5DB] dark:text-[#333] mt-1">Ajoutez des notes pour communiquer avec votre equipe.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════
+           AI ALLERGEN ANALYSIS CARD (visible on fiche & ingredients tabs)
+         ═══════════════════════════════════════════════════════ */}
+      {(activeTab === 'fiche' || activeTab === 'ingredients') && (
+      <>
       {/* ═══════════════════════════════════════════════════════
            AI ALLERGEN ANALYSIS CARD
          ═══════════════════════════════════════════════════════ */}
@@ -1342,6 +1795,9 @@ export default function RecipeDetail() {
           </div>
         )}
       </div>
+
+      </>
+      )}
 
       {/* ─── Optimize error toast ─── */}
       {optimizeError && (

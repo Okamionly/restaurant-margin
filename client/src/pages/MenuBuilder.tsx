@@ -16,6 +16,10 @@ import {
   AlertCircle,
   CheckCircle2,
   ArrowRight,
+  Eye,
+  EyeOff,
+  Printer,
+  AlertTriangle,
 } from 'lucide-react';
 import { fetchRecipes } from '../services/api';
 import { useToast } from '../hooks/useToast';
@@ -24,6 +28,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import type { Recipe } from '../types';
 import { RECIPE_CATEGORIES } from '../types';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
+import FoodIllustration from '../components/FoodIllustration';
 
 // ── Types ──
 
@@ -116,6 +121,9 @@ export default function MenuBuilder() {
   const [searchQuery, setSearchQuery] = useState('');
   const [coversEstimate, setCoversEstimate] = useState(40);
   const [saving, setSaving] = useState(false);
+
+  // Preview mode
+  const [previewMode, setPreviewMode] = useState(false);
 
   // Drag state
   const [draggedRecipeId, setDraggedRecipeId] = useState<number | null>(null);
@@ -393,6 +401,102 @@ export default function MenuBuilder() {
     setSaving(false);
   }, [menuName, menuSections, showToast]);
 
+  // ── Print menu ──
+
+  const handlePrintMenu = useCallback(() => {
+    const printWin = window.open('', '_blank');
+    if (!printWin) return;
+    const restaurantName = (() => {
+      try {
+        const settings = localStorage.getItem('restaurant-settings');
+        if (settings) {
+          const parsed = JSON.parse(settings);
+          return parsed.name || parsed.restaurantName || 'Restaurant';
+        }
+      } catch { /* */ }
+      return 'Restaurant';
+    })();
+
+    const sections = canvasSections.filter(s => s.recipes.length > 0);
+    const sectionHtml = sections.map(s => `
+      <div class="section">
+        <div class="section-header">
+          <span class="section-icon">${getSectionIcon(s.category)}</span>
+          <span class="section-title">${getSectionLabel(s.category)}</span>
+        </div>
+        <div class="items">
+          ${s.recipes.map(r => `
+            <div class="item">
+              <div class="item-main">
+                <span class="item-name">${r.name}</span>
+                ${r.description ? `<span class="item-desc">${r.description}</span>` : ''}
+              </div>
+              <span class="item-price">${r.sellingPrice.toFixed(2)} EUR</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    printWin.document.write(`
+      <html><head><title>Menu - ${restaurantName}</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; max-width: 700px; margin: 0 auto; padding: 40px 30px; color: #111; }
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #111; padding-bottom: 20px; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 32px; margin: 0 0 4px; letter-spacing: 2px; text-transform: uppercase; }
+        .header p { font-size: 11px; color: #999; letter-spacing: 3px; text-transform: uppercase; }
+        .section { margin-bottom: 30px; }
+        .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #e5e7eb; }
+        .section-icon { font-size: 18px; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .item { display: flex; align-items: baseline; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #e5e7eb; }
+        .item-main { flex: 1; min-width: 0; }
+        .item-name { font-weight: 500; font-size: 14px; }
+        .item-desc { display: block; font-size: 11px; color: #888; margin-top: 2px; font-style: italic; }
+        .item-price { font-weight: 600; font-size: 14px; margin-left: 16px; white-space: nowrap; }
+        .footer { text-align: center; margin-top: 40px; font-size: 10px; color: #aaa; border-top: 1px solid #e5e7eb; padding-top: 12px; }
+      </style></head><body>
+      <div class="header">
+        <h1>${restaurantName}</h1>
+        <p>${menuName || 'Menu'}</p>
+      </div>
+      ${sectionHtml}
+      <div class="footer">Merci de votre visite</div>
+      </body></html>
+    `);
+    printWin.document.close();
+    printWin.print();
+  }, [canvasSections, menuName]);
+
+  // ── Export PDF placeholder ──
+
+  const handleExportPDF = useCallback(() => {
+    showToast('Export PDF bientot disponible ! Utilisez Imprimer > PDF pour le moment.', 'info');
+  }, [showToast]);
+
+  // ── Allergen keywords for card badges ──
+
+  const ALLERGEN_KEYWORDS: { allergen: string; icon: string; keywords: string[] }[] = [
+    { allergen: 'Gluten', icon: '\u{1F33E}', keywords: ['farine', 'ble', 'pain', 'pate', 'semoule'] },
+    { allergen: 'Lait', icon: '\u{1F95B}', keywords: ['lait', 'creme', 'beurre', 'fromage', 'yaourt'] },
+    { allergen: 'Oeufs', icon: '\u{1F95A}', keywords: ['oeuf', 'oeufs'] },
+    { allergen: 'Poissons', icon: '\u{1F41F}', keywords: ['poisson', 'saumon', 'cabillaud', 'thon', 'truite'] },
+    { allergen: 'Crustaces', icon: '\u{1F990}', keywords: ['crevette', 'homard', 'crabe', 'langoustine'] },
+    { allergen: 'Fruits a coque', icon: '\u{1F330}', keywords: ['amande', 'noisette', 'noix', 'pistache'] },
+  ];
+
+  const getRecipeAllergens = useCallback((recipe: Recipe): { allergen: string; icon: string }[] => {
+    const detected: { allergen: string; icon: string }[] = [];
+    const names = recipe.ingredients?.map(ri => ri.ingredient?.name?.toLowerCase() || '') || [];
+    for (const { allergen, icon, keywords } of ALLERGEN_KEYWORDS) {
+      if (names.some(n => keywords.some(kw => n.includes(kw)))) {
+        detected.push({ allergen, icon });
+      }
+    }
+    return detected;
+  }, []);
+
   // ── Margin color helper ──
 
   const marginColor = (margin: number) => {
@@ -429,8 +533,35 @@ export default function MenuBuilder() {
           <h1 className="text-lg font-bold text-[#111111] dark:text-white tracking-tight">Compositeur de Menu</h1>
         </div>
         <div className="flex-1" />
-        <div className="flex items-center gap-2 text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-          <span>{stats.totalItems} plat{stats.totalItems !== 1 ? 's' : ''} sur le menu</span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{stats.totalItems} plat{stats.totalItems !== 1 ? 's' : ''}</span>
+          <button
+            onClick={() => setPreviewMode(!previewMode)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              previewMode
+                ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+                : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+            }`}
+          >
+            {previewMode ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            {previewMode ? 'Editeur' : 'Apercu'}
+          </button>
+          <button
+            onClick={handlePrintMenu}
+            disabled={stats.totalItems === 0}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white transition-all disabled:opacity-40"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            Imprimer
+          </button>
+          <button
+            onClick={handleExportPDF}
+            disabled={stats.totalItems === 0}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white transition-all disabled:opacity-40"
+          >
+            <FileDown className="w-3.5 h-3.5" />
+            PDF
+          </button>
         </div>
       </div>
 
@@ -530,12 +661,14 @@ export default function MenuBuilder() {
           </div>
         </div>
 
-        {/* ═══════ CENTER — Menu Canvas ═══════ */}
+        {/* ═══════ CENTER — Menu Canvas / Preview ═══════ */}
         <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-black">
           {/* Canvas header */}
           <div className="flex-none px-6 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-3">
             <Utensils className="w-5 h-5 text-teal-400" />
-            <span className="text-sm font-semibold text-[#111111] dark:text-white">Composition du menu</span>
+            <span className="text-sm font-semibold text-[#111111] dark:text-white">
+              {previewMode ? 'Apercu client' : 'Composition du menu'}
+            </span>
             <div className="flex-1" />
             <div className="flex items-center gap-4 text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
               <span>{stats.totalItems} plats</span>
@@ -551,9 +684,98 @@ export default function MenuBuilder() {
           {/* Canvas body - scrollable sections */}
           <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
             <div className="max-w-4xl mx-auto space-y-6">
+
+              {/* ── PREVIEW MODE ── */}
+              {previewMode ? (
+                <div className="space-y-8">
+                  {/* Preview header */}
+                  <div className="text-center py-8 border-b-2 border-[#111111] dark:border-white">
+                    <h2 className="text-3xl font-bold text-[#111111] dark:text-white tracking-widest uppercase" style={{ fontFamily: 'Georgia, serif' }}>
+                      {menuName || 'Notre Menu'}
+                    </h2>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2 tracking-[0.3em] uppercase">Bonne degustation</p>
+                  </div>
+
+                  {canvasSections.filter(s => s.recipes.length > 0).map((section) => (
+                    <div key={section.category} className="space-y-4">
+                      {/* Preview section header */}
+                      <div className="text-center">
+                        <span className="text-2xl">{getSectionIcon(section.category)}</span>
+                        <h3 className="text-lg font-bold text-[#111111] dark:text-white uppercase tracking-[0.2em] mt-1" style={{ fontFamily: 'Georgia, serif' }}>
+                          {getSectionLabel(section.category)}
+                        </h3>
+                        <div className="w-12 h-0.5 bg-[#111111] dark:bg-white mx-auto mt-2" />
+                      </div>
+
+                      {/* Preview cards grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {section.recipes.map((recipe) => {
+                          const allergens = getRecipeAllergens(recipe);
+                          return (
+                            <div
+                              key={recipe.id}
+                              className="bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
+                            >
+                              {/* Photo placeholder */}
+                              <div className="h-32 bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] dark:from-[#171717] dark:to-[#0A0A0A] flex items-center justify-center relative">
+                                <FoodIllustration recipeName={recipe.name} category={recipe.category} size="lg" />
+                                <span className={`absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-bold ${marginBg(recipe.margin.marginPercent)}`}>
+                                  {recipe.margin.marginPercent.toFixed(0)}% marge
+                                </span>
+                              </div>
+                              <div className="p-4">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="text-sm font-bold text-[#111111] dark:text-white truncate">{recipe.name}</h4>
+                                    {recipe.description && (
+                                      <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] mt-1 line-clamp-2">{recipe.description}</p>
+                                    )}
+                                  </div>
+                                  <span className="text-lg font-bold text-[#111111] dark:text-white shrink-0">
+                                    {recipe.sellingPrice.toFixed(2)}<span className="text-xs font-normal ml-0.5">EUR</span>
+                                  </span>
+                                </div>
+                                {/* Allergen icons */}
+                                {allergens.length > 0 && (
+                                  <div className="flex items-center gap-1 mt-2">
+                                    <AlertTriangle className="w-3 h-3 text-amber-500" />
+                                    {allergens.map(a => (
+                                      <span key={a.allergen} className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-medium" title={a.allergen}>
+                                        {a.icon} {a.allergen}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+
+                  {stats.totalItems === 0 && (
+                    <div className="text-center py-16">
+                      <Utensils className="w-12 h-12 mx-auto mb-3 text-[#6B7280] dark:text-[#A3A3A3] opacity-30" />
+                      <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Le menu est vide. Ajoutez des plats pour voir l'apercu.</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+              /* ── EDITOR MODE ── */
+              <>
               {canvasSections.map((section) => {
                 const isDragOver = dragOverCategory === section.category;
                 const isEmpty = section.recipes.length === 0;
+
+                // Gradient config per category
+                const SECTION_GRADIENTS: Record<string, string> = {
+                  'Entree': 'from-emerald-500/10 via-transparent to-transparent dark:from-emerald-500/5',
+                  'Plat': 'from-orange-500/10 via-transparent to-transparent dark:from-orange-500/5',
+                  'Dessert': 'from-pink-500/10 via-transparent to-transparent dark:from-pink-500/5',
+                  'Boisson': 'from-blue-500/10 via-transparent to-transparent dark:from-blue-500/5',
+                  'Accompagnement': 'from-amber-500/10 via-transparent to-transparent dark:from-amber-500/5',
+                };
 
                 return (
                   <div
@@ -561,7 +783,7 @@ export default function MenuBuilder() {
                     onDragOver={(e) => handleDropZoneDragOver(e, section.category)}
                     onDragLeave={handleDropZoneDragLeave}
                     onDrop={(e) => handleDrop(e, section.category)}
-                    className={`rounded-xl border-2 border-dashed transition-all duration-300 ${
+                    className={`rounded-2xl border-2 border-dashed transition-all duration-300 overflow-hidden ${
                       isDragOver
                         ? 'border-teal-500 bg-teal-500/10 shadow-lg shadow-teal-500/5'
                         : isEmpty
@@ -569,15 +791,17 @@ export default function MenuBuilder() {
                         : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/50'
                     }`}
                   >
-                    {/* Section header */}
-                    <div className="px-4 py-3 flex items-center gap-2">
-                      <span className="text-base">{getSectionIcon(section.category)}</span>
-                      <h3 className="text-sm font-semibold text-teal-400 uppercase tracking-wider">
-                        {getSectionLabel(section.category)}
-                      </h3>
-                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] ml-1">
-                        {section.recipes.length} plat{section.recipes.length !== 1 ? 's' : ''}
-                      </span>
+                    {/* Section header with gradient */}
+                    <div className={`px-4 py-3 flex items-center gap-3 bg-gradient-to-r ${SECTION_GRADIENTS[section.category] || 'from-gray-500/10 via-transparent to-transparent'}`}>
+                      <span className="text-xl">{getSectionIcon(section.category)}</span>
+                      <div>
+                        <h3 className="text-sm font-bold text-[#111111] dark:text-white uppercase tracking-wider">
+                          {getSectionLabel(section.category)}
+                        </h3>
+                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                          {section.recipes.length} plat{section.recipes.length !== 1 ? 's' : ''}
+                        </span>
+                      </div>
                       {isDragOver && (
                         <span className="ml-auto text-[11px] text-teal-400 flex items-center gap-1 animate-pulse">
                           <ArrowRight className="w-3 h-3" />
@@ -588,64 +812,82 @@ export default function MenuBuilder() {
 
                     {/* Recipes in section */}
                     {section.recipes.length > 0 ? (
-                      <div className="px-3 pb-3 space-y-1">
-                        {section.recipes.map((recipe, idx) => (
-                          <div
-                            key={recipe.id}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, recipe.id, 'canvas', section.category)}
-                            onDragEnd={handleDragEnd}
-                            onDragOver={(e) => handleCardDragOver(e, section.category, idx)}
-                            onDrop={(e) => {
-                              e.stopPropagation();
-                              handleDrop(e, section.category, idx);
-                            }}
-                            className={`group flex items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-[#E5E7EB] dark:border-[#1A1A1A] ${
-                              draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
-                            } ${
-                              dragOverCategory === section.category && dragOverIndex === idx
-                                ? 'ring-2 ring-[#111111] dark:ring-white/50 bg-teal-500/10 border-teal-500/30'
-                                : ''
-                            }`}
-                          >
-                            <GripVertical className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3] shrink-0 group-hover:text-[#9CA3AF] dark:text-[#737373]" />
-                            <div className="flex-1 min-w-0 flex items-center gap-3">
-                              <div className="flex-1 min-w-0">
-                                <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
-                                  {recipe.name}
-                                </span>
-                                {recipe.description && (
-                                  <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] truncate block mt-0.5">
-                                    {recipe.description}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-3 shrink-0">
-                                <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                                  {recipe.sellingPrice.toFixed(2)} EUR
-                                </span>
-                                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${marginBg(recipe.margin.marginPercent)}`}>
-                                  {recipe.margin.marginPercent.toFixed(0)}%
-                                </span>
-                                <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">
-                                  FC {(100 - recipe.margin.marginPercent).toFixed(0)}%
-                                </span>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => removeRecipeFromSection(recipe.id, section.category)}
-                              className="shrink-0 p-1 rounded-md opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 transition-all"
-                              title="Retirer du menu"
+                      <div className="px-3 pb-3 space-y-1.5 pt-1">
+                        {section.recipes.map((recipe, idx) => {
+                          const allergens = getRecipeAllergens(recipe);
+                          return (
+                            <div
+                              key={recipe.id}
+                              draggable
+                              onDragStart={(e) => handleDragStart(e, recipe.id, 'canvas', section.category)}
+                              onDragEnd={handleDragEnd}
+                              onDragOver={(e) => handleCardDragOver(e, section.category, idx)}
+                              onDrop={(e) => {
+                                e.stopPropagation();
+                                handleDrop(e, section.category, idx);
+                              }}
+                              className={`group flex items-center gap-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-3 cursor-grab active:cursor-grabbing transition-all duration-200 hover:border-[#D1D5DB] dark:hover:border-[#333] ${
+                                draggedRecipeId === recipe.id ? 'opacity-40 scale-95' : ''
+                              } ${
+                                dragOverCategory === section.category && dragOverIndex === idx
+                                  ? 'ring-2 ring-[#111111] dark:ring-white/50 bg-teal-500/10 border-teal-500/30'
+                                  : ''
+                              }`}
                             >
-                              <X className="w-4 h-4" />
-                            </button>
-                          </div>
-                        ))}
+                              <GripVertical className="w-4 h-4 text-[#D1D5DB] dark:text-[#333] shrink-0 group-hover:text-[#9CA3AF] dark:text-[#737373]" />
+                              {/* Photo placeholder */}
+                              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] dark:from-[#171717] dark:to-[#0A0A0A] flex items-center justify-center shrink-0 overflow-hidden">
+                                <FoodIllustration recipeName={recipe.name} category={recipe.category} size="sm" />
+                              </div>
+                              <div className="flex-1 min-w-0 flex items-center gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
+                                    {recipe.name}
+                                  </span>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    {recipe.description && (
+                                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] truncate block max-w-[200px]">
+                                        {recipe.description}
+                                      </span>
+                                    )}
+                                    {/* Allergen icons inline */}
+                                    {allergens.length > 0 && (
+                                      <span className="flex items-center gap-0.5 shrink-0">
+                                        {allergens.slice(0, 3).map(a => (
+                                          <span key={a.allergen} className="text-[10px]" title={a.allergen}>{a.icon}</span>
+                                        ))}
+                                        {allergens.length > 3 && <span className="text-[9px] text-amber-500">+{allergens.length - 3}</span>}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3 shrink-0">
+                                  <span className="text-xs font-semibold text-[#111111] dark:text-white">
+                                    {recipe.sellingPrice.toFixed(2)} EUR
+                                  </span>
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${marginBg(recipe.margin.marginPercent)}`}>
+                                    {recipe.margin.marginPercent.toFixed(0)}%
+                                  </span>
+                                  <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">
+                                    FC {(100 - recipe.margin.marginPercent).toFixed(0)}%
+                                  </span>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => removeRecipeFromSection(recipe.id, section.category)}
+                                className="shrink-0 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-500/20 text-red-400 transition-all"
+                                title="Retirer du menu"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
                     ) : (
                       <div className={`px-3 pb-4 transition-all ${isDragOver ? 'py-4' : 'py-2'}`}>
                         <div
-                          className={`flex items-center justify-center py-6 rounded-lg border border-dashed transition-all ${
+                          className={`flex items-center justify-center py-6 rounded-xl border border-dashed transition-all ${
                             isDragOver
                               ? 'border-teal-500/50 bg-teal-500/5'
                               : 'border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black/20'
@@ -660,6 +902,8 @@ export default function MenuBuilder() {
                   </div>
                 );
               })}
+              </>
+              )}
             </div>
           </div>
         </div>

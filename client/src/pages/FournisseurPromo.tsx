@@ -4,7 +4,8 @@ import {
   Package, ShoppingCart, Truck, Phone, Mail, MapPin,
   Search, Plus, Minus, Send, Check,
   Building2, Award, Clock, Shield, ArrowLeft, Percent, Tag, Sparkles, Calendar,
-  Star, Filter, ChevronDown, Loader2,
+  Star, Filter, ChevronDown, Loader2, Bell, History, TrendingDown, Zap, Calculator,
+  AlertTriangle, ChevronRight, X,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -121,6 +122,9 @@ export default function FournisseurPromo() {
   const [selectedCat, setSelectedCat] = useState('Tous');
   const [sent, setSent] = useState(false);
   const [sortBy, setSortBy] = useState<'discount' | 'price' | 'name' | 'endDate'>('discount');
+  const [showAlerts, setShowAlerts] = useState(true);
+  const [dismissedAlerts, setDismissedAlerts] = useState<Set<number>>(new Set());
+  const [activeView, setActiveView] = useState<'promos' | 'history'>('promos');
 
   const fetchSupplierPromo = useCallback(async () => {
     if (!id) return;
@@ -196,6 +200,80 @@ export default function FournisseurPromo() {
   const avgDiscount = supplier.products.length > 0
     ? Math.round(supplier.products.reduce((s, p) => s + p.discount, 0) / supplier.products.length)
     : 0;
+
+  // Potential total savings if you order everything at promo price
+  const totalPotentialSavings = useMemo(() => {
+    return supplier.products.reduce((sum, p) => sum + (p.normalPrice - p.promoPrice), 0);
+  }, [supplier]);
+
+  // Best deals (top 3 by discount)
+  const bestDeals = useMemo(() => {
+    return [...supplier.products]
+      .sort((a, b) => b.discount - a.discount)
+      .slice(0, 3);
+  }, [supplier]);
+
+  // Urgently ending promos (within 3 days)
+  const urgentPromos = useMemo(() => {
+    return supplier.products.filter(p => daysRemaining(p.endDate) <= 3 && daysRemaining(p.endDate) >= 0);
+  }, [supplier]);
+
+  // Alerts
+  const alerts = useMemo(() => {
+    const list: { id: number; type: 'urgent' | 'deal' | 'new'; message: string; detail: string }[] = [];
+    urgentPromos.forEach((p, i) => {
+      const days = daysRemaining(p.endDate);
+      list.push({
+        id: i,
+        type: 'urgent',
+        message: days === 0 ? `Dernier jour pour ${p.name} !` : `${p.name} expire dans ${days} jour${days > 1 ? 's' : ''}`,
+        detail: `-${p.discount}% soit ${(p.normalPrice - p.promoPrice).toFixed(2)} EUR d'economie/${p.unit}`,
+      });
+    });
+    bestDeals.forEach((p, i) => {
+      if (!urgentPromos.find(u => u.id === p.id)) {
+        list.push({
+          id: 100 + i,
+          type: 'deal',
+          message: `Offre exceptionnelle : -${p.discount}% sur ${p.name}`,
+          detail: `${p.promoPrice.toFixed(2)} EUR au lieu de ${p.normalPrice.toFixed(2)} EUR/${p.unit}`,
+        });
+      }
+    });
+    supplier.products.filter(p => p.badge === 'nouveau').forEach((p, i) => {
+      list.push({
+        id: 200 + i,
+        type: 'new',
+        message: `Nouveau produit : ${p.name}`,
+        detail: `${p.promoPrice.toFixed(2)} EUR/${p.unit}`,
+      });
+    });
+    return list;
+  }, [urgentPromos, bestDeals, supplier]);
+
+  // Past promos (mock data based on current products)
+  const pastPromos = useMemo(() => {
+    return supplier.products.slice(0, 5).map((p, i) => ({
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      discount: Math.round(p.discount * 0.8),
+      savedAmount: ((p.normalPrice - p.promoPrice) * (3 + i)).toFixed(2),
+      usedDate: new Date(Date.now() - (7 + i * 5) * 86400000).toISOString(),
+      quantity: 3 + i,
+      unit: p.unit,
+    }));
+  }, [supplier]);
+
+  const dismissAlert = useCallback((alertId: number) => {
+    setDismissedAlerts(prev => {
+      const next = new Set(prev);
+      next.add(alertId);
+      return next;
+    });
+  }, []);
+
+  const visibleAlerts = alerts.filter(a => !dismissedAlerts.has(a.id));
 
   if (loading) {
     return (
@@ -292,14 +370,15 @@ export default function FournisseurPromo() {
       </div>
 
       {/* ── Promo stats banner ───────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {[
-          { label: 'Produits en promo', value: `${promoCount}`, icon: Tag, color: 'text-red-400' },
-          { label: 'Réduction moyenne', value: `-${avgDiscount}%`, icon: Percent, color: 'text-amber-400' },
-          { label: 'Produits au catalogue', value: `${supplier.products.length}`, icon: Package, color: 'text-teal-400' },
-          { label: 'Catégories', value: `${supplier.categories.length}`, icon: Filter, color: 'text-emerald-400' },
+          { label: 'Produits en promo', value: `${promoCount}`, icon: Tag, color: 'text-red-400', bg: 'bg-red-500/10' },
+          { label: 'Reduction moyenne', value: `-${avgDiscount}%`, icon: Percent, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+          { label: 'Economies potentielles', value: `${totalPotentialSavings.toFixed(0)} EUR`, icon: TrendingDown, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+          { label: 'Produits au catalogue', value: `${supplier.products.length}`, icon: Package, color: 'text-teal-400', bg: 'bg-teal-500/10' },
+          { label: 'Fin prochaine', value: `${urgentPromos.length}`, icon: Clock, color: urgentPromos.length > 0 ? 'text-red-400' : 'text-[#9CA3AF]', bg: urgentPromos.length > 0 ? 'bg-red-500/10' : 'bg-[#F3F4F6] dark:bg-[#171717]' },
         ].map(stat => (
-          <div key={stat.label} className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl p-4 text-center">
+          <div key={stat.label} className={`${stat.bg} border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 text-center`}>
             <stat.icon className={`w-5 h-5 mx-auto mb-1 ${stat.color}`} />
             <p className="text-xl font-bold text-[#111111] dark:text-white">{stat.value}</p>
             <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{stat.label}</p>
@@ -307,6 +386,164 @@ export default function FournisseurPromo() {
         ))}
       </div>
 
+      {/* ── Alert System ────────────────────────────────────────────── */}
+      {showAlerts && visibleAlerts.length > 0 && (
+        <div className="space-y-2">
+          {visibleAlerts.slice(0, 3).map(alert => (
+            <div
+              key={alert.id}
+              className={`flex items-start gap-3 px-4 py-3 rounded-2xl border transition-all ${
+                alert.type === 'urgent'
+                  ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800'
+                  : alert.type === 'deal'
+                  ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800'
+                  : 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'
+              }`}
+            >
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                alert.type === 'urgent'
+                  ? 'bg-red-500/20'
+                  : alert.type === 'deal'
+                  ? 'bg-emerald-500/20'
+                  : 'bg-amber-500/20'
+              }`}>
+                {alert.type === 'urgent' ? (
+                  <AlertTriangle className="w-4 h-4 text-red-500" />
+                ) : alert.type === 'deal' ? (
+                  <Zap className="w-4 h-4 text-emerald-500" />
+                ) : (
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-sm font-semibold ${
+                  alert.type === 'urgent' ? 'text-red-800 dark:text-red-300' :
+                  alert.type === 'deal' ? 'text-emerald-800 dark:text-emerald-300' :
+                  'text-amber-800 dark:text-amber-300'
+                }`}>{alert.message}</p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">{alert.detail}</p>
+              </div>
+              <button
+                onClick={() => dismissAlert(alert.id)}
+                className="p-1 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ── Savings Calculator ────────────────────────────────────────── */}
+      {cartCount > 0 && (
+        <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/5 dark:to-teal-500/5 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+              <Calculator className="w-5 h-5 text-emerald-500" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-emerald-800 dark:text-emerald-300">Calculateur d'economies</h3>
+              <p className="text-[11px] text-emerald-600 dark:text-emerald-400">Si vous commandez maintenant</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Total commande</p>
+              <p className="text-xl font-bold text-[#111111] dark:text-white mt-1">{cartTotal.toFixed(2)} EUR</p>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Vous economisez</p>
+              <p className="text-xl font-bold text-emerald-500 mt-1">-{cartSavings.toFixed(2)} EUR</p>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Reduction moy.</p>
+              <p className="text-xl font-bold text-emerald-500 mt-1">
+                -{cartTotal + cartSavings > 0 ? ((cartSavings / (cartTotal + cartSavings)) * 100).toFixed(0) : 0}%
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── View Toggle: Promos | Historique ──────────────────────────── */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setActiveView('promos')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+            activeView === 'promos'
+              ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+              : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+          }`}
+        >
+          <Tag className="w-4 h-4" />
+          Promotions actives
+        </button>
+        <button
+          onClick={() => setActiveView('history')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+            activeView === 'history'
+              ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+              : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white'
+          }`}
+        >
+          <History className="w-4 h-4" />
+          Historique
+        </button>
+      </div>
+
+      {/* ── History View ─────────────────────────────────────────────── */}
+      {activeView === 'history' && (
+        <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white flex items-center gap-2">
+              <History className="w-4 h-4 text-teal-400" />
+              Promotions utilisees recemment
+            </h3>
+          </div>
+          {pastPromos.length > 0 ? (
+            <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+              {pastPromos.map(promo => (
+                <div key={promo.id} className="px-5 py-3 flex items-center gap-4 hover:bg-white dark:hover:bg-[#0A0A0A] transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] flex items-center justify-center text-lg">
+                    {CATEGORY_ICONS[promo.category] || '\u{1F4E6}'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-[#111111] dark:text-white">{promo.name}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">
+                        -{promo.discount}%
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+                      {promo.quantity} {promo.unit} commande{promo.quantity > 1 ? 's' : ''} le {formatDate(promo.usedDate)}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-sm font-bold text-emerald-500">-{promo.savedAmount} EUR</span>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">economise</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 text-center">
+              <History className="w-10 h-10 mx-auto mb-3 text-[#D1D5DB] dark:text-[#333]" />
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune promotion utilisee</p>
+            </div>
+          )}
+          {/* Total savings summary */}
+          <div className="px-5 py-3 bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+            <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">Total economies</span>
+            <span className="text-lg font-bold text-emerald-500">
+              -{pastPromos.reduce((sum, p) => sum + parseFloat(p.savedAmount), 0).toFixed(2)} EUR
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Active Promos View ───────────────────────────────────────── */}
+      {activeView === 'promos' && (
+      <>
       {/* ── Search + Filter bar ──────────────────────────────────────── */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -361,12 +598,12 @@ export default function FournisseurPromo() {
           return (
             <div
               key={product.id}
-              className={`bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border rounded-xl p-4 transition-all flex flex-col justify-between ${
+              className={`bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border rounded-2xl p-4 transition-all flex flex-col justify-between ${
                 inCart > 0
                   ? 'border-teal-500/50 ring-1 ring-[#111111] dark:ring-white/20'
                   : product.stock === 'rupture'
                   ? 'border-[#E5E7EB] dark:border-[#1A1A1A] opacity-50'
-                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#E5E7EB] dark:border-[#1A1A1A]'
+                  : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333]'
               }`}
             >
               {/* Top: name, badge, origin */}
@@ -447,7 +684,7 @@ export default function FournisseurPromo() {
                       onClick={() => addToCart(product.id)}
                       className="px-3 py-1.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white text-xs font-medium rounded-lg transition-colors flex items-center gap-1"
                     >
-                      <Plus className="w-3.5 h-3.5" />Ajouter
+                      <Zap className="w-3.5 h-3.5" />Profiter
                     </button>
                   )
                 )}
@@ -462,6 +699,8 @@ export default function FournisseurPromo() {
           <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
           <p>Aucun produit trouvé</p>
         </div>
+      )}
+      </>
       )}
 
       {/* ── Floating Cart ────────────────────────────────────────────── */}

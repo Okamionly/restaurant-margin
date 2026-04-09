@@ -1,10 +1,14 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Bluetooth, BluetoothOff, Scale, Check, RotateCcw, Search,
   AlertTriangle, Wifi, Plus, Minus, ArrowLeft, Trash2,
   ClipboardList, Package, ChefHat, Zap, CircleDot, Euro, PlusCircle, X,
   Maximize, Minimize, Camera, RefreshCw, Settings, WifiOff,
   ArrowDownToLine, ArrowUpFromLine, Replace,
+  // New icons for features
+  BookOpen, Calendar, Download, Bell, Router, Weight,
+  ChevronDown, ChevronRight, CheckCircle2, AlertCircle, Clock,
+  BarChart3, FileText, ExternalLink, Save, Play, Pause,
 } from 'lucide-react';
 import { useScale } from '../hooks/useScale';
 import { useToast } from '../hooks/useToast';
@@ -33,6 +37,75 @@ type HistoryEntry = {
   stockAction?: StockMode;
   stockBefore?: number;
   stockAfter?: number;
+  recipeId?: number;
+  recipeName?: string;
+};
+
+// ── Recipe types ──
+type RecipeIngredient = {
+  id: number;
+  ingredientId: number;
+  quantity: number;
+  wastePercent: number;
+  ingredient: Ingredient;
+};
+
+type Recipe = {
+  id: number;
+  name: string;
+  category: string;
+  sellingPrice: number;
+  nbPortions: number;
+  ingredients: RecipeIngredient[];
+};
+
+// ── Recipe weighing session ──
+type RecipeWeighEntry = {
+  ingredientId: number;
+  ingredientName: string;
+  targetQty: number;
+  actualQty: number | null;
+  unit: string;
+  pricePerUnit: number;
+  status: 'pending' | 'weighed';
+};
+
+type RecipeSession = {
+  recipeId: number;
+  recipeName: string;
+  entries: RecipeWeighEntry[];
+  startedAt: string;
+};
+
+// ── Tare Profile ──
+type TareProfile = {
+  id: string;
+  name: string;
+  weightGrams: number;
+};
+
+const DEFAULT_TARE_PROFILES: TareProfile[] = [
+  { id: 'gn1-1', name: 'Bac GN 1/1', weightGrams: 850 },
+  { id: 'bol-inox', name: 'Bol inox', weightGrams: 320 },
+  { id: 'assiette', name: 'Assiette', weightGrams: 450 },
+  { id: 'bac-gn-1-2', name: 'Bac GN 1/2', weightGrams: 520 },
+  { id: 'saladier', name: 'Saladier', weightGrams: 680 },
+];
+
+// ── Multi-scale ──
+type ScaleProfile = {
+  id: string;
+  name: string;
+  type: 'floor' | 'precision' | 'standard';
+  lastUsedForCategory?: string;
+};
+
+// ── Weighing History Session ──
+type WeighingSession = {
+  date: string; // YYYY-MM-DD
+  entries: HistoryEntry[];
+  totalValue: number;
+  totalKg: number;
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -62,6 +135,9 @@ function convertWeight(kg: number, unit: string): number {
 
 // localStorage persistence for history
 const HISTORY_KEY = 'weighstation_history';
+const TARE_PROFILES_KEY = 'weighstation_tare_profiles';
+const SCALE_PROFILES_KEY = 'weighstation_scale_profiles';
+const RECIPE_SESSIONS_KEY = 'weighstation_recipe_sessions';
 
 function loadHistory(): HistoryEntry[] {
   try {
@@ -71,7 +147,29 @@ function loadHistory(): HistoryEntry[] {
 }
 
 function saveHistory(entries: HistoryEntry[]) {
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, 50)));
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, 200)));
+}
+
+function loadTareProfiles(): TareProfile[] {
+  try {
+    const raw = localStorage.getItem(TARE_PROFILES_KEY);
+    return raw ? JSON.parse(raw) : DEFAULT_TARE_PROFILES;
+  } catch { return DEFAULT_TARE_PROFILES; }
+}
+
+function saveTareProfiles(profiles: TareProfile[]) {
+  localStorage.setItem(TARE_PROFILES_KEY, JSON.stringify(profiles));
+}
+
+function loadRecipeSessions(): RecipeSession[] {
+  try {
+    const raw = localStorage.getItem(RECIPE_SESSIONS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveRecipeSessions(sessions: RecipeSession[]) {
+  localStorage.setItem(RECIPE_SESSIONS_KEY, JSON.stringify(sessions.slice(0, 100)));
 }
 
 // Steps for the workflow
@@ -85,6 +183,64 @@ const STEPS = [
 
 type DisplayUnit = 'g' | 'kg' | 'L' | 'piece';
 
+// ── Main tabs ──
+type MainTab = 'peser' | 'recette' | 'historique' | 'rapport';
+
+// ── Accuracy color helpers ──
+function getAccuracyColor(target: number, actual: number): 'green' | 'amber' | 'red' {
+  if (target <= 0) return 'green';
+  const diff = Math.abs(actual - target) / target;
+  if (diff <= 0.05) return 'green';
+  if (diff <= 0.15) return 'amber';
+  return 'red';
+}
+
+function getAccuracyClasses(color: 'green' | 'amber' | 'red') {
+  switch (color) {
+    case 'green': return 'text-emerald-400 bg-emerald-900/30 border-emerald-500/30';
+    case 'amber': return 'text-amber-400 bg-amber-900/30 border-amber-500/30';
+    case 'red': return 'text-red-400 bg-red-900/30 border-red-500/30';
+  }
+}
+
+function getAccuracyIcon(color: 'green' | 'amber' | 'red') {
+  switch (color) {
+    case 'green': return CheckCircle2;
+    case 'amber': return AlertTriangle;
+    case 'red': return AlertCircle;
+  }
+}
+
+// ── CSV export helper ──
+function exportCSV(data: HistoryEntry[], filename: string) {
+  const headers = ['Date', 'Heure', 'Ingredient', 'Categorie', 'Poids', 'Unite', 'Action', 'Stock Avant', 'Stock Apres', 'Statut', 'Recette'];
+  const rows = data.map(e => {
+    const d = new Date(e.timestamp);
+    return [
+      d.toLocaleDateString('fr-FR'),
+      d.toLocaleTimeString('fr-FR'),
+      e.ingredientName,
+      e.ingredientCategory,
+      e.weight.toString(),
+      e.unit,
+      e.stockAction || '',
+      e.stockBefore?.toString() || '',
+      e.stockAfter?.toString() || '',
+      e.status,
+      e.recipeName || '',
+    ].join(';');
+  });
+  const csv = [headers.join(';'), ...rows].join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
 export default function WeighStation() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -94,6 +250,9 @@ export default function WeighStation() {
     kioskMode, setKioskMode, autoReconnect, setAutoReconnect,
     connect, disconnect,
   } = useScale();
+
+  // ── Main tab state ──
+  const [mainTab, setMainTab] = useState<MainTab>('peser');
 
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [search, setSearch] = useState('');
@@ -112,11 +271,43 @@ export default function WeighStation() {
   const [showNewIngredient, setShowNewIngredient] = useState(false);
   const [newIngForm, setNewIngForm] = useState({ name: '', category: 'Legumes', unit: 'kg', pricePerUnit: '' });
   const [creatingIngredient, setCreatingIngredient] = useState(false);
-  const [ingredientStock, setIngredientStock] = useState<{ stock: number; unit: string; itemId: number } | null>(null);
+  const [ingredientStock, setIngredientStock] = useState<{ stock: number; unit: string; itemId: number; minStock?: number } | null>(null);
   const [loadingStock, setLoadingStock] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showCameraPlaceholder, setShowCameraPlaceholder] = useState(false);
   const [stockMode, setStockMode] = useState<StockMode>('remove');
+
+  // ── Recipe Mode state ──
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [recipeSession, setRecipeSession] = useState<RecipeSession | null>(null);
+  const [activeRecipeIngIdx, setActiveRecipeIngIdx] = useState<number | null>(null);
+  const [recipeSessions, setRecipeSessions] = useState<RecipeSession[]>(loadRecipeSessions);
+
+  // ── Tare Profiles state ──
+  const [tareProfiles, setTareProfiles] = useState<TareProfile[]>(loadTareProfiles);
+  const [showTareProfiles, setShowTareProfiles] = useState(false);
+  const [newTareForm, setNewTareForm] = useState({ name: '', weightGrams: '' });
+
+  // ── Multi-Scale state ──
+  const [scaleProfiles] = useState<ScaleProfile[]>([
+    { id: 'main', name: 'Balance principale', type: 'standard' },
+    { id: 'precision', name: 'Balance de precision', type: 'precision' },
+    { id: 'floor', name: 'Balance au sol', type: 'floor' },
+  ]);
+  const [activeScaleId, setActiveScaleId] = useState('main');
+  const [showScaleSelector, setShowScaleSelector] = useState(false);
+
+  // ── Smart Alerts state ──
+  const [smartAlerts, setSmartAlerts] = useState<Array<{ type: 'warning' | 'danger' | 'reorder'; message: string }>>([]);
+  const [inventoryItems, setInventoryItems] = useState<any[]>([]);
+
+  // ── History tab state ──
+  const [historySelectedDate, setHistorySelectedDate] = useState<string | null>(null);
+  const [historyCalendarMonth, setHistoryCalendarMonth] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
 
   const searchRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -129,6 +320,22 @@ export default function WeighStation() {
       .catch(() => {});
   }, []);
 
+  // Load recipes for Recipe Mode
+  useEffect(() => {
+    fetch(`${API}/api/recipes`, { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : [])
+      .then(setRecipes)
+      .catch(() => {});
+  }, []);
+
+  // Load full inventory for smart alerts
+  useEffect(() => {
+    fetch(`${API}/api/inventory`, { headers: authHeaders() })
+      .then(r => r.ok ? r.json() : [])
+      .then(setInventoryItems)
+      .catch(() => {});
+  }, []);
+
   // Fetch stock when ingredient is selected
   useEffect(() => {
     if (!selected) { setIngredientStock(null); return; }
@@ -138,7 +345,7 @@ export default function WeighStation() {
       .then((items: any[]) => {
         const item = items.find((i: any) => i.ingredientId === selected.id);
         if (item) {
-          setIngredientStock({ stock: item.currentStock, unit: item.unit || selected.unit, itemId: item.id });
+          setIngredientStock({ stock: item.currentStock, unit: item.unit || selected.unit, itemId: item.id, minStock: item.minStock });
         } else {
           setIngredientStock(null);
         }
@@ -146,6 +353,31 @@ export default function WeighStation() {
       .catch(() => setIngredientStock(null))
       .finally(() => setLoadingStock(false));
   }, [selected]);
+
+  // ── Smart Alerts: check stock levels when weighing ──
+  useEffect(() => {
+    if (!selected || stockMode !== 'remove') { setSmartAlerts([]); return; }
+    const currentWeight = useSimulation ? simWeight : (reading?.weight ?? 0);
+    const netW = Math.max(0, currentWeight - tare);
+    const netConv = selected ? convertWeight(netW, selected.unit) : 0;
+    if (netConv <= 0 || !ingredientStock) { setSmartAlerts([]); return; }
+
+    const alerts: Array<{ type: 'warning' | 'danger' | 'reorder'; message: string }> = [];
+    const afterStock = ingredientStock.stock - netConv;
+
+    if (afterStock <= 0) {
+      alerts.push({ type: 'danger', message: `Stock de ${selected.name} sera a 0 apres cette pesee !` });
+      alerts.push({ type: 'reorder', message: `Commander ${selected.name} chez votre fournisseur ?` });
+    } else if (ingredientStock.minStock && afterStock <= ingredientStock.minStock) {
+      alerts.push({ type: 'warning', message: `Stock de ${selected.name} passera sous le seuil minimum (${ingredientStock.minStock} ${selected.unit})` });
+      const reorderQty = Math.ceil((ingredientStock.minStock * 3) - afterStock);
+      if (reorderQty > 0) {
+        alerts.push({ type: 'reorder', message: `Commander ${reorderQty} ${selected.unit} de ${selected.name} ?` });
+      }
+    }
+
+    setSmartAlerts(alerts);
+  }, [selected, stockMode, reading, simWeight, tare, useSimulation, ingredientStock]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -205,11 +437,18 @@ export default function WeighStation() {
     showToast('Tare effectuee', 'success');
   }
 
+  function handleTareFromProfile(profile: TareProfile) {
+    setTare(profile.weightGrams / 1000);
+    setShowTareProfiles(false);
+    showToast(`Tare "${profile.name}" appliquee (${profile.weightGrams}g)`, 'success');
+  }
+
   function handleReset() {
     setTare(0);
     setSelected(null);
     setQuickMode(false);
     setSearch('');
+    setSmartAlerts([]);
   }
 
   async function handleValidate() {
@@ -222,7 +461,7 @@ export default function WeighStation() {
         timestamp: new Date().toISOString(),
         status: 'success',
       };
-      const updated = [entry, ...history].slice(0, 50);
+      const updated = [entry, ...history].slice(0, 200);
       setHistory(updated);
       saveHistory(updated);
       showToast(`Pesee enregistree : ${netConverted} ${displayUnit}`, 'success');
@@ -248,7 +487,6 @@ export default function WeighStation() {
           let newStock: number;
 
           if (stockMode === 'add') {
-            // Ajouter au stock (restock / livraison)
             newStock = item.currentStock + netConverted;
             await fetch(`${API}/api/inventory/${item.id}/restock`, {
               method: 'POST',
@@ -256,7 +494,6 @@ export default function WeighStation() {
               body: JSON.stringify({ quantity: netConverted }),
             });
           } else if (stockMode === 'set') {
-            // Definir le stock (inventaire exact)
             newStock = netConverted;
             await fetch(`${API}/api/inventory/${item.id}`, {
               method: 'PUT',
@@ -264,7 +501,6 @@ export default function WeighStation() {
               body: JSON.stringify({ currentStock: netConverted }),
             });
           } else {
-            // Retirer du stock (consommation)
             newStock = Math.max(0, item.currentStock - netConverted);
             await fetch(`${API}/api/inventory/${item.id}`, {
               method: 'PUT',
@@ -274,7 +510,7 @@ export default function WeighStation() {
           }
 
           stockAfter = newStock;
-          setIngredientStock({ stock: newStock, unit: item.unit || selected.unit, itemId: item.id });
+          setIngredientStock({ stock: newStock, unit: item.unit || selected.unit, itemId: item.id, minStock: item.minStock });
 
           const actionLabel = stockMode === 'add' ? '+' : stockMode === 'set' ? '=' : '-';
           showToast(
@@ -282,7 +518,6 @@ export default function WeighStation() {
             'success'
           );
         } else {
-          // No inventory entry yet — create one
           if (stockMode === 'remove') {
             showToast(`Pas de stock pour ${selected.name} — impossible de retirer`, 'error');
             entryStatus = 'error';
@@ -320,7 +555,7 @@ export default function WeighStation() {
         stockBefore,
         stockAfter,
       };
-      const updated = [entry, ...history].slice(0, 50);
+      const updated = [entry, ...history].slice(0, 200);
       setHistory(updated);
       saveHistory(updated);
       setTare(0);
@@ -337,7 +572,7 @@ export default function WeighStation() {
         status: 'error',
         stockAction: stockMode,
       };
-      const updated = [entry, ...history].slice(0, 50);
+      const updated = [entry, ...history].slice(0, 200);
       setHistory(updated);
       saveHistory(updated);
     }
@@ -373,7 +608,18 @@ export default function WeighStation() {
       if (u === 'ml') return sum + w / 1000;
       return sum + w;
     }, 0);
-    return { totalWeighs, totalKg: Math.round(totalKg * 100) / 100 };
+    const totalValue = todayEntries.reduce((sum, e) => {
+      const ing = ingredients.find(i => i.name === e.ingredientName);
+      if (!ing) return sum;
+      const w = e.weight;
+      const u = e.unit.toLowerCase();
+      let kgVal = w;
+      if (u === 'g') kgVal = w / 1000;
+      else if (u === 'cl') kgVal = w / 100;
+      else if (u === 'ml') kgVal = w / 1000;
+      return sum + kgVal * ing.pricePerUnit;
+    }, 0);
+    return { totalWeighs, totalKg: Math.round(totalKg * 100) / 100, totalValue: Math.round(totalValue * 100) / 100 };
   })();
 
   const isConnected = status === 'connected' || useSimulation;
@@ -408,6 +654,303 @@ export default function WeighStation() {
   // Kiosk: font size multiplier
   const kf = kioskMode ? 1.3 : 1;
 
+  // ═══════════════════════════════════════════════════════════
+  // RECIPE MODE FUNCTIONS
+  // ═══════════════════════════════════════════════════════════
+
+  function startRecipeSession(recipe: Recipe) {
+    const entries: RecipeWeighEntry[] = recipe.ingredients.map(ri => ({
+      ingredientId: ri.ingredientId,
+      ingredientName: ri.ingredient.name,
+      targetQty: ri.quantity,
+      actualQty: null,
+      unit: ri.ingredient.unit,
+      pricePerUnit: ri.ingredient.pricePerUnit,
+      status: 'pending',
+    }));
+    const session: RecipeSession = {
+      recipeId: recipe.id,
+      recipeName: recipe.name,
+      entries,
+      startedAt: new Date().toISOString(),
+    };
+    setRecipeSession(session);
+    setActiveRecipeIngIdx(0);
+    // Select the first pending ingredient on the scale
+    const firstIng = recipe.ingredients[0]?.ingredient;
+    if (firstIng) {
+      setSelected({ id: firstIng.id, name: firstIng.name, unit: firstIng.unit, category: firstIng.category, pricePerUnit: firstIng.pricePerUnit });
+    }
+  }
+
+  function confirmRecipeIngredient() {
+    if (!recipeSession || activeRecipeIngIdx === null) return;
+    const updated = { ...recipeSession };
+    updated.entries = [...updated.entries];
+    const netConv = selected ? convertWeight(netWeight, selected.unit) : 0;
+    if (netConv <= 0) return;
+    updated.entries[activeRecipeIngIdx] = {
+      ...updated.entries[activeRecipeIngIdx],
+      actualQty: netConv,
+      status: 'weighed',
+    };
+    setRecipeSession(updated);
+
+    // Also log to history
+    const entry: HistoryEntry = {
+      ingredientName: updated.entries[activeRecipeIngIdx].ingredientName,
+      ingredientCategory: selected?.category || '',
+      weight: netConv,
+      unit: updated.entries[activeRecipeIngIdx].unit,
+      timestamp: new Date().toISOString(),
+      status: 'success',
+      stockAction: 'remove',
+      recipeId: updated.recipeId,
+      recipeName: updated.recipeName,
+    };
+    const updatedHist = [entry, ...history].slice(0, 200);
+    setHistory(updatedHist);
+    saveHistory(updatedHist);
+
+    // Move to next pending ingredient
+    const nextIdx = updated.entries.findIndex((e, i) => i > activeRecipeIngIdx! && e.status === 'pending');
+    if (nextIdx >= 0) {
+      setActiveRecipeIngIdx(nextIdx);
+      const nextIng = selectedRecipe?.ingredients[nextIdx]?.ingredient;
+      if (nextIng) {
+        setSelected({ id: nextIng.id, name: nextIng.name, unit: nextIng.unit, category: nextIng.category, pricePerUnit: nextIng.pricePerUnit });
+      }
+      setTare(0);
+    } else {
+      setActiveRecipeIngIdx(null);
+    }
+    showToast(`${updated.entries[activeRecipeIngIdx].ingredientName} pese !`, 'success');
+  }
+
+  function saveRecipeSession() {
+    if (!recipeSession) return;
+    const updated = [recipeSession, ...recipeSessions].slice(0, 100);
+    setRecipeSessions(updated);
+    saveRecipeSessions(updated);
+    showToast('Pesee de recette sauvegardee !', 'success');
+    setRecipeSession(null);
+    setActiveRecipeIngIdx(null);
+    setSelectedRecipe(null);
+    setSelected(null);
+  }
+
+  const recipeWeighedCount = recipeSession?.entries.filter(e => e.status === 'weighed').length ?? 0;
+  const recipeTotalCount = recipeSession?.entries.length ?? 0;
+  const recipeProgress = recipeTotalCount > 0 ? (recipeWeighedCount / recipeTotalCount) * 100 : 0;
+
+  // Recipe cost comparison
+  const recipeTheoreticalCost = useMemo(() => {
+    if (!recipeSession) return 0;
+    return recipeSession.entries.reduce((sum, e) => {
+      const u = e.unit.toLowerCase();
+      let kgQty = e.targetQty;
+      if (u === 'g') kgQty = e.targetQty / 1000;
+      else if (u === 'cl') kgQty = e.targetQty / 100;
+      else if (u === 'ml') kgQty = e.targetQty / 1000;
+      return sum + kgQty * e.pricePerUnit;
+    }, 0);
+  }, [recipeSession]);
+
+  const recipeActualCost = useMemo(() => {
+    if (!recipeSession) return 0;
+    return recipeSession.entries.reduce((sum, e) => {
+      if (e.actualQty === null) return sum;
+      const u = e.unit.toLowerCase();
+      let kgQty = e.actualQty;
+      if (u === 'g') kgQty = e.actualQty / 1000;
+      else if (u === 'cl') kgQty = e.actualQty / 100;
+      else if (u === 'ml') kgQty = e.actualQty / 1000;
+      return sum + kgQty * e.pricePerUnit;
+    }, 0);
+  }, [recipeSession]);
+
+  // ═══════════════════════════════════════════════════════════
+  // HISTORY TAB: Calendar & Grouped Sessions
+  // ═══════════════════════════════════════════════════════════
+
+  const historySessions = useMemo((): WeighingSession[] => {
+    const grouped: Record<string, HistoryEntry[]> = {};
+    history.forEach(e => {
+      const date = e.timestamp.slice(0, 10);
+      if (!grouped[date]) grouped[date] = [];
+      grouped[date].push(e);
+    });
+    return Object.entries(grouped).map(([date, entries]) => ({
+      date,
+      entries,
+      totalKg: entries.reduce((sum, e) => {
+        const u = e.unit.toLowerCase();
+        if (u === 'g') return sum + e.weight / 1000;
+        if (u === 'kg') return sum + e.weight;
+        if (u === 'cl') return sum + e.weight / 100;
+        if (u === 'ml') return sum + e.weight / 1000;
+        return sum + e.weight;
+      }, 0),
+      totalValue: entries.reduce((sum, e) => {
+        const ing = ingredients.find(i => i.name === e.ingredientName);
+        if (!ing) return sum;
+        const u = e.unit.toLowerCase();
+        let kgVal = e.weight;
+        if (u === 'g') kgVal = e.weight / 1000;
+        else if (u === 'cl') kgVal = e.weight / 100;
+        else if (u === 'ml') kgVal = e.weight / 1000;
+        return sum + kgVal * ing.pricePerUnit;
+      }, 0),
+    })).sort((a, b) => b.date.localeCompare(a.date));
+  }, [history, ingredients]);
+
+  // Calendar dates with weighings
+  const calendarDatesWithData = useMemo(() => {
+    const dates = new Set<string>();
+    history.forEach(e => dates.add(e.timestamp.slice(0, 10)));
+    return dates;
+  }, [history]);
+
+  // Generate calendar days for the month
+  const calendarDays = useMemo(() => {
+    const [year, month] = historyCalendarMonth.split('-').map(Number);
+    const firstDay = new Date(year, month - 1, 1);
+    const lastDay = new Date(year, month, 0);
+    const startPad = (firstDay.getDay() + 6) % 7; // Monday = 0
+    const days: Array<{ date: string; day: number; isCurrentMonth: boolean; hasData: boolean }> = [];
+
+    // Pad start
+    for (let i = startPad - 1; i >= 0; i--) {
+      const d = new Date(year, month - 1, -i);
+      const ds = d.toISOString().slice(0, 10);
+      days.push({ date: ds, day: d.getDate(), isCurrentMonth: false, hasData: calendarDatesWithData.has(ds) });
+    }
+    // Current month days
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+      const ds = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      days.push({ date: ds, day: d, isCurrentMonth: true, hasData: calendarDatesWithData.has(ds) });
+    }
+    // Pad end
+    const remaining = 7 - (days.length % 7);
+    if (remaining < 7) {
+      for (let d = 1; d <= remaining; d++) {
+        const dd = new Date(year, month, d);
+        const ds = dd.toISOString().slice(0, 10);
+        days.push({ date: ds, day: d, isCurrentMonth: false, hasData: calendarDatesWithData.has(ds) });
+      }
+    }
+    return days;
+  }, [historyCalendarMonth, calendarDatesWithData]);
+
+  function navigateCalendar(dir: -1 | 1) {
+    const [y, m] = historyCalendarMonth.split('-').map(Number);
+    const d = new Date(y, m - 1 + dir, 1);
+    setHistoryCalendarMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+  }
+
+  const selectedDateEntries = historySelectedDate
+    ? history.filter(e => e.timestamp.slice(0, 10) === historySelectedDate)
+    : [];
+
+  // ═══════════════════════════════════════════════════════════
+  // DAILY REPORT
+  // ═══════════════════════════════════════════════════════════
+
+  const dailyReport = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const todayEntries = history.filter(e => e.timestamp.slice(0, 10) === today);
+    const successEntries = todayEntries.filter(e => e.status === 'success');
+    const errorEntries = todayEntries.filter(e => e.status === 'error');
+    const totalKg = successEntries.reduce((sum, e) => {
+      const u = e.unit.toLowerCase();
+      if (u === 'g') return sum + e.weight / 1000;
+      if (u === 'kg') return sum + e.weight;
+      return sum + e.weight;
+    }, 0);
+    const totalValue = successEntries.reduce((sum, e) => {
+      const ing = ingredients.find(i => i.name === e.ingredientName);
+      if (!ing) return sum;
+      const u = e.unit.toLowerCase();
+      let kgVal = e.weight;
+      if (u === 'g') kgVal = e.weight / 1000;
+      else if (u === 'cl') kgVal = e.weight / 100;
+      else if (u === 'ml') kgVal = e.weight / 1000;
+      return sum + kgVal * ing.pricePerUnit;
+    }, 0);
+
+    // Find discrepancies from recipe sessions today
+    const todayRecipeSessions = recipeSessions.filter(s => s.startedAt.slice(0, 10) === today);
+    const discrepancies: Array<{ ingredient: string; target: number; actual: number; unit: string; diff: number }> = [];
+    todayRecipeSessions.forEach(s => {
+      s.entries.forEach(e => {
+        if (e.actualQty !== null && e.targetQty > 0) {
+          const diffPct = Math.abs(e.actualQty - e.targetQty) / e.targetQty;
+          if (diffPct > 0.05) {
+            discrepancies.push({
+              ingredient: e.ingredientName,
+              target: e.targetQty,
+              actual: e.actualQty,
+              unit: e.unit,
+              diff: Math.round(diffPct * 100),
+            });
+          }
+        }
+      });
+    });
+
+    // Calculate potential losses
+    const totalLoss = discrepancies.reduce((sum, d) => {
+      const ing = ingredients.find(i => i.name === d.ingredient);
+      if (!ing) return sum;
+      const overUsed = d.actual - d.target;
+      if (overUsed <= 0) return sum;
+      const u = d.unit.toLowerCase();
+      let kgOver = overUsed;
+      if (u === 'g') kgOver = overUsed / 1000;
+      else if (u === 'cl') kgOver = overUsed / 100;
+      else if (u === 'ml') kgOver = overUsed / 1000;
+      return sum + kgOver * ing.pricePerUnit;
+    }, 0);
+
+    return {
+      totalWeighs: successEntries.length,
+      errorCount: errorEntries.length,
+      totalKg: Math.round(totalKg * 100) / 100,
+      totalValue: Math.round(totalValue * 100) / 100,
+      discrepancies,
+      totalLoss: Math.round(totalLoss * 100) / 100,
+      uniqueIngredients: new Set(successEntries.map(e => e.ingredientName)).size,
+    };
+  }, [history, ingredients, recipeSessions]);
+
+  // ═══════════════════════════════════════════════════════════
+  // TARE PROFILE MANAGEMENT
+  // ═══════════════════════════════════════════════════════════
+
+  function addTareProfile() {
+    if (!newTareForm.name.trim() || !newTareForm.weightGrams) return;
+    const profile: TareProfile = {
+      id: `custom-${Date.now()}`,
+      name: newTareForm.name.trim(),
+      weightGrams: parseFloat(newTareForm.weightGrams),
+    };
+    const updated = [...tareProfiles, profile];
+    setTareProfiles(updated);
+    saveTareProfiles(updated);
+    setNewTareForm({ name: '', weightGrams: '' });
+    showToast(`Profil tare "${profile.name}" ajoute`, 'success');
+  }
+
+  function removeTareProfile(id: string) {
+    const updated = tareProfiles.filter(p => p.id !== id);
+    setTareProfiles(updated);
+    saveTareProfiles(updated);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // RENDER
+  // ═══════════════════════════════════════════════════════════
+
   return (
     <div className={`min-h-screen lg:h-screen bg-gradient-to-b from-white dark:from-black via-white dark:via-black to-white dark:to-black text-white flex flex-col select-none lg:overflow-hidden ${kioskMode ? 'kiosk-mode' : ''}`}>
 
@@ -430,7 +973,7 @@ export default function WeighStation() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Connection status with device name */}
+          {/* Connection status */}
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
             <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${statusDotClass}`} />
             <span className="text-xs text-[#9CA3AF] dark:text-[#737373] hidden sm:inline">
@@ -441,7 +984,49 @@ export default function WeighStation() {
             </span>
           </div>
 
-          {/* Mode toggle: Bluetooth / Simulation */}
+          {/* Multi-Scale selector */}
+          <div className="relative">
+            <button
+              onClick={() => setShowScaleSelector(s => !s)}
+              className="flex items-center gap-1.5 px-3 py-2.5 min-h-[48px] rounded-xl text-sm font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all active:scale-95"
+              title="Changer de balance"
+            >
+              <Router className="w-4 h-4" />
+              <span className="hidden lg:inline">{scaleProfiles.find(s => s.id === activeScaleId)?.name?.split(' ').pop()}</span>
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            {showScaleSelector && (
+              <div className="absolute right-0 top-full mt-1 w-64 bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl shadow-2xl z-30 overflow-hidden">
+                <div className="px-3 py-2 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider">Balances disponibles</p>
+                </div>
+                {scaleProfiles.map(sp => (
+                  <button
+                    key={sp.id}
+                    onClick={() => { setActiveScaleId(sp.id); setShowScaleSelector(false); showToast(`Balance "${sp.name}" selectionnee`, 'success'); }}
+                    className={`w-full flex items-center gap-3 px-3 py-3 min-h-[48px] text-left transition-all hover:bg-[#FAFAFA] dark:hover:bg-[#171717] ${activeScaleId === sp.id ? 'bg-emerald-900/20' : ''}`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      sp.type === 'precision' ? 'bg-purple-900/30 text-purple-400' :
+                      sp.type === 'floor' ? 'bg-orange-900/30 text-orange-400' :
+                      'bg-teal-900/30 text-teal-400'
+                    }`}>
+                      <Scale className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{sp.name}</p>
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                        {sp.type === 'precision' ? 'Pour epices, herbes' : sp.type === 'floor' ? 'Pour sacs, cartons' : 'Usage general'}
+                      </p>
+                    </div>
+                    {activeScaleId === sp.id && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mode toggle */}
           <button
             onClick={() => setUseSimulation(s => !s)}
             className={`px-3 py-2.5 min-h-[48px] rounded-xl text-sm font-medium transition-all active:scale-95 ${
@@ -451,7 +1036,7 @@ export default function WeighStation() {
             {useSimulation ? 'Mode Simule' : 'Mode Bluetooth'}
           </button>
 
-          {/* Connect / Disconnect button */}
+          {/* Connect / Disconnect */}
           {!useSimulation && (
             <button
               onClick={status === 'connected' ? disconnect : connect}
@@ -477,7 +1062,7 @@ export default function WeighStation() {
             </button>
           )}
 
-          {/* Kiosk mode toggle */}
+          {/* Kiosk toggle */}
           <button
             onClick={() => setKioskMode(k => !k)}
             className={`p-2.5 min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl transition-all active:scale-95 ${
@@ -490,7 +1075,7 @@ export default function WeighStation() {
             {kioskMode ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
           </button>
 
-          {/* Settings gear */}
+          {/* Settings */}
           <button
             onClick={() => setShowSettings(s => !s)}
             className="p-2.5 min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all active:scale-95"
@@ -554,7 +1139,33 @@ export default function WeighStation() {
         </div>
       )}
 
-      {/* Camera / barcode placeholder modal */}
+      {/* Smart Alerts Banner */}
+      {smartAlerts.length > 0 && mainTab === 'peser' && (
+        <div className="px-4 py-2 bg-amber-900/20 border-b border-amber-500/20 space-y-1">
+          {smartAlerts.map((alert, i) => (
+            <div key={i} className={`flex items-center gap-2 text-sm ${
+              alert.type === 'danger' ? 'text-red-400' :
+              alert.type === 'reorder' ? 'text-teal-400' :
+              'text-amber-400'
+            }`}>
+              {alert.type === 'danger' ? <AlertCircle className="w-4 h-4 shrink-0" /> :
+               alert.type === 'reorder' ? <Package className="w-4 h-4 shrink-0" /> :
+               <AlertTriangle className="w-4 h-4 shrink-0" />}
+              <span>{alert.message}</span>
+              {alert.type === 'reorder' && (
+                <button
+                  onClick={() => showToast('Demande de commande enregistree', 'success')}
+                  className="ml-auto px-3 py-1 bg-teal-600 hover:bg-teal-500 text-white text-xs rounded-lg font-medium transition-all active:scale-95"
+                >
+                  Commander
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Camera placeholder modal */}
       {showCameraPlaceholder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowCameraPlaceholder(false)}>
           <div className="bg-white dark:bg-[#111111] rounded-2xl p-6 max-w-sm mx-4 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]" onClick={e => e.stopPropagation()}>
@@ -574,8 +1185,33 @@ export default function WeighStation() {
         </div>
       )}
 
-      {/* ===== STEP INDICATOR (hidden in kiosk) ===== */}
-      {!quickMode && !kioskMode && (
+      {/* ===== TAB NAVIGATION ===== */}
+      {!kioskMode && (
+        <div className="flex items-center gap-1 px-3 sm:px-4 py-2 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 overflow-x-auto scrollbar-none">
+          {([
+            { id: 'peser' as MainTab, label: 'Peser', icon: Scale },
+            { id: 'recette' as MainTab, label: 'Peser une recette', icon: BookOpen },
+            { id: 'historique' as MainTab, label: 'Historique des pesees', icon: Calendar },
+            { id: 'rapport' as MainTab, label: 'Rapport du jour', icon: BarChart3 },
+          ]).map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setMainTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium transition-all active:scale-95 whitespace-nowrap ${
+                mainTab === tab.id
+                  ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30'
+                  : 'text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-transparent'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ===== STEP INDICATOR (only for peser tab, hidden in kiosk) ===== */}
+      {mainTab === 'peser' && !quickMode && !kioskMode && (
         <div className="flex items-center justify-center gap-1 px-4 py-3 bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
           {STEPS.map((step, idx) => {
             const active = currentStep === step.num;
@@ -601,651 +1237,1372 @@ export default function WeighStation() {
         </div>
       )}
 
-      {/* ===== MAIN CONTENT ===== */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
-
-        {/* LEFT PANEL: Ingredient selector + Quick actions (hidden in kiosk) */}
-        {!kioskMode && (
-          <div className="max-h-[50vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
-
-            {/* Quick actions */}
-            <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex overflow-x-auto sm:grid sm:grid-cols-5 gap-2 scrollbar-none">
-              <button
-                onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
-                className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
-                  quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
-                }`}
-              >
-                <Zap className="w-5 h-5" />
-                Rapide
-              </button>
-              <button
-                onClick={() => setShowNewIngredient(true)}
-                className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-emerald-800/40 text-emerald-300 hover:bg-emerald-700/40 border border-emerald-600/30 transition-all active:scale-95"
-              >
-                <PlusCircle className="w-5 h-5" />
-                Nouveau
-              </button>
-              <button
-                onClick={() => setShowCameraPlaceholder(true)}
-                className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
-              >
-                <Camera className="w-5 h-5" />
-                Scanner
-              </button>
-              <button
-                onClick={() => navigate('/inventory')}
-                className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
-              >
-                <Package className="w-5 h-5" />
-                Stock
-              </button>
-              <button
-                onClick={() => navigate('/recipes')}
-                className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
-              >
-                <ChefHat className="w-5 h-5" />
-                Recettes
-              </button>
-            </div>
-
-            {/* New ingredient mini form */}
-            {showNewIngredient && (
-              <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-emerald-900/20">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold text-emerald-300">Nouvel ingredient</p>
-                  <button onClick={() => setShowNewIngredient(false)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors">
-                    <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-                  </button>
-                </div>
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Nom *"
-                    value={newIngForm.name}
-                    onChange={e => setNewIngForm(f => ({ ...f, name: e.target.value }))}
-                    className="w-full px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <select
-                      value={newIngForm.category}
-                      onChange={e => setNewIngForm(f => ({ ...f, category: e.target.value }))}
-                      className="px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
-                    >
-                      {['Viandes', 'Poissons', 'Legumes', 'Fruits', 'Produits laitiers', 'Epicerie', 'Autres'].map(c => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                    <select
-                      value={newIngForm.unit}
-                      onChange={e => setNewIngForm(f => ({ ...f, unit: e.target.value }))}
-                      className="px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
-                    >
-                      {['kg', 'g', 'L', 'cl', 'ml', 'piece'].map(u => (
-                        <option key={u} value={u}>{u}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Prix / unite (EUR) *"
-                    value={newIngForm.pricePerUnit}
-                    onChange={e => setNewIngForm(f => ({ ...f, pricePerUnit: e.target.value }))}
-                    className="w-full px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
-                  />
-                  <button
-                    disabled={!newIngForm.name.trim() || !newIngForm.pricePerUnit || creatingIngredient}
-                    onClick={async () => {
-                      setCreatingIngredient(true);
-                      try {
-                        const res = await fetch(`${API}/api/ingredients`, {
-                          method: 'POST',
-                          headers: authHeaders(),
-                          body: JSON.stringify({
-                            name: newIngForm.name.trim(),
-                            category: newIngForm.category,
-                            unit: newIngForm.unit,
-                            pricePerUnit: parseFloat(newIngForm.pricePerUnit),
-                            allergens: [],
-                          }),
-                        });
-                        if (!res.ok) throw new Error('Erreur creation');
-                        const created = await res.json();
-                        const newIng: Ingredient = { id: created.id, name: created.name, unit: created.unit, category: created.category, pricePerUnit: created.pricePerUnit };
-                        setIngredients(prev => [...prev, newIng]);
-                        selectIngredient(newIng);
-                        setShowNewIngredient(false);
-                        setNewIngForm({ name: '', category: 'Legumes', unit: 'kg', pricePerUnit: '' });
-                        showToast(`Ingredient "${created.name}" cree et selectionne`, 'success');
-                      } catch {
-                        showToast('Erreur lors de la creation de l\'ingredient', 'error');
-                      }
-                      setCreatingIngredient(false);
-                    }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[48px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-white font-medium text-sm transition-all active:scale-95"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    {creatingIngredient ? 'Creation...' : 'Creer et selectionner'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Ingredient search */}
-            <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60" ref={dropdownRef}>
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
-                <input
-                  ref={searchRef}
-                  type="text"
-                  value={search}
-                  onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
-                  onFocus={() => setShowDropdown(true)}
-                  placeholder="Rechercher un ingredient..."
-                  className="w-full pl-10 pr-3 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
-                />
-              </div>
-            </div>
-
-            {/* Ingredient list */}
-            <div className="flex-1 overflow-y-auto py-1 px-2 space-y-0.5">
-              {(showDropdown && search ? filteredIngredients : ingredients).map(ing => (
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* TAB: PESER (original weighing interface) */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {mainTab === 'peser' && (
+        <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+          {/* LEFT PANEL */}
+          {!kioskMode && (
+            <div className="max-h-[50vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
+              {/* Quick actions */}
+              <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex overflow-x-auto sm:grid sm:grid-cols-5 gap-2 scrollbar-none">
                 <button
-                  key={ing.id}
-                  onClick={() => selectIngredient(ing)}
-                  className={`w-full flex items-center justify-between px-3 py-3 min-h-[48px] rounded-xl text-left transition-all active:scale-[0.98] ${
-                    selected?.id === ing.id
-                      ? 'bg-emerald-600/30 text-white border border-emerald-500/40'
-                      : 'hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]/60 text-[#6B7280] dark:text-[#A3A3A3] border border-transparent'
+                  onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
+                  className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
+                    quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
                   }`}
                 >
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-sm truncate">{ing.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>
-                        {ing.category}
-                      </span>
-                      <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
-                      <span className="text-[10px] text-teal-400">{(ing.pricePerUnit ?? 0).toFixed(2)} EUR/{ing.unit === 'g' ? 'kg' : ing.unit === 'cl' ? 'L' : ing.unit === 'ml' ? 'L' : ing.unit}</span>
-                    </div>
-                  </div>
-                  {selected?.id === ing.id && (
-                    <CircleDot className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
-                  )}
+                  <Zap className="w-5 h-5" />
+                  Rapide
                 </button>
-              ))}
-              {filteredIngredients.length === 0 && search && (
-                <p className="text-center text-[#6B7280] dark:text-[#A3A3A3] text-sm py-8">Aucun resultat</p>
-              )}
-            </div>
-          </div>
-        )}
+                <button
+                  onClick={() => setShowNewIngredient(true)}
+                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-emerald-800/40 text-emerald-300 hover:bg-emerald-700/40 border border-emerald-600/30 transition-all active:scale-95"
+                >
+                  <PlusCircle className="w-5 h-5" />
+                  Nouveau
+                </button>
+                <button
+                  onClick={() => setShowCameraPlaceholder(true)}
+                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
+                >
+                  <Camera className="w-5 h-5" />
+                  Scanner
+                </button>
+                <button
+                  onClick={() => setShowTareProfiles(s => !s)}
+                  className={`flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium transition-all active:scale-95 ${
+                    showTareProfiles ? 'bg-purple-600/30 text-purple-300 border border-purple-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                  }`}
+                >
+                  <Weight className="w-5 h-5" />
+                  Tare
+                </button>
+                <button
+                  onClick={() => setMainTab('recette')}
+                  className="flex flex-col items-center gap-1 px-3 py-3 min-h-[48px] min-w-[90px] shrink-0 sm:min-w-0 sm:shrink rounded-xl text-xs font-medium bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
+                >
+                  <ChefHat className="w-5 h-5" />
+                  Recettes
+                </button>
+              </div>
 
-        {/* CENTER: Scale display */}
-        <div className={`flex-1 flex flex-col items-center justify-center gap-3 sm:gap-5 px-3 sm:px-4 py-4 sm:py-6 relative overflow-hidden ${kioskMode ? 'gap-6' : ''}`}>
-
-          {/* Kiosk: quick ingredient selector (inline) */}
-          {kioskMode && (
-            <div className="w-full max-w-2xl flex items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
-                  onFocus={() => setShowDropdown(true)}
-                  placeholder="Rechercher un ingredient..."
-                  className="w-full pl-12 pr-4 py-4 min-h-[56px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-2xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-lg focus:outline-none focus:ring-2 focus:ring-teal-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
-                />
-                {/* Kiosk dropdown */}
-                {showDropdown && search && filteredIngredients.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-20">
-                    {filteredIngredients.slice(0, 8).map(ing => (
+              {/* ── Tare Profiles Panel ── */}
+              {showTareProfiles && (
+                <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-purple-900/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-purple-300 flex items-center gap-2"><Weight className="w-4 h-4" /> Profils de tare</p>
+                    <button onClick={() => setShowTareProfiles(false)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors">
+                      <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 mb-2">
+                    {tareProfiles.map(tp => (
                       <button
-                        key={ing.id}
-                        onClick={() => { selectIngredient(ing); setShowDropdown(false); }}
-                        className="w-full flex items-center justify-between px-4 py-4 min-h-[56px] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-left transition-all border-b border-[#E5E7EB] dark:border-[#1A1A1A]/30 last:border-b-0"
+                        key={tp.id}
+                        onClick={() => handleTareFromProfile(tp)}
+                        className="flex items-center justify-between gap-1 px-2.5 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 hover:bg-purple-900/20 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]/50 transition-all active:scale-95 text-left group"
                       >
-                        <div>
-                          <p className="font-semibold text-base text-[#111111] dark:text-white">{ing.name}</p>
-                          <span className={`text-xs px-2 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>{ing.category}</span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-medium text-[#111111] dark:text-white truncate">{tp.name}</p>
+                          <p className="text-[10px] text-purple-400 font-bold">{tp.weightGrams}g</p>
                         </div>
-                        <span className="text-teal-400 font-bold text-lg">{(ing.pricePerUnit ?? 0).toFixed(2)} EUR</span>
+                        {tp.id.startsWith('custom-') && (
+                          <button
+                            onClick={e => { e.stopPropagation(); removeTareProfile(tp.id); }}
+                            className="opacity-0 group-hover:opacity-100 p-1 text-red-400 hover:bg-red-900/30 rounded transition-all"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        )}
                       </button>
                     ))}
                   </div>
-                )}
-              </div>
-              <button
-                onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
-                className={`px-5 py-4 min-h-[56px] rounded-2xl font-semibold text-base transition-all active:scale-95 ${
-                  quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
-                }`}
-              >
-                <Zap className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => setShowCameraPlaceholder(true)}
-                className="px-5 py-4 min-h-[56px] rounded-2xl bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
-              >
-                <Camera className="w-6 h-6" />
-              </button>
-            </div>
-          )}
-
-          {/* Selected ingredient label */}
-          <div className={`text-center flex flex-col items-center justify-center ${kioskMode ? 'min-h-[40px]' : 'min-h-[60px]'}`}>
-            {quickMode ? (
-              <div>
-                <p className={`text-amber-400 uppercase tracking-widest font-medium ${kioskMode ? 'text-base' : 'text-sm'}`}>Pesee rapide</p>
-                {!kioskMode && <p className="text-[#9CA3AF] dark:text-[#737373] text-xs mt-1">Pesez sans selectionner d'ingredient</p>}
-              </div>
-            ) : selected ? (
-              <div>
-                {!kioskMode && <p className="text-[#9CA3AF] dark:text-[#737373] text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>}
-                <p className={`font-bold text-[#111111] dark:text-white mt-0.5 ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>{selected.name}</p>
-                <div className="flex items-center justify-center gap-3 mt-1">
-                  <span className={`inline-block px-2 py-0.5 rounded border ${getCategoryColor(selected.category)} ${kioskMode ? 'text-xs' : 'text-[10px]'}`}>
-                    {selected.category}
-                  </span>
-                  <span className={`text-teal-400 font-medium ${kioskMode ? 'text-sm' : 'text-xs'}`}>
-                    {(selected.pricePerUnit ?? 0).toFixed(2)} EUR/{selected.unit === 'g' ? 'kg' : selected.unit === 'cl' ? 'L' : selected.unit === 'ml' ? 'L' : selected.unit}
-                  </span>
-                </div>
-                {/* Current stock level */}
-                <div className="mt-1.5">
-                  {loadingStock ? (
-                    <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">Chargement stock...</span>
-                  ) : ingredientStock ? (
-                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                      ingredientStock.stock <= 0 ? 'bg-red-900/40 text-red-400' :
-                      ingredientStock.stock < 2 ? 'bg-amber-900/40 text-amber-400' :
-                      'bg-emerald-900/30 text-emerald-400'
-                    }`}>
-                      Stock : {ingredientStock.stock.toFixed(2)} {ingredientStock.unit}
-                    </span>
-                  ) : (
-                    <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">Pas de stock enregistre</span>
+                  <div className="flex gap-1.5">
+                    <input
+                      type="text"
+                      placeholder="Nom..."
+                      value={newTareForm.name}
+                      onChange={e => setNewTareForm(f => ({ ...f, name: e.target.value }))}
+                      className="flex-1 px-2.5 py-2 min-h-[40px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-xs placeholder-[#9CA3AF] dark:placeholder-[#737373] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 focus:outline-none focus:ring-1 focus:ring-purple-500/60"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Poids (g)"
+                      value={newTareForm.weightGrams}
+                      onChange={e => setNewTareForm(f => ({ ...f, weightGrams: e.target.value }))}
+                      className="w-20 px-2.5 py-2 min-h-[40px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-xs placeholder-[#9CA3AF] dark:placeholder-[#737373] border border-[#E5E7EB] dark:border-[#1A1A1A]/50 focus:outline-none focus:ring-1 focus:ring-purple-500/60"
+                    />
+                    <button
+                      onClick={addTareProfile}
+                      disabled={!newTareForm.name.trim() || !newTareForm.weightGrams}
+                      className="px-3 py-2 min-h-[40px] bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white rounded-lg text-xs font-medium transition-all active:scale-95"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {tare > 0 && (
+                    <div className="mt-2 flex items-center gap-2 text-xs text-purple-300">
+                      <Check className="w-3 h-3" />
+                      Tare active : {(tare * 1000).toFixed(0)}g
+                    </div>
                   )}
                 </div>
-              </div>
-            ) : (
-              <div>
-                <p className={`text-[#6B7280] dark:text-[#A3A3A3] px-2 text-center ${kioskMode ? 'text-lg' : 'text-sm sm:text-base'}`}>
-                  {kioskMode ? 'Recherchez un ingredient ci-dessus' : 'Selectionnez un ingredient ou utilisez la pesee rapide'}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* ===== BIG WEIGHT DISPLAY (LCD-style) ===== */}
-          <div
-            className={`relative w-full rounded-2xl flex flex-col items-center justify-center transition-all duration-500 ${
-              flashGreen ? 'shadow-[0_0_80px_rgba(52,211,153,0.3)]' : ''
-            } ${kioskMode ? 'max-w-2xl aspect-[2.5/1]' : 'max-w-full sm:max-w-md aspect-[2.2/1] sm:aspect-[2/1]'}`}
-            style={{
-              background: 'linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0a0e17 100%)',
-              border: `2px solid ${
-                netWeight > 0 && isStable ? '#10b981' :
-                netWeight > 0 ? '#3b82f6' :
-                '#1e293b'
-              }`,
-              boxShadow: netWeight > 0 && isStable
-                ? '0 0 60px rgba(16,185,129,0.15), inset 0 1px 0 rgba(255,255,255,0.03)'
-                : netWeight > 0
-                ? '0 0 40px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.03)'
-                : 'inset 0 1px 0 rgba(255,255,255,0.03)',
-            }}
-          >
-            {/* Scan lines effect */}
-            <div className="absolute inset-0 rounded-2xl opacity-[0.03] pointer-events-none"
-              style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }}
-            />
-
-            {/* Bluetooth connection indicator inside display */}
-            <div className="absolute top-3 right-4 z-10 flex items-center gap-1.5">
-              {useSimulation ? (
-                <span className="text-amber-400/60 text-[10px] font-medium uppercase tracking-wider">SIM</span>
-              ) : status === 'connected' ? (
-                <Bluetooth className="w-3.5 h-3.5 text-teal-400/60" />
-              ) : status === 'reconnecting' ? (
-                <RefreshCw className="w-3.5 h-3.5 text-amber-400/60 animate-spin" />
-              ) : (
-                <WifiOff className="w-3.5 h-3.5 text-[#6B7280]/40" />
               )}
-            </div>
 
-            {/* Weight number */}
-            <div className="relative z-10 flex items-baseline gap-2">
-              <span
-                className={`font-black tabular-nums tracking-tight transition-all duration-300 ${
-                  netWeight > 0 && isStable ? 'text-emerald-400' :
-                  netWeight > 0 ? 'text-teal-300' :
-                  'text-[#6B7280] dark:text-[#A3A3A3]'
-                }`}
-                style={{ fontSize: kioskMode ? 'clamp(5rem, 14vw, 9rem)' : 'clamp(3.5rem, 10vw, 6rem)', lineHeight: 1 }}
-              >
-                {netWeight <= 0 ? '0' : weightForDisplay}
-              </span>
-              <span className={`font-bold transition-colors duration-300 text-[#9CA3AF] dark:text-[#737373] ${kioskMode ? 'text-4xl' : 'text-2xl'}`}>
-                {unitForDisplay}
-              </span>
-            </div>
-
-            {/* Stability indicator */}
-            <div className={`relative z-10 mt-2 flex items-center ${kioskMode ? 'h-7' : 'h-5'}`}>
-              {netWeight > 0 && isStable && (
-                <span className={`flex items-center gap-1.5 text-emerald-400 font-medium animate-in fade-in duration-300 ${kioskMode ? 'text-base' : 'text-sm'}`}>
-                  <Check className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} /> Stable
-                </span>
-              )}
-              {netWeight > 0 && !isStable && (
-                <span className={`flex items-center gap-1.5 text-teal-400 font-medium animate-pulse ${kioskMode ? 'text-base' : 'text-sm'}`}>
-                  <span className="flex gap-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </span>
-                  Mesure en cours
-                </span>
-              )}
-            </div>
-
-            {/* Tare info */}
-            {tare > 0 && (
-              <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
-            )}
-          </div>
-
-          {/* Real-time estimated value */}
-          {selected && netConverted > 0 && selected.pricePerUnit > 0 && (
-            <div className={`flex items-center gap-2 px-5 py-2.5 bg-emerald-900/30 border border-emerald-500/30 rounded-2xl ${kioskMode ? 'px-8 py-4' : ''}`}>
-              <Euro className={kioskMode ? 'w-7 h-7 text-emerald-400' : 'w-5 h-5 text-emerald-400'} />
-              <span className={`font-bold text-emerald-400 tabular-nums ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>
-                Valeur : {(() => {
-                  const unit = selected.unit.toLowerCase();
-                  if (unit === 'g') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
-                  if (unit === 'cl') return (netConverted / 100 * selected.pricePerUnit).toFixed(2);
-                  if (unit === 'ml') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
-                  return (netConverted * selected.pricePerUnit).toFixed(2);
-                })()} EUR
-              </span>
-            </div>
-          )}
-
-          {/* Unit toggle */}
-          <div className="flex items-center gap-1 p-1 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
-            {(['g', 'kg', 'L', 'piece'] as DisplayUnit[]).map(u => (
-              <button
-                key={u}
-                onClick={() => setDisplayUnit(u)}
-                className={`px-3 sm:px-5 py-2 rounded-lg font-bold transition-all ${kioskMode ? 'min-h-[56px] text-base' : 'min-h-[48px] text-sm'} ${
-                  displayUnit === u
-                    ? 'bg-emerald-600 text-white shadow-md'
-                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60'
-                }`}
-              >
-                {u}
-              </button>
-            ))}
-          </div>
-
-          {/* Simulation controls */}
-          {useSimulation && (
-            <div className={`flex items-center gap-3 sm:gap-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 px-3 sm:px-5 py-3 rounded-2xl border border-amber-600/30 ${kioskMode ? 'gap-6 px-8 py-4' : ''}`}>
-              <p className={`text-amber-400 font-medium uppercase tracking-wider ${kioskMode ? 'text-sm' : 'text-xs'}`}>Sim</p>
-              <button
-                onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
-                className={`rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
-              >
-                <Minus className={kioskMode ? 'w-7 h-7' : 'w-5 h-5'} />
-              </button>
-              <span className={`text-[#111111] dark:text-white font-mono text-center tabular-nums ${kioskMode ? 'w-32 text-2xl' : 'w-24 text-lg'}`}>{simWeight.toFixed(3)} kg</span>
-              <button
-                onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
-                className={`rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
-              >
-                <Plus className={kioskMode ? 'w-7 h-7' : 'w-5 h-5'} />
-              </button>
-            </div>
-          )}
-
-          {/* Stock mode selector — visible only when ingredient selected */}
-          {selected && !quickMode && (
-            <div className={`flex items-center gap-1 p-1 rounded-xl border ${kioskMode ? '' : ''} ${
-              stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/30' :
-              stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/30' :
-              'bg-red-900/10 border-red-500/20'
-            }`}>
-              <button
-                onClick={() => setStockMode('remove')}
-                className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
-                  stockMode === 'remove'
-                    ? 'bg-red-600 text-white shadow-md'
-                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 hover:bg-red-900/20'
-                }`}
-              >
-                <ArrowUpFromLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
-                Retirer
-              </button>
-              <button
-                onClick={() => setStockMode('add')}
-                className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
-                  stockMode === 'add'
-                    ? 'bg-emerald-600 text-white shadow-md'
-                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-400 hover:bg-emerald-900/20'
-                }`}
-              >
-                <ArrowDownToLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
-                Ajouter
-              </button>
-              <button
-                onClick={() => setStockMode('set')}
-                className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
-                  stockMode === 'set'
-                    ? 'bg-teal-600 text-white shadow-md'
-                    : 'text-[#9CA3AF] dark:text-[#737373] hover:text-teal-400 hover:bg-teal-900/20'
-                }`}
-              >
-                <Replace className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
-                Definir
-              </button>
-            </div>
-          )}
-
-          {/* Stock change preview */}
-          {selected && !quickMode && netConverted > 0 && ingredientStock && (
-            <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border text-sm ${kioskMode ? 'px-6 py-3 text-base' : ''} ${
-              stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/20 text-emerald-400' :
-              stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/20 text-teal-400' :
-              'bg-red-900/10 border-red-500/20 text-red-400'
-            }`}>
-              <Package className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
-              <span className="font-medium">
-                {ingredientStock.stock.toFixed(2)} {selected.unit}
-              </span>
-              <span className="text-[#9CA3AF] dark:text-[#737373]">→</span>
-              <span className="font-bold">
-                {stockMode === 'add'
-                  ? (ingredientStock.stock + netConverted).toFixed(2)
-                  : stockMode === 'set'
-                  ? netConverted.toFixed(2)
-                  : Math.max(0, ingredientStock.stock - netConverted).toFixed(2)
-                } {selected.unit}
-              </span>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                stockMode === 'add' ? 'bg-emerald-600/30 text-emerald-300' :
-                stockMode === 'set' ? 'bg-teal-600/30 text-teal-300' :
-                'bg-red-600/30 text-red-300'
-              }`}>
-                {stockMode === 'add' ? `+${netConverted.toFixed(2)}` :
-                 stockMode === 'set' ? `= ${netConverted.toFixed(2)}` :
-                 `-${netConverted.toFixed(2)}`}
-              </span>
-            </div>
-          )}
-
-          {/* Action buttons */}
-          <div className={`flex flex-wrap justify-center gap-2 sm:gap-3 w-full px-1 ${kioskMode ? 'max-w-2xl gap-4' : 'max-w-lg'}`}>
-            <button
-              onClick={handleTare}
-              disabled={currentWeight <= 0}
-              className={`flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 ${
-                kioskMode ? 'px-8 py-5 min-h-[64px] text-lg' : 'px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] text-sm sm:text-base'
-              }`}
-            >
-              <RotateCcw className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} /> Tare
-            </button>
-
-            <button
-              onClick={handleValidate}
-              disabled={(!selected && !quickMode) || netConverted <= 0 || saving}
-              className={`flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white transition-all active:scale-95 shadow-lg border ${
-                selected && !quickMode ? (
-                  stockMode === 'add' ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30 border-emerald-500/30' :
-                  stockMode === 'set' ? 'bg-teal-600 hover:bg-teal-500 shadow-teal-900/30 border-teal-500/30' :
-                  'bg-red-600 hover:bg-red-500 shadow-red-900/30 border-red-500/30'
-                ) : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30 border-emerald-500/30'
-              } ${
-                kioskMode ? 'px-14 py-5 min-h-[64px] text-2xl' : 'px-6 sm:px-10 py-4 min-h-[56px] text-base sm:text-lg'
-              }`}
-            >
-              {selected && !quickMode ? (
-                stockMode === 'add' ? <ArrowDownToLine className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} /> :
-                stockMode === 'set' ? <Replace className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} /> :
-                <ArrowUpFromLine className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
-              ) : (
-                <Check className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
-              )}
-              {saving ? 'Sauvegarde...' : (
-                selected && !quickMode ? (
-                  stockMode === 'add' ? 'Ajouter au stock' :
-                  stockMode === 'set' ? 'Definir le stock' :
-                  'Retirer du stock'
-                ) : 'Valider'
-              )}
-            </button>
-
-            <button
-              onClick={handleReset}
-              className={`flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 ${
-                kioskMode ? 'px-8 py-5 min-h-[64px] text-lg' : 'px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] text-sm sm:text-base'
-              }`}
-            >
-              <RotateCcw className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} /> Reset
-            </button>
-          </div>
-        </div>
-
-        {/* RIGHT PANEL: History log (hidden in kiosk) */}
-        {!kioskMode && (
-          <div className="max-h-[40vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-t lg:border-t-0 lg:border-l border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
-
-            {/* History header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
-              <div className="flex items-center gap-2">
-                <ClipboardList className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-                <p className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Historique</p>
-                {history.length > 0 && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">{history.length}</span>
-                )}
-              </div>
-              {history.length > 0 && (
-                <button
-                  onClick={clearHistory}
-                  className="flex items-center gap-1 px-3 py-2 min-h-[48px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  Effacer
-                </button>
-              )}
-            </div>
-
-            {/* History table/list */}
-            <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
-              {history.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-[#737373]">
-                  <Scale className="w-8 h-8 mb-2" />
-                  <p className="text-sm">Aucune pesee</p>
+              {/* New ingredient mini form */}
+              {showNewIngredient && (
+                <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-emerald-900/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-emerald-300">Nouvel ingredient</p>
+                    <button onClick={() => setShowNewIngredient(false)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors">
+                      <X className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      placeholder="Nom *"
+                      value={newIngForm.name}
+                      onChange={e => setNewIngForm(f => ({ ...f, name: e.target.value }))}
+                      className="w-full px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <select
+                        value={newIngForm.category}
+                        onChange={e => setNewIngForm(f => ({ ...f, category: e.target.value }))}
+                        className="px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                      >
+                        {['Viandes', 'Poissons', 'Legumes', 'Fruits', 'Produits laitiers', 'Epicerie', 'Autres'].map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                      <select
+                        value={newIngForm.unit}
+                        onChange={e => setNewIngForm(f => ({ ...f, unit: e.target.value }))}
+                        className="px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                      >
+                        {['kg', 'g', 'L', 'cl', 'ml', 'piece'].map(u => (
+                          <option key={u} value={u}>{u}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="Prix / unite (EUR) *"
+                      value={newIngForm.pricePerUnit}
+                      onChange={e => setNewIngForm(f => ({ ...f, pricePerUnit: e.target.value }))}
+                      className="w-full px-3 py-2.5 min-h-[44px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg text-[#111111] dark:text-white text-sm placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                    />
+                    <button
+                      disabled={!newIngForm.name.trim() || !newIngForm.pricePerUnit || creatingIngredient}
+                      onClick={async () => {
+                        setCreatingIngredient(true);
+                        try {
+                          const res = await fetch(`${API}/api/ingredients`, {
+                            method: 'POST',
+                            headers: authHeaders(),
+                            body: JSON.stringify({
+                              name: newIngForm.name.trim(),
+                              category: newIngForm.category,
+                              unit: newIngForm.unit,
+                              pricePerUnit: parseFloat(newIngForm.pricePerUnit),
+                              allergens: [],
+                            }),
+                          });
+                          if (!res.ok) throw new Error('Erreur creation');
+                          const created = await res.json();
+                          const newIng: Ingredient = { id: created.id, name: created.name, unit: created.unit, category: created.category, pricePerUnit: created.pricePerUnit };
+                          setIngredients(prev => [...prev, newIng]);
+                          selectIngredient(newIng);
+                          setShowNewIngredient(false);
+                          setNewIngForm({ name: '', category: 'Legumes', unit: 'kg', pricePerUnit: '' });
+                          showToast(`Ingredient "${created.name}" cree et selectionne`, 'success');
+                        } catch {
+                          showToast('Erreur lors de la creation de l\'ingredient', 'error');
+                        }
+                        setCreatingIngredient(false);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[48px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl text-white font-medium text-sm transition-all active:scale-95"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      {creatingIngredient ? 'Creation...' : 'Creer et selectionner'}
+                    </button>
+                  </div>
                 </div>
               )}
-              {history.map((entry, i) => (
-                <div
-                  key={`${entry.timestamp}-${i}`}
-                  className={`rounded-xl px-3 py-2.5 border transition-all ${
-                    entry.status === 'error'
-                      ? 'bg-red-900/10 border-red-800/30'
-                      : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-[#E5E7EB] dark:border-[#1A1A1A]/30'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
+
+              {/* Ingredient search */}
+              <div className="p-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60" ref={dropdownRef}>
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                  <input
+                    ref={searchRef}
+                    type="text"
+                    value={search}
+                    onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
+                    onFocus={() => setShowDropdown(true)}
+                    placeholder="Rechercher un ingredient..."
+                    className="w-full pl-10 pr-3 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                  />
+                </div>
+              </div>
+
+              {/* Ingredient list */}
+              <div className="flex-1 overflow-y-auto py-1 px-2 space-y-0.5">
+                {(showDropdown && search ? filteredIngredients : ingredients).map(ing => (
+                  <button
+                    key={ing.id}
+                    onClick={() => selectIngredient(ing)}
+                    className={`w-full flex items-center justify-between px-3 py-3 min-h-[48px] rounded-xl text-left transition-all active:scale-[0.98] ${
+                      selected?.id === ing.id
+                        ? 'bg-emerald-600/30 text-white border border-emerald-500/40'
+                        : 'hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]/60 text-[#6B7280] dark:text-[#A3A3A3] border border-transparent'
+                    }`}
+                  >
                     <div className="min-w-0 flex-1">
-                      <p className="text-[#111111] dark:text-white text-sm font-medium truncate">{entry.ingredientName}</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        {entry.ingredientCategory && (
-                          <span className={`inline-block text-[9px] px-1 py-0.5 rounded border ${getCategoryColor(entry.ingredientCategory)}`}>
-                            {entry.ingredientCategory}
-                          </span>
-                        )}
-                        {entry.stockAction && (
-                          <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${
-                            entry.stockAction === 'add' ? 'bg-emerald-900/30 text-emerald-400' :
-                            entry.stockAction === 'set' ? 'bg-teal-900/30 text-teal-400' :
-                            'bg-red-900/30 text-red-400'
-                          }`}>
-                            {entry.stockAction === 'add' ? '+ Stock' : entry.stockAction === 'set' ? '= Stock' : '- Stock'}
-                          </span>
-                        )}
+                      <p className="font-medium text-sm truncate">{ing.name}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>
+                          {ing.category}
+                        </span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
+                        <span className="text-[10px] text-teal-400">{(ing.pricePerUnit ?? 0).toFixed(2)} EUR/{ing.unit === 'g' ? 'kg' : ing.unit === 'cl' ? 'L' : ing.unit === 'ml' ? 'L' : ing.unit}</span>
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
-                      <p className={`text-lg font-bold tabular-nums ${
-                        entry.status === 'error' ? 'text-red-400' :
-                        entry.stockAction === 'add' ? 'text-emerald-400' :
-                        entry.stockAction === 'remove' ? 'text-red-400' :
-                        'text-teal-400'
-                      }`}>
-                        {entry.stockAction === 'add' ? '+' : entry.stockAction === 'remove' ? '-' : ''}{entry.weight} {entry.unit}
-                      </p>
-                    </div>
-                  </div>
-                  {/* Stock before → after */}
-                  {entry.stockAction && entry.stockBefore !== undefined && entry.stockAfter !== undefined && entry.status === 'success' && (
-                    <div className="flex items-center gap-1.5 mt-1 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
-                      <Package className="w-3 h-3" />
-                      <span>{entry.stockBefore.toFixed(1)}</span>
-                      <span>→</span>
-                      <span className="font-semibold text-[#111111] dark:text-white">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
+                    {selected?.id === ing.id && (
+                      <CircleDot className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
+                    )}
+                  </button>
+                ))}
+                {filteredIngredients.length === 0 && search && (
+                  <p className="text-center text-[#6B7280] dark:text-[#A3A3A3] text-sm py-8">Aucun resultat</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CENTER: Scale display */}
+          <div className={`flex-1 flex flex-col items-center justify-center gap-3 sm:gap-5 px-3 sm:px-4 py-4 sm:py-6 relative overflow-hidden ${kioskMode ? 'gap-6' : ''}`}>
+            {/* Kiosk: quick ingredient selector */}
+            {kioskMode && (
+              <div className="w-full max-w-2xl flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] dark:text-[#737373] pointer-events-none" />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
+                    onFocus={() => setShowDropdown(true)}
+                    placeholder="Rechercher un ingredient..."
+                    className="w-full pl-12 pr-4 py-4 min-h-[56px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-2xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-lg focus:outline-none focus:ring-2 focus:ring-teal-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                  />
+                  {showDropdown && search && filteredIngredients.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-20">
+                      {filteredIngredients.slice(0, 8).map(ing => (
+                        <button
+                          key={ing.id}
+                          onClick={() => { selectIngredient(ing); setShowDropdown(false); }}
+                          className="w-full flex items-center justify-between px-4 py-4 min-h-[56px] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] text-left transition-all border-b border-[#E5E7EB] dark:border-[#1A1A1A]/30 last:border-b-0"
+                        >
+                          <div>
+                            <p className="font-semibold text-base text-[#111111] dark:text-white">{ing.name}</p>
+                            <span className={`text-xs px-2 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>{ing.category}</span>
+                          </div>
+                          <span className="text-teal-400 font-bold text-lg">{(ing.pricePerUnit ?? 0).toFixed(2)} EUR</span>
+                        </button>
+                      ))}
                     </div>
                   )}
-                  <div className="flex items-center justify-between mt-1.5">
-                    <p className="text-[#6B7280] dark:text-[#A3A3A3] text-[10px]">
-                      {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                    </p>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded ${
-                      entry.status === 'error' ? 'bg-red-900/30 text-red-400' : 'bg-emerald-900/30 text-emerald-400'
-                    }`}>
-                      {entry.status === 'error' ? 'Erreur' : 'OK'}
+                </div>
+                <button
+                  onClick={() => { setQuickMode(true); setSelected(null); setSearch(''); }}
+                  className={`px-5 py-4 min-h-[56px] rounded-2xl font-semibold text-base transition-all active:scale-95 ${
+                    quickMode ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40' : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                  }`}
+                >
+                  <Zap className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={() => setShowCameraPlaceholder(true)}
+                  className="px-5 py-4 min-h-[56px] rounded-2xl bg-[#FAFAFA] dark:bg-[#0A0A0A] text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40 transition-all active:scale-95"
+                >
+                  <Camera className="w-6 h-6" />
+                </button>
+              </div>
+            )}
+
+            {/* Selected ingredient label */}
+            <div className={`text-center flex flex-col items-center justify-center ${kioskMode ? 'min-h-[40px]' : 'min-h-[60px]'}`}>
+              {quickMode ? (
+                <div>
+                  <p className={`text-amber-400 uppercase tracking-widest font-medium ${kioskMode ? 'text-base' : 'text-sm'}`}>Pesee rapide</p>
+                  {!kioskMode && <p className="text-[#9CA3AF] dark:text-[#737373] text-xs mt-1">Pesez sans selectionner d'ingredient</p>}
+                </div>
+              ) : selected ? (
+                <div>
+                  {!kioskMode && <p className="text-[#9CA3AF] dark:text-[#737373] text-[10px] uppercase tracking-[0.2em]">Ingredient selectionne</p>}
+                  <p className={`font-bold text-[#111111] dark:text-white mt-0.5 ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>{selected.name}</p>
+                  <div className="flex items-center justify-center gap-3 mt-1">
+                    <span className={`inline-block px-2 py-0.5 rounded border ${getCategoryColor(selected.category)} ${kioskMode ? 'text-xs' : 'text-[10px]'}`}>
+                      {selected.category}
+                    </span>
+                    <span className={`text-teal-400 font-medium ${kioskMode ? 'text-sm' : 'text-xs'}`}>
+                      {(selected.pricePerUnit ?? 0).toFixed(2)} EUR/{selected.unit === 'g' ? 'kg' : selected.unit === 'cl' ? 'L' : selected.unit === 'ml' ? 'L' : selected.unit}
                     </span>
                   </div>
+                  <div className="mt-1.5">
+                    {loadingStock ? (
+                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">Chargement stock...</span>
+                    ) : ingredientStock ? (
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                        ingredientStock.stock <= 0 ? 'bg-red-900/40 text-red-400' :
+                        ingredientStock.stock < 2 ? 'bg-amber-900/40 text-amber-400' :
+                        'bg-emerald-900/30 text-emerald-400'
+                      }`}>
+                        Stock : {ingredientStock.stock.toFixed(2)} {ingredientStock.unit}
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3]">Pas de stock enregistre</span>
+                    )}
+                  </div>
                 </div>
+              ) : (
+                <div>
+                  <p className={`text-[#6B7280] dark:text-[#A3A3A3] px-2 text-center ${kioskMode ? 'text-lg' : 'text-sm sm:text-base'}`}>
+                    {kioskMode ? 'Recherchez un ingredient ci-dessus' : 'Selectionnez un ingredient ou utilisez la pesee rapide'}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* ===== BIG WEIGHT DISPLAY (LCD-style) ===== */}
+            <div
+              className={`relative w-full rounded-2xl flex flex-col items-center justify-center transition-all duration-500 ${
+                flashGreen ? 'shadow-[0_0_80px_rgba(52,211,153,0.3)]' : ''
+              } ${kioskMode ? 'max-w-2xl aspect-[2.5/1]' : 'max-w-full sm:max-w-md aspect-[2.2/1] sm:aspect-[2/1]'}`}
+              style={{
+                background: 'linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0a0e17 100%)',
+                border: `2px solid ${
+                  netWeight > 0 && isStable ? '#10b981' :
+                  netWeight > 0 ? '#3b82f6' :
+                  '#1e293b'
+                }`,
+                boxShadow: netWeight > 0 && isStable
+                  ? '0 0 60px rgba(16,185,129,0.15), inset 0 1px 0 rgba(255,255,255,0.03)'
+                  : netWeight > 0
+                  ? '0 0 40px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.03)'
+                  : 'inset 0 1px 0 rgba(255,255,255,0.03)',
+              }}
+            >
+              <div className="absolute inset-0 rounded-2xl opacity-[0.03] pointer-events-none"
+                style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }}
+              />
+              <div className="absolute top-3 right-4 z-10 flex items-center gap-1.5">
+                {useSimulation ? (
+                  <span className="text-amber-400/60 text-[10px] font-medium uppercase tracking-wider">SIM</span>
+                ) : status === 'connected' ? (
+                  <Bluetooth className="w-3.5 h-3.5 text-teal-400/60" />
+                ) : status === 'reconnecting' ? (
+                  <RefreshCw className="w-3.5 h-3.5 text-amber-400/60 animate-spin" />
+                ) : (
+                  <WifiOff className="w-3.5 h-3.5 text-[#6B7280]/40" />
+                )}
+              </div>
+
+              <div className="relative z-10 flex items-baseline gap-2">
+                <span
+                  className={`font-black tabular-nums tracking-tight transition-all duration-300 ${
+                    netWeight > 0 && isStable ? 'text-emerald-400' :
+                    netWeight > 0 ? 'text-teal-300' :
+                    'text-[#6B7280] dark:text-[#A3A3A3]'
+                  }`}
+                  style={{ fontSize: kioskMode ? 'clamp(5rem, 14vw, 9rem)' : 'clamp(3.5rem, 10vw, 6rem)', lineHeight: 1 }}
+                >
+                  {netWeight <= 0 ? '0' : weightForDisplay}
+                </span>
+                <span className={`font-bold transition-colors duration-300 text-[#9CA3AF] dark:text-[#737373] ${kioskMode ? 'text-4xl' : 'text-2xl'}`}>
+                  {unitForDisplay}
+                </span>
+              </div>
+
+              <div className={`relative z-10 mt-2 flex items-center ${kioskMode ? 'h-7' : 'h-5'}`}>
+                {netWeight > 0 && isStable && (
+                  <span className={`flex items-center gap-1.5 text-emerald-400 font-medium animate-in fade-in duration-300 ${kioskMode ? 'text-base' : 'text-sm'}`}>
+                    <Check className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} /> Stable
+                  </span>
+                )}
+                {netWeight > 0 && !isStable && (
+                  <span className={`flex items-center gap-1.5 text-teal-400 font-medium animate-pulse ${kioskMode ? 'text-base' : 'text-sm'}`}>
+                    <span className="flex gap-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </span>
+                    Mesure en cours
+                  </span>
+                )}
+              </div>
+
+              {tare > 0 && (
+                <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
+              )}
+            </div>
+
+            {/* Real-time estimated value */}
+            {selected && netConverted > 0 && selected.pricePerUnit > 0 && (
+              <div className={`flex items-center gap-2 px-5 py-2.5 bg-emerald-900/30 border border-emerald-500/30 rounded-2xl ${kioskMode ? 'px-8 py-4' : ''}`}>
+                <Euro className={kioskMode ? 'w-7 h-7 text-emerald-400' : 'w-5 h-5 text-emerald-400'} />
+                <span className={`font-bold text-emerald-400 tabular-nums ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>
+                  Valeur : {(() => {
+                    const unit = selected.unit.toLowerCase();
+                    if (unit === 'g') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
+                    if (unit === 'cl') return (netConverted / 100 * selected.pricePerUnit).toFixed(2);
+                    if (unit === 'ml') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
+                    return (netConverted * selected.pricePerUnit).toFixed(2);
+                  })()} EUR
+                </span>
+              </div>
+            )}
+
+            {/* Unit toggle */}
+            <div className="flex items-center gap-1 p-1 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+              {(['g', 'kg', 'L', 'piece'] as DisplayUnit[]).map(u => (
+                <button
+                  key={u}
+                  onClick={() => setDisplayUnit(u)}
+                  className={`px-3 sm:px-5 py-2 rounded-lg font-bold transition-all ${kioskMode ? 'min-h-[56px] text-base' : 'min-h-[48px] text-sm'} ${
+                    displayUnit === u
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F3F4F6] dark:hover:bg-[#171717]/60'
+                  }`}
+                >
+                  {u}
+                </button>
               ))}
             </div>
 
-            {/* Daily stats footer */}
-            <div className="px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-[#FAFAFA]/60 dark:bg-[#0A0A0A]/60">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
-                <div className="flex items-center gap-4">
-                  <span className="text-emerald-400 font-medium">{todayStats.totalWeighs} pesee{todayStats.totalWeighs !== 1 ? 's' : ''}</span>
-                  <span className="text-teal-400 font-medium">{todayStats.totalKg} kg total</span>
+            {/* Simulation controls */}
+            {useSimulation && (
+              <div className={`flex items-center gap-3 sm:gap-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 px-3 sm:px-5 py-3 rounded-2xl border border-amber-600/30 ${kioskMode ? 'gap-6 px-8 py-4' : ''}`}>
+                <p className={`text-amber-400 font-medium uppercase tracking-wider ${kioskMode ? 'text-sm' : 'text-xs'}`}>Sim</p>
+                <button
+                  onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))}
+                  className={`rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
+                >
+                  <Minus className={kioskMode ? 'w-7 h-7' : 'w-5 h-5'} />
+                </button>
+                <span className={`text-[#111111] dark:text-white font-mono text-center tabular-nums ${kioskMode ? 'w-32 text-2xl' : 'w-24 text-lg'}`}>{simWeight.toFixed(3)} kg</span>
+                <button
+                  onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))}
+                  className={`rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all ${kioskMode ? 'w-16 h-16' : 'w-12 h-12'}`}
+                >
+                  <Plus className={kioskMode ? 'w-7 h-7' : 'w-5 h-5'} />
+                </button>
+              </div>
+            )}
+
+            {/* Stock mode selector */}
+            {selected && !quickMode && (
+              <div className={`flex items-center gap-1 p-1 rounded-xl border ${
+                stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/30' :
+                stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/30' :
+                'bg-red-900/10 border-red-500/20'
+              }`}>
+                <button
+                  onClick={() => setStockMode('remove')}
+                  className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                    stockMode === 'remove'
+                      ? 'bg-red-600 text-white shadow-md'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 hover:bg-red-900/20'
+                  }`}
+                >
+                  <ArrowUpFromLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                  Retirer
+                </button>
+                <button
+                  onClick={() => setStockMode('add')}
+                  className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                    stockMode === 'add'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-400 hover:bg-emerald-900/20'
+                  }`}
+                >
+                  <ArrowDownToLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                  Ajouter
+                </button>
+                <button
+                  onClick={() => setStockMode('set')}
+                  className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                    stockMode === 'set'
+                      ? 'bg-teal-600 text-white shadow-md'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-teal-400 hover:bg-teal-900/20'
+                  }`}
+                >
+                  <Replace className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                  Definir
+                </button>
+              </div>
+            )}
+
+            {/* Stock change preview */}
+            {selected && !quickMode && netConverted > 0 && ingredientStock && (
+              <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border text-sm ${kioskMode ? 'px-6 py-3 text-base' : ''} ${
+                stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/20 text-emerald-400' :
+                stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/20 text-teal-400' :
+                'bg-red-900/10 border-red-500/20 text-red-400'
+              }`}>
+                <Package className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                <span className="font-medium">
+                  {ingredientStock.stock.toFixed(2)} {selected.unit}
+                </span>
+                <span className="text-[#9CA3AF] dark:text-[#737373]">&rarr;</span>
+                <span className="font-bold">
+                  {stockMode === 'add'
+                    ? (ingredientStock.stock + netConverted).toFixed(2)
+                    : stockMode === 'set'
+                    ? netConverted.toFixed(2)
+                    : Math.max(0, ingredientStock.stock - netConverted).toFixed(2)
+                  } {selected.unit}
+                </span>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                  stockMode === 'add' ? 'bg-emerald-600/30 text-emerald-300' :
+                  stockMode === 'set' ? 'bg-teal-600/30 text-teal-300' :
+                  'bg-red-600/30 text-red-300'
+                }`}>
+                  {stockMode === 'add' ? `+${netConverted.toFixed(2)}` :
+                   stockMode === 'set' ? `= ${netConverted.toFixed(2)}` :
+                   `-${netConverted.toFixed(2)}`}
+                </span>
+              </div>
+            )}
+
+            {/* Action buttons */}
+            <div className={`flex flex-wrap justify-center gap-2 sm:gap-3 w-full px-1 ${kioskMode ? 'max-w-2xl gap-4' : 'max-w-lg'}`}>
+              <button
+                onClick={handleTare}
+                disabled={currentWeight <= 0}
+                className={`flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 ${
+                  kioskMode ? 'px-8 py-5 min-h-[64px] text-lg' : 'px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] text-sm sm:text-base'
+                }`}
+              >
+                <RotateCcw className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} /> Tare
+              </button>
+
+              <button
+                onClick={handleValidate}
+                disabled={(!selected && !quickMode) || netConverted <= 0 || saving}
+                className={`flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-bold text-white transition-all active:scale-95 shadow-lg border ${
+                  selected && !quickMode ? (
+                    stockMode === 'add' ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30 border-emerald-500/30' :
+                    stockMode === 'set' ? 'bg-teal-600 hover:bg-teal-500 shadow-teal-900/30 border-teal-500/30' :
+                    'bg-red-600 hover:bg-red-500 shadow-red-900/30 border-red-500/30'
+                  ) : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/30 border-emerald-500/30'
+                } ${
+                  kioskMode ? 'px-14 py-5 min-h-[64px] text-2xl' : 'px-6 sm:px-10 py-4 min-h-[56px] text-base sm:text-lg'
+                }`}
+              >
+                {selected && !quickMode ? (
+                  stockMode === 'add' ? <ArrowDownToLine className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} /> :
+                  stockMode === 'set' ? <Replace className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} /> :
+                  <ArrowUpFromLine className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
+                ) : (
+                  <Check className={kioskMode ? 'w-8 h-8' : 'w-6 h-6'} />
+                )}
+                {saving ? 'Sauvegarde...' : (
+                  selected && !quickMode ? (
+                    stockMode === 'add' ? 'Ajouter au stock' :
+                    stockMode === 'set' ? 'Definir le stock' :
+                    'Retirer du stock'
+                  ) : 'Valider'
+                )}
+              </button>
+
+              <button
+                onClick={handleReset}
+                className={`flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50 ${
+                  kioskMode ? 'px-8 py-5 min-h-[64px] text-lg' : 'px-4 sm:px-6 py-3 sm:py-4 min-h-[48px] sm:min-h-[56px] text-sm sm:text-base'
+                }`}
+              >
+                <RotateCcw className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} /> Reset
+              </button>
+            </div>
+          </div>
+
+          {/* RIGHT PANEL: History log (hidden in kiosk) */}
+          {!kioskMode && (
+            <div className="max-h-[40vh] lg:max-h-none lg:w-80 xl:w-96 bg-white dark:bg-black/40 border-t lg:border-t-0 lg:border-l border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                <div className="flex items-center gap-2">
+                  <ClipboardList className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
+                  <p className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Historique</p>
+                  {history.length > 0 && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">{history.length}</span>
+                  )}
+                </div>
+                {history.length > 0 && (
+                  <button
+                    onClick={clearHistory}
+                    className="flex items-center gap-1 px-3 py-2 min-h-[48px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Effacer
+                  </button>
+                )}
+              </div>
+              <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+                {history.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                    <Scale className="w-8 h-8 mb-2" />
+                    <p className="text-sm">Aucune pesee</p>
+                  </div>
+                )}
+                {history.slice(0, 20).map((entry, i) => (
+                  <div
+                    key={`${entry.timestamp}-${i}`}
+                    className={`rounded-xl px-3 py-2.5 border transition-all ${
+                      entry.status === 'error'
+                        ? 'bg-red-900/10 border-red-800/30'
+                        : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-[#E5E7EB] dark:border-[#1A1A1A]/30'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[#111111] dark:text-white text-sm font-medium truncate">{entry.ingredientName}</p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {entry.ingredientCategory && (
+                            <span className={`inline-block text-[9px] px-1 py-0.5 rounded border ${getCategoryColor(entry.ingredientCategory)}`}>
+                              {entry.ingredientCategory}
+                            </span>
+                          )}
+                          {entry.stockAction && (
+                            <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${
+                              entry.stockAction === 'add' ? 'bg-emerald-900/30 text-emerald-400' :
+                              entry.stockAction === 'set' ? 'bg-teal-900/30 text-teal-400' :
+                              'bg-red-900/30 text-red-400'
+                            }`}>
+                              {entry.stockAction === 'add' ? '+ Stock' : entry.stockAction === 'set' ? '= Stock' : '- Stock'}
+                            </span>
+                          )}
+                          {entry.recipeName && (
+                            <span className="inline-block text-[9px] px-1.5 py-0.5 rounded bg-purple-900/30 text-purple-400 font-semibold">
+                              {entry.recipeName}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className={`text-lg font-bold tabular-nums ${
+                          entry.status === 'error' ? 'text-red-400' :
+                          entry.stockAction === 'add' ? 'text-emerald-400' :
+                          entry.stockAction === 'remove' ? 'text-red-400' :
+                          'text-teal-400'
+                        }`}>
+                          {entry.stockAction === 'add' ? '+' : entry.stockAction === 'remove' ? '-' : ''}{entry.weight} {entry.unit}
+                        </p>
+                      </div>
+                    </div>
+                    {entry.stockAction && entry.stockBefore !== undefined && entry.stockAfter !== undefined && entry.status === 'success' && (
+                      <div className="flex items-center gap-1.5 mt-1 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                        <Package className="w-3 h-3" />
+                        <span>{entry.stockBefore.toFixed(1)}</span>
+                        <span>&rarr;</span>
+                        <span className="font-semibold text-[#111111] dark:text-white">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between mt-1.5">
+                      <p className="text-[#6B7280] dark:text-[#A3A3A3] text-[10px]">
+                        {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      </p>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded ${
+                        entry.status === 'error' ? 'bg-red-900/30 text-red-400' : 'bg-emerald-900/30 text-emerald-400'
+                      }`}>
+                        {entry.status === 'error' ? 'Erreur' : 'OK'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-[#FAFAFA]/60 dark:bg-[#0A0A0A]/60">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-emerald-400 font-medium">{todayStats.totalWeighs} pesee{todayStats.totalWeighs !== 1 ? 's' : ''}</span>
+                    <span className="text-teal-400 font-medium">{todayStats.totalKg} kg total</span>
+                  </div>
                 </div>
               </div>
             </div>
+          )}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* TAB: RECIPE MODE */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {mainTab === 'recette' && (
+        <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+
+          {/* LEFT: Recipe selector / ingredient list */}
+          <div className="lg:w-96 xl:w-[28rem] bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
+
+            {!recipeSession ? (
+              <>
+                {/* Recipe selector */}
+                <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                  <p className="text-sm font-semibold text-[#111111] dark:text-white mb-2 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-teal-400" />
+                    Selectionner une recette
+                  </p>
+                  <select
+                    value={selectedRecipe?.id || ''}
+                    onChange={e => {
+                      const r = recipes.find(r => r.id === Number(e.target.value));
+                      setSelectedRecipe(r || null);
+                    }}
+                    className="w-full px-3 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white text-sm border border-[#E5E7EB] dark:border-[#1A1A1A]/50 focus:outline-none focus:ring-2 focus:ring-teal-500/60"
+                  >
+                    <option value="">-- Choisir une recette --</option>
+                    {recipes.map(r => (
+                      <option key={r.id} value={r.id}>{r.name} ({r.ingredients?.length || 0} ingredients)</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Selected recipe preview */}
+                {selectedRecipe && selectedRecipe.ingredients && (
+                  <div className="flex-1 overflow-y-auto">
+                    <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                      <h3 className="text-lg font-bold text-[#111111] dark:text-white">{selectedRecipe.name}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{selectedRecipe.category}</span>
+                        <span className="text-xs text-teal-400">{selectedRecipe.ingredients.length} ingredients</span>
+                        <span className="text-xs text-emerald-400">{selectedRecipe.sellingPrice?.toFixed(2)} EUR</span>
+                      </div>
+                    </div>
+                    <div className="p-3 space-y-1">
+                      {selectedRecipe.ingredients.map((ri, idx) => (
+                        <div key={ri.id || idx} className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#1A1A1A]/30">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{ri.ingredient.name}</p>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(ri.ingredient.category)}`}>
+                              {ri.ingredient.category}
+                            </span>
+                          </div>
+                          <span className="text-sm font-bold text-teal-400 tabular-nums">
+                            {ri.quantity} {ri.ingredient.unit}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="p-4">
+                      <button
+                        onClick={() => startRecipeSession(selectedRecipe)}
+                        className="w-full flex items-center justify-center gap-2 px-6 py-4 min-h-[56px] bg-teal-600 hover:bg-teal-500 text-white rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-lg shadow-teal-900/30"
+                      >
+                        <Play className="w-6 h-6" />
+                        Commencer la pesee
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {!selectedRecipe && (
+                  <div className="flex-1 flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-[#737373]">
+                    <ChefHat className="w-12 h-12 mb-3" />
+                    <p className="text-sm">Choisissez une recette pour commencer</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {/* Active recipe session */}
+                <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-teal-900/10">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="text-xs text-teal-400 uppercase tracking-wider font-medium">Pesee en cours</p>
+                      <h3 className="text-lg font-bold text-[#111111] dark:text-white">{recipeSession.recipeName}</h3>
+                    </div>
+                    <button
+                      onClick={() => { setRecipeSession(null); setActiveRecipeIngIdx(null); setSelected(null); }}
+                      className="p-2 hover:bg-red-900/20 rounded-lg text-red-400 transition-all"
+                      title="Annuler"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="mb-2">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="text-[#6B7280] dark:text-[#A3A3A3]">{recipeWeighedCount}/{recipeTotalCount} ingredients peses</span>
+                      <span className="text-teal-400 font-medium">{Math.round(recipeProgress)}%</span>
+                    </div>
+                    <div className="h-2.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-teal-600 to-emerald-500 rounded-full transition-all duration-500"
+                        style={{ width: `${recipeProgress}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cost comparison */}
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    <div className="px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Cout theorique</p>
+                      <p className="text-sm font-bold text-[#111111] dark:text-white">{recipeTheoreticalCost.toFixed(2)} EUR</p>
+                    </div>
+                    <div className={`px-3 py-2 rounded-lg border ${
+                      recipeActualCost > recipeTheoreticalCost * 1.05 ? 'bg-red-900/20 border-red-500/30' :
+                      recipeActualCost < recipeTheoreticalCost * 0.95 ? 'bg-emerald-900/20 border-emerald-500/30' :
+                      'bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 border-[#E5E7EB] dark:border-[#1A1A1A]/50'
+                    }`}>
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Cout reel</p>
+                      <p className={`text-sm font-bold ${
+                        recipeActualCost > recipeTheoreticalCost * 1.05 ? 'text-red-400' :
+                        recipeActualCost < recipeTheoreticalCost * 0.95 ? 'text-emerald-400' :
+                        'text-[#111111] dark:text-white'
+                      }`}>{recipeActualCost.toFixed(2)} EUR</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ingredient list with status */}
+                <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                  {recipeSession.entries.map((entry, idx) => {
+                    const isActive = activeRecipeIngIdx === idx;
+                    const isWeighed = entry.status === 'weighed';
+                    const accuracy = isWeighed && entry.actualQty !== null ? getAccuracyColor(entry.targetQty, entry.actualQty) : null;
+                    const AccIcon = accuracy ? getAccuracyIcon(accuracy) : null;
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          if (!isWeighed) {
+                            setActiveRecipeIngIdx(idx);
+                            const ing = selectedRecipe?.ingredients[idx]?.ingredient;
+                            if (ing) {
+                              setSelected({ id: ing.id, name: ing.name, unit: ing.unit, category: ing.category, pricePerUnit: ing.pricePerUnit });
+                            }
+                            setTare(0);
+                          }
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-3 min-h-[52px] rounded-xl text-left transition-all ${
+                          isActive ? 'bg-teal-600/20 border-2 border-teal-500/50 shadow-lg shadow-teal-900/20' :
+                          isWeighed ? `border ${getAccuracyClasses(accuracy!)}` :
+                          'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#1A1A1A]/30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                        }`}
+                      >
+                        {/* Status icon */}
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                          isActive ? 'bg-teal-600 text-white' :
+                          isWeighed && AccIcon ? 'bg-transparent' :
+                          'bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]'
+                        }`}>
+                          {isActive ? <Scale className="w-4 h-4" /> :
+                           isWeighed && AccIcon ? <AccIcon className="w-5 h-5" /> :
+                           <span className="text-xs font-bold">{idx + 1}</span>}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className={`text-sm font-medium truncate ${isActive ? 'text-[#111111] dark:text-white' : isWeighed ? '' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                            {entry.ingredientName}
+                          </p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Cible : {entry.targetQty} {entry.unit}</span>
+                            {isWeighed && entry.actualQty !== null && (
+                              <span className={`text-[10px] font-bold ${accuracy === 'green' ? 'text-emerald-400' : accuracy === 'amber' ? 'text-amber-400' : 'text-red-400'}`}>
+                                Pese : {entry.actualQty.toFixed(2)} {entry.unit}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {isActive && <ChevronRight className="w-4 h-4 text-teal-400 shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Save session button */}
+                <div className="p-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                  <button
+                    onClick={saveRecipeSession}
+                    disabled={recipeWeighedCount === 0}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[48px] bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white rounded-xl font-medium text-sm transition-all active:scale-95"
+                  >
+                    <Save className="w-4 h-4" />
+                    Sauvegarder la pesee ({recipeWeighedCount}/{recipeTotalCount})
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-        )}
-      </div>
+
+          {/* CENTER: Scale display for recipe mode */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 px-4 py-6">
+            {recipeSession && activeRecipeIngIdx !== null ? (
+              <>
+                <div className="text-center">
+                  <p className="text-[10px] text-teal-400 uppercase tracking-[0.2em]">Ingredient a peser</p>
+                  <p className="text-2xl font-bold text-[#111111] dark:text-white mt-1">{recipeSession.entries[activeRecipeIngIdx].ingredientName}</p>
+                  <p className="text-lg text-teal-400 font-medium mt-1">
+                    Cible : {recipeSession.entries[activeRecipeIngIdx].targetQty} {recipeSession.entries[activeRecipeIngIdx].unit}
+                  </p>
+                </div>
+
+                {/* Scale display */}
+                <div
+                  className="relative w-full max-w-md aspect-[2/1] rounded-2xl flex flex-col items-center justify-center transition-all duration-500"
+                  style={{
+                    background: 'linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0a0e17 100%)',
+                    border: `2px solid ${netWeight > 0 && isStable ? '#10b981' : netWeight > 0 ? '#3b82f6' : '#1e293b'}`,
+                  }}
+                >
+                  <div className="absolute inset-0 rounded-2xl opacity-[0.03] pointer-events-none"
+                    style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }}
+                  />
+                  <div className="relative z-10 flex items-baseline gap-2">
+                    <span className={`font-black tabular-nums tracking-tight transition-all duration-300 text-5xl sm:text-6xl ${
+                      netWeight > 0 && isStable ? 'text-emerald-400' : netWeight > 0 ? 'text-teal-300' : 'text-[#6B7280]'
+                    }`}>
+                      {netWeight <= 0 ? '0' : weightForDisplay}
+                    </span>
+                    <span className="font-bold text-xl text-[#9CA3AF] dark:text-[#737373]">{unitForDisplay}</span>
+                  </div>
+                  {tare > 0 && <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>}
+                </div>
+
+                {/* Accuracy indicator for current ingredient */}
+                {netConverted > 0 && (() => {
+                  const target = recipeSession.entries[activeRecipeIngIdx].targetQty;
+                  const color = getAccuracyColor(target, netConverted);
+                  const AccuracyIcon = getAccuracyIcon(color);
+                  const diffPct = target > 0 ? Math.round(Math.abs(netConverted - target) / target * 100) : 0;
+                  return (
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${getAccuracyClasses(color)}`}>
+                      <AccuracyIcon className="w-5 h-5" />
+                      <span className="text-sm font-medium">
+                        {color === 'green' ? 'Quantite correcte' :
+                         color === 'amber' ? `Ecart de ${diffPct}% — acceptable` :
+                         `Ecart de ${diffPct}% — trop important`}
+                      </span>
+                    </div>
+                  );
+                })()}
+
+                {/* Simulation controls in recipe mode */}
+                {useSimulation && (
+                  <div className="flex items-center gap-4 bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 px-5 py-3 rounded-2xl border border-amber-600/30">
+                    <p className="text-amber-400 font-medium uppercase tracking-wider text-xs">Sim</p>
+                    <button onClick={() => setSimWeight(w => Math.max(0, +(w - 0.05).toFixed(3)))} className="w-12 h-12 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all">
+                      <Minus className="w-5 h-5" />
+                    </button>
+                    <span className="text-[#111111] dark:text-white font-mono w-24 text-lg text-center tabular-nums">{simWeight.toFixed(3)} kg</span>
+                    <button onClick={() => setSimWeight(w => +(w + 0.05).toFixed(3))} className="w-12 h-12 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] flex items-center justify-center active:scale-90 transition-all">
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Tare profile quick select */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {tareProfiles.slice(0, 4).map(tp => (
+                    <button
+                      key={tp.id}
+                      onClick={() => handleTareFromProfile(tp)}
+                      className="px-3 py-2 min-h-[40px] rounded-lg text-xs font-medium bg-purple-900/20 text-purple-300 border border-purple-500/30 hover:bg-purple-900/40 transition-all active:scale-95"
+                    >
+                      {tp.name} ({tp.weightGrams}g)
+                    </button>
+                  ))}
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleTare}
+                    disabled={currentWeight <= 0}
+                    className="flex items-center gap-2 px-6 py-4 min-h-[56px] bg-[#FAFAFA] dark:bg-[#0A0A0A] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] disabled:opacity-30 rounded-2xl font-semibold text-[#111111] dark:text-white transition-all active:scale-95 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                  >
+                    <RotateCcw className="w-5 h-5" /> Tare
+                  </button>
+                  <button
+                    onClick={confirmRecipeIngredient}
+                    disabled={netConverted <= 0}
+                    className="flex items-center gap-2 px-10 py-4 min-h-[56px] bg-teal-600 hover:bg-teal-500 disabled:opacity-30 rounded-2xl font-bold text-white text-lg transition-all active:scale-95 shadow-lg shadow-teal-900/30"
+                  >
+                    <Check className="w-6 h-6" /> Confirmer
+                  </button>
+                </div>
+              </>
+            ) : recipeSession ? (
+              <div className="text-center">
+                <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-[#111111] dark:text-white mb-2">Pesee terminee !</h3>
+                <p className="text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+                  {recipeWeighedCount}/{recipeTotalCount} ingredients peses
+                </p>
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <div className="px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Theorique</p>
+                    <p className="text-lg font-bold text-[#111111] dark:text-white">{recipeTheoreticalCost.toFixed(2)} EUR</p>
+                  </div>
+                  <span className="text-[#9CA3AF] dark:text-[#737373]">&rarr;</span>
+                  <div className={`px-4 py-3 rounded-xl border ${
+                    recipeActualCost > recipeTheoreticalCost * 1.05 ? 'bg-red-900/20 border-red-500/30' : 'bg-emerald-900/20 border-emerald-500/30'
+                  }`}>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Reel</p>
+                    <p className={`text-lg font-bold ${recipeActualCost > recipeTheoreticalCost * 1.05 ? 'text-red-400' : 'text-emerald-400'}`}>
+                      {recipeActualCost.toFixed(2)} EUR
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={saveRecipeSession}
+                  className="px-8 py-4 min-h-[56px] bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold text-lg transition-all active:scale-95"
+                >
+                  <Save className="w-5 h-5 inline mr-2" />
+                  Sauvegarder
+                </button>
+              </div>
+            ) : (
+              <div className="text-center text-[#6B7280] dark:text-[#A3A3A3]">
+                <BookOpen className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                <p className="text-lg">Selectionnez une recette dans le panneau de gauche</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* TAB: HISTORIQUE DES PESEES */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {mainTab === 'historique' && (
+        <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+          {/* LEFT: Calendar */}
+          <div className="lg:w-96 bg-white dark:bg-black/40 border-b lg:border-b-0 lg:border-r border-[#E5E7EB] dark:border-[#1A1A1A]/60 flex flex-col overflow-hidden shrink-0">
+            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+              <div className="flex items-center justify-between mb-4">
+                <button onClick={() => navigateCalendar(-1)} className="p-2 min-h-[44px] min-w-[44px] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-all">
+                  <ArrowLeft className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                </button>
+                <p className="text-sm font-bold text-[#111111] dark:text-white capitalize">
+                  {new Date(historyCalendarMonth + '-01').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                </p>
+                <button onClick={() => navigateCalendar(1)} className="p-2 min-h-[44px] min-w-[44px] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-all">
+                  <ChevronRight className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                </button>
+              </div>
+
+              {/* Day headers */}
+              <div className="grid grid-cols-7 gap-1 mb-1">
+                {['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'].map(d => (
+                  <div key={d} className="text-center text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373] py-1">{d}</div>
+                ))}
+              </div>
+
+              {/* Calendar grid */}
+              <div className="grid grid-cols-7 gap-1">
+                {calendarDays.map((day, i) => (
+                  <button
+                    key={i}
+                    onClick={() => day.hasData && setHistorySelectedDate(day.date)}
+                    className={`aspect-square flex flex-col items-center justify-center rounded-lg text-sm transition-all ${
+                      historySelectedDate === day.date
+                        ? 'bg-teal-600 text-white font-bold'
+                        : day.hasData && day.isCurrentMonth
+                        ? 'bg-emerald-900/20 text-emerald-400 font-medium hover:bg-emerald-900/40 cursor-pointer'
+                        : day.isCurrentMonth
+                        ? 'text-[#6B7280] dark:text-[#A3A3A3]'
+                        : 'text-[#D1D5DB] dark:text-[#3A3A3A]'
+                    }`}
+                  >
+                    {day.day}
+                    {day.hasData && (
+                      <div className={`w-1.5 h-1.5 rounded-full mt-0.5 ${historySelectedDate === day.date ? 'bg-white' : 'bg-emerald-400'}`} />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Session summaries */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              <p className="text-xs font-semibold text-[#6B7280] dark:text-[#A3A3A3] uppercase tracking-wider px-1">Sessions recentes</p>
+              {historySessions.slice(0, 15).map(session => (
+                <button
+                  key={session.date}
+                  onClick={() => setHistorySelectedDate(session.date)}
+                  className={`w-full flex items-center justify-between px-3 py-3 min-h-[48px] rounded-xl text-left transition-all active:scale-[0.98] ${
+                    historySelectedDate === session.date
+                      ? 'bg-teal-600/20 border border-teal-500/40'
+                      : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border border-[#E5E7EB] dark:border-[#1A1A1A]/30 hover:bg-[#F3F4F6] dark:hover:bg-[#171717]'
+                  }`}
+                >
+                  <div>
+                    <p className="text-sm font-medium text-[#111111] dark:text-white">
+                      {new Date(session.date).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    </p>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{session.entries.length} pesees</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-teal-400">{session.totalKg.toFixed(1)} kg</p>
+                    <p className="text-[10px] text-emerald-400">{session.totalValue.toFixed(2)} EUR</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT: Detail view */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {historySelectedDate ? (
+              <>
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
+                  <div>
+                    <p className="text-lg font-bold text-[#111111] dark:text-white">
+                      {new Date(historySelectedDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    </p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{selectedDateEntries.length} pesees enregistrees</p>
+                  </div>
+                  <button
+                    onClick={() => exportCSV(selectedDateEntries, `pesees_${historySelectedDate}.csv`)}
+                    className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium transition-all active:scale-95 hover:bg-[#333] dark:hover:bg-[#E5E5E5]"
+                  >
+                    <Download className="w-4 h-4" />
+                    Exporter CSV
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
+                  {selectedDateEntries.map((entry, i) => (
+                    <div
+                      key={`${entry.timestamp}-${i}`}
+                      className={`rounded-xl px-4 py-3 border ${
+                        entry.status === 'error' ? 'bg-red-900/10 border-red-800/30' :
+                        'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-[#E5E7EB] dark:border-[#1A1A1A]/30'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            entry.status === 'error' ? 'bg-red-900/30 text-red-400' :
+                            entry.stockAction === 'add' ? 'bg-emerald-900/30 text-emerald-400' :
+                            entry.stockAction === 'remove' ? 'bg-red-900/30 text-red-400' :
+                            'bg-teal-900/30 text-teal-400'
+                          }`}>
+                            {entry.stockAction === 'add' ? <ArrowDownToLine className="w-4 h-4" /> :
+                             entry.stockAction === 'remove' ? <ArrowUpFromLine className="w-4 h-4" /> :
+                             <Scale className="w-4 h-4" />}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-[#111111] dark:text-white">{entry.ingredientName}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              {entry.ingredientCategory && (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded border ${getCategoryColor(entry.ingredientCategory)}`}>
+                                  {entry.ingredientCategory}
+                                </span>
+                              )}
+                              {entry.recipeName && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-900/30 text-purple-400 border border-purple-500/30">
+                                  {entry.recipeName}
+                                </span>
+                              )}
+                              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                                {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-lg font-bold tabular-nums ${
+                            entry.stockAction === 'add' ? 'text-emerald-400' :
+                            entry.stockAction === 'remove' ? 'text-red-400' :
+                            'text-teal-400'
+                          }`}>
+                            {entry.stockAction === 'add' ? '+' : entry.stockAction === 'remove' ? '-' : ''}{entry.weight} {entry.unit}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center text-[#9CA3AF] dark:text-[#737373]">
+                <Calendar className="w-16 h-16 mb-4 opacity-30" />
+                <p className="text-lg">Selectionnez une date dans le calendrier</p>
+                <p className="text-sm mt-1">Les jours avec des pesees sont marques en vert</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {/* TAB: RAPPORT DU JOUR */}
+      {/* ═══════════════════════════════════════════════════════════ */}
+      {mainTab === 'rapport' && (
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+                  <BarChart3 className="w-7 h-7 text-teal-400" />
+                  Rapport du jour
+                </h2>
+                <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                  {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  const today = new Date().toISOString().slice(0, 10);
+                  const todayEntries = history.filter(e => e.timestamp.slice(0, 10) === today);
+                  exportCSV(todayEntries, `rapport_${today}.csv`);
+                }}
+                className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-xl text-sm font-medium transition-all active:scale-95"
+              >
+                <Download className="w-4 h-4" />
+                Exporter
+              </button>
+            </div>
+
+            {/* KPI Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Scale className="w-5 h-5 text-teal-400" />
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Pesees</span>
+                </div>
+                <p className="text-3xl font-black text-[#111111] dark:text-white tabular-nums">{dailyReport.totalWeighs}</p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">{dailyReport.uniqueIngredients} ingredients differents</p>
+              </div>
+
+              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Package className="w-5 h-5 text-emerald-400" />
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Total pese</span>
+                </div>
+                <p className="text-3xl font-black text-[#111111] dark:text-white tabular-nums">{dailyReport.totalKg}</p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">kilogrammes</p>
+              </div>
+
+              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Euro className="w-5 h-5 text-emerald-400" />
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Valeur pesee</span>
+                </div>
+                <p className="text-3xl font-black text-[#111111] dark:text-white tabular-nums">{dailyReport.totalValue}</p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">euros</p>
+              </div>
+
+              <div className={`border rounded-2xl p-4 ${
+                dailyReport.totalLoss > 0
+                  ? 'bg-red-900/10 dark:bg-red-900/20 border-red-500/30'
+                  : 'bg-white dark:bg-[#0A0A0A]/50 border-[#E5E7EB] dark:border-[#1A1A1A]'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className={`w-5 h-5 ${dailyReport.totalLoss > 0 ? 'text-red-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] uppercase font-medium">Ecarts</span>
+                </div>
+                <p className={`text-3xl font-black tabular-nums ${dailyReport.totalLoss > 0 ? 'text-red-400' : 'text-[#111111] dark:text-white'}`}>
+                  {dailyReport.discrepancies.length}
+                </p>
+                <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">
+                  {dailyReport.totalLoss > 0 ? `${dailyReport.totalLoss} EUR de pertes` : 'Aucune perte detectee'}
+                </p>
+              </div>
+            </div>
+
+            {/* Discrepancies table */}
+            {dailyReport.discrepancies.length > 0 && (
+              <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <p className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    Ecarts detectes (attendu vs reel)
+                  </p>
+                  <button
+                    onClick={() => navigate('/gaspillage')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-teal-400 hover:bg-teal-900/20 rounded-lg font-medium transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Voir WasteTracker
+                  </button>
+                </div>
+                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                  {dailyReport.discrepancies.map((d, i) => {
+                    const color = getAccuracyColor(d.target, d.actual);
+                    const AccIcon = getAccuracyIcon(color);
+                    return (
+                      <div key={i} className="flex items-center justify-between px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <AccIcon className={`w-5 h-5 ${color === 'amber' ? 'text-amber-400' : 'text-red-400'}`} />
+                          <div>
+                            <p className="text-sm font-medium text-[#111111] dark:text-white">{d.ingredient}</p>
+                            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                              Cible : {d.target} {d.unit} &rarr; Reel : {d.actual.toFixed(2)} {d.unit}
+                            </p>
+                          </div>
+                        </div>
+                        <span className={`text-sm font-bold px-2 py-1 rounded-lg ${
+                          color === 'amber' ? 'bg-amber-900/30 text-amber-400' : 'bg-red-900/30 text-red-400'
+                        }`}>
+                          {d.actual > d.target ? '+' : ''}{d.diff}%
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Error count */}
+            {dailyReport.errorCount > 0 && (
+              <div className="bg-red-900/10 border border-red-500/30 rounded-2xl p-4 flex items-center gap-3">
+                <AlertCircle className="w-6 h-6 text-red-400 shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-red-400">{dailyReport.errorCount} erreur{dailyReport.errorCount > 1 ? 's' : ''} de pesee</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Verifiez la connexion de la balance et les niveaux de stock</p>
+                </div>
+              </div>
+            )}
+
+            {/* Link to WasteTracker */}
+            {dailyReport.totalLoss > 0 && (
+              <button
+                onClick={() => navigate('/gaspillage')}
+                className="w-full flex items-center justify-center gap-3 px-6 py-4 min-h-[56px] bg-amber-900/20 hover:bg-amber-900/30 border border-amber-500/30 rounded-2xl text-amber-400 font-medium transition-all active:scale-[0.98]"
+              >
+                <AlertTriangle className="w-5 h-5" />
+                <span>Pertes estimees : {dailyReport.totalLoss} EUR</span>
+                <span className="text-xs bg-amber-600/30 px-2 py-0.5 rounded-full">Voir WasteTracker &rarr;</span>
+              </button>
+            )}
+
+            {/* Empty state */}
+            {dailyReport.totalWeighs === 0 && (
+              <div className="text-center py-16 text-[#9CA3AF] dark:text-[#737373]">
+                <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                <p className="text-lg">Aucune pesee aujourd'hui</p>
+                <p className="text-sm mt-1">Les donnees du rapport s'afficheront apres vos premieres pesees</p>
+                <button
+                  onClick={() => setMainTab('peser')}
+                  className="mt-4 px-6 py-3 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-medium transition-all active:scale-95"
+                >
+                  Commencer a peser
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

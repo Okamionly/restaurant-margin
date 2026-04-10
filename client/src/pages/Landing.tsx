@@ -765,7 +765,7 @@ export default function Landing() {
                   <div className="text-sm text-white/50 mt-1 font-medium">Fiches techniques</div>
                 </div>
                 <div className="text-center px-4">
-                  <StatCounterDark value={340000} suffix=" EUR" />
+                  <StatCounterDark value={340} suffix="K EUR" />
                   <div className="text-sm text-white/50 mt-1 font-medium">D'economies generees</div>
                 </div>
                 <div className="text-center px-4">

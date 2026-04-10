@@ -81,6 +81,7 @@ const STORAGE_KEY = 'kitchen-mode-orders';
 const STATS_KEY = 'kitchen-mode-stats';
 const STATS_DATE_KEY = 'kitchen-mode-stats-date';
 const SERVICE_TRACKER_KEY = 'service-tracker-current';
+const KITCHEN_SYNC_KEY = 'kitchen-orders-sync';
 const KITCHEN_SOUND_KEY = 'kitchen-mode-sound';
 const KITCHEN_VOICE_KEY = 'kitchen-mode-voice';
 const KITCHEN_STATION_KEY = 'kitchen-mode-station';
@@ -725,7 +726,7 @@ function NewOrderModal({ recipes, onAdd, onClose }: { recipes: Recipe[]; onAdd: 
                     </span>
                     <span className="text-[#a1a1aa] text-lg">{d.prepTime} min</span>
                     <button onClick={() => setSelectedDishes(prev => prev.filter((_, idx) => idx !== i))}
-                      className="p-2 rounded-lg bg-[#ef4444]/10 hover:bg-[#ef4444]/20 text-[#ef4444] min-w-[48px] min-h-[48px] flex items-center justify-center">
+                      className="p-2 rounded-lg bg-[#ef4444]/10 hover:bg-[#ef4444]/20 text-[#ef4444] min-w-[56px] min-h-[56px] flex items-center justify-center">
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -860,7 +861,9 @@ function OrderCard({
                 </span>
               )}
               {order.source === 'service-tracker' && (
-                <span className="px-2 py-0.5 rounded-md bg-[#1d4ed8]/30 text-[#60a5fa] text-xs font-bold">ST</span>
+                <span className="px-2 py-0.5 rounded-md bg-[#1d4ed8]/30 text-[#60a5fa] text-xs font-bold flex items-center gap-1">
+                  <Users className="w-3 h-3 flex-shrink-0" />SALLE
+                </span>
               )}
             </div>
             <div className="flex items-center gap-3 mt-0.5">
@@ -879,29 +882,29 @@ function OrderCard({
           </span>
           {!allServed && !isBumped && onEditOrder && (
             <button onClick={() => onEditOrder(order)} title="Modifier"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
               <Edit3 className="w-5 h-5" />
             </button>
           )}
           {!allServed && !isBumped && onSplitOrder && order.dishes.length > 1 && (
             <button onClick={() => onSplitOrder(order)} title="Scinder"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
               <Scissors className="w-5 h-5" />
             </button>
           )}
           <button onClick={() => onPrint(order)} title="Imprimer"
-            className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-white kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+            className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-white kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
             <Printer className="w-5 h-5" />
           </button>
           {!allServed && !isBumped && onDeleteOrder && (
             <button onClick={() => { if (confirm('Supprimer cette commande ?')) onDeleteOrder(order.id); }} title="Supprimer"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
             </button>
           )}
           {(allServed || isBumped) && (
             <button onClick={() => onRemoveOrder(order.id)}
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#525252] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#525252] hover:text-[#ef4444] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
             </button>
           )}
@@ -1005,7 +1008,7 @@ function OrderCard({
 
                   {dish.recipeId && !isDone && (
                     <button onClick={() => dish.recipeId && onDishView(dish.recipeId)}
-                      className="min-w-[48px] min-h-[48px] rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-[#14b8a6] flex items-center justify-center kds-transition">
+                      className="min-w-[56px] min-h-[56px] rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-[#14b8a6] flex items-center justify-center kds-transition">
                       <Eye className="w-5 h-5" />
                     </button>
                   )}
@@ -1399,24 +1402,61 @@ function StandaloneTimer({ onClose }: { onClose: () => void }) {
 function printKitchenTicket(order: Order) {
   const win = window.open('', '_blank', 'width=300,height=600');
   if (!win) return;
-  const time = new Date(order.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const time = new Date(order.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const date = new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const prio = order.priority !== 'normal' ? `*** ${order.priority.toUpperCase()} ***` : '';
   const allergens = detectAllergens(order.notes);
-  const dishLines = order.dishes.map(d =>
-    `<tr><td style="font-size:18px;padding:4px 0;font-weight:bold;">${d.quantity > 1 ? `x${d.quantity} ` : ''}${d.recipeName}</td></tr>`
-  ).join('');
-  const allergenLine = allergens.length > 0 ? `<div class="allergen">!! ALLERGENES: ${allergens.join(', ')} !!</div>` : '';
 
-  win.document.write(`<html><head><title>Ticket Cuisine</title>
-    <style>body{font-family:monospace;padding:10px;margin:0;color:#000;background:#fff}h1{text-align:center;font-size:24px;margin:5px 0;border-bottom:2px dashed #000;padding-bottom:8px}.prio{text-align:center;font-size:20px;font-weight:bold;color:red;margin:5px 0}.info{font-size:14px;margin:4px 0}.notes{font-size:16px;font-weight:bold;color:red;background:#fee;padding:6px;margin:8px 0;border:1px solid red}.allergen{font-size:18px;font-weight:bold;color:red;background:#fee;padding:8px;margin:8px 0;border:2px solid red;text-align:center}table{width:100%;border-collapse:collapse}.footer{text-align:center;font-size:12px;margin-top:10px;border-top:2px dashed #000;padding-top:8px}</style></head><body>
-    <h1>${formatOrderNumber(order.orderNumber)} - TABLE ${order.tableNumber}</h1>
-    ${prio ? `<div class="prio">${prio}</div>` : ''}
-    <div class="info">Heure: ${time}</div><div class="info">Serveur: ${order.serverName}</div>
-    ${allergenLine}${order.notes ? `<div class="notes">!! ${order.notes} !!</div>` : ''}
-    <table>${dishLines}</table>
-    <div class="footer">RestauMargin KDS</div></body></html>`);
+  const separator = '<div class="sep">================================</div>';
+  const thinSep = '<div class="sep">--------------------------------</div>';
+
+  const dishLines = order.dishes.map(d => {
+    const qty = d.quantity > 1 ? `${d.quantity}x ` : '1x ';
+    return `<div class="dish"><span class="dish-qty">${qty}</span><span class="dish-name">${d.recipeName.toUpperCase()}</span></div>`;
+  }).join('');
+
+  const allergenLine = allergens.length > 0
+    ? `${thinSep}<div class="allergen">!! ALLERGENES: ${allergens.join(', ')} !!</div>`
+    : '';
+
+  win.document.write(`<!DOCTYPE html><html><head><title>Ticket Cuisine</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Courier New',Courier,monospace;width:280px;margin:0 auto;padding:8px;color:#000;background:#fff;font-size:14px;line-height:1.4}
+  .center{text-align:center}
+  .sep{text-align:center;font-size:12px;margin:4px 0;letter-spacing:-0.5px}
+  .header{text-align:center;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+  .table-num{text-align:center;font-size:36px;font-weight:900;margin:6px 0;letter-spacing:2px}
+  .order-num{text-align:center;font-size:14px;font-weight:bold;margin:2px 0}
+  .prio{text-align:center;font-size:18px;font-weight:bold;margin:4px 0;padding:4px;border:2px solid #000}
+  .meta{font-size:12px;margin:2px 0}
+  .meta-row{display:flex;justify-content:space-between;font-size:12px}
+  .dish{font-size:16px;font-weight:bold;padding:4px 0;border-bottom:1px dotted #ccc}
+  .dish:last-child{border-bottom:none}
+  .dish-qty{font-weight:normal;min-width:30px;display:inline-block}
+  .dish-name{font-weight:bold}
+  .notes{font-size:14px;font-weight:bold;background:#000;color:#fff;padding:6px 8px;margin:6px 0;text-align:center}
+  .allergen{font-size:14px;font-weight:bold;background:#000;color:#fff;padding:6px 8px;margin:4px 0;text-align:center;letter-spacing:0.5px}
+  .footer{text-align:center;font-size:10px;margin-top:6px;color:#999}
+  @media print{body{width:100%;padding:0}}
+</style></head><body>
+<div class="header">** CUISINE **</div>
+${separator}
+<div class="table-num">TABLE ${order.tableNumber}</div>
+<div class="order-num">${formatOrderNumber(order.orderNumber)}</div>
+${separator}
+<div class="meta-row"><span>${date}</span><span>${time}</span></div>
+<div class="meta">Serveur: ${order.serverName}</div>
+${prio ? `<div class="prio">${prio}</div>` : ''}
+${separator}
+${dishLines}
+${allergenLine}
+${order.notes ? `${thinSep}<div class="notes">!! ${order.notes.toUpperCase()} !!</div>` : ''}
+${separator}
+<div class="footer">RestauMargin KDS</div>
+<script>window.onload=function(){setTimeout(function(){window.print()},200)}</script>
+</body></html>`);
   win.document.close();
-  setTimeout(() => { win.print(); }, 300);
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -1833,6 +1873,7 @@ export default function KitchenMode() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [bumpedOrders, setBumpedOrders] = useState<Order[]>([]); // recall buffer
+  const syncProcessedRef = useRef(new Set<string>());
   const [now, setNow] = useState(Date.now());
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showNewOrder, setShowNewOrder] = useState(false);
@@ -2089,6 +2130,50 @@ export default function KitchenMode() {
     }, 3000);
     return () => clearInterval(pollInterval);
   }, [orderCounter]);
+
+  // ── kitchen-orders-sync polling (ServiceTracker auto-sync) ───────
+  useEffect(() => {
+    const syncPoll = setInterval(() => {
+      try {
+        const raw = localStorage.getItem(KITCHEN_SYNC_KEY);
+        if (!raw) return;
+        const syncItems: any[] = JSON.parse(raw);
+        if (!syncItems.length) return;
+        const newItems = syncItems.filter(item => !syncProcessedRef.current.has(item.id));
+        if (!newItems.length) return;
+
+        setOrders(prev => {
+          let updated = [...prev];
+          for (const item of newItems) {
+            syncProcessedRef.current.add(item.id);
+            const alreadyExists = updated.some(o => o.dishes.some(d => d.id === `sync-${item.id}`));
+            if (alreadyExists) continue;
+            const tbl = item.tableNumber || 0;
+            const newDish: OrderDish = {
+              id: `sync-${item.id}`, recipeName: item.recipeName, recipeId: item.recipeId, quantity: item.quantity || 1,
+              status: 'attente', prepTimeMinutes: 10, startedAt: null, completedAt: null, servedAt: null,
+              category: item.category || 'plat', course: detectCourse({ recipeName: item.recipeName, category: item.category || 'plat' }),
+            };
+            let existingOrder = updated.find(o => o.source === 'service-tracker' && o.tableNumber === tbl && !o.dishes.every(d => d.status === 'servi'));
+            if (existingOrder && tbl > 0) {
+              updated = updated.map(o => o.id === existingOrder!.id ? { ...o, dishes: [...o.dishes, newDish] } : o);
+            } else {
+              const newCounter = orderCounter + 1;
+              setOrderCounter(newCounter);
+              updated.push({
+                id: uid(), orderNumber: newCounter, tableNumber: tbl, serverName: 'Salle',
+                createdAt: item.timestamp || Date.now(), notes: '', priority: 'normal',
+                source: 'service-tracker', holdStatus: 'active', dishes: [newDish],
+              });
+            }
+          }
+          return updated;
+        });
+        if (soundEnabled && newItems.length > 0) playBellSound();
+      } catch {}
+    }, 3000);
+    return () => clearInterval(syncPoll);
+  }, [orderCounter, soundEnabled]);
 
   // ── Speech synthesis voices ───────────────────────────────────────
   useEffect(() => { if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); }, []);
@@ -2423,8 +2508,8 @@ export default function KitchenMode() {
         <div className="flex items-center gap-3">
           {!isFullscreen && (
             <button onClick={() => navigate('/dashboard')}
-              className="min-w-[64px] min-h-[64px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition shrink-0">
-              <ArrowLeft className="w-6 h-6" />
+              className="min-w-[56px] min-h-[56px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition shrink-0">
+              <ArrowLeft className="w-6 h-6 flex-shrink-0" />
             </button>
           )}
 
@@ -2449,15 +2534,15 @@ export default function KitchenMode() {
 
           <div className="flex items-center gap-2 shrink-0">
             <button onClick={() => setShowNewOrder(true)}
-              className="min-w-[64px] min-h-[64px] rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white flex items-center justify-center gap-2 px-4 kds-transition">
-              <Plus className="w-6 h-6" /><span className="hidden sm:inline text-lg font-bold">Commande</span>
+              className="min-w-[56px] min-h-[56px] rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white flex items-center justify-center gap-2 px-4 kds-transition">
+              <Plus className="w-6 h-6 flex-shrink-0" /><span className="hidden sm:inline text-lg font-bold">Commande</span>
             </button>
 
             <button onClick={() => setShowTablePanel(v => !v)}
-              className={`relative min-w-[64px] min-h-[64px] rounded-xl flex items-center justify-center gap-2 px-4 kds-transition
+              className={`relative min-w-[56px] min-h-[56px] rounded-xl flex items-center justify-center gap-2 px-4 kds-transition
                 ${showTablePanel ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}
               title="Gestion des tables">
-              <LayoutGrid className="w-6 h-6" /><span className="hidden sm:inline text-lg font-bold">Tables</span>
+              <LayoutGrid className="w-6 h-6 flex-shrink-0" /><span className="hidden sm:inline text-lg font-bold">Tables</span>
               {tableFilter !== null && (
                 <span className="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full bg-[#14b8a6] text-white">
                   T{tableFilter}
@@ -2465,35 +2550,23 @@ export default function KitchenMode() {
               )}
             </button>
 
-            {!hasAnyOrders && (
-              <button onClick={addDemoOrders}
-                className="min-w-[64px] min-h-[64px] rounded-xl bg-[#78350f]/50 hover:bg-[#78350f]/70 text-[#fbbf24] flex items-center justify-center gap-2 px-4 kds-transition">
-                <Flame className="w-5 h-5" /><span className="hidden sm:inline text-lg font-bold">Demo</span>
-              </button>
-            )}
-
             {/* Recall button */}
             {bumpedOrders.length > 0 && (
               <button onClick={() => { const last = bumpedOrders[0]; if (last) recallOrder(last.id); }}
-                className="min-w-[64px] min-h-[64px] rounded-xl bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30 text-[#f59e0b] flex items-center justify-center kds-transition relative"
+                className="min-w-[56px] min-h-[56px] rounded-xl bg-[#f59e0b]/20 hover:bg-[#f59e0b]/30 text-[#f59e0b] flex items-center justify-center kds-transition relative"
                 title="Rappeler derniere commande bumpee">
-                <Undo2 className="w-6 h-6" />
+                <Undo2 className="w-6 h-6 flex-shrink-0" />
                 <span className="absolute -top-1 -right-1 text-xs font-black px-1.5 py-0.5 rounded-full bg-[#f59e0b] text-black min-w-[20px] text-center">
                   {bumpedOrders.length}
                 </span>
               </button>
             )}
 
-            <button onClick={() => setShowTimer(true)}
-              className="min-w-[64px] min-h-[64px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition">
-              <Timer className="w-6 h-6" />
-            </button>
-
             {/* Mobile station view toggle */}
             <button onClick={() => setStationView(v => v === 'complete' ? 'chaud' : v === 'chaud' ? 'froid' : v === 'froid' ? 'passe' : 'complete')}
-              className={`min-w-[64px] min-h-[64px] rounded-xl flex items-center justify-center kds-transition lg:hidden relative
+              className={`min-w-[56px] min-h-[56px] rounded-xl flex items-center justify-center kds-transition lg:hidden relative
                 ${stationView !== 'complete' ? 'bg-[#14b8a6]/20 text-[#14b8a6]' : 'bg-[#1a1a1a] text-[#a1a1aa] hover:bg-[#262626]'}`}>
-              <SplitSquareHorizontal className="w-6 h-6" />
+              <SplitSquareHorizontal className="w-6 h-6 flex-shrink-0" />
               {stationView !== 'complete' && (
                 <span className="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full bg-[#1a1a1a] border border-current uppercase">
                   {stationView === 'chaud' ? 'HOT' : stationView === 'froid' ? 'COLD' : 'PASS'}
@@ -2501,30 +2574,15 @@ export default function KitchenMode() {
               )}
             </button>
 
-            <button onClick={() => setVoiceEnabled(v => !v)}
-              className={`min-w-[64px] min-h-[64px] rounded-xl flex items-center justify-center kds-transition
-                ${voiceEnabled ? 'bg-[#a78bfa]/20 text-[#a78bfa] hover:bg-[#a78bfa]/30' : 'bg-[#1a1a1a] text-[#525252] hover:bg-[#262626]'}`}
-              title={voiceEnabled ? 'Annonces vocales: ON' : 'Annonces vocales: OFF'}>
-              {voiceEnabled ? <Megaphone className="w-6 h-6" /> : <MicOff className="w-6 h-6" />}
-            </button>
-
             <button onClick={() => setSoundEnabled(s => !s)}
-              className={`min-w-[64px] min-h-[64px] rounded-xl flex items-center justify-center kds-transition
+              className={`min-w-[56px] min-h-[56px] rounded-xl flex items-center justify-center kds-transition
                 ${soundEnabled ? 'bg-[#0d9488]/20 text-[#14b8a6] hover:bg-[#0d9488]/30' : 'bg-[#1a1a1a] text-[#525252] hover:bg-[#262626]'}`}>
-              {soundEnabled ? <Volume2 className="w-6 h-6" /> : <VolumeX className="w-6 h-6" />}
+              {soundEnabled ? <Volume2 className="w-6 h-6 flex-shrink-0" /> : <VolumeX className="w-6 h-6 flex-shrink-0" />}
             </button>
-
-            {hasServed && (
-              <button onClick={clearServed}
-                className="min-w-[64px] min-h-[64px] rounded-xl bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] flex items-center justify-center kds-transition"
-                title="Supprimer les commandes servies">
-                <Trash2 className="w-6 h-6" />
-              </button>
-            )}
 
             <button onClick={toggleFullscreen}
-              className="min-w-[64px] min-h-[64px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition">
-              {isFullscreen ? <Minimize2 className="w-6 h-6" /> : <Maximize2 className="w-6 h-6" />}
+              className="min-w-[56px] min-h-[56px] rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white flex items-center justify-center kds-transition">
+              {isFullscreen ? <Minimize2 className="w-6 h-6 flex-shrink-0" /> : <Maximize2 className="w-6 h-6 flex-shrink-0" />}
             </button>
           </div>
         </div>

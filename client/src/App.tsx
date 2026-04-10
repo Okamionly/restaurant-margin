@@ -527,10 +527,10 @@ function AppLayout() {
         <NavLink
           to="/kitchen-mode"
           title={collapsed ? 'Cuisine KDS' : undefined}
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-semibold transition-colors active:scale-95 w-full ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-semibold transition-colors active:scale-95 w-full overflow-hidden ${collapsed ? 'justify-center' : ''}`}
         >
           <ChefHat className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && <span className="sidebar-label">Cuisine KDS</span>}
+          {!collapsed && <span className="sidebar-label truncate">Cuisine KDS</span>}
         </NavLink>
       </div>
 

@@ -66,6 +66,7 @@ interface ServiceSummary {
 const STORAGE_KEY = 'service-tracker-current';
 const HISTORY_KEY = 'service-tracker-history';
 const KITCHEN_STORAGE_KEY = 'kitchen-mode-orders';
+const KITCHEN_SYNC_KEY = 'kitchen-orders-sync';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 const CATEGORY_TABS = [
@@ -273,28 +274,45 @@ function printKitchenTicket(order: ServiceOrder, sessionType: ServiceType) {
   const ticketWindow = window.open('', '_blank', 'width=300,height=500');
   if (!ticketWindow) return;
 
+  const time = new Date(order.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const date = new Date(order.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const separator = '<div class="sep">================================</div>';
+  const thinSep = '<div class="sep">--------------------------------</div>';
+
   const html = `<!DOCTYPE html><html><head><title>Ticket #${order.id.slice(-6)}</title>
 <style>
-body{font-family:'Courier New',monospace;width:280px;margin:0 auto;padding:10px;color:#000}
-.center{text-align:center}.bold{font-weight:bold}.divider{border-top:1px dashed #000;margin:8px 0}
-.large{font-size:18px}.small{font-size:11px}.row{display:flex;justify-content:space-between}
-@media print{body{width:100%}}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Courier New',Courier,monospace;width:280px;margin:0 auto;padding:8px;color:#000;background:#fff;font-size:14px;line-height:1.4}
+  .center{text-align:center}
+  .sep{text-align:center;font-size:12px;margin:4px 0;letter-spacing:-0.5px}
+  .header{text-align:center;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px}
+  .service-type{text-align:center;font-size:11px;color:#555;margin:2px 0}
+  .table-num{text-align:center;font-size:36px;font-weight:900;margin:6px 0;letter-spacing:2px}
+  .ticket-id{text-align:center;font-size:12px;font-weight:bold}
+  .meta-row{display:flex;justify-content:space-between;font-size:12px}
+  .dish{font-size:18px;font-weight:bold;padding:6px 0}
+  .dish-cat{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:0.5px}
+  .price-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
+  .price-total{font-weight:bold;font-size:15px}
+  .footer{text-align:center;font-size:10px;margin-top:6px;color:#999}
+  @media print{body{width:100%;padding:0}}
 </style></head><body>
-<div class="center bold large">CUISINE</div>
-<div class="center small">Service ${sessionType === 'midi' ? 'du Midi' : 'du Soir'}</div>
-<div class="divider"></div>
-<div class="center bold">${new Date(order.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
-<div class="center small">Ticket #${order.id.slice(-6).toUpperCase()}</div>
-<div class="divider"></div>
-${order.tableNumber ? `<div class="center bold large">TABLE ${order.tableNumber}</div><div class="divider"></div>` : ''}
-<div class="bold large">${order.quantity}x ${order.recipeName}</div>
-<div class="small">${order.recipeCategory}</div>
-<div class="divider"></div>
-<div class="row"><span>Prix unitaire</span><span>${formatCurrency(order.unitSellingPrice)}</span></div>
-<div class="row bold"><span>Total</span><span>${formatCurrency(order.quantity * order.unitSellingPrice)}</span></div>
-<div class="divider"></div>
-<div class="center small">RestauMargin</div>
-<script>window.onload=function(){window.print()}</script>
+<div class="header">** CUISINE **</div>
+<div class="service-type">Service ${sessionType === 'midi' ? 'du Midi' : 'du Soir'}</div>
+${separator}
+${order.tableNumber ? `<div class="table-num">TABLE ${order.tableNumber}</div>` : ''}
+<div class="ticket-id">#${order.id.slice(-6).toUpperCase()}</div>
+${separator}
+<div class="meta-row"><span>${date}</span><span>${time}</span></div>
+${separator}
+<div class="dish">${order.quantity}x ${order.recipeName.toUpperCase()}</div>
+<div class="dish-cat">${order.recipeCategory}</div>
+${thinSep}
+<div class="price-row"><span>Prix unitaire</span><span>${formatCurrency(order.unitSellingPrice)}</span></div>
+<div class="price-row price-total"><span>TOTAL</span><span>${formatCurrency(order.quantity * order.unitSellingPrice)}</span></div>
+${separator}
+<div class="footer">RestauMargin</div>
+<script>window.onload=function(){setTimeout(function(){window.print()},200)}</script>
 </body></html>`;
   ticketWindow.document.write(html);
   ticketWindow.document.close();
@@ -593,8 +611,23 @@ export default function ServiceTracker() {
       unitCost: getRecipeCost(recipe),
       tableNumber: null,
       timestamp: Date.now(),
-      sentToKitchen: false,
+      sentToKitchen: true,
     };
+
+    // Auto-sync to kitchen via shared localStorage key
+    try {
+      const syncData = loadFromStorage<any[]>(KITCHEN_SYNC_KEY, []);
+      syncData.push({
+        id: order.id,
+        recipeId: order.recipeId,
+        recipeName: order.recipeName,
+        category: order.recipeCategory,
+        quantity: order.quantity,
+        tableNumber: order.tableNumber,
+        timestamp: order.timestamp,
+      });
+      saveToStorage(KITCHEN_SYNC_KEY, syncData);
+    } catch { /* sync fail is non-blocking */ }
 
     setSession(prev => prev ? { ...prev, orders: [...prev.orders, order] } : prev);
     setFlashOrderId(order.id);
@@ -1117,8 +1150,8 @@ export default function ServiceTracker() {
                             <span>{formatTime(order.timestamp)}</span>
                             {order.tableNumber && <span>Table {order.tableNumber}</span>}
                             {order.sentToKitchen && (
-                              <span className="text-teal-500 flex items-center gap-0.5">
-                                <ChefHat className="w-3 h-3" /> Envoyee
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 text-[10px] font-semibold">
+                                <ChefHat className="w-3 h-3" /> Envoyee en cuisine
                               </span>
                             )}
                           </div>

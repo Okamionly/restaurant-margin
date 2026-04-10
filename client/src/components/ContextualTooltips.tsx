@@ -54,12 +54,12 @@ const TOOLTIPS: TooltipConfig[] = [
     position: 'top',
   },
   {
-    route: '/weigh-station',
+    route: '/station',
     message: 'Pesez vos ingredients directement avec une balance connectee pour des fiches techniques ultra-precises.',
     position: 'top',
   },
   {
-    route: '/kitchen-display',
+    route: '/kitchen-mode',
     message: 'Affichez les fiches techniques en cuisine sur tablette — les equipes suivent chaque etape en temps reel.',
     position: 'top',
   },

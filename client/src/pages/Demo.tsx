@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChefHat, TrendingUp, AlertTriangle, BarChart3, ShoppingBasket, ArrowRight, Lock, Eye, Percent, DollarSign, UtensilsCrossed, Truck, ClipboardList, Target } from 'lucide-react';
+import { ChefHat, TrendingUp, AlertTriangle, BarChart3, ShoppingBasket, ArrowRight, Lock, Eye, Percent, DollarSign, UtensilsCrossed, Truck, ClipboardList, Target, X, Sparkles } from 'lucide-react';
+import FoodIllustration from '../components/FoodIllustration';
 
 /* ═══════════════════════════════════════════════════════════════
    Demo Page — Mode demo pour les prospects (route publique /demo)
@@ -20,7 +21,15 @@ const FAKE_RECIPES = [
     margin: 5.48,
     popularity: 180,
     status: 'puzzle' as const,
-    ingredients: ['Riz arborio', 'Champignons de Paris', 'Parmesan', 'Vin blanc', 'Beurre', 'Oignon', 'Bouillon'],
+    ingredients: [
+      { name: 'Riz arborio', qty: '250g', cost: 0.80 },
+      { name: 'Champignons de Paris', qty: '200g', cost: 0.90 },
+      { name: 'Parmesan AOP', qty: '40g', cost: 0.72 },
+      { name: 'Vin blanc sec', qty: '80ml', cost: 0.48 },
+      { name: 'Beurre doux', qty: '30g', cost: 0.24 },
+      { name: 'Oignon', qty: '50g', cost: 0.08 },
+      { name: 'Bouillon de legumes', qty: '500ml', cost: 0.25 },
+    ],
   },
   {
     name: 'Magret de canard aux cerises',
@@ -31,7 +40,14 @@ const FAKE_RECIPES = [
     margin: 15.71,
     popularity: 110,
     status: 'star' as const,
-    ingredients: ['Magret de canard', 'Cerises', 'Vinaigre balsamique', 'Miel', 'Thym', 'Beurre'],
+    ingredients: [
+      { name: 'Magret de canard', qty: '350g', cost: 7.88 },
+      { name: 'Cerises fraiches', qty: '120g', cost: 1.02 },
+      { name: 'Vinaigre balsamique', qty: '30ml', cost: 0.45 },
+      { name: 'Miel', qty: '20g', cost: 0.18 },
+      { name: 'Thym frais', qty: '5g', cost: 0.10 },
+      { name: 'Beurre doux', qty: '20g', cost: 0.16 },
+    ],
   },
   {
     name: 'Creme brulee a la vanille',
@@ -42,7 +58,12 @@ const FAKE_RECIPES = [
     margin: 4.80,
     popularity: 200,
     status: 'star' as const,
-    ingredients: ['Creme liquide', 'Oeufs', 'Sucre', 'Gousse de vanille'],
+    ingredients: [
+      { name: 'Creme liquide 35%', qty: '200ml', cost: 0.76 },
+      { name: 'Oeufs frais (jaunes)', qty: '3 pcs', cost: 0.84 },
+      { name: 'Sucre en poudre', qty: '60g', cost: 0.07 },
+      { name: 'Gousse de vanille', qty: '0.5 pcs', cost: 2.25 },
+    ],
   },
   {
     name: 'Salade Nicoise revisitee',
@@ -53,7 +74,15 @@ const FAKE_RECIPES = [
     margin: 8.10,
     popularity: 95,
     status: 'workhorse' as const,
-    ingredients: ['Thon frais', 'Oeuf', 'Olives noires', 'Tomates', 'Haricots verts', 'Anchois', 'Huile olive'],
+    ingredients: [
+      { name: 'Thon frais', qty: '120g', cost: 3.36 },
+      { name: 'Oeuf frais', qty: '1 pc', cost: 0.28 },
+      { name: 'Olives noires Kalamata', qty: '30g', cost: 0.33 },
+      { name: 'Tomates grappe', qty: '100g', cost: 0.35 },
+      { name: 'Haricots verts frais', qty: '80g', cost: 0.46 },
+      { name: 'Anchois', qty: '20g', cost: 0.40 },
+      { name: 'Huile olive extra vierge', qty: '20ml', cost: 0.18 },
+    ],
   },
   {
     name: 'Tartare de boeuf classique',
@@ -64,7 +93,15 @@ const FAKE_RECIPES = [
     margin: 12.00,
     popularity: 60,
     status: 'dog' as const,
-    ingredients: ['Boeuf hache', 'Capres', 'Cornichons', 'Oignon', 'Jaune oeuf', 'Moutarde', 'Tabasco'],
+    ingredients: [
+      { name: 'Boeuf hache (rumsteck)', qty: '180g', cost: 2.61 },
+      { name: 'Capres', qty: '15g', cost: 0.23 },
+      { name: 'Cornichons', qty: '20g', cost: 0.12 },
+      { name: 'Oignon rouge', qty: '30g', cost: 0.09 },
+      { name: 'Jaune oeuf', qty: '1 pc', cost: 0.28 },
+      { name: 'Moutarde de Dijon', qty: '10g', cost: 0.06 },
+      { name: 'Tabasco', qty: '2ml', cost: 0.04 },
+    ],
   },
 ];
 
@@ -116,17 +153,58 @@ const MARGIN_EVOLUTION = [
   { month: 'Avr', margin: 73.2, foodCost: 26.8 },
 ];
 
+// Category distribution for donut-style chart
+const CATEGORY_DIST = [
+  { name: 'Plats', pct: 45, color: '#0d9488' },
+  { name: 'Entrees', pct: 20, color: '#111111' },
+  { name: 'Desserts', pct: 18, color: '#6B7280' },
+  { name: 'Boissons', pct: 12, color: '#D4D4D4' },
+  { name: 'Accomp.', pct: 5, color: '#E5E7EB' },
+];
+
 function statusLabel(s: string) {
   switch (s) {
-    case 'star': return { text: 'Star', color: 'bg-emerald-100 text-emerald-700' };
-    case 'puzzle': return { text: 'Puzzle', color: 'bg-amber-100 text-amber-700' };
-    case 'workhorse': return { text: 'Cheval de labour', color: 'bg-blue-100 text-blue-700' };
-    case 'dog': return { text: 'Poids mort', color: 'bg-red-100 text-red-700' };
-    default: return { text: s, color: 'bg-[#F5F5F5] text-[#404040]' };
+    case 'star': return { text: 'Star', color: 'bg-emerald-100 text-emerald-700', dotColor: 'bg-emerald-500' };
+    case 'puzzle': return { text: 'Puzzle', color: 'bg-amber-100 text-amber-700', dotColor: 'bg-amber-500' };
+    case 'workhorse': return { text: 'Cheval de labour', color: 'bg-blue-100 text-blue-700', dotColor: 'bg-blue-500' };
+    case 'dog': return { text: 'Poids mort', color: 'bg-red-100 text-red-700', dotColor: 'bg-red-500' };
+    default: return { text: s, color: 'bg-[#F5F5F5] text-[#404040]', dotColor: 'bg-[#A3A3A3]' };
   }
 }
 
+/* ── Animated number counter ─────────────────────── */
+function useAnimatedNumber(target: number, duration = 1500) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        let startTime: number | null = null;
+        const animate = (ts: number) => {
+          if (!startTime) startTime = ts;
+          const progress = Math.min((ts - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setValue(Math.round(eased * target));
+          if (progress < 1) requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+      }
+    }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [target, duration]);
+
+  return { value, ref };
+}
+
 export default function Demo() {
+  const [selectedRecipe, setSelectedRecipe] = useState<number | null>(null);
+
   useEffect(() => {
     document.title = 'Demo RestauMargin -- Le Bistrot de Marie | RestauMargin';
     window.scrollTo(0, 0);
@@ -134,22 +212,45 @@ export default function Demo() {
 
   const maxMargin = Math.max(...MARGIN_EVOLUTION.map(m => m.margin));
 
+  // Animated KPIs
+  const foodCostAnim = useAnimatedNumber(268);
+  const marginAnim = useAnimatedNumber(732);
+  const caAnim = useAnimatedNumber(46327);
+  const couvertsAnim = useAnimatedNumber(1456);
+
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
 
+      {/* ── Animated CSS keyframes ── */}
+      <style>{`
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes barGrow { from { height: 0; } }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .anim-slide-up { animation: slideUp 0.6s ease-out both; }
+        .anim-fade { animation: fadeIn 0.5s ease-out both; }
+        .anim-bar { animation: barGrow 0.8s ease-out both; }
+        .shimmer-bg { background: linear-gradient(90deg, transparent 30%, rgba(13,148,136,0.05) 50%, transparent 70%); background-size: 200% 100%; animation: shimmer 3s infinite; }
+      `}</style>
+
       {/* -- Demo Banner -- */}
-      <div className="sticky top-0 z-50 bg-[#111111] text-white px-4 py-3 text-center">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3">
-          <div className="flex items-center gap-2">
-            <Eye className="w-5 h-5 text-white/70" />
-            <span className="font-semibold text-sm sm:text-base">
-              Mode demo -- Donnees fictives
-            </span>
+      <div className="sticky top-0 z-50 bg-[#111111] text-white px-4 py-3">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <Eye className="w-4 h-4 text-white/60" />
+              <span className="font-semibold text-sm">
+                Mode demo -- Donnees fictives du "Bistrot de Marie"
+              </span>
+            </div>
           </div>
           <Link
             to="/login?mode=register"
-            className="inline-flex items-center gap-1.5 px-5 py-1.5 bg-white text-[#111111] font-semibold text-sm rounded-full hover:bg-white/90 transition-colors"
+            className="inline-flex items-center gap-1.5 px-6 py-2 bg-white text-[#111111] font-bold text-sm rounded-full hover:bg-white/90 transition-colors shadow-lg shadow-white/10"
           >
+            <Sparkles className="w-4 h-4" />
             Creer mon compte gratuit
             <ArrowRight className="w-4 h-4" />
           </Link>
@@ -182,17 +283,26 @@ export default function Demo() {
       </nav>
 
       {/* -- Restaurant Header -- */}
-      <header className="bg-gradient-to-b from-[#FAFAFA] to-white pt-8 pb-6 px-4 border-b border-[#F5F5F5]">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-              <UtensilsCrossed className="w-5 h-5 text-teal-600" />
+      <header className="relative overflow-hidden bg-gradient-to-br from-[#FAFAFA] via-white to-[#FAFAFA] pt-10 pb-8 px-4 border-b border-[#F5F5F5]">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/[0.03] rounded-full blur-[80px]" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/[0.03] rounded-full blur-[60px]" />
+        <div className="max-w-6xl mx-auto relative">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-teal-600 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/20">
+              <UtensilsCrossed className="w-7 h-7 text-white" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-[#111111]" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-[#111111]" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
                 Le Bistrot de Marie
               </h1>
-              <p className="text-sm text-[#737373]">Bistrot traditionnel -- Paris 11e</p>
+              <p className="text-sm text-[#737373] mt-0.5">Bistrot traditionnel -- Paris 11e -- 45 couverts/service</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="text-right">
+                <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Derniere MAJ</p>
+                <p className="text-sm font-bold text-[#111111]">Aujourd'hui, 14h32</p>
+              </div>
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
           </div>
         </div>
@@ -200,39 +310,55 @@ export default function Demo() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10">
 
-        {/* -- KPI Cards -- */}
-        <section>
-          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+        {/* -- KPI Cards with animated numbers -- */}
+        <section className="anim-slide-up">
+          <h2 className="text-lg font-bold text-[#111111] mb-4 flex items-center gap-2" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <BarChart3 className="w-5 h-5 text-teal-600" />
             Tableau de bord
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <KPICard
-              label="Food cost global"
-              value={`${FAKE_KPIS.foodCostGlobal} %`}
-              sub={`Objectif : ${FAKE_KPIS.foodCostTarget} %`}
-              icon={<Percent className="w-5 h-5 text-teal-600" />}
-              good
-            />
-            <KPICard
-              label="Marge brute"
-              value={`${FAKE_KPIS.marginBrute} %`}
-              sub={`${FAKE_KPIS.caHT.toLocaleString('fr-FR')} EUR HT/mois`}
-              icon={<TrendingUp className="w-5 h-5 text-emerald-600" />}
-              good
-            />
-            <KPICard
-              label="Recettes / Ingredients"
-              value={`${FAKE_KPIS.recipeCount} / ${FAKE_KPIS.ingredientCount}`}
-              sub={`${FAKE_KPIS.couverts} couverts/mois`}
-              icon={<BarChart3 className="w-5 h-5 text-blue-600" />}
-            />
-            <KPICard
-              label="Alertes"
-              value={String(FAKE_KPIS.alertCount)}
-              sub="Prix fournisseurs en hausse"
-              icon={<AlertTriangle className="w-5 h-5 text-amber-500" />}
-              warning
-            />
+            <div ref={foodCostAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 relative overflow-hidden">
+              <div className="shimmer-bg absolute inset-0 rounded-2xl" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Food cost global</span>
+                  <Percent className="w-5 h-5 text-teal-600" />
+                </div>
+                <p className="text-3xl font-extrabold text-[#111111]">{(foodCostAnim.value / 10).toFixed(1)}%</p>
+                <p className="text-xs text-emerald-600 mt-1 font-semibold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> Sous l'objectif de {FAKE_KPIS.foodCostTarget}%
+                </p>
+              </div>
+            </div>
+            <div ref={marginAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5 relative overflow-hidden">
+              <div className="shimmer-bg absolute inset-0 rounded-2xl" />
+              <div className="relative">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Marge brute</span>
+                  <TrendingUp className="w-5 h-5 text-emerald-600" />
+                </div>
+                <p className="text-3xl font-extrabold text-[#111111]">{(marginAnim.value / 10).toFixed(1)}%</p>
+                <p className="text-xs text-emerald-600 mt-1 font-semibold flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> +4.7 pts en 6 mois
+                </p>
+              </div>
+            </div>
+            <div ref={caAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">CA HT / mois</span>
+                <DollarSign className="w-5 h-5 text-emerald-600" />
+              </div>
+              <p className="text-3xl font-extrabold text-[#111111]">{caAnim.value.toLocaleString('fr-FR')} EUR</p>
+              <p className="text-xs text-emerald-600 mt-1 font-semibold">+12% vs mois dernier</p>
+            </div>
+            <div ref={couvertsAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Couverts / mois</span>
+                <UtensilsCrossed className="w-5 h-5 text-[#737373]" />
+              </div>
+              <p className="text-3xl font-extrabold text-[#111111]">{couvertsAnim.value.toLocaleString('fr-FR')}</p>
+              <p className="text-xs text-[#A3A3A3] mt-1">{FAKE_KPIS.recipeCount} recettes / {FAKE_KPIS.ingredientCount} ingredients</p>
+            </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
             <KPICard
@@ -248,79 +374,128 @@ export default function Demo() {
               icon={<ClipboardList className="w-5 h-5 text-[#737373]" />}
             />
             <KPICard
-              label="Couverts"
-              value={FAKE_KPIS.couverts.toLocaleString('fr-FR')}
-              sub="Ce mois"
-              icon={<UtensilsCrossed className="w-5 h-5 text-[#737373]" />}
+              label="Alertes prix"
+              value={String(FAKE_KPIS.alertCount)}
+              sub="Fournisseurs en hausse"
+              icon={<AlertTriangle className="w-5 h-5 text-amber-500" />}
+              warning
             />
             <KPICard
-              label="CA HT"
-              value={`${FAKE_KPIS.caHT.toLocaleString('fr-FR')} EUR`}
-              sub="+12% vs mois dernier"
-              icon={<DollarSign className="w-5 h-5 text-emerald-600" />}
-              good
+              label="Objectif food cost"
+              value={`${FAKE_KPIS.foodCostTarget}%`}
+              sub="Seuil configure"
+              icon={<Target className="w-5 h-5 text-teal-600" />}
             />
           </div>
         </section>
 
-        {/* -- Margin Evolution Chart -- */}
-        <section>
-          <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
-            Evolution de la marge (6 derniers mois)
-          </h2>
-          <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
-            <div className="flex items-end gap-3 h-48">
-              {MARGIN_EVOLUTION.map((m, i) => (
-                <div key={m.month} className="flex-1 flex flex-col items-center gap-2">
-                  <span className="text-xs font-bold text-emerald-600">{m.margin}%</span>
-                  <div className="w-full bg-[#F5F5F5] rounded-t-lg relative" style={{ height: '100%' }}>
-                    <div
-                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-teal-600 to-teal-400 rounded-t-lg transition-all duration-500"
-                      style={{ height: `${(m.margin / maxMargin) * 100}%`, animationDelay: `${i * 100}ms` }}
-                    />
+        {/* -- Charts row: Margin Evolution + Category Distribution -- */}
+        <section className="grid lg:grid-cols-3 gap-6">
+          {/* Margin Evolution Chart */}
+          <div className="lg:col-span-2">
+            <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+              Evolution de la marge (6 derniers mois)
+            </h2>
+            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6">
+              <div className="flex items-end gap-3 h-52">
+                {MARGIN_EVOLUTION.map((m, i) => (
+                  <div key={m.month} className="flex-1 flex flex-col items-center gap-2">
+                    <span className="text-xs font-bold text-emerald-600">{m.margin}%</span>
+                    <div className="w-full bg-[#F5F5F5] rounded-t-lg relative" style={{ height: '100%' }}>
+                      <div
+                        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-teal-600 to-teal-400 rounded-t-lg anim-bar"
+                        style={{
+                          height: `${(m.margin / maxMargin) * 100}%`,
+                          animationDelay: `${i * 150}ms`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs text-[#737373] font-medium">{m.month}</span>
                   </div>
-                  <span className="text-xs text-[#737373] font-medium">{m.month}</span>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="mt-4 flex items-center justify-between text-xs text-[#A3A3A3]">
+                <span>Marge brute en progression constante</span>
+                <span className="flex items-center gap-1 text-emerald-600 font-semibold">
+                  <TrendingUp className="w-3.5 h-3.5" /> +4.7 pts en 6 mois
+                </span>
+              </div>
             </div>
-            <div className="mt-4 flex items-center justify-between text-xs text-[#A3A3A3]">
-              <span>Marge brute en progression constante</span>
-              <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                <TrendingUp className="w-3.5 h-3.5" /> +4.7 pts en 6 mois
-              </span>
+          </div>
+
+          {/* Category Distribution */}
+          <div>
+            <h2 className="text-lg font-bold text-[#111111] mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+              Repartition par categorie
+            </h2>
+            <div className="bg-white border border-[#E5E7EB] rounded-2xl p-6 h-[calc(100%-2rem)]">
+              <div className="space-y-3">
+                {CATEGORY_DIST.map((cat, i) => (
+                  <div key={cat.name} className="anim-fade" style={{ animationDelay: `${i * 100}ms` }}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium text-[#404040]">{cat.name}</span>
+                      <span className="text-sm font-bold text-[#111111]">{cat.pct}%</span>
+                    </div>
+                    <div className="h-3 bg-[#F5F5F5] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-1000 ease-out"
+                        style={{
+                          width: `${cat.pct}%`,
+                          backgroundColor: cat.color,
+                          animation: `barGrow 1s ease-out ${i * 100}ms both`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 pt-4 border-t border-[#F5F5F5]">
+                <p className="text-xs text-[#A3A3A3]">Base: {FAKE_KPIS.recipeCount} recettes actives</p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* -- Recipes -- */}
+        {/* -- Recipes with FoodIllustration -- */}
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-[#111111]" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+            <h2 className="text-lg font-bold text-[#111111] flex items-center gap-2" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+              <ClipboardList className="w-5 h-5 text-teal-600" />
               Fiches techniques ({FAKE_RECIPES.length} recettes)
             </h2>
             <div className="flex gap-2">
               {(['star', 'puzzle', 'workhorse', 'dog'] as const).map(s => {
                 const st = statusLabel(s);
                 return (
-                  <span key={s} className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${st.color}`}>{st.text}</span>
+                  <span key={s} className={`text-[10px] font-semibold px-2 py-0.5 rounded-full hidden sm:inline-flex items-center gap-1 ${st.color}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${st.dotColor}`} />
+                    {st.text}
+                  </span>
                 );
               })}
             </div>
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {FAKE_RECIPES.map((r) => {
+            {FAKE_RECIPES.map((r, idx) => {
               const st = statusLabel(r.status);
               return (
-                <div key={r.name} className="bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:shadow-md transition-shadow relative group">
-                  <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10 pointer-events-none">
-                    <span className="flex items-center gap-2 text-[#737373] font-medium text-xs bg-white/90 px-3 py-1.5 rounded-full shadow">
-                      <Lock className="w-3 h-3" />
-                      Lecture seule
-                    </span>
+                <button
+                  key={r.name}
+                  onClick={() => setSelectedRecipe(idx)}
+                  className="bg-white border border-[#E5E7EB] rounded-2xl p-4 hover:shadow-lg hover:border-teal-200 transition-all relative group text-left anim-slide-up cursor-pointer"
+                  style={{ animationDelay: `${idx * 80}ms` }}
+                >
+                  {/* FoodIllustration */}
+                  <div className="flex items-center justify-center mb-3">
+                    <FoodIllustration recipeName={r.name} category={r.category} size="md" animated />
                   </div>
+
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-semibold text-[#A3A3A3] uppercase tracking-wider">{r.category}</span>
-                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${st.color}`}>{st.text}</span>
+                    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-1 ${st.color}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${st.dotColor}`} />
+                      {st.text}
+                    </span>
                   </div>
                   <h3 className="text-sm font-bold text-[#111111] mb-2 line-clamp-2">{r.name}</h3>
                   <div className="grid grid-cols-2 gap-2 mb-3">
@@ -333,19 +508,177 @@ export default function Demo() {
                       <p className="text-base font-bold text-emerald-600">{r.margin.toFixed(2)} EUR</p>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {r.ingredients.slice(0, 4).map((ing) => (
-                      <span key={ing} className="text-[10px] bg-[#F5F5F5] text-[#525252] px-1.5 py-0.5 rounded-full">{ing}</span>
-                    ))}
-                    {r.ingredients.length > 4 && (
-                      <span className="text-[10px] bg-[#F5F5F5] text-[#A3A3A3] px-1.5 py-0.5 rounded-full">+{r.ingredients.length - 4}</span>
-                    )}
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] text-[#A3A3A3]">PV: {r.sellingPrice.toFixed(2)} EUR</p>
+                    <span className="text-[10px] text-teal-600 font-semibold group-hover:underline">
+                      Voir details
+                    </span>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
         </section>
+
+        {/* -- Recipe Detail Modal -- */}
+        {selectedRecipe !== null && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm anim-fade" onClick={() => setSelectedRecipe(null)}>
+            <div
+              className="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl anim-slide-up"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {(() => {
+                const r = FAKE_RECIPES[selectedRecipe];
+                const st = statusLabel(r.status);
+                const totalCost = r.ingredients.reduce((sum, ing) => sum + ing.cost, 0);
+                return (
+                  <>
+                    <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-[#F5F5F5] px-6 py-4 rounded-t-3xl flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <FoodIllustration recipeName={r.name} category={r.category} size="sm" />
+                        <div>
+                          <h3 className="text-lg font-bold text-[#111111]">{r.name}</h3>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-xs text-[#A3A3A3]">{r.category}</span>
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${st.color}`}>{st.text}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button onClick={() => setSelectedRecipe(null)} className="p-2 hover:bg-[#F5F5F5] rounded-full transition-colors">
+                        <X className="w-5 h-5 text-[#737373]" />
+                      </button>
+                    </div>
+
+                    <div className="px-6 py-5 space-y-6">
+                      {/* Key metrics */}
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-[#F5F5F5] rounded-xl p-3 text-center">
+                          <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Prix de vente</p>
+                          <p className="text-xl font-bold text-[#111111] mt-1">{r.sellingPrice.toFixed(2)} EUR</p>
+                        </div>
+                        <div className="bg-[#F5F5F5] rounded-xl p-3 text-center">
+                          <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Cout matiere</p>
+                          <p className="text-xl font-bold text-[#111111] mt-1">{totalCost.toFixed(2)} EUR</p>
+                        </div>
+                        <div className="bg-emerald-50 rounded-xl p-3 text-center">
+                          <p className="text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">Marge</p>
+                          <p className="text-xl font-bold text-emerald-600 mt-1">{r.margin.toFixed(2)} EUR</p>
+                        </div>
+                      </div>
+
+                      {/* Food cost visual bar */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-semibold text-[#404040]">Food cost</span>
+                          <span className="text-sm font-bold text-[#111111]">{r.foodCost}%</span>
+                        </div>
+                        <div className="h-4 bg-[#F5F5F5] rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-700"
+                            style={{
+                              width: `${r.foodCost}%`,
+                              backgroundColor: r.foodCost > 30 ? '#ef4444' : r.foodCost > 25 ? '#f59e0b' : '#10b981',
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between mt-1 text-[10px] text-[#A3A3A3]">
+                          <span>0%</span>
+                          <span className="text-amber-500 font-semibold">Objectif: 28%</span>
+                          <span>50%</span>
+                        </div>
+                      </div>
+
+                      {/* Ingredients table */}
+                      <div>
+                        <h4 className="text-sm font-bold text-[#111111] mb-3">Ingredients ({r.ingredients.length})</h4>
+                        <div className="bg-[#FAFAFA] rounded-xl overflow-hidden border border-[#E5E7EB]">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="text-[10px] text-[#A3A3A3] uppercase tracking-wider">
+                                <th className="text-left px-4 py-2 font-semibold">Ingredient</th>
+                                <th className="text-right px-4 py-2 font-semibold">Quantite</th>
+                                <th className="text-right px-4 py-2 font-semibold">Cout</th>
+                                <th className="text-right px-4 py-2 font-semibold">% du total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {r.ingredients.map((ing, i) => (
+                                <tr key={i} className="border-t border-[#E5E7EB]">
+                                  <td className="px-4 py-2 font-medium text-[#111111]">{ing.name}</td>
+                                  <td className="px-4 py-2 text-right text-[#737373]">{ing.qty}</td>
+                                  <td className="px-4 py-2 text-right font-semibold text-[#404040]">{ing.cost.toFixed(2)} EUR</td>
+                                  <td className="px-4 py-2 text-right text-[#A3A3A3]">{((ing.cost / totalCost) * 100).toFixed(0)}%</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                            <tfoot>
+                              <tr className="border-t-2 border-[#E5E7EB] bg-white">
+                                <td className="px-4 py-2 font-bold text-[#111111]" colSpan={2}>Total</td>
+                                <td className="px-4 py-2 text-right font-bold text-[#111111]">{totalCost.toFixed(2)} EUR</td>
+                                <td className="px-4 py-2 text-right font-bold text-[#111111]">100%</td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Cost breakdown mini-chart */}
+                      <div>
+                        <h4 className="text-sm font-bold text-[#111111] mb-3">Repartition des couts</h4>
+                        <div className="flex gap-1 h-6 rounded-full overflow-hidden">
+                          {r.ingredients.map((ing, i) => {
+                            const pct = (ing.cost / totalCost) * 100;
+                            const colors = ['#0d9488', '#111111', '#6B7280', '#9CA3AF', '#D4D4D4', '#E5E7EB', '#F5F5F5'];
+                            return (
+                              <div
+                                key={i}
+                                className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
+                                style={{ width: `${pct}%`, backgroundColor: colors[i % colors.length] }}
+                                title={`${ing.name}: ${pct.toFixed(0)}%`}
+                              />
+                            );
+                          })}
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {r.ingredients.slice(0, 4).map((ing, i) => {
+                            const colors = ['#0d9488', '#111111', '#6B7280', '#9CA3AF'];
+                            return (
+                              <span key={i} className="flex items-center gap-1 text-[10px] text-[#737373]">
+                                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[i] }} />
+                                {ing.name}
+                              </span>
+                            );
+                          })}
+                          {r.ingredients.length > 4 && (
+                            <span className="text-[10px] text-[#A3A3A3]">+{r.ingredients.length - 4} autres</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Popularity indicator */}
+                      <div className="bg-[#F5F5F5] rounded-xl p-4 flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">Popularite</p>
+                          <p className="text-lg font-bold text-[#111111]">{r.popularity} ventes/mois</p>
+                        </div>
+                        <div className={`text-xs font-semibold px-3 py-1.5 rounded-full ${st.color}`}>
+                          {st.text}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="px-6 py-4 border-t border-[#F5F5F5] bg-[#FAFAFA] rounded-b-3xl">
+                      <div className="flex items-center gap-2 text-xs text-[#A3A3A3]">
+                        <Lock className="w-3 h-3" />
+                        <span>Mode demo -- Donnees fictives. <Link to="/login?mode=register" className="text-teal-600 font-semibold hover:underline">Creez votre compte</Link> pour gerer vos propres recettes.</span>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+        )}
 
         {/* -- Ingredients -- */}
         <section>
@@ -442,29 +775,41 @@ export default function Demo() {
           </div>
         </section>
 
-        {/* -- CTA Section -- */}
-        <section className="text-center py-12 px-4">
-          <div className="max-w-lg mx-auto">
-            <h2 className="text-2xl font-bold text-[#111111] mb-3" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
-              Pret a gerer VOS marges ?
+        {/* -- CTA Section — Stunning -- */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#111111] to-[#1a1a1a] rounded-3xl" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-0 w-60 h-60 bg-emerald-500/10 rounded-full blur-[80px]" />
+          <div className="relative text-center py-16 px-6 rounded-3xl">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-white/70 text-xs font-semibold mb-6 border border-white/10">
+              <Sparkles className="w-3.5 h-3.5" />
+              Essai gratuit 7 jours -- Sans carte bancaire
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4" style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}>
+              Impressionne ? Creez votre compte gratuit
             </h2>
-            <p className="text-[#737373] mb-6">
-              Ce que vous voyez ici avec des donnees fictives, RestauMargin le fait avec les donnees reelles de votre restaurant. Essayez gratuitement pendant 7 jours.
+            <p className="text-white/60 max-w-md mx-auto mb-8 text-lg">
+              Ce que vous voyez avec des donnees fictives, RestauMargin le fait avec les donnees reelles de votre restaurant.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center gap-2 px-7 py-3 bg-[#111111] hover:bg-[#333333] text-white font-semibold rounded-xl transition-colors"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-white/90 text-[#111111] font-bold text-lg rounded-xl transition-colors shadow-lg shadow-white/10"
               >
                 Creer mon compte gratuit
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
                 to="/pricing"
-                className="inline-flex items-center gap-2 px-7 py-3 border border-[#D4D4D4] hover:border-[#A3A3A3] text-[#404040] font-semibold rounded-xl transition-colors"
+                className="inline-flex items-center gap-2 px-8 py-4 border border-white/20 hover:border-white/40 text-white font-semibold rounded-xl transition-colors"
               >
                 Voir les tarifs
               </Link>
+            </div>
+            <div className="mt-6 flex items-center justify-center gap-6 text-xs text-white/40">
+              <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Sans engagement</span>
+              <span className="flex items-center gap-1"><UtensilsCrossed className="w-3 h-3" /> 150+ restaurants</span>
+              <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> -5 pts food cost</span>
             </div>
           </div>
         </section>

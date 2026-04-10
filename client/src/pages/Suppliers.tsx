@@ -1428,7 +1428,7 @@ export default function Suppliers() {
           </Modal>
 
           {/* Search / filter bar */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-4 mb-6">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 mb-6">
             <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
@@ -2268,7 +2268,7 @@ export default function Suppliers() {
           </div>
 
           {/* Filters */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-4 mb-6">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4 mb-6">
             <div className="flex items-center gap-2 mb-3 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">
               <Filter className="w-4 h-4" />
               {t('suppliers.filters')}
@@ -2339,8 +2339,8 @@ export default function Suppliers() {
 
           {/* Supplier Cards Grid */}
           {annuaireResults.length === 0 ? (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-12 text-center">
-              <Search className="w-12 h-12 mx-auto text-[#6B7280] dark:text-[#A3A3A3] mb-3" />
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-12 text-center">
+              <Search className="w-12 h-12 mx-auto text-[#737373] dark:text-[#A3A3A3] mb-3" />
               <p className="text-[#9CA3AF] dark:text-[#A3A3A3]">{t('suppliers.noMatchingSupplier')}</p>
             </div>
           ) : (

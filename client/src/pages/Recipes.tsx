@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList, Package, Download, Leaf, BarChart3, ArrowRight, RefreshCw, TrendingDown, Sun, Snowflake, Flower2, CloudRain } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList, Package, Download, Leaf, BarChart3, ArrowRight, RefreshCw, TrendingDown, Sun, Snowflake, Flower2, CloudRain, Printer, FileText, StickyNote } from 'lucide-react';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
@@ -82,6 +82,13 @@ function MarginAlertBadge({ percent }: { percent: number }) {
       </span>
     );
   }
+  if (percent > 0 && percent < 50) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-500 text-white shadow-lg shadow-red-500/20">
+        <AlertTriangle className="w-3 h-3" /> ATTENTION
+      </span>
+    );
+  }
   if (percent > 80) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-lg shadow-emerald-500/30">
@@ -90,6 +97,121 @@ function MarginAlertBadge({ percent }: { percent: number }) {
     );
   }
   return null;
+}
+
+// ── Category color mapping ─────────────────────────────────────────────
+function getCategoryBadgeColor(category: string): string {
+  switch (category) {
+    case 'Entree':
+    case 'Entrée':
+      return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300';
+    case 'Plat':
+      return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
+    case 'Dessert':
+      return 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300';
+    case 'Boisson':
+      return 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300';
+    case 'Accompagnement':
+      return 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300';
+    default:
+      return 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]';
+  }
+}
+
+// ── Print Fiche Technique ──────────────────────────────────────────────
+function printFicheTechnique(recipe: Recipe, restaurantName: string) {
+  const ingredientRows = recipe.ingredients.map((ri) => {
+    const ing = ri.ingredient;
+    const name = ing?.name || 'Ingredient';
+    const qty = ri.quantity;
+    const unit = ing?.unit || '';
+    const unitPrice = ing?.pricePerUnit || 0;
+    const waste = ri.wastePercent || 0;
+    const divisor = (() => {
+      const u = (unit || '').toLowerCase().trim();
+      if (u === 'g') return 1000;
+      if (u === 'mg') return 1000000;
+      if (u === 'cl') return 100;
+      if (u === 'ml') return 1000;
+      if (u === 'dl') return 10;
+      return 1;
+    })();
+    const rawCost = (qty / divisor) * unitPrice;
+    const costWithWaste = rawCost * (1 + waste / 100);
+    return `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:left">${name}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${qty} ${unit}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${unitPrice.toFixed(2)} / ${unit === 'g' || unit === 'mg' ? 'kg' : unit === 'cl' || unit === 'ml' || unit === 'dl' ? 'L' : unit}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${waste}%</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right;font-weight:600">${costWithWaste.toFixed(2)} EUR</td>
+    </tr>`;
+  }).join('');
+
+  const totalCost = recipe.margin?.costPerPortion ? recipe.margin.costPerPortion * recipe.nbPortions : 0;
+  const costPerPortion = recipe.margin?.costPerPortion || 0;
+  const marginPct = recipe.margin?.marginPercent || 0;
+  const marginPerPortion = recipe.sellingPrice - costPerPortion;
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Fiche Technique - ${recipe.name}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111; padding: 40px; max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  h2 { font-size: 16px; font-weight: 400; color: #666; margin-bottom: 24px; }
+  .header { border-bottom: 2px solid #111; padding-bottom: 16px; margin-bottom: 24px; }
+  .restaurant { font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .meta { display: flex; gap: 32px; margin-bottom: 24px; }
+  .meta-item { }
+  .meta-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-value { font-size: 16px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  thead th { padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; border-bottom: 2px solid #111; }
+  thead th:nth-child(n+2) { text-align: center; }
+  thead th:last-child { text-align: right; }
+  .totals { border-top: 2px solid #111; padding-top: 16px; }
+  .totals-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }
+  .totals-row.highlight { font-size: 16px; font-weight: 700; padding: 8px 0; border-top: 1px solid #ddd; margin-top: 8px; }
+  .notes { margin-top: 24px; padding: 16px; border: 1px solid #ddd; border-radius: 4px; }
+  .notes-title { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .notes-text { font-size: 14px; color: #333; white-space: pre-wrap; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 11px; color: #999; text-align: center; }
+  @media print { body { padding: 20px; } @page { margin: 15mm; } }
+</style></head><body>
+<div class="header">
+  <div class="restaurant">${restaurantName || 'Mon Restaurant'}</div>
+  <h1>${recipe.name}</h1>
+  <h2>${recipe.category}${recipe.description ? ' — ' + recipe.description : ''}</h2>
+</div>
+<div class="meta">
+  <div class="meta-item"><div class="meta-label">Portions</div><div class="meta-value">${recipe.nbPortions}</div></div>
+  <div class="meta-item"><div class="meta-label">Prix de vente</div><div class="meta-value">${recipe.sellingPrice.toFixed(2)} EUR</div></div>
+  <div class="meta-item"><div class="meta-label">Marge</div><div class="meta-value">${marginPct.toFixed(1)}%</div></div>
+  ${recipe.prepTimeMinutes ? `<div class="meta-item"><div class="meta-label">Prep.</div><div class="meta-value">${recipe.prepTimeMinutes} min</div></div>` : ''}
+  ${recipe.cookTimeMinutes ? `<div class="meta-item"><div class="meta-label">Cuisson</div><div class="meta-value">${recipe.cookTimeMinutes} min</div></div>` : ''}
+</div>
+<table>
+  <thead><tr>
+    <th>Ingredient</th><th>Quantite</th><th>Prix unitaire</th><th>Perte</th><th style="text-align:right">Cout</th>
+  </tr></thead>
+  <tbody>${ingredientRows}</tbody>
+</table>
+<div class="totals">
+  <div class="totals-row"><span>Cout matieres total</span><strong>${totalCost.toFixed(2)} EUR</strong></div>
+  <div class="totals-row"><span>Cout par portion</span><strong>${costPerPortion.toFixed(2)} EUR</strong></div>
+  <div class="totals-row"><span>Prix de vente</span><strong>${recipe.sellingPrice.toFixed(2)} EUR</strong></div>
+  <div class="totals-row highlight"><span>Marge par portion</span><strong>${marginPerPortion.toFixed(2)} EUR (${marginPct.toFixed(1)}%)</strong></div>
+</div>
+${recipe.description ? `<div class="notes"><div class="notes-title">Notes du chef</div><div class="notes-text">${recipe.description}</div></div>` : ''}
+<div class="footer">Fiche technique generee par RestauMargin &mdash; ${new Date().toLocaleDateString('fr-FR')}</div>
+</body></html>`;
+
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
+    setTimeout(() => printWindow.print(), 300);
+  }
 }
 
 // ── Cost Breakdown Donut (pure CSS) ─────────────────────────────────────
@@ -2157,6 +2279,37 @@ export default function Recipes() {
     }
   }
 
+  // Quick duplicate: pre-fills form with "Copie de [original]" and opens edit form
+  function handleQuickDuplicate(recipe: Recipe) {
+    setForm({
+      name: `Copie de ${recipe.name}`,
+      category: recipe.category,
+      sellingPrice: String(recipe.sellingPrice),
+      nbPortions: String(recipe.nbPortions),
+      description: recipe.description || '',
+      prepTimeMinutes: recipe.prepTimeMinutes ? String(recipe.prepTimeMinutes) : '',
+      cookTimeMinutes: recipe.cookTimeMinutes ? String(recipe.cookTimeMinutes) : '',
+      laborCostPerHour: recipe.laborCostPerHour ? String(recipe.laborCostPerHour) : '',
+    });
+    setFormIngredients(
+      recipe.ingredients.map((ri) => ({
+        ingredientId: ri.ingredientId,
+        quantity: String(ri.quantity),
+        wastePercent: ri.wastePercent ? String(ri.wastePercent) : '0',
+        newName: '',
+        newUnit: '',
+        newPrice: '',
+        newCategory: '',
+      }))
+    );
+    setEditingId(null); // New recipe, not editing
+    setTemplateApplyInfo(null);
+    setIngredientSearch('');
+    setWeighingLineIdx(null); setShowBatchWeighing(false); setShowQuickWeighAdd(false); setWeighedLines(new Set()); setSimWeight(0);
+    setShowForm(true);
+    showToast('Formulaire pre-rempli avec les ingredients', 'success');
+  }
+
   function openVariantModal(recipe: Recipe) {
     setVariantTarget(recipe);
     setVariantName(`${recipe.name} \u2014 Variante`);
@@ -2461,14 +2614,17 @@ export default function Recipes() {
                       <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.view")}>
                         <Eye className="w-4 h-4 text-[#111111] dark:text-white" />
                       </Link>
-                      <button onClick={() => setOptimizingRecipe(recipe)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
-                        <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      </button>
                       <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                         <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                       </button>
-                      <button onClick={() => handleClone(recipe.id)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
-                        <Copy className="w-4 h-4 text-[#111111] dark:text-white" />
+                      <button onClick={() => handleQuickDuplicate(recipe)} className="p-1.5 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
+                        <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </button>
+                      <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                        <Printer className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                      </button>
+                      <button onClick={() => setOptimizingRecipe(recipe)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                        <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       </button>
                       <button onClick={() => setDeleteTarget(recipe.id)} className="p-1.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                         <Trash2 className="w-4 h-4 text-red-500" />
@@ -2516,7 +2672,7 @@ export default function Recipes() {
               </button>
 
               {/* Margin Alert Badge */}
-              {(recipe.margin.marginPercent < 0 || recipe.margin.marginPercent > 80) && (
+              {(recipe.margin.marginPercent < 50 || recipe.margin.marginPercent > 80) && (
                 <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
                   <MarginAlertBadge percent={recipe.margin.marginPercent} />
                 </div>
@@ -2526,12 +2682,18 @@ export default function Recipes() {
               <RecipePhotoPlaceholder category={recipe.category} name={recipe.name} />
 
               <div className="p-4">
-                {/* Header: name + category + donut */}
+                {/* Header: name + category badge + price/margin line */}
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex-1 min-w-0 mr-2">
-                    <h3 className="font-semibold text-lg text-[#111111] dark:text-white leading-tight">{recipe.name}</h3>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{recipe.category}</span>
+                    <h3 className="font-bold text-lg text-[#111111] dark:text-white leading-tight">{recipe.name}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${getCategoryBadgeColor(recipe.category)}`}>
+                        <Tag className="w-2.5 h-2.5" /> {recipe.category}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="text-sm font-semibold text-[#111111] dark:text-white">{recipe.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
+                      <span className="text-[#9CA3AF] dark:text-[#737373]">/</span>
                       <MarginBadge percent={recipe.margin.marginPercent} />
                     </div>
                   </div>
@@ -2601,19 +2763,30 @@ export default function Recipes() {
                 {/* Quick Price Simulator */}
                 <PriceSimulator recipe={recipe} />
 
+                {/* Description/Notes preview */}
+                {recipe.description && (
+                  <div className="flex items-start gap-1.5 mb-2 px-1">
+                    <StickyNote className="w-3 h-3 text-[#9CA3AF] dark:text-[#737373] mt-0.5 shrink-0" />
+                    <p className="text-[11px] text-[#6B7280] dark:text-[#A3A3A3] line-clamp-2 leading-relaxed italic">{recipe.description}</p>
+                  </div>
+                )}
+
                 {/* Actions */}
-                <div className="flex gap-2 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-2">
+                <div className="flex gap-1.5 pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A] mt-2">
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
-                  <button onClick={() => setOptimizingRecipe(recipe)} className="p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
-                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  </button>
                   <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                     <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                   </button>
-                  <button onClick={() => handleClone(recipe.id)} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.cloneTooltip")} aria-label="Dupliquer la recette">
-                    <Copy className="w-4 h-4 text-[#111111] dark:text-white" />
+                  <button onClick={() => handleQuickDuplicate(recipe)} className="p-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20" title="Dupliquer avec ingredients" aria-label="Dupliquer la recette">
+                    <Copy className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  </button>
+                  <button onClick={() => printFicheTechnique(recipe, selectedRestaurant?.name || '')} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title="Imprimer fiche technique" aria-label="Imprimer fiche technique">
+                    <Printer className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
+                  </button>
+                  <button onClick={() => setOptimizingRecipe(recipe)} className="p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </button>
                   <button onClick={() => setDeleteTarget(recipe.id)} className="p-2 rounded hover:bg-red-100 dark:hover:bg-red-900/30" title={t("recipes.deleteTooltip")} aria-label="Supprimer la recette">
                     <Trash2 className="w-4 h-4 text-red-500" />
@@ -3205,9 +3378,19 @@ export default function Recipes() {
               <label className="label">{t("recipes.sellingPrice")}</label>
               <input required type="number" step="0.01" min="0" className="input w-full" value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} />
             </div>
-            <div>
-              <label className="label">{t("recipes.description")}</label>
-              <input className="input w-full" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            <div className="sm:col-span-2">
+              <label className="label flex items-center gap-1.5">
+                <StickyNote className="w-3.5 h-3.5" />
+                Notes du chef
+              </label>
+              <textarea
+                className="input w-full resize-none"
+                rows={3}
+                placeholder="Astuces, variantes, conseils de dressage..."
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+              />
+              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">Visible sur la fiche technique imprimee</p>
             </div>
           </div>
 

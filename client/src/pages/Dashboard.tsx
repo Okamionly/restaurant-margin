@@ -9,7 +9,7 @@ import {
   X, Loader2, Copy, Mail, Download, Trophy,
   Sun, Moon, Settings2, GripVertical,
   Scale, ScanLine, ShoppingCart, Eye, EyeOff,
-  Lightbulb, Zap,
+  Lightbulb, Zap, Target, Info,
 } from 'lucide-react';
 import { fetchRecipes, fetchIngredients } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
@@ -33,7 +33,7 @@ function getUnitDivisor(unit: string): number {
 type TabKey = 'overview' | 'margins' | 'costs' | 'profitability' | 'pnl';
 
 // ── Widget Customization ──────────────────────────────────────────────────
-type WidgetId = 'welcome' | 'ai-insight' | 'kpis' | 'alerts' | 'quick-actions' | 'top5' | 'onboarding';
+type WidgetId = 'welcome' | 'ai-insight' | 'kpis' | 'alerts' | 'quick-actions' | 'top5' | 'onboarding' | 'today-focus';
 
 interface WidgetDef {
   id: WidgetId;
@@ -45,13 +45,14 @@ const ALL_WIDGETS: WidgetDef[] = [
   { id: 'welcome', label: 'Message de bienvenue', icon: Sun },
   { id: 'ai-insight', label: 'AI Insight du jour', icon: Lightbulb },
   { id: 'kpis', label: 'KPIs principaux', icon: TrendingUp },
-  { id: 'alerts', label: 'Alertes', icon: AlertTriangle },
+  { id: 'alerts', label: 'Alertes intelligentes', icon: AlertTriangle },
+  { id: 'today-focus', label: 'Priorite du jour', icon: Target },
   { id: 'quick-actions', label: 'Actions rapides', icon: Zap },
   { id: 'top5', label: 'Top 5 Recettes', icon: Trophy },
   { id: 'onboarding', label: 'Onboarding', icon: Check },
 ];
 
-const DEFAULT_WIDGET_ORDER: WidgetId[] = ['welcome', 'ai-insight', 'kpis', 'alerts', 'quick-actions', 'top5', 'onboarding'];
+const DEFAULT_WIDGET_ORDER: WidgetId[] = ['welcome', 'ai-insight', 'kpis', 'alerts', 'today-focus', 'quick-actions', 'top5', 'onboarding'];
 const WIDGET_LAYOUT_KEY = 'restaumargin_widget_layout';
 
 function loadWidgetLayout(): { visible: WidgetId[]; order: WidgetId[] } {
@@ -259,6 +260,181 @@ function AIDailyInsight({ recipes, ingredients }: { recipes: Recipe[]; ingredien
     <div className="flex items-center gap-3 px-5 py-3 rounded-2xl border border-teal-200 dark:border-teal-800/40 bg-teal-50 dark:bg-teal-900/10">
       <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
       <p className="text-sm font-medium text-teal-800 dark:text-teal-300 flex-1">{insight}</p>
+    </div>
+  );
+}
+
+// ── Smart Alert System ───────────────────────────────────────────────────
+interface SmartAlert {
+  type: 'critical' | 'warning' | 'info';
+  message: string;
+  link: string;
+}
+
+function SmartAlerts({ recipes, ingredients, navigate }: {
+  recipes: Recipe[]; ingredients: Ingredient[]; navigate: (path: string) => void;
+}) {
+  const alerts = useMemo<SmartAlert[]>(() => {
+    const result: SmartAlert[] = [];
+
+    if (recipes.length === 0) {
+      result.push({ type: 'info', message: 'Commencez par creer votre premiere recette', link: '/recipes?action=new' });
+      return result;
+    }
+
+    // Critical margin recipes (<30%)
+    const criticalRecipes = recipes.filter(r => r.margin.marginPercent < 30);
+    if (criticalRecipes.length > 0) {
+      result.push({
+        type: 'critical',
+        message: `${criticalRecipes.length} recette${criticalRecipes.length > 1 ? 's ont' : ' a'} une marge critique (<30%)`,
+        link: '/recipes',
+      });
+    }
+
+    // Food cost too high (>35%)
+    if (recipes.length > 0) {
+      const avgSP = recipes.reduce((s, r) => s + r.sellingPrice, 0) / recipes.length;
+      const avgFC = recipes.reduce((s, r) => s + r.margin.costPerPortion, 0) / recipes.length;
+      if (avgSP > 0) {
+        const foodCostPct = (avgFC / avgSP) * 100;
+        if (foodCostPct > 35) {
+          result.push({
+            type: 'critical',
+            message: `Food cost trop eleve (${foodCostPct.toFixed(0)}%)`,
+            link: '/recipes',
+          });
+        }
+      }
+    }
+
+    // Warning margin recipes (30-50%)
+    const warningRecipes = recipes.filter(r => r.margin.marginPercent >= 30 && r.margin.marginPercent < 50);
+    if (warningRecipes.length > 0) {
+      result.push({
+        type: 'warning',
+        message: `${warningRecipes.length} recette${warningRecipes.length > 1 ? 's' : ''} sous 50% de marge`,
+        link: '/recipes',
+      });
+    }
+
+    // Ingredients without price
+    const noPrice = ingredients.filter(i => !i.pricePerUnit || i.pricePerUnit === 0).length;
+    if (noPrice > 0) {
+      result.push({
+        type: 'warning',
+        message: `${noPrice} ingredient${noPrice > 1 ? 's' : ''} sans prix — marges imprecises`,
+        link: '/ingredients',
+      });
+    }
+
+    return result;
+  }, [recipes, ingredients]);
+
+  if (alerts.length === 0) return null;
+
+  const colorMap = {
+    critical: {
+      border: 'border-red-200 dark:border-red-800/40',
+      bg: 'bg-red-50 dark:bg-red-900/10',
+      text: 'text-red-800 dark:text-red-300',
+      link: 'text-red-700 dark:text-red-400',
+      icon: 'text-red-600 dark:text-red-400',
+    },
+    warning: {
+      border: 'border-amber-200 dark:border-amber-800/40',
+      bg: 'bg-amber-50 dark:bg-amber-900/10',
+      text: 'text-amber-800 dark:text-amber-300',
+      link: 'text-amber-700 dark:text-amber-400',
+      icon: 'text-amber-600 dark:text-amber-400',
+    },
+    info: {
+      border: 'border-teal-200 dark:border-teal-800/40',
+      bg: 'bg-teal-50 dark:bg-teal-900/10',
+      text: 'text-teal-800 dark:text-teal-300',
+      link: 'text-teal-700 dark:text-teal-400',
+      icon: 'text-teal-600 dark:text-teal-400',
+    },
+  };
+
+  return (
+    <div className="space-y-2">
+      {alerts.map((alert, i) => {
+        const colors = colorMap[alert.type];
+        const Icon = alert.type === 'info' ? Info : AlertTriangle;
+        return (
+          <button
+            key={i}
+            onClick={() => navigate(alert.link)}
+            className={`w-full flex items-center gap-3 px-5 py-3 rounded-2xl border ${colors.border} ${colors.bg} transition-all hover:opacity-90 active:scale-[0.99] text-left`}
+          >
+            <Icon className={`w-5 h-5 ${colors.icon} flex-shrink-0`} />
+            <p className={`text-sm font-medium ${colors.text} flex-1`}>
+              {alert.message}
+            </p>
+            <ArrowRight className={`w-4 h-4 ${colors.link} flex-shrink-0`} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Today's Focus ────────────────────────────────────────────────────────
+function TodayFocus({ recipes, navigate }: { recipes: Recipe[]; navigate: (path: string) => void }) {
+  const focus = useMemo(() => {
+    if (recipes.length === 0) return null;
+
+    const worst = [...recipes].sort((a, b) => a.margin.marginPercent - b.margin.marginPercent)[0];
+    if (!worst || worst.margin.marginPercent >= 70) return null;
+
+    const marginPct = worst.margin.marginPercent;
+    const currentCost = worst.margin.totalCostPerPortion || worst.margin.costPerPortion;
+    const sellingPrice = worst.sellingPrice;
+
+    // Generate actionable suggestion based on the situation
+    let suggestion: string;
+    if (marginPct < 30) {
+      const targetPrice = currentCost / 0.30; // price needed for 70% margin
+      suggestion = `Augmentez le prix de vente a ${targetPrice.toFixed(2)} ou reduisez les ingredients couteux`;
+    } else if (marginPct < 50) {
+      suggestion = `Cherchez des ingredients alternatifs moins chers ou augmentez legerement le prix`;
+    } else {
+      suggestion = `Optimisez les portions ou negociez les prix fournisseurs pour gagner quelques points`;
+    }
+
+    return { recipe: worst, marginPct, suggestion, recipeId: worst.id };
+  }, [recipes]);
+
+  if (!focus) return null;
+
+  return (
+    <div className="rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black p-6">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+          <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+        </div>
+        <div>
+          <h3 className="text-base font-bold text-[#111111] dark:text-white font-satoshi">Priorite du jour</h3>
+          <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Basee sur vos donnees actuelles</p>
+        </div>
+      </div>
+      <div className="flex items-start gap-4 p-4 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-[#111111] dark:text-white mb-1">
+            Ameliorer la marge de "{focus.recipe.name}" ({focus.marginPct.toFixed(0)}%)
+          </p>
+          <p className="text-xs text-[#737373] dark:text-[#A3A3A3] leading-relaxed">
+            {focus.suggestion}
+          </p>
+        </div>
+        <button
+          onClick={() => navigate(`/recipes/${focus.recipeId}`)}
+          className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+        >
+          Voir <ArrowRight className="w-3 h-3" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -619,15 +795,50 @@ export default function Dashboard() {
     };
   }, [recipes]);
 
-  // ── Quick alerts ───────────────────────────────────────────────────────
-  const alertSummary = useMemo(() => {
-    const items: string[] = [];
-    const lowMargin = recipes.filter(r => r.margin?.marginPercent < 50).length;
-    const noPrice = ingredients.filter(i => !i.pricePerUnit || i.pricePerUnit === 0).length;
-    if (lowMargin > 0) items.push(`${lowMargin} marge${lowMargin > 1 ? 's' : ''} < 50%`);
-    if (noPrice > 0) items.push(`${noPrice} ingredient${noPrice > 1 ? 's' : ''} sans prix`);
-    return { count: items.length, items };
-  }, [recipes, ingredients]);
+  // ── KPI Trend computation (localStorage weekly snapshots) ───────────────
+  const TREND_KEY = 'restaumargin_kpi_trends';
+  const trends = useMemo(() => {
+    if (!stats) return null;
+    const now = Date.now();
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+
+    // Load previous snapshot
+    let prevSnapshot: { avgMargin: number; avgFoodCostPct: number; avgTotalCost: number; timestamp: number } | null = null;
+    try {
+      const raw = localStorage.getItem(TREND_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.timestamp && now - parsed.timestamp < weekMs * 4) {
+          prevSnapshot = parsed;
+        }
+      }
+    } catch { /* ignore */ }
+
+    // Save current snapshot if no snapshot or older than 7 days
+    if (!prevSnapshot || now - prevSnapshot.timestamp > weekMs) {
+      const current = {
+        avgMargin: Math.round(stats.avgMargin * 10) / 10,
+        avgFoodCostPct: Math.round(stats.avgFoodCostPct * 10) / 10,
+        avgTotalCost: Math.round(stats.avgTotalCost * 100) / 100,
+        timestamp: now,
+      };
+      // Only save as previous if we had a previous, otherwise save as baseline
+      if (prevSnapshot) {
+        // Keep the old snapshot as comparison, save new as current
+        localStorage.setItem(TREND_KEY, JSON.stringify(current));
+      } else {
+        localStorage.setItem(TREND_KEY, JSON.stringify(current));
+      }
+    }
+
+    if (!prevSnapshot) return null;
+
+    const marginDiff = Math.round((stats.avgMargin - prevSnapshot.avgMargin) * 10) / 10;
+    const foodCostDiff = Math.round((stats.avgFoodCostPct - prevSnapshot.avgFoodCostPct) * 10) / 10;
+    const costDiff = Math.round((stats.avgTotalCost - prevSnapshot.avgTotalCost) * 100) / 100;
+
+    return { marginDiff, foodCostDiff, costDiff };
+  }, [stats]);
 
   // ── Loading — skeleton shimmer ──────────────────────────────────────
   if (loading) {
@@ -768,6 +979,13 @@ export default function Dashboard() {
               <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(stats.avgMargin, 100)}%`, backgroundColor: barColor(stats.avgMargin) }} />
             </div>
           )}
+          {trends ? (
+            <p className={`text-xs font-medium mt-2 tabular-nums ${trends.marginDiff >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+              {trends.marginDiff >= 0 ? '\u2191' : '\u2193'} {trends.marginDiff >= 0 ? '+' : ''}{trends.marginDiff}% vs semaine derniere
+            </p>
+          ) : stats ? (
+            <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-2 italic">Tendance disponible la semaine prochaine</p>
+          ) : null}
         </div>
 
         {/* Food Cost moyen */}
@@ -791,6 +1009,13 @@ export default function Dashboard() {
               <div className="h-full rounded-full transition-all duration-700 bg-red-500" style={{ width: `${Math.min(stats.avgFoodCostPct * 2.5, 100)}%` }} />
             </div>
           )}
+          {trends ? (
+            <p className={`text-xs font-medium mt-2 tabular-nums ${trends.foodCostDiff <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+              {trends.foodCostDiff <= 0 ? '\u2193' : '\u2191'} {trends.foodCostDiff >= 0 ? '+' : ''}{trends.foodCostDiff}% vs semaine derniere
+            </p>
+          ) : stats ? (
+            <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-2 italic">Tendance disponible la semaine prochaine</p>
+          ) : null}
         </div>
 
         {/* Cout moyen total */}
@@ -802,20 +1027,19 @@ export default function Dashboard() {
           <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
             {stats ? `Food cost : ${formatCurrency(stats.avgFoodCost)}` : 'Ajoutez des recettes'}
           </p>
+          {trends ? (
+            <p className={`text-xs font-medium mt-2 tabular-nums ${trends.costDiff <= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+              {trends.costDiff <= 0 ? '\u2193' : '\u2191'} {trends.costDiff >= 0 ? '+' : ''}{trends.costDiff.toFixed(2)} vs semaine derniere
+            </p>
+          ) : stats ? (
+            <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-2 italic">Tendance disponible la semaine prochaine</p>
+          ) : null}
         </div>
       </div>}
 
-      {/* ── ALERT BANNER ────────────────────────────────────────────────── */}
-      {isWidgetVisible('alerts') && alertSummary.count > 0 && (
-        <div className="flex items-center gap-3 px-5 py-3 rounded-2xl border border-amber-200 dark:border-amber-800/40 bg-amber-50 dark:bg-amber-900/10">
-          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <p className="text-sm font-medium text-amber-800 dark:text-amber-300 flex-1">
-            {alertSummary.count} alerte{alertSummary.count > 1 ? 's' : ''} : {alertSummary.items.join(', ')}
-          </p>
-          <Link to="/recipes" className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:underline flex-shrink-0">
-            Voir details <ArrowRight className="w-3 h-3 inline" />
-          </Link>
-        </div>
+      {/* ── SMART ALERT BANNER ──────────────────────────────────────────── */}
+      {isWidgetVisible('alerts') && (
+        <SmartAlerts recipes={recipes} ingredients={ingredients} navigate={navigate} />
       )}
 
       {/* ── TABS ────────────────────────────────────────────────────────── */}
@@ -859,7 +1083,10 @@ export default function Dashboard() {
                 return null; // KPIs are rendered above tabs (always visible)
 
               case 'alerts':
-                return null; // Alert banner is rendered above tabs (always visible)
+                return null; // Smart alerts are rendered above tabs (always visible)
+
+              case 'today-focus':
+                return <TodayFocus key={wId} recipes={recipes} navigate={navigate} />;
 
               case 'quick-actions':
                 return <QuickActionsWidget key={wId} navigate={navigate} />;

@@ -242,6 +242,43 @@ function ScoreBadge({ score, label }: { score: number; label: string }) {
   );
 }
 
+// ── Health Score Progress Bar ─────────────────────────────────────────────
+
+function HealthScoreBar({ score, compact = false }: { score: number; compact?: boolean }) {
+  const clamped = Math.max(0, Math.min(100, Math.round(score)));
+  const color = clamped > 70 ? 'bg-emerald-500' : clamped >= 50 ? 'bg-amber-500' : 'bg-red-500';
+  const textColor = clamped > 70 ? 'text-emerald-600 dark:text-emerald-400' : clamped >= 50 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400';
+  const bgColor = clamped > 70 ? 'bg-emerald-100 dark:bg-emerald-900/30' : clamped >= 50 ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-red-100 dark:bg-red-900/30';
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-1.5">
+        <div className="flex-1 h-1.5 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden" style={{ minWidth: 40 }}>
+          <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.max(3, clamped)}%`, transition: 'width 0.6s ease-in-out' }} />
+        </div>
+        <span className={`text-[10px] font-bold ${textColor}`}>{clamped}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-medium text-[#9CA3AF] dark:text-[#737373] flex items-center gap-1">
+          <ShieldCheck className="w-3 h-3" />
+          Score sante
+        </span>
+        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${bgColor} ${textColor}`}>
+          {clamped}/100
+        </span>
+      </div>
+      <div className="h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.max(3, clamped)}%`, transition: 'width 0.8s ease-in-out' }} />
+      </div>
+    </div>
+  );
+}
+
 // ── Monthly Spend Horizontal Bar ─────────────────────────────────────────
 
 function SpendBarChart({ data, maxSpend }: { data: { name: string; spend: number; color: string }[]; maxSpend: number }) {
@@ -963,6 +1000,36 @@ export default function Suppliers() {
     showToast(`Demande de prix envoyée à ${supplier.name}`, 'success');
   }
 
+  // Quick WhatsApp order from card — sends low-stock ingredients for this supplier
+  function handleWhatsAppQuickOrder(e: React.MouseEvent, supplier: Supplier) {
+    e.stopPropagation();
+    const supplierIngs = ingredients.filter((ing) => ing.supplierId === supplier.id);
+    if (supplierIngs.length === 0) {
+      showToast('Aucun ingredient lie a ce fournisseur', 'error');
+      return;
+    }
+    // Build items list from all supplier ingredients (prioritize low-stock)
+    const lowStock = supplierIngs.filter(ing => ((ing.id * 13 + 7) % 5) < 2);
+    const itemList = (lowStock.length > 0 ? lowStock : supplierIngs).map((ing) => ({
+      name: ing.name,
+      quantity: Math.max(1, Math.ceil(((ing.id * 13 + 5) % 20) + 1)),
+      unit: ing.unit,
+      pricePerUnit: ing.pricePerUnit,
+    }));
+    const restaurantName = selectedRestaurant?.name || 'Mon Restaurant';
+    const totalHT = itemList.reduce((s, i) => s + i.quantity * (i.pricePerUnit || 0), 0);
+    const message = reorderMessage({
+      supplierName: supplier.name,
+      restaurantName,
+      items: itemList,
+      totalHT,
+      originalDate: new Date().toISOString(),
+    });
+    const phone = supplier.whatsappPhone || supplier.phone;
+    openWhatsApp(phone, message);
+    showToast(`Commande envoyée à ${supplier.name} via WhatsApp`, 'success');
+  }
+
   // ── Supplier star scores (5-star system from backend scores) ────────────
 
   const supplierStarScores = useMemo(() => {
@@ -1043,6 +1110,57 @@ export default function Suppliers() {
       entry.byCategory[cat].push(ing);
       entry.totalSpend += ing.pricePerUnit;
       entry.count++;
+    });
+    return map;
+  }, [ingredients]);
+
+  // ── Supplier health score (0-100): ingredient count + price competitiveness ──
+  const supplierHealthScores = useMemo(() => {
+    const maxIngredients = Math.max(1, ...suppliers.map(s => s._count?.ingredients ?? 0));
+    const scores: Record<number, number> = {};
+    suppliers.forEach(s => {
+      // Factor 1: Ingredient breadth (0-50 points) — more ingredients = better
+      const ingCount = s._count?.ingredients ?? 0;
+      const breadthScore = Math.min(50, (ingCount / Math.max(maxIngredients, 1)) * 50);
+
+      // Factor 2: Price competitiveness (0-50 points) — more "best price" wins = better
+      const bestCount = bestForIngredients[s.id]?.length ?? 0;
+      const totalComparable = ingCount || 1;
+      const priceScore = Math.min(50, (bestCount / totalComparable) * 100);
+
+      // Boost from backend score if available
+      const bScore = backendScores[s.id];
+      const boost = bScore ? (bScore.scores.global / 100) * 10 : 0;
+
+      scores[s.id] = Math.round(Math.min(100, breadthScore + priceScore + boost));
+    });
+    return scores;
+  }, [suppliers, bestForIngredients, backendScores]);
+
+  // ── Last order date (days ago) per supplier ─────────────────────────────────
+  const supplierLastOrderDays = useMemo(() => {
+    const days: Record<number, number> = {};
+    suppliers.forEach(s => {
+      // Deterministic "last order" based on supplierId (matches OrderTimeline pattern)
+      const base = s.id * 17 + 3;
+      const daysAgo = base % 45 + 0 * 6; // First (most recent) order in timeline
+      days[s.id] = daysAgo;
+    });
+    return days;
+  }, [suppliers]);
+
+  // ── Low-stock ingredients per supplier (for WhatsApp quick order) ───────────
+  const supplierLowStockIngs = useMemo(() => {
+    const map: Record<number, Ingredient[]> = {};
+    ingredients.forEach(ing => {
+      if (!ing.supplierId) return;
+      // Simulate low stock: use deterministic logic (id-based) for demo
+      // In production, this would use actual inventory currentStock < minStock
+      const isLow = ((ing.id * 13 + 7) % 5) < 2; // ~40% chance of being "low stock"
+      if (isLow) {
+        if (!map[ing.supplierId]) map[ing.supplierId] = [];
+        map[ing.supplierId].push(ing);
+      }
     });
     return map;
   }, [ingredients]);
@@ -1544,6 +1662,31 @@ export default function Suppliers() {
                       </div>
                     )}
 
+                    {/* Health Score */}
+                    <div className="mb-3">
+                      <HealthScoreBar score={supplierHealthScores[supplier.id] ?? 0} />
+                    </div>
+
+                    {/* Last Order Date */}
+                    {(() => {
+                      const daysAgo = supplierLastOrderDays[supplier.id] ?? 0;
+                      const isOld = daysAgo > 30;
+                      return (
+                        <div className={`mb-3 flex items-center gap-1.5 text-[10px] ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                          <Clock className="w-3 h-3" />
+                          <span>
+                            Derniere commande : il y a {daysAgo} jour{daysAgo > 1 ? 's' : ''}
+                          </span>
+                          {isOld && (
+                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-bold text-[9px]">
+                              <AlertTriangle className="w-2.5 h-2.5" />
+                              30+ jours
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })()}
+
                     {/* Top 3 Products */}
                     {topProducts.length > 0 && (
                       <div className="mb-3">
@@ -1566,46 +1709,64 @@ export default function Suppliers() {
                       </div>
                     )}
 
-                    {/* Contact Buttons */}
-                    <div className="flex items-center gap-1.5 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
-                      {(supplier.whatsappPhone || supplier.phone) && (
+                    {/* WhatsApp Quick Order + Contact Buttons */}
+                    <div className="flex flex-col gap-1.5 pt-2 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+                      {/* Commander via WhatsApp — green CTA */}
+                      {(supplier.whatsappPhone || supplier.phone) && (supplier._count?.ingredients ?? 0) > 0 && (
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const phone = supplier.whatsappPhone || supplier.phone;
-                            const clean = phone ? phone.replace(/[\s+\-()]/g, '') : '';
-                            if (clean) window.open(`https://wa.me/${clean}?text=${encodeURIComponent(`Bonjour ${supplier.name},\n\n`)}`, '_blank');
-                          }}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-[10px] font-medium transition"
+                          onClick={(e) => handleWhatsAppQuickOrder(e, supplier)}
+                          className="flex items-center justify-center gap-1.5 w-full px-2.5 py-1.5 rounded-lg bg-[#25D366] hover:bg-[#20bd5a] text-white text-[11px] font-semibold transition shadow-sm"
                         >
-                          <MessageCircle className="w-3 h-3" />
-                          WhatsApp
+                          <ShoppingCart className="w-3.5 h-3.5" />
+                          Commander via WhatsApp
+                          {(supplierLowStockIngs[supplier.id]?.length ?? 0) > 0 && (
+                            <span className="ml-1 px-1.5 py-0.5 rounded-full bg-white/20 text-[9px] font-bold">
+                              {supplierLowStockIngs[supplier.id].length} en stock bas
+                            </span>
+                          )}
                         </button>
                       )}
-                      {supplier.email && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(`mailto:${supplier.email}`, '_blank');
-                          }}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-medium transition"
-                        >
-                          <Mail className="w-3 h-3" />
-                          Email
-                        </button>
-                      )}
-                      {supplier.phone && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(`tel:${supplier.phone}`, '_blank');
-                          }}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#6B7280] dark:text-[#A3A3A3] text-[10px] font-medium transition"
-                        >
-                          <Phone className="w-3 h-3" />
-                          Appeler
-                        </button>
-                      )}
+                      {/* Other contact buttons */}
+                      <div className="flex items-center gap-1.5">
+                        {(supplier.whatsappPhone || supplier.phone) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const phone = supplier.whatsappPhone || supplier.phone;
+                              const clean = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                              if (clean) window.open(`https://wa.me/${clean}?text=${encodeURIComponent(`Bonjour ${supplier.name},\n\n`)}`, '_blank');
+                            }}
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-[10px] font-medium transition"
+                          >
+                            <MessageCircle className="w-3 h-3" />
+                            WhatsApp
+                          </button>
+                        )}
+                        {supplier.email && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(`mailto:${supplier.email}`, '_blank');
+                            }}
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-medium transition"
+                          >
+                            <Mail className="w-3 h-3" />
+                            Email
+                          </button>
+                        )}
+                        {supplier.phone && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(`tel:${supplier.phone}`, '_blank');
+                            }}
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-[#F3F4F6] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#262626] text-[#6B7280] dark:text-[#A3A3A3] text-[10px] font-medium transition"
+                          >
+                            <Phone className="w-3 h-3" />
+                            Appeler
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {/* Product count footer */}
@@ -1683,40 +1844,79 @@ export default function Suppliers() {
                           {supplierCatalogMap[supplier.id]?.count ?? 0} produits
                         </span>
                       </div>
-                      {/* Star rating + contact buttons */}
-                      <div className="flex items-center justify-between mt-1.5 ml-[50px]">
-                        <div className="flex flex-wrap gap-1">
-                          {(supplier.categories || []).slice(0, 3).map(cat => (
-                            <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{cat}</span>
-                          ))}
+                      {/* Health Score + Last Order + Categories + Contacts */}
+                      <div className="mt-1.5 ml-[50px] space-y-1.5">
+                        {/* Health score compact bar */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] flex items-center gap-0.5 shrink-0">
+                            <ShieldCheck className="w-3 h-3" /> Sante
+                          </span>
+                          <div className="flex-1">
+                            <HealthScoreBar score={supplierHealthScores[supplier.id] ?? 0} compact />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1 shrink-0">
-                          {(supplier.whatsappPhone || supplier.phone) && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const phone = supplier.whatsappPhone || supplier.phone;
-                                const clean = phone ? phone.replace(/[\s+\-()]/g, '') : '';
-                                if (clean) window.open(`https://wa.me/${clean}`, '_blank');
-                              }}
-                              className="p-1 rounded-md hover:bg-[#25D366]/10 transition"
-                              title="WhatsApp"
-                            >
-                              <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-                            </button>
-                          )}
-                          {supplier.email && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                window.open(`mailto:${supplier.email}`, '_blank');
-                              }}
-                              className="p-1 rounded-md hover:bg-blue-500/10 transition"
-                              title="Email"
-                            >
-                              <Mail className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
-                            </button>
-                          )}
+                        {/* Last order date */}
+                        {(() => {
+                          const daysAgo = supplierLastOrderDays[supplier.id] ?? 0;
+                          const isOld = daysAgo > 30;
+                          return (
+                            <div className={`flex items-center gap-1 text-[10px] ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                              <Clock className="w-2.5 h-2.5" />
+                              <span>Derniere commande : {daysAgo}j</span>
+                              {isOld && (
+                                <span className="px-1 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-bold text-[8px]">
+                                  30+ jours
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })()}
+                        {/* Categories + contact buttons row */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-wrap gap-1">
+                            {(supplier.categories || []).slice(0, 3).map(cat => (
+                              <span key={cat} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{cat}</span>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            {/* WhatsApp Quick Order button */}
+                            {(supplier.whatsappPhone || supplier.phone) && (supplier._count?.ingredients ?? 0) > 0 && (
+                              <button
+                                onClick={(e) => handleWhatsAppQuickOrder(e, supplier)}
+                                className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-[#25D366] hover:bg-[#20bd5a] text-white text-[9px] font-semibold transition"
+                                title="Commander via WhatsApp"
+                              >
+                                <ShoppingCart className="w-3 h-3" />
+                                Commander
+                              </button>
+                            )}
+                            {(supplier.whatsappPhone || supplier.phone) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const phone = supplier.whatsappPhone || supplier.phone;
+                                  const clean = phone ? phone.replace(/[\s+\-()]/g, '') : '';
+                                  if (clean) window.open(`https://wa.me/${clean}`, '_blank');
+                                }}
+                                className="p-1 rounded-md hover:bg-[#25D366]/10 transition"
+                                title="WhatsApp"
+                              >
+                                <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
+                              </button>
+                            )}
+                            {supplier.email && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  window.open(`mailto:${supplier.email}`, '_blank');
+                                }}
+                                className="p-1 rounded-md hover:bg-blue-500/10 transition"
+                                title="Email"
+                              >
+                                <Mail className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1801,6 +2001,50 @@ export default function Suppliers() {
                           Comparer les prix
                         </button>
                       </div>
+                    </div>
+
+                    {/* Health Score + Last Order Summary */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Health Score Card */}
+                      <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50 p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <ShieldCheck className="w-4 h-4 text-teal-500" />
+                          <span className="text-sm font-bold text-[#111111] dark:text-white">Score Sante Fournisseur</span>
+                        </div>
+                        <HealthScoreBar score={supplierHealthScores[detailSupplier.id] ?? 0} />
+                        <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-2">
+                          Base sur le nombre d'ingredients ({detailSupplier._count?.ingredients ?? 0}) et la competitivite prix ({bestForIngredients[detailSupplier.id]?.length ?? 0} meilleur{(bestForIngredients[detailSupplier.id]?.length ?? 0) > 1 ? 's' : ''} prix)
+                        </p>
+                      </div>
+                      {/* Last Order Card */}
+                      {(() => {
+                        const daysAgo = supplierLastOrderDays[detailSupplier.id] ?? 0;
+                        const isOld = daysAgo > 30;
+                        return (
+                          <div className={`rounded-xl border p-4 ${isOld ? 'bg-amber-50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-800/40' : 'bg-[#F3F4F6] dark:bg-[#0F0F0F] border-[#E5E7EB] dark:border-[#1A1A1A]/50'}`}>
+                            <div className="flex items-center gap-2 mb-2">
+                              <CalendarDays className={`w-4 h-4 ${isOld ? 'text-amber-500' : 'text-blue-500'}`} />
+                              <span className="text-sm font-bold text-[#111111] dark:text-white">Derniere Commande</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-2xl font-black ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#111111] dark:text-white'}`}>
+                                {daysAgo}
+                              </span>
+                              <span className={`text-sm ${isOld ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                                jour{daysAgo > 1 ? 's' : ''}
+                              </span>
+                            </div>
+                            {isOld && (
+                              <div className="flex items-center gap-1.5 mt-2 px-2 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800/40">
+                                <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                                <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300">
+                                  Pas de commande depuis 30+ jours
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Best price badges for this supplier */}

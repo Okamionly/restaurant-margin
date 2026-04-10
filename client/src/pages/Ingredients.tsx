@@ -125,6 +125,39 @@ function PriceSparkline({ prices }: { prices: number[] }) {
   );
 }
 
+// ── Auto-categorization helper ────────────────────────────────────────
+const AUTO_CATEGORY_RULES: { pattern: RegExp; category: string }[] = [
+  { pattern: /poulet|boeuf|b\u0153uf|agneau|porc|veau|canard|dinde|lapin|steak|filet|entrecote|côte|saucisse/i, category: 'Viandes' },
+  { pattern: /saumon|cabillaud|thon|crevette|moule|huitre|huître|sardine|bar|lotte|sole|dorade|gambas|homard|langoustine|poulpe|calmar/i, category: 'Poissons & Fruits de mer' },
+  { pattern: /tomate|carotte|oignon|salade|courgette|pomme de terre|aubergine|poivron|brocoli|chou|navet|radis|concombre|haricot vert|epinard|épinard|asperge|artichaut|fenouil|celeri|céleri|betterave|petit pois/i, category: 'Légumes' },
+  { pattern: /pomme|fraise|citron|orange|banane|mangue|framboise|myrtille|poire|peche|pêche|abricot|cerise|kiwi|ananas|melon|pastèque|raisin|figue/i, category: 'Fruits' },
+  { pattern: /lait|creme|crème|beurre|fromage|yaourt|yogourt|mascarpone|mozzarella|parmesan|gruyere|gruyère|emmental|ricotta|cheddar|roquefort|chevre|chèvre/i, category: 'Produits laitiers' },
+  { pattern: /farine|huile|sel|poivre|sucre|riz|pates|pâtes|semoule|quinoa|boulgour|polenta|maïzena|levure|chapelure|amidon/i, category: 'Féculents & Céréales' },
+  { pattern: /huile d'olive|huile de tournesol|huile de colza|beurre clarifie|saindoux|margarine|graisse/i, category: 'Huiles & Matières grasses' },
+  { pattern: /cumin|paprika|curry|curcuma|cannelle|muscade|gingembre|safran|thym|romarin|basilic|persil|coriandre|ciboulette|aneth|oregano|origan|laurier|estragon|menthe|vanille|vinaigre|moutarde|ketchup|mayonnaise|sauce soja|tabasco/i, category: 'Épices & Condiments' },
+  { pattern: /eau|jus|vin|biere|bière|cafe|café|the|thé|sirop|soda|limonade|lait d'amande|lait de coco/i, category: 'Boissons' },
+];
+
+function suggestCategory(name: string): string | null {
+  const trimmed = name.trim().toLowerCase();
+  if (!trimmed) return null;
+  for (const rule of AUTO_CATEGORY_RULES) {
+    if (rule.pattern.test(trimmed)) return rule.category;
+  }
+  return null;
+}
+
+// ── Price change calculation helper ───────────────────────────────────
+function computePriceChange(prices: number[]): { direction: 'up' | 'down' | 'stable'; percent: number } | null {
+  if (!prices || prices.length < 2) return null;
+  const oldest = prices[0];
+  const latest = prices[prices.length - 1];
+  if (oldest === 0) return null;
+  const pct = ((latest - oldest) / oldest) * 100;
+  if (Math.abs(pct) < 0.5) return { direction: 'stable', percent: 0 };
+  return { direction: pct > 0 ? 'up' : 'down', percent: Math.abs(pct) };
+}
+
 const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[], barcode: '' };
 
 type SortKey = 'name' | 'category' | 'pricePerUnit' | 'unit' | 'supplier';
@@ -159,6 +192,7 @@ export default function Ingredients() {
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
 
   // Weigh modal
   const [weighTarget, setWeighTarget] = useState<Ingredient | null>(null);
@@ -565,10 +599,16 @@ export default function Ingredients() {
     }));
   }
 
-  // Handle name change with autocomplete
+  // Handle name change with autocomplete + auto-categorization
   function handleNameChange(value: string) {
     setNameQuery(value);
-    setForm({ ...form, name: value });
+    // Auto-suggest category based on ingredient name keywords
+    const suggested = suggestCategory(value);
+    if (suggested && !editingId) {
+      setForm({ ...form, name: value, category: suggested });
+    } else {
+      setForm({ ...form, name: value });
+    }
     setShowNameSuggestions(value.length >= 2 && (nameSuggestions.length > 0 || catalogSuggestions.length > 0));
     if (formErrors.name && value.trim()) {
       setFormErrors((prev) => ({ ...prev, name: false }));
@@ -762,9 +802,11 @@ export default function Ingredients() {
       await Promise.all(ids.map((id) => deleteIngredient(id)));
       showToast(`${ids.length} ingredient(s) supprime(s)`, 'success');
       setSelectedIds(new Set());
+      setShowBulkDeleteConfirm(false);
       loadIngredients();
     } catch {
       showToast(t('ingredients.deleteError'), 'error');
+      setShowBulkDeleteConfirm(false);
     }
   }
 
@@ -850,6 +892,31 @@ export default function Ingredients() {
     a.click();
     URL.revokeObjectURL(url);
     showToast(`${ingredients.length} ingredients exportes en CSV`, 'success');
+  }
+
+  // ── Export Selected CSV ─────────────────────────────────────────────
+  function exportSelectedCSV() {
+    if (selectedIds.size === 0) return;
+    const header = ['Nom', 'Categorie', 'Prix unitaire', 'Unite', 'Fournisseur', 'Allergenes', 'Code-barres'];
+    const selectedIngs = ingredients.filter(ing => selectedIds.has(ing.id));
+    const rows = selectedIngs.map(ing => [
+      ing.name,
+      ing.category,
+      ing.pricePerUnit.toFixed(2),
+      ing.unit,
+      ing.supplierRef?.name || ing.supplier || '',
+      (ing.allergens || []).join('; '),
+      ing.barcode || '',
+    ]);
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `selection_ingredients_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${selectedIngs.length} ingredient${selectedIngs.length > 1 ? 's' : ''} exporte${selectedIngs.length > 1 ? 's' : ''} en CSV`, 'success');
   }
 
   function downloadCSVTemplate() {
@@ -1098,6 +1165,21 @@ export default function Ingredients() {
                         title="Voir l'historique des prix"
                       >
                         {ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}
+                        {/* Price change indicator */}
+                        {(() => {
+                          const change = computePriceChange(allPriceHistories[ing.id]);
+                          if (!change || change.direction === 'stable') return null;
+                          return (
+                            <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold ml-1 px-1.5 py-0.5 rounded-full ${
+                              change.direction === 'up'
+                                ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
+                                : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
+                            }`}>
+                              {change.direction === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                              {change.percent.toFixed(1)}%
+                            </span>
+                          );
+                        })()}
                         <BarChart3 className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         {getAlertForIngredient(ing.id) !== null && (
                           <Bell className={`w-3 h-3 ${ing.pricePerUnit > (getAlertForIngredient(ing.id) || 0) ? 'text-red-500' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
@@ -1215,9 +1297,19 @@ export default function Ingredients() {
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[#111111] dark:bg-white text-white dark:text-black rounded-2xl shadow-2xl px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2 sm:gap-4 animate-in slide-in-from-bottom-4 max-w-[95vw]">
           <span className="text-sm font-medium flex items-center gap-2">
             <CheckSquare className="w-4 h-4" />
-            {selectedIds.size} selectionne{selectedIds.size > 1 ? 's' : ''}
+            {selectedIds.size} ingredient{selectedIds.size > 1 ? 's' : ''} selectionne{selectedIds.size > 1 ? 's' : ''}
           </span>
           <div className="w-px h-6 bg-white/20 dark:bg-black/20 hidden sm:block" />
+
+          {/* Export selected CSV */}
+          <button
+            onClick={exportSelectedCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-white/10 dark:bg-black/10 hover:bg-white/20 dark:hover:bg-black/20 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">Exporter selection CSV</span>
+            <span className="sm:hidden">CSV</span>
+          </button>
 
           {/* Bulk price update */}
           <button
@@ -1229,13 +1321,13 @@ export default function Ingredients() {
             <span className="sm:hidden">Prix</span>
           </button>
 
-          {/* Bulk delete */}
+          {/* Bulk delete with confirmation */}
           <button
-            onClick={bulkDelete}
+            onClick={() => setShowBulkDeleteConfirm(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-600 hover:bg-red-500 text-white transition-colors"
           >
             <Trash2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Supprimer ({selectedIds.size})</span>
+            <span className="hidden sm:inline">Supprimer selection ({selectedIds.size})</span>
             <span className="sm:hidden">{selectedIds.size}</span>
           </button>
 
@@ -1587,6 +1679,11 @@ export default function Ingredients() {
             >
               {INGREDIENT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
+            {!editingId && suggestCategory(form.name) && suggestCategory(form.name) === form.category && (
+              <p className="text-xs text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
+                <Check className="w-3 h-3" /> Categorie detectee automatiquement
+              </p>
+            )}
           </div>
 
           {/* Supplier dropdown with autocomplete */}
@@ -1992,6 +2089,15 @@ export default function Ingredients() {
         onCancel={() => setDeleteTarget(null)}
         title={t('ingredients.deleteTitle')}
         message={t('ingredients.deleteMessage')}
+      />
+
+      {/* Bulk Delete Confirm */}
+      <ConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onConfirm={bulkDelete}
+        onCancel={() => setShowBulkDeleteConfirm(false)}
+        title={`Supprimer ${selectedIds.size} ingredient${selectedIds.size > 1 ? 's' : ''}`}
+        message={`Etes-vous sur de vouloir supprimer ${selectedIds.size} ingredient${selectedIds.size > 1 ? 's' : ''} ? Cette action est irreversible.`}
       />
     </div>
   );

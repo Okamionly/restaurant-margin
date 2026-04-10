@@ -417,15 +417,173 @@ export default function Analytics() {
     return ((curr - prev) / prev) * 100;
   }, [report]);
 
+  // ── Margin Trend — last 6 data points from marginTimeline ──
+  const marginTrendBars = useMemo(() => {
+    if (!report?.marginTimeline?.length) return [];
+    const timeline = report.marginTimeline;
+    const last6 = timeline.slice(-6);
+    return last6.map((pt, i) => {
+      const prev = i > 0 ? last6[i - 1].avgMargin : pt.avgMargin;
+      const improving = pt.avgMargin >= prev;
+      return {
+        label: pt.date?.slice(5) || `M${i + 1}`, // "MM-DD" or fallback
+        value: pt.avgMargin,
+        improving,
+      };
+    });
+  }, [report]);
+
+  // ── Top Insights — computed from real recipe data ──
+  const topInsightsText = useMemo(() => {
+    if (!report) return [];
+    const insights: { text: string; type: 'success' | 'warning' | 'info' }[] = [];
+    const allRecipes = [...(report.topProfitable || []), ...(report.bottomMargin || [])];
+    const seen = new Set<number>();
+    const unique = allRecipes.filter(r => { if (seen.has(r.id)) return false; seen.add(r.id); return true; });
+
+    // Best recipe
+    if (unique.length > 0) {
+      const best = unique.reduce((a, b) => a.marginPercent > b.marginPercent ? a : b);
+      insights.push({
+        text: `Votre meilleure recette: ${best.name} (${best.marginPercent.toFixed(0)}% marge)`,
+        type: 'success',
+      });
+    }
+
+    // Worst recipe warning
+    if (unique.length > 0) {
+      const worst = unique.reduce((a, b) => a.marginPercent < b.marginPercent ? a : b);
+      if (worst.marginPercent < 40) {
+        insights.push({
+          text: `Attention: ${worst.name} a une marge de seulement ${worst.marginPercent.toFixed(0)}%`,
+          type: 'warning',
+        });
+      }
+    }
+
+    // Food cost average vs target
+    const avgFoodCostPercent = report.summary.totalRevenuePotential > 0
+      ? (report.summary.totalCostPotential / report.summary.totalRevenuePotential) * 100
+      : 0;
+    const foodCostOk = avgFoodCostPercent < 30;
+    insights.push({
+      text: `Food cost moyen: ${avgFoodCostPercent.toFixed(0)}% (objectif <30% ${foodCostOk ? '\u2705' : '\u274C'})`,
+      type: foodCostOk ? 'info' : 'warning',
+    });
+
+    // Margin health
+    if (report.summary.avgMarginPercent >= 65) {
+      insights.push({
+        text: `Marge moyenne saine a ${report.summary.avgMarginPercent.toFixed(1)}% — au-dessus de l'objectif de 65%`,
+        type: 'success',
+      });
+    } else if (report.summary.avgMarginPercent > 0) {
+      insights.push({
+        text: `Marge moyenne a ${report.summary.avgMarginPercent.toFixed(1)}% — en dessous de l'objectif de 65%`,
+        type: 'warning',
+      });
+    }
+
+    // Waste insight
+    if (report.wasteImpact.totalCost > 0) {
+      insights.push({
+        text: `Gaspillage: ${report.wasteImpact.totalCost.toFixed(0)} EUR perdus sur ${report.wasteImpact.entryCount} incidents`,
+        type: 'warning',
+      });
+    }
+
+    return insights.slice(0, 5);
+  }, [report]);
+
   // ── PDF Export ──
   const handleExportPDF = () => {
     window.print();
   };
 
-  // ── Generate Report ──
-  const handleGenerateReport = () => {
-    window.print();
-  };
+  // ── Generate TXT Report & Download ──
+  const handleDownloadReport = useCallback(() => {
+    if (!report) return;
+    const s = report.summary;
+    const allRecipes = [...(report.topProfitable || []), ...(report.bottomMargin || [])];
+    const seen = new Set<number>();
+    const unique = allRecipes.filter(r => { if (seen.has(r.id)) return false; seen.add(r.id); return true; });
+    const best = unique.length > 0 ? unique.reduce((a, b) => a.marginPercent > b.marginPercent ? a : b) : null;
+    const worst = unique.length > 0 ? unique.reduce((a, b) => a.marginPercent < b.marginPercent ? a : b) : null;
+    const avgFoodCostPct = s.totalRevenuePotential > 0 ? (s.totalCostPotential / s.totalRevenuePotential) * 100 : 0;
+    const localMargeBrute = s.totalRevenuePotential > 0
+      ? ((s.totalRevenuePotential - s.totalCostPotential) / s.totalRevenuePotential) * 100
+      : 0;
+
+    const lines: string[] = [
+      '═══════════════════════════════════════════════',
+      '  RESTAUMARGIN — RAPPORT ANALYTIQUE',
+      '═══════════════════════════════════════════════',
+      '',
+      `Restaurant: ${selectedRestaurant?.name || '-'}`,
+      `Date: ${new Date().toLocaleDateString('fr-FR')}`,
+      `Periode: ${report.periodDays} jours (${report.periodStart} → ${report.periodEnd})`,
+      '',
+      '── KPI PRINCIPAUX ──',
+      `  Chiffre d'affaires potentiel: ${s.totalRevenuePotential.toFixed(0)} EUR`,
+      `  Cout matieres total:          ${s.totalCostPotential.toFixed(0)} EUR`,
+      `  Marge brute:                   ${localMargeBrute.toFixed(1)}%`,
+      `  Food cost moyen:               ${s.avgFoodCost.toFixed(2)} EUR/portion`,
+      `  Food cost %:                   ${avgFoodCostPct.toFixed(1)}%`,
+      `  Nombre de recettes:            ${s.totalRecipes}`,
+      `  Nombre d'ingredients:          ${s.totalIngredients}`,
+      `  Score de performance:          ${report.performanceScore}/100`,
+      '',
+      '── TOP 5 RECETTES LES PLUS RENTABLES ──',
+      ...(report.topProfitable || []).map((r, i) =>
+        `  ${i + 1}. ${r.name} — ${r.marginPercent.toFixed(1)}% marge (${r.marginAmount.toFixed(2)} EUR profit)`
+      ),
+      '',
+      '── TOP 5 MARGES LES PLUS FAIBLES ──',
+      ...(report.bottomMargin || []).map((r, i) =>
+        `  ${i + 1}. ${r.name} — ${r.marginPercent.toFixed(1)}% marge (${r.sellingPrice.toFixed(2)} EUR prix de vente)`
+      ),
+      '',
+      '── INSIGHTS ──',
+      ...(topInsightsText.map(ins => `  ${ins.type === 'success' ? '[+]' : ins.type === 'warning' ? '[!]' : '[i]'} ${ins.text}`)),
+      '',
+      '── PERFORMANCE PAR CATEGORIE ──',
+      ...(report.categoryPerformance || []).map(c =>
+        `  ${c.category}: ${c.recipeCount} recettes, marge moy. ${c.avgMarginPercent}%, CA ${c.totalRevenue.toFixed(0)} EUR`
+      ),
+      '',
+    ];
+
+    if (report.wasteImpact.entryCount > 0) {
+      lines.push('── GASPILLAGE ──');
+      lines.push(`  Total perdu: ${report.wasteImpact.totalCost.toFixed(0)} EUR (${report.wasteImpact.entryCount} incidents)`);
+      report.wasteImpact.byReason.forEach(r => {
+        lines.push(`  ${WASTE_LABELS[r.reason] || r.reason}: ${r.cost.toFixed(0)} EUR (${r.count}x)`);
+      });
+      lines.push('');
+    }
+
+    if (best) {
+      lines.push(`Meilleure recette: ${best.name} (${best.marginPercent.toFixed(0)}% marge)`);
+    }
+    if (worst) {
+      lines.push(`Pire recette:     ${worst.name} (${worst.marginPercent.toFixed(0)}% marge)`);
+    }
+    lines.push('');
+    lines.push('═══════════════════════════════════════════════');
+    lines.push('  Genere par RestauMargin');
+    lines.push('═══════════════════════════════════════════════');
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `rapport-restaumargin-${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Rapport telecharge !', 'success');
+  }, [report, selectedRestaurant, topInsightsText, showToast]);
 
   if (loading) {
     return (
@@ -522,13 +680,13 @@ export default function Analytics() {
             <Printer className="w-4 h-4" />
             Imprimer
           </button>
-          {/* 6. EXPORT REPORT BUTTON */}
+          {/* 6. EXPORT REPORT BUTTON — Downloads .txt */}
           <button
-            onClick={handleGenerateReport}
+            onClick={handleDownloadReport}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:opacity-90 transition-all print:hidden"
           >
             <Download className="w-4 h-4" />
-            Generer rapport PDF
+            Telecharger le rapport
           </button>
         </div>
       </div>
@@ -676,6 +834,85 @@ export default function Analytics() {
                 </div>
                 <p className="text-sm font-medium text-[#111111] dark:text-white mb-1">{insight.title}</p>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] leading-relaxed">{insight.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+           MARGIN TREND — CSS BAR CHART (last 6 points)
+         ══════════════════════════════════════════════ */}
+      {marginTrendBars.length > 1 && (
+        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <TrendingUp className="w-4 h-4 text-[#111111] dark:text-white" />
+            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Tendance marge — 6 derniers points</h2>
+            <span className="ml-auto text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+              {marginTrendBars[marginTrendBars.length - 1].value > marginTrendBars[0].value
+                ? 'En hausse'
+                : marginTrendBars[marginTrendBars.length - 1].value < marginTrendBars[0].value
+                  ? 'En baisse'
+                  : 'Stable'}
+            </span>
+          </div>
+          <div className="flex items-end gap-3 h-40">
+            {marginTrendBars.map((bar, i) => {
+              const maxVal = Math.max(...marginTrendBars.map(b => b.value), 1);
+              const heightPct = Math.max(8, (bar.value / maxVal) * 100);
+              const barColor = bar.improving ? '#22C55E' : '#EF4444';
+              return (
+                <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <span className="text-xs font-bold" style={{ color: barColor }}>
+                    {bar.value.toFixed(1)}%
+                  </span>
+                  <div
+                    className="w-full rounded-t-lg transition-all duration-700"
+                    style={{
+                      height: `${heightPct}%`,
+                      backgroundColor: barColor,
+                      minHeight: 6,
+                      opacity: 0.85,
+                    }}
+                  />
+                  <span className="text-[10px] font-medium text-[#6B7280] dark:text-[#A3A3A3]">{bar.label}</span>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-[#9CA3AF] dark:text-[#525252] mt-3 text-center">
+            Vert = marge en hausse vs point precedent — Rouge = marge en baisse
+          </p>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+           TOP INSIGHTS — Auto-generated text insights
+         ══════════════════════════════════════════════ */}
+      {topInsightsText.length > 0 && (
+        <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Lightbulb className="w-4 h-4 text-[#111111] dark:text-white" />
+            <h2 className="text-sm font-semibold text-[#111111] dark:text-white">Insights cles</h2>
+          </div>
+          <div className="space-y-2">
+            {topInsightsText.map((ins, i) => (
+              <div
+                key={i}
+                className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${
+                  ins.type === 'success'
+                    ? 'bg-green-50 dark:bg-green-950/10 border-green-200 dark:border-green-900/30'
+                    : ins.type === 'warning'
+                      ? 'bg-amber-50 dark:bg-amber-950/10 border-amber-200 dark:border-amber-900/30'
+                      : 'bg-[#F9FAFB] dark:bg-[#111111] border-[#F3F4F6] dark:border-[#1A1A1A]'
+                }`}
+              >
+                <span className="flex-shrink-0 mt-0.5">
+                  {ins.type === 'success' && <TrendingUp className="w-4 h-4 text-[#22C55E]" />}
+                  {ins.type === 'warning' && <AlertTriangle className="w-4 h-4 text-[#F59E0B]" />}
+                  {ins.type === 'info' && <Eye className="w-4 h-4 text-[#111111] dark:text-white" />}
+                </span>
+                <p className="text-sm text-[#111111] dark:text-white font-medium">{ins.text}</p>
               </div>
             ))}
           </div>

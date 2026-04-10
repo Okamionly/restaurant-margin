@@ -547,6 +547,7 @@ export default function InvoiceScanner() {
 
   /* Delete */
   const handleDelete = (id: string) => {
+    if (!window.confirm('Supprimer cette facture ?')) return;
     const inv = invoices.find((i) => i.id === id);
     if (inv?.previewUrl && inv.file) URL.revokeObjectURL(inv.previewUrl);
     setInvoices((prev) => prev.filter((i) => i.id !== id));

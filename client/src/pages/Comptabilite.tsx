@@ -708,6 +708,7 @@ export default function Comptabilite() {
   }
 
   async function handleDeleteExpense(id: number) {
+    if (!window.confirm('Supprimer cette depense ?')) return;
     try {
       const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE', headers: apiHeaders() });
       if (!res.ok) throw new Error('API error');
@@ -814,6 +815,7 @@ export default function Comptabilite() {
   }
 
   function handleDeleteBankTx(txId: number) {
+    if (!window.confirm('Supprimer cette transaction ?')) return;
     setBankTransactions(prev => prev.filter(t2 => t2.id !== txId));
     showToast('Transaction supprimee', 'success');
   }
@@ -1799,7 +1801,7 @@ export default function Comptabilite() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis type="number" tickFormatter={(v: number) => `${Math.round(v / 1000)}k`} />
                   <YAxis type="category" dataKey="category" width={120} tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={(v: number) => fmt(v)} />
+                  <Tooltip formatter={(v) => fmt(Number(v))} />
                   <Legend />
                   <Bar dataKey="budget" name="Budget" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={14} />
                   <Bar dataKey="actual" name="Reel" fill="#10b981" radius={[0, 4, 4, 0]} barSize={14} />

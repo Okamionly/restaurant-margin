@@ -338,6 +338,7 @@ export default function EmailMarketing() {
   }
 
   function handleDeleteCampaign(id: string) {
+    if (!window.confirm('Supprimer cette campagne ?')) return;
     setCampaigns(prev => prev.filter(c => c.id !== id));
     if (selectedCampaign?.id === id) setSelectedCampaign(null);
     showToast('Campagne supprimee', 'success');

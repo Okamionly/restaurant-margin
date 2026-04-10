@@ -700,6 +700,7 @@ export default function Clients() {
   }
 
   function handleDelete(id: string) {
+    if (!window.confirm('Supprimer ce client ?')) return;
     setClients(prev => prev.filter(c => c.id !== id));
     setShowDetail(false);
     if (sidebarClient && sidebarClient.id === id) closeSidebar();

@@ -757,6 +757,7 @@ export default function AIAssistant() {
 
   function handleDeleteConversation(convId: string, e: React.MouseEvent) {
     e.stopPropagation();
+    if (!window.confirm('Supprimer cette conversation ?')) return;
     setConversations(prev => {
       const updated = prev.filter(c => c.id !== convId);
       saveConversations(updated);

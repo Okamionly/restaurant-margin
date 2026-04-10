@@ -362,7 +362,7 @@ export default function Actualites() {
     setMarketIntelLoading(true);
     try {
       const res = await fetch('/api/cron/market-intel', {
-        headers: { ...authHeaders(), Authorization: `Bearer ${process.env.CRON_SECRET || 'cron-secret'}` },
+        headers: { ...authHeaders(), Authorization: `Bearer ${(import.meta as any).env?.VITE_CRON_SECRET || 'cron-secret'}` },
       });
       const data = await res.json();
       if (data.error) {

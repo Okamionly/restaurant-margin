@@ -847,6 +847,7 @@ export default function Devis() {
   }
 
   async function handleDelete(id: string) {
+    if (!window.confirm('Supprimer ce document ?')) return;
     try {
       const res = await fetch(`${API}/api/devis/${id}`, {
         method: 'DELETE',

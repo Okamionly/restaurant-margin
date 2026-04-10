@@ -11,6 +11,7 @@ import {
   ShieldCheck, Globe, Headphones, FileCheck, CreditCard,
   Package, Calculator, Eye, MapPin, ChevronRight,
 } from 'lucide-react';
+import FoodIllustration from '../components/FoodIllustration';
 
 /* <!-- HERO SAUVEGARDE -->
 HERO SECTION BACKUP (lines 323-414 of original Landing.tsx):
@@ -676,25 +677,75 @@ export default function Landing() {
               </p>
             </div>
 
-            {/* Right -- Product image */}
+            {/* Right -- CSS mockup dashboard + food illustrations */}
             <div className="hidden lg:block animate-[fadeInUp_1s_ease-out_0.3s_both]">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.07] to-emerald-500/[0.07] rounded-3xl blur-2xl" />
-                <div className="relative bg-white border border-[#E5E7EB] shadow-sm hover:shadow-md rounded-3xl p-8 transition-shadow">
-                  <div className="relative overflow-hidden rounded-2xl">
-                    <div className="flex transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${heroSlide * 100}%)` }}>
-                      <img src="/images/hero/hero-1.webp" alt="RestauMargin Station en cuisine" className="w-full h-auto flex-shrink-0" loading="eager" fetchPriority="high" />
-                      <img src="/images/hero/hero-2.webp" alt="RestauMargin Station cuisine pro" className="w-full h-auto flex-shrink-0" loading="lazy" />
-                      <img src="/images/hero/hero-3.webp" alt="Chef utilisant RestauMargin" className="w-full h-auto flex-shrink-0" loading="lazy" />
+
+                {/* Laptop frame mockup */}
+                <div className="relative">
+                  {/* Laptop bezel */}
+                  <div className="bg-[#111111] rounded-t-2xl pt-3 px-3">
+                    <div className="flex items-center gap-1.5 pb-2">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-400/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/60" />
+                      <div className="flex-1 flex justify-center">
+                        <div className="bg-[#2a2a2a] rounded-md px-3 py-0.5 text-[9px] text-white/40 font-mono">app.restaumargin.com/dashboard</div>
+                      </div>
                     </div>
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-                      {[0, 1, 2].map(i => (
-                        <button key={i} onClick={() => setHeroSlide(i)} className={`w-2 h-2 rounded-full transition-all ${heroSlide === i ? 'bg-teal-600 w-6' : 'bg-gray-400/50'}`} />
+                  </div>
+                  {/* Screen content — mini dashboard */}
+                  <div className="bg-white border-x border-b border-[#E5E7EB] rounded-b-xl p-4 space-y-3">
+                    {/* Mini KPI row */}
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                        <p className="text-[9px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Food cost</p>
+                        <p className="text-lg font-extrabold text-[#111111]">26.8%</p>
+                      </div>
+                      <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                        <p className="text-[9px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Marge</p>
+                        <p className="text-lg font-extrabold text-emerald-600">73.2%</p>
+                      </div>
+                      <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
+                        <p className="text-[9px] text-[#A3A3A3] uppercase tracking-wider font-semibold">CA HT</p>
+                        <p className="text-lg font-extrabold text-[#111111]">46k</p>
+                      </div>
+                    </div>
+                    {/* Mini chart bars */}
+                    <div className="flex items-end gap-1.5 h-16 px-1">
+                      {[68, 69, 70, 72, 73, 74].map((v, i) => (
+                        <div key={i} className="flex-1 bg-gradient-to-t from-teal-600 to-teal-400 rounded-t" style={{ height: `${(v / 80) * 100}%` }} />
+                      ))}
+                    </div>
+                    {/* Mini recipe cards with FoodIllustration */}
+                    <div className="flex gap-2">
+                      {['Risotto aux champignons', 'Magret de canard', 'Creme brulee'].map((name, i) => (
+                        <div key={i} className="flex-1 bg-[#F9FAFB] rounded-lg p-2 flex flex-col items-center gap-1">
+                          <FoodIllustration recipeName={name} size="sm" animated={false} />
+                          <p className="text-[8px] text-[#737373] font-medium text-center leading-tight truncate w-full">{name.split(' ').slice(0, 2).join(' ')}</p>
+                        </div>
                       ))}
                     </div>
                   </div>
+                  {/* Laptop base */}
+                  <div className="mx-auto w-[60%] h-2 bg-[#E5E7EB] rounded-b-lg" />
                 </div>
-                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
+
+                {/* Floating food illustrations */}
+                <div className="absolute -top-3 -right-3 animate-bounce" style={{ animationDuration: '3s' }}>
+                  <div className="bg-white rounded-2xl p-2 shadow-lg border border-[#E5E7EB]">
+                    <FoodIllustration recipeName="pizza margherita" size="sm" />
+                  </div>
+                </div>
+                <div className="absolute -bottom-2 -left-3 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
+                  <div className="bg-white rounded-2xl p-2 shadow-lg border border-[#E5E7EB]">
+                    <FoodIllustration recipeName="croissant" size="sm" />
+                  </div>
+                </div>
+
+                {/* Badge */}
+                <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold z-10">
                   {t('landing.new2026')}
                 </div>
               </div>

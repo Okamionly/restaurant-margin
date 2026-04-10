@@ -1,0 +1,8 @@
+node_modules
+.git
+data
+docs/campaigns
+scripts
+client/src/pages/Dashboard.backup.tsx
+*.output
+*.log

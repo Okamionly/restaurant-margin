@@ -797,7 +797,7 @@ export default function Clients() {
       c.tags.join('; '),
       c.notes.replace(/\n/g, ' '),
     ]);
-    const csvContent = [headers.join(','), ...rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(','))].join('\n');
+    const csvContent = [headers.join(';'), ...rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(';'))].join('\n');
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

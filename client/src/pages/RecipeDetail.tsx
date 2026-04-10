@@ -687,7 +687,10 @@ export default function RecipeDetail() {
         <div className="fiche-header bg-[#111111] dark:bg-[#111111] text-white px-5 py-3 print:bg-[#111111] print:text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <ChefHat className="w-6 h-6 opacity-80" />
+              {/* Logo placeholder */}
+              <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                <ChefHat className="w-5 h-5 opacity-90" />
+              </div>
               <div>
                 <div className="text-sm font-bold uppercase tracking-widest">{getRestaurantName()}</div>
                 <div className="text-[10px] text-gray-400 uppercase tracking-wider">Fiche Technique</div>
@@ -704,7 +707,7 @@ export default function RecipeDetail() {
         <div className="px-5 py-2.5 border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A]">
           <div className="flex items-baseline justify-between gap-4 flex-wrap">
             <div>
-              <h1 className="text-xl font-bold text-[#111111] dark:text-white leading-tight">{recipe.name}</h1>
+              <h1 className="text-xl font-bold text-[#111111] dark:text-white leading-tight print:font-serif">{recipe.name}</h1>
               <div className="flex items-center gap-3 mt-0.5 text-xs text-[#9CA3AF] dark:text-[#737373]">
                 <span className="font-medium text-[#9CA3AF] dark:text-[#737373] bg-[#E5E7EB] dark:bg-[#1A1A1A] px-2 py-0.5 rounded">{recipe.category}</span>
                 <span>{portions ?? recipe.nbPortions} portion{(portions ?? recipe.nbPortions) > 1 ? 's' : ''}</span>
@@ -920,9 +923,9 @@ export default function RecipeDetail() {
 
         {/* ─── FOOTER ─── */}
         <div className="fiche-footer px-5 py-1.5 border-t border-[#D1D5DB] dark:border-[#1A1A1A] bg-[#F5F5F5] dark:bg-[#0A0A0A] flex items-center justify-between text-[9px] text-[#9CA3AF] dark:text-[#737373]">
-          <span>Mise à jour le {formatDate(recipe.updatedAt)}</span>
+          <span>Genere par RestauMargin &mdash; {new Date().toLocaleDateString('fr-FR')}</span>
           <span>{getRestaurantName()} &mdash; Fiche Technique N&deg;{String(recipe.id).padStart(3, '0')}</span>
-          <span>Page 1/1</span>
+          <span>Mise a jour le {formatDate(recipe.updatedAt)}</span>
         </div>
       </div>
 
@@ -1021,6 +1024,19 @@ export default function RecipeDetail() {
           }
           #fiche-technique tfoot tr {
             border-top: 2px solid #64748b !important;
+          }
+
+          /* ── Recipe name serif font ── */
+          #fiche-technique h1 {
+            font-family: Georgia, 'Times New Roman', serif !important;
+            font-size: 18pt !important;
+          }
+
+          /* ── Logo placeholder circle ── */
+          #fiche-technique .fiche-header .rounded-full {
+            background-color: rgba(255,255,255,0.15) !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
 
           /* ── Force all text colors for readability on white ── */

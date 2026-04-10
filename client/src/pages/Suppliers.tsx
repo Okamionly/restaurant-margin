@@ -1253,6 +1253,31 @@ export default function Suppliers() {
     },
   };
 
+  // ── Export CSV ─────────────────────────────────────────────────────────────
+  function exportSuppliersCSV() {
+    if (suppliers.length === 0) { showToast('Aucun fournisseur a exporter', 'error'); return; }
+    const header = ['Nom', 'Email', 'Telephone', 'Ville', 'Region', 'Categories', 'Nb produits', 'Score'];
+    const rows = suppliers.map(s => [
+      s.name,
+      s.email || '',
+      s.phone || '',
+      s.city || '',
+      s.region || '',
+      (s.categories || []).join(', '),
+      String(s._count?.ingredients ?? 0),
+      String(supplierScores[s.id] ?? ''),
+    ]);
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fournisseurs_restaumargin_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${suppliers.length} fournisseurs exportes en CSV`, 'success');
+  }
+
   // ── render ─────────────────────────────────────────────────────────────────
 
   if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.loading')}</div>;
@@ -1312,6 +1337,17 @@ export default function Suppliers() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
             <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
             <div className="flex flex-wrap items-center gap-2">
+              {/* Export CSV button */}
+              {suppliers.length > 0 && (
+                <button
+                  onClick={exportSuppliersCSV}
+                  className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+                  title="Exporter CSV"
+                >
+                  <Download className="w-4 h-4" />
+                  Exporter CSV
+                </button>
+              )}
               {/* Score comparison button */}
               {suppliers.length >= 2 && (
                 <button

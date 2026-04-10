@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
-import Toast, { type ToastType } from '../components/Toast';
+import Toast, { type ToastType, type ToastAction } from '../components/Toast';
 import { onApiToast } from '../services/api';
 
 export type { ToastType };
@@ -8,10 +8,17 @@ interface ToastItem {
   id: number;
   message: string;
   type: ToastType;
+  action?: ToastAction;
+  duration?: number;
+}
+
+interface ShowToastOptions {
+  action?: ToastAction;
+  duration?: number;
 }
 
 interface ToastContextType {
-  showToast: (message: string, type?: ToastType) => void;
+  showToast: (message: string, type?: ToastType, options?: ShowToastOptions) => void;
 }
 
 const ToastContext = createContext<ToastContextType | null>(null);
@@ -22,17 +29,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const [successFlash, setSuccessFlash] = useState(false);
 
-  const showToast = useCallback((message: string, type: ToastType = 'info') => {
+  const showToast = useCallback((message: string, type: ToastType = 'info', options?: ShowToastOptions) => {
     const id = ++toastId;
-    setToasts((prev) => [...prev, { id, message, type }]);
+    setToasts((prev) => [...prev, { id, message, type, action: options?.action, duration: options?.duration }]);
     // Trigger success celebration flash
     if (type === 'success') {
       setSuccessFlash(true);
       setTimeout(() => setSuccessFlash(false), 800);
     }
+    const dismissMs = (options?.duration ?? 3000) + 1000;
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 4000);
+    }, dismissMs);
   }, []);
 
   // Bridge: listen to API-level toast events (from services/api.ts)
@@ -58,7 +66,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {/* Toast container */}
       <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2">
         {toasts.map((toast) => (
-          <Toast key={toast.id} message={toast.message} type={toast.type} onClose={() => removeToast(toast.id)} />
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => removeToast(toast.id)}
+            action={toast.action}
+            duration={toast.duration}
+          />
         ))}
       </div>
     </ToastContext.Provider>

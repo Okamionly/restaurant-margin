@@ -9,6 +9,7 @@ import { fetchIngredients, createIngredient, updateIngredient, deleteIngredient,
 import type { Ingredient, Supplier, InventoryItem } from '../types';
 import { INGREDIENT_CATEGORIES, UNITS, ALLERGENS } from '../types';
 import { useToast } from '../hooks/useToast';
+import { useUndoDelete } from '../hooks/useUndoDelete';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { isInSeason } from '../data/seasons';
@@ -181,6 +182,7 @@ type SortDir = 'asc' | 'desc';
 export default function Ingredients() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { deleteWithUndo } = useUndoDelete();
   const { t } = useTranslation();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -765,15 +767,28 @@ export default function Ingredients() {
 
   async function handleDeleteConfirm() {
     if (!deleteTarget) return;
-    try {
-      await deleteIngredient(deleteTarget);
-      showToast(t('ingredients.ingredientDeleted'), 'success');
-      loadIngredients();
-    } catch {
-      showToast(t('ingredients.deleteError'), 'error');
-    } finally {
-      setDeleteTarget(null);
-    }
+    // Snapshot the ingredient before deleting for undo
+    const targetIng = ingredients.find((i) => i.id === deleteTarget);
+    setDeleteTarget(null);
+    if (!targetIng) return;
+
+    await deleteWithUndo({
+      deleteFn: () => deleteIngredient(deleteTarget),
+      restoreFn: () =>
+        createIngredient({
+          name: targetIng.name,
+          unit: targetIng.unit,
+          pricePerUnit: targetIng.pricePerUnit,
+          supplier: targetIng.supplier,
+          supplierId: targetIng.supplierId,
+          category: targetIng.category,
+          allergens: targetIng.allergens,
+          barcode: targetIng.barcode,
+        }),
+      itemLabel: targetIng.name,
+      onDeleted: () => loadIngredients(),
+      onRestored: () => loadIngredients(),
+    });
   }
 
   // Weigh and add to inventory
@@ -917,7 +932,7 @@ export default function Ingredients() {
       (ing.allergens || []).join('; '),
       ing.barcode || '',
     ]);
-    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -942,7 +957,7 @@ export default function Ingredients() {
       (ing.allergens || []).join('; '),
       ing.barcode || '',
     ]);
-    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -956,7 +971,7 @@ export default function Ingredients() {
   function downloadCSVTemplate() {
     const header = ['Nom', 'Categorie', 'Prix unitaire', 'Unite', 'Fournisseur', 'Allergenes', 'Code-barres'];
     const exampleRow = ['Tomate cerise', 'Legumes', '3.50', 'kg', 'Metro', 'Aucun', ''];
-    const csvContent = [header, exampleRow].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    const csvContent = [header, exampleRow].map(row => row.map(cell => `"${cell}"`).join(';')).join('\n');
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

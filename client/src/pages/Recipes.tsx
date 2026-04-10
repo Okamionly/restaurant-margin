@@ -3,11 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList, Package, Download, Leaf, BarChart3, ArrowRight, RefreshCw, TrendingDown, Sun, Snowflake, Flower2, CloudRain, Printer, FileText, StickyNote } from 'lucide-react';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
-import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
+import { fetchRecipes, fetchIngredients, fetchRecipe, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
 import type { MercurialeSuggestedIngredient } from '../services/api';
 import type { Recipe, Ingredient } from '../types';
 import { RECIPE_CATEGORIES, INGREDIENT_CATEGORIES, UNITS } from '../types';
 import { useToast } from '../hooks/useToast';
+import { useUndoDelete } from '../hooks/useUndoDelete';
 import { useTranslation } from '../hooks/useTranslation';
 import { useRestaurant } from '../hooks/useRestaurant';
 import Modal from '../components/Modal';
@@ -119,8 +120,37 @@ function getCategoryBadgeColor(category: string): string {
 }
 
 // ── Print Fiche Technique ──────────────────────────────────────────────
-function printFicheTechnique(recipe: Recipe, restaurantName: string) {
-  const ingredientRows = recipe.ingredients.map((ri) => {
+// ── Allergen keyword map for print fiches ──
+const PRINT_ALLERGEN_KEYWORDS: { allergen: string; keywords: string[] }[] = [
+  { allergen: 'Gluten', keywords: ['ble', 'blé', 'farine', 'semoule', 'orge', 'seigle', 'avoine', 'epeautre', 'épeautre', 'pain', 'pate', 'pâte', 'chapelure', 'couscous'] },
+  { allergen: 'Crustaces', keywords: ['crustace', 'crustacé', 'crevette', 'homard', 'langouste', 'crabe', 'gambas'] },
+  { allergen: 'Oeufs', keywords: ['oeuf', 'œuf', 'oeufs', 'œufs', 'mayonnaise'] },
+  { allergen: 'Poissons', keywords: ['poisson', 'saumon', 'cabillaud', 'thon', 'truite', 'sole', 'bar', 'anchois', 'sardine', 'dorade', 'morue'] },
+  { allergen: 'Arachides', keywords: ['arachide', 'cacahuete', 'cacahuète'] },
+  { allergen: 'Soja', keywords: ['soja', 'tofu', 'edamame', 'tempeh', 'miso'] },
+  { allergen: 'Lait', keywords: ['lait', 'creme', 'crème', 'beurre', 'fromage', 'yaourt', 'mascarpone', 'mozzarella', 'parmesan', 'gruyere', 'gruyère', 'emmental'] },
+  { allergen: 'Fruits a coque', keywords: ['amande', 'noisette', 'noix', 'cajou', 'pistache', 'pecan', 'pécan', 'macadamia', 'pignon'] },
+  { allergen: 'Celeri', keywords: ['celeri', 'céleri'] },
+  { allergen: 'Moutarde', keywords: ['moutarde'] },
+  { allergen: 'Sesame', keywords: ['sesame', 'sésame', 'tahini'] },
+  { allergen: 'Sulfites', keywords: ['sulfite', 'vin', 'vinaigre'] },
+  { allergen: 'Lupin', keywords: ['lupin'] },
+  { allergen: 'Mollusques', keywords: ['mollusque', 'moule', 'huitre', 'huître', 'calamar', 'poulpe', 'escargot', 'saint-jacques'] },
+];
+
+function detectPrintAllergens(ingredientNames: string[]): string[] {
+  const detected = new Set<string>();
+  for (const name of ingredientNames) {
+    const lower = name.toLowerCase();
+    for (const { allergen, keywords } of PRINT_ALLERGEN_KEYWORDS) {
+      if (keywords.some(kw => lower.includes(kw))) detected.add(allergen);
+    }
+  }
+  return Array.from(detected).sort();
+}
+
+function generateFicheHTML(recipe: Recipe, restaurantName: string): string {
+  const ingredientRows = recipe.ingredients.map((ri, idx) => {
     const ing = ri.ingredient;
     const name = ing?.name || 'Ingredient';
     const qty = ri.quantity;
@@ -138,79 +168,278 @@ function printFicheTechnique(recipe: Recipe, restaurantName: string) {
     })();
     const rawCost = (qty / divisor) * unitPrice;
     const costWithWaste = rawCost * (1 + waste / 100);
-    return `<tr>
-      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:left">${name}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${qty} ${unit}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${unitPrice.toFixed(2)} / ${unit === 'g' || unit === 'mg' ? 'kg' : unit === 'cl' || unit === 'ml' || unit === 'dl' ? 'L' : unit}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${waste}%</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right;font-weight:600">${formatCurrency(costWithWaste)}</td>
+    const bgColor = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
+    const category = ing?.category || '';
+    const catEmoji: Record<string, string> = {
+      'Viandes': '\u{1F969}', 'Poissons & Fruits de mer': '\u{1F41F}', 'Legumes': '\u{1F96C}', 'Légumes': '\u{1F96C}',
+      'Fruits': '\u{1F34E}', 'Produits laitiers': '\u{1F9C0}', 'Epices & Condiments': '\u{1F336}', 'Épices & Condiments': '\u{1F336}',
+      'Feculents & Cereales': '\u{1F33E}', 'Féculents & Céréales': '\u{1F33E}', 'Feculents': '\u{1F33E}', 'Féculents': '\u{1F33E}',
+      'Huiles & Matieres grasses': '\u{1FAD2}', 'Huiles & Matières grasses': '\u{1FAD2}', 'Boissons': '\u{1F377}', 'Boulangerie': '\u{1F35E}',
+      'Surgeles': '\u{2744}\u{FE0F}', 'Surgelés': '\u{2744}\u{FE0F}', 'Autres': '\u{1F4E6}',
+    };
+    const emoji = catEmoji[category] || '\u{1F4E6}';
+    const hasAllergens = (ing?.allergens || []).length > 0;
+    return `<tr style="background:${bgColor}">
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;font-weight:500">${emoji} ${name}${hasAllergens ? ' <span style="color:#f59e0b;font-size:9px;font-weight:700;vertical-align:super">*</span>' : ''}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace">${qty}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;color:#64748b">${unit}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-family:monospace;color:#94a3b8">${waste > 0 ? waste + '%' : '\u2014'}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;color:#64748b">${unitPrice.toFixed(2)}</td>
+      <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;text-align:right;font-family:monospace;font-weight:700">${costWithWaste.toFixed(2)} ${getCurrencySymbol()}</td>
     </tr>`;
   }).join('');
 
-  const totalCost = recipe.margin?.costPerPortion ? recipe.margin.costPerPortion * recipe.nbPortions : 0;
   const costPerPortion = recipe.margin?.costPerPortion || 0;
+  const totalCost = costPerPortion * recipe.nbPortions;
+  const laborCost = recipe.margin?.laborCostPerPortion || 0;
+  const totalCostPerPortion = recipe.margin?.totalCostPerPortion || costPerPortion;
   const marginPct = recipe.margin?.marginPercent || 0;
-  const marginPerPortion = recipe.sellingPrice - costPerPortion;
+  const marginAmount = recipe.margin?.marginAmount || 0;
+  const coefficient = recipe.margin?.coefficient || 0;
+  const marginColor = marginPct >= 70 ? '#16a34a' : marginPct >= 50 ? '#d97706' : '#dc2626';
+  const totalTime = (recipe.prepTimeMinutes || 0) + (recipe.cookTimeMinutes || 0);
 
+  // Detect allergens from ingredient names
+  const ingredientNames = recipe.ingredients.map(ri => ri.ingredient?.name || '');
+  const allergens = detectPrintAllergens(ingredientNames);
+
+  // Build donut SVG (pure inline)
+  const donutParts = (() => {
+    const data = [
+      { label: 'Cout matiere', value: costPerPortion, color: '#ef4444' },
+      { label: 'Main d\'oeuvre', value: laborCost, color: '#f59e0b' },
+      { label: 'Marge', value: marginAmount, color: '#22c55e' },
+    ].filter(d => d.value > 0);
+    const total = data.reduce((s, d) => s + d.value, 0);
+    if (total === 0) return { svg: '', legend: '' };
+    let cumAngle = -90;
+    const paths = data.map((d, i) => {
+      const angle = (d.value / total) * 360;
+      const startAngle = cumAngle;
+      cumAngle += angle;
+      const endAngle = cumAngle;
+      const startRad = (startAngle * Math.PI) / 180;
+      const endRad = (endAngle * Math.PI) / 180;
+      const cx = 50, cy = 50, r1 = 25, r2 = 45;
+      const largeArc = angle > 180 ? 1 : 0;
+      const path = `M ${cx + r1 * Math.cos(startRad)} ${cy + r1 * Math.sin(startRad)} L ${cx + r2 * Math.cos(startRad)} ${cy + r2 * Math.sin(startRad)} A ${r2} ${r2} 0 ${largeArc} 1 ${cx + r2 * Math.cos(endRad)} ${cy + r2 * Math.sin(endRad)} L ${cx + r1 * Math.cos(endRad)} ${cy + r1 * Math.sin(endRad)} A ${r1} ${r1} 0 ${largeArc} 0 ${cx + r1 * Math.cos(startRad)} ${cy + r1 * Math.sin(startRad)} Z`;
+      return `<path d="${path}" fill="${d.color}" />`;
+    });
+    const svg = `<svg viewBox="0 0 100 100" width="80" height="80">${paths.join('')}</svg>`;
+    const legend = data.map(d => `<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span style="width:10px;height:10px;border-radius:2px;background:${d.color};display:inline-block;flex-shrink:0"></span><span style="color:#64748b;flex:1;font-size:10px">${d.label}</span><span style="font-family:monospace;font-weight:700;font-size:10px">${d.value.toFixed(2)} ${getCurrencySymbol()}</span></div>`).join('');
+    return { svg, legend };
+  })();
+
+  return `<div class="fiche-page">
+<!-- Logo placeholder -->
+<div style="text-align:center;padding:16px 0 8px">
+  <div style="width:60px;height:60px;margin:0 auto;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center">
+    <span style="color:white;font-size:24px">\u{1F468}\u{200D}\u{1F373}</span>
+  </div>
+  <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:2px;margin-top:6px">${restaurantName || 'Mon Restaurant'}</div>
+</div>
+
+<!-- Recipe name -->
+<div style="text-align:center;padding:4px 20px 12px;border-bottom:2px solid #111">
+  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;color:#0f172a;margin:0 0 4px">${recipe.name}</h1>
+  ${recipe.description ? `<p style="font-size:12px;color:#64748b;font-style:italic;margin:0">${recipe.description}</p>` : ''}
+</div>
+
+<!-- Info bar -->
+<div style="display:flex;justify-content:center;gap:24px;padding:10px 20px;background:#f8fafc;border-bottom:1px solid #e2e8f0">
+  <div style="text-align:center">
+    <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Categorie</div>
+    <div style="font-size:13px;font-weight:600;color:#0f172a">${recipe.category}</div>
+  </div>
+  <div style="text-align:center">
+    <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Portions</div>
+    <div style="font-size:13px;font-weight:600;color:#0f172a">${recipe.nbPortions}</div>
+  </div>
+  ${recipe.prepTimeMinutes ? `<div style="text-align:center"><div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Preparation</div><div style="font-size:13px;font-weight:600;color:#0f172a">${recipe.prepTimeMinutes} min</div></div>` : ''}
+  ${recipe.cookTimeMinutes ? `<div style="text-align:center"><div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Cuisson</div><div style="font-size:13px;font-weight:600;color:#0f172a">${recipe.cookTimeMinutes} min</div></div>` : ''}
+  ${totalTime > 0 ? `<div style="text-align:center;background:#111;color:white;padding:4px 12px;border-radius:6px"><div style="font-size:9px;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.5px">Total</div><div style="font-size:13px;font-weight:700">${totalTime} min</div></div>` : ''}
+  <div style="text-align:center">
+    <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Prix de vente</div>
+    <div style="font-size:16px;font-weight:800;color:#0f172a">${recipe.sellingPrice.toFixed(2)} ${getCurrencySymbol()}</div>
+  </div>
+</div>
+
+<!-- Two-column body -->
+<div style="display:flex;min-height:300px">
+  <!-- Left: ingredients -->
+  <div style="flex:3;padding:12px 16px;border-right:1px solid #e2e8f0">
+    <h2 style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;font-weight:700">Composition</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="border-bottom:2px solid #94a3b8">
+          <th style="padding:6px 10px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Ingredient</th>
+          <th style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Qte</th>
+          <th style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Unite</th>
+          <th style="padding:6px 10px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Perte</th>
+          <th style="padding:6px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">P.U.</th>
+          <th style="padding:6px 10px;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600">Total</th>
+        </tr>
+      </thead>
+      <tbody>${ingredientRows}</tbody>
+      <tfoot>
+        <tr style="border-top:2px solid #64748b">
+          <td colspan="5" style="padding:8px 10px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.5px">Cout matiere total</td>
+          <td style="padding:8px 10px;text-align:right;font-family:monospace;font-weight:800;font-size:13px">${totalCost.toFixed(2)} ${getCurrencySymbol()}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Right: cost breakdown -->
+  <div style="flex:2;padding:12px 16px;background:#f8fafc">
+    <h2 style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;font-weight:700">Indicateurs cles</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <tr style="border-bottom:1px solid #e2e8f0"><td style="padding:5px 8px;color:#64748b">Prix de vente</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:600">${recipe.sellingPrice.toFixed(2)} ${getCurrencySymbol()}</td></tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#ffffff"><td style="padding:5px 8px;color:#64748b">Cout matiere / portion</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:600">${costPerPortion.toFixed(2)} ${getCurrencySymbol()}</td></tr>
+      ${laborCost > 0 ? `<tr style="border-bottom:1px solid #e2e8f0"><td style="padding:5px 8px;color:#64748b">Cout M.O. / portion</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:600">${laborCost.toFixed(2)} ${getCurrencySymbol()}</td></tr>` : ''}
+      <tr style="border-bottom:1px solid #e2e8f0;background:#ffffff"><td style="padding:5px 8px;color:#64748b;font-weight:700">Cout total / portion</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:800">${totalCostPerPortion.toFixed(2)} ${getCurrencySymbol()}</td></tr>
+      <tr style="border-bottom:1px solid #e2e8f0"><td style="padding:5px 8px;color:#64748b">Marge brute</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:700;color:${marginColor}">${marginAmount.toFixed(2)} ${getCurrencySymbol()}</td></tr>
+      <tr style="border-bottom:1px solid #e2e8f0;background:#ffffff"><td style="padding:5px 8px;color:#64748b;font-weight:700">Marge %</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:800;font-size:14px;color:${marginColor}">${marginPct.toFixed(1)}%</td></tr>
+      <tr><td style="padding:5px 8px;color:#64748b">Coefficient</td><td style="padding:5px 8px;text-align:right;font-family:monospace;font-weight:600">${coefficient.toFixed(2)}</td></tr>
+    </table>
+
+    <!-- Donut chart -->
+    <h2 style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;font-weight:700">Repartition du prix</h2>
+    <div style="display:flex;align-items:center;gap:8px">
+      ${donutParts.svg}
+      <div style="flex:1">${donutParts.legend}</div>
+    </div>
+
+    <!-- Allergens -->
+    <h2 style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;font-weight:700">\u{26A0}\u{FE0F} Allergenes</h2>
+    ${allergens.length > 0
+      ? `<div style="display:flex;flex-wrap:wrap;gap:4px">${allergens.map(a => `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fbbf24">\u{26A0}\u{FE0F} ${a}</span>`).join('')}</div>`
+      : '<p style="font-size:10px;color:#16a34a;font-style:italic">Aucun allergene majeur detecte</p>'
+    }
+  </div>
+</div>
+
+<!-- Chef notes -->
+${recipe.description ? `<div style="margin:0;padding:10px 16px;border-top:1px solid #e2e8f0;background:#fffbeb"><div style="font-size:9px;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">\u{1F468}\u{200D}\u{1F373} Notes du chef</div><div style="font-size:11px;color:#44403c;white-space:pre-wrap">${recipe.description}</div></div>` : ''}
+
+<!-- Footer -->
+<div style="padding:8px 16px;border-top:1px solid #cbd5e1;background:#f1f5f9;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8">
+  <span>Genere par RestauMargin &mdash; ${new Date().toLocaleDateString('fr-FR')}</span>
+  <span>${restaurantName || 'Mon Restaurant'} &mdash; Fiche N\u00B0${String(recipe.id).padStart(3, '0')}</span>
+</div>
+</div>`;
+}
+
+function printFicheTechnique(recipe: Recipe, restaurantName: string) {
+  const ficheHTML = generateFicheHTML(recipe, restaurantName);
   const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>Fiche Technique - ${recipe.name}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111; padding: 40px; max-width: 800px; margin: 0 auto; }
-  h1 { font-size: 28px; margin-bottom: 4px; }
-  h2 { font-size: 16px; font-weight: 400; color: #666; margin-bottom: 24px; }
-  .header { border-bottom: 2px solid #111; padding-bottom: 16px; margin-bottom: 24px; }
-  .restaurant { font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .meta { display: flex; gap: 32px; margin-bottom: 24px; }
-  .meta-item { }
-  .meta-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
-  .meta-value { font-size: 16px; font-weight: 600; }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-  thead th { padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; border-bottom: 2px solid #111; }
-  thead th:nth-child(n+2) { text-align: center; }
-  thead th:last-child { text-align: right; }
-  .totals { border-top: 2px solid #111; padding-top: 16px; }
-  .totals-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; }
-  .totals-row.highlight { font-size: 16px; font-weight: 700; padding: 8px 0; border-top: 1px solid #ddd; margin-top: 8px; }
-  .notes { margin-top: 24px; padding: 16px; border: 1px solid #ddd; border-radius: 4px; }
-  .notes-title { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-  .notes-text { font-size: 14px; color: #333; white-space: pre-wrap; }
-  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 11px; color: #999; text-align: center; }
-  @media print { body { padding: 20px; } @page { margin: 15mm; } }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; }
+  .fiche-page { max-width: 210mm; margin: 0 auto; background: white; border: 1px solid #cbd5e1; }
+  @media print {
+    @page { size: A4 portrait; margin: 8mm 10mm; }
+    body { padding: 0; }
+    .fiche-page { border: none; max-width: 100%; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  @media screen { body { padding: 20px; background: #f1f5f9; } }
 </style></head><body>
-<div class="header">
-  <div class="restaurant">${restaurantName || 'Mon Restaurant'}</div>
-  <h1>${recipe.name}</h1>
-  <h2>${recipe.category}${recipe.description ? ' — ' + recipe.description : ''}</h2>
-</div>
-<div class="meta">
-  <div class="meta-item"><div class="meta-label">Portions</div><div class="meta-value">${recipe.nbPortions}</div></div>
-  <div class="meta-item"><div class="meta-label">Prix de vente</div><div class="meta-value">${formatCurrency(recipe.sellingPrice)}</div></div>
-  <div class="meta-item"><div class="meta-label">Marge</div><div class="meta-value">${marginPct.toFixed(1)}%</div></div>
-  ${recipe.prepTimeMinutes ? `<div class="meta-item"><div class="meta-label">Prep.</div><div class="meta-value">${recipe.prepTimeMinutes} min</div></div>` : ''}
-  ${recipe.cookTimeMinutes ? `<div class="meta-item"><div class="meta-label">Cuisson</div><div class="meta-value">${recipe.cookTimeMinutes} min</div></div>` : ''}
-</div>
-<table>
-  <thead><tr>
-    <th>Ingredient</th><th>Quantite</th><th>Prix unitaire</th><th>Perte</th><th style="text-align:right">Cout</th>
-  </tr></thead>
-  <tbody>${ingredientRows}</tbody>
-</table>
-<div class="totals">
-  <div class="totals-row"><span>Cout matieres total</span><strong>${formatCurrency(totalCost)}</strong></div>
-  <div class="totals-row"><span>Cout par portion</span><strong>${formatCurrency(costPerPortion)}</strong></div>
-  <div class="totals-row"><span>Prix de vente</span><strong>${formatCurrency(recipe.sellingPrice)}</strong></div>
-  <div class="totals-row highlight"><span>Marge par portion</span><strong>${formatCurrency(marginPerPortion)} (${marginPct.toFixed(1)}%)</strong></div>
-</div>
-${recipe.description ? `<div class="notes"><div class="notes-title">Notes du chef</div><div class="notes-text">${recipe.description}</div></div>` : ''}
-<div class="footer">Fiche technique generee par RestauMargin &mdash; ${new Date().toLocaleDateString('fr-FR')}</div>
+${ficheHTML}
+<script>window.onload=function(){setTimeout(function(){window.print()},300)}</script>
 </body></html>`;
 
   const printWindow = window.open('', '_blank');
   if (printWindow) {
     printWindow.document.write(html);
     printWindow.document.close();
-    setTimeout(() => printWindow.print(), 300);
+  }
+}
+
+function printAllFichesTechniques(recipes: Recipe[], restaurantName: string) {
+  if (recipes.length === 0) return;
+
+  // Generate table of contents
+  const tocRows = recipes.map((r, i) => {
+    const marginPct = r.margin?.marginPercent || 0;
+    const marginColor = marginPct >= 70 ? '#16a34a' : marginPct >= 50 ? '#d97706' : '#dc2626';
+    return `<tr style="border-bottom:1px solid #e2e8f0${i % 2 === 1 ? ';background:#f8fafc' : ''}">
+      <td style="padding:6px 12px;font-size:12px;color:#64748b">${i + 1}</td>
+      <td style="padding:6px 12px;font-size:12px;font-weight:600">${r.name}</td>
+      <td style="padding:6px 12px;font-size:11px;color:#64748b">${r.category}</td>
+      <td style="padding:6px 12px;font-size:11px;text-align:center">${r.nbPortions}</td>
+      <td style="padding:6px 12px;font-size:11px;text-align:right;font-family:monospace">${r.sellingPrice.toFixed(2)} ${getCurrencySymbol()}</td>
+      <td style="padding:6px 12px;font-size:11px;text-align:right;font-family:monospace;font-weight:700;color:${marginColor}">${marginPct.toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+
+  const avgMargin = recipes.length > 0 ? recipes.reduce((s, r) => s + (r.margin?.marginPercent || 0), 0) / recipes.length : 0;
+  const avgColor = avgMargin >= 70 ? '#16a34a' : avgMargin >= 50 ? '#d97706' : '#dc2626';
+
+  const toc = `<div class="fiche-page" style="padding:40px">
+    <div style="text-align:center;margin-bottom:30px">
+      <div style="width:60px;height:60px;margin:0 auto;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center">
+        <span style="color:white;font-size:24px">\u{1F468}\u{200D}\u{1F373}</span>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:2px;margin-top:8px">${restaurantName || 'Mon Restaurant'}</div>
+      <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:700;color:#0f172a;margin:12px 0 4px">Recueil des Fiches Techniques</h1>
+      <p style="font-size:13px;color:#64748b">${recipes.length} recettes &mdash; Genere le ${new Date().toLocaleDateString('fr-FR')}</p>
+      <div style="display:flex;justify-content:center;gap:24px;margin-top:16px">
+        <div style="text-align:center;background:#f8fafc;padding:8px 16px;border-radius:8px;border:1px solid #e2e8f0">
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Recettes</div>
+          <div style="font-size:22px;font-weight:800;color:#0f172a">${recipes.length}</div>
+        </div>
+        <div style="text-align:center;background:#f8fafc;padding:8px 16px;border-radius:8px;border:1px solid #e2e8f0">
+          <div style="font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px">Marge moyenne</div>
+          <div style="font-size:22px;font-weight:800;color:${avgColor}">${avgMargin.toFixed(1)}%</div>
+        </div>
+      </div>
+    </div>
+    <h2 style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;font-weight:700;border-bottom:2px solid #111;padding-bottom:6px">Sommaire</h2>
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr style="border-bottom:2px solid #94a3b8">
+        <th style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">#</th>
+        <th style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Recette</th>
+        <th style="padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Categorie</th>
+        <th style="padding:8px 12px;text-align:center;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Portions</th>
+        <th style="padding:8px 12px;text-align:right;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Prix</th>
+        <th style="padding:8px 12px;text-align:right;font-size:9px;text-transform:uppercase;color:#64748b;font-weight:600">Marge</th>
+      </tr></thead>
+      <tbody>${tocRows}</tbody>
+    </table>
+    <div style="margin-top:20px;padding-top:12px;border-top:1px solid #cbd5e1;font-size:9px;color:#94a3b8;text-align:center">
+      Genere par RestauMargin &mdash; ${new Date().toLocaleDateString('fr-FR')}
+    </div>
+  </div>`;
+
+  // Generate all fiches
+  const allFiches = recipes.map(r => generateFicheHTML(r, restaurantName)).join('\n');
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Fiches Techniques - ${restaurantName || 'Mon Restaurant'}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; }
+  .fiche-page { max-width: 210mm; margin: 0 auto; background: white; border: 1px solid #cbd5e1; page-break-after: always; }
+  .fiche-page:last-child { page-break-after: auto; }
+  @media print {
+    @page { size: A4 portrait; margin: 8mm 10mm; }
+    body { padding: 0; }
+    .fiche-page { border: none; max-width: 100%; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  @media screen { body { padding: 20px; background: #f1f5f9; } .fiche-page { margin-bottom: 20px; } }
+</style></head><body>
+${toc}
+${allFiches}
+<script>window.onload=function(){setTimeout(function(){window.print()},500)}</script>
+</body></html>`;
+
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
   }
 }
 
@@ -1517,6 +1746,7 @@ function BatchOptimizerPanel({
 export default function Recipes() {
   const { t } = useTranslation();
   const { showToast } = useToast();
+  const { deleteWithUndo } = useUndoDelete();
   const { selectedRestaurant, loading: restaurantLoading } = useRestaurant();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -2307,15 +2537,32 @@ export default function Recipes() {
 
   async function handleDeleteConfirm() {
     if (!deleteTarget) return;
-    try {
-      await deleteRecipe(deleteTarget);
-      showToast(t("recipes.recipeDeleted"), 'success');
-      loadData();
-    } catch {
-      showToast(t("recipes.errorDeleting"), 'error');
-    } finally {
-      setDeleteTarget(null);
-    }
+    // Snapshot the recipe before deleting for undo
+    const targetRecipe = recipes.find((r) => r.id === deleteTarget);
+    setDeleteTarget(null);
+    if (!targetRecipe) return;
+
+    await deleteWithUndo({
+      deleteFn: () => deleteRecipe(deleteTarget),
+      restoreFn: () =>
+        createRecipe({
+          name: targetRecipe.name,
+          category: targetRecipe.category,
+          sellingPrice: targetRecipe.sellingPrice,
+          nbPortions: targetRecipe.nbPortions,
+          description: targetRecipe.description ?? undefined,
+          prepTimeMinutes: targetRecipe.prepTimeMinutes,
+          cookTimeMinutes: targetRecipe.cookTimeMinutes,
+          ingredients: (targetRecipe.ingredients || []).map((ri: any) => ({
+            ingredientId: ri.ingredientId ?? ri.ingredient?.id,
+            quantity: ri.quantity,
+            wastePercent: ri.wastePercent ?? 0,
+          })),
+        }),
+      itemLabel: targetRecipe.name,
+      onDeleted: () => loadData(),
+      onRestored: () => loadData(),
+    });
   }
 
   async function handleClone(recipeId: number) {
@@ -2420,15 +2667,60 @@ export default function Recipes() {
     return { estimatedCost, costPerPortion, margin, foundCount };
   }
 
+  // ── Export CSV ────────────────────────────────────────────────────
+  function exportRecipesCSV() {
+    if (recipes.length === 0) { showToast('Aucune recette a exporter', 'error'); return; }
+    const header = ['Nom', 'Categorie', 'Prix de vente', 'Cout portion', 'Marge %', 'Portions', 'Temps prep (min)', 'Temps cuisson (min)'];
+    const rows = recipes.map(r => [
+      r.name,
+      r.category,
+      r.sellingPrice.toFixed(2),
+      (r.margin?.costPerPortion || 0).toFixed(2),
+      (r.margin?.marginPercent || 0).toFixed(1),
+      String(r.nbPortions),
+      String(r.prepTimeMinutes || ''),
+      String(r.cookTimeMinutes || ''),
+    ]);
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `recettes_restaumargin_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${recipes.length} recettes exportees en CSV`, 'success');
+  }
+
   if (loading) return <div className="text-center py-12 text-[#9CA3AF] dark:text-[#737373]">{t("recipes.loading")}</div>;
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t("recipes.title")}</h2>
-        <button onClick={openNew} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center">
-          <Plus className="w-4 h-4" /> {t("recipes.newRecipe")}
-        </button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          {recipes.length > 0 && (
+            <>
+            <button
+              onClick={exportRecipesCSV}
+              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              title="Exporter CSV"
+            >
+              <Download className="w-4 h-4" /> Exporter CSV
+            </button>
+            <button
+              onClick={() => printAllFichesTechniques(recipes, selectedRestaurant?.name || '')}
+              className="flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors"
+              title="Imprimer toutes les fiches techniques"
+            >
+              <Printer className="w-4 h-4" /> Imprimer toutes les fiches
+            </button>
+            </>
+          )}
+          <button onClick={openNew} className="btn-primary flex items-center gap-2 flex-1 sm:flex-none justify-center">
+            <Plus className="w-4 h-4" /> {t("recipes.newRecipe")}
+          </button>
+        </div>
       </div>
 
       {/* ── KPI Summary Cards ──────────────────────────────────────────── */}

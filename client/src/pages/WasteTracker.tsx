@@ -7,7 +7,7 @@ import {
   Brain, Zap, Clock, TrendingUp, CalendarDays, Sparkles,
   Award, CheckCircle, Flame, ArrowUpRight, ArrowDownRight,
   FileText, Package, Camera, Mail, Percent, ShieldCheck,
-  Image, X, Send, Eye
+  Image, X, Send, Eye, Download
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -971,6 +971,36 @@ export default function WasteTracker() {
     }
   }
 
+  // ── Export dechets CSV ──────────────────────────────────────────────
+  function exportWasteCSV() {
+    if (entries.length === 0) { showToast('Aucune perte a exporter', 'error'); return; }
+    const header = ['Date', 'Ingredient', 'Quantite', 'Unite', 'Cout unitaire', 'Cout total', 'Raison', 'Cause racine', 'Notes'];
+    const rows = entries.map(e => {
+      const totalCost = (e.quantity * e.costPerUnit).toFixed(2);
+      const reasonLabels: Record<WasteReason, string> = { expired: 'Perime', spoiled: 'Avarie', overproduction: 'Surproduction', damaged: 'Endommage', other: 'Autre' };
+      return [
+        e.date,
+        e.ingredientName,
+        String(e.quantity),
+        e.unit,
+        e.costPerUnit.toFixed(2),
+        totalCost,
+        reasonLabels[e.reason] || e.reason,
+        e.rootCause ? (ROOT_CAUSE_LABELS[e.rootCause] || e.rootCause) : '',
+        (e.notes || '').replace(/\n/g, ' '),
+      ];
+    });
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dechets_restaumargin_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`${entries.length} pertes exportees en CSV`, 'success');
+  }
+
   // ─── Render ────────────────────────────────────────────────────────────────
 
   const periodLabels: Record<Period, string> = { jour: t('wasteTracker.today'), semaine: t('wasteTracker.thisWeek'), mois: t('wasteTracker.thisMonth') };
@@ -1005,6 +1035,13 @@ export default function WasteTracker() {
               </button>
             ))}
           </div>
+          <button
+            onClick={exportWasteCSV}
+            className="flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] rounded-lg text-sm font-medium transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            Exporter dechets
+          </button>
           <button
             onClick={loadAiAnalysis}
             disabled={aiLoading}

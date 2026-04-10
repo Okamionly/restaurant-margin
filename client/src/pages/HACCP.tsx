@@ -1059,6 +1059,50 @@ export default function HACCP() {
     window.print();
   }
 
+  // ── Export registre CSV ────────────────────────────────────────────
+  function exportRegistreCSV() {
+    if (temperatures.length === 0 && tempLogEntries.length === 0) {
+      window.print();
+      return;
+    }
+    const header = ['Date', 'Heure', 'Zone / Equipement', 'Temperature (C)', 'Conforme', 'Operateur', 'Notes'];
+    const rows: string[][] = [];
+    // Legacy temperature records
+    temperatures.forEach(t => {
+      const d = t.timestamp ? new Date(t.timestamp) : null;
+      rows.push([
+        d ? d.toLocaleDateString('fr-FR') : '',
+        d ? d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
+        ZONE_LABELS[t.zone] || t.zone,
+        String(t.temperature),
+        '', // compliance determined by zone limits
+        t.agent || '',
+        t.notes || '',
+      ]);
+    });
+    // Digital temp log entries
+    tempLogEntries.forEach(e => {
+      const equip = TEMP_LOG_EQUIPMENT.find(eq => eq.id === e.equipment);
+      rows.push([
+        e.timestamp ? new Date(e.timestamp).toLocaleDateString('fr-FR') : tempLogDate,
+        e.checkTime,
+        equip?.label || e.equipment,
+        String(e.temperature),
+        e.isConform ? 'Oui' : 'Non',
+        e.operator,
+        e.correctiveAction || '',
+      ]);
+    });
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `haccp_registre_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   // ─── Daily Checklist Handlers ─────────────────────────────────────────
 
   function toggleCheckItem(id: string) {
@@ -1379,11 +1423,18 @@ export default function HACCP() {
           </h1>
           <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">{t('haccp.subtitle')}</p>
         </div>
-        <button onClick={handlePrint}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
-          <Printer className="w-4 h-4" />
-          Imprimer le registre
-        </button>
+        <div className="flex gap-2">
+          <button onClick={exportRegistreCSV}
+            className="flex items-center gap-2 px-4 py-2.5 border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] rounded-xl text-sm font-medium transition-colors">
+            <Download className="w-4 h-4" />
+            Exporter registre
+          </button>
+          <button onClick={handlePrint}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+            <Printer className="w-4 h-4" />
+            Imprimer le registre
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -2888,9 +2939,9 @@ export default function HACCP() {
                   Chronologie
                 </button>
               </div>
-              <button onClick={handlePrint}
+              <button onClick={exportRegistreCSV}
                 className="flex items-center gap-2 px-3 py-2 text-xs border border-[#E5E7EB] dark:border-[#333] text-[#111111] dark:text-white rounded-xl hover:bg-[#F5F5F5] dark:hover:bg-[#171717] transition-colors">
-                <Download className="w-3.5 h-3.5" />Export
+                <Download className="w-3.5 h-3.5" />Exporter registre
               </button>
               <button onClick={() => setShowIncidentForm(!showIncidentForm)}
                 className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">

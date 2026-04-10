@@ -8,7 +8,7 @@ import OnboardingWizard, { isOnboardingCompleted } from './components/Onboarding
 import FloatingActionBubble from './components/FloatingActionBubble';
 import CookieBanner from './components/CookieBanner';
 import Breadcrumbs from './components/Breadcrumbs';
-import CommandPalette from './components/CommandPalette';
+import CommandPalette, { trackPageVisit } from './components/CommandPalette';
 import NotificationCenter from './components/NotificationCenter';
 import ShortcutsModal from './components/ShortcutsModal';
 import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
@@ -324,6 +324,14 @@ function AppLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Track recently visited pages for CommandPalette
+  useEffect(() => {
+    const path = location.pathname;
+    // Only track main app pages (not login, public, etc.)
+    if (path && path !== '/' && path !== '/login' && !path.startsWith('/outils') && !path.startsWith('/blog')) {
+      trackPageVisit(path);
+    }
+  }, [location.pathname]);
 
   // "?" key opens shortcuts modal (only when no input is focused)
   useEffect(() => {

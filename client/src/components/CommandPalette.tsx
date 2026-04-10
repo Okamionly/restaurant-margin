@@ -98,6 +98,29 @@ function addRecent(id: string) {
   localStorage.setItem(RECENT_KEY, JSON.stringify(current.slice(0, MAX_RECENT)));
 }
 
+// ----- Recently visited pages (localStorage) -----
+const RECENT_PAGES_KEY = 'rm-recent-pages';
+const MAX_RECENT_PAGES = 5;
+
+export function trackPageVisit(path: string) {
+  try {
+    const raw = localStorage.getItem(RECENT_PAGES_KEY);
+    const current: string[] = raw ? JSON.parse(raw) : [];
+    const updated = [path, ...current.filter((p) => p !== path)].slice(0, MAX_RECENT_PAGES);
+    localStorage.setItem(RECENT_PAGES_KEY, JSON.stringify(updated));
+  } catch { /* ignore */ }
+}
+
+function getRecentPages(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_PAGES_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as string[];
+  } catch {
+    return [];
+  }
+}
+
 // ----- Component -----
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
@@ -106,6 +129,7 @@ export default function CommandPalette() {
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const [recipes, setRecipes] = useState<any[]>([]);
   const [ingredients, setIngredients] = useState<any[]>([]);
+  const [suppliers, setSuppliers] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -283,10 +307,23 @@ export default function CommandPalette() {
         });
       });
 
-    return items;
-  }, [query, recipes, ingredients, go]);
+    suppliers
+      .filter((s: any) => s.name?.toLowerCase().includes(q))
+      .slice(0, 5)
+      .forEach((s: any) => {
+        items.push({
+          id: 'supplier-' + s.id,
+          name: s.name,
+          icon: Truck,
+          action: () => go('/suppliers'),
+          category: 'fournisseur',
+        });
+      });
 
-  // ----- Build recent items -----
+    return items;
+  }, [query, recipes, ingredients, suppliers, go]);
+
+  // ----- Build recent command items -----
   const recentItems: CommandItem[] = useMemo(() => {
     if (query.trim()) return []; // Don't show recent when searching
     return recentIds
@@ -294,14 +331,70 @@ export default function CommandPalette() {
       .filter(Boolean) as CommandItem[];
   }, [recentIds, allStaticItems, query]);
 
+  // ----- Build recently visited pages -----
+  // Map of route paths to page item IDs for resolving recent pages
+  const pathToPageId = useMemo(() => {
+    const map: Record<string, string> = {
+      '/dashboard': 'p-dashboard',
+      '/menu': 'p-menu',
+      '/ingredients': 'p-ingredients',
+      '/recipes': 'p-recipes',
+      '/inventory': 'p-inventory',
+      '/suppliers': 'p-suppliers',
+      '/scanner-factures': 'p-scanner',
+      '/mercuriale': 'p-mercuriale',
+      '/menu-engineering': 'p-engineering',
+      '/allergen-matrix': 'p-allergens',
+      '/commandes': 'p-commandes',
+      '/planning': 'p-planning',
+      '/messagerie': 'p-messagerie',
+      '/clients': 'p-clients',
+      '/comptabilite': 'p-comptabilite',
+      '/devis': 'p-devis',
+      '/marketplace': 'p-marketplace',
+      '/settings': 'p-settings',
+      '/gaspillage': 'p-gaspillage',
+      '/menu-calendar': 'p-menu-calendar',
+      '/haccp': 'p-haccp',
+      '/assistant': 'p-assistant',
+      '/seminaires': 'p-seminaires',
+      '/qr-menu': 'p-qr',
+      '/abonnement': 'p-abonnement',
+      '/station': 'p-station',
+      '/feedback': 'p-feedback',
+      '/analytics': 'p-analytics',
+    };
+    return map;
+  }, []);
+
+  const recentPageItems: CommandItem[] = useMemo(() => {
+    if (query.trim()) return [];
+    const recentPaths = getRecentPages();
+    const items: CommandItem[] = [];
+    for (const path of recentPaths) {
+      const pageId = pathToPageId[path];
+      if (pageId) {
+        const found = pageItems.find((pi) => pi.id === pageId);
+        if (found && !items.find((i) => i.id === found.id)) {
+          items.push(found);
+        }
+      }
+      if (items.length >= MAX_RECENT_PAGES) break;
+    }
+    return items;
+  }, [query, pageItems, pathToPageId]);
+
   // ----- Filtered command groups for display -----
   const displayGroups = useMemo(() => {
     const groups: { label: string; icon: React.ComponentType<{ className?: string }>; items: CommandItem[] }[] = [];
 
     if (!query.trim()) {
-      // No query: show recent, then quick actions, then pages (collapsed)
+      // No query: show recently visited pages, then recent commands, then quick actions, then pages
+      if (recentPageItems.length > 0) {
+        groups.push({ label: 'Recemment visite', icon: Clock, items: recentPageItems });
+      }
       if (recentItems.length > 0) {
-        groups.push({ label: 'Recent', icon: Clock, items: recentItems });
+        groups.push({ label: 'Recemment utilise', icon: Clock, items: recentItems });
       }
       groups.push({ label: 'Actions rapides', icon: Zap, items: quickActions });
       groups.push({ label: 'Navigation', icon: Layout, items: pageItems.slice(0, 8) });
@@ -324,11 +417,15 @@ export default function CommandPalette() {
       if (dynamicResults.length > 0) {
         const recipeResults = dynamicResults.filter((d) => d.category === 'recette');
         const ingredientResults = dynamicResults.filter((d) => d.category === 'ingredient');
+        const supplierResults = dynamicResults.filter((d) => d.category === 'fournisseur');
         if (recipeResults.length > 0) {
           groups.push({ label: 'Recettes', icon: ClipboardList, items: recipeResults });
         }
         if (ingredientResults.length > 0) {
           groups.push({ label: 'Ingredients', icon: ShoppingBasket, items: ingredientResults });
+        }
+        if (supplierResults.length > 0) {
+          groups.push({ label: 'Fournisseurs', icon: Truck, items: supplierResults });
         }
       }
       if (matchedPages.length > 0) {
@@ -340,7 +437,7 @@ export default function CommandPalette() {
     }
 
     return groups;
-  }, [query, quickActions, pageItems, aiItems, recentItems, dynamicResults]);
+  }, [query, quickActions, pageItems, aiItems, recentItems, recentPageItems, dynamicResults]);
 
   const flatItems = useMemo(() => displayGroups.flatMap((g) => g.items), [displayGroups]);
 
@@ -354,9 +451,11 @@ export default function CommandPalette() {
     Promise.all([
       fetch('/api/recipes', { headers }).then((r) => (r.ok ? r.json() : [])).catch(() => []),
       fetch('/api/ingredients', { headers }).then((r) => (r.ok ? r.json() : [])).catch(() => []),
-    ]).then(([rec, ing]) => {
+      fetch('/api/suppliers', { headers }).then((r) => (r.ok ? r.json() : [])).catch(() => []),
+    ]).then(([rec, ing, sup]) => {
       setRecipes(Array.isArray(rec) ? rec : []);
       setIngredients(Array.isArray(ing) ? ing : []);
+      setSuppliers(Array.isArray(sup) ? sup : []);
       setLoadingData(false);
     });
   }, [open]);
@@ -617,6 +716,12 @@ export default function CommandPalette() {
               esc
             </kbd>
             fermer
+          </span>
+          <span className="flex items-center gap-1.5">
+            <kbd className="px-1.5 py-0.5 bg-[#171717] border border-[#262626] rounded-md text-[#525252] text-[10px]">
+              ?
+            </kbd>
+            raccourcis
           </span>
           <span className="ml-auto flex items-center gap-1.5 text-[#525252]">
             <Command className="w-3 h-3" />

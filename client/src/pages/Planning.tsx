@@ -5,7 +5,7 @@ import {
   Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical,
   Timer, LogIn, LogOut, Play, Square, Printer, AlertCircle,
   Sun, Moon, Coffee, ChefHat, UtensilsCrossed, GlassWater, Droplets,
-  Send, Copy, Save, FileText, Ban, Check, MessageSquare, Zap, Shield
+  Send, Copy, Save, FileText, Ban, Check, MessageSquare, Zap, Shield, Download
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -1109,6 +1109,33 @@ export default function Planning() {
     window.print();
   }
 
+  // ── Export planning CSV ──────────────────────────────────────────
+  function exportPlanningCSV() {
+    if (weekShifts.length === 0) { showToast('Aucun shift a exporter', 'error'); return; }
+    const header = ['Employe', 'Role', 'Date', 'Debut', 'Fin', 'Type', 'Notes'];
+    const rows = weekShifts.map(s => {
+      const emp = employees.find(e => e.id === s.employeeId);
+      return [
+        emp?.name || '',
+        emp?.role || '',
+        s.date,
+        s.startTime,
+        s.endTime,
+        s.type || '',
+        s.notes || '',
+      ];
+    });
+    const csvContent = [header, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `planning_${weekDayStrings[0] || new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Planning exporte en CSV', 'success');
+  }
+
   // ── Summary table data ────────────────────────────────────────────
 
   const summaryRows = useMemo(() => {
@@ -1158,6 +1185,12 @@ export default function Planning() {
             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
           >
             <FileText className="w-4 h-4" /> Templates
+          </button>
+          <button
+            onClick={exportPlanningCSV}
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
+          >
+            <Download className="w-4 h-4" /> Exporter planning
           </button>
           <button
             onClick={handlePrint}

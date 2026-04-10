@@ -12,15 +12,18 @@ interface ShortcutEntry {
 }
 
 const shortcuts: ShortcutEntry[] = [
-  { keys: ['Ctrl', 'K'], description: 'Recherche rapide' },
-  { keys: ['?'], description: 'Raccourcis clavier' },
+  { keys: ['Ctrl', 'K'], description: 'Recherche rapide / Palette de commandes' },
+  { keys: ['?'], description: 'Afficher les raccourcis clavier' },
+  { keys: ['Ctrl', 'N'], description: 'Nouvelle recette' },
+  { keys: ['Ctrl', 'I'], description: 'Nouvel ingredient' },
+  { keys: ['Ctrl', 'P'], description: 'Imprimer la page' },
   { keys: ['G', 'D'], description: 'Aller au Dashboard' },
   { keys: ['G', 'R'], description: 'Aller aux Recettes' },
   { keys: ['G', 'I'], description: 'Aller aux Ingredients' },
   { keys: ['G', 'F'], description: 'Aller aux Fournisseurs' },
   { keys: ['G', 'P'], description: 'Aller au Planning' },
   { keys: ['N'], description: 'Nouveau (dans la page active)' },
-  { keys: ['ESC'], description: 'Fermer modal/popup' },
+  { keys: ['ESC'], description: 'Fermer modal / panneau' },
 ];
 
 export default function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {

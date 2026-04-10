@@ -778,11 +778,11 @@ export default function Settings() {
 
       const headers = ['Nom', 'Categorie', 'Unite', 'Prix', 'Fournisseur'];
       const rows = (Array.isArray(ingredients) ? ingredients : []).map((i: any) =>
-        [i.name, i.category, i.unit, i.price, i.supplier || ''].join(','),
+        [i.name, i.category, i.unit, i.price, i.supplier || ''].map(v => `"${String(v).replace(/"/g, '""')}"`).join(';'),
       );
-      const csv = [headers.join(','), ...rows].join('\n');
+      const csv = [headers.join(';'), ...rows].join('\n');
 
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

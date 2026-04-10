@@ -603,14 +603,14 @@ export default function Inventory() {
   function handleBulkExportCSV() {
     const selected = filteredItems.filter(i => selectedIds.has(i.id));
     if (selected.length === 0) { showToast('Aucun article selectionne', 'error'); return; }
-    const header = 'Ingredient,Categorie,Stock actuel,Unite,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
+    const header = '"Ingredient";"Categorie";"Stock actuel";"Unite";"Stock min";"Stock max";"Valeur";"Statut";"Emplacement";"Date expiration"\n';
     const rows = selected.map(item => {
       const val = ((item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit).toFixed(2);
       const status = getStatus(item) === 'ok' ? 'OK' : getStatus(item) === 'low' ? 'Bas' : 'Critique';
       const meta = parseMeta(item.notes);
-      return `"${item.ingredient.name}","${item.ingredient.category}",${item.currentStock},"${item.unit}",${item.minStock},${item.maxStock || ''},${val},${status},"${meta.location || ''}","${meta.expirationDate || ''}"`;
+      return `"${item.ingredient.name}";"${item.ingredient.category}";${item.currentStock};"${item.unit}";${item.minStock};${item.maxStock || ''};${val};"${status}";"${meta.location || ''}";"${meta.expirationDate || ''}"`;
     }).join('\n');
-    const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -1066,14 +1066,14 @@ export default function Inventory() {
   }
 
   function handleExportCSV() {
-    const header = 'Ingredient,Categorie,Stock actuel,Unite,Stock min,Stock max,Valeur,Statut,Emplacement,Date expiration\n';
+    const header = '"Ingredient";"Categorie";"Stock actuel";"Unite";"Stock min";"Stock max";"Valeur";"Statut";"Emplacement";"Date expiration"\n';
     const rows = filteredItems.map(item => {
       const val = ((item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit).toFixed(2);
       const status = getStatus(item) === 'ok' ? 'OK' : getStatus(item) === 'low' ? 'Bas' : 'Critique';
       const meta = parseMeta(item.notes);
-      return `"${item.ingredient.name}","${item.ingredient.category}",${item.currentStock},"${item.unit}",${item.minStock},${item.maxStock || ''},${val},${status},"${meta.location || ''}","${meta.expirationDate || ''}"`;
+      return `"${item.ingredient.name}";"${item.ingredient.category}";${item.currentStock};"${item.unit}";${item.minStock};${item.maxStock || ''};${val};"${status}";"${meta.location || ''}";"${meta.expirationDate || ''}"`;
     }).join('\n');
-    const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

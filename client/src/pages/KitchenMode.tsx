@@ -1850,7 +1850,7 @@ function QuickActionsBar({
         {showSettingsMenu && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setShowSettingsMenu(false)} />
-            <div className="absolute right-0 top-full mt-1 z-50 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-2xl shadow-black/50 py-2 min-w-[200px]">
+            <div className="absolute right-0 bottom-full mb-1 z-50 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-2xl shadow-black/50 py-2 min-w-[200px]">
               <button onClick={() => { onOpenTableConfig(); setShowSettingsMenu(false); }}
                 className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-[#a1a1aa] hover:bg-[#262626] hover:text-white kds-transition">
                 <Settings className="w-4 h-4" />Config tables

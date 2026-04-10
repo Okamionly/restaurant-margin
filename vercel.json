@@ -1,14 +1,5 @@
 {
   "version": 2,
-  "crons": [
-    { "path": "/api/cron/health-check", "schedule": "*/15 * * * *" },
-    { "path": "/api/cron/sentry-monitor", "schedule": "*/30 * * * *" },
-    { "path": "/api/cron/email-sequence", "schedule": "0 10 * * *" },
-    { "path": "/api/cron/lead-finder", "schedule": "0 8 * * *" },
-    { "path": "/api/cron/market-intel", "schedule": "0 7 * * *" },
-    { "path": "/api/cron/daily-report", "schedule": "30 8 * * *" },
-    { "path": "/api/cron/trial-expiry", "schedule": "0 9 * * *" }
-  ],
   "buildCommand": "npx prisma generate && cd client && npx vite build",
   "outputDirectory": "client/dist",
   "installCommand": "npm install && cd client && npm install && cd ../server && npm install",

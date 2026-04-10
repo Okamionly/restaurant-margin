@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import {
   ChefHat, ClipboardList, Truck, BarChart3,
@@ -9,7 +9,7 @@ import {
   XCircle, Brain, Thermometer, Newspaper,
   Check, Plus, Minus, Sparkles, MessageCircle,
   ShieldCheck, Globe, Headphones, FileCheck, CreditCard,
-  Package, Calculator, Eye, Play, MapPin, ChevronRight,
+  Package, Calculator, Eye, MapPin, ChevronRight,
 } from 'lucide-react';
 
 /* <!-- HERO SAUVEGARDE -->
@@ -334,8 +334,6 @@ const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
 export default function Landing() {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const heroVariant = searchParams.get('variant') === 'b' ? 'b' : 'a';
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -367,6 +365,9 @@ export default function Landing() {
 
   // Social Proof notification
   const [socialNotif, setSocialNotif] = useState<string | null>(null);
+
+  // Pricing toggle
+  const [annualBilling, setAnnualBilling] = useState(false);
 
   // Live Demo
   const [demoActiveRecipe, setDemoActiveRecipe] = useState<number | null>(null);
@@ -571,6 +572,16 @@ export default function Landing() {
     );
   };
 
+  const StatCounterDark = ({ value, suffix = '' }: { value: number; suffix?: string }) => {
+    const { ref, visible } = useInView(0.3);
+    const count = useAnimatedCounter(value, 2000, visible);
+    return (
+      <div ref={ref} className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+        {count.toLocaleString('fr-FR')}{suffix}
+      </div>
+    );
+  };
+
   /* ================================================================ */
   /*  RENDER                                                          */
   /* ================================================================ */
@@ -641,51 +652,27 @@ export default function Landing() {
                 {t('landing.badge')}
               </div>
 
-              {heroVariant === 'a' ? (
-                <>
-                  <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                    <span className="text-[#111111]">{t('landing.heroTitleA1')}</span>
-                    <br />
-                    <span className="text-[#111111]">{t('landing.heroTitleA2')}</span>
-                    <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
-                      {t('landing.heroTitleA3')}
-                    </span>
-                  </h1>
-                  <p className="mt-6 text-lg sm:text-xl text-[#6B7280] max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                    {t('landing.heroSubA')}
-                  </p>
-                </>
-              ) : (
-                <>
-                  <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                    <span className="text-[#111111]">Les restaurants qui utilisent RestauMargin economisent </span>
-                    <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
-                      340EUR/mois
-                    </span>
-                    <span className="text-[#111111]"> en moyenne.</span>
-                  </h1>
-                  <p className="mt-6 text-lg sm:text-xl text-[#6B7280] max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                    Fiches techniques automatiques, alertes fournisseurs, IA cuisine — tout pour reduire votre food cost des le premier jour.
-                  </p>
-                </>
-              )}
+              <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
+                <span className="text-[#111111]">Maitrisez vos marges,</span>
+                <br />
+                <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent">
+                  augmentez vos profits.
+                </span>
+              </h1>
+              <p className="mt-5 text-lg sm:text-xl text-[#6B7280] max-w-lg mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+                Fiches techniques, food cost et commandes fournisseurs automatises par l'IA pour votre restaurant.
+              </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-[fadeInUp_0.8s_ease-out_0.3s_both]">
                 <Link
                   to="/login?mode=register"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold shadow-lg shadow-teal-600/20 transition-all text-lg"
                 >
-                  {t('landing.ctaTrial')} <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  to="/demo"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border-2 border-[#111111] text-[#111111] font-semibold transition-all text-base hover:bg-[#111111] hover:text-white"
-                >
-                  <Play className="w-4 h-4" /> {t('landing.ctaDemo')}
+                  Essai gratuit 7 jours <ArrowRight className="w-5 h-5" />
                 </Link>
               </div>
               <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                <Shield className="w-3.5 h-3.5" /> {t('landing.noCreditCard')}
+                <Shield className="w-3.5 h-3.5" /> Sans carte bancaire -- Sans engagement
               </p>
             </div>
 
@@ -714,24 +701,25 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Social proof headline */}
-          <div className="animate-[fadeInUp_1s_ease-out_0.45s_both]">
-            <p className="mt-16 text-center text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">
-              {t('landing.socialProof')}
-            </p>
-          </div>
-
-          {/* Stats bar */}
+          {/* Social proof stats bar */}
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
-            <div className="bg-white border border-[#E5E7EB] shadow-sm rounded-2xl py-8 px-4">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-6 divide-[#E5E7EB] md:divide-x">
-                <StatCounter value={150} suffix="+" label={t('landing.statRestaurants')} />
-                <StatCounter value={12400} suffix="" label={t('landing.statRecipes')} />
-                <StatCounter value={340} suffix="k" label={t('landing.statSavings')} />
-                <StatCounter value={8} suffix="%" label={t('landing.statFoodCost')} />
-                <div className="text-center px-6">
-                  <div className="text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">4.8/5</div>
-                  <div className="text-sm text-[#6B7280] mt-1 font-medium">Satisfaction clients</div>
+            <div className="mt-16 bg-[#111111] rounded-2xl py-10 px-6 shadow-lg">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-white/10">
+                <div className="text-center px-4">
+                  <StatCounterDark value={150} suffix="+" />
+                  <div className="text-sm text-white/50 mt-1 font-medium">Restaurants equipes</div>
+                </div>
+                <div className="text-center px-4">
+                  <StatCounterDark value={12000} suffix="+" />
+                  <div className="text-sm text-white/50 mt-1 font-medium">Fiches techniques</div>
+                </div>
+                <div className="text-center px-4">
+                  <StatCounterDark value={340000} suffix=" EUR" />
+                  <div className="text-sm text-white/50 mt-1 font-medium">D'economies generees</div>
+                </div>
+                <div className="text-center px-4">
+                  <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">4.8<span className="text-2xl text-white/50">/5</span></div>
+                  <div className="text-sm text-white/50 mt-1 font-medium">Satisfaction clients</div>
                 </div>
               </div>
             </div>
@@ -1258,17 +1246,28 @@ export default function Landing() {
       <section id="pricing" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-12">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Tarifs</p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
                 Des tarifs simples et transparents
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">Sans engagement. Annulez quand vous voulez.</p>
-              <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E5E7EB] bg-[#F9FAFB]">
-                <Zap className="w-4 h-4 text-teal-600" />
-                <span className="text-sm font-semibold text-[#111111]">Essai gratuit 7 jours</span>
+
+              {/* Annual / Monthly toggle */}
+              <div className="mt-8 inline-flex items-center gap-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-full p-1">
+                <button
+                  onClick={() => setAnnualBilling(false)}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${!annualBilling ? 'bg-[#111111] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#111111]'}`}
+                >
+                  Mensuel
+                </button>
+                <button
+                  onClick={() => setAnnualBilling(true)}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${annualBilling ? 'bg-[#111111] text-white shadow-sm' : 'text-[#6B7280] hover:text-[#111111]'}`}
+                >
+                  Annuel <span className={`text-xs px-2 py-0.5 rounded-full ${annualBilling ? 'bg-teal-500 text-white' : 'bg-teal-50 text-teal-700 border border-teal-200'}`}>-20%</span>
+                </button>
               </div>
-              <p className="mt-3 text-sm text-[#9CA3AF]">Messages et IA limites pendant l'essai</p>
             </div>
           </FadeIn>
 
@@ -1278,10 +1277,14 @@ export default function Landing() {
               <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col">
                 <h3 className="text-lg font-bold text-[#111111] mb-1">Pro</h3>
                 <p className="text-sm text-[#9CA3AF] mb-6">Pour les independants qui veulent maitriser leurs marges.</p>
-                <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-extrabold text-[#111111]">29</span>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-5xl font-extrabold text-[#111111]">{annualBilling ? '23' : '29'}</span>
                   <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
+                {annualBilling && (
+                  <p className="text-xs text-teal-600 font-semibold mb-6">276 EUR/an au lieu de 348 EUR — Economisez 72 EUR</p>
+                )}
+                {!annualBilling && <div className="mb-6" />}
                 <div className="space-y-4 mb-10 flex-1">
                   {[
                     'Fiches techniques illimitees avec calcul automatique des marges',
@@ -1303,10 +1306,11 @@ export default function Landing() {
                   href="https://buy.stripe.com/9B614g1u2eRe9QU6vl87K04"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center px-6 py-3.5 rounded-lg bg-[#111111] text-white font-semibold hover:bg-[#333333] transition-colors"
+                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors shadow-lg shadow-teal-600/20"
                 >
-                  Commencer l'essai gratuit
+                  Essai gratuit 7 jours
                 </a>
+                <p className="text-xs text-[#9CA3AF] text-center mt-2">Sans carte bancaire</p>
               </div>
             </FadeIn>
 
@@ -1318,10 +1322,14 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-bold text-[#111111] mb-1 mt-2">Business</h3>
                 <p className="text-sm text-[#9CA3AF] mb-6">Pour les groupes qui gerent plusieurs etablissements.</p>
-                <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-extrabold text-[#111111]">79</span>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-5xl font-extrabold text-[#111111]">{annualBilling ? '63' : '79'}</span>
                   <span className="text-[#9CA3AF] text-base">&euro;/mois</span>
                 </div>
+                {annualBilling && (
+                  <p className="text-xs text-teal-600 font-semibold mb-6">756 EUR/an au lieu de 948 EUR — Economisez 192 EUR</p>
+                )}
+                {!annualBilling && <div className="mb-6" />}
                 <div className="space-y-4 mb-10 flex-1">
                   {[
                     'Tout du plan Pro',
@@ -1343,10 +1351,11 @@ export default function Landing() {
                   href="https://buy.stripe.com/4gMbIU5Ki4cAfbe1b187K05"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full text-center px-6 py-3.5 rounded-lg bg-[#111111] text-white font-semibold hover:bg-[#333333] transition-colors"
+                  className="block w-full text-center px-6 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-colors shadow-lg shadow-teal-600/20"
                 >
-                  Commencer l'essai gratuit
+                  Essai gratuit 7 jours
                 </a>
+                <p className="text-xs text-[#9CA3AF] text-center mt-2">Sans carte bancaire</p>
               </div>
             </FadeIn>
           </div>
@@ -1518,46 +1527,70 @@ export default function Landing() {
       {/* ═══════════════ 10. FOOTER ═══════════════ */}
       <footer className="border-t border-[#E5E7EB] bg-[#FFFFFF]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            <div>
+          <div className="py-16 grid sm:grid-cols-2 lg:grid-cols-5 gap-10">
+            {/* Brand column */}
+            <div className="lg:col-span-2">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-9 h-9 rounded-xl bg-[#111111] flex items-center justify-center">
                   <ChefHat className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-lg font-bold text-[#111111]">RestauMargin</span>
               </div>
-              <p className="text-sm text-[#6B7280] leading-relaxed">
+              <p className="text-sm text-[#6B7280] leading-relaxed max-w-xs">
                 La plateforme de gestion des marges pour la restauration professionnelle.
               </p>
-              <div className="flex items-center gap-4 mt-4">
-                <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF]">
-                  <Shield className="w-3.5 h-3.5" /> Donnees EU
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-[#9CA3AF]">
-                  <Lock className="w-3.5 h-3.5" /> SSL
-                </div>
+
+              {/* Made in France badge */}
+              <div className="mt-5 inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#F9FAFB] border border-[#E5E7EB]">
+                <span className="text-base">🇫🇷</span>
+                <span className="text-xs font-semibold text-[#111111]">Made in France</span>
+                <span className="text-[10px] text-[#9CA3AF]">Donnees hebergees en Europe</span>
+              </div>
+
+              {/* Social icons */}
+              <div className="flex items-center gap-3 mt-5">
+                {[
+                  { label: 'LinkedIn', path: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' },
+                  { label: 'Instagram', path: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z' },
+                  { label: 'Facebook', path: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z' },
+                ].map((social) => (
+                  <a
+                    key={social.label}
+                    href="#"
+                    aria-label={social.label}
+                    className="w-9 h-9 rounded-lg bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center hover:bg-[#111111] hover:border-[#111111] group transition-colors"
+                  >
+                    <svg className="w-4 h-4 text-[#9CA3AF] group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                      <path d={social.path} />
+                    </svg>
+                  </a>
+                ))}
               </div>
             </div>
 
+            {/* Produit */}
             <div>
               <h4 className="font-semibold text-[#111111] text-sm mb-4">Produit</h4>
               <ul className="space-y-2.5 text-sm text-[#6B7280]">
                 <li><button onClick={() => scrollTo('features')} className="hover:text-[#111111] transition-colors">Fonctionnalites</button></li>
-                <li><Link to="/pricing" className="hover:text-[#111111] transition-colors">Tarifs</Link></li>
-                <li><button onClick={() => scrollTo('faq')} className="hover:text-[#111111] transition-colors">FAQ</button></li>
-                <li><Link to="/temoignages" className="hover:text-[#111111] transition-colors">Temoignages</Link></li>
+                <li><button onClick={() => scrollTo('pricing')} className="hover:text-[#111111] transition-colors">Tarifs</button></li>
+                <li><Link to="/blog" className="hover:text-[#111111] transition-colors">Blog</Link></li>
+                <li><button onClick={() => scrollTo('contact')} className="hover:text-[#111111] transition-colors">Contact</button></li>
               </ul>
             </div>
 
+            {/* Legal */}
             <div>
               <h4 className="font-semibold text-[#111111] text-sm mb-4">Legal</h4>
               <ul className="space-y-2.5 text-sm text-[#6B7280]">
-                <li><Link to="/mentions-legales" className="hover:text-[#111111] transition-colors">Mentions legales</Link></li>
                 <li><Link to="/cgu" className="hover:text-[#111111] transition-colors">CGU</Link></li>
-                <li><Link to="/politique-confidentialite" className="hover:text-[#111111] transition-colors">Politique de confidentialite</Link></li>
+                <li><Link to="/cgv" className="hover:text-[#111111] transition-colors">CGV</Link></li>
+                <li><Link to="/mentions-legales" className="hover:text-[#111111] transition-colors">Mentions legales</Link></li>
+                <li><Link to="/politique-confidentialite" className="hover:text-[#111111] transition-colors">Confidentialite</Link></li>
               </ul>
             </div>
 
+            {/* Contact */}
             <div>
               <h4 className="font-semibold text-[#111111] text-sm mb-4">Contact</h4>
               <ul className="space-y-2.5 text-sm text-[#6B7280]">
@@ -1576,8 +1609,9 @@ export default function Landing() {
           <div className="border-t border-[#E5E7EB] py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-[#9CA3AF]">RestauMargin &copy; 2026. Tous droits reserves.</p>
             <div className="flex items-center gap-6 text-xs text-[#9CA3AF]">
-              <Link to="/mentions-legales" className="hover:text-[#111111] transition-colors">Mentions legales</Link>
               <Link to="/cgu" className="hover:text-[#111111] transition-colors">CGU</Link>
+              <Link to="/cgv" className="hover:text-[#111111] transition-colors">CGV</Link>
+              <Link to="/mentions-legales" className="hover:text-[#111111] transition-colors">Mentions legales</Link>
               <Link to="/politique-confidentialite" className="hover:text-[#111111] transition-colors">Confidentialite</Link>
             </div>
           </div>

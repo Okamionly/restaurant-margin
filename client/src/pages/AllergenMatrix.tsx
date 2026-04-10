@@ -278,11 +278,11 @@ export default function AllergenMatrix() {
       {/* ── Header ────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
+          <h1 className="text-xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
             <Shield className="w-5 h-5" />
             Matrice allergenes
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-0.5">
+          <p className="text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3] mt-0.5">
             {data.recipes.length} recettes &times; 14 allergenes majeurs UE
           </p>
         </div>

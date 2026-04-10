@@ -960,8 +960,8 @@ export default function AIAssistant() {
           <Sparkles className="w-5 h-5 text-white dark:text-black" />
         </div>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold text-black dark:text-white tracking-tight">Assistant IA</h1>
-          <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Votre copilote restaurant intelligent</p>
+          <h1 className="text-xl font-bold font-satoshi text-[#111111] dark:text-white tracking-tight">Assistant IA</h1>
+          <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">Votre copilote restaurant intelligent</p>
         </div>
 
         {/* Mode selector */}

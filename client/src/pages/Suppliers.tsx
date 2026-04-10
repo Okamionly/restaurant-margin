@@ -1191,13 +1191,13 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t('suppliers.title')}</h2>
             <div className="flex flex-wrap items-center gap-2">
               {/* Score comparison button */}
               {suppliers.length >= 2 && (
                 <button
                   onClick={() => setShowScoreCompare(true)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-[#D1D5DB] dark:border-[#333] rounded-lg text-[#111111] dark:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#111111] dark:text-white hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors"
                 >
                   <BarChart3 className="w-4 h-4" />
                   Comparer les fournisseurs
@@ -1205,7 +1205,7 @@ export default function Suppliers() {
               )}
               {/* Quick-add dropdown */}
               <div className="relative">
-                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium border border-[#D1D5DB] dark:border-[#2A2A2A] rounded-lg text-[#9CA3AF] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
+                <button onClick={() => setShowQuickAdd(!showQuickAdd)} className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl text-[#737373] dark:text-[#A3A3A3] hover:bg-[#FAFAFA] dark:hover:bg-[#171717] transition-colors">
                   <Zap className="w-4 h-4 text-amber-500" />
                   {t('suppliers.quickAdd')}
                   <ChevronDown className="w-3 h-3" />
@@ -1242,34 +1242,34 @@ export default function Suppliers() {
           </div>
 
           {/* Stats cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.totalSuppliers')}</span>
-                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.totalSuppliers')}</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{stats.totalSuppliers}</div>
+              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.totalSuppliers}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.linkedIngredients')}</span>
-                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.linkedIngredients')}</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{stats.totalLinked}</div>
+              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.totalLinked}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.withDelivery')}</span>
-                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.withDelivery')}</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.withDelivery}</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.withDelivery}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('suppliers.withoutSupplier')}</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('suppliers.withoutSupplier')}</span>
+                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Package className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{stats.withoutSupplier}</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{stats.withoutSupplier}</div>
             </div>
           </div>
 
@@ -2571,12 +2571,12 @@ export default function Suppliers() {
         <>
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
               <Scale className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
               Comparateur de prix
             </h2>
             {totalPotentialSavings > 0 && (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
                 <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
                   Economie potentielle totale : {totalPotentialSavings.toFixed(2)} EUR/mois
@@ -2586,42 +2586,42 @@ export default function Suppliers() {
           </div>
 
           {/* Stats cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-3 sm:p-5">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs sm:text-sm text-[#9CA3AF] dark:text-[#737373]">Produits comparables</span>
-                <div className="p-1.5 sm:p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Scale className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Produits comparables</span>
+                <div className="p-1.5 sm:p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Scale className="w-4 h-4 sm:w-5 sm:h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{comparatorData.length}</div>
+              <div className="text-xl sm:text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{comparatorData.length}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Fournisseurs actifs</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Fournisseurs actifs</span>
+                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Truck className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{suppliers.length}</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{suppliers.length}</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Economie potentielle</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><Euro className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Economie potentielle</span>
+                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Euro className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{totalPotentialSavings.toFixed(2)} EUR</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">par mois</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-emerald-600 dark:text-emerald-400">{totalPotentialSavings.toFixed(2)} EUR</div>
+              <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">par mois</div>
             </div>
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-5">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Alertes prix</span>
-                <div className="p-2 rounded-lg bg-[#F3F4F6] dark:bg-[#171717]"><AlertTriangle className="w-5 h-5 text-[#111111] dark:text-white" /></div>
+                <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Alertes prix</span>
+                <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><AlertTriangle className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold text-[#111111] dark:text-white">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">hausses &gt; 5%</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{Object.values(priceAlerts).filter(a => a.pctChange > 0).length}</div>
+              <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">hausses &gt; 5%</div>
             </div>
           </div>
 
           {comparatorData.length === 0 ? (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow p-12 text-center">
-              <Scale className="w-12 h-12 mx-auto text-[#6B7280] dark:text-[#A3A3A3] mb-3" />
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-12 text-center">
+              <Scale className="w-12 h-12 mx-auto text-[#737373] dark:text-[#A3A3A3] mb-3" />
               <p className="text-[#9CA3AF] dark:text-[#A3A3A3] mb-2">Aucun produit comparable</p>
               <p className="text-sm text-[#9CA3AF] dark:text-[#A3A3A3]">
                 Liez le meme ingredient a plusieurs fournisseurs pour activer la comparaison des prix.

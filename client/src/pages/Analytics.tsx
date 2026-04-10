@@ -478,7 +478,7 @@ export default function Analytics() {
          ══════════════════════════════════════════════ */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
             <BarChart3 className="w-7 h-7" />
             Analytiques
           </h1>

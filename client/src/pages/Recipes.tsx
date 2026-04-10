@@ -2223,7 +2223,7 @@ export default function Recipes() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t("recipes.title")}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t("recipes.title")}</h2>
         <button onClick={openNew} className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center">
           <Plus className="w-4 h-4" /> {t("recipes.newRecipe")}
         </button>
@@ -2231,27 +2231,27 @@ export default function Recipes() {
 
       {/* ── KPI Summary Cards ──────────────────────────────────────────── */}
       {recipes.length > 0 && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("recipes.kpiTotal")}</div>
-            <div className="text-2xl font-bold text-[#111111] dark:text-white">{kpis.total}</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">{t("recipes.kpiTotal")}</div>
+            <div className="text-2xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{kpis.total}</div>
           </div>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">{t("recipes.kpiAvgMargin")}</div>
-            <div className={`text-2xl font-bold ${kpis.avgMargin >= 70 ? 'text-green-600 dark:text-green-400' : kpis.avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{kpis.avgMargin.toFixed(1)}%</div>
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">{t("recipes.kpiAvgMargin")}</div>
+            <div className={`text-2xl font-bold font-satoshi tabular-nums ${kpis.avgMargin >= 70 ? 'text-emerald-600 dark:text-emerald-400' : kpis.avgMargin >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{kpis.avgMargin.toFixed(1)}%</div>
           </div>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-            <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="flex items-center gap-1 text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">
               <Trophy className="w-3 h-3" /> {t("recipes.kpiBestMargin")}
             </div>
-            <div className="text-sm font-bold text-green-600 dark:text-green-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
-            <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{kpis.bestMargin.toFixed(1)}%</div>
+            <div className="text-sm font-bold font-satoshi text-emerald-600 dark:text-emerald-400 truncate" title={kpis.bestName}>{kpis.bestName}</div>
+            <div className="text-xs font-general-sans tabular-nums text-[#737373] dark:text-[#A3A3A3]">{kpis.bestMargin.toFixed(1)}%</div>
           </div>
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
-            <div className="flex items-center gap-1 text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
+            <div className="flex items-center gap-1 text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3] mb-1">
               <ShieldAlert className="w-3 h-3" /> {t("recipes.kpiDanger")}
             </div>
-            <div className={`text-2xl font-bold ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>{kpis.dangerCount}</div>
+            <div className={`text-2xl font-bold font-satoshi tabular-nums ${kpis.dangerCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>{kpis.dangerCount}</div>
           </div>
         </div>
       )}

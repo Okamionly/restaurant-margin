@@ -138,6 +138,24 @@ const HISTORY_KEY = 'weighstation_history';
 const TARE_PROFILES_KEY = 'weighstation_tare_profiles';
 const SCALE_PROFILES_KEY = 'weighstation_scale_profiles';
 const RECIPE_SESSIONS_KEY = 'weighstation_recipe_sessions';
+const RECENT_INGREDIENTS_KEY = 'weighstation_recent_ingredients';
+
+function loadRecentIngredients(): number[] {
+  try {
+    const raw = localStorage.getItem(RECENT_INGREDIENTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveRecentIngredients(ids: number[]) {
+  localStorage.setItem(RECENT_INGREDIENTS_KEY, JSON.stringify(ids.slice(0, 5)));
+}
+
+function addToRecent(id: number) {
+  const recent = loadRecentIngredients().filter(rid => rid !== id);
+  recent.unshift(id);
+  saveRecentIngredients(recent.slice(0, 5));
+}
 
 function loadHistory(): HistoryEntry[] {
   try {
@@ -276,6 +294,8 @@ export default function WeighStation() {
   const [showSettings, setShowSettings] = useState(false);
   const [showCameraPlaceholder, setShowCameraPlaceholder] = useState(false);
   const [stockMode, setStockMode] = useState<StockMode>('remove');
+  const [recentIngredientIds, setRecentIngredientIds] = useState<number[]>(loadRecentIngredients);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   // ── Recipe Mode state ──
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -427,10 +447,8 @@ export default function WeighStation() {
   // Current step calculation
   const currentStep = !selected && !quickMode ? 1 : tare === 0 && currentWeight <= 0 ? 2 : netWeight <= 0 ? 3 : netConverted > 0 && selected ? 5 : 4;
 
-  const filteredIngredients = ingredients.filter(i =>
-    i.name.toLowerCase().includes(search.toLowerCase()) ||
-    i.category.toLowerCase().includes(search.toLowerCase())
-  );
+  // filteredIngredients is kept as alias for displayIngredients for kiosk usage
+  const filteredIngredients = displayIngredients;
 
   function handleTare() {
     setTare(currentWeight);
@@ -591,6 +609,8 @@ export default function WeighStation() {
     setSearch('');
     setShowDropdown(false);
     setQuickMode(false);
+    addToRecent(ing.id);
+    setRecentIngredientIds(loadRecentIngredients());
   }
 
   // Daily stats
@@ -619,8 +639,51 @@ export default function WeighStation() {
       else if (u === 'ml') kgVal = w / 1000;
       return sum + kgVal * ing.pricePerUnit;
     }, 0);
-    return { totalWeighs, totalKg: Math.round(totalKg * 100) / 100, totalValue: Math.round(totalValue * 100) / 100 };
+    // Most weighed ingredient
+    const ingCounts: Record<string, number> = {};
+    todayEntries.forEach(e => {
+      if (e.ingredientName && e.ingredientName !== 'Pesee rapide') {
+        ingCounts[e.ingredientName] = (ingCounts[e.ingredientName] || 0) + 1;
+      }
+    });
+    const mostWeighed = Object.entries(ingCounts).sort((a, b) => b[1] - a[1])[0];
+    return {
+      totalWeighs,
+      totalKg: Math.round(totalKg * 100) / 100,
+      totalValue: Math.round(totalValue * 100) / 100,
+      mostWeighedName: mostWeighed ? mostWeighed[0] : null,
+      mostWeighedCount: mostWeighed ? mostWeighed[1] : 0,
+    };
   })();
+
+  // Get unique categories from ingredients
+  const ingredientCategories = useMemo(() => {
+    const cats = new Set<string>();
+    ingredients.forEach(i => { if (i.category) cats.add(i.category); });
+    return Array.from(cats).sort();
+  }, [ingredients]);
+
+  // Filtered ingredients with category filter
+  const displayIngredients = useMemo(() => {
+    let list = ingredients;
+    if (search) {
+      list = list.filter(i =>
+        i.name.toLowerCase().includes(search.toLowerCase()) ||
+        i.category.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (categoryFilter) {
+      list = list.filter(i => i.category === categoryFilter);
+    }
+    return list;
+  }, [ingredients, search, categoryFilter]);
+
+  // Recent ingredients resolved
+  const recentIngredients = useMemo(() => {
+    return recentIngredientIds
+      .map(id => ingredients.find(i => i.id === id))
+      .filter(Boolean) as Ingredient[];
+  }, [recentIngredientIds, ingredients]);
 
   const isConnected = status === 'connected' || useSimulation;
   const weightForDisplay = quickMode || !selected
@@ -1442,17 +1505,78 @@ export default function WeighStation() {
                     ref={searchRef}
                     type="text"
                     value={search}
-                    onChange={e => { setSearch(e.target.value); setShowDropdown(true); }}
+                    onChange={e => { setSearch(e.target.value); setShowDropdown(true); setCategoryFilter(null); }}
                     onFocus={() => setShowDropdown(true)}
                     placeholder="Rechercher un ingredient..."
-                    className="w-full pl-10 pr-3 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
+                    className="w-full pl-10 pr-10 py-3 min-h-[48px] bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60 border border-[#E5E7EB] dark:border-[#1A1A1A]/50"
                   />
+                  {search && (
+                    <button
+                      onClick={() => { setSearch(''); setCategoryFilter(null); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                    </button>
+                  )}
                 </div>
+
+                {/* Recent ingredients chips */}
+                {recentIngredients.length > 0 && !search && (
+                  <div className="mt-2">
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-semibold mb-1.5 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> Recents
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {recentIngredients.map(ing => (
+                        <button
+                          key={`recent-${ing.id}`}
+                          onClick={() => selectIngredient(ing)}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                            selected?.id === ing.id
+                              ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40'
+                              : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#1A1A1A]/40 hover:bg-emerald-900/10 hover:border-emerald-500/20 hover:text-emerald-400'
+                          }`}
+                        >
+                          <span className="truncate max-w-[100px]">{ing.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Category filter tabs */}
+                {!search && ingredientCategories.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    <button
+                      onClick={() => setCategoryFilter(null)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-all ${
+                        !categoryFilter
+                          ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+                          : 'bg-[#FAFAFA] dark:bg-[#0A0A0A]/60 text-[#9CA3AF] dark:text-[#737373] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]/40'
+                      }`}
+                    >
+                      Tous
+                    </button>
+                    {ingredientCategories.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-semibold transition-all ${
+                          categoryFilter === cat
+                            ? 'bg-[#111111] dark:bg-white text-white dark:text-[#111111]'
+                            : `${getCategoryColor(cat)} hover:opacity-80`
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Ingredient list */}
               <div className="flex-1 overflow-y-auto py-1 px-2 space-y-0.5">
-                {(showDropdown && search ? filteredIngredients : ingredients).map(ing => (
+                {displayIngredients.map(ing => (
                   <button
                     key={ing.id}
                     onClick={() => selectIngredient(ing)}
@@ -1477,8 +1601,18 @@ export default function WeighStation() {
                     )}
                   </button>
                 ))}
-                {filteredIngredients.length === 0 && search && (
-                  <p className="text-center text-[#6B7280] dark:text-[#A3A3A3] text-sm py-8">Aucun resultat</p>
+                {displayIngredients.length === 0 && (search || categoryFilter) && (
+                  <div className="text-center py-8">
+                    <p className="text-[#6B7280] dark:text-[#A3A3A3] text-sm">Aucun resultat</p>
+                    {categoryFilter && (
+                      <button
+                        onClick={() => setCategoryFilter(null)}
+                        className="mt-2 text-xs text-teal-400 hover:underline"
+                      >
+                        Voir tous les ingredients
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -1578,76 +1712,116 @@ export default function WeighStation() {
               )}
             </div>
 
-            {/* ===== BIG WEIGHT DISPLAY (LCD-style) ===== */}
+            {/* ===== BIG WEIGHT DISPLAY (Premium LCD-style) ===== */}
             <div
-              className={`relative w-full rounded-2xl flex flex-col items-center justify-center transition-all duration-500 ${
-                flashGreen ? 'shadow-[0_0_80px_rgba(52,211,153,0.3)]' : ''
-              } ${kioskMode ? 'max-w-2xl aspect-[2.5/1]' : 'max-w-full sm:max-w-md aspect-[2.2/1] sm:aspect-[2/1]'}`}
+              className={`relative w-full rounded-3xl flex flex-col items-center justify-center transition-all duration-700 overflow-hidden ${
+                flashGreen ? '' : ''
+              } ${kioskMode ? 'max-w-2xl aspect-[2.5/1]' : 'max-w-full sm:max-w-lg aspect-[2/1] sm:aspect-[1.8/1]'}`}
               style={{
-                background: 'linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0a0e17 100%)',
+                background: 'linear-gradient(145deg, #050810 0%, #0c1220 40%, #0a0f1a 100%)',
                 border: `2px solid ${
                   netWeight > 0 && isStable ? '#10b981' :
                   netWeight > 0 ? '#3b82f6' :
-                  '#1e293b'
+                  '#1a2035'
                 }`,
                 boxShadow: netWeight > 0 && isStable
-                  ? '0 0 60px rgba(16,185,129,0.15), inset 0 1px 0 rgba(255,255,255,0.03)'
+                  ? '0 0 80px rgba(16,185,129,0.2), 0 0 120px rgba(16,185,129,0.08), inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -2px 20px rgba(16,185,129,0.05)'
                   : netWeight > 0
-                  ? '0 0 40px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.03)'
-                  : 'inset 0 1px 0 rgba(255,255,255,0.03)',
+                  ? '0 0 50px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.03)'
+                  : 'inset 0 1px 0 rgba(255,255,255,0.03), inset 0 -1px 0 rgba(0,0,0,0.3)',
               }}
             >
-              <div className="absolute inset-0 rounded-2xl opacity-[0.03] pointer-events-none"
-                style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' }}
+              {/* Scanline overlay */}
+              <div className="absolute inset-0 rounded-3xl opacity-[0.025] pointer-events-none"
+                style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.15) 2px, rgba(255,255,255,0.15) 3px)' }}
               />
-              <div className="absolute top-3 right-4 z-10 flex items-center gap-1.5">
-                {useSimulation ? (
-                  <span className="text-amber-400/60 text-[10px] font-medium uppercase tracking-wider">SIM</span>
-                ) : status === 'connected' ? (
-                  <Bluetooth className="w-3.5 h-3.5 text-teal-400/60" />
-                ) : status === 'reconnecting' ? (
-                  <RefreshCw className="w-3.5 h-3.5 text-amber-400/60 animate-spin" />
-                ) : (
-                  <WifiOff className="w-3.5 h-3.5 text-[#6B7280]/40" />
-                )}
-              </div>
-
-              <div className="relative z-10 flex items-baseline gap-2">
-                <span
-                  className={`font-black tabular-nums tracking-tight transition-all duration-300 ${
-                    netWeight > 0 && isStable ? 'text-emerald-400' :
-                    netWeight > 0 ? 'text-teal-300' :
-                    'text-[#6B7280] dark:text-[#A3A3A3]'
-                  }`}
-                  style={{ fontSize: kioskMode ? 'clamp(5rem, 14vw, 9rem)' : 'clamp(3.5rem, 10vw, 6rem)', lineHeight: 1 }}
-                >
-                  {netWeight <= 0 ? '0' : weightForDisplay}
-                </span>
-                <span className={`font-bold transition-colors duration-300 text-[#9CA3AF] dark:text-[#737373] ${kioskMode ? 'text-4xl' : 'text-2xl'}`}>
-                  {unitForDisplay}
-                </span>
-              </div>
-
-              <div className={`relative z-10 mt-2 flex items-center ${kioskMode ? 'h-7' : 'h-5'}`}>
-                {netWeight > 0 && isStable && (
-                  <span className={`flex items-center gap-1.5 text-emerald-400 font-medium animate-in fade-in duration-300 ${kioskMode ? 'text-base' : 'text-sm'}`}>
-                    <Check className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} /> Stable
+              {/* Inner glow ring for stable state */}
+              {netWeight > 0 && isStable && (
+                <div className="absolute inset-0 rounded-3xl pointer-events-none" style={{
+                  background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.06) 0%, transparent 70%)',
+                }} />
+              )}
+              {/* Status badge top-left */}
+              <div className="absolute top-3 left-4 z-10">
+                {netWeight > 0 && isStable ? (
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
+                    <span className="text-emerald-400 text-[10px] font-semibold uppercase tracking-wider">Stable</span>
                   </span>
-                )}
-                {netWeight > 0 && !isStable && (
-                  <span className={`flex items-center gap-1.5 text-teal-400 font-medium animate-pulse ${kioskMode ? 'text-base' : 'text-sm'}`}>
+                ) : netWeight > 0 ? (
+                  <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
                     <span className="flex gap-0.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '150ms' }} />
                       <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                     </span>
-                    Mesure en cours
+                    <span className="text-teal-400 text-[10px] font-medium uppercase tracking-wider">Mesure...</span>
                   </span>
+                ) : null}
+              </div>
+              {/* BLE/SIM badge top-right */}
+              <div className="absolute top-3 right-4 z-10 flex items-center gap-1.5">
+                {useSimulation ? (
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                    <span className="text-amber-400/70 text-[9px] font-semibold uppercase tracking-wider">SIM</span>
+                  </span>
+                ) : status === 'connected' ? (
+                  <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20">
+                    <Bluetooth className="w-3 h-3 text-teal-400/70" />
+                    <span className="text-teal-400/60 text-[9px] font-semibold uppercase tracking-wider">BLE</span>
+                  </span>
+                ) : status === 'reconnecting' ? (
+                  <RefreshCw className="w-3.5 h-3.5 text-amber-400/60 animate-spin" />
+                ) : (
+                  <WifiOff className="w-3.5 h-3.5 text-[#6B7280]/30" />
                 )}
               </div>
 
+              {/* Main weight number - HUGE LCD */}
+              <div className="relative z-10 flex items-baseline gap-1">
+                <span
+                  className={`tabular-nums tracking-tighter transition-all duration-500 ease-out ${
+                    netWeight > 0 && isStable ? 'text-emerald-400' :
+                    netWeight > 0 ? 'text-teal-300' :
+                    'text-[#2a3040]'
+                  }`}
+                  style={{
+                    fontSize: kioskMode ? 'clamp(6rem, 16vw, 11rem)' : 'clamp(4.5rem, 12vw, 7.5rem)',
+                    lineHeight: 0.9,
+                    fontFamily: '"SF Mono", "Cascadia Code", "Fira Code", "JetBrains Mono", ui-monospace, monospace',
+                    fontWeight: 800,
+                    letterSpacing: '-0.04em',
+                    textShadow: netWeight > 0 && isStable
+                      ? '0 0 40px rgba(16,185,129,0.4), 0 0 80px rgba(16,185,129,0.15)'
+                      : netWeight > 0
+                      ? '0 0 30px rgba(56,189,248,0.2)'
+                      : 'none',
+                  }}
+                >
+                  {netWeight <= 0 ? '0.000' : weightForDisplay}
+                </span>
+                <span
+                  className={`font-bold transition-colors duration-500 ${
+                    netWeight > 0 && isStable ? 'text-emerald-400/50' :
+                    netWeight > 0 ? 'text-teal-300/40' :
+                    'text-[#2a3040]'
+                  }`}
+                  style={{
+                    fontSize: kioskMode ? 'clamp(2rem, 5vw, 3.5rem)' : 'clamp(1.5rem, 3.5vw, 2.5rem)',
+                    fontFamily: '"SF Mono", "Cascadia Code", "Fira Code", "JetBrains Mono", ui-monospace, monospace',
+                  }}
+                >
+                  {unitForDisplay}
+                </span>
+              </div>
+
+              {/* Tare indicator */}
               {tare > 0 && (
-                <p className="relative z-10 text-xs text-amber-400/70 mt-1">Tare : {(tare * 1000).toFixed(0)} g</p>
+                <div className="relative z-10 mt-2 flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/15">
+                  <RotateCcw className="w-3 h-3 text-amber-400/60" />
+                  <span className="text-[10px] text-amber-400/70 font-medium tracking-wide">TARE {(tare * 1000).toFixed(0)}g</span>
+                </div>
               )}
             </div>
 
@@ -1704,78 +1878,95 @@ export default function WeighStation() {
               </div>
             )}
 
-            {/* Stock mode selector */}
+            {/* Stock mode selector - Premium buttons */}
             {selected && !quickMode && (
-              <div className={`flex items-center gap-1 p-1 rounded-xl border ${
-                stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/30' :
-                stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/30' :
-                'bg-red-900/10 border-red-500/20'
+              <div className={`flex items-center gap-2 p-1.5 rounded-2xl border ${kioskMode ? 'gap-3' : ''} ${
+                stockMode === 'add' ? 'bg-emerald-900/10 border-emerald-500/20' :
+                stockMode === 'set' ? 'bg-teal-900/10 border-teal-500/20' :
+                'bg-red-900/10 border-red-500/15'
               }`}>
                 <button
                   onClick={() => setStockMode('remove')}
-                  className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                  className={`flex items-center gap-2 rounded-xl font-bold transition-all active:scale-95 ${kioskMode ? 'px-6 py-4 min-h-[56px] text-base' : 'px-4 sm:px-5 py-2.5 min-h-[48px] text-sm'} ${
                     stockMode === 'remove'
-                      ? 'bg-red-600 text-white shadow-md'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 hover:bg-red-900/20'
+                      ? 'bg-red-600 text-white shadow-lg shadow-red-900/30 border-2 border-red-500/50'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-red-400 hover:bg-red-900/10 border-2 border-transparent'
                   }`}
                 >
-                  <ArrowUpFromLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                  <Minus className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} />
                   Retirer
                 </button>
                 <button
                   onClick={() => setStockMode('add')}
-                  className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                  className={`flex items-center gap-2 rounded-xl font-bold transition-all active:scale-95 ${kioskMode ? 'px-6 py-4 min-h-[56px] text-base' : 'px-4 sm:px-5 py-2.5 min-h-[48px] text-sm'} ${
                     stockMode === 'add'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-400 hover:bg-emerald-900/20'
+                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/30 border-2 border-emerald-500/50'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-emerald-400 hover:bg-emerald-900/10 border-2 border-transparent'
                   }`}
                 >
-                  <ArrowDownToLine className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                  <Plus className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} />
                   Ajouter
                 </button>
                 <button
                   onClick={() => setStockMode('set')}
-                  className={`flex items-center gap-1.5 rounded-lg font-semibold transition-all active:scale-95 ${kioskMode ? 'px-5 py-3 min-h-[52px] text-base' : 'px-3 sm:px-4 py-2 min-h-[44px] text-xs sm:text-sm'} ${
+                  className={`flex items-center gap-2 rounded-xl font-bold transition-all active:scale-95 ${kioskMode ? 'px-6 py-4 min-h-[56px] text-base' : 'px-4 sm:px-5 py-2.5 min-h-[48px] text-sm'} ${
                     stockMode === 'set'
-                      ? 'bg-teal-600 text-white shadow-md'
-                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-teal-400 hover:bg-teal-900/20'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/30 border-2 border-blue-500/50'
+                      : 'text-[#9CA3AF] dark:text-[#737373] hover:text-blue-400 hover:bg-blue-900/10 border-2 border-transparent'
                   }`}
                 >
-                  <Replace className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
+                  <Replace className={kioskMode ? 'w-6 h-6' : 'w-5 h-5'} />
                   Definir
                 </button>
               </div>
             )}
 
-            {/* Stock change preview */}
-            {selected && !quickMode && netConverted > 0 && ingredientStock && (
-              <div className={`flex items-center gap-3 px-4 py-2 rounded-xl border text-sm ${kioskMode ? 'px-6 py-3 text-base' : ''} ${
-                stockMode === 'add' ? 'bg-emerald-900/20 border-emerald-500/20 text-emerald-400' :
-                stockMode === 'set' ? 'bg-teal-900/20 border-teal-500/20 text-teal-400' :
-                'bg-red-900/10 border-red-500/20 text-red-400'
+            {/* Stock change preview - Premium card */}
+            {selected && !quickMode && ingredientStock && (
+              <div className={`w-full rounded-2xl border px-4 py-3 ${kioskMode ? 'max-w-2xl px-6 py-4' : 'max-w-md'} ${
+                stockMode === 'add' ? 'bg-emerald-900/10 border-emerald-500/15' :
+                stockMode === 'set' ? 'bg-blue-900/10 border-blue-500/15' :
+                'bg-red-900/10 border-red-500/10'
               }`}>
-                <Package className={kioskMode ? 'w-5 h-5' : 'w-4 h-4'} />
-                <span className="font-medium">
-                  {ingredientStock.stock.toFixed(2)} {selected.unit}
-                </span>
-                <span className="text-[#9CA3AF] dark:text-[#737373]">&rarr;</span>
-                <span className="font-bold">
-                  {stockMode === 'add'
-                    ? (ingredientStock.stock + netConverted).toFixed(2)
-                    : stockMode === 'set'
-                    ? netConverted.toFixed(2)
-                    : Math.max(0, ingredientStock.stock - netConverted).toFixed(2)
-                  } {selected.unit}
-                </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                  stockMode === 'add' ? 'bg-emerald-600/30 text-emerald-300' :
-                  stockMode === 'set' ? 'bg-teal-600/30 text-teal-300' :
-                  'bg-red-600/30 text-red-300'
-                }`}>
-                  {stockMode === 'add' ? `+${netConverted.toFixed(2)}` :
-                   stockMode === 'set' ? `= ${netConverted.toFixed(2)}` :
-                   `-${netConverted.toFixed(2)}`}
-                </span>
+                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-semibold mb-2">Stock actuel</p>
+                <div className={`flex items-center justify-center gap-3 ${kioskMode ? 'text-xl' : 'text-base'}`}>
+                  <div className="flex items-center gap-1.5">
+                    <Package className={`${kioskMode ? 'w-5 h-5' : 'w-4 h-4'} text-[#9CA3AF] dark:text-[#737373]`} />
+                    <span className="font-bold text-[#111111] dark:text-white tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>
+                      {ingredientStock.stock.toFixed(2)} {selected.unit}
+                    </span>
+                  </div>
+                  {netConverted > 0 && (
+                    <>
+                      <span className={`text-2xl font-light ${
+                        stockMode === 'add' ? 'text-emerald-400' :
+                        stockMode === 'set' ? 'text-blue-400' :
+                        'text-red-400'
+                      }`}>&rarr;</span>
+                      <span className={`font-black tabular-nums ${kioskMode ? 'text-2xl' : 'text-lg'} ${
+                        stockMode === 'add' ? 'text-emerald-400' :
+                        stockMode === 'set' ? 'text-blue-400' :
+                        'text-red-400'
+                      }`} style={{ fontFamily: 'ui-monospace, monospace' }}>
+                        {stockMode === 'add'
+                          ? (ingredientStock.stock + netConverted).toFixed(2)
+                          : stockMode === 'set'
+                          ? netConverted.toFixed(2)
+                          : Math.max(0, ingredientStock.stock - netConverted).toFixed(2)
+                        } {selected.unit}
+                      </span>
+                      <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${
+                        stockMode === 'add' ? 'bg-emerald-600/20 text-emerald-300 border border-emerald-500/20' :
+                        stockMode === 'set' ? 'bg-blue-600/20 text-blue-300 border border-blue-500/20' :
+                        'bg-red-600/20 text-red-300 border border-red-500/20'
+                      }`}>
+                        {stockMode === 'add' ? `+${netConverted.toFixed(2)}` :
+                         stockMode === 'set' ? `= ${netConverted.toFixed(2)}` :
+                         `-${netConverted.toFixed(2)}`}
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
             )}
 
@@ -1837,102 +2028,147 @@ export default function WeighStation() {
               <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A]/60">
                 <div className="flex items-center gap-2">
                   <ClipboardList className="w-4 h-4 text-[#9CA3AF] dark:text-[#737373]" />
-                  <p className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Historique</p>
+                  <p className="text-sm font-bold text-[#111111] dark:text-white">Historique</p>
                   {history.length > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">{history.length}</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-900/20 text-emerald-400 font-bold">{history.length}</span>
                   )}
                 </div>
                 {history.length > 0 && (
                   <button
                     onClick={clearHistory}
-                    className="flex items-center gap-1 px-3 py-2 min-h-[48px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
+                    className="flex items-center gap-1 px-3 py-2 min-h-[40px] text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     Effacer
                   </button>
                 )}
               </div>
-              <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+              <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
                 {history.length === 0 && (
                   <div className="flex flex-col items-center justify-center py-12 text-[#9CA3AF] dark:text-[#737373]">
-                    <Scale className="w-8 h-8 mb-2" />
+                    <Scale className="w-8 h-8 mb-2 opacity-40" />
                     <p className="text-sm">Aucune pesee</p>
+                    <p className="text-[10px] mt-1">Les pesees apparaitront ici</p>
                   </div>
                 )}
-                {history.slice(0, 20).map((entry, i) => (
-                  <div
-                    key={`${entry.timestamp}-${i}`}
-                    className={`rounded-xl px-3 py-2.5 border transition-all ${
-                      entry.status === 'error'
-                        ? 'bg-red-900/10 border-red-800/30'
-                        : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-[#E5E7EB] dark:border-[#1A1A1A]/30'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[#111111] dark:text-white text-sm font-medium truncate">{entry.ingredientName}</p>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          {entry.ingredientCategory && (
-                            <span className={`inline-block text-[9px] px-1 py-0.5 rounded border ${getCategoryColor(entry.ingredientCategory)}`}>
-                              {entry.ingredientCategory}
-                            </span>
-                          )}
-                          {entry.stockAction && (
-                            <span className={`inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${
-                              entry.stockAction === 'add' ? 'bg-emerald-900/30 text-emerald-400' :
-                              entry.stockAction === 'set' ? 'bg-teal-900/30 text-teal-400' :
-                              'bg-red-900/30 text-red-400'
-                            }`}>
-                              {entry.stockAction === 'add' ? '+ Stock' : entry.stockAction === 'set' ? '= Stock' : '- Stock'}
-                            </span>
-                          )}
-                          {entry.recipeName && (
-                            <span className="inline-block text-[9px] px-1.5 py-0.5 rounded bg-purple-900/30 text-purple-400 font-semibold">
-                              {entry.recipeName}
-                            </span>
-                          )}
-                        </div>
+                {/* Group history by date */}
+                {(() => {
+                  const today = new Date().toISOString().slice(0, 10);
+                  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+                  const grouped: Record<string, HistoryEntry[]> = {};
+                  history.slice(0, 30).forEach(e => {
+                    const date = e.timestamp.slice(0, 10);
+                    if (!grouped[date]) grouped[date] = [];
+                    grouped[date].push(e);
+                  });
+                  return Object.entries(grouped).map(([date, entries]) => (
+                    <div key={date}>
+                      {/* Date header */}
+                      <div className="flex items-center gap-2 px-2 py-1.5 mt-1 first:mt-0">
+                        <div className="h-[1px] flex-1 bg-[#E5E7EB] dark:bg-[#1A1A1A]/60" />
+                        <span className="text-[10px] font-bold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider shrink-0">
+                          {date === today ? "Aujourd'hui" :
+                           date === yesterday ? 'Hier' :
+                           new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                        </span>
+                        <div className="h-[1px] flex-1 bg-[#E5E7EB] dark:bg-[#1A1A1A]/60" />
                       </div>
-                      <div className="text-right shrink-0">
-                        <p className={`text-lg font-bold tabular-nums ${
-                          entry.status === 'error' ? 'text-red-400' :
-                          entry.stockAction === 'add' ? 'text-emerald-400' :
-                          entry.stockAction === 'remove' ? 'text-red-400' :
-                          'text-teal-400'
-                        }`}>
-                          {entry.stockAction === 'add' ? '+' : entry.stockAction === 'remove' ? '-' : ''}{entry.weight} {entry.unit}
-                        </p>
-                      </div>
+                      {entries.map((entry, i) => {
+                        const actionColor = entry.status === 'error' ? 'red' :
+                          entry.stockAction === 'add' ? 'emerald' :
+                          entry.stockAction === 'set' ? 'blue' :
+                          entry.stockAction === 'remove' ? 'red' : 'teal';
+                        return (
+                          <div
+                            key={`${entry.timestamp}-${i}`}
+                            className={`rounded-xl px-3 py-2.5 mb-0.5 transition-all ${
+                              entry.status === 'error'
+                                ? 'bg-red-900/10 border-l-2 border-red-500'
+                                : entry.stockAction === 'add'
+                                ? 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-l-2 border-emerald-500'
+                                : entry.stockAction === 'set'
+                                ? 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-l-2 border-blue-500'
+                                : 'bg-[#FAFAFA]/40 dark:bg-[#0A0A0A]/40 border-l-2 border-red-400'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <p className="text-[#111111] dark:text-white text-sm font-semibold truncate">{entry.ingredientName}</p>
+                                  {entry.stockAction && (
+                                    <span className={`inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-full font-bold ${
+                                      entry.stockAction === 'add' ? 'bg-emerald-500/15 text-emerald-400' :
+                                      entry.stockAction === 'set' ? 'bg-blue-500/15 text-blue-400' :
+                                      'bg-red-500/15 text-red-400'
+                                    }`}>
+                                      {entry.stockAction === 'add' ? <Plus className="w-2.5 h-2.5" /> :
+                                       entry.stockAction === 'set' ? <Replace className="w-2.5 h-2.5" /> :
+                                       <Minus className="w-2.5 h-2.5" />}
+                                      {entry.stockAction === 'add' ? 'Ajout' : entry.stockAction === 'set' ? 'Defini' : 'Retrait'}
+                                    </span>
+                                  )}
+                                </div>
+                                {entry.recipeName && (
+                                  <span className="inline-block text-[9px] px-1.5 py-0.5 rounded bg-purple-900/20 text-purple-400 font-semibold mt-0.5">
+                                    {entry.recipeName}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-right shrink-0">
+                                <p className={`text-base font-black tabular-nums ${
+                                  actionColor === 'red' ? 'text-red-400' :
+                                  actionColor === 'emerald' ? 'text-emerald-400' :
+                                  actionColor === 'blue' ? 'text-blue-400' :
+                                  'text-teal-400'
+                                }`} style={{ fontFamily: 'ui-monospace, monospace' }}>
+                                  {entry.stockAction === 'add' ? '+' : entry.stockAction === 'remove' ? '-' : ''}{entry.weight} <span className="text-xs opacity-60">{entry.unit}</span>
+                                </p>
+                              </div>
+                            </div>
+                            {entry.stockAction && entry.stockBefore !== undefined && entry.stockAfter !== undefined && entry.status === 'success' && (
+                              <div className="flex items-center gap-1.5 mt-1.5 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                                <Package className="w-3 h-3 opacity-50" />
+                                <span className="tabular-nums">{entry.stockBefore.toFixed(1)}</span>
+                                <span className="opacity-40">&rarr;</span>
+                                <span className="font-bold text-[#111111] dark:text-white tabular-nums">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
+                              </div>
+                            )}
+                            <p className="text-[#6B7280] dark:text-[#A3A3A3] text-[10px] mt-1 tabular-nums">
+                              {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
-                    {entry.stockAction && entry.stockBefore !== undefined && entry.stockAfter !== undefined && entry.status === 'success' && (
-                      <div className="flex items-center gap-1.5 mt-1 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
-                        <Package className="w-3 h-3" />
-                        <span>{entry.stockBefore.toFixed(1)}</span>
-                        <span>&rarr;</span>
-                        <span className="font-semibold text-[#111111] dark:text-white">{entry.stockAfter.toFixed(1)} {entry.unit}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between mt-1.5">
-                      <p className="text-[#6B7280] dark:text-[#A3A3A3] text-[10px]">
-                        {new Date(entry.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                      </p>
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded ${
-                        entry.status === 'error' ? 'bg-red-900/30 text-red-400' : 'bg-emerald-900/30 text-emerald-400'
-                      }`}>
-                        {entry.status === 'error' ? 'Erreur' : 'OK'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ));
+                })()}
               </div>
-              <div className="px-4 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-[#FAFAFA]/60 dark:bg-[#0A0A0A]/60">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-[#9CA3AF] dark:text-[#737373]">Aujourd'hui</span>
-                  <div className="flex items-center gap-4">
-                    <span className="text-emerald-400 font-medium">{todayStats.totalWeighs} pesee{todayStats.totalWeighs !== 1 ? 's' : ''}</span>
-                    <span className="text-teal-400 font-medium">{todayStats.totalKg} kg total</span>
+
+              {/* Daily stats footer - premium */}
+              <div className="px-3 py-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]/60 bg-[#FAFAFA]/80 dark:bg-[#0A0A0A]/80">
+                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider font-bold mb-2">Statistiques du jour</p>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                    <p className="text-lg font-black text-emerald-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalWeighs}</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">Pesees</p>
+                  </div>
+                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                    <p className="text-lg font-black text-teal-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalKg}</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">kg total</p>
+                  </div>
+                  <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                    <p className="text-lg font-black text-amber-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalValue}</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">EUR</p>
                   </div>
                 </div>
+                {todayStats.mostWeighedName && (
+                  <div className="mt-2 flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
+                    <BarChart3 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Plus pese:</span>
+                    <span className="text-[10px] font-bold text-[#111111] dark:text-white truncate">{todayStats.mostWeighedName}</span>
+                    <span className="text-[10px] text-purple-400 font-bold shrink-0">x{todayStats.mostWeighedCount}</span>
+                  </div>
+                )}
               </div>
             </div>
           )}

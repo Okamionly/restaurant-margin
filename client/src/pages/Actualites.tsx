@@ -434,7 +434,7 @@ export default function Actualites() {
             <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-xl">
               <Newspaper className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
-            <h1 className="text-2xl font-bold text-black dark:text-white">Actualites</h1>
+            <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white">Actualites</h1>
             {highCount > 0 && (
               <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse">
                 {highCount} urgent{highCount > 1 ? 's' : ''}

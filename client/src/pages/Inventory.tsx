@@ -1166,16 +1166,16 @@ export default function Inventory() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold font-satoshi flex items-center gap-2 text-[#111111] dark:text-white">
             <Package className="w-6 h-6 sm:w-7 sm:h-7 text-teal-600" />
             Inventaire
           </h1>
-          <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
+          <p className="text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3] mt-1">
             Gestion des stocks d'ingredients
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={openReorderModal} className="relative flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+          <button onClick={openReorderModal} className="relative flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <ShoppingCart className="w-4 h-4" /> Reappro auto
             {reorderBelowCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center px-1 text-[11px] font-bold rounded-full bg-red-600 text-white">
@@ -1183,29 +1183,29 @@ export default function Inventory() {
               </span>
             )}
           </button>
-          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+          <button onClick={() => { setAddForm({ ingredientId: 0, currentStock: '', minStock: '', unit: '', expirationDate: '', location: '' }); setShowAddModal(true); }} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <Plus className="w-4 h-4" /> Ajouter
           </button>
-          <button onClick={startScanner} className="flex items-center gap-1.5 px-3 py-2 bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-lg hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+          <button onClick={startScanner} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#111111] dark:bg-white text-white dark:text-black text-sm rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
             <ScanBarcode className="w-4 h-4" /> Scanner
           </button>
           {suggestions.length > 0 && (
-            <button onClick={handleBulkAdd} disabled={savingBulk} className="flex items-center gap-1.5 px-3 py-2 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50">
+            <button onClick={handleBulkAdd} disabled={savingBulk} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-purple-600 text-white text-sm rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50">
               {savingBulk ? <Loader2 className="w-4 h-4 animate-spin" /> : <PackagePlus className="w-4 h-4" />}
               Inventaire complet
             </button>
           )}
-          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#F3F4F6] dark:bg-[#171717] text-[#737373] dark:text-[#A3A3A3] text-sm rounded-xl hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors">
             <Download className="w-4 h-4" /> Export CSV
           </button>
-          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#A3A3A3] text-sm rounded-lg hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors no-print">
+          <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] bg-[#F3F4F6] dark:bg-[#171717] text-[#737373] dark:text-[#A3A3A3] text-sm rounded-xl hover:bg-[#E5E7EB] dark:hover:bg-[#171717] transition-colors no-print">
             <Printer className="w-4 h-4" /> Imprimer
           </button>
         </div>
       </div>
 
       {/* ══════ INVENTORY VALUE DASHBOARD ══════ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Total Value - Hero Card with CSS Pie Chart */}
         <div className="col-span-2 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-50 dark:from-emerald-900/10 to-transparent rounded-bl-full" />
@@ -1217,7 +1217,7 @@ export default function Inventory() {
                 </div>
                 Valeur totale du stock
               </div>
-              <div className="text-3xl sm:text-4xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+              <div className="text-3xl sm:text-4xl font-bold font-satoshi tabular-nums text-emerald-600 dark:text-emerald-400 tracking-tight">
                 {computedTotalValue.toFixed(2)} <span className="text-lg font-medium">EUR</span>
               </div>
               <div className="flex items-center gap-4 mt-3">
@@ -1267,7 +1267,7 @@ export default function Inventory() {
             </div>
             Alertes
           </div>
-          <div className={`text-2xl font-bold ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+          <div className={`text-2xl font-bold font-satoshi tabular-nums ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
             {alerts.length}
           </div>
           <div className="flex gap-1.5 mt-2 flex-wrap">
@@ -1302,7 +1302,7 @@ export default function Inventory() {
             </div>
             Expirent bientot
           </div>
-          <div className={`text-2xl font-bold ${expiringItems.length > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+          <div className={`text-2xl font-bold font-satoshi tabular-nums ${expiringItems.length > 0 ? 'text-orange-600 dark:text-orange-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
             {expiringItems.length}
           </div>
           {expiringItems.length > 0 ? (

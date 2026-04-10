@@ -1714,8 +1714,8 @@ export default function AutoOrders() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
-            <ShoppingCart className="w-7 h-7 text-[#6B7280] dark:text-[#A3A3A3]" />
+          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2">
+            <ShoppingCart className="w-7 h-7 text-[#737373] dark:text-[#A3A3A3]" />
             {t('autoOrders.title')}
           </h1>
           <p className="text-[#9CA3AF] dark:text-[#737373] mt-1">{t('autoOrders.subtitle')}</p>

@@ -891,7 +891,7 @@ export default function Ingredients() {
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
+        <h2 className="text-xl sm:text-2xl font-bold font-satoshi text-[#111111] dark:text-white">{t('ingredients.title')}</h2>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <button onClick={exportCSV} className="hidden sm:flex btn-secondary items-center gap-2 text-sm no-print" title="Exporter CSV">
             <Download className="w-4 h-4" /> Exporter CSV
@@ -920,7 +920,7 @@ export default function Ingredients() {
               className={`${colors.bg} ${colors.darkBg} rounded-2xl border-l-4 ${colors.border} ${colors.darkBorder} p-3 text-left transition-all hover:scale-[1.02] ${filterCategory === cat ? 'ring-2 ring-[#111111] dark:ring-white' : ''}`}
             >
               <p className={`text-xs font-semibold ${colors.text} dark:text-white/70 truncate`}>{cat}</p>
-              <p className="text-lg font-bold text-[#111111] dark:text-white mt-0.5">{summary.count}</p>
+              <p className="text-lg font-bold font-satoshi tabular-nums text-[#111111] dark:text-white mt-0.5">{summary.count}</p>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">Moy. {summary.avgPrice.toFixed(2)}{getCurrencySymbol()}</span>
                 <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Tot. {summary.totalSpend.toFixed(0)}{getCurrencySymbol()}</span>
@@ -931,41 +931,41 @@ export default function Ingredients() {
       </div>
 
       {/* KPI Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-4 sm:mb-6">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Package className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.totalIngredients')}</p>
-            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.total}</p>
+            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.totalIngredients')}</p>
+            <p className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{summaryStats.total}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Euro className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.avgPrice')}</p>
-            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
+            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.avgPrice')}</p>
+            <p className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{summaryStats.avgPrice.toFixed(2)} {getCurrencySymbol()}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Tag className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.expensiveCategory')}</p>
-            <p className="text-lg font-bold text-[#111111] dark:text-white truncate">{summaryStats.expensiveCat}</p>
+            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.expensiveCategory')}</p>
+            <p className="text-lg font-bold font-satoshi text-[#111111] dark:text-white truncate">{summaryStats.expensiveCat}</p>
           </div>
         </div>
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-3 sm:p-4 flex items-center gap-2 sm:gap-3">
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6 flex items-center gap-2 sm:gap-3">
           <div className="p-2 sm:p-2.5 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]">
             <Truck className="w-5 h-5 text-[#111111] dark:text-white" />
           </div>
           <div>
-            <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('ingredients.linkedSuppliers')}</p>
-            <p className="text-xl font-bold text-[#111111] dark:text-white">{summaryStats.uniqueSuppliers}</p>
+            <p className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">{t('ingredients.linkedSuppliers')}</p>
+            <p className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{summaryStats.uniqueSuppliers}</p>
           </div>
         </div>
       </div>

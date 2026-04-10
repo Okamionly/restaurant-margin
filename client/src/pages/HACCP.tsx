@@ -1373,7 +1373,7 @@ export default function HACCP() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
             <ShieldCheck className="w-7 h-7 text-emerald-400" />
             {t('haccp.title')}
           </h1>

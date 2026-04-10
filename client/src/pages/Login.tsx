@@ -44,6 +44,31 @@ export default function Login() {
     if (searchParams.get('ref')) setIsRegisterMode(true);
   }, []);
 
+  // Handle Google OAuth token from URL → auto-login
+  useEffect(() => {
+    const oauthToken = searchParams.get('token');
+    if (oauthToken) {
+      // Store token and let AuthProvider pick it up → triggers isAuthenticated redirect
+      localStorage.setItem('token', oauthToken);
+      trackEvent('login', { method: 'google' });
+      // Force page reload so AuthProvider re-checks token from localStorage
+      window.location.replace('/dashboard');
+      return;
+    }
+    // Handle Google OAuth errors
+    const oauthError = searchParams.get('error');
+    if (oauthError) {
+      const errorMessages: Record<string, string> = {
+        google_no_code: 'Connexion Google annulee.',
+        google_not_configured: 'Connexion Google non disponible pour le moment.',
+        google_token_failed: 'Erreur de connexion Google. Veuillez reessayer.',
+        google_no_email: 'Impossible de recuperer votre email Google.',
+        google_failed: 'Erreur lors de la connexion Google.',
+      };
+      setError(errorMessages[oauthError] || 'Erreur de connexion Google.');
+    }
+  }, [searchParams]);
+
   // Handle email verification token from URL
   useEffect(() => {
     const verifyToken = searchParams.get('verify');
@@ -288,11 +313,10 @@ export default function Login() {
                   </div>
                 )}
 
-                {/* OAuth buttons — placeholder */}
+                {/* OAuth buttons */}
                 <div className="space-y-3 mb-2">
-                  <button
-                    type="button"
-                    onClick={() => showToast('Connexion Google bientot disponible — utilisez votre email pour l\'instant', 'info')}
+                  <a
+                    href="/api/auth/google"
                     className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-white hover:bg-white/95 text-[#111111] font-semibold text-sm rounded-xl border border-[#E5E7EB] transition-colors"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -302,7 +326,7 @@ export default function Login() {
                       <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                     </svg>
                     Continuer avec Google
-                  </button>
+                  </a>
                   <button
                     type="button"
                     onClick={() => showToast('Connexion Apple bientot disponible — utilisez votre email pour l\'instant', 'info')}

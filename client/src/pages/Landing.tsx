@@ -577,7 +577,7 @@ export default function Landing() {
     const { ref, visible } = useInView(0.3);
     const count = useAnimatedCounter(value, 2000, visible);
     return (
-      <div ref={ref} className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+      <div ref={ref} className="text-5xl sm:text-6xl font-black text-white tracking-tight">
         {count.toLocaleString('fr-FR')}{suffix}
       </div>
     );
@@ -635,7 +635,7 @@ export default function Landing() {
       </nav>
 
       {/* ═══════════════ 1. HERO — A/B TEST READY ═══════════════ */}
-      <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden">
+      <section ref={heroRef} className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden bg-white">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-10 left-1/4 w-[600px] h-[600px] bg-teal-500/[0.05] rounded-full blur-[120px] animate-pulse" />
           <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-teal-400/[0.04] rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
@@ -769,7 +769,7 @@ export default function Landing() {
                   <div className="text-sm text-white/50 mt-1 font-medium">D'economies generees</div>
                 </div>
                 <div className="text-center px-4">
-                  <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">4.8<span className="text-2xl text-white/50">/5</span></div>
+                  <div className="text-5xl sm:text-6xl font-black text-white tracking-tight">4.8<span className="text-2xl text-white/50">/5</span></div>
                   <div className="text-sm text-white/50 mt-1 font-medium">Satisfaction clients</div>
                 </div>
               </div>
@@ -779,12 +779,12 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 2. FEATURES ═══════════════ */}
-      <section id="features" className="py-24 sm:py-32 bg-[#FFFFFF]">
+      <section id="features" className="py-24 sm:py-32 bg-[#FAFAFA]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Fonctionnalites</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-[#111111]">
                 Tout ce dont vous avez besoin
               </h2>
               <p className="mt-4 text-lg text-[#6B7280] max-w-lg mx-auto">
@@ -797,14 +797,15 @@ export default function Landing() {
           <div className="grid sm:grid-cols-3 gap-6 mb-6">
             {features.filter((f: any) => f.priority).map((f, i) => {
               const Icon = f.icon;
+              const leftBorderColors = ['border-l-teal-500', 'border-l-emerald-500', 'border-l-amber-500'];
               return (
                 <FadeIn key={i} delay={i * 80}>
-                  <div className="bg-[#FFFFFF] border-2 border-[#111111] rounded-2xl p-10 h-full hover:shadow-lg transition-all duration-300">
+                  <div className={`bg-[#FFFFFF] border-2 border-[#E5E7EB] ${leftBorderColors[i % 3]} border-l-4 rounded-2xl p-10 h-full hover:shadow-md transition-all duration-300`}>
                     <div className="w-14 h-14 rounded-xl bg-[#111111] flex items-center justify-center mb-6">
                       <Icon className="w-7 h-7 text-white" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#111111] mb-3">{f.title}</h3>
-                    <p className="text-sm text-[#6B7280] leading-relaxed">{f.description}</p>
+                    <h3 className="text-lg font-bold text-[#111111] mb-3">{f.title}</h3>
+                    <p className="text-sm text-[#525252] leading-relaxed">{f.description}</p>
                   </div>
                 </FadeIn>
               );
@@ -815,14 +816,15 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {features.filter((f: any) => !f.priority).map((f, i) => {
               const Icon = f.icon;
+              const leftBorderColors = ['border-l-blue-500', 'border-l-purple-500', 'border-l-rose-500', 'border-l-orange-500', 'border-l-cyan-500'];
               return (
                 <FadeIn key={i} delay={(i + 3) * 80}>
-                  <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full hover:border-[#111111]/20 transition-colors duration-300">
+                  <div className={`bg-[#FFFFFF] border-2 border-[#E5E7EB] ${leftBorderColors[i % 5]} border-l-4 rounded-2xl p-8 h-full hover:shadow-md transition-all duration-300`}>
                     <div className="w-12 h-12 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center mb-6">
                       <Icon className="w-6 h-6 text-[#111111]" />
                     </div>
                     <h3 className="text-lg font-bold text-[#111111] mb-2">{f.title}</h3>
-                    <p className="text-sm text-[#6B7280] leading-relaxed">{f.description}</p>
+                    <p className="text-sm text-[#525252] leading-relaxed">{f.description}</p>
                   </div>
                 </FadeIn>
               );
@@ -837,7 +839,7 @@ export default function Landing() {
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Demo interactive</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Testez en 10 secondes
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">
@@ -935,9 +937,9 @@ export default function Landing() {
               <p className="text-lg font-bold text-[#111111] mb-4">Impressionnant ? Essayez avec VOS recettes.</p>
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-base transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-lg transition-all shadow-lg"
               >
-                Creer mon compte gratuit <ArrowRight className="w-4 h-4" />
+                Creer mon compte gratuit <ArrowRight className="w-5 h-5" />
               </Link>
               <p className="mt-3 text-sm text-[#9CA3AF]">7 jours gratuits -- Sans carte bancaire</p>
             </div>
@@ -951,7 +953,7 @@ export default function Landing() {
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Voir en action</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Un apercu de votre futur quotidien
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">
@@ -1102,9 +1104,9 @@ export default function Landing() {
             <div className="mt-16 text-center">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-bold text-lg transition-all shadow-lg"
               >
-                Essayer gratuitement pendant 7 jours <ArrowRight className="w-4 h-4" />
+                Essayer gratuitement pendant 7 jours <ArrowRight className="w-5 h-5" />
               </Link>
               <p className="mt-3 text-sm text-[#9CA3AF]">Sans carte bancaire -- Sans engagement</p>
             </div>
@@ -1113,12 +1115,12 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 3. HOW IT WORKS ═══════════════ */}
-      <section id="how-it-works" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+      <section id="how-it-works" className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Comment ca marche</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Trois etapes simples
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">
@@ -1157,12 +1159,12 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ 4. SOCIAL PROOF / TESTIMONIALS ═══════════════ */}
-      <section id="testimonials" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+      <section id="testimonials" className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-20">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Temoignages</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Ils ont transforme leurs marges
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">
@@ -1174,7 +1176,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 100}>
-                <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col hover:shadow-lg hover:border-[#111111]/20 transition-all duration-500">
+                <div className="bg-[#FFFFFF] border-2 border-[#E5E7EB] border-l-4 border-l-teal-500 rounded-2xl p-8 h-full flex flex-col hover:shadow-lg hover:border-[#111111]/20 transition-all duration-500">
                   {/* Stars */}
                   <div className="flex items-center gap-0.5 mb-4">
                     {Array.from({ length: t.stars }).map((_, s) => (
@@ -1202,12 +1204,12 @@ export default function Landing() {
       </section>
 
       {/* ═══════════════ VIDEO TESTIMONIAL — ANIMATED TUTORIALS ═══════════════ */}
-      <section className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+      <section className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Tutoriels animes</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Voyez le produit en action
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">
@@ -1235,9 +1237,9 @@ export default function Landing() {
             <div className="mt-12 text-center">
               <Link
                 to="/login?mode=register"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-semibold text-base transition-all"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#111111] hover:bg-[#333333] text-white font-bold text-lg transition-all shadow-lg"
               >
-                Essayer maintenant <ArrowRight className="w-4 h-4" />
+                Essayer maintenant <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </FadeIn>
@@ -1250,7 +1252,7 @@ export default function Landing() {
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-16">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Calculateur ROI</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Combien pouvez-vous economiser ?
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">
@@ -1294,12 +1296,12 @@ export default function Landing() {
 
 
       {/* ═══════════════ 6. PRICING ═══════════════ */}
-      <section id="pricing" className="py-24 sm:py-32 bg-[#FFFFFF] border-t border-[#E5E7EB]">
+      <section id="pricing" className="py-24 sm:py-32 bg-[#FAFAFA] border-t border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center max-w-2xl mx-auto mb-12">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">Tarifs</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">
                 Des tarifs simples et transparents
               </h2>
               <p className="mt-4 text-lg text-[#6B7280]">Sans engagement. Annulez quand vous voulez.</p>
@@ -1325,7 +1327,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Pro */}
             <FadeIn delay={100}>
-              <div className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col">
+              <div className="bg-[#FFFFFF] border-2 border-[#E5E7EB] rounded-2xl p-8 h-full flex flex-col">
                 <h3 className="text-lg font-bold text-[#111111] mb-1">Pro</h3>
                 <p className="text-sm text-[#9CA3AF] mb-6">Pour les independants qui veulent maitriser leurs marges.</p>
                 <div className="flex items-baseline gap-1 mb-2">
@@ -1367,8 +1369,8 @@ export default function Landing() {
 
             {/* Business */}
             <FadeIn delay={200}>
-              <div className="bg-[#FFFFFF] border-2 border-[#111111] rounded-2xl p-8 h-full flex flex-col relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#111111] text-white text-xs font-bold uppercase tracking-wide">
+              <div className="bg-[#FFFFFF] border-2 border-teal-500 rounded-2xl p-8 h-full flex flex-col relative shadow-xl">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-teal-600 text-white text-xs font-bold uppercase tracking-wide">
                   Populaire
                 </div>
                 <h3 className="text-lg font-bold text-[#111111] mb-1 mt-2">Business</h3>
@@ -1419,12 +1421,12 @@ export default function Landing() {
           <FadeIn>
             <div className="text-center mb-16">
               <p className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">FAQ</p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#111111]">Questions frequentes</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#111111]">Questions frequentes</h2>
             </div>
           </FadeIn>
 
           <FadeIn delay={100}>
-            <div className="space-y-0 border border-[#E5E7EB] rounded-2xl overflow-hidden">
+            <div className="space-y-0 border-2 border-[#E5E7EB] rounded-2xl overflow-hidden">
               {faqItems.map((item, i) => (
                 <FAQItem key={i} q={item.q} a={item.a} isLast={i === faqItems.length - 1} />
               ))}
@@ -1950,12 +1952,12 @@ export default function Landing() {
 function FAQItem({ q, a, isLast = false }: { q: string; a: string; isLast?: boolean }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className={`${!isLast ? 'border-b border-[#E5E7EB]' : ''}`}>
+    <div className={`${!isLast ? 'border-b-2 border-[#E5E7EB]' : ''}`}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#F9FAFB] transition-colors"
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#F5F5F5] transition-colors"
       >
-        <span className="font-semibold text-[#111111] pr-4">{q}</span>
+        <span className="font-bold text-[#111111] pr-4">{q}</span>
         <div className={`w-6 h-6 rounded-full border border-[#E5E7EB] flex items-center justify-center shrink-0 transition-all duration-300 ${open ? 'rotate-180 bg-[#111111] border-[#111111]' : ''}`}>
           {open ? <Minus className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#111111]" />}
         </div>

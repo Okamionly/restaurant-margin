@@ -193,4 +193,121 @@ router.post('/reset-password', async (req: any, res) => {
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur serveur' }); }
 });
 
+// ============ GOOGLE OAUTH ============
+
+// GET /api/auth/google → redirect to Google consent screen
+router.get('/google', (_req, res) => {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  if (!clientId) return res.status(500).json({ error: 'Google OAuth non configure' });
+
+  const redirectUri = 'https://www.restaumargin.fr/api/auth/google/callback';
+  const scope = encodeURIComponent('email profile');
+  const state = crypto.randomBytes(16).toString('hex');
+
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
+  res.redirect(url);
+});
+
+// GET /api/auth/google/callback → handle Google callback
+router.get('/google/callback', async (req, res) => {
+  const frontendUrl = process.env.FRONTEND_URL || 'https://www.restaumargin.fr';
+  try {
+    const { code } = req.query;
+    if (!code || typeof code !== 'string') {
+      return res.redirect(`${frontendUrl}/login?error=google_no_code`);
+    }
+
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    if (!clientId || !clientSecret) {
+      return res.redirect(`${frontendUrl}/login?error=google_not_configured`);
+    }
+
+    const redirectUri = 'https://www.restaumargin.fr/api/auth/google/callback';
+
+    // Exchange code for tokens
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    });
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) {
+      console.error('[GOOGLE OAUTH] Token exchange failed:', tokenData);
+      return res.redirect(`${frontendUrl}/login?error=google_token_failed`);
+    }
+
+    // Get user info from Google
+    const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
+    const userInfo = await userInfoRes.json();
+    if (!userInfo.email) {
+      return res.redirect(`${frontendUrl}/login?error=google_no_email`);
+    }
+
+    const email = userInfo.email.toLowerCase().trim();
+    const name = userInfo.name || email.split('@')[0];
+
+    // Check if user already exists
+    let user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
+
+    if (user) {
+      // Existing user → login
+      const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+      return res.redirect(`${frontendUrl}/login?token=${token}`);
+    }
+
+    // New user → create account + restaurant
+    const passwordHash = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12);
+    user = await prisma.user.create({
+      data: {
+        email,
+        passwordHash,
+        name,
+        role: 'chef',
+        plan: 'basic',
+        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        emailVerified: true, // Google emails are verified
+      },
+    });
+
+    await prisma.restaurant.create({
+      data: {
+        name: 'Mon Restaurant',
+        ownerId: user.id,
+        members: { create: { userId: user.id, role: 'owner' } },
+      },
+    });
+
+    // Send welcome email (non-blocking)
+    try {
+      const resendApiKey = process.env.RESEND_API_KEY;
+      if (resendApiKey) {
+        const resend = new Resend(resendApiKey);
+        await resend.emails.send({
+          from: 'RestauMargin <contact@restaumargin.fr>',
+          to: user.email,
+          subject: 'Bienvenue sur RestauMargin !',
+          html: buildWelcomeEmail({ userName: user.name }),
+        });
+      }
+    } catch (emailErr) {
+      console.error('Failed to send welcome email (Google OAuth):', emailErr);
+    }
+
+    const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
+    return res.redirect(`${frontendUrl}/login?token=${token}`);
+  } catch (e) {
+    console.error('[GOOGLE OAUTH] Error:', e);
+    return res.redirect(`${frontendUrl}/login?error=google_failed`);
+  }
+});
+
 export default router;

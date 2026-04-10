@@ -36,22 +36,22 @@ import type { Ingredient } from '../types';
 type WasteReason = 'expired' | 'spoiled' | 'overproduction' | 'damaged' | 'other';
 
 // ─── Root Cause Analysis Categories ─────────────────────────────────────────
-type RootCause = 'surproduction' | 'perime' | 'preparation' | 'stockage' | 'service';
+type RootCause = 'surproduction' | 'perime' | 'preparation' | 'stockage' | 'invendu';
 
 const ROOT_CAUSE_LABELS: Record<RootCause, string> = {
-  surproduction: 'Surproduction',
   perime: 'Perime / DLC depassee',
+  surproduction: 'Surproduction',
   preparation: 'Erreur de preparation',
   stockage: 'Probleme de stockage',
-  service: 'Perte en service',
+  invendu: 'Invendu',
 };
 
 const ROOT_CAUSE_COLORS: Record<RootCause, string> = {
-  surproduction: '#7c3aed',
   perime: '#dc2626',
+  surproduction: '#7c3aed',
   preparation: '#d97706',
   stockage: '#0891b2',
-  service: '#ea580c',
+  invendu: '#ea580c',
 };
 
 interface WasteEntry {
@@ -746,11 +746,11 @@ export default function WasteTracker() {
   // ── Root Cause Analysis ──────────────────────────────────────────────────
   const rootCauseStats = useMemo(() => {
     const counts: Record<RootCause, { count: number; cost: number }> = {
-      surproduction: { count: 0, cost: 0 },
       perime: { count: 0, cost: 0 },
+      surproduction: { count: 0, cost: 0 },
       preparation: { count: 0, cost: 0 },
       stockage: { count: 0, cost: 0 },
-      service: { count: 0, cost: 0 },
+      invendu: { count: 0, cost: 0 },
     };
     filteredByPeriod.forEach(e => {
       if (e.rootCause && counts[e.rootCause]) {

@@ -116,6 +116,8 @@ const BlogFoodCost = lazyRetry(() => import('./pages/BlogFoodCost'));
 const BlogIA = lazyRetry(() => import('./pages/BlogIA'));
 const NegociationIA = lazyRetry(() => import('./pages/NegociationIA'));
 const EmailMarketing = lazyRetry(() => import('./pages/EmailMarketing'));
+const BlogGaspillage = lazyRetry(() => import('./pages/BlogGaspillage'));
+const BlogHACCP = lazyRetry(() => import('./pages/BlogHACCP'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -862,6 +864,7 @@ function AppLayout() {
               <Route path="/users" element={<UserManagement />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/mon-score" element={<GamificationPage />} />
+              <Route path="/email-marketing" element={<EmailMarketing />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
@@ -937,6 +940,8 @@ function App() {
           <Route path="/blog/coefficient-multiplicateur" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCoefficient /></Suspense>} />
           <Route path="/blog/reduire-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogFoodCost /></Suspense>} />
           <Route path="/blog/ia-restauration" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIA /></Suspense>} />
+          <Route path="/blog/gaspillage-alimentaire" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogGaspillage /></Suspense>} />
+          <Route path="/blog/haccp-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogHACCP /></Suspense>} />
           <Route
             path="/station"
             element={

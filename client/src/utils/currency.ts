@@ -38,7 +38,7 @@ export function getCurrencySymbol(currency?: string): string {
  */
 export function formatCurrency(amount: number, currency?: string): string {
   const symbol = getCurrencySymbol(currency);
-  return `${amount.toFixed(2)} ${symbol}`;
+  return `${(Number(amount) || 0).toFixed(2)} ${symbol}`;
 }
 
 /**

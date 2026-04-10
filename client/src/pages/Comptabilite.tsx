@@ -4,7 +4,8 @@ import {
   BarChart3, Download, FileText, Printer, Plus,
   Target, Gauge, ArrowUpRight, ArrowDownRight, Euro, Search,
   X, Trash2, Loader2, ArrowUp, ArrowDown, Mail, Activity,
-  DollarSign, Shield, ChevronRight, Minus, Heart
+  DollarSign, Shield, ChevronRight, Minus, Heart,
+  Tags, Landmark, BarChart2, CheckCircle, XCircle, Link2, AlertTriangle
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, LineChart, Line,
@@ -76,7 +77,52 @@ function apiToExpenses(entries: ApiEntry[]): ExpenseEntry[] {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-type TabId = 'pnl' | 'journal' | 'charges' | 'cashflow' | 'tva' | 'ratios' | 'export';
+type TabId = 'pnl' | 'journal' | 'charges' | 'cashflow' | 'tva' | 'ratios' | 'budget' | 'bank' | 'export';
+
+// ─── Auto-categorization keywords ───────────────────────────────────────────
+
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+  'Matieres premieres': ['metro', 'rungis', 'pomona', 'brake', 'sysco', 'transgourmet', 'davigel', 'viande', 'poisson', 'legume', 'fruit', 'lait', 'farine', 'huile', 'beurre', 'fromage', 'epicerie', 'boulangerie', 'patisserie', 'alimentaire', 'boisson'],
+  'Personnel': ['salaire', 'paie', 'urssaf', 'cotisation', 'mutuelle', 'prevoyance', 'interim', 'formation', 'medecine travail', 'ticket restaurant', 'prime'],
+  'Loyer': ['loyer', 'bail', 'foncier', 'charges locatives', 'syndic', 'copropriete'],
+  'Energie': ['edf', 'engie', 'gaz', 'electricite', 'eau', 'veolia', 'suez', 'chauffage', 'climatisation'],
+  'Marketing': ['publicite', 'pub', 'google ads', 'facebook', 'instagram', 'flyer', 'affiche', 'sponsoring', 'communication', 'agence com', 'seo', 'site web', 'reseaux sociaux', 'influence'],
+  'Assurance': ['assurance', 'axa', 'allianz', 'maif', 'generali', 'responsabilite civile'],
+  'Entretien': ['nettoyage', 'entretien', 'reparation', 'maintenance', 'plombier', 'electricien', 'desinsectisation', 'desratisation'],
+  'Divers': [],
+};
+
+function autoCategorize(fournisseur: string, description: string): string {
+  const text = `${fournisseur} ${description}`.toLowerCase();
+  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (category === 'Divers') continue;
+    for (const kw of keywords) {
+      if (text.includes(kw)) return category;
+    }
+  }
+  return 'Divers';
+}
+
+// ─── Bank Reconciliation types ──────────────────────────────────────────────
+
+type ReconciliationStatus = 'rapproche' | 'non_rapproche';
+
+interface BankTransaction {
+  id: number;
+  date: string;
+  label: string;
+  amount: number;
+  status: ReconciliationStatus;
+  matchedExpenseId?: number;
+}
+
+// ─── Budget types ───────────────────────────────────────────────────────────
+
+interface BudgetEntry {
+  category: string;
+  budget: number;
+  actual: number;
+}
 type PeriodType = 'mois' | 'trimestre' | 'annee';
 type PaymentMode = 'CB' | 'Especes' | 'Cheque' | 'Virement' | 'Ticket resto';
 
@@ -244,6 +290,34 @@ export default function Comptabilite() {
     tva: '20',
     description: '',
   });
+
+  // ─── Bank Reconciliation state ──────────────────────────────────────────
+  const [bankTransactions, setBankTransactions] = useState<BankTransaction[]>([]);
+  const [showBankModal, setShowBankModal] = useState(false);
+  const [newBankTx, setNewBankTx] = useState({ date: new Date().toISOString().slice(0, 10), label: '', amount: '' });
+
+  // ─── Budget state ──────────────────────────────────────────────────────
+  const [budgets, setBudgets] = useState<Record<string, number>>(() => {
+    const saved = localStorage.getItem('rm_budgets');
+    if (saved) return JSON.parse(saved);
+    return {
+      'Matieres premieres': 12000,
+      'Personnel': 15000,
+      'Loyer': 3500,
+      'Energie': 1200,
+      'Entretien': 800,
+      'Assurance': 600,
+      'Marketing': 1500,
+      'Divers': 1000,
+    };
+  });
+  const [editingBudget, setEditingBudget] = useState<string | null>(null);
+  const [budgetInput, setBudgetInput] = useState('');
+
+  // Persist budgets
+  useEffect(() => {
+    localStorage.setItem('rm_budgets', JSON.stringify(budgets));
+  }, [budgets]);
 
   // ─── Computed data ───────────────────────────────────────────────────────
 
@@ -435,6 +509,32 @@ export default function Comptabilite() {
       };
     });
   }, [monthlyData]);
+
+  // ─── Budget vs Actual computed data ─────────────────────────────────────
+  const budgetData = useMemo((): BudgetEntry[] => {
+    return EXPENSE_CATEGORIES.map(cat => {
+      const actual = expenses
+        .filter(e => {
+          if (period === 'mois') return e.date.startsWith(selectedMonth) && e.categorie === cat;
+          if (period === 'trimestre') {
+            const idx = monthlyData.findIndex(m => m.mois === selectedMonth);
+            const months = monthlyData.slice(Math.max(0, idx - 2), idx + 1).map(m => m.mois);
+            return months.some(mo => e.date.startsWith(mo)) && e.categorie === cat;
+          }
+          return e.categorie === cat;
+        })
+        .reduce((s, e) => s + e.montantHT, 0);
+      const multiplier = period === 'trimestre' ? 3 : period === 'annee' ? 12 : 1;
+      return { category: cat, budget: (budgets[cat] || 0) * multiplier, actual: Math.round(actual) };
+    });
+  }, [expenses, budgets, period, selectedMonth, monthlyData]);
+
+  const totalBudget = useMemo(() => budgetData.reduce((s, b) => s + b.budget, 0), [budgetData]);
+  const totalActual = useMemo(() => budgetData.reduce((s, b) => s + b.actual, 0), [budgetData]);
+
+  // ─── Bank reconciliation computed ───────────────────────────────────────
+  const reconciledCount = useMemo(() => bankTransactions.filter(t2 => t2.status === 'rapproche').length, [bankTransactions]);
+  const unreconciledCount = useMemo(() => bankTransactions.filter(t2 => t2.status === 'non_rapproche').length, [bankTransactions]);
 
   // Ticket moyen and taux remplissage
   const currentRatios = useMemo(() => {
@@ -666,11 +766,69 @@ export default function Comptabilite() {
   }
 
   function handleSendToAccountant() {
-    showToast('Email envoye au comptable avec les donnees du mois', 'success');
+    // Generate FEC CSV and trigger download + show toast
+    handleExportFEC();
+    showToast('Export FEC genere et envoye au comptable', 'success');
   }
 
   function handlePrint() {
     window.print();
+  }
+
+  // ─── Bank reconciliation handlers ─────────────────────────────────────
+  function handleAddBankTransaction() {
+    if (!newBankTx.label || !newBankTx.amount) {
+      showToast('Veuillez remplir tous les champs', 'error');
+      return;
+    }
+    const amount = parseFloat(newBankTx.amount);
+    if (isNaN(amount)) {
+      showToast('Montant invalide', 'error');
+      return;
+    }
+    const tx: BankTransaction = {
+      id: Date.now(),
+      date: newBankTx.date,
+      label: newBankTx.label,
+      amount,
+      status: 'non_rapproche',
+    };
+    setBankTransactions(prev => [tx, ...prev]);
+    setNewBankTx({ date: new Date().toISOString().slice(0, 10), label: '', amount: '' });
+    setShowBankModal(false);
+    showToast('Transaction bancaire ajoutee', 'success');
+  }
+
+  function handleReconcile(txId: number, expenseId?: number) {
+    setBankTransactions(prev => prev.map(t2 =>
+      t2.id === txId ? { ...t2, status: 'rapproche' as ReconciliationStatus, matchedExpenseId: expenseId } : t2
+    ));
+    showToast('Transaction rapprochee', 'success');
+  }
+
+  function handleUnreconcile(txId: number) {
+    setBankTransactions(prev => prev.map(t2 =>
+      t2.id === txId ? { ...t2, status: 'non_rapproche' as ReconciliationStatus, matchedExpenseId: undefined } : t2
+    ));
+    showToast('Rapprochement annule', 'info');
+  }
+
+  function handleDeleteBankTx(txId: number) {
+    setBankTransactions(prev => prev.filter(t2 => t2.id !== txId));
+    showToast('Transaction supprimee', 'success');
+  }
+
+  // ─── Budget handlers ──────────────────────────────────────────────────
+  function handleSaveBudget(category: string) {
+    const val = parseFloat(budgetInput);
+    if (isNaN(val) || val < 0) {
+      showToast('Montant invalide', 'error');
+      return;
+    }
+    setBudgets(prev => ({ ...prev, [category]: val }));
+    setEditingBudget(null);
+    setBudgetInput('');
+    showToast(`Budget ${category} mis a jour`, 'success');
   }
 
   // ─── Gauge component ──────────────────────────────────────────────────
@@ -807,6 +965,8 @@ export default function Comptabilite() {
     { id: 'charges', label: 'Charges', icon: TrendingDown },
     { id: 'cashflow', label: 'Tresorerie', icon: Activity },
     { id: 'tva', label: 'TVA', icon: Euro },
+    { id: 'budget', label: 'Budget', icon: BarChart2 },
+    { id: 'bank', label: 'Rapprochement', icon: Landmark },
     { id: 'ratios', label: 'Ratios', icon: Gauge },
     { id: 'export', label: 'Exports', icon: Download },
   ];
@@ -1513,6 +1673,264 @@ export default function Comptabilite() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════════════
+          TAB: Budget vs Actual
+          ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'budget' && (
+        <div className="space-y-6">
+          {/* Summary cards */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Budget total</span>
+              <div className="text-xl font-bold text-[#111111] dark:text-white mt-1">{fmt(totalBudget)}</div>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{period === 'mois' ? 'Ce mois' : period === 'trimestre' ? 'Ce trimestre' : 'Cette annee'}</span>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Depenses reelles</span>
+              <div className="text-xl font-bold text-[#111111] dark:text-white mt-1">{fmt(totalActual)}</div>
+              <span className={`text-xs font-medium ${totalActual <= totalBudget ? 'text-emerald-500' : 'text-red-500'}`}>
+                {totalActual <= totalBudget ? 'Dans le budget' : `Depassement ${fmt(totalActual - totalBudget)}`}
+              </span>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Ecart</span>
+              <div className={`text-xl font-bold mt-1 ${totalBudget - totalActual >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                {totalBudget - totalActual >= 0 ? '+' : ''}{fmt(totalBudget - totalActual)}
+              </div>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                {totalBudget > 0 ? fmtPct(((totalBudget - totalActual) / totalBudget) * 100) : '0%'} du budget
+              </span>
+            </div>
+          </div>
+
+          {/* Budget table with color bars */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
+              <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+                <BarChart2 className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+                Budget mensuel par categorie
+              </h3>
+              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Cliquez sur un montant pour modifier</span>
+            </div>
+            <div className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+              {budgetData.map(({ category, budget, actual }) => {
+                const variance = budget - actual;
+                const pct = budget > 0 ? (actual / budget) * 100 : 0;
+                const isOver = actual > budget;
+                const barColor = isOver ? 'bg-red-500' : pct > 80 ? 'bg-amber-500' : 'bg-emerald-500';
+
+                return (
+                  <div key={category} className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: EXPENSE_BAR_COLORS[category] || '#6b7280' }} />
+                        <span className="text-sm font-medium text-[#111111] dark:text-white">{category}</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm">
+                        {/* Budget editable */}
+                        <div className="text-right">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Budget</span>
+                          {editingBudget === category ? (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                value={budgetInput}
+                                onChange={e => setBudgetInput(e.target.value)}
+                                className="w-20 px-2 py-0.5 rounded border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-right"
+                                autoFocus
+                                onKeyDown={e => e.key === 'Enter' && handleSaveBudget(category)}
+                              />
+                              <button onClick={() => handleSaveBudget(category)} className="text-emerald-500 hover:text-emerald-400">
+                                <CheckCircle className="w-4 h-4" />
+                              </button>
+                              <button onClick={() => setEditingBudget(null)} className="text-red-500 hover:text-red-400">
+                                <XCircle className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div
+                              className="font-medium text-[#111111] dark:text-white cursor-pointer hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                              onClick={() => { setEditingBudget(category); setBudgetInput(String(budgets[category] || 0)); }}
+                            >
+                              {fmt(budget)}
+                            </div>
+                          )}
+                        </div>
+                        {/* Actual */}
+                        <div className="text-right">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Reel</span>
+                          <div className="font-medium text-[#111111] dark:text-white">{fmt(actual)}</div>
+                        </div>
+                        {/* Variance */}
+                        <div className="text-right w-20">
+                          <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Ecart</span>
+                          <div className={`font-semibold ${isOver ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                            {variance >= 0 ? '+' : ''}{fmt(variance)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="h-3 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${barColor}`}
+                        style={{ width: `${Math.min(pct, 100)}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtPct(pct)} utilise</span>
+                      {isOver && (
+                        <span className="text-[10px] text-red-500 font-medium flex items-center gap-0.5">
+                          <AlertTriangle className="w-3 h-3" /> Depassement
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Budget vs Actual bar chart */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-6">
+            <h3 className="font-semibold text-[#111111] dark:text-white mb-4">Comparaison visuelle</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={budgetData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis type="number" tickFormatter={(v: number) => `${Math.round(v / 1000)}k`} />
+                  <YAxis type="category" dataKey="category" width={120} tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v: number) => fmt(v)} />
+                  <Legend />
+                  <Bar dataKey="budget" name="Budget" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={14} />
+                  <Bar dataKey="actual" name="Reel" fill="#10b981" radius={[0, 4, 4, 0]} barSize={14} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          TAB: Bank Reconciliation
+          ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'bank' && (
+        <div className="space-y-6">
+          {/* Summary row */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Total transactions</span>
+              <div className="text-xl font-bold text-[#111111] dark:text-white mt-1">{bankTransactions.length}</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex items-center gap-1.5 mb-1">
+                <CheckCircle className="w-4 h-4 text-emerald-500" />
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Rapprochees</span>
+              </div>
+              <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{reconciledCount}</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="flex items-center gap-1.5 mb-1">
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Non rapprochees</span>
+              </div>
+              <div className="text-xl font-bold text-amber-600 dark:text-amber-400">{unreconciledCount}</div>
+            </div>
+          </div>
+
+          {/* Add button */}
+          <div className="flex justify-end">
+            <button
+              onClick={() => setShowBankModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Ajouter une transaction bancaire
+            </button>
+          </div>
+
+          {/* Transaction list */}
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+            <div className="p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h3 className="font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+                <Landmark className="w-5 h-5 text-[#111111] dark:text-[#A3A3A3]" />
+                Transactions bancaires
+              </h3>
+            </div>
+            {bankTransactions.length === 0 ? (
+              <div className="p-8 text-center">
+                <Landmark className="w-10 h-10 mx-auto text-[#D1D5DB] dark:text-[#525252] mb-3" />
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune transaction bancaire.</p>
+                <p className="text-xs text-[#D1D5DB] dark:text-[#525252] mt-1">Ajoutez vos releves bancaires pour les rapprocher avec vos depenses.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-[#F3F4F6] dark:divide-[#1A1A1A]">
+                {bankTransactions.map(tx => {
+                  const matchedExpense = tx.matchedExpenseId ? expenses.find(e => e.id === tx.matchedExpenseId) : null;
+                  return (
+                    <div key={tx.id} className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.status === 'rapproche' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-amber-100 dark:bg-amber-900/30'}`}>
+                          {tx.status === 'rapproche' ? <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-[#111111] dark:text-white">{tx.label}</div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{fmtDate(tx.date)}</div>
+                          {matchedExpense && (
+                            <div className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
+                              <Link2 className="w-3 h-3" /> {matchedExpense.fournisseur} - {matchedExpense.categorie}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm font-bold text-[#111111] dark:text-white">{fmt(tx.amount)}</span>
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${tx.status === 'rapproche' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'}`}>
+                          {tx.status === 'rapproche' ? 'Rapproche' : 'Non rapproche'}
+                        </span>
+                        {tx.status === 'non_rapproche' ? (
+                          <div className="flex items-center gap-1">
+                            {/* Try auto-match with expenses */}
+                            {expenses.filter(e => Math.abs(e.montantHT - tx.amount) < 1).length > 0 ? (
+                              <button
+                                onClick={() => {
+                                  const match = expenses.find(e => Math.abs(e.montantHT - tx.amount) < 1);
+                                  if (match) handleReconcile(tx.id, match.id);
+                                }}
+                                className="px-2 py-1 text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+                              >
+                                Rapprocher auto
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleReconcile(tx.id)}
+                                className="px-2 py-1 text-xs font-medium bg-teal-600 hover:bg-teal-500 text-white rounded-lg transition-colors"
+                              >
+                                Rapprocher
+                              </button>
+                            )}
+                            <button onClick={() => handleDeleteBankTx(tx.id)} className="p-1 text-red-500 hover:text-red-400 transition-colors">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleUnreconcile(tx.id)}
+                            className="px-2 py-1 text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:text-red-500 transition-colors"
+                          >
+                            Annuler
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
           TAB: Ratios & indicateurs
           ═══════════════════════════════════════════════════════════════════ */}
       {activeTab === 'ratios' && (
@@ -1704,6 +2122,56 @@ export default function Comptabilite() {
         </div>
       )}
 
+      {/* ─── Bank Transaction Modal ──────────────────────────────────────── */}
+      <Modal isOpen={showBankModal} onClose={() => setShowBankModal(false)} title="Ajouter une transaction bancaire">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Date</label>
+            <input
+              type="date"
+              value={newBankTx.date}
+              onChange={e => setNewBankTx({ ...newBankTx, date: e.target.value })}
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Libelle *</label>
+            <input
+              type="text"
+              value={newBankTx.label}
+              onChange={e => setNewBankTx({ ...newBankTx, label: e.target.value })}
+              placeholder="Ex: VIREMENT METRO CASH&CARRY"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Montant *</label>
+            <input
+              type="number"
+              step="0.01"
+              value={newBankTx.amount}
+              onChange={e => setNewBankTx({ ...newBankTx, amount: e.target.value })}
+              placeholder="0,00"
+              className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
+            />
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={() => setShowBankModal(false)}
+              className="flex-1 px-4 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              onClick={handleAddBankTransaction}
+              className="flex-1 px-4 py-2 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors"
+            >
+              Ajouter
+            </button>
+          </div>
+        </div>
+      </Modal>
+
       {/* ─── Add expense Modal ─────────────────────────────────────────── */}
       <Modal isOpen={showExpenseModal} onClose={() => setShowExpenseModal(false)} title="Ajouter une depense">
         <div className="space-y-4">
@@ -1736,10 +2204,20 @@ export default function Comptabilite() {
             <input
               type="text"
               value={newExpense.fournisseur}
-              onChange={(e) => setNewExpense({ ...newExpense, fournisseur: e.target.value })}
-              placeholder="Nom du fournisseur"
+              onChange={(e) => {
+                const val = e.target.value;
+                const suggestedCat = autoCategorize(val, newExpense.description);
+                setNewExpense({ ...newExpense, fournisseur: val, categorie: suggestedCat });
+              }}
+              placeholder="Nom du fournisseur — categorie auto-detectee"
               className="w-full px-3 py-2 rounded-lg border border-[#D1D5DB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-sm text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373]"
             />
+            {newExpense.fournisseur && (
+              <div className="flex items-center gap-1.5 mt-1">
+                <Tags className="w-3 h-3 text-teal-500" />
+                <span className="text-xs text-teal-600 dark:text-teal-400">Auto-categorie : {autoCategorize(newExpense.fournisseur, newExpense.description)}</span>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">

@@ -3,7 +3,9 @@ import {
   Thermometer, Plus, ShieldCheck, AlertTriangle, Clock,
   CheckCircle2, XCircle, Package, SprayCan, BarChart3, Search,
   Wrench, Calendar, Download, ChevronRight, ChevronLeft, Printer,
-  TrendingUp, Bell, User, Flame, Snowflake, Droplets, HandMetal
+  TrendingUp, Bell, User, Flame, Snowflake, Droplets, HandMetal,
+  Truck, FileText, ClipboardCheck, AlertOctagon, Camera, ExternalLink,
+  FileCheck, ChevronDown, ChevronUp, Hash, Building2, ListChecks
 } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -103,7 +105,74 @@ interface TempAlert {
   timestamp: string;
 }
 
-type TabKey = 'dashboard' | 'checklist' | 'temperatures' | 'lots' | 'alertes' | 'nettoyage' | 'conformite' | 'actions';
+// ─── Digital Temperature Log Types ──────────────────────────────────────────
+
+interface TempLogEntry {
+  id: string;
+  equipment: string;
+  checkTime: '08:00' | '12:00' | '18:00';
+  temperature: number;
+  operator: string;
+  timestamp: string;
+  isConform: boolean;
+  correctiveAction?: string;
+}
+
+// ─── Cleaning Schedule Types ────────────────────────────────────────────────
+
+interface CleaningTask {
+  id: string;
+  label: string;
+  frequency: 'daily' | 'weekly' | 'monthly';
+  category: string;
+  checked: boolean;
+  operator: string;
+  timestamp: string;
+  photoPlaceholder: boolean;
+}
+
+// ─── Supplier Traceability Types ────────────────────────────────────────────
+
+interface DeliveryRecord {
+  id: string;
+  supplierName: string;
+  deliveryDate: string;
+  products: string;
+  lotNumbers: string;
+  temperatureReception: number | null;
+  tempIsConform: boolean | null;
+  decision: 'accepte' | 'refuse' | 'en_attente';
+  refusalReason: string;
+  operator: string;
+  timestamp: string;
+}
+
+// ─── Incident Log Types ─────────────────────────────────────────────────────
+
+interface IncidentRecord {
+  id: string;
+  date: string;
+  description: string;
+  severity: 'faible' | 'moyen' | 'grave' | 'critique';
+  actionsTaken: string;
+  followUp: string;
+  status: 'ouvert' | 'en_cours' | 'clos';
+  reporter: string;
+  timestamp: string;
+}
+
+// ─── Audit Preparation Types ────────────────────────────────────────────────
+
+interface AuditCheckItem {
+  id: string;
+  category: string;
+  label: string;
+  description: string;
+  isPresent: boolean;
+  isCritical: boolean;
+}
+
+type TabKey = 'dashboard' | 'checklist' | 'temperatures' | 'lots' | 'alertes' | 'nettoyage' | 'conformite' | 'actions' | 'temp_log' | 'cleaning_schedule' | 'supplier_trace' | 'audit_prep' | 'incidents';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -160,6 +229,127 @@ const DAILY_CHECK_TEMPLATE: Omit<DailyCheckItem, 'checked' | 'temperature' | 'ti
   { id: 'hygiene-tenue', category: 'Hygiene personnel', label: 'Tenues propres et conformes', icon: 'hand' },
   { id: 'hygiene-blessures', category: 'Hygiene personnel', label: 'Verification blessures / maladies', icon: 'hand' },
 ];
+
+// ─── Temperature Log Constants ──────────────────────────────────────────────
+
+const TEMP_LOG_EQUIPMENT = [
+  { id: 'frigo1', label: 'Frigo 1', type: 'froid' as const, maxTemp: 4 },
+  { id: 'frigo2', label: 'Frigo 2', type: 'froid' as const, maxTemp: 4 },
+  { id: 'congelateur', label: 'Congelateur', type: 'congel' as const, maxTemp: -18 },
+  { id: 'chambre_froide', label: 'Chambre froide', type: 'froid' as const, maxTemp: 4 },
+  { id: 'bain_marie', label: 'Bain-marie', type: 'chaud' as const, minTemp: 63 },
+];
+
+const TEMP_LOG_TIMES = ['08:00', '12:00', '18:00'] as const;
+
+function isTempLogConform(equipId: string, temp: number): boolean {
+  const equip = TEMP_LOG_EQUIPMENT.find(e => e.id === equipId);
+  if (!equip) return true;
+  if (equip.type === 'froid') return temp < (equip.maxTemp ?? 4);
+  if (equip.type === 'congel') return temp <= (equip.maxTemp ?? -18);
+  if (equip.type === 'chaud') return temp >= (equip.minTemp ?? 63);
+  return true;
+}
+
+function getTempLogCorrective(equipId: string, temp: number): string {
+  const equip = TEMP_LOG_EQUIPMENT.find(e => e.id === equipId);
+  if (!equip) return '';
+  if (equip.type === 'froid' && temp >= (equip.maxTemp ?? 4))
+    return `${equip.label} a ${temp}°C (max ${equip.maxTemp}°C). Verifier thermostat, fermeture porte. Deplacer produits sensibles.`;
+  if (equip.type === 'congel' && temp > (equip.maxTemp ?? -18))
+    return `${equip.label} a ${temp}°C (max ${equip.maxTemp}°C). Verifier compresseur, ne pas ouvrir. Appeler technicien si > -15°C.`;
+  if (equip.type === 'chaud' && temp < (equip.minTemp ?? 63))
+    return `${equip.label} a ${temp}°C (min ${equip.minTemp}°C). Remonter temperature immediatement. Jeter si maintien > 2h entre 10-63°C.`;
+  return '';
+}
+
+// ─── Cleaning Schedule Constants ────────────────────────────────────────────
+
+const CLEANING_SCHEDULE_TEMPLATE: Omit<CleaningTask, 'checked' | 'operator' | 'timestamp' | 'photoPlaceholder'>[] = [
+  // Daily
+  { id: 'daily-plans-travail', label: 'Plans de travail', frequency: 'daily', category: 'Quotidien' },
+  { id: 'daily-sols', label: 'Sols cuisine et salle', frequency: 'daily', category: 'Quotidien' },
+  { id: 'daily-equipements', label: 'Equipements (trancheur, mixeur, etc.)', frequency: 'daily', category: 'Quotidien' },
+  { id: 'daily-poubelles-int', label: 'Poubelles interieures', frequency: 'daily', category: 'Quotidien' },
+  { id: 'daily-sanitaires', label: 'Sanitaires et lavabos', frequency: 'daily', category: 'Quotidien' },
+  // Weekly
+  { id: 'weekly-hottes', label: 'Hottes et filtres', frequency: 'weekly', category: 'Hebdomadaire' },
+  { id: 'weekly-grilles', label: 'Grilles et aerations', frequency: 'weekly', category: 'Hebdomadaire' },
+  { id: 'weekly-poubelles-ext', label: 'Poubelles exterieures et bacs', frequency: 'weekly', category: 'Hebdomadaire' },
+  { id: 'weekly-fours', label: 'Fours et plaques', frequency: 'weekly', category: 'Hebdomadaire' },
+  { id: 'weekly-frigos-ext', label: 'Exterieur frigos', frequency: 'weekly', category: 'Hebdomadaire' },
+  // Monthly
+  { id: 'monthly-chambre-froide', label: 'Chambre froide (degivrage + nettoyage)', frequency: 'monthly', category: 'Mensuel' },
+  { id: 'monthly-stockage-sec', label: 'Stockage sec (etageres, rayonnages)', frequency: 'monthly', category: 'Mensuel' },
+  { id: 'monthly-murs-plafonds', label: 'Murs et plafonds cuisine', frequency: 'monthly', category: 'Mensuel' },
+  { id: 'monthly-canalisations', label: 'Canalisations et siphons', frequency: 'monthly', category: 'Mensuel' },
+];
+
+// ─── Audit Checklist Template ───────────────────────────────────────────────
+
+const AUDIT_CHECKLIST_TEMPLATE: Omit<AuditCheckItem, 'isPresent'>[] = [
+  { id: 'audit-plan-haccp', category: 'Documents HACCP', label: 'Plan HACCP a jour', description: 'Document decrivant les 7 principes HACCP appliques', isCritical: true },
+  { id: 'audit-registre-temp', category: 'Documents HACCP', label: 'Registre temperatures (30 jours)', description: 'Releves temperatures frigo, congel, chaud des 30 derniers jours', isCritical: true },
+  { id: 'audit-plan-nettoyage', category: 'Documents HACCP', label: 'Plan de nettoyage et desinfection', description: 'Planning des taches de nettoyage avec frequences', isCritical: true },
+  { id: 'audit-fiches-produits', category: 'Documents HACCP', label: 'Fiches techniques produits', description: 'Fiches de securite des produits de nettoyage utilises', isCritical: false },
+  { id: 'audit-tracabilite', category: 'Tracabilite', label: 'Registre de tracabilite fournisseurs', description: 'Bons de livraison avec numeros de lots, DLC, temperatures', isCritical: true },
+  { id: 'audit-agrements', category: 'Tracabilite', label: 'Agrements sanitaires fournisseurs', description: 'Copies des agrements sanitaires de chaque fournisseur', isCritical: true },
+  { id: 'audit-bon-livraison', category: 'Tracabilite', label: 'Bons de livraison classes', description: 'Archivage chronologique des bons de livraison', isCritical: false },
+  { id: 'audit-formation', category: 'Personnel', label: 'Attestations de formation hygiene', description: 'Formation HACCP de 14h pour au moins un responsable', isCritical: true },
+  { id: 'audit-visite-medicale', category: 'Personnel', label: 'Visites medicales a jour', description: 'Aptitude medicale de chaque employe manipulant des aliments', isCritical: true },
+  { id: 'audit-tenues', category: 'Personnel', label: 'Tenues de travail conformes', description: 'Vetements propres, charlotte, tablier, chaussures de securite', isCritical: false },
+  { id: 'audit-eau', category: 'Infrastructures', label: 'Analyse eau potable', description: 'Dernier resultat d\'analyse de l\'eau (si puits ou reseau prive)', isCritical: false },
+  { id: 'audit-nuisibles', category: 'Infrastructures', label: 'Contrat desinsectisation / deratisation', description: 'Contrat en cours avec une societe specialisee + rapports de visite', isCritical: true },
+  { id: 'audit-dechets', category: 'Infrastructures', label: 'Gestion des dechets', description: 'Procedures de tri et elimination des dechets alimentaires', isCritical: false },
+  { id: 'audit-actions-correctives', category: 'Suivi', label: 'Registre des actions correctives', description: 'Historique des non-conformites et mesures prises', isCritical: true },
+  { id: 'audit-incidents', category: 'Suivi', label: 'Registre des incidents', description: 'Journal des incidents de securite alimentaire', isCritical: false },
+  { id: 'audit-rappel-produits', category: 'Suivi', label: 'Procedure de rappel produits', description: 'Procedure ecrite de retrait/rappel en cas d\'alerte sanitaire', isCritical: true },
+];
+
+const SEVERITY_LABELS: Record<string, string> = {
+  faible: 'Faible',
+  moyen: 'Moyen',
+  grave: 'Grave',
+  critique: 'Critique',
+};
+
+const SEVERITY_BADGE: Record<string, string> = {
+  faible: 'bg-blue-900/40 text-blue-300 border border-blue-700/50',
+  moyen: 'bg-amber-900/40 text-amber-300 border border-amber-700/50',
+  grave: 'bg-orange-900/40 text-orange-300 border border-orange-700/50',
+  critique: 'bg-red-900/40 text-red-300 border border-red-700/50',
+};
+
+const INCIDENT_STATUS_BADGE: Record<string, string> = {
+  ouvert: 'bg-red-900/40 text-red-300 border border-red-700/50',
+  en_cours: 'bg-amber-900/40 text-amber-300 border border-amber-700/50',
+  clos: 'bg-emerald-900/40 text-emerald-300 border border-emerald-700/50',
+};
+
+const INCIDENT_STATUS_LABELS: Record<string, string> = {
+  ouvert: 'Ouvert',
+  en_cours: 'En cours',
+  clos: 'Clos',
+};
+
+// ─── localStorage helpers for new modules ───────────────────────────────────
+
+function getStorageKey(module: string, dateKey?: string): string {
+  const rid = localStorage.getItem('activeRestaurantId') || 'default';
+  return dateKey ? `haccp_${module}_${rid}_${dateKey}` : `haccp_${module}_${rid}`;
+}
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return fallback;
+}
+
+function saveToStorage(key: string, data: any): void {
+  localStorage.setItem(key, JSON.stringify(data));
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -384,6 +574,51 @@ export default function HACCP() {
   const [selectedWeekDay, setSelectedWeekDay] = useState<string | null>(null);
   const [weeklyData, setWeeklyData] = useState<Record<string, DailyCheckItem[]>>(() => loadWeeklyData());
 
+  // ─── Digital Temperature Log state ────────────────────────────────────
+  const [tempLogDate, setTempLogDate] = useState(today);
+  const [tempLogEntries, setTempLogEntries] = useState<TempLogEntry[]>(() =>
+    loadFromStorage(getStorageKey('temp_log', today), [])
+  );
+  const [showTempLogForm, setShowTempLogForm] = useState(false);
+  const [tempLogForm, setTempLogForm] = useState({ equipment: 'frigo1', checkTime: '08:00' as const, temperature: '', operator: '' });
+
+  // ─── Cleaning Schedule state ──────────────────────────────────────────
+  const [cleaningSchedule, setCleaningSchedule] = useState<CleaningTask[]>(() => {
+    const stored = loadFromStorage<CleaningTask[]>(getStorageKey('cleaning_schedule', today), []);
+    if (stored.length > 0) return stored;
+    return CLEANING_SCHEDULE_TEMPLATE.map(t => ({ ...t, checked: false, operator: '', timestamp: '', photoPlaceholder: false }));
+  });
+  const [cleaningFilter, setCleaningFilter] = useState<'all' | 'daily' | 'weekly' | 'monthly'>('all');
+
+  // ─── Supplier Traceability state ──────────────────────────────────────
+  const [deliveries, setDeliveries] = useState<DeliveryRecord[]>(() =>
+    loadFromStorage(getStorageKey('deliveries'), [])
+  );
+  const [showDeliveryForm, setShowDeliveryForm] = useState(false);
+  const [deliveryForm, setDeliveryForm] = useState({
+    supplierName: '', deliveryDate: today, products: '', lotNumbers: '',
+    temperatureReception: '', decision: 'en_attente' as DeliveryRecord['decision'],
+    refusalReason: '', operator: '',
+  });
+
+  // ─── Audit Preparation state ──────────────────────────────────────────
+  const [auditChecklist, setAuditChecklist] = useState<AuditCheckItem[]>(() => {
+    const stored = loadFromStorage<AuditCheckItem[]>(getStorageKey('audit_checklist'), []);
+    if (stored.length > 0) return stored;
+    return AUDIT_CHECKLIST_TEMPLATE.map(t => ({ ...t, isPresent: false }));
+  });
+
+  // ─── Incident Log state ───────────────────────────────────────────────
+  const [incidents, setIncidents] = useState<IncidentRecord[]>(() =>
+    loadFromStorage(getStorageKey('incidents'), [])
+  );
+  const [showIncidentForm, setShowIncidentForm] = useState(false);
+  const [incidentForm, setIncidentForm] = useState({
+    description: '', severity: 'moyen' as IncidentRecord['severity'],
+    actionsTaken: '', followUp: '', reporter: '',
+  });
+  const [incidentView, setIncidentView] = useState<'list' | 'timeline'>('list');
+
   // ─── API: Load data on mount ──────────────────────────────────────────
 
   const loadTemperatures = useCallback(async () => {
@@ -465,6 +700,31 @@ export default function HACCP() {
   useEffect(() => {
     setDailyChecklist(loadDailyChecklist(checklistDate));
   }, [checklistDate]);
+
+  // Persist new module data to localStorage
+  useEffect(() => {
+    saveToStorage(getStorageKey('temp_log', tempLogDate), tempLogEntries);
+  }, [tempLogEntries, tempLogDate]);
+
+  useEffect(() => {
+    setTempLogEntries(loadFromStorage(getStorageKey('temp_log', tempLogDate), []));
+  }, [tempLogDate]);
+
+  useEffect(() => {
+    saveToStorage(getStorageKey('cleaning_schedule', today), cleaningSchedule);
+  }, [cleaningSchedule]);
+
+  useEffect(() => {
+    saveToStorage(getStorageKey('deliveries'), deliveries);
+  }, [deliveries]);
+
+  useEffect(() => {
+    saveToStorage(getStorageKey('audit_checklist'), auditChecklist);
+  }, [auditChecklist]);
+
+  useEffect(() => {
+    saveToStorage(getStorageKey('incidents'), incidents);
+  }, [incidents]);
 
   // ─── Stats ───────────────────────────────────────────────────────────────
 
@@ -860,6 +1120,149 @@ export default function HACCP() {
     setTempAlerts(prev => prev.filter(a => a.id !== alertId));
   }
 
+  // ─── Digital Temperature Log Handlers ─────────────────────────────────
+
+  function addTempLogEntry() {
+    if (!tempLogForm.temperature || !tempLogForm.operator) return;
+    const temp = parseFloat(tempLogForm.temperature);
+    const isConform = isTempLogConform(tempLogForm.equipment, temp);
+    const corrective = !isConform ? getTempLogCorrective(tempLogForm.equipment, temp) : undefined;
+    const entry: TempLogEntry = {
+      id: `tl-${Date.now()}`,
+      equipment: tempLogForm.equipment,
+      checkTime: tempLogForm.checkTime as TempLogEntry['checkTime'],
+      temperature: temp,
+      operator: tempLogForm.operator,
+      timestamp: new Date().toISOString(),
+      isConform,
+      correctiveAction: corrective,
+    };
+    setTempLogEntries(prev => [...prev, entry]);
+
+    // Auto-generate corrective action for non-conformity
+    if (!isConform && corrective) {
+      const autoAction: CorrectiveAction = {
+        id: Date.now(),
+        type: 'temperature',
+        description: corrective,
+        responsiblePerson: tempLogForm.operator,
+        deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        status: 'ouvert',
+        resolution: corrective,
+        createdAt: new Date().toISOString(),
+      };
+      setCorrectiveActions(prev => [autoAction, ...prev]);
+    }
+
+    setTempLogForm({ equipment: 'frigo1', checkTime: '08:00', temperature: '', operator: '' });
+    setShowTempLogForm(false);
+  }
+
+  // ─── Cleaning Schedule Handlers ───────────────────────────────────────
+
+  function toggleCleaningTask(id: string) {
+    setCleaningSchedule(prev => prev.map(task => {
+      if (task.id !== id) return task;
+      const now = new Date();
+      return {
+        ...task,
+        checked: !task.checked,
+        operator: !task.checked ? 'Moi' : '',
+        timestamp: !task.checked ? now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '',
+      };
+    }));
+  }
+
+  function toggleCleaningPhoto(id: string) {
+    setCleaningSchedule(prev => prev.map(task =>
+      task.id === id ? { ...task, photoPlaceholder: !task.photoPlaceholder } : task
+    ));
+  }
+
+  // ─── Supplier Traceability Handlers ───────────────────────────────────
+
+  function addDelivery() {
+    if (!deliveryForm.supplierName || !deliveryForm.products) return;
+    const tempVal = deliveryForm.temperatureReception ? parseFloat(deliveryForm.temperatureReception) : null;
+    let tempIsConform: boolean | null = null;
+    if (tempVal !== null) {
+      // Simple check: if cold product, should be < 4
+      tempIsConform = tempVal < 4;
+    }
+    const record: DeliveryRecord = {
+      id: `del-${Date.now()}`,
+      supplierName: deliveryForm.supplierName,
+      deliveryDate: deliveryForm.deliveryDate,
+      products: deliveryForm.products,
+      lotNumbers: deliveryForm.lotNumbers,
+      temperatureReception: tempVal,
+      tempIsConform,
+      decision: deliveryForm.decision,
+      refusalReason: deliveryForm.refusalReason,
+      operator: deliveryForm.operator,
+      timestamp: new Date().toISOString(),
+    };
+    setDeliveries(prev => [record, ...prev]);
+    setDeliveryForm({
+      supplierName: '', deliveryDate: today, products: '', lotNumbers: '',
+      temperatureReception: '', decision: 'en_attente', refusalReason: '', operator: '',
+    });
+    setShowDeliveryForm(false);
+  }
+
+  function updateDeliveryDecision(id: string, decision: DeliveryRecord['decision'], reason?: string) {
+    setDeliveries(prev => prev.map(d =>
+      d.id === id ? { ...d, decision, refusalReason: reason || d.refusalReason } : d
+    ));
+  }
+
+  // ─── Audit Preparation Handlers ───────────────────────────────────────
+
+  function toggleAuditItem(id: string) {
+    setAuditChecklist(prev => prev.map(item =>
+      item.id === id ? { ...item, isPresent: !item.isPresent } : item
+    ));
+  }
+
+  const auditScore = useMemo(() => {
+    const total = auditChecklist.length;
+    const present = auditChecklist.filter(i => i.isPresent).length;
+    return total > 0 ? Math.round((present / total) * 100) : 0;
+  }, [auditChecklist]);
+
+  const auditByCategory = useMemo(() => {
+    const cats: Record<string, AuditCheckItem[]> = {};
+    auditChecklist.forEach(item => {
+      if (!cats[item.category]) cats[item.category] = [];
+      cats[item.category].push(item);
+    });
+    return cats;
+  }, [auditChecklist]);
+
+  // ─── Incident Log Handlers ────────────────────────────────────────────
+
+  function addIncident() {
+    if (!incidentForm.description || !incidentForm.reporter) return;
+    const record: IncidentRecord = {
+      id: `inc-${Date.now()}`,
+      date: today,
+      description: incidentForm.description,
+      severity: incidentForm.severity,
+      actionsTaken: incidentForm.actionsTaken,
+      followUp: incidentForm.followUp,
+      status: 'ouvert',
+      reporter: incidentForm.reporter,
+      timestamp: new Date().toISOString(),
+    };
+    setIncidents(prev => [record, ...prev]);
+    setIncidentForm({ description: '', severity: 'moyen', actionsTaken: '', followUp: '', reporter: '' });
+    setShowIncidentForm(false);
+  }
+
+  function updateIncidentStatus(id: string, status: IncidentRecord['status']) {
+    setIncidents(prev => prev.map(i => i.id === id ? { ...i, status } : i));
+  }
+
   const filteredLots = useMemo(() => {
     if (!searchLots) return lots;
     const q = searchLots.toLowerCase();
@@ -894,9 +1297,36 @@ export default function HACCP() {
     return <CheckCircle2 className="w-5 h-5 text-[#9CA3AF]" />;
   }
 
+  // Cleaning schedule progress
+  const cleaningScheduleProgress = useMemo(() => {
+    const filtered = cleaningFilter === 'all' ? cleaningSchedule : cleaningSchedule.filter(t => t.frequency === cleaningFilter);
+    const done = filtered.filter(t => t.checked).length;
+    return { total: filtered.length, done, pct: filtered.length > 0 ? Math.round((done / filtered.length) * 100) : 0 };
+  }, [cleaningSchedule, cleaningFilter]);
+
+  // Temp log grouped by equipment for the day
+  const tempLogGrid = useMemo(() => {
+    const grid: Record<string, Record<string, TempLogEntry | null>> = {};
+    TEMP_LOG_EQUIPMENT.forEach(eq => {
+      grid[eq.id] = {};
+      TEMP_LOG_TIMES.forEach(time => { grid[eq.id][time] = null; });
+    });
+    tempLogEntries.forEach(entry => {
+      if (grid[entry.equipment]) {
+        grid[entry.equipment][entry.checkTime] = entry;
+      }
+    });
+    return grid;
+  }, [tempLogEntries]);
+
   const tabs: { key: TabKey; label: string; icon: React.ReactNode; badge?: number }[] = [
     { key: 'dashboard', label: t('haccp.tabDashboard'), icon: <BarChart3 className="w-4 h-4" /> },
     { key: 'checklist', label: 'Checklist du jour', icon: <CheckCircle2 className="w-4 h-4" />, badge: checklistProgress.total - checklistProgress.done > 0 ? checklistProgress.total - checklistProgress.done : undefined },
+    { key: 'temp_log', label: 'Releves temp.', icon: <Thermometer className="w-4 h-4" /> },
+    { key: 'cleaning_schedule', label: 'Plan nettoyage', icon: <ListChecks className="w-4 h-4" /> },
+    { key: 'supplier_trace', label: 'Fournisseurs', icon: <Truck className="w-4 h-4" /> },
+    { key: 'audit_prep', label: 'Audit', icon: <ClipboardCheck className="w-4 h-4" />, badge: auditChecklist.filter(i => i.isCritical && !i.isPresent).length > 0 ? auditChecklist.filter(i => i.isCritical && !i.isPresent).length : undefined },
+    { key: 'incidents', label: 'Incidents', icon: <AlertOctagon className="w-4 h-4" />, badge: incidents.filter(i => i.status !== 'clos').length > 0 ? incidents.filter(i => i.status !== 'clos').length : undefined },
     { key: 'temperatures', label: t('haccp.tabTemperatures'), icon: <Thermometer className="w-4 h-4" /> },
     { key: 'nettoyage', label: t('haccp.tabCleaning'), icon: <SprayCan className="w-4 h-4" /> },
     { key: 'conformite', label: 'Conformite', icon: <ShieldCheck className="w-4 h-4" /> },
@@ -1802,6 +2232,888 @@ export default function HACCP() {
             </div>
             {correctiveActions.length === 0 && <div className="text-center py-8 text-[#9CA3AF] dark:text-[#737373]">Aucune action corrective</div>}
           </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+           DIGITAL TEMPERATURE LOG
+         ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'temp_log' && (
+        <div className="space-y-4">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+                <Thermometer className="w-5 h-5 text-teal-400" />
+                Releve de temperatures
+              </h3>
+              <input
+                type="date"
+                value={tempLogDate}
+                onChange={(e) => setTempLogDate(e.target.value)}
+                className="bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-1.5 text-sm text-[#111111] dark:text-white"
+              />
+              {tempLogDate !== today && (
+                <button onClick={() => setTempLogDate(today)} className="text-xs text-teal-400 hover:text-teal-300 font-medium">
+                  Aujourd'hui
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setShowTempLogForm(!showTempLogForm)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+                <Plus className="w-4 h-4" />Enregistrer
+              </button>
+              <button onClick={handlePrint}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-[#111111] dark:text-white rounded-xl text-sm font-medium transition-colors">
+                <Printer className="w-4 h-4" />Imprimer
+              </button>
+            </div>
+          </div>
+
+          {/* Quick entry form */}
+          {showTempLogForm && (
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
+              <h3 className="text-[#111111] dark:text-white font-semibold">Nouveau releve</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Equipement</label>
+                  <select value={tempLogForm.equipment} onChange={e => setTempLogForm(f => ({ ...f, equipment: e.target.value }))}
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    {TEMP_LOG_EQUIPMENT.map(eq => <option key={eq.id} value={eq.id}>{eq.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Heure du controle</label>
+                  <select value={tempLogForm.checkTime} onChange={e => setTempLogForm(f => ({ ...f, checkTime: e.target.value as any }))}
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    <option value="08:00">8h - Matin</option>
+                    <option value="12:00">12h - Midi</option>
+                    <option value="18:00">18h - Soir</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Temperature (°C)</label>
+                  <input type="number" step="0.1" value={tempLogForm.temperature}
+                    onChange={e => setTempLogForm(f => ({ ...f, temperature: e.target.value }))}
+                    placeholder="Ex: 3.2"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] dark:text-[#A3A3A3] mb-1">Operateur</label>
+                  <input type="text" value={tempLogForm.operator}
+                    onChange={e => setTempLogForm(f => ({ ...f, operator: e.target.value }))}
+                    placeholder="Votre nom"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+              </div>
+
+              {/* Live alert preview */}
+              {tempLogForm.temperature && (() => {
+                const temp = parseFloat(tempLogForm.temperature);
+                if (isNaN(temp)) return null;
+                const conform = isTempLogConform(tempLogForm.equipment, temp);
+                if (conform) return (
+                  <div className="bg-emerald-950/30 border border-emerald-500/40 rounded-xl p-3 flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    <span className="text-sm text-emerald-300">Temperature conforme</span>
+                  </div>
+                );
+                return (
+                  <div className="bg-red-950/40 border border-red-500/40 rounded-xl p-3 flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-red-300">NON-CONFORME</p>
+                      <p className="text-xs text-red-400/80 mt-1">{getTempLogCorrective(tempLogForm.equipment, temp)}</p>
+                      <p className="text-[10px] text-red-400/50 mt-1">Action corrective auto-creee a l'enregistrement</p>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div className="flex gap-3">
+                <button onClick={addTempLogEntry} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
+                <button onClick={() => setShowTempLogForm(false)} className="px-4 py-2 bg-[#F5F5F5] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+              </div>
+            </div>
+          )}
+
+          {/* Professional grid: equipment x time */}
+          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
+            <div className="px-5 py-3 bg-[#F5F5F5] dark:bg-[#0A0A0A] border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white">
+                Fiche de releve - {new Date(tempLogDate).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </h4>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[#737373] dark:text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                    <th className="text-left py-3 px-4 font-semibold">Equipement</th>
+                    <th className="text-left py-3 px-4 font-semibold">Limite</th>
+                    {TEMP_LOG_TIMES.map(time => (
+                      <th key={time} className="text-center py-3 px-4 font-semibold">{time === '08:00' ? '8h Matin' : time === '12:00' ? '12h Midi' : '18h Soir'}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {TEMP_LOG_EQUIPMENT.map(eq => (
+                    <tr key={eq.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          {eq.type === 'chaud' ? <Flame className="w-4 h-4 text-orange-400" /> : <Snowflake className="w-4 h-4 text-blue-400" />}
+                          <span className="text-[#111111] dark:text-white font-medium">{eq.label}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-xs text-[#737373] dark:text-[#A3A3A3]">
+                        {eq.type === 'chaud' ? `>= ${eq.minTemp}°C` : `< ${eq.maxTemp}°C`}
+                      </td>
+                      {TEMP_LOG_TIMES.map(time => {
+                        const entry = tempLogGrid[eq.id]?.[time];
+                        if (!entry) {
+                          return (
+                            <td key={time} className="py-3 px-4 text-center">
+                              <button
+                                onClick={() => {
+                                  setTempLogForm(f => ({ ...f, equipment: eq.id, checkTime: time as any }));
+                                  setShowTempLogForm(true);
+                                }}
+                                className="text-xs text-[#737373] hover:text-teal-400 transition-colors px-3 py-1.5 rounded-lg border border-dashed border-[#E5E7EB] dark:border-[#333] hover:border-teal-400/50"
+                              >
+                                + Saisir
+                              </button>
+                            </td>
+                          );
+                        }
+                        return (
+                          <td key={time} className="py-3 px-4 text-center">
+                            <div className={`inline-flex flex-col items-center px-3 py-1.5 rounded-lg ${entry.isConform ? 'bg-emerald-900/20' : 'bg-red-900/20 border border-red-500/30'}`}>
+                              <span className={`text-sm font-bold ${entry.isConform ? 'text-emerald-400' : 'text-red-400'}`}>{entry.temperature}°C</span>
+                              <span className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">{entry.operator}</span>
+                            </div>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Non-conformities of the day */}
+          {tempLogEntries.filter(e => !e.isConform).length > 0 && (
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-red-700/30 rounded-2xl p-5">
+              <h4 className="text-[#111111] dark:text-white font-semibold mb-3 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+                Non-conformites du jour ({tempLogEntries.filter(e => !e.isConform).length})
+              </h4>
+              <div className="space-y-2">
+                {tempLogEntries.filter(e => !e.isConform).map(entry => {
+                  const eq = TEMP_LOG_EQUIPMENT.find(e => e.id === entry.equipment);
+                  return (
+                    <div key={entry.id} className="flex items-start gap-3 bg-red-900/10 border border-red-900/20 rounded-xl px-4 py-3">
+                      <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-[#111111] dark:text-white font-medium">{eq?.label}</span>
+                          <span className="text-red-400 font-bold">{entry.temperature}°C</span>
+                          <span className="text-[#737373] text-xs">a {entry.checkTime}</span>
+                        </div>
+                        {entry.correctiveAction && (
+                          <p className="text-xs text-red-400/70 mt-1">{entry.correctiveAction}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+           CLEANING SCHEDULE
+         ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'cleaning_schedule' && (
+        <div className="space-y-4">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <ListChecks className="w-5 h-5 text-violet-400" />
+              Plan de nettoyage et desinfection
+            </h3>
+            <div className="flex items-center gap-3">
+              {/* Filter buttons */}
+              {(['all', 'daily', 'weekly', 'monthly'] as const).map(f => (
+                <button key={f} onClick={() => setCleaningFilter(f)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${cleaningFilter === f ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'text-[#737373] hover:text-[#111111] dark:hover:text-white hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'}`}>
+                  {f === 'all' ? 'Tout' : f === 'daily' ? 'Quotidien' : f === 'weekly' ? 'Hebdo' : 'Mensuel'}
+                </button>
+              ))}
+              <button onClick={handlePrint}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#262626] hover:bg-[#E5E7EB] dark:hover:bg-[#333] text-[#111111] dark:text-white rounded-xl text-sm font-medium transition-colors">
+                <Printer className="w-4 h-4" />PDF
+              </button>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-[#737373] dark:text-[#A3A3A3]">Progression</span>
+              <span className={`text-sm font-bold ${cleaningScheduleProgress.pct >= 80 ? 'text-emerald-400' : cleaningScheduleProgress.pct >= 50 ? 'text-amber-400' : 'text-red-400'}`}>
+                {cleaningScheduleProgress.done}/{cleaningScheduleProgress.total} ({cleaningScheduleProgress.pct}%)
+              </span>
+            </div>
+            <div className="h-2.5 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-full overflow-hidden">
+              <div className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${cleaningScheduleProgress.pct}%`,
+                  backgroundColor: cleaningScheduleProgress.pct >= 80 ? '#10b981' : cleaningScheduleProgress.pct >= 50 ? '#f59e0b' : '#ef4444',
+                }} />
+            </div>
+          </div>
+
+          {/* Tasks by category */}
+          {(['Quotidien', 'Hebdomadaire', 'Mensuel'] as const).map(cat => {
+            const tasks = cleaningSchedule.filter(t => t.category === cat);
+            if (cleaningFilter !== 'all') {
+              const freq = cleaningFilter === 'daily' ? 'Quotidien' : cleaningFilter === 'weekly' ? 'Hebdomadaire' : 'Mensuel';
+              if (cat !== freq) return null;
+            }
+            const catDone = tasks.filter(t => t.checked).length;
+            const freqIcon = cat === 'Quotidien' ? <Clock className="w-4 h-4 text-teal-400" /> :
+              cat === 'Hebdomadaire' ? <Calendar className="w-4 h-4 text-blue-400" /> :
+              <Calendar className="w-4 h-4 text-violet-400" />;
+
+            return (
+              <div key={cat} className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center gap-2">
+                    {freqIcon}
+                    <span className="text-[#111111] dark:text-white font-semibold text-sm">{cat}</span>
+                    <span className="text-xs text-[#737373] dark:text-[#A3A3A3]">
+                      ({cat === 'Quotidien' ? 'tous les jours' : cat === 'Hebdomadaire' ? '1x/semaine' : '1x/mois'})
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-medium ${catDone === tasks.length ? 'text-emerald-400' : 'text-[#737373]'}`}>
+                      {catDone}/{tasks.length}
+                    </span>
+                    {catDone === tasks.length && tasks.length > 0 && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                  </div>
+                </div>
+                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                  {tasks.map(task => (
+                    <div key={task.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${task.checked ? 'bg-emerald-500/5' : 'hover:bg-[#F5F5F5] dark:hover:bg-[#171717]/30'}`}>
+                      <button onClick={() => toggleCleaningTask(task.id)}
+                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${task.checked ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-[#E5E7EB] dark:border-[#333] hover:border-emerald-400'}`}>
+                        {task.checked && <CheckCircle2 className="w-4 h-4" />}
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <span className={`text-sm ${task.checked ? 'text-[#737373] line-through' : 'text-[#111111] dark:text-white'}`}>
+                          {task.label}
+                        </span>
+                      </div>
+                      {/* Photo placeholder */}
+                      <button onClick={() => toggleCleaningPhoto(task.id)}
+                        className={`p-1.5 rounded-lg transition-colors ${task.photoPlaceholder ? 'bg-teal-500/20 text-teal-400' : 'text-[#737373] hover:text-teal-400 hover:bg-[#F5F5F5] dark:hover:bg-[#171717]'}`}
+                        title="Photo attestation">
+                        <Camera className="w-4 h-4" />
+                      </button>
+                      {task.timestamp && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#737373]">
+                          <Clock className="w-3 h-3" />
+                          <span>{task.timestamp}</span>
+                        </div>
+                      )}
+                      {task.operator && (
+                        <div className="flex items-center gap-1 text-xs text-[#737373]">
+                          <User className="w-3 h-3" />
+                          <span>{task.operator}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+           SUPPLIER TRACEABILITY
+         ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'supplier_trace' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <Truck className="w-5 h-5 text-teal-400" />
+              Tracabilite fournisseurs - Receptions
+            </h3>
+            <div className="flex items-center gap-3">
+              <a href="/fournisseurs" className="flex items-center gap-1.5 px-3 py-2 text-xs text-teal-400 hover:text-teal-300 border border-teal-400/30 hover:border-teal-400/60 rounded-xl transition-colors">
+                <ExternalLink className="w-3.5 h-3.5" />
+                Page Fournisseurs
+              </a>
+              <button onClick={() => setShowDeliveryForm(!showDeliveryForm)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+                <Plus className="w-4 h-4" />Nouvelle livraison
+              </button>
+            </div>
+          </div>
+
+          {/* Summary cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{deliveries.length}</div>
+              <div className="text-xs text-[#737373] mt-1">Total livraisons</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-emerald-400">{deliveries.filter(d => d.decision === 'accepte').length}</div>
+              <div className="text-xs text-[#737373] mt-1">Acceptees</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-red-700/30 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-red-400">{deliveries.filter(d => d.decision === 'refuse').length}</div>
+              <div className="text-xs text-[#737373] mt-1">Refusees</div>
+            </div>
+          </div>
+
+          {/* Delivery form */}
+          {showDeliveryForm && (
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
+              <h3 className="text-[#111111] dark:text-white font-semibold">Enregistrer une livraison</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Fournisseur</label>
+                  <input type="text" value={deliveryForm.supplierName}
+                    onChange={e => setDeliveryForm(f => ({ ...f, supplierName: e.target.value }))}
+                    placeholder="Nom du fournisseur"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Date de livraison</label>
+                  <input type="date" value={deliveryForm.deliveryDate}
+                    onChange={e => setDeliveryForm(f => ({ ...f, deliveryDate: e.target.value }))}
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Produits livres</label>
+                  <input type="text" value={deliveryForm.products}
+                    onChange={e => setDeliveryForm(f => ({ ...f, products: e.target.value }))}
+                    placeholder="Viande, legumes, etc."
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Numeros de lot</label>
+                  <input type="text" value={deliveryForm.lotNumbers}
+                    onChange={e => setDeliveryForm(f => ({ ...f, lotNumbers: e.target.value }))}
+                    placeholder="LOT-001, LOT-002"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Temperature a reception (°C)</label>
+                  <input type="number" step="0.1" value={deliveryForm.temperatureReception}
+                    onChange={e => setDeliveryForm(f => ({ ...f, temperatureReception: e.target.value }))}
+                    placeholder="Ex: 2.5"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Decision</label>
+                  <select value={deliveryForm.decision}
+                    onChange={e => setDeliveryForm(f => ({ ...f, decision: e.target.value as DeliveryRecord['decision'] }))}
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    <option value="en_attente">En attente</option>
+                    <option value="accepte">Accepte</option>
+                    <option value="refuse">Refuse</option>
+                  </select>
+                </div>
+                {deliveryForm.decision === 'refuse' && (
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs text-[#737373] mb-1">Motif de refus</label>
+                    <input type="text" value={deliveryForm.refusalReason}
+                      onChange={e => setDeliveryForm(f => ({ ...f, refusalReason: e.target.value }))}
+                      placeholder="Temperature non conforme, emballage endommage..."
+                      className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                  </div>
+                )}
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Operateur</label>
+                  <input type="text" value={deliveryForm.operator}
+                    onChange={e => setDeliveryForm(f => ({ ...f, operator: e.target.value }))}
+                    placeholder="Votre nom"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+              </div>
+
+              {/* Temperature auto-validate preview */}
+              {deliveryForm.temperatureReception && (() => {
+                const temp = parseFloat(deliveryForm.temperatureReception);
+                if (isNaN(temp)) return null;
+                const ok = temp < 4;
+                return (
+                  <div className={`${ok ? 'bg-emerald-950/30 border-emerald-500/40' : 'bg-red-950/40 border-red-500/40'} border rounded-xl p-3 flex items-center gap-3`}>
+                    {ok ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <AlertTriangle className="w-5 h-5 text-red-400" />}
+                    <span className={`text-sm ${ok ? 'text-emerald-300' : 'text-red-300'}`}>
+                      Temperature de reception: {temp}°C - {ok ? 'Conforme (< 4°C)' : 'NON CONFORME (>= 4°C)'}
+                    </span>
+                  </div>
+                );
+              })()}
+
+              <div className="flex gap-3">
+                <button onClick={addDelivery} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-sm font-medium transition-colors">Enregistrer</button>
+                <button onClick={() => setShowDeliveryForm(false)} className="px-4 py-2 bg-[#F5F5F5] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+              </div>
+            </div>
+          )}
+
+          {/* Deliveries list */}
+          <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                    <th className="text-left py-3 px-4">Fournisseur</th>
+                    <th className="text-left py-3 px-4">Date</th>
+                    <th className="text-left py-3 px-4">Produits</th>
+                    <th className="text-left py-3 px-4">N° Lots</th>
+                    <th className="text-left py-3 px-4">Temp.</th>
+                    <th className="text-left py-3 px-4">Decision</th>
+                    <th className="text-left py-3 px-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {deliveries.map(d => (
+                    <tr key={d.id} className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F5F5F5] dark:hover:bg-[#171717]/30 transition-colors">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-4 h-4 text-[#737373]" />
+                          <span className="text-[#111111] dark:text-white font-medium">{d.supplierName}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-[#737373]">{new Date(d.deliveryDate).toLocaleDateString('fr-FR')}</td>
+                      <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs truncate">{d.products}</td>
+                      <td className="py-3 px-4 text-teal-400 font-mono text-xs">{d.lotNumbers || '-'}</td>
+                      <td className="py-3 px-4">
+                        {d.temperatureReception !== null ? (
+                          <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${d.tempIsConform ? 'bg-emerald-900/40 text-emerald-300' : 'bg-red-900/40 text-red-300'}`}>
+                            {d.temperatureReception}°C
+                          </span>
+                        ) : <span className="text-[#737373]">-</span>}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${
+                          d.decision === 'accepte' ? 'bg-emerald-900/40 text-emerald-300 border border-emerald-700/50' :
+                          d.decision === 'refuse' ? 'bg-red-900/40 text-red-300 border border-red-700/50' :
+                          'bg-amber-900/40 text-amber-300 border border-amber-700/50'
+                        }`}>
+                          {d.decision === 'accepte' ? 'Accepte' : d.decision === 'refuse' ? 'Refuse' : 'En attente'}
+                        </span>
+                        {d.decision === 'refuse' && d.refusalReason && (
+                          <div className="text-[10px] text-red-400/70 mt-0.5">{d.refusalReason}</div>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        {d.decision === 'en_attente' && (
+                          <div className="flex gap-1">
+                            <button onClick={() => updateDeliveryDecision(d.id, 'accepte')}
+                              className="px-2 py-1 text-xs bg-emerald-900/30 text-emerald-300 rounded-lg hover:bg-emerald-900/50 transition-colors">
+                              Accepter
+                            </button>
+                            <button onClick={() => {
+                              const reason = prompt('Motif de refus:');
+                              if (reason) updateDeliveryDecision(d.id, 'refuse', reason);
+                            }}
+                              className="px-2 py-1 text-xs bg-red-900/30 text-red-300 rounded-lg hover:bg-red-900/50 transition-colors">
+                              Refuser
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {deliveries.length === 0 && (
+              <div className="text-center py-12 text-[#737373]">
+                <Truck className="w-12 h-12 mx-auto mb-3 text-[#737373]/40" />
+                <p className="font-medium text-[#111111] dark:text-white">Aucune livraison enregistree</p>
+                <p className="text-sm mt-1">Cliquez "Nouvelle livraison" pour commencer</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+           AUDIT PREPARATION
+         ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'audit_prep' && (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <ClipboardCheck className="w-5 h-5 text-teal-400" />
+              Preparer un audit
+            </h3>
+            <button onClick={handlePrint}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+              <FileText className="w-4 h-4" />Generer rapport audit
+            </button>
+          </div>
+
+          {/* Audit readiness score */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6 flex flex-col items-center justify-center">
+              <ComplianceScoreWidget score={auditScore} size={160} />
+              <div className="mt-4 text-center">
+                <p className="text-sm text-[#111111] dark:text-white font-semibold">
+                  Vous etes pret a {auditScore}% pour l'audit
+                </p>
+                <p className="text-xs text-[#737373] mt-1">
+                  {auditChecklist.filter(i => i.isPresent).length}/{auditChecklist.length} documents disponibles
+                </p>
+              </div>
+            </div>
+
+            {/* Missing critical items */}
+            <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-6">
+              <h4 className="text-[#111111] dark:text-white font-semibold mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+                Elements manquants
+              </h4>
+              {auditChecklist.filter(i => !i.isPresent).length === 0 ? (
+                <div className="text-center py-8">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
+                  <p className="text-emerald-400 font-semibold">Tous les documents sont presents !</p>
+                  <p className="text-sm text-[#737373] mt-1">Vous etes pret pour l'audit</p>
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {auditChecklist.filter(i => !i.isPresent).map(item => (
+                    <div key={item.id}
+                      className={`flex items-center justify-between px-4 py-3 rounded-xl border ${item.isCritical ? 'border-red-500/30 bg-red-900/10' : 'border-amber-500/30 bg-amber-900/10'}`}>
+                      <div className="flex items-center gap-3">
+                        {item.isCritical ? (
+                          <XCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                        ) : (
+                          <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                        )}
+                        <div>
+                          <span className={`text-sm font-medium ${item.isCritical ? 'text-red-300' : 'text-amber-300'}`}>{item.label}</span>
+                          {item.isCritical && <span className="ml-2 text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded">CRITIQUE</span>}
+                        </div>
+                      </div>
+                      <button onClick={() => toggleAuditItem(item.id)}
+                        className="text-xs text-teal-400 hover:text-teal-300 transition-colors">
+                        Marquer present
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Full audit checklist by category */}
+          {Object.entries(auditByCategory).map(([category, items]) => {
+            const catDone = items.filter(i => i.isPresent).length;
+            const catCritical = items.filter(i => i.isCritical && !i.isPresent).length;
+
+            return (
+              <div key={category} className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/50 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center gap-2">
+                    <FileCheck className="w-4 h-4 text-teal-400" />
+                    <span className="text-[#111111] dark:text-white font-semibold text-sm">{category}</span>
+                    {catCritical > 0 && (
+                      <span className="text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded">{catCritical} critique{catCritical > 1 ? 's' : ''} manquant{catCritical > 1 ? 's' : ''}</span>
+                    )}
+                  </div>
+                  <span className={`text-xs font-medium ${catDone === items.length ? 'text-emerald-400' : 'text-[#737373]'}`}>
+                    {catDone}/{items.length}
+                  </span>
+                </div>
+                <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]/50">
+                  {items.map(item => (
+                    <div key={item.id} className={`flex items-center gap-4 px-5 py-3 transition-colors ${item.isPresent ? 'bg-emerald-500/5' : item.isCritical ? 'bg-red-500/5' : ''}`}>
+                      <button onClick={() => toggleAuditItem(item.id)}
+                        className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all flex-shrink-0 ${item.isPresent ? 'bg-emerald-500 border-emerald-500 text-white' : item.isCritical ? 'border-red-500/50 hover:border-red-400' : 'border-[#E5E7EB] dark:border-[#333] hover:border-emerald-400'}`}>
+                        {item.isPresent && <CheckCircle2 className="w-4 h-4" />}
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm ${item.isPresent ? 'text-[#737373] line-through' : 'text-[#111111] dark:text-white'}`}>
+                            {item.label}
+                          </span>
+                          {item.isCritical && !item.isPresent && (
+                            <span className="text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded flex-shrink-0">OBLIGATOIRE</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-[#737373] mt-0.5">{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════════
+           INCIDENT LOG
+         ═══════════════════════════════════════════════════════════════════ */}
+      {activeTab === 'incidents' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h3 className="text-[#111111] dark:text-white font-semibold flex items-center gap-2">
+              <AlertOctagon className="w-5 h-5 text-red-400" />
+              Journal des incidents
+            </h3>
+            <div className="flex items-center gap-3">
+              {/* View toggle */}
+              <div className="flex bg-[#F5F5F5] dark:bg-[#171717] rounded-lg p-0.5">
+                <button onClick={() => setIncidentView('list')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${incidentView === 'list' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'text-[#737373]'}`}>
+                  Liste
+                </button>
+                <button onClick={() => setIncidentView('timeline')}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${incidentView === 'timeline' ? 'bg-[#111111] dark:bg-white text-white dark:text-black' : 'text-[#737373]'}`}>
+                  Chronologie
+                </button>
+              </div>
+              <button onClick={handlePrint}
+                className="flex items-center gap-2 px-3 py-2 text-xs border border-[#E5E7EB] dark:border-[#333] text-[#111111] dark:text-white rounded-xl hover:bg-[#F5F5F5] dark:hover:bg-[#171717] transition-colors">
+                <Download className="w-3.5 h-3.5" />Export
+              </button>
+              <button onClick={() => setShowIncidentForm(!showIncidentForm)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-black rounded-xl text-sm font-medium transition-colors">
+                <Plus className="w-4 h-4" />Nouvel incident
+              </button>
+            </div>
+          </div>
+
+          {/* Summary cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-[#111111] dark:text-white">{incidents.length}</div>
+              <div className="text-xs text-[#737373] mt-1">Total incidents</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-red-700/30 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-red-400">{incidents.filter(i => i.status === 'ouvert').length}</div>
+              <div className="text-xs text-[#737373] mt-1">Ouverts</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-amber-700/30 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-amber-400">{incidents.filter(i => i.status === 'en_cours').length}</div>
+              <div className="text-xs text-[#737373] mt-1">En cours</div>
+            </div>
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-emerald-700/30 rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-emerald-400">{incidents.filter(i => i.status === 'clos').length}</div>
+              <div className="text-xs text-[#737373] mt-1">Clos</div>
+            </div>
+          </div>
+
+          {/* Incident form */}
+          {showIncidentForm && (
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-5 space-y-4">
+              <h3 className="text-[#111111] dark:text-white font-semibold">Signaler un incident</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs text-[#737373] mb-1">Description de l'incident</label>
+                  <textarea value={incidentForm.description}
+                    onChange={e => setIncidentForm(f => ({ ...f, description: e.target.value }))}
+                    placeholder="Decrire l'incident en detail..."
+                    rows={3}
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280] resize-none" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Gravite</label>
+                  <select value={incidentForm.severity}
+                    onChange={e => setIncidentForm(f => ({ ...f, severity: e.target.value as IncidentRecord['severity'] }))}
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white">
+                    <option value="faible">Faible</option>
+                    <option value="moyen">Moyen</option>
+                    <option value="grave">Grave</option>
+                    <option value="critique">Critique</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Signale par</label>
+                  <input type="text" value={incidentForm.reporter}
+                    onChange={e => setIncidentForm(f => ({ ...f, reporter: e.target.value }))}
+                    placeholder="Votre nom"
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Actions prises</label>
+                  <input type="text" value={incidentForm.actionsTaken}
+                    onChange={e => setIncidentForm(f => ({ ...f, actionsTaken: e.target.value }))}
+                    placeholder="Mesures immediates prises..."
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+                <div>
+                  <label className="block text-xs text-[#737373] mb-1">Suivi necessaire</label>
+                  <input type="text" value={incidentForm.followUp}
+                    onChange={e => setIncidentForm(f => ({ ...f, followUp: e.target.value }))}
+                    placeholder="Actions de suivi..."
+                    className="w-full bg-[#F5F5F5] dark:bg-[#262626] border border-[#E5E7EB] dark:border-[#262626] rounded-lg px-3 py-2 text-sm text-[#111111] dark:text-white placeholder:text-[#6B7280]" />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button onClick={addIncident} className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-xl text-sm font-medium transition-colors">Signaler l'incident</button>
+                <button onClick={() => setShowIncidentForm(false)} className="px-4 py-2 bg-[#F5F5F5] dark:bg-[#171717] hover:bg-[#E5E7EB] dark:hover:bg-[#222] text-[#6B7280] dark:text-[#A3A3A3] rounded-xl text-sm font-medium transition-colors">Annuler</button>
+              </div>
+            </div>
+          )}
+
+          {/* LIST VIEW */}
+          {incidentView === 'list' && (
+            <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl overflow-hidden print-report">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-[#737373] text-xs uppercase tracking-wider bg-[#FAFAFA] dark:bg-[#0A0A0A]/50">
+                      <th className="text-left py-3 px-4">Date</th>
+                      <th className="text-left py-3 px-4">Description</th>
+                      <th className="text-left py-3 px-4">Gravite</th>
+                      <th className="text-left py-3 px-4">Actions</th>
+                      <th className="text-left py-3 px-4">Suivi</th>
+                      <th className="text-left py-3 px-4">Statut</th>
+                      <th className="text-left py-3 px-4">Gerer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {incidents.map(inc => (
+                      <tr key={inc.id} className={`border-t border-[#E5E7EB] dark:border-[#1A1A1A]/50 hover:bg-[#F5F5F5] dark:hover:bg-[#171717]/30 transition-colors ${inc.severity === 'critique' ? 'bg-red-500/5' : ''}`}>
+                        <td className="py-3 px-4 text-[#737373] whitespace-nowrap">{new Date(inc.date).toLocaleDateString('fr-FR')}</td>
+                        <td className="py-3 px-4 text-[#111111] dark:text-white max-w-xs">
+                          <div className="truncate">{inc.description}</div>
+                          <div className="text-[10px] text-[#737373] mt-0.5">Par {inc.reporter}</div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${SEVERITY_BADGE[inc.severity]}`}>
+                            {SEVERITY_LABELS[inc.severity]}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-[#737373] text-xs max-w-[200px] truncate">{inc.actionsTaken || '-'}</td>
+                        <td className="py-3 px-4 text-[#737373] text-xs max-w-[200px] truncate">{inc.followUp || '-'}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${INCIDENT_STATUS_BADGE[inc.status]}`}>
+                            {INCIDENT_STATUS_LABELS[inc.status]}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4">
+                          {inc.status !== 'clos' && (
+                            <div className="flex gap-1">
+                              {inc.status === 'ouvert' && (
+                                <button onClick={() => updateIncidentStatus(inc.id, 'en_cours')}
+                                  className="px-2 py-1 text-xs bg-amber-900/30 text-amber-300 rounded-lg hover:bg-amber-900/50 transition-colors">
+                                  Traiter
+                                </button>
+                              )}
+                              <button onClick={() => updateIncidentStatus(inc.id, 'clos')}
+                                className="px-2 py-1 text-xs bg-emerald-900/30 text-emerald-300 rounded-lg hover:bg-emerald-900/50 transition-colors">
+                                Clore
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {incidents.length === 0 && (
+                <div className="text-center py-12 text-[#737373]">
+                  <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-400" />
+                  <p className="font-medium text-[#111111] dark:text-white">Aucun incident enregistre</p>
+                  <p className="text-sm mt-1">C'est une bonne nouvelle !</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TIMELINE VIEW */}
+          {incidentView === 'timeline' && (
+            <div className="space-y-0 print-report">
+              {incidents.length === 0 ? (
+                <div className="bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-12 text-center">
+                  <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-emerald-400" />
+                  <p className="font-medium text-[#111111] dark:text-white">Aucun incident</p>
+                </div>
+              ) : (
+                <div className="relative pl-8">
+                  {/* Timeline line */}
+                  <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-[#E5E7EB] dark:bg-[#1A1A1A]" />
+
+                  {incidents.map((inc, idx) => {
+                    const sevColor = inc.severity === 'critique' ? 'bg-red-500' :
+                      inc.severity === 'grave' ? 'bg-orange-500' :
+                      inc.severity === 'moyen' ? 'bg-amber-500' : 'bg-blue-500';
+
+                    return (
+                      <div key={inc.id} className="relative pb-6">
+                        {/* Timeline dot */}
+                        <div className={`absolute -left-5 top-4 w-4 h-4 rounded-full border-2 border-white dark:border-black ${sevColor} z-10`} />
+
+                        <div className={`bg-white dark:bg-[#0A0A0A]/50 border rounded-2xl p-5 ml-4 ${inc.severity === 'critique' ? 'border-red-500/30' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}>
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-xs text-[#737373]">{new Date(inc.date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                                <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${SEVERITY_BADGE[inc.severity]}`}>
+                                  {SEVERITY_LABELS[inc.severity]}
+                                </span>
+                                <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${INCIDENT_STATUS_BADGE[inc.status]}`}>
+                                  {INCIDENT_STATUS_LABELS[inc.status]}
+                                </span>
+                              </div>
+                              <p className="text-sm text-[#111111] dark:text-white">{inc.description}</p>
+                              {inc.actionsTaken && (
+                                <div className="mt-2 text-xs">
+                                  <span className="text-[#737373]">Actions: </span>
+                                  <span className="text-[#111111] dark:text-[#A3A3A3]">{inc.actionsTaken}</span>
+                                </div>
+                              )}
+                              {inc.followUp && (
+                                <div className="mt-1 text-xs">
+                                  <span className="text-[#737373]">Suivi: </span>
+                                  <span className="text-[#111111] dark:text-[#A3A3A3]">{inc.followUp}</span>
+                                </div>
+                              )}
+                              <div className="mt-2 text-[10px] text-[#737373]">
+                                Signale par {inc.reporter} a {new Date(inc.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                              </div>
+                            </div>
+                            {inc.status !== 'clos' && (
+                              <div className="flex gap-1 flex-shrink-0">
+                                {inc.status === 'ouvert' && (
+                                  <button onClick={() => updateIncidentStatus(inc.id, 'en_cours')}
+                                    className="px-2 py-1 text-xs bg-amber-900/30 text-amber-300 rounded-lg hover:bg-amber-900/50 transition-colors">
+                                    Traiter
+                                  </button>
+                                )}
+                                <button onClick={() => updateIncidentStatus(inc.id, 'clos')}
+                                  className="px-2 py-1 text-xs bg-emerald-900/30 text-emerald-300 rounded-lg hover:bg-emerald-900/50 transition-colors">
+                                  Clore
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

@@ -1,107 +1,66 @@
-import { useState } from 'react';
-import { Wifi, WifiOff, Bluetooth, BluetoothOff, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
-import { useConnectivity } from '../hooks/useConnectivity';
-
-function formatTimeSince(date: Date | null): string {
-  if (!date) return 'Jamais';
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 10) return "à l'instant";
-  if (seconds < 60) return `il y a ${seconds}s`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `il y a ${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  return `il y a ${hours}h`;
-}
+import { useState, useEffect, useRef } from 'react';
+import { WifiOff, Wifi } from 'lucide-react';
 
 export default function ConnectivityBar() {
-  const { isOnline, isBluetoothAvailable, isBluetoothConnected, lastSync, refreshSync } = useConnectivity();
-  const [collapsed, setCollapsed] = useState(false);
+  const [isOnline, setIsOnline] = useState(
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  );
+  const [showReconnected, setShowReconnected] = useState(false);
+  const wasOfflineRef = useRef(false);
 
-  if (collapsed) {
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      if (wasOfflineRef.current) {
+        setShowReconnected(true);
+        setTimeout(() => setShowReconnected(false), 3000);
+      }
+      wasOfflineRef.current = false;
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      wasOfflineRef.current = true;
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Offline banner
+  if (!isOnline) {
     return (
-      <div className="bg-[#F5F5F5] dark:bg-[#262626]/50 border-b dark:border-[#262626] no-print">
-        <div className="max-w-7xl mx-auto px-4">
-          <button
-            onClick={() => setCollapsed(false)}
-            className="flex items-center gap-1.5 py-1 text-[11px] text-[#A3A3A3] dark:text-[#A3A3A3] hover:text-[#525252] dark:hover:text-[#D4D4D4] transition-colors"
-          >
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}
-            />
-            <ChevronDown className="w-3 h-3" />
-            <span>Connectivit&eacute;</span>
-          </button>
-        </div>
+      <div className="bg-amber-500 text-white px-4 py-2.5 flex items-center justify-center gap-2 text-sm font-medium animate-slideDown no-print">
+        <WifiOff className="w-4 h-4 flex-shrink-0" />
+        <span>Vous etes hors ligne. Les donnees seront synchronisees a la reconnexion.</span>
       </div>
     );
   }
 
-  return (
-    <div className="bg-[#F5F5F5] dark:bg-[#262626]/50 border-b dark:border-[#262626] no-print">
-      <div className="max-w-7xl mx-auto px-4 py-1.5 flex items-center justify-between">
-        {/* Status indicators */}
-        <div className="flex items-center gap-4 text-[11px]">
-          {/* WiFi status */}
-          <div className="flex items-center gap-1.5">
-            {isOnline ? (
-              <>
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <Wifi className="w-3 h-3 text-green-600 dark:text-green-400" />
-                <span className="text-green-700 dark:text-green-400 font-medium">Connect&eacute;</span>
-              </>
-            ) : (
-              <>
-                <span className="w-2 h-2 rounded-full bg-red-500" />
-                <WifiOff className="w-3 h-3 text-red-500 dark:text-red-400" />
-                <span className="text-red-600 dark:text-red-400 font-medium">Hors ligne</span>
-              </>
-            )}
-          </div>
-
-          {/* Bluetooth status */}
-          <div className="flex items-center gap-1.5">
-            {isBluetoothAvailable && isBluetoothConnected ? (
-              <>
-                <span className="w-2 h-2 rounded-full bg-blue-500" />
-                <Bluetooth className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                <span className="text-blue-700 dark:text-blue-400 font-medium hidden sm:inline">
-                  Balance connect&eacute;e
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="w-2 h-2 rounded-full bg-[#A3A3A3] dark:bg-[#525252]" />
-                <BluetoothOff className="w-3 h-3 text-[#A3A3A3] dark:text-[#A3A3A3]" />
-                <span className="text-[#737373] dark:text-[#A3A3A3] hidden sm:inline">
-                  Balance d&eacute;connect&eacute;e
-                </span>
-              </>
-            )}
-          </div>
-
-          {/* Sync status */}
-          <div className="flex items-center gap-1.5 text-[#737373] dark:text-[#A3A3A3]">
-            <span>Derni&egrave;re sync :</span>
-            <span className="font-medium">{formatTimeSince(lastSync)}</span>
-            <button
-              onClick={refreshSync}
-              className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors"
-              title="Rafra&icirc;chir la synchronisation"
-            >
-              <RefreshCw className="w-3 h-3" />
-            </button>
-          </div>
-        </div>
-
-        {/* Collapse toggle */}
-        <button
-          onClick={() => setCollapsed(true)}
-          className="p-0.5 rounded hover:bg-[#E5E7EB] dark:hover:bg-[#262626] transition-colors text-[#A3A3A3] dark:text-[#A3A3A3]"
-          title="Masquer la barre"
-        >
-          <ChevronUp className="w-3.5 h-3.5" />
-        </button>
+  // Reconnected flash
+  if (showReconnected) {
+    return (
+      <div
+        className="bg-emerald-500 text-white px-4 py-2.5 flex items-center justify-center gap-2 text-sm font-medium no-print"
+        style={{ animation: 'connectivity-flash 3s ease-out forwards' }}
+      >
+        <Wifi className="w-4 h-4 flex-shrink-0" />
+        <span>Connexion retablie</span>
+        <style>{`
+          @keyframes connectivity-flash {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; max-height: 0; padding: 0; overflow: hidden; }
+          }
+        `}</style>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList, Package, Download } from 'lucide-react';
+import { Plus, Eye, Trash2, Search, Pencil, Copy, Sparkles, Loader2, Check, AlertTriangle, TrendingUp, X, UtensilsCrossed, LayoutGrid, List, ChevronUp, ChevronDown, ChevronsUpDown, Trophy, ShieldAlert, CheckSquare, Tag, BookOpen, Clock, Users, Star, ArrowUpDown, Scale, Zap, SlidersHorizontal, GitCompareArrows, ClipboardList, Package, Download, Leaf, BarChart3, ArrowRight, RefreshCw, TrendingDown, Sun, Snowflake, Flower2, CloudRain } from 'lucide-react';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
 import { fetchRecipes, fetchIngredients, createRecipe, updateRecipe, deleteRecipe, cloneRecipe, createIngredient, suggestMercurialeIngredients } from '../services/api';
@@ -640,6 +640,709 @@ function getCoefficient(category: string, coeffs: Record<string, number>): numbe
   return coeffs[category] || DEFAULT_COEFFICIENTS[category] || 3.5;
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// ── AI RECIPE COST OPTIMIZER — DATA & HELPERS ──────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+
+/** Seasonal ingredient calendar — maps month (0-11) to ingredient name patterns + discount */
+const SEASONAL_CALENDAR: Record<number, { patterns: string[]; discount: number; label: string }[]> = {
+  0: [ // Janvier
+    { patterns: ['poireau', 'chou', 'navet', 'endive', 'celeri', 'mache', 'topinambour'], discount: 25, label: 'Legumes d\'hiver' },
+    { patterns: ['pomme', 'poire', 'clementine', 'orange', 'kiwi', 'mandarine'], discount: 20, label: 'Fruits d\'hiver' },
+  ],
+  1: [ // Fevrier
+    { patterns: ['poireau', 'chou', 'navet', 'endive', 'betterave', 'carotte'], discount: 20, label: 'Legumes d\'hiver' },
+    { patterns: ['pomme', 'poire', 'citron', 'orange', 'pamplemousse'], discount: 20, label: 'Agrumes' },
+  ],
+  2: [ // Mars
+    { patterns: ['radis', 'asperge', 'epinard', 'cresson', 'chou-fleur'], discount: 15, label: 'Primeurs de printemps' },
+    { patterns: ['citron', 'pomme', 'kiwi'], discount: 15, label: 'Derniers fruits d\'hiver' },
+  ],
+  3: [ // Avril
+    { patterns: ['asperge', 'artichaut', 'radis', 'epinard', 'petit pois', 'feve', 'ail'], discount: 25, label: 'Legumes de printemps' },
+    { patterns: ['fraise', 'rhubarbe'], discount: 20, label: 'Premieres fraises' },
+  ],
+  4: [ // Mai
+    { patterns: ['asperge', 'artichaut', 'petit pois', 'feve', 'courgette', 'concombre', 'laitue'], discount: 25, label: 'Legumes de printemps' },
+    { patterns: ['fraise', 'cerise'], discount: 30, label: 'Fruits de printemps' },
+  ],
+  5: [ // Juin
+    { patterns: ['tomate', 'courgette', 'aubergine', 'poivron', 'haricot vert', 'concombre', 'fenouil'], discount: 30, label: 'Legumes d\'ete' },
+    { patterns: ['fraise', 'cerise', 'abricot', 'peche', 'framboise', 'melon'], discount: 30, label: 'Fruits d\'ete' },
+  ],
+  6: [ // Juillet
+    { patterns: ['tomate', 'courgette', 'aubergine', 'poivron', 'haricot vert', 'mais', 'fenouil'], discount: 35, label: 'Plein ete' },
+    { patterns: ['peche', 'nectarine', 'abricot', 'melon', 'pasteque', 'figue', 'myrtille', 'framboise', 'mure'], discount: 35, label: 'Fruits d\'ete' },
+  ],
+  7: [ // Aout
+    { patterns: ['tomate', 'courgette', 'aubergine', 'poivron', 'mais', 'basilic'], discount: 35, label: 'Plein ete' },
+    { patterns: ['peche', 'melon', 'pasteque', 'figue', 'prune', 'mirabelle', 'raisin', 'mure'], discount: 35, label: 'Fruits d\'ete' },
+  ],
+  8: [ // Septembre
+    { patterns: ['tomate', 'courgette', 'potiron', 'champignon', 'poivron', 'chou'], discount: 25, label: 'Fin d\'ete' },
+    { patterns: ['raisin', 'figue', 'prune', 'pomme', 'poire', 'noix'], discount: 25, label: 'Fruits d\'automne' },
+  ],
+  9: [ // Octobre
+    { patterns: ['potiron', 'courge', 'butternut', 'champignon', 'chou', 'brocoli', 'poireau', 'celeri'], discount: 25, label: 'Legumes d\'automne' },
+    { patterns: ['pomme', 'poire', 'chataigne', 'noix', 'coing', 'raisin'], discount: 25, label: 'Fruits d\'automne' },
+  ],
+  10: [ // Novembre
+    { patterns: ['potiron', 'courge', 'butternut', 'poireau', 'chou', 'endive', 'topinambour', 'panais'], discount: 20, label: 'Legumes d\'automne/hiver' },
+    { patterns: ['pomme', 'poire', 'clementine', 'kiwi', 'chataigne', 'mandarine'], discount: 20, label: 'Premiers agrumes' },
+  ],
+  11: [ // Decembre
+    { patterns: ['poireau', 'chou', 'endive', 'topinambour', 'panais', 'navet', 'mache', 'truffe'], discount: 20, label: 'Legumes d\'hiver' },
+    { patterns: ['pomme', 'poire', 'clementine', 'orange', 'mandarine', 'litchi'], discount: 20, label: 'Fruits d\'hiver / fetes' },
+  ],
+};
+
+/** Common substitution rules: maps ingredient name patterns to cheaper alternatives */
+const SUBSTITUTION_RULES: { pattern: string; alternatives: { name: string; savingsPercent: number; quality: 'aucun' | 'minimal' | 'modere' }[] }[] = [
+  { pattern: 'beurre', alternatives: [
+    { name: 'margarine', savingsPercent: 40, quality: 'minimal' },
+    { name: 'huile olive', savingsPercent: 20, quality: 'minimal' },
+  ]},
+  { pattern: 'creme fraiche', alternatives: [
+    { name: 'creme liquide', savingsPercent: 25, quality: 'aucun' },
+    { name: 'fromage blanc', savingsPercent: 30, quality: 'minimal' },
+    { name: 'yaourt grec', savingsPercent: 35, quality: 'minimal' },
+  ]},
+  { pattern: 'parmesan', alternatives: [
+    { name: 'grana padano', savingsPercent: 30, quality: 'aucun' },
+    { name: 'pecorino', savingsPercent: 20, quality: 'minimal' },
+  ]},
+  { pattern: 'saumon', alternatives: [
+    { name: 'truite', savingsPercent: 35, quality: 'minimal' },
+    { name: 'cabillaud', savingsPercent: 25, quality: 'modere' },
+  ]},
+  { pattern: 'filet de boeuf', alternatives: [
+    { name: 'bavette', savingsPercent: 45, quality: 'minimal' },
+    { name: 'onglet', savingsPercent: 40, quality: 'minimal' },
+    { name: 'paleron', savingsPercent: 55, quality: 'modere' },
+  ]},
+  { pattern: 'entrecote', alternatives: [
+    { name: 'bavette', savingsPercent: 35, quality: 'minimal' },
+    { name: 'faux-filet', savingsPercent: 15, quality: 'aucun' },
+  ]},
+  { pattern: 'crevette', alternatives: [
+    { name: 'gambas congelees', savingsPercent: 30, quality: 'minimal' },
+    { name: 'calamars', savingsPercent: 40, quality: 'modere' },
+  ]},
+  { pattern: 'huile olive extra', alternatives: [
+    { name: 'huile olive vierge', savingsPercent: 25, quality: 'aucun' },
+    { name: 'huile tournesol', savingsPercent: 60, quality: 'modere' },
+  ]},
+  { pattern: 'mascarpone', alternatives: [
+    { name: 'ricotta', savingsPercent: 30, quality: 'minimal' },
+    { name: 'fromage frais', savingsPercent: 40, quality: 'minimal' },
+  ]},
+  { pattern: 'mozzarella di bufala', alternatives: [
+    { name: 'mozzarella', savingsPercent: 50, quality: 'minimal' },
+    { name: 'burrata', savingsPercent: -20, quality: 'aucun' },
+  ]},
+  { pattern: 'vanille gousse', alternatives: [
+    { name: 'extrait vanille', savingsPercent: 70, quality: 'minimal' },
+    { name: 'vanille poudre', savingsPercent: 50, quality: 'aucun' },
+  ]},
+  { pattern: 'chocolat noir', alternatives: [
+    { name: 'cacao poudre', savingsPercent: 40, quality: 'minimal' },
+    { name: 'chocolat patissier', savingsPercent: 30, quality: 'aucun' },
+  ]},
+  { pattern: 'amande', alternatives: [
+    { name: 'noisette', savingsPercent: 15, quality: 'aucun' },
+    { name: 'noix', savingsPercent: 10, quality: 'aucun' },
+  ]},
+  { pattern: 'pignon', alternatives: [
+    { name: 'graines tournesol', savingsPercent: 70, quality: 'minimal' },
+    { name: 'noix de cajou', savingsPercent: 30, quality: 'minimal' },
+  ]},
+  { pattern: 'safran', alternatives: [
+    { name: 'curcuma', savingsPercent: 95, quality: 'modere' },
+    { name: 'paprika', savingsPercent: 90, quality: 'modere' },
+  ]},
+  { pattern: 'foie gras', alternatives: [
+    { name: 'mousse de canard', savingsPercent: 60, quality: 'modere' },
+    { name: 'rillettes de canard', savingsPercent: 70, quality: 'modere' },
+  ]},
+  { pattern: 'agneau', alternatives: [
+    { name: 'epaule agneau', savingsPercent: 30, quality: 'minimal' },
+    { name: 'porc', savingsPercent: 50, quality: 'modere' },
+  ]},
+  { pattern: 'veau', alternatives: [
+    { name: 'dinde', savingsPercent: 45, quality: 'modere' },
+    { name: 'poulet', savingsPercent: 55, quality: 'modere' },
+  ]},
+  { pattern: 'magret', alternatives: [
+    { name: 'cuisse de canard', savingsPercent: 40, quality: 'minimal' },
+    { name: 'filet de poulet', savingsPercent: 50, quality: 'modere' },
+  ]},
+];
+
+/** Get the seasonal month icon */
+function SeasonIcon({ month }: { month: number }) {
+  if (month >= 2 && month <= 4) return <Flower2 className="w-3.5 h-3.5 text-pink-500" />;
+  if (month >= 5 && month <= 7) return <Sun className="w-3.5 h-3.5 text-amber-500" />;
+  if (month >= 8 && month <= 10) return <CloudRain className="w-3.5 h-3.5 text-orange-500" />;
+  return <Snowflake className="w-3.5 h-3.5 text-blue-400" />;
+}
+
+/** Check if an ingredient name matches a seasonal pattern for the given month */
+function isIngredientSeasonal(name: string, month: number): { seasonal: boolean; discount: number; label: string } {
+  const n = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const groups = SEASONAL_CALENDAR[month] || [];
+  for (const group of groups) {
+    for (const pattern of group.patterns) {
+      const p = pattern.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (n.includes(p)) return { seasonal: true, discount: group.discount, label: group.label };
+    }
+  }
+  return { seasonal: false, discount: 0, label: '' };
+}
+
+/** Find substitution alternatives from the DB for a given ingredient */
+function findAlternatives(ingredientName: string, allIngredients: Ingredient[]): {
+  ruleName: string;
+  alternatives: { ingredient: Ingredient; savingsPercent: number; quality: 'aucun' | 'minimal' | 'modere' }[];
+} | null {
+  const nameLower = ingredientName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  for (const rule of SUBSTITUTION_RULES) {
+    const patternNorm = rule.pattern.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (nameLower.includes(patternNorm)) {
+      const found: { ingredient: Ingredient; savingsPercent: number; quality: 'aucun' | 'minimal' | 'modere' }[] = [];
+      for (const alt of rule.alternatives) {
+        const altNorm = alt.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const match = allIngredients.find(ing => {
+          const ingNorm = ing.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          return ingNorm.includes(altNorm);
+        });
+        if (match) {
+          found.push({ ingredient: match, savingsPercent: alt.savingsPercent, quality: alt.quality });
+        }
+      }
+      // Also look for same-category ingredients that are cheaper
+      const currentIng = allIngredients.find(ing => ing.name.toLowerCase().includes(nameLower));
+      if (currentIng) {
+        const sameCatCheaper = allIngredients
+          .filter(ing => ing.category === currentIng.category && ing.id !== currentIng.id && ing.pricePerUnit < currentIng.pricePerUnit)
+          .sort((a, b) => a.pricePerUnit - b.pricePerUnit)
+          .slice(0, 2);
+        for (const cheap of sameCatCheaper) {
+          if (!found.some(f => f.ingredient.id === cheap.id)) {
+            const savings = ((currentIng.pricePerUnit - cheap.pricePerUnit) / currentIng.pricePerUnit) * 100;
+            found.push({ ingredient: cheap, savingsPercent: savings, quality: 'minimal' });
+          }
+        }
+      }
+      if (found.length > 0) return { ruleName: rule.pattern, alternatives: found };
+    }
+  }
+
+  // Fallback: look for same-category cheaper options even without rule match
+  const currentIng = allIngredients.find(ing => ing.name.toLowerCase() === nameLower || ing.name.toLowerCase().includes(nameLower));
+  if (currentIng) {
+    const sameCatCheaper = allIngredients
+      .filter(ing => ing.category === currentIng.category && ing.id !== currentIng.id && ing.pricePerUnit < currentIng.pricePerUnit * 0.85)
+      .sort((a, b) => a.pricePerUnit - b.pricePerUnit)
+      .slice(0, 3);
+    if (sameCatCheaper.length > 0) {
+      return {
+        ruleName: currentIng.name,
+        alternatives: sameCatCheaper.map(cheap => ({
+          ingredient: cheap,
+          savingsPercent: ((currentIng.pricePerUnit - cheap.pricePerUnit) / currentIng.pricePerUnit) * 100,
+          quality: 'modere' as const,
+        })),
+      };
+    }
+  }
+  return null;
+}
+
+/** Compute ingredient cost for a recipe ingredient */
+function computeIngredientCost(ri: { quantity: number; wastePercent: number; ingredient: Ingredient }): number {
+  const effectiveQty = ri.quantity * (1 + (ri.wastePercent || 0) / 100);
+  const divisor = getUnitDivisor(ri.ingredient.unit || 'kg');
+  return ri.ingredient.pricePerUnit * (effectiveQty / divisor);
+}
+
+// ── Single Recipe Cost Optimizer Panel ──────────────────────────────────
+function CostOptimizerPanel({
+  recipe,
+  allIngredients,
+  onClose,
+}: {
+  recipe: Recipe;
+  allIngredients: Ingredient[];
+  onClose: () => void;
+}) {
+  const currentMonth = new Date().getMonth();
+  const monthNames = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+
+  // Compute per-ingredient costs
+  const ingredientCosts = recipe.ingredients.map((ri) => {
+    const cost = computeIngredientCost(ri);
+    const seasonal = isIngredientSeasonal(ri.ingredient.name, currentMonth);
+    const alternatives = findAlternatives(ri.ingredient.name, allIngredients);
+    return { ri, cost, seasonal, alternatives };
+  }).sort((a, b) => b.cost - a.cost);
+
+  const totalCost = ingredientCosts.reduce((s, ic) => s + ic.cost, 0);
+  const top3 = ingredientCosts.slice(0, 3);
+
+  // Seasonal ingredients in this recipe
+  const seasonalIngredients = ingredientCosts.filter(ic => ic.seasonal.seasonal);
+
+  // Price alert: detect if any ingredient increased >10% recently (simulated by checking if pricePerUnit is above median for its category)
+  const priceAlerts = ingredientCosts.filter(ic => {
+    const sameCat = allIngredients.filter(ing => ing.category === ic.ri.ingredient.category);
+    if (sameCat.length < 3) return false;
+    const avgPrice = sameCat.reduce((s, ing) => s + ing.pricePerUnit, 0) / sameCat.length;
+    return ic.ri.ingredient.pricePerUnit > avgPrice * 1.15; // 15% above category average
+  });
+
+  // Compute potential savings
+  const totalPotentialSavings = top3.reduce((s, ic) => {
+    if (!ic.alternatives || ic.alternatives.alternatives.length === 0) return s;
+    const bestAlt = ic.alternatives.alternatives.reduce((best, a) => a.savingsPercent > best.savingsPercent ? a : best);
+    return s + (ic.cost * bestAlt.savingsPercent / 100);
+  }, 0);
+
+  const optimizedCost = totalCost - totalPotentialSavings;
+  const currentMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - (totalCost / recipe.nbPortions)) / recipe.sellingPrice) * 100 : 0;
+  const optimizedMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - (optimizedCost / recipe.nbPortions)) / recipe.sellingPrice) * 100 : 0;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Optimisation : {recipe.name}</h3>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse du cout et suggestions d'economies</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
+          </button>
+        </div>
+
+        {/* Margin Impact Summary */}
+        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Cout actuel</div>
+              <div className="text-lg font-bold font-mono text-[#111111] dark:text-white">{(totalCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
+            </div>
+            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Cout optimise</div>
+              <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">{(optimizedCost / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</div>
+            </div>
+            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Marge actuelle</div>
+              <div className={`text-lg font-bold ${currentMargin >= 70 ? 'text-emerald-500' : currentMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{currentMargin.toFixed(1)}%</div>
+            </div>
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
+              <div className="text-[10px] uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">Marge optimisee</div>
+              <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{optimizedMargin.toFixed(1)}%</div>
+            </div>
+          </div>
+          {totalPotentialSavings > 0 && (
+            <div className="mt-3 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+              <TrendingDown className="w-4 h-4" />
+              Economie potentielle : {(totalPotentialSavings / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()} / portion ({((totalPotentialSavings / totalCost) * 100).toFixed(0)}%)
+            </div>
+          )}
+        </div>
+
+        {/* Cost Breakdown Bar Chart */}
+        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 mb-3">
+            <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
+            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Repartition du cout par ingredient</h4>
+          </div>
+          <div className="space-y-2">
+            {ingredientCosts.map((ic, idx) => {
+              const pct = totalCost > 0 ? (ic.cost / totalCost) * 100 : 0;
+              const isTop3 = idx < 3;
+              return (
+                <div key={ic.ri.id} className="group/bar">
+                  <div className="flex items-center justify-between text-xs mb-0.5">
+                    <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                      {isTop3 && <span className="text-[9px] font-bold text-white bg-red-500 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0">{idx + 1}</span>}
+                      <span className={`truncate ${isTop3 ? 'font-semibold text-[#111111] dark:text-white' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
+                        {ic.ri.ingredient.name}
+                      </span>
+                      {ic.seasonal.seasonal && (
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 flex-shrink-0">
+                          <Leaf className="w-2.5 h-2.5" /> Saison
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-mono text-[#111111] dark:text-white ml-2 flex-shrink-0">{ic.cost.toFixed(2)}{getCurrencySymbol()} ({pct.toFixed(0)}%)</span>
+                  </div>
+                  <div className="w-full h-3 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${isTop3 ? 'bg-red-500' : 'bg-[#111111] dark:bg-white'}`}
+                      style={{ width: `${Math.max(pct, 1)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Top 3 Expensive — Substitution Suggestions */}
+        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 mb-3">
+            <RefreshCw className="w-4 h-4 text-[#111111] dark:text-white" />
+            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Suggestions de substitution</h4>
+          </div>
+          {top3.map((ic) => {
+            if (!ic.alternatives || ic.alternatives.alternatives.length === 0) {
+              return (
+                <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="text-sm font-medium text-[#111111] dark:text-white">{ic.ri.ingredient.name}</div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Aucune alternative moins chere trouvee en base</div>
+                </div>
+              );
+            }
+            return (
+              <div key={ic.ri.id} className="mb-3 p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-medium text-[#111111] dark:text-white">{ic.ri.ingredient.name}</div>
+                  <span className="text-xs font-mono text-red-500">{ic.cost.toFixed(2)}{getCurrencySymbol()}</span>
+                </div>
+                <div className="space-y-2">
+                  {ic.alternatives.alternatives.slice(0, 3).map((alt, aIdx) => {
+                    const savings = ic.cost * alt.savingsPercent / 100;
+                    const newCostPerPortion = (totalCost - savings) / recipe.nbPortions;
+                    const newMargin = recipe.sellingPrice > 0 ? ((recipe.sellingPrice - newCostPerPortion) / recipe.sellingPrice) * 100 : 0;
+                    return (
+                      <div key={aIdx} className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                        <ArrowRight className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs text-[#111111] dark:text-white">
+                            Si vous remplacez <strong>{ic.ri.ingredient.name}</strong> par <strong>{alt.ingredient.name}</strong>, vous economisez <strong className="text-emerald-500">{(savings / recipe.nbPortions).toFixed(2)}{getCurrencySymbol()}</strong>/portion
+                          </div>
+                          <div className="flex items-center gap-3 mt-1 text-[10px]">
+                            <span className="text-[#9CA3AF] dark:text-[#737373]">{alt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{alt.ingredient.unit}</span>
+                            <span className={`font-medium ${newMargin >= 70 ? 'text-emerald-500' : newMargin >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
+                              Marge → {newMargin.toFixed(1)}%
+                            </span>
+                            <span className={`px-1.5 py-0.5 rounded-full font-medium ${alt.quality === 'aucun' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : alt.quality === 'minimal' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
+                              Impact: {alt.quality}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Seasonal Suggestions */}
+        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 mb-3">
+            <SeasonIcon month={currentMonth} />
+            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Ingredients de saison — {monthNames[currentMonth]}</h4>
+          </div>
+          {seasonalIngredients.length > 0 ? (
+            <div className="space-y-2">
+              {seasonalIngredients.map((ic) => (
+                <div key={ic.ri.id} className="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
+                  <Leaf className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-xs text-[#111111] dark:text-white font-medium">{ic.ri.ingredient.name}</span>
+                    <span className="text-[10px] text-green-600 dark:text-green-400 ml-2">De saison — potentiellement {ic.seasonal.discount}% moins cher</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">{ic.seasonal.label}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Aucun ingredient de saison dans cette recette. Suggestions :</p>
+              {(SEASONAL_CALENDAR[currentMonth] || []).slice(0, 2).map((group, gIdx) => (
+                <div key={gIdx} className="p-2 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
+                  <div className="text-[10px] font-semibold text-green-700 dark:text-green-300 mb-1">{group.label} (-{group.discount}% ce mois)</div>
+                  <div className="flex flex-wrap gap-1">
+                    {group.patterns.slice(0, 6).map((p, pIdx) => (
+                      <span key={pIdx} className="px-1.5 py-0.5 rounded text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">{p}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Price Alerts */}
+        {priceAlerts.length > 0 && (
+          <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+              <h4 className="text-sm font-semibold text-red-600 dark:text-red-400">Alertes prix</h4>
+            </div>
+            <div className="space-y-2">
+              {priceAlerts.map((ic) => {
+                const sameCat = allIngredients.filter(ing => ing.category === ic.ri.ingredient.category);
+                const avgPrice = sameCat.reduce((s, ing) => s + ing.pricePerUnit, 0) / sameCat.length;
+                const pctAbove = ((ic.ri.ingredient.pricePerUnit - avgPrice) / avgPrice) * 100;
+                return (
+                  <div key={ic.ri.id} className="p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-[#111111] dark:text-white">{ic.ri.ingredient.name}</span>
+                      <span className="text-xs font-mono text-red-500">+{pctAbove.toFixed(0)}% vs moyenne categorie</span>
+                    </div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">
+                      Prix: {ic.ri.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ic.ri.ingredient.unit} | Moyenne: {avgPrice.toFixed(2)}{getCurrencySymbol()}/{ic.ri.ingredient.unit}
+                    </div>
+                    {ic.alternatives && ic.alternatives.alternatives.length > 0 && (
+                      <div className="mt-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                        Action : remplacer par {ic.alternatives.alternatives[0].ingredient.name} ({ic.alternatives.alternatives[0].ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{ic.alternatives.alternatives[0].ingredient.unit})
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="p-5 bg-[#FAFAFA] dark:bg-[#111111] rounded-b-2xl">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Calcule a partir de vos donnees reelles — aucun appel IA</span>
+            <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg hover:opacity-90 transition-opacity">
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Batch Optimizer Panel ───────────────────────────────────────────────
+function BatchOptimizerPanel({
+  recipes,
+  allIngredients,
+  onClose,
+}: {
+  recipes: Recipe[];
+  allIngredients: Ingredient[];
+  onClose: () => void;
+}) {
+  const currentMonth = new Date().getMonth();
+  const monthNames = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'];
+
+  // Collect all ingredient costs across selected recipes
+  const ingredientAgg: Record<string, { name: string; totalCost: number; recipeCount: number; ingredient: Ingredient; alternatives: ReturnType<typeof findAlternatives> }> = {};
+
+  recipes.forEach(recipe => {
+    recipe.ingredients.forEach(ri => {
+      const cost = computeIngredientCost(ri);
+      const key = ri.ingredient.name.toLowerCase();
+      if (!ingredientAgg[key]) {
+        ingredientAgg[key] = {
+          name: ri.ingredient.name,
+          totalCost: 0,
+          recipeCount: 0,
+          ingredient: ri.ingredient,
+          alternatives: findAlternatives(ri.ingredient.name, allIngredients),
+        };
+      }
+      ingredientAgg[key].totalCost += cost;
+      ingredientAgg[key].recipeCount += 1;
+    });
+  });
+
+  // Sort by total cost (most expensive common ingredients first)
+  const sortedIngredients = Object.values(ingredientAgg)
+    .sort((a, b) => b.totalCost - a.totalCost);
+
+  // Common expensive (appear in 2+ recipes)
+  const commonExpensive = sortedIngredients.filter(ing => ing.recipeCount >= 2);
+
+  // Total cost across all selected recipes
+  const totalCostAll = sortedIngredients.reduce((s, ing) => s + ing.totalCost, 0);
+
+  // Compute total savings for common substitutions
+  const savingsBreakdown = commonExpensive
+    .filter(ing => ing.alternatives && ing.alternatives.alternatives.length > 0)
+    .map(ing => {
+      const bestAlt = ing.alternatives!.alternatives.reduce((best, a) => a.savingsPercent > best.savingsPercent ? a : best);
+      const savings = ing.totalCost * bestAlt.savingsPercent / 100;
+      return { ...ing, bestAlt, savings };
+    })
+    .sort((a, b) => b.savings - a.savings);
+
+  const totalMonthlyServings = recipes.reduce((s, r) => s + (r.nbPortions || 1) * 30, 0); // Assume ~30x/month
+  const totalMonthlySavings = savingsBreakdown.reduce((s, item) => s + item.savings, 0) * 30; // Rough monthly multiplier
+
+  // Seasonal suggestions for this month
+  const seasonalGroups = SEASONAL_CALENDAR[currentMonth] || [];
+
+  // Current total margins
+  const avgMarginBefore = recipes.reduce((s, r) => s + (r.margin?.marginPercent || 0), 0) / recipes.length;
+  const totalSavingsPerServing = savingsBreakdown.reduce((s, item) => s + item.savings, 0);
+  const avgSellingPrice = recipes.reduce((s, r) => s + r.sellingPrice, 0) / recipes.length;
+  const avgCostBefore = recipes.reduce((s, r) => s + (r.margin?.costPerPortion || 0), 0) / recipes.length;
+  const avgCostAfter = avgCostBefore - (totalSavingsPerServing / recipes.length);
+  const avgMarginAfter = avgSellingPrice > 0 ? ((avgSellingPrice - avgCostAfter) / avgSellingPrice) * 100 : 0;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white dark:text-[#111111]" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Optimiser la carte ({recipes.length} recettes)</h3>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse croisee et substitutions groupees</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+            <X className="w-5 h-5 text-[#9CA3AF] dark:text-[#737373]" />
+          </button>
+        </div>
+
+        {/* Summary KPIs */}
+        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Recettes</div>
+              <div className="text-xl font-bold text-[#111111] dark:text-white">{recipes.length}</div>
+            </div>
+            <div className="bg-[#FAFAFA] dark:bg-[#111111] rounded-xl p-3 text-center">
+              <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-1">Marge moy. actuelle</div>
+              <div className={`text-xl font-bold ${avgMarginBefore >= 70 ? 'text-emerald-500' : avgMarginBefore >= 50 ? 'text-amber-500' : 'text-red-500'}`}>{avgMarginBefore.toFixed(1)}%</div>
+            </div>
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
+              <div className="text-[10px] uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">Marge moy. optimisee</div>
+              <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{avgMarginAfter.toFixed(1)}%</div>
+            </div>
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center border border-emerald-200 dark:border-emerald-800">
+              <div className="text-[10px] uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">Eco. mensuelle est.</div>
+              <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{totalMonthlySavings.toFixed(0)}{getCurrencySymbol()}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Common Expensive Ingredients */}
+        {commonExpensive.length > 0 && (
+          <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center gap-2 mb-3">
+              <BarChart3 className="w-4 h-4 text-[#111111] dark:text-white" />
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Ingredients couteux communs ({commonExpensive.length})</h4>
+            </div>
+            <div className="space-y-2">
+              {commonExpensive.slice(0, 8).map((ing, idx) => {
+                const pct = totalCostAll > 0 ? (ing.totalCost / totalCostAll) * 100 : 0;
+                return (
+                  <div key={idx}>
+                    <div className="flex items-center justify-between text-xs mb-0.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-medium text-[#111111] dark:text-white">{ing.name}</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+                          {ing.recipeCount} recettes
+                        </span>
+                      </div>
+                      <span className="font-mono text-[#111111] dark:text-white">{ing.totalCost.toFixed(2)}{getCurrencySymbol()}</span>
+                    </div>
+                    <div className="w-full h-2.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden">
+                      <div className="h-full rounded-full bg-red-500 transition-all duration-500" style={{ width: `${Math.max(pct, 1)}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Bulk Substitution Suggestions */}
+        {savingsBreakdown.length > 0 && (
+          <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center gap-2 mb-3">
+              <RefreshCw className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Substitutions groupees recommandees</h4>
+            </div>
+            <div className="space-y-3">
+              {savingsBreakdown.slice(0, 6).map((item, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#111111] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-[#111111] dark:text-white">{item.name}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-emerald-500" />
+                      <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{item.bestAlt.ingredient.name}</span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-500">-{item.savings.toFixed(2)}{getCurrencySymbol()}</span>
+                  </div>
+                  <div className="flex items-center gap-4 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                    <span>Affecte {item.recipeCount} recettes</span>
+                    <span>{item.ingredient.pricePerUnit.toFixed(2)} → {item.bestAlt.ingredient.pricePerUnit.toFixed(2)}{getCurrencySymbol()}/{item.ingredient.unit}</span>
+                    <span className={`px-1.5 py-0.5 rounded-full font-medium ${item.bestAlt.quality === 'aucun' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : item.bestAlt.quality === 'minimal' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
+                      Impact: {item.bestAlt.quality}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Seasonal Suggestions */}
+        <div className="p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2 mb-3">
+            <SeasonIcon month={currentMonth} />
+            <h4 className="text-sm font-semibold text-[#111111] dark:text-white">Suggestions saisonnieres — {monthNames[currentMonth]}</h4>
+          </div>
+          <div className="space-y-2">
+            {seasonalGroups.map((group, gIdx) => (
+              <div key={gIdx} className="p-3 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/50">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-xs font-semibold text-green-700 dark:text-green-300">{group.label}</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-medium">-{group.discount}% ce mois</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {group.patterns.map((p, pIdx) => (
+                    <span key={pIdx} className="px-1.5 py-0.5 rounded text-[10px] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white border border-green-200 dark:border-green-800/50">{p}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] italic">
+              Ce mois-ci, privilegiez les ingredients de saison pour reduire les couts et ameliorer la fraicheur.
+            </p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-5 bg-[#FAFAFA] dark:bg-[#111111] rounded-b-2xl">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse basee sur {sortedIngredients.length} ingredients — {recipes.length} recettes</span>
+            <button onClick={onClose} className="px-4 py-2 text-sm font-semibold bg-[#111111] dark:bg-white text-white dark:text-[#111111] rounded-lg hover:opacity-90 transition-opacity">
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Recipes() {
   const { t } = useTranslation();
   const { showToast } = useToast();
@@ -719,6 +1422,10 @@ export default function Recipes() {
   // Recipe comparison
   const [compareIds, setCompareIds] = useState<number[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+
+  // Cost Optimizer
+  const [optimizingRecipe, setOptimizingRecipe] = useState<Recipe | null>(null);
+  const [showBatchOptimizer, setShowBatchOptimizer] = useState(false);
 
   // Delete confirm
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
@@ -1754,6 +2461,9 @@ export default function Recipes() {
                       <Link to={`/recipes/${recipe.id}`} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.view")}>
                         <Eye className="w-4 h-4 text-[#111111] dark:text-white" />
                       </Link>
+                      <button onClick={() => setOptimizingRecipe(recipe)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                        <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      </button>
                       <button onClick={() => openEdit(recipe)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                         <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                       </button>
@@ -1861,6 +2571,33 @@ export default function Recipes() {
                   </div>
                 )}
 
+                {/* Seasonal Badges */}
+                {(() => {
+                  const month = new Date().getMonth();
+                  const seasonalIngs = recipe.ingredients.filter(ri => isIngredientSeasonal(ri.ingredient?.name || '', month).seasonal);
+                  const priceAlertIngs = recipe.ingredients.filter(ri => {
+                    if (!ri.ingredient) return false;
+                    const sameCat = ingredients.filter(ing => ing.category === ri.ingredient.category);
+                    if (sameCat.length < 3) return false;
+                    const avgPrice = sameCat.reduce((s, ing) => s + ing.pricePerUnit, 0) / sameCat.length;
+                    return ri.ingredient.pricePerUnit > avgPrice * 1.15;
+                  });
+                  return (
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {seasonalIngs.length > 0 && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                          <Leaf className="w-3 h-3" /> {seasonalIngs.length} ingredient{seasonalIngs.length > 1 ? 's' : ''} de saison
+                        </span>
+                      )}
+                      {priceAlertIngs.length > 0 && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                          <AlertTriangle className="w-3 h-3" /> {priceAlertIngs.length} alerte{priceAlertIngs.length > 1 ? 's' : ''} prix
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* Quick Price Simulator */}
                 <PriceSimulator recipe={recipe} />
 
@@ -1869,6 +2606,9 @@ export default function Recipes() {
                   <Link to={`/recipes/${recipe.id}`} className="btn-secondary text-sm flex items-center gap-1 flex-1 justify-center">
                     <Eye className="w-4 h-4" /> {t("recipes.view")}
                   </Link>
+                  <button onClick={() => setOptimizingRecipe(recipe)} className="p-2 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title="Optimiser les couts" aria-label="Optimiser la recette">
+                    <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  </button>
                   <button onClick={() => openEdit(recipe)} className="p-2 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717]" title={t("recipes.editTooltip")} aria-label="Modifier la recette">
                     <Pencil className="w-4 h-4 text-[#6B7280] dark:text-[#A3A3A3]" />
                   </button>
@@ -1903,6 +2643,15 @@ export default function Recipes() {
           >
             <Zap className="w-4 h-4" />
             Optimiser les prix
+          </button>
+
+          {/* Batch Cost Optimizer */}
+          <button
+            onClick={() => setShowBatchOptimizer(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-teal-600 hover:bg-teal-500 text-white transition-colors"
+          >
+            <Sparkles className="w-4 h-4" />
+            Optimiser la carte
           </button>
 
           {/* Bulk delete */}
@@ -2977,6 +3726,28 @@ export default function Recipes() {
           <RecipeComparisonPanel
             recipes={[recA, recB]}
             onClose={() => { setShowComparison(false); setCompareIds([]); }}
+          />
+        );
+      })()}
+
+      {/* ── Single Recipe Cost Optimizer ──────────────────────────────── */}
+      {optimizingRecipe && (
+        <CostOptimizerPanel
+          recipe={optimizingRecipe}
+          allIngredients={ingredients}
+          onClose={() => setOptimizingRecipe(null)}
+        />
+      )}
+
+      {/* ── Batch Cost Optimizer ────────────────────────────────────────── */}
+      {showBatchOptimizer && (() => {
+        const selectedRecipes = recipes.filter(r => selectedRecipeIds.has(r.id));
+        if (selectedRecipes.length === 0) return null;
+        return (
+          <BatchOptimizerPanel
+            recipes={selectedRecipes}
+            allIngredients={ingredients}
+            onClose={() => setShowBatchOptimizer(false)}
           />
         );
       })()}

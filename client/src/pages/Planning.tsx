@@ -3,7 +3,8 @@ import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
   Edit, Trash2, X, UserPlus, AlertTriangle, Eye, GripVertical,
   Timer, LogIn, LogOut, Play, Square, Printer, AlertCircle,
-  Sun, Moon, Coffee, ChefHat, UtensilsCrossed, GlassWater, Droplets
+  Sun, Moon, Coffee, ChefHat, UtensilsCrossed, GlassWater, Droplets,
+  Send, Copy, Save, FileText, Ban, Check, MessageSquare, Zap, Shield
 } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
 import { useTranslation } from '../hooks/useTranslation';
@@ -63,6 +64,28 @@ interface Conflict {
   shiftB: Shift;
 }
 
+interface Availability {
+  id: number;
+  employeeId: number;
+  dayOfWeek: number; // 0=Lun, 1=Mar, ..., 6=Dim
+  startTime: string;
+  endTime: string;
+  available: boolean; // true=dispo, false=indisponible
+}
+
+interface ShiftTemplate {
+  id: number;
+  name: string;
+  description: string;
+  assignments: {
+    role: string;
+    count: number;
+    startTime: string;
+    endTime: string;
+    type: string;
+  }[];
+}
+
 type EmployeeRole = 'Chef' | 'Commis' | 'Serveur' | 'Serveuse' | 'Plongeur' | 'Plongeuse' | 'Patissier' | 'Patissiere';
 
 type ShiftType = 'matin' | 'midi' | 'soir';
@@ -112,6 +135,59 @@ const JOURS_FULL = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi',
 
 // Time grid hours 6h -> 23h
 const GRID_HOURS = Array.from({ length: 18 }, (_, i) => i + 6);
+
+// ── Default Shift Templates ──────────────────────────────────────────
+const DEFAULT_TEMPLATES: ShiftTemplate[] = [
+  {
+    id: 1,
+    name: 'Service midi standard',
+    description: '3 cuisiniers + 2 serveurs, 10h-15h',
+    assignments: [
+      { role: 'Chef', count: 1, startTime: '10:00', endTime: '15:00', type: 'cuisine' },
+      { role: 'Commis', count: 2, startTime: '10:00', endTime: '15:00', type: 'cuisine' },
+      { role: 'Serveur', count: 2, startTime: '11:00', endTime: '15:00', type: 'salle' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Service soir complet',
+    description: '2 cuisiniers + 3 serveurs + 1 plongeur, 17h-23h',
+    assignments: [
+      { role: 'Chef', count: 1, startTime: '17:00', endTime: '23:00', type: 'cuisine' },
+      { role: 'Commis', count: 1, startTime: '17:00', endTime: '23:00', type: 'cuisine' },
+      { role: 'Serveur', count: 2, startTime: '18:00', endTime: '23:00', type: 'salle' },
+      { role: 'Serveuse', count: 1, startTime: '18:00', endTime: '23:00', type: 'salle' },
+      { role: 'Plongeur', count: 1, startTime: '18:00', endTime: '23:00', type: 'plonge' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Brunch weekend',
+    description: '2 cuisiniers + 2 serveurs + 1 bar, 8h-14h',
+    assignments: [
+      { role: 'Chef', count: 1, startTime: '08:00', endTime: '14:00', type: 'cuisine' },
+      { role: 'Commis', count: 1, startTime: '08:00', endTime: '14:00', type: 'cuisine' },
+      { role: 'Serveur', count: 1, startTime: '09:00', endTime: '14:00', type: 'salle' },
+      { role: 'Serveuse', count: 1, startTime: '09:00', endTime: '14:00', type: 'salle' },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Equipe reduite',
+    description: '1 cuisinier + 1 serveur, pour jour calme',
+    assignments: [
+      { role: 'Chef', count: 1, startTime: '11:00', endTime: '15:00', type: 'cuisine' },
+      { role: 'Serveur', count: 1, startTime: '11:00', endTime: '15:00', type: 'salle' },
+    ],
+  },
+];
+
+// French labor law constants
+const LEGAL_WEEKLY_HOURS = 35;
+const LEGAL_MAX_WEEKLY_HOURS = 48;
+const LEGAL_MAX_DAILY_HOURS = 10;
+const OVERTIME_RATE_1 = 1.25; // 36h-43h: +25%
+const OVERTIME_RATE_2 = 1.50; // 44h+: +50%
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -308,6 +384,30 @@ export default function Planning() {
     active: boolean;
   } | null>(null);
 
+  // Availability management
+  const [availabilities, setAvailabilities] = useState<Availability[]>([]);
+  const [showAvailabilityModal, setShowAvailabilityModal] = useState(false);
+  const [availabilityEmployee, setAvailabilityEmployee] = useState<Employee | null>(null);
+  const [availForm, setAvailForm] = useState({ dayOfWeek: 0, startTime: '06:00', endTime: '23:00', available: false as boolean });
+
+  // Shift templates
+  const [shiftTemplates, setShiftTemplates] = useState<ShiftTemplate[]>(() => {
+    try {
+      const saved = localStorage.getItem('planning-templates');
+      return saved ? JSON.parse(saved) : DEFAULT_TEMPLATES;
+    } catch { return DEFAULT_TEMPLATES; }
+  });
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showTemplateApplyModal, setShowTemplateApplyModal] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<ShiftTemplate | null>(null);
+  const [templateApplyDate, setTemplateApplyDate] = useState('');
+
+  // WhatsApp modal
+  const [showWhatsappModal, setShowWhatsappModal] = useState(false);
+
+  // Overtime details modal
+  const [showOvertimeModal, setShowOvertimeModal] = useState(false);
+
   // Modals
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showShiftModal, setShowShiftModal] = useState(false);
@@ -328,6 +428,26 @@ export default function Planning() {
 
   // Inject print styles on mount
   useEffect(() => { injectPrintStyles(); }, []);
+
+  // Persist templates to localStorage
+  useEffect(() => {
+    localStorage.setItem('planning-templates', JSON.stringify(shiftTemplates));
+  }, [shiftTemplates]);
+
+  // Load availabilities
+  const loadAvailabilities = useCallback(async () => {
+    try {
+      const res = await fetch('/api/planning/availabilities', { headers: getAuthHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setAvailabilities(Array.isArray(data) ? data : []);
+      }
+    } catch {
+      // Silently ignore - availability is optional
+    }
+  }, []);
+
+  useEffect(() => { loadAvailabilities(); }, [loadAvailabilities]);
 
   // ── API: Load employees on mount ──────────────────────────────────────
 
@@ -562,6 +682,156 @@ export default function Planning() {
         }, 0);
     });
   }, [weekDayStrings, shifts, employees]);
+
+  // Overtime details per employee (French labor law)
+  const overtimeDetails = useMemo(() => {
+    return employees.map(emp => {
+      const hours = employeeWeeklyHours.get(emp.id) || 0;
+      const isOver35 = hours > LEGAL_WEEKLY_HOURS;
+      const isOver48 = hours > LEGAL_MAX_WEEKLY_HOURS;
+      const overtime = Math.max(0, hours - LEGAL_WEEKLY_HOURS);
+      const overtimeAt25 = Math.min(overtime, 8); // 36h-43h
+      const overtimeAt50 = Math.max(0, overtime - 8); // 44h+
+      const baseCost = LEGAL_WEEKLY_HOURS * (emp.hourlyRate ?? 0);
+      const overtimeCost = overtimeAt25 * (emp.hourlyRate ?? 0) * OVERTIME_RATE_1
+        + overtimeAt50 * (emp.hourlyRate ?? 0) * OVERTIME_RATE_2;
+      // Check daily hours
+      const dailyAlerts: string[] = [];
+      weekDayStrings.forEach((dayStr, i) => {
+        const dayHours = weekShifts
+          .filter(s => s.employeeId === emp.id && s.date === dayStr)
+          .reduce((sum, s) => sum + shiftHours(s.startTime, s.endTime), 0);
+        if (dayHours > LEGAL_MAX_DAILY_HOURS) {
+          dailyAlerts.push(`${JOURS[i]}: ${dayHours.toFixed(1)}h (max ${LEGAL_MAX_DAILY_HOURS}h)`);
+        }
+      });
+      return { emp, hours, isOver35, isOver48, overtime, overtimeAt25, overtimeAt50, baseCost, overtimeCost, dailyAlerts };
+    }).filter(d => d.isOver35 || d.dailyAlerts.length > 0);
+  }, [employees, employeeWeeklyHours, weekShifts, weekDayStrings]);
+
+  // Get unavailable slots for a given employee on a given day-of-week
+  function getUnavailableSlots(empId: number, dayOfWeek: number): Availability[] {
+    return availabilities.filter(a => a.employeeId === empId && a.dayOfWeek === dayOfWeek && !a.available);
+  }
+
+  // WhatsApp message generator
+  const whatsappMessage = useMemo(() => {
+    const lines: string[] = [];
+    lines.push(`Planning semaine du ${weekLabel}`);
+    lines.push('');
+    employees.forEach(emp => {
+      const empShifts = weekShifts.filter(s => s.employeeId === emp.id);
+      if (empShifts.length === 0) return;
+      lines.push(`${emp.name} (${ROLE_LABELS[emp.role] || emp.role}):`);
+      weekDayStrings.forEach((dayStr, i) => {
+        const dayShifts = empShifts.filter(s => s.date === dayStr);
+        if (dayShifts.length > 0) {
+          const times = dayShifts.map(s => `${s.startTime}-${s.endTime}`).join(', ');
+          lines.push(`  ${JOURS_FULL[i]}: ${times}`);
+        }
+      });
+      const hours = employeeWeeklyHours.get(emp.id) || 0;
+      lines.push(`  Total: ${hours.toFixed(0)}h`);
+      lines.push('');
+    });
+    return lines.join('\n');
+  }, [employees, weekShifts, weekDayStrings, weekLabel, employeeWeeklyHours]);
+
+  // Apply template to a date
+  async function applyTemplate(template: ShiftTemplate, date: string) {
+    if (!date) {
+      showToast('Selectionnez une date', 'error');
+      return;
+    }
+    let addedCount = 0;
+    for (const assignment of template.assignments) {
+      // Find matching employees by role
+      const matchingEmps = employees.filter(e => e.role === assignment.role ||
+        (assignment.role === 'Serveur' && (e.role === 'Serveur' || e.role === 'Serveuse')) ||
+        (assignment.role === 'Commis' && (e.role === 'Commis' || e.role === 'Chef')) ||
+        (assignment.role === 'Plongeur' && (e.role === 'Plongeur' || e.role === 'Plongeuse'))
+      );
+      const needed = Math.min(assignment.count, matchingEmps.length);
+      for (let i = 0; i < needed; i++) {
+        const emp = matchingEmps[i];
+        // Check for overlap
+        const overlap = shifts.some(s => {
+          if (s.employeeId !== emp.id || s.date !== date) return false;
+          return s.startTime < assignment.endTime && s.endTime > assignment.startTime;
+        });
+        if (overlap) continue;
+        const shiftData = {
+          employeeId: emp.id,
+          date,
+          startTime: assignment.startTime,
+          endTime: assignment.endTime,
+          type: assignment.type,
+        };
+        const localId = nextId + addedCount;
+        const newShift: Shift = { id: localId, ...shiftData };
+        try {
+          const res = await fetch('/api/planning/shifts', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(shiftData),
+          });
+          if (res.ok) {
+            const saved = await res.json();
+            setShifts(prev => [...prev, saved]);
+          } else {
+            setShifts(prev => [...prev, newShift]);
+          }
+        } catch {
+          setShifts(prev => [...prev, newShift]);
+        }
+        addedCount++;
+      }
+    }
+    setNextId(n => n + addedCount);
+    showToast(`Template "${template.name}" applique: ${addedCount} creneaux ajoutes`, 'success');
+    setShowTemplateApplyModal(false);
+    setSelectedTemplate(null);
+  }
+
+  // Availability CRUD
+  function openAvailabilityManager(emp: Employee) {
+    setAvailabilityEmployee(emp);
+    setAvailForm({ dayOfWeek: 0, startTime: '06:00', endTime: '23:00', available: false });
+    setShowAvailabilityModal(true);
+  }
+
+  async function addAvailability() {
+    if (!availabilityEmployee) return;
+    const newAvail: Availability = {
+      id: Date.now(),
+      employeeId: availabilityEmployee.id,
+      dayOfWeek: availForm.dayOfWeek,
+      startTime: availForm.startTime,
+      endTime: availForm.endTime,
+      available: availForm.available,
+    };
+    setAvailabilities(prev => [...prev, newAvail]);
+    try {
+      await fetch('/api/planning/availabilities', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(newAvail),
+      });
+    } catch {
+      // Already added locally
+    }
+    showToast('Disponibilite ajoutee', 'success');
+  }
+
+  function removeAvailability(id: number) {
+    setAvailabilities(prev => prev.filter(a => a.id !== id));
+    try {
+      fetch(`/api/planning/availabilities/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+    } catch {
+      // Already removed locally
+    }
+    showToast('Disponibilite supprimee', 'success');
+  }
 
   // ── Employee CRUD ──────────────────────────────────────────────────
 
@@ -874,12 +1144,35 @@ export default function Planning() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap no-print">
+          {/* WhatsApp / Send planning */}
+          <button
+            onClick={() => setShowWhatsappModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white rounded-xl hover:bg-[#20BD5A] transition text-sm font-medium"
+          >
+            <Send className="w-4 h-4" /> Envoyer le planning
+          </button>
+          {/* Templates */}
+          <button
+            onClick={() => setShowTemplateModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
+          >
+            <FileText className="w-4 h-4" /> Templates
+          </button>
           <button
             onClick={handlePrint}
             className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-black text-[#111111] dark:text-white border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition text-sm font-medium"
           >
-            <Printer className="w-4 h-4" /> Imprimer le planning
+            <Printer className="w-4 h-4" /> Imprimer
           </button>
+          {/* Overtime alerts */}
+          {overtimeDetails.length > 0 && (
+            <button
+              onClick={() => setShowOvertimeModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 transition text-sm font-medium animate-pulse"
+            >
+              <Shield className="w-4 h-4" /> {overtimeDetails.length} alerte{overtimeDetails.length > 1 ? 's' : ''} heures
+            </button>
+          )}
           {conflicts.length > 0 && (
             <button
               onClick={() => setShowConflictsModal(true)}
@@ -1047,6 +1340,7 @@ export default function Planning() {
                 const dayStr = formatDate(day);
                 const isToday = todayStr === dayStr;
                 const dayConflicts = conflicts.filter(c => c.shiftA.date === dayStr);
+                const dayCost = dailyCosts[i] || 0;
                 return (
                   <div
                     key={i}
@@ -1058,6 +1352,12 @@ export default function Planning() {
                     <div className={`text-sm font-bold ${isToday ? 'text-indigo-500' : 'text-[#6B7280] dark:text-[#A3A3A3]'}`}>
                       {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
                     </div>
+                    {/* Labor cost badge per day */}
+                    {dayCost > 0 && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold mt-0.5">
+                        <Euro className="w-2.5 h-2.5" /> {dayCost.toFixed(0)} EUR
+                      </span>
+                    )}
                     {dayConflicts.length > 0 && (
                       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-500 text-[9px] font-bold mt-0.5">
                         <AlertCircle className="w-2.5 h-2.5" /> {dayConflicts.length}
@@ -1083,6 +1383,13 @@ export default function Planning() {
                   {weekDays.map((day, dayIdx) => {
                     const dayStr = formatDate(day);
                     const isToday = todayStr === dayStr;
+
+                    // Check if any employee is unavailable at this hour on this day
+                    const dayOfWeek = dayIdx; // 0=Lun matches our dayOfWeek convention
+                    const hasUnavailable = availabilities.some(a =>
+                      !a.available && a.dayOfWeek === dayOfWeek &&
+                      timeToMinutes(a.startTime) <= hour * 60 && timeToMinutes(a.endTime) > hour * 60
+                    );
 
                     // Find shifts that span this hour
                     const hourShifts = shifts.filter(s => {
@@ -1112,6 +1419,8 @@ export default function Planning() {
                         className={`border-b border-r border-[#E5E7EB] dark:border-[#1A1A1A] last:border-r-0 relative min-h-[32px] transition-colors cursor-crosshair ${
                           isToday ? 'bg-indigo-50/50 dark:bg-indigo-950/10' : ''
                         } ${isDragHighlight ? 'bg-indigo-100 dark:bg-indigo-900/30' : ''} ${
+                          hasUnavailable && !isDragHighlight ? 'bg-[#F0F0F0] dark:bg-[#1A1A1A]' : ''
+                        } ${
                           dragEmployee ? 'hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A]' : ''
                         }`}
                         onDragOver={handleDragOver}
@@ -1321,6 +1630,9 @@ export default function Planning() {
                     </td>
                     <td className="px-4 py-3 text-center no-print">
                       <div className="flex items-center justify-center gap-1">
+                        <button onClick={() => openAvailabilityManager(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition" title="Disponibilites">
+                          <Clock className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
+                        </button>
                         <button onClick={() => openEditEmployee(emp)} className="p-1.5 rounded hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition">
                           <Edit className="w-3.5 h-3.5 text-[#9CA3AF] dark:text-[#737373]" />
                         </button>
@@ -1655,6 +1967,380 @@ export default function Planning() {
           )}
           <div className="flex justify-end pt-2">
             <button onClick={() => setShowConflictsModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+              Fermer
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Overtime Alerts Modal (French Labor Law) ──────────────────── */}
+      <Modal
+        isOpen={showOvertimeModal}
+        onClose={() => setShowOvertimeModal(false)}
+        title="Alertes heures supplementaires - Droit du travail"
+      >
+        <div className="space-y-4">
+          <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/30">
+            <div className="flex items-center gap-2 mb-1">
+              <Shield className="w-4 h-4 text-amber-500" />
+              <span className="font-semibold text-[#111111] dark:text-white text-sm">Code du travail francais</span>
+            </div>
+            <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] space-y-0.5 pl-6">
+              <div>Duree legale : {LEGAL_WEEKLY_HOURS}h/semaine</div>
+              <div>Maximum absolu : {LEGAL_MAX_WEEKLY_HOURS}h/semaine</div>
+              <div>Maximum journalier : {LEGAL_MAX_DAILY_HOURS}h/jour</div>
+              <div>Heures sup 36h-43h : +25% | 44h+ : +50%</div>
+            </div>
+          </div>
+
+          {overtimeDetails.map(detail => (
+            <div key={detail.emp.id} className={`p-4 rounded-xl border ${
+              detail.isOver48 ? 'bg-red-50 dark:bg-red-950/20 border-red-300 dark:border-red-800/30'
+              : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/30'
+            }`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: detail.emp.color || '#6366f1' }} />
+                <span className="font-semibold text-[#111111] dark:text-white">{detail.emp.name}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
+                  detail.isOver48 ? 'bg-red-500/20 text-red-500' : 'bg-amber-500/20 text-amber-500'
+                }`}>
+                  {detail.hours.toFixed(1)}h / {LEGAL_WEEKLY_HOURS}h
+                </span>
+              </div>
+              <div className="text-xs space-y-1 pl-5 text-[#6B7280] dark:text-[#A3A3A3]">
+                {detail.isOver48 && (
+                  <div className="text-red-500 font-bold flex items-center gap-1">
+                    <Ban className="w-3 h-3" /> ILLEGAL : depasse {LEGAL_MAX_WEEKLY_HOURS}h hebdomadaires
+                  </div>
+                )}
+                {detail.overtime > 0 && (
+                  <>
+                    <div>Heures supplementaires : {detail.overtime.toFixed(1)}h</div>
+                    {detail.overtimeAt25 > 0 && <div>- {detail.overtimeAt25.toFixed(1)}h a 125% = {(detail.overtimeAt25 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_1).toFixed(0)} EUR</div>}
+                    {detail.overtimeAt50 > 0 && <div>- {detail.overtimeAt50.toFixed(1)}h a 150% = {(detail.overtimeAt50 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_2).toFixed(0)} EUR</div>}
+                    <div className="font-semibold text-[#111111] dark:text-white">Surcout heures sup : {detail.overtimeCost.toFixed(0)} EUR</div>
+                  </>
+                )}
+                {detail.dailyAlerts.length > 0 && (
+                  <div className="mt-1">
+                    <div className="text-red-500 font-bold">Depassement journalier :</div>
+                    {detail.dailyAlerts.map((alert, i) => (
+                      <div key={i} className="text-red-400">{alert}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {overtimeDetails.length === 0 && (
+            <div className="text-center py-6">
+              <Check className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+              <p className="text-[#6B7280] dark:text-[#A3A3A3]">Aucun depassement horaire cette semaine.</p>
+            </div>
+          )}
+
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setShowOvertimeModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+              Fermer
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Shift Templates Modal ─────────────────────────────────────── */}
+      <Modal
+        isOpen={showTemplateModal}
+        onClose={() => setShowTemplateModal(false)}
+        title="Templates de planning"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Appliquez un template pour remplir rapidement une journee.
+          </p>
+          {shiftTemplates.map(tmpl => (
+            <div key={tmpl.id} className="p-4 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] transition">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <div className="font-semibold text-[#111111] dark:text-white text-sm flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    {tmpl.name}
+                  </div>
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{tmpl.description}</div>
+                </div>
+                <button
+                  onClick={() => {
+                    setSelectedTemplate(tmpl);
+                    setTemplateApplyDate('');
+                    setShowTemplateApplyModal(true);
+                  }}
+                  className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-xs font-medium flex items-center gap-1"
+                >
+                  <Play className="w-3 h-3" /> Appliquer
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {tmpl.assignments.map((a, i) => {
+                  const pc = POSTE_COLORS[a.type] || POSTE_COLORS.cuisine;
+                  return (
+                    <span key={i} className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${pc.bg} ${pc.text} border ${pc.border}`}>
+                      {a.count}x {ROLE_LABELS[a.role] || a.role} ({a.startTime}-{a.endTime})
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setShowTemplateModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+              Fermer
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Template Apply Modal (date picker) ────────────────────────── */}
+      <Modal
+        isOpen={showTemplateApplyModal}
+        onClose={() => { setShowTemplateApplyModal(false); setSelectedTemplate(null); }}
+        title={`Appliquer : ${selectedTemplate?.name || ''}`}
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Choisissez la date a laquelle appliquer ce template. Les creneaux seront automatiquement attribues aux employes disponibles.
+          </p>
+          {selectedTemplate && (
+            <div className="p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Creneaux prevus :</div>
+              {selectedTemplate.assignments.map((a, i) => (
+                <div key={i} className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
+                  {a.count}x {ROLE_LABELS[a.role] || a.role} -- {a.startTime} a {a.endTime} ({a.type})
+                </div>
+              ))}
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Date</label>
+            <input
+              type="date"
+              value={templateApplyDate}
+              onChange={e => setTemplateApplyDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+            />
+          </div>
+          {/* Quick day buttons */}
+          <div className="flex flex-wrap gap-1.5">
+            {weekDays.map((day, i) => {
+              const dayStr = formatDate(day);
+              return (
+                <button
+                  key={i}
+                  onClick={() => setTemplateApplyDate(dayStr)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${
+                    templateApplyDate === dayStr
+                      ? 'bg-indigo-600 text-white border-indigo-600'
+                      : 'bg-[#FAFAFA] dark:bg-[#0A0A0A] border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3] hover:border-[#D1D5DB] dark:hover:border-[#333]'
+                  }`}
+                >
+                  {JOURS[i]} {day.getDate()}/{(day.getMonth() + 1).toString().padStart(2, '0')}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <button onClick={() => { setShowTemplateApplyModal(false); setSelectedTemplate(null); }} className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg transition">
+              Annuler
+            </button>
+            <button
+              onClick={() => selectedTemplate && applyTemplate(selectedTemplate, templateApplyDate)}
+              disabled={!templateApplyDate}
+              className="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition disabled:opacity-50"
+            >
+              <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> Appliquer</span>
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Availability Management Modal ─────────────────────────────── */}
+      <Modal
+        isOpen={showAvailabilityModal}
+        onClose={() => setShowAvailabilityModal(false)}
+        title={`Disponibilites : ${availabilityEmployee?.name || ''}`}
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Definissez les creneaux ou l'employe n'est pas disponible. Les zones grises apparaitront sur le planning.
+          </p>
+
+          {/* Current unavailabilities */}
+          {availabilityEmployee && (
+            <div className="space-y-2">
+              <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Indisponibilites actuelles</h4>
+              {availabilities.filter(a => a.employeeId === availabilityEmployee.id && !a.available).length === 0 && (
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl border border-dashed border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  Aucune indisponibilite definie.
+                </p>
+              )}
+              {availabilities.filter(a => a.employeeId === availabilityEmployee.id && !a.available).map(avail => (
+                <div key={avail.id} className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center gap-2">
+                    <Ban className="w-3.5 h-3.5 text-red-400" />
+                    <span className="text-sm text-[#111111] dark:text-white font-medium">{JOURS_FULL[avail.dayOfWeek]}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{avail.startTime} - {avail.endTime}</span>
+                  </div>
+                  <button onClick={() => removeAvailability(avail.id)} className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/20 transition">
+                    <X className="w-3.5 h-3.5 text-red-400" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add new unavailability */}
+          <div className="p-3 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] space-y-3">
+            <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Ajouter une indisponibilite</h4>
+            <div>
+              <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">Jour</label>
+              <select
+                value={availForm.dayOfWeek}
+                onChange={e => setAvailForm(f => ({ ...f, dayOfWeek: parseInt(e.target.value) }))}
+                className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm"
+              >
+                {JOURS_FULL.map((j, i) => (
+                  <option key={i} value={i}>{j}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">De</label>
+                <input
+                  type="time"
+                  value={availForm.startTime}
+                  onChange={e => setAvailForm(f => ({ ...f, startTime: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3] mb-1">A</label>
+                <input
+                  type="time"
+                  value={availForm.endTime}
+                  onChange={e => setAvailForm(f => ({ ...f, endTime: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-sm"
+                />
+              </div>
+            </div>
+            <button
+              onClick={addAvailability}
+              className="w-full py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition text-sm font-medium flex items-center justify-center gap-1"
+            >
+              <Ban className="w-3.5 h-3.5" /> Marquer comme indisponible
+            </button>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setShowAvailabilityModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
+              Fermer
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── WhatsApp / Send Planning Modal ────────────────────────────── */}
+      <Modal
+        isOpen={showWhatsappModal}
+        onClose={() => setShowWhatsappModal(false)}
+        title="Envoyer le planning"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Copiez le message ci-dessous et envoyez-le via WhatsApp, SMS ou autre messagerie.
+          </p>
+
+          <div className="relative">
+            <textarea
+              readOnly
+              value={whatsappMessage}
+              rows={12}
+              className="w-full px-3 py-2 rounded-lg bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#111111] dark:text-white text-xs font-mono resize-none"
+            />
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(whatsappMessage);
+                showToast('Message copie dans le presse-papier !', 'success');
+              }}
+              className="flex-1 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition text-sm font-medium flex items-center justify-center gap-2"
+            >
+              <Copy className="w-4 h-4" /> Copier le message
+            </button>
+            <button
+              onClick={() => {
+                const encoded = encodeURIComponent(whatsappMessage);
+                window.open(`https://wa.me/?text=${encoded}`, '_blank');
+              }}
+              className="flex-1 py-2.5 bg-[#25D366] text-white rounded-xl hover:bg-[#20BD5A] transition text-sm font-medium flex items-center justify-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" /> Ouvrir WhatsApp
+            </button>
+          </div>
+
+          {/* Per-employee send links */}
+          <div className="space-y-2">
+            <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Envoyer par employe</h4>
+            {employees.map(emp => {
+              const empShifts = weekShifts.filter(s => s.employeeId === emp.id);
+              if (empShifts.length === 0) return null;
+              const empMsg = [`${emp.name}, voici ton planning :`];
+              weekDayStrings.forEach((dayStr, i) => {
+                const dayShifts = empShifts.filter(s => s.date === dayStr);
+                if (dayShifts.length > 0) {
+                  empMsg.push(`${JOURS_FULL[i]}: ${dayShifts.map(s => `${s.startTime}-${s.endTime}`).join(', ')}`);
+                }
+              });
+              const hours = employeeWeeklyHours.get(emp.id) || 0;
+              empMsg.push(`Total: ${hours.toFixed(0)}h`);
+              const msg = empMsg.join('\n');
+              return (
+                <div key={emp.id} className="flex items-center justify-between p-2.5 rounded-xl bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: emp.color || '#6366f1' }} />
+                    <span className="text-sm font-medium text-[#111111] dark:text-white">{emp.name}</span>
+                    <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{hours.toFixed(0)}h</span>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(msg);
+                        showToast(`Planning de ${emp.name} copie !`, 'success');
+                      }}
+                      className="p-1.5 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition"
+                      title="Copier"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#A3A3A3]" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        const encoded = encodeURIComponent(msg);
+                        window.open(`https://wa.me/?text=${encoded}`, '_blank');
+                      }}
+                      className="p-1.5 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 transition"
+                      title="WhatsApp"
+                    >
+                      <Send className="w-3.5 h-3.5 text-[#25D366]" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button onClick={() => setShowWhatsappModal(false)} className="px-4 py-2 text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black rounded-xl hover:opacity-90 transition">
               Fermer
             </button>
           </div>

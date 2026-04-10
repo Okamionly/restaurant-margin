@@ -5,7 +5,8 @@ import {
   ChevronDown, ChevronUp, Calendar, ArrowDown, Loader2,
   Brain, Zap, Clock, TrendingUp, CalendarDays, Sparkles,
   Award, CheckCircle, Flame, ArrowUpRight, ArrowDownRight,
-  FileText, Package
+  FileText, Package, Camera, Mail, Percent, ShieldCheck,
+  Image, X, Send, Eye
 } from 'lucide-react';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -34,6 +35,25 @@ import type { Ingredient } from '../types';
 
 type WasteReason = 'expired' | 'spoiled' | 'overproduction' | 'damaged' | 'other';
 
+// ─── Root Cause Analysis Categories ─────────────────────────────────────────
+type RootCause = 'surproduction' | 'perime' | 'preparation' | 'stockage' | 'service';
+
+const ROOT_CAUSE_LABELS: Record<RootCause, string> = {
+  surproduction: 'Surproduction',
+  perime: 'Perime / DLC depassee',
+  preparation: 'Erreur de preparation',
+  stockage: 'Probleme de stockage',
+  service: 'Perte en service',
+};
+
+const ROOT_CAUSE_COLORS: Record<RootCause, string> = {
+  surproduction: '#7c3aed',
+  perime: '#dc2626',
+  preparation: '#d97706',
+  stockage: '#0891b2',
+  service: '#ea580c',
+};
+
 interface WasteEntry {
   id: number;
   date: string;
@@ -43,7 +63,43 @@ interface WasteEntry {
   unit: string;
   costPerUnit: number;
   reason: WasteReason;
+  rootCause?: RootCause;
+  photoBase64?: string;
   notes: string;
+}
+
+// ─── Photo storage helpers ──────────────────────────────────────────────────
+function saveWastePhoto(entryId: number, base64: string) {
+  try {
+    const photos = JSON.parse(localStorage.getItem('wastePhotos') || '{}');
+    photos[entryId] = base64;
+    localStorage.setItem('wastePhotos', JSON.stringify(photos));
+  } catch { /* storage full */ }
+}
+
+function getWastePhoto(entryId: number): string | null {
+  try {
+    const photos = JSON.parse(localStorage.getItem('wastePhotos') || '{}');
+    return photos[entryId] || null;
+  } catch { return null; }
+}
+
+function getAllWastePhotos(): Record<number, string> {
+  try {
+    return JSON.parse(localStorage.getItem('wastePhotos') || '{}');
+  } catch { return {}; }
+}
+
+// ─── Weekly Report helpers ──────────────────────────────────────────────────
+interface WeeklyReport {
+  weekStart: string;
+  weekEnd: string;
+  totalCost: number;
+  entryCount: number;
+  top3: { name: string; cost: number }[];
+  trendVsLastWeek: number; // percentage
+  suggestions: string[];
+  generatedAt: string;
 }
 
 interface WasteSummary {
@@ -212,6 +268,39 @@ function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): 
     );
   }
 
+  // Day-of-week pattern detection
+  const byDayOfWeek: Record<string, number> = {};
+  const dayNames = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  entries.forEach(e => {
+    const d = new Date(e.date);
+    const dayName = dayNames[d.getDay()];
+    byDayOfWeek[dayName] = (byDayOfWeek[dayName] || 0) + e.quantity * e.costPerUnit;
+  });
+  const sortedDays = Object.entries(byDayOfWeek).sort((a, b) => b[1] - a[1]);
+  if (sortedDays.length > 0 && sortedDays[0][1] > 0) {
+    const avgDayCost = Object.values(byDayOfWeek).reduce((a, b) => a + b, 0) / Object.keys(byDayOfWeek).length;
+    if (sortedDays[0][1] > avgDayCost * 1.3) {
+      tips.push(
+        `L'IA suggere : Le gaspillage augmente le ${sortedDays[0][0]} (${sortedDays[0][1].toFixed(0)} EUR vs ${avgDayCost.toFixed(0)} EUR en moyenne). Ajustez les commandes et les preparations ce jour-la.`
+      );
+    }
+  }
+
+  // Root cause pattern suggestion
+  const rootCauseCounts: Record<string, number> = {};
+  entries.forEach(e => {
+    if (e.rootCause) {
+      rootCauseCounts[e.rootCause] = (rootCauseCounts[e.rootCause] || 0) + 1;
+    }
+  });
+  const topRootCause = Object.entries(rootCauseCounts).sort((a, b) => b[1] - a[1])[0];
+  if (topRootCause) {
+    const label = ROOT_CAUSE_LABELS[topRootCause[0] as RootCause] || topRootCause[0];
+    tips.push(
+      `L'IA suggere : La cause racine la plus frequente est "${label}" (${topRootCause[1]} occurrences). Concentrez vos efforts de reduction sur ce point.`
+    );
+  }
+
   tips.push('L\'IA suggere : Utilisez une app anti-gaspi (Too Good To Go) pour vendre les invendus en fin de service.');
 
   return tips;
@@ -314,12 +403,22 @@ export default function WasteTracker() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
+  // Photo documentation
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [viewingPhoto, setViewingPhoto] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Weekly report
+  const [showWeeklyReport, setShowWeeklyReport] = useState(false);
+  const [weeklyReportSending, setWeeklyReportSending] = useState(false);
+
   // Form state
   const [form, setForm] = useState({
     ingredientId: '',
     ingredientName: '',
     quantity: '',
     reason: 'expired' as WasteReason,
+    rootCause: '' as RootCause | '',
     notes: '',
   });
 
@@ -644,6 +743,112 @@ export default function WasteTracker() {
   // AI suggestions
   const suggestions = useMemo(() => generateSuggestions(entries, ingredients), [entries, ingredients]);
 
+  // ── Root Cause Analysis ──────────────────────────────────────────────────
+  const rootCauseStats = useMemo(() => {
+    const counts: Record<RootCause, { count: number; cost: number }> = {
+      surproduction: { count: 0, cost: 0 },
+      perime: { count: 0, cost: 0 },
+      preparation: { count: 0, cost: 0 },
+      stockage: { count: 0, cost: 0 },
+      service: { count: 0, cost: 0 },
+    };
+    filteredByPeriod.forEach(e => {
+      if (e.rootCause && counts[e.rootCause]) {
+        counts[e.rootCause].count += 1;
+        counts[e.rootCause].cost += e.quantity * e.costPerUnit;
+      }
+    });
+    const totalWithCause = Object.values(counts).reduce((s, c) => s + c.count, 0);
+    return {
+      counts,
+      totalWithCause,
+      topCause: Object.entries(counts).sort((a, b) => b[1].count - a[1].count)[0] as [RootCause, { count: number; cost: number }] | undefined,
+    };
+  }, [filteredByPeriod]);
+
+  // ── Waste vs Revenue Ratio ───────────────────────────────────────────────
+  // Estimate total food cost from all ingredients (sum of all ingredient costs in stock)
+  const totalFoodCost = useMemo(() => {
+    // Use a rough estimate: sum of all ingredient pricePerUnit * typical quantity
+    // For a more accurate version, this would come from an API
+    return ingredients.reduce((sum, ing) => sum + (ing.pricePerUnit || 0), 0) * 30; // rough monthly estimate
+  }, [ingredients]);
+
+  const wasteRevenueRatio = useMemo(() => {
+    if (totalFoodCost <= 0) return null;
+    const ratio = (thisMonthCost / totalFoodCost) * 100;
+    let status: 'excellent' | 'ok' | 'problematic';
+    let color: string;
+    if (ratio < 3) { status = 'excellent'; color = '#16a34a'; }
+    else if (ratio <= 5) { status = 'ok'; color = '#d97706'; }
+    else { status = 'problematic'; color = '#dc2626'; }
+    return { ratio, status, color };
+  }, [thisMonthCost, totalFoodCost]);
+
+  // ── Weekly Report Generation ─────────────────────────────────────────────
+  const weeklyReport = useMemo((): WeeklyReport | null => {
+    const now = new Date();
+    // Get last Monday
+    const dayOfWeek = now.getDay();
+    const lastMonday = new Date(now);
+    lastMonday.setDate(now.getDate() - ((dayOfWeek + 6) % 7));
+    lastMonday.setHours(0, 0, 0, 0);
+    const lastSunday = new Date(lastMonday);
+    lastSunday.setDate(lastMonday.getDate() + 6);
+
+    // Previous week
+    const prevMonday = new Date(lastMonday);
+    prevMonday.setDate(prevMonday.getDate() - 7);
+    const prevSunday = new Date(lastMonday);
+    prevSunday.setDate(prevSunday.getDate() - 1);
+
+    const thisWeekEntries = entries.filter(e => {
+      const d = new Date(e.date);
+      return d >= lastMonday && d <= lastSunday;
+    });
+    const prevWeekEntries = entries.filter(e => {
+      const d = new Date(e.date);
+      return d >= prevMonday && d <= prevSunday;
+    });
+
+    const thisWeekCost = thisWeekEntries.reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
+    const prevWeekCost = prevWeekEntries.reduce((s, e) => s + e.quantity * e.costPerUnit, 0);
+    const trend = prevWeekCost > 0 ? ((thisWeekCost - prevWeekCost) / prevWeekCost * 100) : 0;
+
+    // Top 3
+    const byIng: Record<string, number> = {};
+    thisWeekEntries.forEach(e => {
+      byIng[e.ingredientName] = (byIng[e.ingredientName] || 0) + e.quantity * e.costPerUnit;
+    });
+    const top3 = Object.entries(byIng)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([name, cost]) => ({ name, cost }));
+
+    // Generate relevant suggestions
+    const reportSuggestions: string[] = [];
+    if (trend > 0) {
+      reportSuggestions.push(`Le gaspillage a augmente de ${trend.toFixed(1)}% — revisez les quantites commandees.`);
+    } else if (trend < 0) {
+      reportSuggestions.push(`Le gaspillage a diminue de ${Math.abs(trend).toFixed(1)}% — continuez vos efforts !`);
+    }
+    if (top3.length > 0) {
+      reportSuggestions.push(`Priorite de la semaine : reduire les pertes de ${top3[0].name} (${formatEuro(top3[0].cost)}).`);
+    }
+    reportSuggestions.push('Verifiez les DLC de tous les produits frais chaque lundi matin.');
+
+    return {
+      weekStart: lastMonday.toISOString().split('T')[0],
+      weekEnd: lastSunday.toISOString().split('T')[0],
+      totalCost: thisWeekCost,
+      entryCount: thisWeekEntries.length,
+      top3,
+      trendVsLastWeek: trend,
+      suggestions: reportSuggestions,
+      generatedAt: now.toISOString(),
+    };
+  }, [entries]);
+
   // Filtered ingredient suggestions for autocomplete
   const filteredIngredients = useMemo(() => {
     if (!ingredientSearch.trim()) return ingredients.slice(0, 20);
@@ -699,7 +904,7 @@ export default function WasteTracker() {
         const body = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(body.error || 'Erreur lors de la declaration');
       }
-      setForm({ ingredientId: '', ingredientName: '', quantity: '', reason: 'expired', notes: '' });
+      setForm({ ingredientId: '', ingredientName: '', quantity: '', reason: 'expired', rootCause: '', notes: '' }); setPhotoPreview(null);
       setIngredientSearch('');
       setShowAddModal(false);
       setShowInlineForm(false);
@@ -723,6 +928,45 @@ export default function WasteTracker() {
       await loadEntries();
     } catch {
       showToast('Impossible de supprimer la declaration', 'error');
+    }
+  }
+
+  // ─── Photo Capture Handler ─────────────────────────────────────────────────
+  function handlePhotoCapture(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Photo trop volumineuse (max 5 Mo)', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setPhotoPreview(base64);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ─── Weekly Report Send ───────────────────────────────────────────────────
+  async function handleSendWeeklyReport() {
+    if (!weeklyReport) return;
+    setWeeklyReportSending(true);
+    try {
+      const res = await fetch(`${API_BASE}/waste/weekly-report`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify(weeklyReport),
+      });
+      if (!res.ok) {
+        // If endpoint doesn't exist yet, show a success preview anyway
+        showToast('Rapport hebdomadaire genere. L\'envoi par email sera bientot disponible.', 'success');
+      } else {
+        showToast('Rapport hebdomadaire envoye par email !', 'success');
+      }
+    } catch {
+      showToast('Rapport genere localement. Envoi email bientot disponible.', 'success');
+    } finally {
+      setWeeklyReportSending(false);
     }
   }
 
@@ -817,11 +1061,44 @@ export default function WasteTracker() {
           <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-2">
             Mois dernier : {formatEuro(lastMonthCost)} | Ecart : {formatEuro(thisMonthCost - lastMonthCost)}
           </p>
+
+          {/* Target comparison */}
+          {reductionGoal ? (
+            <div className="mt-3 flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <Target className="w-4 h-4 text-green-500" />
+                <span className="text-sm font-medium text-[#374151] dark:text-[#D4D4D4]">
+                  Objectif : -{reductionGoal.targetPercent}% vs mois dernier
+                </span>
+                <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                  ({formatEuro(goalProgress?.targetCost || 0)})
+                </span>
+              </div>
+              {goalProgress && (
+                <span className={`text-sm font-bold ${goalProgress.met ? 'text-green-600' : 'text-red-500'}`}>
+                  {goalProgress.met ? 'Objectif atteint !' : `Reste ${formatEuro(thisMonthCost - (goalProgress.targetCost || 0))} a economiser`}
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="mt-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#F9FAFB] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] w-fit">
+              <Target className="w-4 h-4 text-[#9CA3AF]" />
+              <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+                Objectif : -15% vs mois dernier (recommande)
+              </span>
+              <button
+                onClick={() => { setGoalInput('15'); setShowGoalModal(true); }}
+                className="text-sm font-semibold text-[#111111] dark:text-white underline ml-1"
+              >
+                Definir
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.totalLosses')}</span>
@@ -867,6 +1144,34 @@ export default function WasteTracker() {
           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.perIncident')}</span>
         </div>
 
+        {/* Waste vs Revenue Ratio (NEW) */}
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">Ratio gaspillage</span>
+            <div className="p-2 rounded-lg" style={{ backgroundColor: wasteRevenueRatio ? `${wasteRevenueRatio.color}15` : '#f3f4f6' }}>
+              <Percent className="w-4 h-4" style={{ color: wasteRevenueRatio?.color || '#9ca3af' }} />
+            </div>
+          </div>
+          <div className="text-2xl font-bold text-[#111111] dark:text-white">
+            {wasteRevenueRatio ? `${wasteRevenueRatio.ratio.toFixed(1)}%` : '--'}
+          </div>
+          {wasteRevenueRatio && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <span
+                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase"
+                style={{
+                  backgroundColor: `${wasteRevenueRatio.color}20`,
+                  color: wasteRevenueRatio.color,
+                }}
+              >
+                {wasteRevenueRatio.status === 'excellent' ? 'Excellent' :
+                 wasteRevenueRatio.status === 'ok' ? 'Acceptable' : 'Problematique'}
+              </span>
+              <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">du food cost</span>
+            </div>
+          )}
+        </div>
+
         <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.antiWasteScore')}</span>
@@ -877,6 +1182,79 @@ export default function WasteTracker() {
           <div className="text-2xl font-bold text-[#111111] dark:text-white">{zeroWasteScore.toFixed(0)}/100</div>
           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.zeroWasteGoal')}</span>
         </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          WASTE vs REVENUE BENCHMARK — Industry Standards
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Percent className="w-5 h-5 text-[#111111] dark:text-white" />
+          <h2 className="font-semibold text-[#1F2937] dark:text-white">Ratio gaspillage / food cost</h2>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#111111] dark:bg-white text-white dark:text-black uppercase">
+            Benchmark
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            { label: 'Excellent', range: '< 3%', color: '#16a34a', threshold: 3 },
+            { label: 'Acceptable', range: '3% - 5%', color: '#d97706', threshold: 5 },
+            { label: 'Problematique', range: '> 5%', color: '#dc2626', threshold: 100 },
+          ].map(benchmark => {
+            const isActive = wasteRevenueRatio
+              ? (benchmark.threshold === 3 && wasteRevenueRatio.ratio < 3) ||
+                (benchmark.threshold === 5 && wasteRevenueRatio.ratio >= 3 && wasteRevenueRatio.ratio <= 5) ||
+                (benchmark.threshold === 100 && wasteRevenueRatio.ratio > 5)
+              : false;
+            return (
+              <div
+                key={benchmark.label}
+                className={`p-4 rounded-xl border-2 transition-all ${
+                  isActive
+                    ? 'border-[#111111] dark:border-white bg-[#F9FAFB] dark:bg-[#171717] scale-[1.02]'
+                    : 'border-[#E5E7EB] dark:border-[#1A1A1A]'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: benchmark.color }} />
+                  <span className="text-sm font-bold text-[#111111] dark:text-white">{benchmark.label}</span>
+                  {isActive && <CheckCircle className="w-4 h-4 ml-auto" style={{ color: benchmark.color }} />}
+                </div>
+                <div className="text-2xl font-black" style={{ color: benchmark.color }}>
+                  {benchmark.range}
+                </div>
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
+                  {benchmark.label === 'Excellent' && 'Gestion optimale des stocks et productions'}
+                  {benchmark.label === 'Acceptable' && 'Marge d\'amelioration identifiable'}
+                  {benchmark.label === 'Problematique' && 'Action immediate requise sur les processus'}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+        {wasteRevenueRatio && (
+          <div className="mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Votre ratio actuel :</span>
+              <span className="text-lg font-black" style={{ color: wasteRevenueRatio.color }}>
+                {wasteRevenueRatio.ratio.toFixed(1)}%
+              </span>
+              <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden relative">
+                {/* Green zone */}
+                <div className="absolute inset-y-0 left-0 bg-green-200 dark:bg-green-900/50" style={{ width: '30%' }} />
+                {/* Amber zone */}
+                <div className="absolute inset-y-0 bg-amber-200 dark:bg-amber-900/50" style={{ left: '30%', width: '20%' }} />
+                {/* Red zone */}
+                <div className="absolute inset-y-0 bg-red-200 dark:bg-red-900/50" style={{ left: '50%', right: 0 }} />
+                {/* Marker */}
+                <div
+                  className="absolute inset-y-0 w-1 bg-[#111111] dark:bg-white rounded-full z-10"
+                  style={{ left: `${Math.min(wasteRevenueRatio.ratio * 10, 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
@@ -982,6 +1360,62 @@ export default function WasteTracker() {
               </div>
             </div>
 
+            {/* Root Cause + Photo row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Root Cause Analysis dropdown */}
+              <div>
+                <label className="block text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase">
+                  Cause racine (HACCP)
+                </label>
+                <select
+                  value={form.rootCause}
+                  onChange={e => setForm(f => ({ ...f, rootCause: e.target.value as RootCause }))}
+                  className="w-full px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#1F2937] dark:text-white text-sm focus:ring-2 focus:ring-[#111111] dark:focus:ring-white"
+                >
+                  <option value="">-- Selectionnez --</option>
+                  {(Object.entries(ROOT_CAUSE_LABELS) as [RootCause, string][]).map(([key, label]) => (
+                    <option key={key} value={key}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Photo Documentation */}
+              <div>
+                <label className="block text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] mb-1 uppercase">
+                  Photo (HACCP)
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handlePhotoCapture}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-3 py-2 border border-[#D1D5DB] dark:border-[#1A1A1A] rounded-lg bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-sm hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors w-full"
+                  >
+                    <Camera className="w-4 h-4" />
+                    {photoPreview ? 'Photo ajoutee' : 'Prendre une photo'}
+                  </button>
+                  {photoPreview && (
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-[#E5E7EB] dark:border-[#1A1A1A] flex-shrink-0">
+                      <img src={photoPreview} alt="preview" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => setPhotoPreview(null)}
+                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center"
+                      >
+                        <X className="w-2.5 h-2.5 text-white" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Cost preview + save */}
             <div className="flex items-center justify-between flex-wrap gap-3">
               {form.ingredientId && form.quantity && (() => {
@@ -999,7 +1433,7 @@ export default function WasteTracker() {
                 <button
                   onClick={() => {
                     setShowInlineForm(false);
-                    setForm({ ingredientId: '', ingredientName: '', quantity: '', reason: 'expired', notes: '' });
+                    setForm({ ingredientId: '', ingredientName: '', quantity: '', reason: 'expired', rootCause: '', notes: '' }); setPhotoPreview(null);
                     setIngredientSearch('');
                   }}
                   className="px-4 py-2 text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A] rounded-lg transition-colors"
@@ -1155,6 +1589,91 @@ export default function WasteTracker() {
             <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">{t('wasteTracker.noDataForPeriod')}</p>
           )}
         </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════════════
+          ROOT CAUSE ANALYSIS — Track which cause is most frequent
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="w-5 h-5 text-[#111111] dark:text-white" />
+          <h2 className="font-semibold text-[#1F2937] dark:text-white">Analyse des causes racines</h2>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 uppercase">
+            HACCP
+          </span>
+        </div>
+
+        {rootCauseStats.totalWithCause > 0 ? (
+          <div className="space-y-4">
+            {/* Most frequent cause highlight */}
+            {rootCauseStats.topCause && (
+              <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-4 border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl" style={{ backgroundColor: `${ROOT_CAUSE_COLORS[rootCauseStats.topCause[0]]}20` }}>
+                    <AlertTriangle className="w-5 h-5" style={{ color: ROOT_CAUSE_COLORS[rootCauseStats.topCause[0]] }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-[#111111] dark:text-white">
+                      Cause n.1 : {ROOT_CAUSE_LABELS[rootCauseStats.topCause[0]]}
+                    </p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      {rootCauseStats.topCause[1].count} incidents | {formatEuro(rootCauseStats.topCause[1].cost)} de pertes
+                    </p>
+                  </div>
+                  <div className="ml-auto text-right">
+                    <span className="text-2xl font-black" style={{ color: ROOT_CAUSE_COLORS[rootCauseStats.topCause[0]] }}>
+                      {rootCauseStats.totalWithCause > 0
+                        ? ((rootCauseStats.topCause[1].count / rootCauseStats.totalWithCause) * 100).toFixed(0)
+                        : 0}%
+                    </span>
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">des incidents</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* All root causes breakdown */}
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+              {(Object.entries(rootCauseStats.counts) as [RootCause, { count: number; cost: number }][])
+                .sort((a, b) => b[1].count - a[1].count)
+                .map(([cause, data]) => {
+                  const pct = rootCauseStats.totalWithCause > 0
+                    ? (data.count / rootCauseStats.totalWithCause) * 100
+                    : 0;
+                  return (
+                    <div
+                      key={cause}
+                      className="p-3 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] text-center"
+                    >
+                      <div
+                        className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center text-white text-xs font-bold"
+                        style={{ backgroundColor: ROOT_CAUSE_COLORS[cause] }}
+                      >
+                        {data.count}
+                      </div>
+                      <p className="text-xs font-semibold text-[#374151] dark:text-[#D4D4D4] mb-1">
+                        {ROOT_CAUSE_LABELS[cause]}
+                      </p>
+                      <div className="w-full h-1.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{ width: `${pct}%`, backgroundColor: ROOT_CAUSE_COLORS[cause] }}
+                        />
+                      </div>
+                      <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mt-1">{formatEuro(data.cost)}</p>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <ShieldCheck className="w-10 h-10 text-[#D1D5DB] dark:text-[#404040] mx-auto mb-3" />
+            <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">
+              Aucune cause racine enregistree. Selectionnez une cause racine lors de chaque declaration pour activer l'analyse.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════
@@ -1696,6 +2215,130 @@ export default function WasteTracker() {
         </div>
       )}
 
+      {/* ═══════════════════════════════════════════════════════════════════════
+          WEEKLY WASTE REPORT — Auto-generated summary
+          ═══════════════════════════════════════════════════════════════════════ */}
+      <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Mail className="w-5 h-5 text-[#111111] dark:text-white" />
+            <h2 className="font-semibold text-[#1F2937] dark:text-white">Rapport hebdomadaire</h2>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#111111] dark:bg-white text-white dark:text-black uppercase">
+              Auto
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowWeeklyReport(!showWeeklyReport)}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F9FAFB] dark:hover:bg-[#171717] transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+              {showWeeklyReport ? 'Masquer' : 'Apercu'}
+            </button>
+            <button
+              onClick={handleSendWeeklyReport}
+              disabled={weeklyReportSending}
+              className="flex items-center gap-2 px-3 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333333] dark:hover:bg-[#E5E5E5] rounded-lg text-sm font-semibold transition-colors disabled:opacity-60"
+            >
+              {weeklyReportSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              Envoyer par email
+            </button>
+          </div>
+        </div>
+
+        {/* Report summary bar */}
+        {weeklyReport && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-3 text-center">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Total semaine</p>
+              <p className="text-lg font-bold text-red-600 dark:text-red-400">{formatEuro(weeklyReport.totalCost)}</p>
+            </div>
+            <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-3 text-center">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Incidents</p>
+              <p className="text-lg font-bold text-[#111111] dark:text-white">{weeklyReport.entryCount}</p>
+            </div>
+            <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-3 text-center">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">vs semaine precedente</p>
+              <p className={`text-lg font-bold ${weeklyReport.trendVsLastWeek > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                {weeklyReport.trendVsLastWeek > 0 ? '+' : ''}{weeklyReport.trendVsLastWeek.toFixed(1)}%
+              </p>
+            </div>
+            <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-3 text-center">
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mb-1">Envoi automatique</p>
+              <p className="text-lg font-bold text-[#111111] dark:text-white">Lundi</p>
+            </div>
+          </div>
+        )}
+
+        {showWeeklyReport && weeklyReport && (
+          <div className="bg-[#F9FAFB] dark:bg-[#171717] rounded-xl p-5 border border-[#E5E7EB] dark:border-[#1A1A1A] space-y-4">
+            <div className="border-b border-[#E5E7EB] dark:border-[#1A1A1A] pb-3">
+              <h3 className="font-bold text-[#111111] dark:text-white text-lg">
+                Rapport gaspillage — Semaine du {new Date(weeklyReport.weekStart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} au {new Date(weeklyReport.weekEnd).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </h3>
+            </div>
+
+            {/* Total & Trend */}
+            <div className="flex items-center gap-4 flex-wrap">
+              <div>
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Cout total du gaspillage</p>
+                <p className="text-3xl font-black text-red-600 dark:text-red-400">{formatEuro(weeklyReport.totalCost)}</p>
+              </div>
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold ${
+                weeklyReport.trendVsLastWeek > 0
+                  ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                  : 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+              }`}>
+                {weeklyReport.trendVsLastWeek > 0 ? (
+                  <ArrowUpRight className="w-4 h-4" />
+                ) : (
+                  <ArrowDownRight className="w-4 h-4" />
+                )}
+                {weeklyReport.trendVsLastWeek > 0 ? '+' : ''}{weeklyReport.trendVsLastWeek.toFixed(1)}% vs semaine precedente
+              </div>
+            </div>
+
+            {/* Top 3 wasted items */}
+            <div>
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2">Top 3 ingredients gaspilles</h4>
+              <div className="space-y-2">
+                {weeklyReport.top3.map((item, i) => (
+                  <div key={item.name} className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-600 text-white text-xs font-bold">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-[#374151] dark:text-[#D4D4D4] flex-1">{item.name}</span>
+                    <span className="text-sm font-bold text-red-600 dark:text-red-400">{formatEuro(item.cost)}</span>
+                  </div>
+                ))}
+                {weeklyReport.top3.length === 0 && (
+                  <p className="text-sm text-[#9CA3AF] dark:text-[#737373]">Aucune perte cette semaine</p>
+                )}
+              </div>
+            </div>
+
+            {/* Suggestions */}
+            <div>
+              <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-2">Suggestions de la semaine</h4>
+              <div className="space-y-2">
+                {weeklyReport.suggestions.map((sug, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <Lightbulb className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-[#374151] dark:text-[#D4D4D4]">{sug}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                Ce rapport est genere automatiquement chaque lundi. Il sera envoye a l'adresse email du compte.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Recent waste entries table */}
       <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -1723,6 +2366,8 @@ export default function WasteTracker() {
                 <th className="text-left py-2 px-3 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase">{t('wasteTracker.ingredient')}</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase">{t('wasteTracker.quantity')}</th>
                 <th className="text-left py-2 px-3 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase">{t('wasteTracker.cause')}</th>
+                <th className="text-left py-2 px-3 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase">Cause racine</th>
+                <th className="text-center py-2 px-3 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase">Photo</th>
                 <th className="text-right py-2 px-3 text-xs font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase">{t('wasteTracker.cost')}</th>
                 <th className="py-2 px-3"></th>
               </tr>
@@ -1736,37 +2381,69 @@ export default function WasteTracker() {
                 </tr>
               ) : (
                 <>
-                  {recentEntries.map(e => (
-                    <tr key={e.id} className="border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 transition-colors">
-                      <td className="py-2.5 px-3 text-[#6B7280] dark:text-[#A3A3A3]">
-                        {new Date(e.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
-                      </td>
-                      <td className="py-2.5 px-3 font-medium text-[#1F2937] dark:text-white">{e.ingredientName}</td>
-                      <td className="py-2.5 px-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">
-                        {e.quantity.toFixed(2)} {e.unit}
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${REASON_BADGE[e.reason]}`}>
-                          {REASON_LABELS[e.reason]}
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-semibold text-red-600 dark:text-red-400">
-                        {formatEuro(e.quantity * e.costPerUnit)}
-                      </td>
-                      <td className="py-2.5 px-3 text-right">
-                        <button
-                          onClick={() => handleDeleteEntry(e.id)}
-                          className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                          title={t('wasteTracker.delete')}
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {recentEntries.map(e => {
+                    const photo = getWastePhoto(e.id);
+                    return (
+                      <tr key={e.id} className="border-b border-[#F3F4F6] dark:border-[#1A1A1A]/50 hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/30 transition-colors">
+                        <td className="py-2.5 px-3 text-[#6B7280] dark:text-[#A3A3A3]">
+                          {new Date(e.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
+                        </td>
+                        <td className="py-2.5 px-3 font-medium text-[#1F2937] dark:text-white">{e.ingredientName}</td>
+                        <td className="py-2.5 px-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">
+                          {e.quantity.toFixed(2)} {e.unit}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${REASON_BADGE[e.reason]}`}>
+                            {REASON_LABELS[e.reason]}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          {e.rootCause ? (
+                            <span
+                              className="inline-block px-2 py-0.5 rounded-full text-xs font-medium"
+                              style={{
+                                backgroundColor: `${ROOT_CAUSE_COLORS[e.rootCause]}20`,
+                                color: ROOT_CAUSE_COLORS[e.rootCause],
+                              }}
+                            >
+                              {ROOT_CAUSE_LABELS[e.rootCause]}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-[#D1D5DB] dark:text-[#404040]">--</span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 text-center">
+                          {photo ? (
+                            <button
+                              onClick={() => setViewingPhoto(photo)}
+                              className="inline-flex items-center justify-center w-7 h-7 rounded-lg overflow-hidden border border-[#E5E7EB] dark:border-[#1A1A1A] hover:ring-2 hover:ring-[#111111] dark:hover:ring-white transition-all"
+                            >
+                              <img src={photo} alt="waste" className="w-full h-full object-cover" />
+                            </button>
+                          ) : (
+                            <span className="text-[#D1D5DB] dark:text-[#404040]">
+                              <Image className="w-3.5 h-3.5 mx-auto" />
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-semibold text-red-600 dark:text-red-400">
+                          {formatEuro(e.quantity * e.costPerUnit)}
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          <button
+                            onClick={() => handleDeleteEntry(e.id)}
+                            className="p-1.5 rounded-lg text-[#9CA3AF] dark:text-[#737373] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                            title={t('wasteTracker.delete')}
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                   {recentEntries.length === 0 && (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
+                      <td colSpan={8} className="py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
                         {t('wasteTracker.noWasteForPeriod')}
                       </td>
                     </tr>

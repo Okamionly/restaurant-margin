@@ -19,10 +19,16 @@ let toastId = 0;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [successFlash, setSuccessFlash] = useState(false);
 
   const showToast = useCallback((message: string, type: ToastType = 'info') => {
     const id = ++toastId;
     setToasts((prev) => [...prev, { id, message, type }]);
+    // Trigger success celebration flash
+    if (type === 'success') {
+      setSuccessFlash(true);
+      setTimeout(() => setSuccessFlash(false), 800);
+    }
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
@@ -34,6 +40,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   return (
     <ToastContext.Provider value={{ showToast }}>
+      {/* Success celebration flash overlay */}
+      {successFlash && (
+        <div className="fixed inset-0 z-[99] pointer-events-none animate-success-flash" />
+      )}
       {children}
       {/* Toast container */}
       <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2">

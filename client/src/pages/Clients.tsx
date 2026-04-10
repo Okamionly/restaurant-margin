@@ -6,7 +6,9 @@ import {
   Upload, Copy, ExternalLink, Heart, UserPlus, Send, Loader2,
   Crown, Repeat, Sparkles, UserMinus, MessageSquare, Megaphone, Zap,
   Cake, Award, Calendar, StickyNote, ChevronRight, ArrowUpRight,
-  Gift, Target, Activity, ChevronsRight,
+  Gift, Target, Activity, ChevronsRight, ThumbsUp, ThumbsDown,
+  Globe, Instagram, Mic, MapPin, DollarSign, TrendingDown, AlertCircle,
+  Hash, Gem, Trophy,
 } from 'lucide-react';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
@@ -31,6 +33,44 @@ type SortField = 'nom' | 'caTotal' | 'derniereVisite';
 type TabId = 'infos' | 'preferences' | 'historique' | 'documents' | 'rgpd';
 type SegmentId = 'tous' | 'vip' | 'reguliers' | 'nouveaux' | 'inactifs';
 type LoyaltyTier = 'Bronze' | 'Silver' | 'Gold';
+type AcquisitionSource = 'Google' | 'Instagram' | 'Bouche-a-oreille' | 'Walk-in' | '';
+
+// ── Loyalty & Insights Types ──────────────────────────────────────────
+
+interface LoyaltyPointsEntry {
+  id: string;
+  date: string;
+  points: number;
+  reason: string;
+  type: 'earned' | 'redeemed';
+}
+
+interface ClientLoyaltyData {
+  clientId: string;
+  points: number;
+  history: LoyaltyPointsEntry[];
+}
+
+interface NPSEntry {
+  id: string;
+  clientId: string;
+  date: string;
+  score: number;
+  comment?: string;
+}
+
+interface ClientInsights {
+  panierMoyen: number;
+  frequence: number; // visits per month
+  joursSanVisite: number;
+  risquePerte: boolean;
+  commandeHabituelle: string[];
+}
+
+interface AcquisitionData {
+  source: AcquisitionSource;
+  adSpend?: number;
+}
 
 interface Allergene {
   id: string;
@@ -77,6 +117,8 @@ interface Client {
   historique: Interaction[];
   documents: Document[];
   consentementRGPD: string;
+  source?: AcquisitionSource;
+  npsScores?: NPSEntry[];
 }
 
 interface SegmentData {
@@ -178,6 +220,62 @@ function initClients(): Client[] {
   return loadClientsFromStorage();
 }
 
+// ── Loyalty Points Persistence ───────────────────────────────────────────
+
+const LOYALTY_STORAGE_KEY = 'restaumargin_loyalty';
+const NPS_STORAGE_KEY = 'restaumargin_nps';
+const ACQUISITION_STORAGE_KEY = 'restaumargin_acquisition';
+
+function loadLoyaltyData(): Record<string, ClientLoyaltyData> {
+  try {
+    const raw = localStorage.getItem(LOYALTY_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* corrupt */ }
+  return {};
+}
+
+function saveLoyaltyData(data: Record<string, ClientLoyaltyData>) {
+  try { localStorage.setItem(LOYALTY_STORAGE_KEY, JSON.stringify(data)); } catch { /* quota */ }
+}
+
+function loadNPSData(): NPSEntry[] {
+  try {
+    const raw = localStorage.getItem(NPS_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* corrupt */ }
+  return [];
+}
+
+function saveNPSData(data: NPSEntry[]) {
+  try { localStorage.setItem(NPS_STORAGE_KEY, JSON.stringify(data)); } catch { /* quota */ }
+}
+
+function loadAcquisitionData(): Record<string, AcquisitionData> {
+  try {
+    const raw = localStorage.getItem(ACQUISITION_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* corrupt */ }
+  return {};
+}
+
+function saveAcquisitionData(data: Record<string, AcquisitionData>) {
+  try { localStorage.setItem(ACQUISITION_STORAGE_KEY, JSON.stringify(data)); } catch { /* quota */ }
+}
+
+const LOYALTY_REWARDS = [
+  { points: 100, label: 'Cafe offert', icon: 'coffee' },
+  { points: 250, label: 'Dessert offert', icon: 'cake' },
+  { points: 500, label: '-10% sur la note', icon: 'percent' },
+  { points: 750, label: 'Bouteille de vin offerte', icon: 'wine' },
+  { points: 1000, label: 'Repas complet offert', icon: 'meal' },
+];
+
+const AUTOMATED_CAMPAIGNS = [
+  { id: 'inactifs', segment: 'inactifs' as SegmentId, label: 'Clients inactifs', subject: 'Vous nous manquez ! -10% sur votre prochaine visite', body: 'Cher [prenom],\n\nCela fait un moment que nous ne vous avons pas vu ! Votre table preferee vous attend.\n\nPour celebrer votre retour, beneficiez de -10% sur votre prochaine visite avec le code RETOUR10.\n\nA tres bientot !\nVotre restaurant', icon: UserMinus, color: 'text-red-500' },
+  { id: 'anniversaire', segment: 'tous' as SegmentId, label: 'Anniversaires cette semaine', subject: 'Joyeux anniversaire ! Dessert offert', body: 'Cher [prenom],\n\nToute notre equipe vous souhaite un merveilleux anniversaire !\n\nPour celebrer, nous vous offrons un dessert de votre choix lors de votre prochaine visite.\n\nA bientot !\nVotre restaurant', icon: Cake, color: 'text-pink-500' },
+  { id: 'vip', segment: 'vip' as SegmentId, label: 'VIP', subject: 'Invitation exclusive : soiree degustation', body: 'Cher [prenom],\n\nEn tant que client VIP, nous avons le plaisir de vous convier a une soiree degustation exclusive.\n\nDate : ce vendredi a 20h\nMenu : 5 plats accords mets & vins\n\nPlaces limitees, reservez vite !\n\nCordialement,\nVotre restaurant', icon: Crown, color: 'text-amber-500' },
+];
+
 // ── Helpers ─────────────────────────────────────────────────────────────
 
 function fmt(n: number) {
@@ -222,6 +320,31 @@ function getBirthdayDaysAway(dateNaissance: string): number | null {
 function isBirthdayThisWeek(dateNaissance: string): boolean {
   const days = getBirthdayDaysAway(dateNaissance);
   return days !== null && days >= 0 && days <= 7;
+}
+
+function getClientInsights(c: Client): ClientInsights {
+  const panierMoyen = c.nbCommandes > 0 ? c.caTotal / c.nbCommandes : 0;
+  const now = new Date();
+  const creation = new Date(c.dateCreation || now.toISOString());
+  const monthsSinceCreation = Math.max(1, Math.ceil((now.getTime() - creation.getTime()) / (30 * 24 * 60 * 60 * 1000)));
+  const frequence = c.nbCommandes / monthsSinceCreation;
+  const joursSanVisite = c.derniereVisite
+    ? Math.floor((now.getTime() - new Date(c.derniereVisite).getTime()) / (24 * 60 * 60 * 1000))
+    : 999;
+  const risquePerte = joursSanVisite > 30;
+  const commandeHabituelle = c.platsFavoris.slice(0, 3);
+  return { panierMoyen, frequence, joursSanVisite, risquePerte, commandeHabituelle };
+}
+
+function getNPSAverage(scores: NPSEntry[]): number {
+  if (scores.length === 0) return 0;
+  return Math.round((scores.reduce((s, e) => s + e.score, 0) / scores.length) * 10) / 10;
+}
+
+function getNPSCategory(score: number): { label: string; color: string } {
+  if (score >= 9) return { label: 'Promoteur', color: 'text-green-600 dark:text-green-400' };
+  if (score >= 7) return { label: 'Passif', color: 'text-amber-600 dark:text-amber-400' };
+  return { label: 'Detracteur', color: 'text-red-600 dark:text-red-400' };
 }
 
 const interactionIcons: Record<string, { icon: string; color: string }> = {
@@ -279,6 +402,8 @@ export default function Clients() {
     dateNaissance: '',
     allergenes: [], regime: [], platsFavoris: [], historique: [], documents: [],
     consentementRGPD: new Date().toISOString().split('T')[0],
+    source: '' as AcquisitionSource,
+    npsScores: [],
   };
   const [form, setForm] = useState<Client>(emptyForm);
   const [duplicateWarning, setDuplicateWarning] = useState('');
@@ -296,6 +421,34 @@ export default function Clients() {
   // Tag editing
   const [editingTags, setEditingTags] = useState(false);
   const [clientNotes, setClientNotes] = useState('');
+
+  // Loyalty points
+  const [loyaltyData, setLoyaltyData] = useState<Record<string, ClientLoyaltyData>>(loadLoyaltyData);
+  const [showLoyalty, setShowLoyalty] = useState(false);
+  const [loyaltyClient, setLoyaltyClient] = useState<Client | null>(null);
+  const [addPointsAmount, setAddPointsAmount] = useState('');
+  const [redeemReward, setRedeemReward] = useState<number | null>(null);
+  useEffect(() => { saveLoyaltyData(loyaltyData); }, [loyaltyData]);
+
+  // NPS
+  const [npsData, setNpsData] = useState<NPSEntry[]>(loadNPSData);
+  const [showNPS, setShowNPS] = useState(false);
+  const [npsClient, setNpsClient] = useState<Client | null>(null);
+  const [npsScore, setNpsScore] = useState(8);
+  const [npsComment, setNpsComment] = useState('');
+  useEffect(() => { saveNPSData(npsData); }, [npsData]);
+
+  // Acquisition
+  const [acquisitionData, setAcquisitionData] = useState<Record<string, AcquisitionData>>(loadAcquisitionData);
+  const [showAcquisition, setShowAcquisition] = useState(false);
+  useEffect(() => { saveAcquisitionData(acquisitionData); }, [acquisitionData]);
+
+  // Automated campaigns
+  const [showAutoCampaign, setShowAutoCampaign] = useState(false);
+
+  // Insights panel
+  const [showInsights, setShowInsights] = useState(false);
+  const [insightsClient, setInsightsClient] = useState<Client | null>(null);
 
   // Sidebar notes for quick editing
   const [sidebarNotes, setSidebarNotes] = useState('');
@@ -691,6 +844,169 @@ export default function Clients() {
     window.open(`https://wa.me/${cleaned}`, '_blank');
   }
 
+  // ── Loyalty Points ────────────────────────────────────────────────────
+
+  function getClientPoints(clientId: string): number {
+    return loyaltyData[clientId]?.points || 0;
+  }
+
+  function getClientLoyaltyHistory(clientId: string): LoyaltyPointsEntry[] {
+    return loyaltyData[clientId]?.history || [];
+  }
+
+  function addLoyaltyPoints(clientId: string, amount: number, reason: string) {
+    const entry: LoyaltyPointsEntry = {
+      id: crypto.randomUUID(),
+      date: new Date().toISOString(),
+      points: amount,
+      reason,
+      type: 'earned',
+    };
+    setLoyaltyData(prev => {
+      const existing = prev[clientId] || { clientId, points: 0, history: [] };
+      return {
+        ...prev,
+        [clientId]: {
+          ...existing,
+          points: existing.points + amount,
+          history: [entry, ...existing.history],
+        },
+      };
+    });
+    showToast(`+${amount} points de fidelite ajoutes`, 'success');
+  }
+
+  function redeemLoyaltyPoints(clientId: string, pointsCost: number, rewardLabel: string) {
+    const current = getClientPoints(clientId);
+    if (current < pointsCost) {
+      showToast('Points insuffisants', 'error');
+      return;
+    }
+    const entry: LoyaltyPointsEntry = {
+      id: crypto.randomUUID(),
+      date: new Date().toISOString(),
+      points: -pointsCost,
+      reason: `Recompense : ${rewardLabel}`,
+      type: 'redeemed',
+    };
+    setLoyaltyData(prev => {
+      const existing = prev[clientId] || { clientId, points: 0, history: [] };
+      return {
+        ...prev,
+        [clientId]: {
+          ...existing,
+          points: existing.points - pointsCost,
+          history: [entry, ...existing.history],
+        },
+      };
+    });
+    showToast(`Recompense "${rewardLabel}" utilisee (-${pointsCost} pts)`, 'success');
+  }
+
+  function openLoyaltyPanel(c: Client) {
+    setLoyaltyClient(c);
+    setAddPointsAmount('');
+    setRedeemReward(null);
+    setShowLoyalty(true);
+  }
+
+  // ── NPS / Satisfaction ───────────────────────────────────────────────
+
+  function openNPSModal(c: Client) {
+    setNpsClient(c);
+    setNpsScore(8);
+    setNpsComment('');
+    setShowNPS(true);
+  }
+
+  function submitNPS() {
+    if (!npsClient) return;
+    const entry: NPSEntry = {
+      id: crypto.randomUUID(),
+      clientId: npsClient.id,
+      date: new Date().toISOString(),
+      score: npsScore,
+      comment: npsComment || undefined,
+    };
+    setNpsData(prev => [entry, ...prev]);
+    // Also auto-add loyalty points for giving feedback
+    addLoyaltyPoints(npsClient.id, 10, 'Feedback NPS enregistre');
+    showToast(`Score NPS ${npsScore}/10 enregistre pour ${npsClient.prenom}`, 'success');
+    setShowNPS(false);
+  }
+
+  function getClientNPS(clientId: string): NPSEntry[] {
+    return npsData.filter(e => e.clientId === clientId);
+  }
+
+  // ── Client Insights ──────────────────────────────────────────────────
+
+  function openInsightsPanel(c: Client) {
+    setInsightsClient(c);
+    setShowInsights(true);
+  }
+
+  // ── Acquisition ──────────────────────────────────────────────────────
+
+  function setClientSource(clientId: string, source: AcquisitionSource) {
+    setAcquisitionData(prev => ({
+      ...prev,
+      [clientId]: { ...prev[clientId], source },
+    }));
+    showToast(`Source d'acquisition mise a jour : ${source}`, 'success');
+  }
+
+  const acquisitionStats = useMemo(() => {
+    const counts: Record<string, number> = { 'Google': 0, 'Instagram': 0, 'Bouche-a-oreille': 0, 'Walk-in': 0, 'Non renseigne': 0 };
+    clients.forEach(c => {
+      const src = acquisitionData[c.id]?.source || c.source;
+      if (src && counts[src] !== undefined) {
+        counts[src]++;
+      } else {
+        counts['Non renseigne']++;
+      }
+    });
+    return counts;
+  }, [clients, acquisitionData]);
+
+  // ── Global NPS score ─────────────────────────────────────────────────
+
+  const globalNPS = useMemo(() => {
+    if (npsData.length === 0) return { score: 0, promoters: 0, passives: 0, detractors: 0, total: 0 };
+    const promoters = npsData.filter(e => e.score >= 9).length;
+    const detractors = npsData.filter(e => e.score <= 6).length;
+    const total = npsData.length;
+    const score = Math.round(((promoters - detractors) / total) * 100);
+    return { score, promoters, passives: total - promoters - detractors, detractors, total };
+  }, [npsData]);
+
+  // ── NPS alerts (clients below 7) ─────────────────────────────────────
+
+  const npsAlerts = useMemo(() => {
+    const clientLatest: Record<string, NPSEntry> = {};
+    npsData.forEach(e => {
+      if (!clientLatest[e.clientId] || new Date(e.date) > new Date(clientLatest[e.clientId].date)) {
+        clientLatest[e.clientId] = e;
+      }
+    });
+    return Object.values(clientLatest)
+      .filter(e => e.score < 7)
+      .sort((a, b) => a.score - b.score)
+      .map(e => ({ ...e, client: clients.find(c => c.id === e.clientId) }))
+      .filter(e => e.client);
+  }, [npsData, clients]);
+
+  // ── Risk clients (>30 days no visit) ─────────────────────────────────
+
+  const riskClients = useMemo(() => {
+    const now = new Date();
+    return clients
+      .map(c => ({ ...c, insights: getClientInsights(c) }))
+      .filter(c => c.insights.risquePerte)
+      .sort((a, b) => b.insights.joursSanVisite - a.insights.joursSanVisite)
+      .slice(0, 10);
+  }, [clients]);
+
   // ── Campaign ──────────────────────────────────────────────────────────
 
   function openCampaign(segment: SegmentId) {
@@ -863,11 +1179,26 @@ export default function Clients() {
 
   function ClientCard({ c }: { c: Client }) {
     const tier = getLoyaltyTier(c.caTotal);
+    const pts = getClientPoints(c.id);
+    const insights = getClientInsights(c);
+    const clientNpsEntries = getClientNPS(c.id);
+    const lastNPS = clientNpsEntries.length > 0 ? clientNpsEntries[0].score : null;
+    const acqSource = acquisitionData[c.id]?.source || c.source;
+
     return (
       <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 hover:shadow-lg hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all cursor-pointer group"
         onClick={() => openSidebar(c)}>
+        {/* Risk banner */}
+        {insights.risquePerte && (
+          <div className="flex items-center gap-2 px-3 py-1.5 -mx-5 -mt-5 mb-4 rounded-t-2xl bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-900/10 border-b border-amber-200 dark:border-amber-800">
+            <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+            <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+              Risque de perte - {insights.joursSanVisite} jours sans visite
+            </span>
+          </div>
+        )}
         {/* Birthday banner */}
-        {isBirthdayThisWeek(c.dateNaissance) && (
+        {!insights.risquePerte && isBirthdayThisWeek(c.dateNaissance) && (
           <div className="flex items-center gap-2 px-3 py-1.5 -mx-5 -mt-5 mb-4 rounded-t-2xl bg-gradient-to-r from-pink-50 to-pink-100 dark:from-pink-900/20 dark:to-pink-900/10 border-b border-pink-200 dark:border-pink-800">
             <Cake className="w-3.5 h-3.5 text-pink-500" />
             <span className="text-xs font-medium text-pink-600 dark:text-pink-400">
@@ -904,18 +1235,49 @@ export default function Clients() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
+        {/* Points & NPS row */}
+        <div className="flex items-center gap-2 mt-3 flex-wrap">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+            <Gem className="w-3 h-3" /> {pts} pts
+          </span>
+          {lastNPS !== null && (
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+              lastNPS >= 9 ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800'
+              : lastNPS >= 7 ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+              : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800'
+            }`}>
+              <ThumbsUp className="w-3 h-3" /> NPS {lastNPS}
+            </span>
+          )}
+          {acqSource && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">
+              {acqSource === 'Google' && <Globe className="w-3 h-3" />}
+              {acqSource === 'Instagram' && <Instagram className="w-3 h-3" />}
+              {acqSource === 'Bouche-a-oreille' && <Mic className="w-3 h-3" />}
+              {acqSource === 'Walk-in' && <MapPin className="w-3 h-3" />}
+              {acqSource}
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 mt-4 pt-4 border-t border-[#F3F4F6] dark:border-[#1A1A1A]">
           <div className="text-center">
-            <div className="text-lg font-bold text-[#111111] dark:text-white">{fmt(c.caTotal)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Total depense</div>
+            <div className="text-base font-bold text-[#111111] dark:text-white">{fmt(c.caTotal)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Total</div>
           </div>
           <div className="text-center">
-            <div className="text-lg font-bold text-[#111111] dark:text-white">{c.nbCommandes}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Commandes</div>
+            <div className="text-base font-bold text-[#111111] dark:text-white">{fmt(insights.panierMoyen)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Panier moy.</div>
           </div>
           <div className="text-center">
-            <div className="text-sm font-medium text-[#9CA3AF] dark:text-[#737373]">{fmtDate(c.derniereVisite)}</div>
-            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Derniere visite</div>
+            <div className="text-base font-bold text-[#111111] dark:text-white">{insights.frequence.toFixed(1)}</div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Visites/mois</div>
+          </div>
+          <div className="text-center">
+            <div className={`text-sm font-medium ${insights.risquePerte ? 'text-amber-600 dark:text-amber-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+              {insights.joursSanVisite < 999 ? `${insights.joursSanVisite}j` : '--'}
+            </div>
+            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Dern. visite</div>
           </div>
         </div>
 
@@ -923,11 +1285,15 @@ export default function Clients() {
         <div className="flex items-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={(e) => { e.stopPropagation(); openEmailModal(c); }}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
-            <Send className="w-3.5 h-3.5" /> Envoyer email
+            <Send className="w-3.5 h-3.5" /> Email
           </button>
-          <button onClick={(e) => { e.stopPropagation(); setSidebarNotes(c.notes || ''); openSidebar(c); }}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#F9FAFB] dark:bg-[#0A0A0A]/30 text-[#111111] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#0A0A0A]/50 transition-colors">
-            <StickyNote className="w-3.5 h-3.5" /> Ajouter note
+          <button onClick={(e) => { e.stopPropagation(); openLoyaltyPanel(c); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors">
+            <Gem className="w-3.5 h-3.5" /> Points
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); openNPSModal(c); }}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
+            <ThumbsUp className="w-3.5 h-3.5" /> NPS
           </button>
         </div>
       </div>
@@ -1135,6 +1501,179 @@ export default function Clients() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {birthdayClients.map(c => renderBirthdayAlert(c))}
+            </div>
+          </div>
+        )}
+
+        {/* ── NPS & Risk Alerts ──────────────────────────────────────── */}
+        {(npsAlerts.length > 0 || riskClients.length > 0) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* NPS Alerts */}
+            {npsAlerts.length > 0 && (
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-red-200 dark:border-red-900 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <ThumbsDown className="w-5 h-5 text-red-500" />
+                  <h3 className="text-sm font-semibold text-[#111111] dark:text-white">
+                    Alertes NPS ({npsAlerts.length})
+                  </h3>
+                </div>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {npsAlerts.slice(0, 5).map(alert => (
+                    <div key={alert.id} className="flex items-center gap-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                      {alert.client && renderAvatar(alert.client, 'w-8 h-8 text-xs')}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
+                          {alert.client?.prenom} {alert.client?.nom}
+                        </span>
+                        <span className="text-xs text-red-600 dark:text-red-400">
+                          NPS : {alert.score}/10 {alert.comment && `- "${alert.comment}"`}
+                        </span>
+                      </div>
+                      <span className="text-lg font-bold text-red-600 dark:text-red-400">{alert.score}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Risk Clients */}
+            {riskClients.length > 0 && (
+              <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-amber-200 dark:border-amber-900 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertCircle className="w-5 h-5 text-amber-500" />
+                  <h3 className="text-sm font-semibold text-[#111111] dark:text-white">
+                    Risque de perte ({riskClients.length})
+                  </h3>
+                </div>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {riskClients.slice(0, 5).map(c => (
+                    <div key={c.id} className="flex items-center gap-3 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
+                      {renderAvatar(c, 'w-8 h-8 text-xs')}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-medium text-[#111111] dark:text-white truncate block">
+                          {c.prenom} {c.nom}
+                        </span>
+                        <span className="text-xs text-amber-600 dark:text-amber-400">
+                          {c.insights.joursSanVisite} jours sans visite
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => openEmailModal(c)}
+                        className="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60 transition-colors"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Loyalty & NPS Summary Row ─────────────────────────────────── */}
+        {clients.length > 0 && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Global NPS */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 cursor-pointer hover:shadow-lg transition-all"
+              onClick={() => setShowAcquisition(true)}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-900/20">
+                  <ThumbsUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">NPS</span>
+              </div>
+              <div className={`text-3xl font-bold ${globalNPS.score >= 50 ? 'text-green-600 dark:text-green-400' : globalNPS.score >= 0 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                {globalNPS.total > 0 ? globalNPS.score : '--'}
+              </div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Score NPS global</div>
+            </div>
+
+            {/* Total Loyalty Points */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-900/20">
+                  <Gem className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">fidelite</span>
+              </div>
+              <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">
+                {Object.values(loyaltyData).reduce((s, d) => s + d.points, 0).toLocaleString('fr-FR')}
+              </div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Points distribues</div>
+            </div>
+
+            {/* Acquisition Channel Leader */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 cursor-pointer hover:shadow-lg transition-all"
+              onClick={() => setShowAcquisition(true)}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20">
+                  <Globe className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                </div>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">acquisition</span>
+              </div>
+              <div className="text-xl font-bold text-teal-600 dark:text-teal-400 truncate">
+                {Object.entries(acquisitionStats).filter(([k]) => k !== 'Non renseigne').sort((a, b) => b[1] - a[1])[0]?.[0] || '--'}
+              </div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Canal principal</div>
+            </div>
+
+            {/* Risk Count */}
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-900/20">
+                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                </div>
+                <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373]">&gt;30j</span>
+              </div>
+              <div className="text-3xl font-bold text-red-600 dark:text-red-400">{riskClients.length}</div>
+              <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">Clients a risque</div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Automated Campaigns Quick Actions ────────────────────────── */}
+        {clients.length > 0 && (
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-[#111111] dark:text-white flex items-center gap-2">
+                <Zap className="w-4 h-4 text-amber-500" />
+                Campagnes automatisees
+              </h3>
+              <button onClick={() => setShowAutoCampaign(true)}
+                className="text-xs text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
+                Voir tout
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {AUTOMATED_CAMPAIGNS.map(camp => {
+                const Icon = camp.icon;
+                const recipientCount = camp.id === 'anniversaire'
+                  ? birthdayClients.length
+                  : camp.segment !== 'tous'
+                    ? (localSegmentCounts[camp.segment as keyof typeof localSegmentCounts] || 0)
+                    : clients.length;
+                return (
+                  <button key={camp.id}
+                    onClick={() => {
+                      setCampaignSegment(camp.segment);
+                      setCampaignSubject(camp.subject);
+                      setCampaignMessage(camp.body);
+                      setShowCampaign(true);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#F9FAFB] dark:bg-black border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all text-left"
+                  >
+                    <Icon className={`w-5 h-5 ${camp.color} flex-shrink-0`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium text-[#111111] dark:text-white truncate">{camp.label}</div>
+                      <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] truncate">{camp.subject}</div>
+                    </div>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] font-medium">
+                      {recipientCount}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -1502,12 +2041,115 @@ export default function Clients() {
               </div>
             </div>
 
+            {/* Loyalty Points */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+                <Gem className="w-3.5 h-3.5 text-amber-500" /> Points de fidelite
+              </h4>
+              {(() => {
+                const pts = getClientPoints(sidebarClient.id);
+                const tier = getLoyaltyTier(sidebarClient.caTotal);
+                const tierColors = getLoyaltyColors(tier);
+                const nextReward = LOYALTY_REWARDS.find(r => r.points > pts);
+                return (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">{pts}</span>
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">points</span>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${tierColors.bg} ${tierColors.text} ${tierColors.border}`}>
+                        {tier === 'Gold' && <Trophy className="w-3 h-3 inline mr-0.5" />}
+                        {tier}
+                      </span>
+                    </div>
+                    {nextReward && (
+                      <div>
+                        <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] mb-1">
+                          <span>Prochain : {nextReward.label}</span>
+                          <span>{pts}/{nextReward.points}</span>
+                        </div>
+                        <div className="w-full bg-[#F3F4F6] dark:bg-[#171717] rounded-full h-2">
+                          <div className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all"
+                            style={{ width: `${Math.min(100, (pts / nextReward.points) * 100)}%` }} />
+                        </div>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => openLoyaltyPanel(sidebarClient)}
+                      className="w-full px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <Gem className="w-3 h-3" /> Gerer les points
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Client Insights */}
+            <div className="p-5 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
+              <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3 flex items-center gap-1.5">
+                <BarChart3 className="w-3.5 h-3.5 text-teal-500" /> Insights client
+              </h4>
+              {(() => {
+                const insights = getClientInsights(sidebarClient);
+                const clientNpsEntries = getClientNPS(sidebarClient.id);
+                const avgNps = getNPSAverage(clientNpsEntries);
+                return (
+                  <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-2.5 text-center">
+                        <div className="text-sm font-bold text-[#111111] dark:text-white">{fmt(insights.panierMoyen)}</div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Panier moyen</div>
+                      </div>
+                      <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-2.5 text-center">
+                        <div className="text-sm font-bold text-[#111111] dark:text-white">{insights.frequence.toFixed(1)}</div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Visites/mois</div>
+                      </div>
+                    </div>
+                    {insights.commandeHabituelle.length > 0 && (
+                      <div>
+                        <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] mb-1">Commande habituelle</div>
+                        <div className="flex flex-wrap gap-1">
+                          {insights.commandeHabituelle.map(p => (
+                            <span key={p} className="px-2 py-0.5 rounded-lg text-[10px] font-medium bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800">{p}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {insights.risquePerte && (
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                        <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                        <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                          {insights.joursSanVisite} jours sans visite - Risque de perte
+                        </span>
+                      </div>
+                    )}
+                    {clientNpsEntries.length > 0 && (
+                      <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#F9FAFB] dark:bg-black">
+                        <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">NPS moyen</span>
+                        <span className={`text-sm font-bold ${getNPSCategory(avgNps).color}`}>{avgNps}/10</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
+
             {/* Quick Actions */}
             <div className="p-5 space-y-2">
               <h4 className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-3">Actions rapides</h4>
               <button onClick={() => openEmailModal(sidebarClient)}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
                 <Send className="w-4 h-4" /> Envoyer email
+              </button>
+              <button onClick={() => openLoyaltyPanel(sidebarClient)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors">
+                <Gem className="w-4 h-4" /> Gerer les points
+              </button>
+              <button onClick={() => openNPSModal(sidebarClient)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
+                <ThumbsUp className="w-4 h-4" /> Enregistrer NPS
               </button>
               <button onClick={() => openWhatsApp(sidebarClient.telephone)}
                 className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">
@@ -1911,6 +2553,23 @@ export default function Clients() {
                 <option value="Association">Association</option>
               </select>
             </div>
+            <div>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Source d'acquisition</label>
+              <select value={form.source || ''} onChange={e => {
+                const val = e.target.value as AcquisitionSource;
+                setForm({ ...form, source: val });
+                if (form.id && val) {
+                  setAcquisitionData(prev => ({ ...prev, [form.id]: { ...prev[form.id], source: val } }));
+                }
+              }}
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white">
+                <option value="">-- Selectionner --</option>
+                <option value="Google">Google</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Bouche-a-oreille">Bouche-a-oreille</option>
+                <option value="Walk-in">Walk-in</option>
+              </select>
+            </div>
             <div className="col-span-full">
               <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Adresse</label>
               <input type="text" value={form.adresse} onChange={e => setForm({ ...form, adresse: e.target.value })}
@@ -2172,6 +2831,374 @@ export default function Clients() {
               </button>
             </div>
           </div>
+        </div>
+      </Modal>
+
+      {/* ── Loyalty Points Modal ────────────────────────────────────── */}
+      <Modal isOpen={showLoyalty} onClose={() => setShowLoyalty(false)}
+        title={loyaltyClient ? `Points de fidelite - ${loyaltyClient.prenom} ${loyaltyClient.nom}` : 'Points de fidelite'}
+        className="max-w-2xl">
+        {loyaltyClient && (() => {
+          const pts = getClientPoints(loyaltyClient.id);
+          const tier = getLoyaltyTier(loyaltyClient.caTotal);
+          const tierColors = getLoyaltyColors(tier);
+          const history = getClientLoyaltyHistory(loyaltyClient.id);
+          return (
+            <div className="space-y-6">
+              {/* Balance */}
+              <div className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-900/10 rounded-2xl p-6 text-center border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border ${tierColors.bg} ${tierColors.text} ${tierColors.border}`}>
+                    {tier === 'Gold' && <Trophy className="w-3 h-3 inline mr-1" />}
+                    {tier}
+                  </span>
+                </div>
+                <div className="text-5xl font-bold text-amber-600 dark:text-amber-400">{pts}</div>
+                <div className="text-sm text-amber-700 dark:text-amber-300 mt-1">points de fidelite</div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2">
+                  1 EUR depense = 1 point &middot; Bronze (0-500) &middot; Silver (500-1000) &middot; Gold (1000+)
+                </div>
+              </div>
+
+              {/* Add Points */}
+              <div>
+                <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                  <Plus className="w-4 h-4" /> Ajouter des points
+                </h4>
+                <div className="flex gap-2">
+                  <input type="number" value={addPointsAmount}
+                    onChange={e => setAddPointsAmount(e.target.value)}
+                    placeholder="Montant depense (EUR)"
+                    className="flex-1 px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white" />
+                  <button onClick={() => {
+                    const amount = Math.round(parseFloat(addPointsAmount) || 0);
+                    if (amount > 0) {
+                      addLoyaltyPoints(loyaltyClient.id, amount, `Achat de ${amount} EUR`);
+                      setAddPointsAmount('');
+                    }
+                  }}
+                    className="px-4 py-2 rounded-xl text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white transition-colors">
+                    +{Math.round(parseFloat(addPointsAmount) || 0)} pts
+                  </button>
+                </div>
+              </div>
+
+              {/* Recompenses disponibles */}
+              <div>
+                <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-amber-500" /> Recompenses disponibles
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {LOYALTY_REWARDS.map(reward => {
+                    const canRedeem = pts >= reward.points;
+                    return (
+                      <button key={reward.points}
+                        onClick={() => canRedeem && redeemLoyaltyPoints(loyaltyClient.id, reward.points, reward.label)}
+                        disabled={!canRedeem}
+                        className={`flex items-center justify-between px-4 py-3 rounded-xl border transition-colors ${
+                          canRedeem
+                            ? 'bg-white dark:bg-[#0A0A0A] border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 cursor-pointer'
+                            : 'bg-[#F9FAFB] dark:bg-black border-[#E5E7EB] dark:border-[#1A1A1A] opacity-50 cursor-not-allowed'
+                        }`}>
+                        <div>
+                          <div className={`text-sm font-medium ${canRedeem ? 'text-[#111111] dark:text-white' : 'text-[#9CA3AF] dark:text-[#737373]'}`}>
+                            {reward.label}
+                          </div>
+                          <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{reward.points} points</div>
+                        </div>
+                        {canRedeem && <Gift className="w-4 h-4 text-amber-500" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Points History */}
+              <div>
+                <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-3 flex items-center gap-2">
+                  <Clock className="w-4 h-4" /> Historique des points
+                </h4>
+                {history.length === 0 ? (
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] text-center py-4">Aucun historique</p>
+                ) : (
+                  <div className="relative pl-5 border-l-2 border-amber-200 dark:border-amber-800 space-y-3 max-h-48 overflow-y-auto">
+                    {history.slice(0, 20).map(h => (
+                      <div key={h.id} className="relative">
+                        <div className={`absolute -left-[23px] w-3 h-3 rounded-full ${h.type === 'earned' ? 'bg-green-500' : 'bg-red-500'}`} />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-[#111111] dark:text-white">{h.reason}</span>
+                          <span className={`text-sm font-bold ${h.type === 'earned' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                            {h.type === 'earned' ? '+' : ''}{h.points}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtDate(h.date)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+      </Modal>
+
+      {/* ── NPS Modal ────────────────────────────────────────────────── */}
+      <Modal isOpen={showNPS} onClose={() => setShowNPS(false)}
+        title={npsClient ? `Score NPS - ${npsClient.prenom} ${npsClient.nom}` : 'Score NPS'}
+        className="max-w-lg">
+        {npsClient && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3] mb-4">
+                Recommanderiez-vous notre restaurant ?
+              </p>
+              {/* Score selector */}
+              <div className="flex items-center justify-center gap-2 mb-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                  <button key={n}
+                    onClick={() => setNpsScore(n)}
+                    className={`w-10 h-10 rounded-xl text-sm font-bold transition-all ${
+                      npsScore === n
+                        ? n >= 9 ? 'bg-green-500 text-white scale-110'
+                          : n >= 7 ? 'bg-amber-500 text-white scale-110'
+                          : 'bg-red-500 text-white scale-110'
+                        : 'bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#E5E7EB] dark:hover:bg-[#333]'
+                    }`}>
+                    {n}
+                  </button>
+                ))}
+              </div>
+              <div className="flex justify-between text-[10px] text-[#9CA3AF] dark:text-[#737373] px-1">
+                <span>Pas du tout</span>
+                <span>Absolument</span>
+              </div>
+            </div>
+
+            {/* Category label */}
+            <div className="text-center">
+              <span className={`text-lg font-bold ${getNPSCategory(npsScore).color}`}>
+                {getNPSCategory(npsScore).label}
+              </span>
+            </div>
+
+            {/* Comment */}
+            <div>
+              <label className="block text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-1">Commentaire (optionnel)</label>
+              <textarea value={npsComment} onChange={e => setNpsComment(e.target.value)}
+                rows={3} placeholder="Remarques du client..."
+                className="w-full px-3 py-2 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black text-sm text-[#111111] dark:text-white resize-none" />
+            </div>
+
+            {/* Previous scores */}
+            {(() => {
+              const clientScores = getClientNPS(npsClient.id);
+              if (clientScores.length === 0) return null;
+              return (
+                <div>
+                  <h4 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Historique NPS</h4>
+                  <div className="flex items-end gap-1 h-16">
+                    {clientScores.slice(0, 12).reverse().map((e, i) => (
+                      <div key={e.id} className="flex-1 flex flex-col items-center gap-0.5">
+                        <div className={`w-full rounded-t transition-all ${
+                          e.score >= 9 ? 'bg-green-500' : e.score >= 7 ? 'bg-amber-500' : 'bg-red-500'
+                        }`} style={{ height: `${(e.score / 10) * 48}px` }} />
+                        <span className="text-[8px] text-[#9CA3AF]">{e.score}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {clientScores.length > 0 && (
+                    <div className="flex items-center justify-between mt-2 text-xs text-[#9CA3AF] dark:text-[#737373]">
+                      <span>Moyenne : <strong className={getNPSCategory(getNPSAverage(clientScores)).color}>{getNPSAverage(clientScores)}</strong></span>
+                      <span>{clientScores.length} evaluation{clientScores.length > 1 ? 's' : ''}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Submit */}
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setShowNPS(false)}
+                className="px-4 py-2 rounded-xl text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3] hover:bg-[#F3F4F6] dark:hover:bg-[#171717] transition-colors">
+                Annuler
+              </button>
+              <button onClick={submitNPS}
+                className="flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-white transition-colors">
+                <ThumbsUp className="w-4 h-4" /> Enregistrer
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* ── Acquisition & NPS Dashboard Modal ────────────────────────── */}
+      <Modal isOpen={showAcquisition} onClose={() => setShowAcquisition(false)}
+        title="Acquisition & Satisfaction" className="max-w-3xl">
+        <div className="space-y-8">
+          {/* Acquisition Channels Chart */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-teal-500" /> Canaux d'acquisition
+            </h4>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
+              {Object.entries(acquisitionStats).map(([source, count]) => {
+                const total = clients.length || 1;
+                const pct = Math.round((count / total) * 100);
+                return (
+                  <div key={source} className="bg-[#F9FAFB] dark:bg-black rounded-xl p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                    <div className="text-lg font-bold text-[#111111] dark:text-white">{count}</div>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{source}</div>
+                    <div className="text-[10px] text-teal-600 dark:text-teal-400 font-medium">{pct}%</div>
+                  </div>
+                );
+              })}
+            </div>
+            {/* Bar representation */}
+            <div className="space-y-2">
+              {Object.entries(acquisitionStats).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([source, count]) => {
+                const max = Math.max(...Object.values(acquisitionStats), 1);
+                return (
+                  <div key={source} className="flex items-center gap-3">
+                    <div className="w-32 text-xs text-[#6B7280] dark:text-[#A3A3A3] text-right flex items-center justify-end gap-1.5">
+                      {source === 'Google' && <Globe className="w-3 h-3" />}
+                      {source === 'Instagram' && <Instagram className="w-3 h-3" />}
+                      {source === 'Bouche-a-oreille' && <Mic className="w-3 h-3" />}
+                      {source === 'Walk-in' && <MapPin className="w-3 h-3" />}
+                      {source}
+                    </div>
+                    <div className="flex-1 bg-[#F3F4F6] dark:bg-[#171717] rounded-full h-5 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-teal-500 to-teal-700 rounded-full transition-all flex items-center justify-end pr-2"
+                        style={{ width: `${(count / max) * 100}%` }}>
+                        {count > 0 && <span className="text-[10px] text-white font-medium">{count}</span>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* NPS Summary */}
+          <div>
+            <h4 className="text-sm font-semibold text-[#111111] dark:text-white mb-4 flex items-center gap-2">
+              <ThumbsUp className="w-4 h-4 text-purple-500" /> Score NPS global
+            </h4>
+            <div className="grid grid-cols-4 gap-3 mb-4">
+              <div className="bg-[#F9FAFB] dark:bg-black rounded-xl p-4 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
+                <div className={`text-3xl font-bold ${globalNPS.score >= 50 ? 'text-green-600 dark:text-green-400' : globalNPS.score >= 0 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {globalNPS.total > 0 ? globalNPS.score : '--'}
+                </div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">NPS Score</div>
+              </div>
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 text-center border border-green-200 dark:border-green-800">
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">{globalNPS.promoters}</div>
+                <div className="text-xs text-green-600 dark:text-green-400 mt-1">Promoteurs (9-10)</div>
+              </div>
+              <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 text-center border border-amber-200 dark:border-amber-800">
+                <div className="text-3xl font-bold text-amber-600 dark:text-amber-400">{globalNPS.passives}</div>
+                <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">Passifs (7-8)</div>
+              </div>
+              <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 text-center border border-red-200 dark:border-red-800">
+                <div className="text-3xl font-bold text-red-600 dark:text-red-400">{globalNPS.detractors}</div>
+                <div className="text-xs text-red-600 dark:text-red-400 mt-1">Detracteurs (1-6)</div>
+              </div>
+            </div>
+
+            {/* NPS visual bar */}
+            {globalNPS.total > 0 && (
+              <div className="flex rounded-xl overflow-hidden h-8">
+                {globalNPS.promoters > 0 && (
+                  <div className="bg-green-500 flex items-center justify-center text-white text-xs font-medium"
+                    style={{ width: `${(globalNPS.promoters / globalNPS.total) * 100}%` }}>
+                    {Math.round((globalNPS.promoters / globalNPS.total) * 100)}%
+                  </div>
+                )}
+                {globalNPS.passives > 0 && (
+                  <div className="bg-amber-500 flex items-center justify-center text-white text-xs font-medium"
+                    style={{ width: `${(globalNPS.passives / globalNPS.total) * 100}%` }}>
+                    {Math.round((globalNPS.passives / globalNPS.total) * 100)}%
+                  </div>
+                )}
+                {globalNPS.detractors > 0 && (
+                  <div className="bg-red-500 flex items-center justify-center text-white text-xs font-medium"
+                    style={{ width: `${(globalNPS.detractors / globalNPS.total) * 100}%` }}>
+                    {Math.round((globalNPS.detractors / globalNPS.total) * 100)}%
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Recent NPS entries */}
+            {npsData.length > 0 && (
+              <div className="mt-4">
+                <h5 className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] mb-2">Dernieres evaluations</h5>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {npsData.slice(0, 10).map(e => {
+                    const cl = clients.find(c => c.id === e.clientId);
+                    return (
+                      <div key={e.id} className="flex items-center gap-3 px-3 py-2 bg-[#F9FAFB] dark:bg-black rounded-xl">
+                        {cl && renderAvatar(cl, 'w-7 h-7 text-[10px]')}
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs font-medium text-[#111111] dark:text-white">{cl ? `${cl.prenom} ${cl.nom}` : 'Client'}</span>
+                          {e.comment && <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] block truncate">{e.comment}</span>}
+                        </div>
+                        <span className={`text-sm font-bold ${e.score >= 9 ? 'text-green-600' : e.score >= 7 ? 'text-amber-600' : 'text-red-600'}`}>
+                          {e.score}/10
+                        </span>
+                        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtDate(e.date)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Modal>
+
+      {/* ── Automated Campaigns Modal ────────────────────────────────── */}
+      <Modal isOpen={showAutoCampaign} onClose={() => setShowAutoCampaign(false)}
+        title="Campagnes automatisees" className="max-w-2xl">
+        <div className="space-y-4">
+          <p className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">
+            Campagnes pre-configurees par segment. Cliquez pour personnaliser et envoyer via Resend.
+          </p>
+          {AUTOMATED_CAMPAIGNS.map(camp => {
+            const Icon = camp.icon;
+            const recipientCount = camp.id === 'anniversaire'
+              ? birthdayClients.length
+              : camp.segment !== 'tous'
+                ? (localSegmentCounts[camp.segment as keyof typeof localSegmentCounts] || 0)
+                : clients.length;
+            return (
+              <div key={camp.id}
+                className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 hover:border-[#D1D5DB] dark:hover:border-[#333] transition-all">
+                <div className="flex items-start gap-4">
+                  <div className={`p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]`}>
+                    <Icon className={`w-6 h-6 ${camp.color}`} />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold text-[#111111] dark:text-white">{camp.label}</h4>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">Sujet : {camp.subject}</p>
+                    <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1 line-clamp-2">{camp.body.split('\n').slice(0, 2).join(' ')}</p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{recipientCount} destinataire{recipientCount > 1 ? 's' : ''}</span>
+                      <button onClick={() => {
+                        setShowAutoCampaign(false);
+                        setCampaignSegment(camp.segment);
+                        setCampaignSubject(camp.subject);
+                        setCampaignMessage(camp.body);
+                        setShowCampaign(true);
+                      }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#111111] dark:bg-white text-white dark:text-black hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors">
+                        <Send className="w-3 h-3" /> Lancer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </Modal>
 

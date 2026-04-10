@@ -3,9 +3,28 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── 8. Smooth Scroll ─────────────────────────────────────────────────── */
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply antialiased bg-white text-mono-100 dark:bg-mono-0 dark:text-mono-white;
     font-family: 'General Sans', 'DM Sans', 'Inter', system-ui, sans-serif;
+  }
+
+  /* ── 10. Dark Mode Transition ─────────────────────────────────────────── */
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: 0ms;
+  }
+  html.dark-transition *,
+  html.dark-transition *::before,
+  html.dark-transition *::after {
+    transition-duration: 300ms;
+    transition-timing-function: ease-out;
   }
 }
 
@@ -58,7 +77,7 @@ body::before {
 
 @layer components {
   .btn-primary {
-    @apply bg-mono-100 text-white px-4 py-2 rounded-lg font-medium hover:bg-mono-300 transition-all duration-300 dark:bg-mono-white dark:text-mono-0 dark:hover:bg-mono-800;
+    @apply bg-mono-100 text-white px-4 py-2 rounded-lg font-medium hover:bg-mono-300 transition-all duration-300 active:scale-95 dark:bg-mono-white dark:text-mono-0 dark:hover:bg-mono-800;
     position: relative;
     overflow: hidden;
   }
@@ -297,13 +316,13 @@ body::before {
   animation: page-enter 0.25s ease-out;
 }
 
-/* Accessibility: focus-visible outline */
+/* ── 9. Focus Rings — consistent teal for accessibility ───────────────── */
 *:focus-visible {
-  outline: 2px solid #111111;
+  outline: 2px solid #0D9488;
   outline-offset: 2px;
 }
 .dark *:focus-visible {
-  outline-color: #FFFFFF;
+  outline-color: #2DD4BF;
 }
 
 /* Landing page hero animations */
@@ -644,6 +663,167 @@ body::before {
     display: block !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MICRO-ANIMATIONS & VISUAL POLISH
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 2. Card Hover Effects — subtle lift on rounded-2xl cards ─────────── */
+.card-hover {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -6px rgba(0, 0, 0, 0.04);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.4), 0 4px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* ── 3. Number Animations — KPI number reveal on mount ────────────────── */
+@keyframes number-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.animate-number-reveal {
+  animation: number-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-number-reveal-d1 { animation: number-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+.animate-number-reveal-d2 { animation: number-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.animate-number-reveal-d3 { animation: number-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+
+/* ── 4. Button Press Effects — active:scale-95 feedback ───────────────── */
+.btn-press {
+  transition: transform 0.1s ease-out;
+}
+.btn-press:active {
+  transform: scale(0.95);
+}
+
+/* ── 5. Skeleton Loading — shimmer placeholder ────────────────────────── */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #F3F4F6 25%,
+    #E5E7EB 37%,
+    #F3F4F6 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    #171717 25%,
+    #262626 37%,
+    #171717 63%
+  );
+  background-size: 200% 100%;
+}
+
+/* ── 6. Toast Animations — slide in from right, slide out ─────────────── */
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(100%) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes toast-slide-out {
+  from {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%) scale(0.95);
+    opacity: 0;
+  }
+}
+.animate-toast-slide-in {
+  animation: toast-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.animate-toast-slide-out {
+  animation: toast-slide-out 0.25s ease-in forwards;
+}
+
+/* ── 7. Success Celebrations — brief green flash ──────────────────────── */
+@keyframes success-flash {
+  0% { box-shadow: inset 0 0 0 0 rgba(16, 185, 129, 0); }
+  30% { box-shadow: inset 0 0 60px 10px rgba(16, 185, 129, 0.08); }
+  100% { box-shadow: inset 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+.animate-success-flash {
+  animation: success-flash 0.8s ease-out;
+}
+
+/* CSS-only confetti burst */
+@keyframes confetti-pop {
+  0% { transform: scale(0) rotate(0deg); opacity: 1; }
+  50% { transform: scale(1) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1.5) rotate(360deg); opacity: 0; }
+}
+.confetti-burst {
+  position: relative;
+}
+.confetti-burst::before,
+.confetti-burst::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: confetti-pop 0.6s ease-out forwards;
+}
+.confetti-burst::before {
+  background: #10B981;
+  box-shadow:
+    -12px -12px 0 #0D9488,
+    12px -8px 0 #06B6D4,
+    -8px 12px 0 #F59E0B,
+    14px 10px 0 #8B5CF6;
+}
+.confetti-burst::after {
+  background: #EF4444;
+  box-shadow:
+    -16px 4px 0 #EC4899,
+    10px -14px 0 #3B82F6,
+    4px 16px 0 #14B8A6,
+    -10px -10px 0 #F97316;
+}
+
+/* ── Staggered fade-in for KPI cards ──────────────────────────────────── */
+@keyframes kpi-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-kpi-1 { animation: kpi-card-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
+.animate-kpi-2 { animation: kpi-card-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+.animate-kpi-3 { animation: kpi-card-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.19s both; }
 
 /* ── Mobile-first: push Crisp chat widget above bottom nav ──────────── */
 @media (max-width: 767px) {

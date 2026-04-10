@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
@@ -115,6 +115,7 @@ const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));
 const BlogFoodCost = lazyRetry(() => import('./pages/BlogFoodCost'));
 const BlogIA = lazyRetry(() => import('./pages/BlogIA'));
 const NegociationIA = lazyRetry(() => import('./pages/NegociationIA'));
+const EmailMarketing = lazyRetry(() => import('./pages/EmailMarketing'));
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -303,12 +304,17 @@ function AppLayout() {
   }
 
   useEffect(() => {
+    // Enable smooth dark-mode transition class
+    document.documentElement.classList.add('dark-transition');
     if (darkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
     localStorage.setItem('darkMode', String(darkMode));
+    // Remove transition class after animation completes to avoid affecting other transitions
+    const timer = setTimeout(() => document.documentElement.classList.remove('dark-transition'), 350);
+    return () => clearTimeout(timer);
   }, [darkMode]);
 
   // Close mobile menu on navigation
@@ -519,7 +525,7 @@ function AppLayout() {
         <NavLink
           to="/kitchen-mode"
           title={collapsed ? 'Cuisine KDS' : undefined}
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-semibold transition-colors w-full ${collapsed ? 'justify-center' : ''}`}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#111111] dark:bg-white hover:bg-[#333] dark:hover:bg-[#E5E5E5] text-white dark:text-[#111111] text-sm font-semibold transition-colors active:scale-95 w-full ${collapsed ? 'justify-center' : ''}`}
         >
           <ChefHat className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span className="sidebar-label">Cuisine KDS</span>}

@@ -3,7 +3,8 @@ import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
   ArrowUpDown, Download, Printer, TrendingUp, CheckCircle2, XCircle, MinusCircle,
   PackagePlus, Loader2, PieChart, Scale, Clock, MapPin, X, Trash, ScanBarcode, Camera, XOctagon,
-  ShoppingCart, ChevronDown, ChevronUp, Timer, Flame, BarChart3, CheckSquare, Square
+  ShoppingCart, ChevronDown, ChevronUp, Timer, Flame, BarChart3, CheckSquare, Square,
+  MessageCircle, CalendarClock, TrendingDown, RotateCcw
 } from 'lucide-react';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
 import FilterPanel, { type FilterDef, type FilterValues } from '../components/FilterPanel';
@@ -150,6 +151,53 @@ function getExpirationOrder(expStatus: string): number {
   return 3;
 }
 
+/** Calculate daily consumption rate from restock history */
+function getDailyConsumptionRate(item: InventoryItem): number | null {
+  if (!item.lastRestockDate || !item.lastRestockQuantity) return null;
+  const restockDate = new Date(item.lastRestockDate);
+  const now = new Date();
+  const daysSinceRestock = Math.max(1, (now.getTime() - restockDate.getTime()) / (1000 * 60 * 60 * 24));
+  // consumed = what was added minus what remains extra above previous level
+  const consumed = item.lastRestockQuantity - Math.max(0, item.currentStock - (item.minStock * 0.5));
+  if (consumed <= 0) return null;
+  return consumed / daysSinceRestock;
+}
+
+/** Calculate days remaining based on consumption rate */
+function getDaysRemaining(item: InventoryItem): number | null {
+  if (item.currentStock <= 0) return 0;
+  const rate = getDailyConsumptionRate(item);
+  if (!rate || rate <= 0) return null;
+  return Math.floor(item.currentStock / rate);
+}
+
+/** Get depletion date prediction */
+function getDepletionDate(item: InventoryItem): Date | null {
+  const days = getDaysRemaining(item);
+  if (days === null) return null;
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+/** Urgency level for days remaining */
+function getDaysRemainingUrgency(days: number | null): 'critical' | 'warning' | 'ok' | 'unknown' {
+  if (days === null) return 'unknown';
+  if (days < 3) return 'critical';
+  if (days < 7) return 'warning';
+  return 'ok';
+}
+
+/** Build WhatsApp message for a supplier order */
+function buildWhatsAppMessage(supplierName: string, orderItems: { name: string; qty: number; unit: string }[]): string {
+  let msg = `Bonjour,\n\nCommande pour ${supplierName} :\n\n`;
+  orderItems.forEach((item, i) => {
+    msg += `${i + 1}. ${item.name} : ${item.qty} ${item.unit}\n`;
+  });
+  msg += `\nMerci de confirmer la disponibilite et le delai de livraison.\n\nCordialement`;
+  return encodeURIComponent(msg);
+}
+
 /** Compute stock fill % for the progress bar */
 function getStockPercent(item: InventoryItem): number {
   const max = item.maxStock && item.maxStock > 0 ? item.maxStock : item.minStock * 3;
@@ -224,6 +272,9 @@ export default function Inventory() {
   const [editedQuantities, setEditedQuantities] = useState<Record<string, number>>({});
   const [expandedSuppliers, setExpandedSuppliers] = useState<Set<string>>(new Set());
   const [reorderBelowCount, setReorderBelowCount] = useState(0);
+
+  // Smart dashboard visibility
+  const [showSmartDashboard, setShowSmartDashboard] = useState(true);
 
   // Quick restock inline
   const [quickRestockId, setQuickRestockId] = useState<number | null>(null);
@@ -300,6 +351,101 @@ export default function Inventory() {
       .filter(x => x.days !== null && x.days <= 7)
       .sort((a, b) => (a.days ?? 999) - (b.days ?? 999));
   }, [items]);
+
+  // ── SMART AUTO-REORDER: Items below minStock with order details ──
+  const reorderItems = useMemo(() => {
+    return items
+      .filter(i => i.currentStock < i.minStock && i.minStock > 0)
+      .map(item => {
+        const suggestedQty = Math.max(0, item.minStock * 2 - item.currentStock);
+        const unitPrice = item.ingredient.pricePerUnit / getUnitDivisor(item.ingredient.unit);
+        const estimatedCost = suggestedQty * unitPrice;
+        return {
+          item,
+          suggestedQty: Math.round(suggestedQty * 100) / 100,
+          estimatedCost: Math.round(estimatedCost * 100) / 100,
+          supplier: item.ingredient.supplier || 'Non assigne',
+        };
+      })
+      .sort((a, b) => a.item.currentStock / a.item.minStock - b.item.currentStock / b.item.minStock);
+  }, [items]);
+
+  // Group reorder items by supplier
+  const reorderBySupplier = useMemo(() => {
+    const map = new Map<string, typeof reorderItems>();
+    reorderItems.forEach(ri => {
+      const key = ri.supplier;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(ri);
+    });
+    return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  }, [reorderItems]);
+
+  // ── SMART STOCK PREDICTIONS: Days remaining per item ──
+  const stockPredictions = useMemo(() => {
+    return items
+      .map(item => {
+        const daysLeft = getDaysRemaining(item);
+        const depletionDate = getDepletionDate(item);
+        const urgency = getDaysRemainingUrgency(daysLeft);
+        const dailyRate = getDailyConsumptionRate(item);
+        return { item, daysLeft, depletionDate, urgency, dailyRate };
+      })
+      .filter(p => p.urgency === 'critical' || p.urgency === 'warning')
+      .sort((a, b) => (a.daysLeft ?? 999) - (b.daysLeft ?? 999));
+  }, [items]);
+
+  // ── FIFO ALERTS: Items with new stock added but old stock still near expiry ──
+  const fifoAlerts = useMemo(() => {
+    return items
+      .filter(item => {
+        const meta = parseMeta(item.notes);
+        if (!meta.expirationDate) return false;
+        const daysToExpiry = getDaysUntilExpiry(meta.expirationDate);
+        // FIFO alert: item has been recently restocked but old stock expires soon
+        if (daysToExpiry !== null && daysToExpiry <= 3 && item.lastRestockDate) {
+          const restockDate = new Date(item.lastRestockDate);
+          const daysSinceRestock = (new Date().getTime() - restockDate.getTime()) / (1000 * 60 * 60 * 24);
+          return daysSinceRestock < 7; // Restocked within last 7 days but expiring within 3
+        }
+        return false;
+      })
+      .map(item => {
+        const meta = parseMeta(item.notes);
+        return { item, expirationDate: meta.expirationDate!, daysLeft: getDaysUntilExpiry(meta.expirationDate)! };
+      });
+  }, [items]);
+
+  // ── INVENTORY VALUE: Category breakdown for CSS pie chart ──
+  const categoryValues = useMemo(() => {
+    const map = new Map<string, number>();
+    items.forEach(item => {
+      const cat = item.ingredient.category;
+      const val = (item.currentStock / getUnitDivisor(item.ingredient.unit)) * item.ingredient.pricePerUnit;
+      map.set(cat, (map.get(cat) || 0) + val);
+    });
+    return Array.from(map.entries())
+      .map(([category, value]) => ({ category, value: Math.round(value * 100) / 100 }))
+      .sort((a, b) => b.value - a.value);
+  }, [items]);
+
+  // Build conic-gradient for CSS pie chart
+  const pieGradient = useMemo(() => {
+    const colors = ['#14B8A6', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6', '#EC4899', '#10B981', '#F97316', '#06B6D4', '#6366F1'];
+    const total = categoryValues.reduce((s, c) => s + c.value, 0);
+    if (total <= 0) return 'conic-gradient(#E5E7EB 0% 100%)';
+    let acc = 0;
+    const stops: string[] = [];
+    categoryValues.forEach((cat, i) => {
+      const pct = (cat.value / total) * 100;
+      const color = colors[i % colors.length];
+      stops.push(`${color} ${acc.toFixed(1)}% ${(acc + pct).toFixed(1)}%`);
+      acc += pct;
+    });
+    return `conic-gradient(${stops.join(', ')})`;
+  }, [categoryValues]);
+
+  const pieColors = ['#14B8A6', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6', '#EC4899', '#10B981', '#F97316', '#06B6D4', '#6366F1'];
 
   // Smart search suggestions for inventory
   const inventorySearchSuggestions = useMemo<SearchSuggestion[]>(() => {
@@ -744,6 +890,25 @@ export default function Inventory() {
     }
   }
 
+  // ── WhatsApp Ordering ─────────────────────────────────────────────────
+  function handleWhatsAppOrder(supplierName: string) {
+    const supplierItems = reorderItems.filter(ri => ri.supplier === supplierName);
+    if (supplierItems.length === 0) return;
+    const orderList = supplierItems.map(ri => ({
+      name: ri.item.ingredient.name,
+      qty: ri.suggestedQty,
+      unit: ri.item.unit,
+    }));
+    const msg = buildWhatsAppMessage(supplierName, orderList);
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+  }
+
+  function handleWhatsAppOrderAll() {
+    reorderBySupplier.forEach(([supplier]) => {
+      handleWhatsAppOrder(supplier);
+    });
+  }
+
   // ── Barcode Scanner ─────────────────────────────────────────────────
   const stopScanner = useCallback(() => {
     if (scanIntervalRef.current) {
@@ -1039,34 +1204,58 @@ export default function Inventory() {
         </div>
       </div>
 
-      {/* ══════ 2. STOCK VALUE CARD + STATS ══════ */}
+      {/* ══════ INVENTORY VALUE DASHBOARD ══════ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {/* Total Value - Hero Card */}
+        {/* Total Value - Hero Card with CSS Pie Chart */}
         <div className="col-span-2 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-emerald-50 dark:from-emerald-900/10 to-transparent rounded-bl-full" />
-          <div className="relative">
-            <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              Valeur totale du stock
-            </div>
-            <div className="text-3xl sm:text-4xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
-              {computedTotalValue.toFixed(2)} <span className="text-lg font-medium">EUR</span>
-            </div>
-            <div className="flex items-center gap-4 mt-3">
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                <span className="font-semibold text-black dark:text-white">{items.length}</span> articles
-              </div>
-              <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                <span className="font-semibold text-black dark:text-white">{categoriesWithCounts.length}</span> categories
-              </div>
-              {lastUpdate && (
-                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                  MaJ {lastUpdate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+          <div className="relative flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-sm mb-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-              )}
+                Valeur totale du stock
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                {computedTotalValue.toFixed(2)} <span className="text-lg font-medium">EUR</span>
+              </div>
+              <div className="flex items-center gap-4 mt-3">
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <span className="font-semibold text-black dark:text-white">{items.length}</span> articles
+                </div>
+                <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  <span className="font-semibold text-black dark:text-white">{categoriesWithCounts.length}</span> categories
+                </div>
+                {lastUpdate && (
+                  <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                    MaJ {lastUpdate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                )}
+              </div>
+              {/* Category legend mini */}
+              <div className="flex flex-wrap gap-x-3 gap-y-1 mt-3">
+                {categoryValues.slice(0, 5).map((cat, i) => (
+                  <div key={cat.category} className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pieColors[i % pieColors.length] }} />
+                    <span className="text-[10px] text-[#737373] dark:text-[#A3A3A3]">{cat.category}</span>
+                  </div>
+                ))}
+                {categoryValues.length > 5 && (
+                  <span className="text-[10px] text-[#9CA3AF]">+{categoryValues.length - 5}</span>
+                )}
+              </div>
             </div>
+            {/* CSS Conic Pie Chart */}
+            {categoryValues.length > 0 && (
+              <div className="flex-shrink-0 hidden sm:block">
+                <div
+                  className="w-20 h-20 rounded-full border-2 border-white dark:border-[#1A1A1A] shadow-sm"
+                  style={{ background: pieGradient }}
+                  title={categoryValues.map(c => `${c.category}: ${c.value.toFixed(2)} EUR`).join('\n')}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -1081,7 +1270,7 @@ export default function Inventory() {
           <div className={`text-2xl font-bold ${alerts.length > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
             {alerts.length}
           </div>
-          <div className="flex gap-1.5 mt-2">
+          <div className="flex gap-1.5 mt-2 flex-wrap">
             {criticalCount > 0 && (
               <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400">
                 {criticalCount} critique
@@ -1092,7 +1281,12 @@ export default function Inventory() {
                 {lowCount} bas
               </span>
             )}
-            {alerts.length === 0 && (
+            {fifoAlerts.length > 0 && (
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400">
+                {fifoAlerts.length} FIFO
+              </span>
+            )}
+            {alerts.length === 0 && fifoAlerts.length === 0 && (
               <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
                 Tout OK
               </span>
@@ -1100,7 +1294,7 @@ export default function Inventory() {
           </div>
         </div>
 
-        {/* Expiring Soon Card */}
+        {/* Expiring Soon + Predictions Card */}
         <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <div className="flex items-center gap-2 text-[#9CA3AF] dark:text-[#737373] text-xs sm:text-sm mb-2">
             <div className="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
@@ -1133,6 +1327,206 @@ export default function Inventory() {
         </div>
       </div>
 
+      {/* ══════ SMART AUTO-REORDER DASHBOARD ══════ */}
+      {reorderItems.length > 0 && (
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
+          <button
+            onClick={() => setShowSmartDashboard(!showSmartDashboard)}
+            className="w-full flex items-center justify-between px-5 py-4 hover:bg-[#FAFAFA] dark:hover:bg-[#111111] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="text-left">
+                <h3 className="font-bold text-sm sm:text-base">
+                  {reorderItems.length} ingredient{reorderItems.length > 1 ? 's' : ''} a commander
+                </h3>
+                <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
+                  {reorderBySupplier.length} fournisseur{reorderBySupplier.length > 1 ? 's' : ''} — Cout estime : {reorderItems.reduce((s, r) => s + r.estimatedCost, 0).toFixed(2)} EUR
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-red-600 text-white">{reorderItems.length}</span>
+              {showSmartDashboard ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
+            </div>
+          </button>
+
+          {showSmartDashboard && (
+            <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
+              {/* Per-supplier reorder cards */}
+              <div className="p-4 space-y-3">
+                {reorderBySupplier.map(([supplier, supplierItems]) => (
+                  <div key={supplier} className="border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-xl overflow-hidden">
+                    {/* Supplier header */}
+                    <div className="flex items-center justify-between px-4 py-3 bg-[#FAFAFA] dark:bg-[#171717]">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-[#111111] dark:bg-white text-white dark:text-black flex items-center justify-center text-xs font-bold">
+                          {supplier.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm">{supplier}</p>
+                          <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                            {supplierItems.length} article{supplierItems.length > 1 ? 's' : ''} — {supplierItems.reduce((s, r) => s + r.estimatedCost, 0).toFixed(2)} EUR
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleWhatsAppOrder(supplier)}
+                          className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 text-white text-[11px] font-medium rounded-lg hover:bg-emerald-700 transition-colors"
+                          title="Commander via WhatsApp"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                        </button>
+                      </div>
+                    </div>
+                    {/* Items list */}
+                    <div className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                      {supplierItems.map(ri => {
+                        const pct = ri.item.minStock > 0 ? Math.round((ri.item.currentStock / ri.item.minStock) * 100) : 0;
+                        return (
+                          <div key={ri.item.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <span className="text-base">{CATEGORY_EMOJIS[ri.item.ingredient.category] || '📦'}</span>
+                              <div className="min-w-0">
+                                <p className="font-medium truncate">{ri.item.ingredient.name}</p>
+                                <div className="flex items-center gap-2 text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                                  <span className={ri.item.currentStock <= 0 ? 'text-red-600 dark:text-red-400 font-bold' : 'text-amber-600 dark:text-amber-400 font-semibold'}>
+                                    {ri.item.currentStock} {ri.item.unit}
+                                  </span>
+                                  <span>/</span>
+                                  <span>min {ri.item.minStock}</span>
+                                  <span className="text-[#D1D5DB] dark:text-[#404040]">|</span>
+                                  <span>{pct}%</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 flex-shrink-0 text-right">
+                              <div>
+                                <p className="text-xs font-semibold">+{ri.suggestedQty} {ri.item.unit}</p>
+                                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">~{ri.estimatedCost.toFixed(2)} EUR</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Action buttons */}
+              <div className="px-4 pb-4 flex flex-wrap gap-2">
+                <button
+                  onClick={openReorderModal}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors"
+                >
+                  <ShoppingCart className="w-4 h-4" /> Commander tout
+                </button>
+                <button
+                  onClick={handleWhatsAppOrderAll}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" /> WhatsApp
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ══════ SMART STOCK PREDICTIONS ══════ */}
+      {stockPredictions.length > 0 && (
+        <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
+          <h3 className="font-semibold flex items-center gap-2 mb-3">
+            <CalendarClock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            Predictions de rupture
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            {stockPredictions.slice(0, 6).map(({ item, daysLeft, depletionDate, urgency, dailyRate }) => (
+              <div
+                key={item.id}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 border transition-all ${
+                  urgency === 'critical'
+                    ? 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-800'
+                    : 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                  urgency === 'critical' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-amber-100 dark:bg-amber-900/30'
+                }`}>
+                  <TrendingDown className={`w-4 h-4 ${urgency === 'critical' ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold truncate">{item.ingredient.name}</p>
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span className={`font-bold ${urgency === 'critical' ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                      {daysLeft === 0 ? 'Rupture !' : `${daysLeft}j restant${(daysLeft ?? 0) > 1 ? 's' : ''}`}
+                    </span>
+                    {dailyRate && (
+                      <span className="text-[#9CA3AF] dark:text-[#737373]">
+                        ({dailyRate.toFixed(1)} {item.unit}/j)
+                      </span>
+                    )}
+                  </div>
+                  {depletionDate && daysLeft !== null && daysLeft > 0 && (
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      Epuise le {depletionDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {stockPredictions.length > 6 && (
+            <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-2 text-center">
+              +{stockPredictions.length - 6} autre{stockPredictions.length - 6 > 1 ? 's' : ''} en alerte
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ══════ FIFO ALERTS ══════ */}
+      {fifoAlerts.length > 0 && (
+        <div className="bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800 rounded-2xl p-4">
+          <h3 className="font-semibold text-purple-700 dark:text-purple-400 flex items-center gap-2 mb-3">
+            <RotateCcw className="w-5 h-5" />
+            Alerte FIFO ({fifoAlerts.length})
+          </h3>
+          <p className="text-xs text-purple-600 dark:text-purple-400 mb-3">
+            Stock ancien bientot perime — utilisez en priorite le stock existant avant le nouveau.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {fifoAlerts.map(({ item, daysLeft }) => (
+              <div key={item.id} className="flex items-center justify-between bg-white dark:bg-[#0A0A0A] rounded-lg px-3 py-2 border border-purple-100 dark:border-purple-900/30">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{CATEGORY_EMOJIS[item.ingredient.category] || '📦'}</span>
+                  <div>
+                    <span className="text-sm font-medium">{item.ingredient.name}</span>
+                    <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
+                      {daysLeft <= 0 ? (
+                        <span className="text-red-600 dark:text-red-400 font-bold animate-pulse">EXPIRE</span>
+                      ) : (
+                        <span className="text-red-500 font-semibold">Expire dans {daysLeft}j</span>
+                      )}
+                      {' — '}Restock recent
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => openWaste(item)}
+                  className="px-2 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                >
+                  Declarer perte
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Alert Panel */}
       {alerts.length > 0 && (
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-4">
@@ -1158,29 +1552,41 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* Value by category (pie chart representation) */}
-      {valueData && valueData.byCategory.length > 0 && (
+      {/* Value by category with CSS pie chart */}
+      {categoryValues.length > 0 && (
         <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-4">
           <h3 className="font-semibold flex items-center gap-2 mb-3">
             <PieChart className="w-5 h-5 text-teal-600" />
             Valeur par categorie
           </h3>
-          <div className="flex flex-wrap gap-3">
-            {valueData.byCategory.sort((a, b) => b.value - a.value).map(cat => {
-              const pct = valueData.totalValue > 0 ? (cat.value / valueData.totalValue * 100) : 0;
-              return (
-                <div key={cat.category} className="flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#171717] rounded-lg px-3 py-2">
-                  <span>{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
-                  <div>
-                    <div className="text-sm font-medium">{cat.category}</div>
-                    <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} EUR ({pct.toFixed(1)}%)</div>
+          <div className="flex flex-col sm:flex-row gap-4 items-start">
+            {/* Pie Chart */}
+            <div className="flex-shrink-0 flex items-center justify-center">
+              <div
+                className="w-28 h-28 rounded-full shadow-inner border-2 border-[#E5E7EB] dark:border-[#262626]"
+                style={{ background: pieGradient }}
+              />
+            </div>
+            {/* Legend */}
+            <div className="flex flex-wrap gap-2 flex-1">
+              {categoryValues.map((cat, i) => {
+                const totalVal = categoryValues.reduce((s, c) => s + c.value, 0);
+                const pct = totalVal > 0 ? (cat.value / totalVal * 100) : 0;
+                return (
+                  <div key={cat.category} className="flex items-center gap-2 bg-[#FAFAFA] dark:bg-[#171717] rounded-lg px-3 py-2">
+                    <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: pieColors[i % pieColors.length] }} />
+                    <span className="text-sm">{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
+                    <div>
+                      <div className="text-sm font-medium">{cat.category}</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} EUR ({pct.toFixed(1)}%)</div>
+                    </div>
+                    <div className="w-16 h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
+                      <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pieColors[i % pieColors.length] }} />
+                    </div>
                   </div>
-                  <div className="w-16 h-2 bg-[#E5E7EB] dark:bg-[#171717] rounded-full overflow-hidden">
-                    <div className="h-full bg-teal-500 rounded-full" style={{ width: `${pct}%` }} />
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -1422,6 +1828,21 @@ export default function Inventory() {
                           <span className={`text-[10px] font-semibold ${stockPct < 20 ? 'text-red-600 dark:text-red-400' : stockPct < 50 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                             {status === 'critical' ? 'Critique' : status === 'low' ? 'Bas' : 'OK'}
                           </span>
+                          {/* ══════ STOCK PREDICTION INLINE ══════ */}
+                          {(() => {
+                            const daysRem = getDaysRemaining(item);
+                            const urgLevel = getDaysRemainingUrgency(daysRem);
+                            if (urgLevel === 'unknown') return null;
+                            return (
+                              <span className={`text-[9px] font-medium ${
+                                urgLevel === 'critical' ? 'text-red-600 dark:text-red-400' :
+                                urgLevel === 'warning' ? 'text-amber-600 dark:text-amber-400' :
+                                'text-[#9CA3AF] dark:text-[#737373]'
+                              }`}>
+                                {daysRem === 0 ? 'Rupture !' : `~${daysRem}j restant${(daysRem ?? 0) > 1 ? 's' : ''}`}
+                              </span>
+                            );
+                          })()}
                           {/* ══════ 4. QUICK RESTOCK BUTTON ══════ */}
                           {quickRestockId === item.id ? (
                             <div className="flex items-center gap-1">

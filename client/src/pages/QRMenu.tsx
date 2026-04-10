@@ -3,7 +3,7 @@ import {
   QrCode, Eye, EyeOff, Printer, Copy, Check, Globe, Smartphone, ExternalLink,
   Download, Palette, ChefHat, UtensilsCrossed, Coffee, Wine, CakeSlice,
   Salad, AlertTriangle, Filter, X, Search, Wheat, Milk, Egg, Fish,
-  Nut, Bean, Shell, Leaf
+  Nut, Bean, Shell, Leaf, ShoppingCart, Zap, Moon, Sun, Type
 } from 'lucide-react';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { useTranslation } from '../hooks/useTranslation';
@@ -171,7 +171,69 @@ const LANGUAGES = [
   { code: 'fr', label: 'Francais', flag: 'FR' },
   { code: 'en', label: 'English', flag: 'EN' },
   { code: 'es', label: 'Espanol', flag: 'ES' },
+  { code: 'ar', label: 'العربية', flag: 'AR' },
 ];
+
+// ── Menu Themes ──────────────────────────────────────────────────────────
+type MenuTheme = 'classic' | 'dark' | 'elegant';
+
+interface ThemeConfig {
+  key: MenuTheme;
+  label: string;
+  description: string;
+  preview: { bg: string; text: string; accent: string; card: string; border: string; font: string };
+}
+
+const THEMES: ThemeConfig[] = [
+  {
+    key: 'classic',
+    label: 'Classic',
+    description: 'Fond blanc, propre et moderne',
+    preview: { bg: '#FFFFFF', text: '#111111', accent: '#000000', card: '#F5F5F5', border: '#E5E7EB', font: 'sans-serif' },
+  },
+  {
+    key: 'dark',
+    label: 'Dark',
+    description: 'Fond noir, elegance sombre',
+    preview: { bg: '#0A0A0A', text: '#FFFFFF', accent: '#FFFFFF', card: '#1A1A1A', border: '#262626', font: 'sans-serif' },
+  },
+  {
+    key: 'elegant',
+    label: 'Elegant',
+    description: 'Creme, serif, sophistique',
+    preview: { bg: '#FAF7F2', text: '#3D2B1F', accent: '#8B6914', card: '#F5F0E8', border: '#E8DFD0', font: 'serif' },
+  },
+];
+
+// ── Multi-language translation map for dish names ─────────────────────────
+const DISH_TRANSLATIONS: Record<string, Record<string, string>> = {
+  'Salade Nicoise': { en: 'Nicoise Salad', es: 'Ensalada Nizarda', ar: 'سلطة نيسواز' },
+  'Veloute de potiron': { en: 'Pumpkin Veloute', es: 'Crema de Calabaza', ar: 'شوربة اليقطين' },
+  'Tartare de saumon': { en: 'Salmon Tartare', es: 'Tartar de Salmon', ar: 'تارتار السلمون' },
+  'Bruschetta tomates-basilic': { en: 'Tomato-Basil Bruschetta', es: 'Bruschetta de Tomate y Albahaca', ar: 'بروسكيتا بالطماطم والريحان' },
+  'Filet de boeuf sauce morilles': { en: 'Beef Filet with Morel Sauce', es: 'Filete de Res con Salsa de Colmenillas', ar: 'فيليه لحم بصلصة الفطر' },
+  'Risotto aux crevettes': { en: 'Shrimp Risotto', es: 'Risotto de Gambas', ar: 'ريزوتو بالقريدس' },
+  'Bowl vegan': { en: 'Vegan Bowl', es: 'Bowl Vegano', ar: 'طبق نباتي' },
+  'Pave de cabillaud': { en: 'Cod Fillet', es: 'Filete de Bacalao', ar: 'فيليه سمك القد' },
+  'Poulet fermier roti': { en: 'Roasted Free-Range Chicken', es: 'Pollo de Granja Asado', ar: 'دجاج مشوي' },
+  'Fondant au chocolat': { en: 'Chocolate Fondant', es: 'Fondant de Chocolate', ar: 'فوندان شوكولاتة' },
+  'Tarte au citron meringuee': { en: 'Lemon Meringue Tart', es: 'Tarta de Limon con Merengue', ar: 'تارت الليمون بالمارينغ' },
+  'Panna cotta fruits rouges': { en: 'Red Berry Panna Cotta', es: 'Panna Cotta de Frutos Rojos', ar: 'بانا كوتا بالتوت' },
+  'Sorbet artisanal (3 boules)': { en: 'Artisan Sorbet (3 scoops)', es: 'Sorbete Artesanal (3 bolas)', ar: 'سوربيه يدوي (3 كرات)' },
+  'Eau minerale Evian (75cl)': { en: 'Evian Mineral Water (75cl)', es: 'Agua Mineral Evian (75cl)', ar: 'ماء إيفيان معدني (75cl)' },
+  'Coca-Cola / Coca Zero': { en: 'Coca-Cola / Coca Zero', es: 'Coca-Cola / Coca Zero', ar: 'كوكا كولا / كوكا زيرو' },
+  'Jus de fruits frais': { en: 'Fresh Fruit Juice', es: 'Zumo de Frutas Frescas', ar: 'عصير فواكه طازج' },
+  'Cafe espresso': { en: 'Espresso Coffee', es: 'Cafe Espresso', ar: 'قهوة اسبريسو' },
+  'The / Infusion': { en: 'Tea / Herbal Infusion', es: 'Te / Infusion', ar: 'شاي / اعشاب' },
+};
+
+// Category labels per language (including AR)
+const CATEGORY_TRANSLATIONS: Record<string, Record<string, string>> = {
+  entrees: { fr: 'Entrees', en: 'Starters', es: 'Entrantes', ar: 'المقبلات' },
+  plats: { fr: 'Plats', en: 'Main Courses', es: 'Platos Principales', ar: 'الاطباق الرئيسية' },
+  desserts: { fr: 'Desserts', en: 'Desserts', es: 'Postres', ar: 'الحلويات' },
+  boissons: { fr: 'Boissons', en: 'Beverages', es: 'Bebidas', ar: 'المشروبات' },
+};
 
 // ── Demo menu fallback (shown ONLY if user has no recipes in the database) ──
 const DEMO_MENU: MenuItem[] = [
@@ -210,6 +272,13 @@ export default function QRMenu() {
   const [language, setLanguage] = useState('fr');
   const [copied, setCopied] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
+
+  // Theme
+  const [menuTheme, setMenuTheme] = useState<MenuTheme>('classic');
+
+  // Order mode (experimental)
+  const [orderModeEnabled, setOrderModeEnabled] = useState(false);
+  const [orderCart, setOrderCart] = useState<Record<string, number>>({});
 
   // Menu Preview
   const [activeCategory, setActiveCategory] = useState<MenuCategory | 'all'>('all');
@@ -268,9 +337,47 @@ export default function QRMenu() {
     if (!showAllergens) params.set('hideAllergens', '1');
     if (!showDescriptions) params.set('hideDesc', '1');
     if (language !== 'fr') params.set('lang', language);
+    if (menuTheme !== 'classic') params.set('theme', menuTheme);
+    if (orderModeEnabled) params.set('order', '1');
     const qs = params.toString();
     return `${base}/menu-public${qs ? '?' + qs : ''}`;
-  }, [showPrices, showAllergens, showDescriptions, language]);
+  }, [showPrices, showAllergens, showDescriptions, language, menuTheme, orderModeEnabled]);
+
+  // Helper: translate a dish name
+  const translateDishName = useCallback((name: string, lang: string) => {
+    if (lang === 'fr') return name;
+    return DISH_TRANSLATIONS[name]?.[lang] || name;
+  }, []);
+
+  // Helper: get category label
+  const getCategoryLabel = useCallback((catKey: string, lang: string) => {
+    return CATEGORY_TRANSLATIONS[catKey]?.[lang] || CATEGORY_TRANSLATIONS[catKey]?.fr || catKey;
+  }, []);
+
+  // Cart management
+  const addToCart = useCallback((itemId: string) => {
+    setOrderCart(prev => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
+  }, []);
+
+  const removeFromCart = useCallback((itemId: string) => {
+    setOrderCart(prev => {
+      const next = { ...prev };
+      if (next[itemId] && next[itemId] > 1) {
+        next[itemId] -= 1;
+      } else {
+        delete next[itemId];
+      }
+      return next;
+    });
+  }, []);
+
+  const totalCartItems = useMemo(() => Object.values(orderCart).reduce((a, b) => a + b, 0), [orderCart]);
+  const totalCartPrice = useMemo(() => {
+    return Object.entries(orderCart).reduce((sum, [id, qty]) => {
+      const item = menuItems.find(i => i.id === id);
+      return sum + (item ? item.price * qty : 0);
+    }, 0);
+  }, [orderCart, menuItems]);
 
   // Filter menu items
   const filteredItems = useMemo(() => {
@@ -476,18 +583,51 @@ export default function QRMenu() {
             />
           </div>
 
+          {/* Menu Theme Selector */}
+          <div className="bg-white dark:bg-black rounded-2xl border border-black/10 dark:border-white/10 p-5 space-y-3">
+            <h2 className="text-xs font-bold text-black dark:text-white uppercase tracking-wider flex items-center gap-2">
+              <Palette className="w-4 h-4 text-black/40 dark:text-white/40" />
+              Theme du menu
+            </h2>
+            <div className="space-y-2">
+              {THEMES.map(theme => (
+                <button
+                  key={theme.key}
+                  onClick={() => setMenuTheme(theme.key)}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all border ${
+                    menuTheme === theme.key
+                      ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
+                      : 'border-black/5 dark:border-white/5 hover:border-black/15 dark:hover:border-white/15'
+                  }`}
+                >
+                  {/* Theme color preview dots */}
+                  <div className="flex -space-x-1">
+                    <div className="w-5 h-5 rounded-full border-2 border-white dark:border-black" style={{ backgroundColor: theme.preview.bg }} />
+                    <div className="w-5 h-5 rounded-full border-2 border-white dark:border-black" style={{ backgroundColor: theme.preview.text }} />
+                    <div className="w-5 h-5 rounded-full border-2 border-white dark:border-black" style={{ backgroundColor: theme.preview.accent }} />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <div className="text-black dark:text-white font-semibold text-sm">{theme.label}</div>
+                    <div className="text-[10px] text-black/40 dark:text-white/40">{theme.description}</div>
+                  </div>
+                  {menuTheme === theme.key && <Check className="w-4 h-4 text-black dark:text-white" />}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Language */}
           <div className="bg-white dark:bg-black rounded-2xl border border-black/10 dark:border-white/10 p-5 space-y-3">
             <h2 className="text-xs font-bold text-black dark:text-white uppercase tracking-wider flex items-center gap-2">
               <Globe className="w-4 h-4 text-black/40 dark:text-white/40" />
               Langue du menu
             </h2>
-            <div className="space-y-1.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {LANGUAGES.map(lang => (
                 <button
                   key={lang.code}
                   onClick={() => setLanguage(lang.code)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     language === lang.code
                       ? 'bg-black dark:bg-white text-white dark:text-black'
                       : 'text-black/50 dark:text-white/50 hover:bg-black/5 dark:hover:bg-white/5'
@@ -496,11 +636,31 @@ export default function QRMenu() {
                   <span className="text-xs font-bold w-6 h-6 rounded-md bg-black/5 dark:bg-white/10 flex items-center justify-center">
                     {lang.flag}
                   </span>
-                  {lang.label}
-                  {language === lang.code && <Check className="w-4 h-4 ml-auto" />}
+                  <span className="truncate">{lang.label}</span>
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Order Mode (experimental) */}
+          <div className="bg-white dark:bg-black rounded-2xl border border-black/10 dark:border-white/10 p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xs font-bold text-black dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4 text-black/40 dark:text-white/40" />
+                Commande depuis menu
+              </h2>
+              <span className="px-1.5 py-0.5 bg-black/5 dark:bg-white/5 text-[9px] font-bold text-black/40 dark:text-white/40 rounded uppercase">Beta</span>
+            </div>
+            <p className="text-[11px] text-black/40 dark:text-white/40 leading-relaxed">
+              Activez pour que vos clients puissent ajouter des plats et envoyer une commande vers la cuisine.
+            </p>
+            <ToggleOption
+              icon={<Zap className="w-4 h-4" />}
+              iconOff={<Zap className="w-4 h-4" />}
+              label="Activer commandes"
+              enabled={orderModeEnabled}
+              onChange={setOrderModeEnabled}
+            />
           </div>
 
           {/* URL preview */}
@@ -681,7 +841,7 @@ export default function QRMenu() {
                       {cat.icon}
                     </div>
                     <h3 className="text-lg font-bold text-black dark:text-white" style={{ fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }}>
-                      {cat.label}
+                      {getCategoryLabel(cat.key, language)}
                     </h3>
                     <div className="flex-1 h-px bg-black/5 dark:bg-white/5" />
                     <span className="text-xs font-semibold text-black/30 dark:text-white/30">{items.length} plats</span>
@@ -696,6 +856,12 @@ export default function QRMenu() {
                         showPrices={showPrices}
                         showAllergens={showAllergens}
                         showDescriptions={showDescriptions}
+                        language={language}
+                        translateName={translateDishName}
+                        orderMode={orderModeEnabled}
+                        cartQty={orderCart[item.id] || 0}
+                        onAddToCart={() => addToCart(item.id)}
+                        onRemoveFromCart={() => removeFromCart(item.id)}
                       />
                     ))}
                   </div>
@@ -704,38 +870,71 @@ export default function QRMenu() {
             })}
           </div>
         )}
+
+        {/* Floating Cart Summary (when order mode is on) */}
+        {orderModeEnabled && totalCartItems > 0 && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black dark:bg-white text-white dark:text-black px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 min-w-[320px]">
+            <div className="w-10 h-10 bg-white/20 dark:bg-black/20 rounded-xl flex items-center justify-center">
+              <ShoppingCart className="w-5 h-5" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold">{totalCartItems} article{totalCartItems > 1 ? 's' : ''}</p>
+              <p className="text-xs opacity-60">{totalCartPrice.toFixed(2)} EUR</p>
+            </div>
+            <button
+              onClick={() => {
+                alert(`Commande de ${totalCartItems} articles (${totalCartPrice.toFixed(2)} EUR) envoyee a la cuisine ! (Mode demo)`);
+                setOrderCart({});
+              }}
+              className="px-5 py-2.5 bg-white dark:bg-black text-black dark:text-white rounded-xl text-sm font-bold hover:opacity-80 transition"
+            >
+              Commander
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 // ── Dish Card Component ──────────────────────────────────────────────────
-function DishCard({ item, showPrices, showAllergens, showDescriptions }: {
+function DishCard({ item, showPrices, showAllergens, showDescriptions, language, translateName, orderMode, cartQty, onAddToCart, onRemoveFromCart }: {
   item: MenuItem;
   showPrices: boolean;
   showAllergens: boolean;
   showDescriptions: boolean;
+  language: string;
+  translateName: (name: string, lang: string) => string;
+  orderMode: boolean;
+  cartQty: number;
+  onAddToCart: () => void;
+  onRemoveFromCart: () => void;
 }) {
   const allergenConfigs = ALLERGENS.filter(a => item.allergens.includes(a.key));
+  const displayName = translateName(item.name, language);
 
   return (
-    <div className="group bg-white dark:bg-black border border-black/[0.06] dark:border-white/[0.06] rounded-2xl p-4 hover:border-black/15 dark:hover:border-white/15 hover:shadow-sm transition-all">
+    <div className={`group bg-white dark:bg-black border rounded-2xl p-4 hover:shadow-sm transition-all ${
+      cartQty > 0
+        ? 'border-black/30 dark:border-white/30 ring-1 ring-black/10 dark:ring-white/10'
+        : 'border-black/[0.06] dark:border-white/[0.06] hover:border-black/15 dark:hover:border-white/15'
+    }`}>
       {/* Top row: badges */}
       {(item.isPopular || item.isNew || item.isVegetarian || item.isVegan) && (
         <div className="flex flex-wrap gap-1.5 mb-2.5">
           {item.isPopular && (
             <span className="px-2 py-0.5 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold rounded-md uppercase tracking-wide">
-              Populaire
+              {language === 'en' ? 'Popular' : language === 'es' ? 'Popular' : language === 'ar' ? 'شائع' : 'Populaire'}
             </span>
           )}
           {item.isNew && (
             <span className="px-2 py-0.5 bg-black/10 dark:bg-white/10 text-black dark:text-white text-[10px] font-bold rounded-md uppercase tracking-wide">
-              Nouveau
+              {language === 'en' ? 'New' : language === 'es' ? 'Nuevo' : language === 'ar' ? 'جديد' : 'Nouveau'}
             </span>
           )}
           {item.isVegetarian && !item.isVegan && (
             <span className="px-2 py-0.5 bg-black/5 dark:bg-white/5 text-black/60 dark:text-white/60 text-[10px] font-bold rounded-md flex items-center gap-1">
-              <Leaf className="w-3 h-3" /> Vegetarien
+              <Leaf className="w-3 h-3" /> {language === 'en' ? 'Vegetarian' : language === 'es' ? 'Vegetariano' : language === 'ar' ? 'نباتي' : 'Vegetarien'}
             </span>
           )}
           {item.isVegan && (
@@ -748,8 +947,8 @@ function DishCard({ item, showPrices, showAllergens, showDescriptions }: {
 
       {/* Name + Price */}
       <div className="flex items-start justify-between gap-3">
-        <h4 className="text-sm font-bold text-black dark:text-white leading-snug">
-          {item.name}
+        <h4 className={`text-sm font-bold text-black dark:text-white leading-snug ${language === 'ar' ? 'text-right' : ''}`}>
+          {displayName}
         </h4>
         {showPrices && (
           <span className="shrink-0 text-sm font-extrabold text-black dark:text-white tabular-nums">
@@ -778,6 +977,37 @@ function DishCard({ item, showPrices, showAllergens, showDescriptions }: {
               {a.emoji}
             </span>
           ))}
+        </div>
+      )}
+
+      {/* Order button */}
+      {orderMode && (
+        <div className="mt-3 flex items-center gap-2">
+          {cartQty > 0 ? (
+            <div className="flex items-center gap-2 w-full">
+              <button
+                onClick={onRemoveFromCart}
+                className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center text-black dark:text-white font-bold hover:bg-black/10 dark:hover:bg-white/10 transition"
+              >
+                -
+              </button>
+              <span className="flex-1 text-center text-sm font-bold text-black dark:text-white">{cartQty}</span>
+              <button
+                onClick={onAddToCart}
+                className="w-8 h-8 rounded-lg bg-black dark:bg-white flex items-center justify-center text-white dark:text-black font-bold hover:opacity-80 transition"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onAddToCart}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-black/5 dark:bg-white/5 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black text-black/60 dark:text-white/60 rounded-xl text-xs font-bold transition-all"
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+              {language === 'en' ? 'Add to order' : language === 'es' ? 'Agregar' : language === 'ar' ? 'اضف للطلب' : 'Commander'}
+            </button>
+          )}
         </div>
       )}
     </div>

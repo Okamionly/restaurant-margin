@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   ChefHat, ClipboardList, Truck, BarChart3,
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
@@ -332,6 +333,7 @@ const socialProofCities = [
 const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export default function Landing() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const heroVariant = searchParams.get('variant') === 'b' ? 'b' : 'a';
 
@@ -587,16 +589,16 @@ export default function Landing() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Demo</button>
-            <button onClick={() => scrollTo('features')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Fonctionnalites</button>
-            <button onClick={() => scrollTo('pricing')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Tarifs</button>
-            <button onClick={() => scrollTo('faq')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">FAQ</button>
+            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navDemo')}</button>
+            <button onClick={() => scrollTo('features')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navFeatures')}</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navPricing')}</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navFAQ')}</button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors px-3 py-2">Connexion</Link>
+            <Link to="/login" className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors px-3 py-2">{t('landing.navLogin')}</Link>
             <Link to="/login?mode=register" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold transition-all">
-              Essai gratuit <ArrowRight className="w-4 h-4" />
+              {t('landing.navTrialFree')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -608,13 +610,13 @@ export default function Landing() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-[#FFFFFF] border-t border-[#E5E7EB]">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Demo</button>
-              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Fonctionnalites</button>
-              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Tarifs</button>
-              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
+              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navDemo')}</button>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navFeatures')}</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navPricing')}</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navFAQ')}</button>
               <hr className="border-[#E5E7EB]" />
-              <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">Connexion</Link>
-              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 7 jours</Link>
+              <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navLogin')}</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">{t('landing.ctaTrial')}</Link>
             </div>
           </div>
         )}
@@ -636,21 +638,21 @@ export default function Landing() {
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(13,148,136,0.08)]">
                 <Zap className="w-3.5 h-3.5" />
-                PLATEFORME #1 DES RESTAURATEURS
+                {t('landing.badge')}
               </div>
 
               {heroVariant === 'a' ? (
                 <>
                   <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
-                    <span className="text-[#111111]">Calculez le cout reel</span>
+                    <span className="text-[#111111]">{t('landing.heroTitleA1')}</span>
                     <br />
-                    <span className="text-[#111111]">de chaque plat </span>
+                    <span className="text-[#111111]">{t('landing.heroTitleA2')}</span>
                     <span className="bg-gradient-to-r from-teal-500 to-teal-600 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(13,148,136,0.2)]">
-                      en 2 clics.
+                      {t('landing.heroTitleA3')}
                     </span>
                   </h1>
                   <p className="mt-6 text-lg sm:text-xl text-[#6B7280] max-w-xl mx-auto lg:mx-0 leading-relaxed animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                    La plateforme tout-en-un pour les restaurateurs qui veulent reprendre le controle de leurs couts matiere, optimiser leur carte et automatiser leurs commandes.
+                    {t('landing.heroSubA')}
                   </p>
                 </>
               ) : (
@@ -673,17 +675,17 @@ export default function Landing() {
                   to="/login?mode=register"
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold shadow-lg transition-all text-base"
                 >
-                  Essai gratuit 7 jours <ArrowRight className="w-4 h-4" />
+                  {t('landing.ctaTrial')} <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   to="/demo"
                   className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border-2 border-[#111111] text-[#111111] font-semibold transition-all text-base hover:bg-[#111111] hover:text-white"
                 >
-                  <Play className="w-4 h-4" /> Voir la demo
+                  <Play className="w-4 h-4" /> {t('landing.ctaDemo')}
                 </Link>
               </div>
               <p className="mt-3 text-sm text-[#6B7280] text-center lg:text-left flex items-center justify-center lg:justify-start gap-1.5 animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                <Shield className="w-3.5 h-3.5" /> Pas de carte bancaire requise
+                <Shield className="w-3.5 h-3.5" /> {t('landing.noCreditCard')}
               </p>
             </div>
 
@@ -706,7 +708,7 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold">
-                  Nouveau 2026
+                  {t('landing.new2026')}
                 </div>
               </div>
             </div>
@@ -715,7 +717,7 @@ export default function Landing() {
           {/* Social proof headline */}
           <div className="animate-[fadeInUp_1s_ease-out_0.45s_both]">
             <p className="mt-16 text-center text-sm font-semibold text-[#9CA3AF] uppercase tracking-[0.15em] mb-4">
-              Deja adopte par des restaurateurs partout en France
+              {t('landing.socialProof')}
             </p>
           </div>
 
@@ -723,10 +725,10 @@ export default function Landing() {
           <div className="animate-[fadeInUp_1s_ease-out_0.5s_both]">
             <div className="bg-white border border-[#E5E7EB] shadow-sm rounded-2xl py-8 px-4">
               <div className="grid grid-cols-2 md:grid-cols-5 gap-6 divide-[#E5E7EB] md:divide-x">
-                <StatCounter value={150} suffix="+" label="Restaurants equipes" />
-                <StatCounter value={12400} suffix="" label="Fiches techniques creees" />
-                <StatCounter value={340} suffix="k" label="Euros economises en food cost" />
-                <StatCounter value={8} suffix="%" label="Cout matiere economise" />
+                <StatCounter value={150} suffix="+" label={t('landing.statRestaurants')} />
+                <StatCounter value={12400} suffix="" label={t('landing.statRecipes')} />
+                <StatCounter value={340} suffix="k" label={t('landing.statSavings')} />
+                <StatCounter value={8} suffix="%" label={t('landing.statFoodCost')} />
                 <div className="text-center px-6">
                   <div className="text-3xl sm:text-4xl font-extrabold text-[#111111] tracking-tight">4.8/5</div>
                   <div className="text-sm text-[#6B7280] mt-1 font-medium">Satisfaction clients</div>

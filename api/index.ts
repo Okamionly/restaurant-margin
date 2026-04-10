@@ -451,6 +451,11 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', env: 'vercel' });
 });
 
+// Simple cron test
+app.get('/api/cron-test', (_req, res) => {
+  res.json({ ok: true, crons_loaded: true, time: new Date().toISOString() });
+});
+
 // ══════════════════════════════════════════════════════════════════════════
 // CRON AGENTS — Vercel scheduled jobs (run automatically, no auth needed)
 // Protected by CRON_SECRET env var to prevent unauthorized access

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Check, X, ChefHat, Sparkles, Building2, HelpCircle, ChevronDown, ChevronUp,
   ArrowRight, CheckCircle2, Loader2, Eye, ShieldCheck, TrendingUp, Users,
@@ -396,6 +396,10 @@ function ComparisonTable() {
 }
 
 export default function Pricing() {
+  useEffect(() => {
+    document.title = 'Tarifs \u2014 RestauMargin';
+  }, []);
+
   const [annual, setAnnual] = useState(false);
   const [showDevisForm, setShowDevisForm] = useState(false);
   const [devisForm, setDevisForm] = useState({ name: '', email: '', phone: '', message: '' });

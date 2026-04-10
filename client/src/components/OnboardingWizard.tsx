@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { createIngredient, createRecipe } from '../services/api';
+import { recipePacks } from '../data/recipeTemplates';
+import type { RecipePack } from '../data/recipeTemplates';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'onboarding-completed';
@@ -29,13 +31,20 @@ const SUGGESTED_INGREDIENTS: SuggestedIngredient[] = [
 ];
 
 const RESTAURANT_TYPES = [
-  { value: 'brasserie', label: 'Brasserie', icon: UtensilsCrossed, emoji: '🍽️' },
-  { value: 'gastronomique', label: 'Gastronomique', icon: Star, emoji: '⭐' },
-  { value: 'fast-food', label: 'Fast-food', icon: Flame, emoji: '🍔' },
-  { value: 'pizzeria', label: 'Pizzeria', icon: Pizza, emoji: '🍕' },
-  { value: 'japonais', label: 'Japonais', icon: Fish, emoji: '🍣' },
-  { value: 'autre', label: 'Autre', icon: Store, emoji: '🏪' },
+  { value: 'brasserie', label: 'Brasserie', icon: UtensilsCrossed, emoji: '🍽️', desc: 'Cuisine traditionnelle, plats du jour' },
+  { value: 'gastronomique', label: 'Gastronomique', icon: Star, emoji: '⭐', desc: 'Haute cuisine, produits nobles' },
+  { value: 'fast-food', label: 'Burger', icon: Flame, emoji: '🍔', desc: 'Burgers, frites, fast casual' },
+  { value: 'pizzeria', label: 'Pizzeria', icon: Pizza, emoji: '🍕', desc: 'Pizzas, antipasti, pasta' },
+  { value: 'japonais', label: 'Japonais', icon: Fish, emoji: '🍣', desc: 'Sushi, ramen, bento' },
+  { value: 'autre', label: 'Autre', icon: Store, emoji: '🍴', desc: 'Tout type de restauration' },
 ];
+
+// Map restaurant type to recipe pack ID
+const RESTAURANT_PACK_MAP: Record<string, string> = {
+  'brasserie': 'brasserie-francaise',
+  'fast-food': 'burger',
+  'pizzeria': 'pizzeria',
+};
 
 const GOALS = [
   { value: 'reduce-costs', label: 'Reduire les couts', icon: TrendingDown, desc: 'Identifier les ingredients trop chers et trouver des alternatives' },
@@ -187,6 +196,70 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
 
   // Celebration state
   const [showConfetti, setShowConfetti] = useState(false);
+
+  // Recipe pack import state
+  const [importingPack, setImportingPack] = useState(false);
+  const [packImported, setPackImported] = useState(false);
+
+  // Get the matching recipe pack for the restaurant type
+  const matchingPack: RecipePack | undefined = useMemo(() => {
+    const packId = RESTAURANT_PACK_MAP[restaurantType];
+    if (!packId) return undefined;
+    return recipePacks.find(p => p.id === packId);
+  }, [restaurantType]);
+
+  const handleImportPack = useCallback(async () => {
+    if (!matchingPack || importingPack || packImported) return;
+    setImportingPack(true);
+    try {
+      for (const packRecipe of matchingPack.recipes.slice(0, 5)) {
+        // Create ingredients first
+        const ingIds: number[] = [];
+        for (const ing of packRecipe.ingredients) {
+          try {
+            const created = await createIngredient({
+              name: ing.name,
+              unit: ing.unit,
+              pricePerUnit: ing.pricePerUnit,
+              category: ing.category,
+              supplier: null,
+              supplierId: null,
+              allergens: [],
+            });
+            ingIds.push(created.id);
+          } catch {
+            // Skip duplicates
+          }
+        }
+        // Create recipe
+        if (ingIds.length > 0) {
+          const recipeIngredients = packRecipe.ingredients
+            .map((ing, idx) => {
+              const ingId = ingIds[idx];
+              if (!ingId) return null;
+              return { ingredientId: ingId, quantity: ing.quantity, wastePercent: ing.wastePercent };
+            })
+            .filter(Boolean) as { ingredientId: number; quantity: number; wastePercent: number }[];
+
+          if (recipeIngredients.length > 0) {
+            await createRecipe({
+              name: packRecipe.name,
+              category: packRecipe.category,
+              sellingPrice: packRecipe.sellingPrice,
+              nbPortions: packRecipe.nbPortions,
+              ingredients: recipeIngredients,
+            });
+          }
+        }
+      }
+      setPackImported(true);
+      updateOnboardingStep('recipeCreated', true);
+    } catch {
+      // Continue even if some fail
+    } finally {
+      setImportingPack(false);
+    }
+  }, [matchingPack, importingPack, packImported]);
 
   // AI autocomplete suggestions for ingredient name
   const autoCompleteSuggestions = useMemo(() => {
@@ -483,22 +556,27 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                   <button
                     key={type.value}
                     onClick={() => setRestaurantType(type.value)}
-                    className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all duration-200 ${
+                    className={`flex flex-col items-center gap-1.5 p-4 rounded-2xl border-2 transition-all duration-200 group ${
                       restaurantType === type.value
                         ? 'border-[#111111] dark:border-white bg-[#F3F4F6] dark:bg-[#171717] scale-[1.02]'
                         : 'border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#9CA3AF] dark:hover:border-[#555555] hover:bg-[#F9FAFB] dark:hover:bg-[#171717]/50'
                     }`}
                   >
-                    <span className="text-3xl">{type.emoji}</span>
-                    <span className={`text-sm font-medium ${
+                    <span className={`text-4xl transition-transform duration-200 ${
+                      restaurantType === type.value ? 'scale-110' : 'group-hover:scale-105'
+                    }`}>{type.emoji}</span>
+                    <span className={`text-sm font-bold ${
                       restaurantType === type.value
                         ? 'text-[#111111] dark:text-white'
                         : 'text-[#6B7280] dark:text-[#A3A3A3]'
                     }`}>
                       {type.label}
                     </span>
+                    <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] leading-tight text-center">
+                      {type.desc}
+                    </span>
                     {restaurantType === type.value && (
-                      <div className="w-5 h-5 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center">
+                      <div className="w-5 h-5 rounded-full bg-[#111111] dark:bg-white flex items-center justify-center mt-0.5">
                         <Check className="w-3 h-3 text-white dark:text-[#111111]" />
                       </div>
                     )}
@@ -948,6 +1026,47 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                   </div>
                 </div>
               </div>
+
+              {/* Recipe pack import suggestion */}
+              {matchingPack && (
+                <div className="mt-4 p-4 rounded-xl border-2 border-dashed border-teal-300 dark:border-teal-700 bg-teal-50/50 dark:bg-teal-900/10 text-left">
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl flex-shrink-0">{matchingPack.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-[#111111] dark:text-white">
+                        Importer le pack "{matchingPack.name}" ?
+                      </p>
+                      <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-0.5">
+                        {matchingPack.recipes.slice(0, 5).length} recettes pre-remplies avec ingredients et prix
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {matchingPack.recipes.slice(0, 5).map(r => (
+                          <span key={r.name} className="text-[10px] px-2 py-0.5 rounded-full bg-white dark:bg-[#1A1A1A] border border-[#E5E7EB] dark:border-[#333333] text-[#6B7280] dark:text-[#A3A3A3]">
+                            {r.name}
+                          </span>
+                        ))}
+                      </div>
+                      <button
+                        onClick={handleImportPack}
+                        disabled={importingPack || packImported}
+                        className={`mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                          packImported
+                            ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700'
+                            : 'bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#333333] dark:hover:bg-[#E5E7EB] disabled:opacity-50'
+                        }`}
+                      >
+                        {packImported ? (
+                          <><Check className="w-4 h-4" /> Pack importe !</>
+                        ) : importingPack ? (
+                          <><Loader2 className="w-4 h-4 animate-spin" /> Import en cours...</>
+                        ) : (
+                          <><Sparkles className="w-4 h-4" /> Importer {matchingPack.recipes.slice(0, 5).length} recettes {matchingPack.name}</>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

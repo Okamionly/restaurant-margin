@@ -1043,7 +1043,7 @@ export default function Dashboard() {
       )}
 
       {/* ── TABS ────────────────────────────────────────────────────────── */}
-      <div className="flex gap-1 p-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-xl overflow-x-auto">
+      <div className="flex gap-1 p-1 bg-[#F3F4F6] dark:bg-[#0A0A0A] rounded-xl overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
         {TABS.map(tab => (
           <button
             key={tab.key}
@@ -1156,18 +1156,63 @@ export default function Dashboard() {
             }
           })}
 
-          {/* Empty state */}
+          {/* Empty state — "Commencez ici" onboarding card */}
           {(!stats || stats.totalRecipes === 0) && recipes.length === 0 && (
-            <div className="text-center py-16 rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black">
-              <ChefHat className="w-14 h-14 mx-auto text-[#D1D5DB] dark:text-[#525252] mb-4" />
-              <h3 className="text-lg font-semibold text-[#111111] dark:text-white mb-2">{t("dashboard.welcome")}</h3>
-              <p className="text-[#9CA3AF] dark:text-[#737373] mb-6 max-w-md mx-auto">{t("dashboard.emptyStateDesc")}</p>
-              <div className="flex gap-3 justify-center">
-                <Link to="/ingredients" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-medium rounded-xl">
-                  <Plus className="w-4 h-4" /> {t("dashboard.addIngredients")}
+            <div className="rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-black overflow-hidden">
+              {/* Header */}
+              <div className="px-6 py-8 text-center border-b border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#F9FAFB] dark:bg-[#0A0A0A]">
+                <div className="text-5xl mb-3">👨‍🍳</div>
+                <h3 className="text-xl font-bold text-[#111111] dark:text-white font-satoshi mb-1">Commencez ici</h3>
+                <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-sm mx-auto">
+                  3 etapes simples pour maitriser vos marges et optimiser votre restaurant
+                </p>
+              </div>
+
+              {/* 3 steps */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#E5E7EB] dark:divide-[#1A1A1A]">
+                {/* Step 1 */}
+                <Link to="/ingredients" className="group p-6 flex flex-col items-center text-center hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <ShoppingBasket className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1">Etape 1</div>
+                  <h4 className="text-sm font-bold text-[#111111] dark:text-white mb-1">Ajoutez vos ingredients</h4>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] leading-relaxed">
+                    Saisissez vos ingredients et leurs prix fournisseur
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 group-hover:gap-2 transition-all">
+                    Commencer <ArrowRight className="w-3 h-3" />
+                  </span>
                 </Link>
-                <Link to="/recipes" className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#E5E5E5] text-sm font-medium rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]">
-                  {t("dashboard.createRecipe")}
+
+                {/* Step 2 */}
+                <Link to="/recipes" className="group p-6 flex flex-col items-center text-center hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <ClipboardList className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">Etape 2</div>
+                  <h4 className="text-sm font-bold text-[#111111] dark:text-white mb-1">Creez vos fiches techniques</h4>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] leading-relaxed">
+                    Associez ingredients et prix de vente pour chaque plat
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 group-hover:gap-2 transition-all">
+                    Creer <ArrowRight className="w-3 h-3" />
+                  </span>
+                </Link>
+
+                {/* Step 3 */}
+                <Link to="/analytics" className="group p-6 flex flex-col items-center text-center hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A]/50 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <TrendingUp className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div className="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">Etape 3</div>
+                  <h4 className="text-sm font-bold text-[#111111] dark:text-white mb-1">Analysez vos marges</h4>
+                  <p className="text-xs text-[#9CA3AF] dark:text-[#737373] leading-relaxed">
+                    Visualisez food cost, marges et rentabilite en un clic
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400 group-hover:gap-2 transition-all">
+                    Analyser <ArrowRight className="w-3 h-3" />
+                  </span>
                 </Link>
               </div>
             </div>

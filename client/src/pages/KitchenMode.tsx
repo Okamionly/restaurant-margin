@@ -575,7 +575,7 @@ function RecipeQuickView({ recipe, onClose }: { recipe: Recipe; onClose: () => v
               {recipe.cookTimeMinutes > 0 && <span className="text-lg text-[#f97316]">Cuisson {recipe.cookTimeMinutes}min</span>}
             </div>
           </div>
-          <button onClick={onClose} className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white transition-colors min-w-[64px] min-h-[64px] flex items-center justify-center">
+          <button onClick={onClose} aria-label="Fermer" className="p-3 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] hover:text-white transition-colors min-w-[64px] min-h-[64px] flex items-center justify-center">
             <X className="w-7 h-7" />
           </button>
         </div>
@@ -1035,6 +1035,7 @@ function OrderCard({
         <div className="px-4 py-3 bg-[#0a0a0a] border-t border-[#1a1a1a] flex flex-col gap-2">
           {/* BUMP button - full width, tall, neon glow */}
           <button onClick={() => onBump(order.id)}
+            aria-label="Marquer comme pret"
             className="w-full py-4 rounded-xl bg-[#059669] hover:bg-[#10b981] active:scale-[0.97] text-white text-lg font-black uppercase tracking-wider flex items-center justify-center gap-2 kds-transition"
             style={{ boxShadow: '0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(16, 185, 129, 0.15)' }}>
             <ArrowDown className="w-7 h-7" />
@@ -1042,6 +1043,7 @@ function OrderCard({
           </button>
           {/* HOLD button */}
           <button onClick={() => onHold(order.id)}
+            aria-label={isOnHold ? 'Reprendre la commande' : 'Mettre la commande en pause'}
             className={`w-full min-h-[48px] rounded-xl kds-transition flex items-center justify-center gap-2
               ${isOnHold ? 'bg-[#f59e0b]/20 text-[#f59e0b] hover:bg-[#f59e0b]/30' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-[#f59e0b]'}`}
             title={isOnHold ? 'Reprendre' : 'Mettre en pause'}>
@@ -1294,36 +1296,36 @@ function StatsBar({ orders, stats, onOpenStats }: { orders: Order[]; stats: Dail
     ? Math.round(stats.totalPrepTimes.reduce((a, b) => a + b, 0) / stats.totalPrepTimes.length) : 0;
 
   return (
-    <div className="bg-[#0a0a0a] border-t-2 border-[#262626] px-6 py-3 shrink-0 cursor-pointer hover:bg-[#111111] kds-transition"
+    <div className="bg-[#0a0a0a] border-t-2 border-[#262626] px-3 md:px-6 py-2 md:py-3 shrink-0 cursor-pointer hover:bg-[#111111] kds-transition"
       onClick={onOpenStats} title="Cliquer pour voir les stats detaillees">
-      <div className="flex items-center justify-around gap-6 max-w-full">
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="w-3 h-3 rounded-full bg-[#22c55e]" />
-          <span className="text-[#a1a1aa] text-base">Servis</span>
-          <span className="text-white text-2xl font-black font-mono">{stats.platsServis}</span>
+      <div className="flex items-center justify-around gap-3 md:gap-6 max-w-full">
+        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+          <div className="w-2.5 md:w-3 h-2.5 md:h-3 rounded-full bg-[#22c55e]" />
+          <span className="text-[#a1a1aa] text-xs md:text-base">Servis</span>
+          <span className="text-white text-lg md:text-2xl font-black font-mono">{stats.platsServis}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="w-3 h-3 rounded-full bg-[#fbbf24]" />
-          <span className="text-[#a1a1aa] text-base">En prep</span>
-          <span className="text-[#fbbf24] text-2xl font-black font-mono">{enPrep}</span>
+        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+          <div className="w-2.5 md:w-3 h-2.5 md:h-3 rounded-full bg-[#fbbf24]" />
+          <span className="text-[#a1a1aa] text-xs md:text-base">Prep</span>
+          <span className="text-[#fbbf24] text-lg md:text-2xl font-black font-mono">{enPrep}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+          <Clock className="w-4 md:w-5 h-4 md:h-5 text-[#71717a]" />
+          <span className="text-[#a1a1aa] text-xs md:text-base hidden sm:inline">Tps moy</span>
+          <span className="text-white text-lg md:text-2xl font-black font-mono">{formatElapsed(avgTime)}</span>
+        </div>
+        <div className="hidden md:flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-[#71717a]" />
           <span className="text-[#a1a1aa] text-base">En attente</span>
           <span className="text-white text-2xl font-black font-mono">{enAttente}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="hidden md:flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-[#34d399]" />
           <span className="text-[#a1a1aa] text-base">Prets</span>
           <span className="text-[#34d399] text-2xl font-black font-mono">{prets}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Clock className="w-5 h-5 text-[#71717a]" />
-          <span className="text-[#a1a1aa] text-base">Temps moy</span>
-          <span className="text-white text-2xl font-black font-mono">{formatElapsed(avgTime)}</span>
-        </div>
         <div className="flex items-center gap-1 shrink-0">
-          <BarChart3 className="w-5 h-5 text-[#14b8a6]" /><span className="text-[#14b8a6] text-sm font-bold">STATS</span>
+          <BarChart3 className="w-4 md:w-5 h-4 md:h-5 text-[#14b8a6]" /><span className="text-[#14b8a6] text-xs md:text-sm font-bold">STATS</span>
         </div>
       </div>
     </div>

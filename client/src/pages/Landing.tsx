@@ -381,6 +381,10 @@ export default function Landing() {
   /* ---- side-effects ---- */
 
   useEffect(() => {
+    document.title = 'RestauMargin \u2014 Calculez vos marges restaurant';
+  }, []);
+
+  useEffect(() => {
     const dismissed = localStorage.getItem('newsletterDismissed');
     const isLoggedIn = !!localStorage.getItem('token');
     if (dismissed || isLoggedIn) return;

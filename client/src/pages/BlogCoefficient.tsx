@@ -8,7 +8,7 @@ import { ChefHat, BookOpen, Calculator, ArrowRight, ArrowLeft, Clock, User } fro
 
 export default function BlogCoefficient() {
   useEffect(() => {
-    document.title = 'Comment calculer le coefficient multiplicateur de vos plats | RestauMargin';
+    document.title = 'Comment calculer le coefficient multiplicateur de vos plats \u2014 Blog RestauMargin';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute('content', 'Apprenez a calculer le coefficient multiplicateur en restauration pour fixer vos prix de vente et maximiser vos marges. Guide complet avec exemples.');

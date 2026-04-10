@@ -1,74 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Pages principales -->
   <url>
     <loc>https://www.restaumargin.fr/</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.restaumargin.fr/login</loc>
-    <lastmod>2026-04-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://www.restaumargin.fr/pricing</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.restaumargin.fr/outils/calculateur-food-cost</loc>
-    <lastmod>2026-04-05</lastmod>
+    <loc>https://www.restaumargin.fr/demo</loc>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.restaumargin.fr/outils/generateur-qr-menu</loc>
-    <lastmod>2026-04-05</lastmod>
+    <loc>https://www.restaumargin.fr/login</loc>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.6</priority>
   </url>
+
+  <!-- Blog -->
   <url>
     <loc>https://www.restaumargin.fr/blog/calcul-marge-restaurant</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.restaumargin.fr/blog/reduire-food-cost</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/coefficient-multiplicateur</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/ia-restauration</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/gaspillage-alimentaire</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/blog/haccp-restaurant</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Outils publics -->
+  <url>
+    <loc>https://www.restaumargin.fr/outils/calculateur-food-cost</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Menu public -->
+  <url>
+    <loc>https://www.restaumargin.fr/menu-public</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Pages legales -->
+  <url>
     <loc>https://www.restaumargin.fr/station-produit</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/dev-corp</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/mentions-legales</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/cgv</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/cgu</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.restaumargin.fr/politique-confidentialite</loc>
-    <lastmod>2026-04-05</lastmod>
+    <lastmod>2026-04-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -10,7 +10,7 @@ import { ChefHat, Trash2, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTria
 
 export default function BlogGaspillage() {
   useEffect(() => {
-    document.title = 'Comment reduire le gaspillage alimentaire en restaurant : 5 astuces concretes | RestauMargin';
+    document.title = 'Comment reduire le gaspillage alimentaire en restaurant : 5 astuces concretes \u2014 Blog RestauMargin';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

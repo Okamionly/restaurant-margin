@@ -102,7 +102,7 @@ export default function MobileBottomNav() {
       )}
 
       {/* Bottom navigation bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-lg border-t border-[#E5E7EB] dark:border-[#1A1A1A] no-print" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <nav aria-label="Navigation mobile" className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-lg border-t border-[#E5E7EB] dark:border-[#1A1A1A] no-print" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
         <div className="flex items-center justify-around h-14">
           {MAIN_TABS.map(tab => (
             <NavLink
@@ -120,7 +120,9 @@ export default function MobileBottomNav() {
               {({ isActive }) => (
                 <>
                   <tab.icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : ''}`} />
-                  <span className={`text-[10px] font-medium leading-tight ${isActive ? 'font-semibold' : ''}`}>{tab.label}</span>
+                  {isActive && (
+                    <span className="text-[10px] font-semibold leading-tight">{tab.label}</span>
+                  )}
                 </>
               )}
             </NavLink>
@@ -136,7 +138,9 @@ export default function MobileBottomNav() {
             }`}
           >
             <MoreHorizontal className={`w-5 h-5 transition-transform duration-200 ${drawerOpen ? 'rotate-90' : ''}`} />
-            <span className={`text-[10px] font-medium leading-tight ${isMoreActive || drawerOpen ? 'font-semibold' : ''}`}>Plus</span>
+            {(isMoreActive || drawerOpen) && (
+              <span className="text-[10px] font-semibold leading-tight">Plus</span>
+            )}
           </button>
         </div>
       </nav>

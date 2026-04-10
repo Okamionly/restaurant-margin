@@ -8,7 +8,7 @@ import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Scan, Mic, Alert
 
 export default function BlogIA() {
   useEffect(() => {
-    document.title = "L'IA en restauration : gadget ou revolution ? | RestauMargin";
+    document.title = "L'IA en restauration : gadget ou revolution ? \u2014 Blog RestauMargin";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute('content', "Intelligence artificielle en restauration : decouvrez ce que l'IA peut vraiment faire pour votre restaurant et ce qu'elle ne remplacera jamais.");

@@ -53,6 +53,21 @@ const TOOLTIPS: TooltipConfig[] = [
     message: 'Scannez vos factures fournisseurs. L\'IA extrait les prix et met a jour vos ingredients automatiquement.',
     position: 'top',
   },
+  {
+    route: '/weigh-station',
+    message: 'Pesez vos ingredients directement avec une balance connectee pour des fiches techniques ultra-precises.',
+    position: 'top',
+  },
+  {
+    route: '/kitchen-display',
+    message: 'Affichez les fiches techniques en cuisine sur tablette — les equipes suivent chaque etape en temps reel.',
+    position: 'top',
+  },
+  {
+    route: '/service-tracker',
+    message: 'Suivez le service en direct : plats envoyes, temps de preparation et performance de chaque poste.',
+    position: 'top',
+  },
 ];
 
 function getShownTooltips(): Record<string, boolean> {
@@ -110,10 +125,10 @@ export default function ContextualTooltips() {
     }, 300);
   }, [tooltip]);
 
-  // Auto-dismiss after 12 seconds
+  // Auto-dismiss after 8 seconds
   useEffect(() => {
     if (visible && tooltip) {
-      const timer = setTimeout(dismiss, 12000);
+      const timer = setTimeout(dismiss, 8000);
       return () => clearTimeout(timer);
     }
   }, [visible, tooltip, dismiss]);

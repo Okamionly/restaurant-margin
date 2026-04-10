@@ -207,7 +207,7 @@ export default function Demo() {
   const [selectedRecipe, setSelectedRecipe] = useState<number | null>(null);
 
   useEffect(() => {
-    document.title = 'Demo RestauMargin -- Le Bistrot de Marie | RestauMargin';
+    document.title = 'Demo \u2014 RestauMargin';
     window.scrollTo(0, 0);
   }, []);
 

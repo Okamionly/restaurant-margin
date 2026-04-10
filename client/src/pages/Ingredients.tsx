@@ -18,6 +18,7 @@ import WeighModal from '../components/WeighModal';
 import IngredientAvatar from '../components/IngredientAvatar';
 import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { updateOnboardingStep } from '../components/OnboardingWizard';
+import FoodIllustration from '../components/FoodIllustration';
 
 // ── Price alert helpers (localStorage) ─────────────────────────────────
 interface PriceAlert {
@@ -1214,11 +1215,43 @@ export default function Ingredients() {
           </thead>
           <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
             {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={9} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
-                  {ingredients.length === 0 ? t('ingredients.noIngredients') : t('ingredients.noResults')}
-                </td>
-              </tr>
+              ingredients.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="p-0">
+                    <div className="py-16 px-6 flex flex-col items-center text-center">
+                      <div className="mb-4">
+                        <FoodIllustration recipeName="tomate" size="lg" />
+                      </div>
+                      <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+                        Ajoutez votre premier ingredient
+                      </h3>
+                      <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-sm mb-2">
+                        Commencez par ajouter vos ingredients avec leurs prix fournisseur. L'IA peut suggerer les prix du marche.
+                      </p>
+                      <div className="flex flex-wrap gap-2 justify-center my-3">
+                        <span className="text-xs px-3 py-1 rounded-full bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]">
+                          Ex: Poulet (filet) — 9.50 EUR/kg
+                        </span>
+                        <span className="text-xs px-3 py-1 rounded-full bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A] text-[#6B7280] dark:text-[#A3A3A3]">
+                          Ex: Tomates — 2.80 EUR/kg
+                        </span>
+                      </div>
+                      <button
+                        onClick={openNew}
+                        className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                      >
+                        <Plus className="w-4 h-4" /> Ajouter un ingredient
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td colSpan={9} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">
+                    {t('ingredients.noResults')}
+                  </td>
+                </tr>
+              )
             ) : (
               filtered.map((ing) => {
                 const supplierName = ing.supplierRef?.name || ing.supplier || '';

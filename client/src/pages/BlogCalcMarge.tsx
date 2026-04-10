@@ -10,7 +10,7 @@ import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight
 
 export default function BlogCalcMarge() {
   useEffect(() => {
-    document.title = 'Comment calculer la marge de votre restaurant en 2026 | RestauMargin';
+    document.title = 'Comment calculer la marge de votre restaurant en 2026 \u2014 Blog RestauMargin';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

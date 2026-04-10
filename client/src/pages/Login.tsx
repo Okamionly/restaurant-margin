@@ -30,6 +30,10 @@ export default function Login() {
   const [referralCode] = useState(searchParams.get('ref') || '');
 
   useEffect(() => {
+    document.title = 'Connexion \u2014 RestauMargin';
+  }, []);
+
+  useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard', { replace: true });
     }

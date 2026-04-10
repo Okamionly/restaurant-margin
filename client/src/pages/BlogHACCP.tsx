@@ -10,7 +10,7 @@ import { ChefHat, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Us
 
 export default function BlogHACCP() {
   useEffect(() => {
-    document.title = 'Guide HACCP pour les restaurants : tout ce qu\'il faut savoir en 2026 | RestauMargin';
+    document.title = 'Guide HACCP pour les restaurants : tout ce qu\'il faut savoir en 2026 \u2014 Blog RestauMargin';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

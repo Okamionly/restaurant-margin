@@ -2462,26 +2462,26 @@ export default function Recipes() {
       {recipes.length > 0 && <MarginHealthBar recipes={recipes} />}
 
       {/* ── Tabs: Mes recettes / Templates ──────────────────────────────── */}
-      <div className="flex items-center gap-1 mb-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+      <div className="flex items-center gap-1 mb-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A] overflow-x-auto scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
         <button
           onClick={() => setActiveTab('recipes')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'recipes' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'recipes' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
         >
-          <UtensilsCrossed className="w-4 h-4" />
+          <UtensilsCrossed className="w-4 h-4 shrink-0" />
           Mes recettes
         </button>
         <button
           onClick={() => setActiveTab('templates')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'templates' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'templates' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
         >
-          <BookOpen className="w-4 h-4" />
+          <BookOpen className="w-4 h-4 shrink-0" />
           Templates
         </button>
         <button
           onClick={() => setActiveTab('modeles')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'modeles' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap shrink-0 ${activeTab === 'modeles' ? 'border-[#111111] dark:border-white text-[#111111] dark:text-white' : 'border-transparent text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white'}`}
         >
-          <Package className="w-4 h-4" />
+          <Package className="w-4 h-4 shrink-0" />
           Modeles
         </button>
       </div>

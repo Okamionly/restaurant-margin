@@ -3,6 +3,61 @@ import { saveToOffline, getFromOffline, addPendingAction, isOffline, type Offlin
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
+// --- Global error toast (event-based, consumed by useToast) ---
+
+export type ApiToastEvent = { message: string; type: 'error' | 'info' | 'success' };
+type ApiToastListener = (event: ApiToastEvent) => void;
+const apiToastListeners: Set<ApiToastListener> = new Set();
+
+/** Subscribe to API-level toast events (used by ToastProvider) */
+export function onApiToast(listener: ApiToastListener): () => void {
+  apiToastListeners.add(listener);
+  return () => { apiToastListeners.delete(listener); };
+}
+
+function emitToast(message: string, type: ApiToastEvent['type'] = 'error') {
+  apiToastListeners.forEach(fn => fn({ message, type }));
+}
+
+/** French user-friendly messages by HTTP status */
+const STATUS_MESSAGES: Record<number, string> = {
+  401: 'Session expiree \u2014 reconnectez-vous',
+  403: 'Acces refuse',
+  404: 'Ressource introuvable',
+  429: 'Trop de requetes \u2014 reessayez dans 1 minute',
+  500: 'Erreur serveur \u2014 reessayez plus tard',
+  502: 'Erreur serveur \u2014 reessayez plus tard',
+  503: 'Erreur serveur \u2014 reessayez plus tard',
+};
+
+const NETWORK_ERROR_MSG = 'Connexion perdue \u2014 verifiez votre internet';
+
+// --- Retry logic for GET requests ---
+
+/** Status codes that should trigger a retry for GET requests */
+const RETRYABLE_STATUSES = new Set([500, 502, 503]);
+const RETRY_DELAY_MS = 2000;
+const MAX_RETRIES = 1;
+
+async function fetchWithRetry(url: string, options: RequestInit, retries = MAX_RETRIES): Promise<Response> {
+  const isGet = !options.method || options.method === 'GET';
+  try {
+    const res = await fetch(url, options);
+    if (isGet && RETRYABLE_STATUSES.has(res.status) && retries > 0) {
+      await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+      return fetchWithRetry(url, options, retries - 1);
+    }
+    return res;
+  } catch (err) {
+    // Network error — retry once for GET requests
+    if (isGet && retries > 0) {
+      await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+      return fetchWithRetry(url, options, retries - 1);
+    }
+    throw err;
+  }
+}
+
 // --- In-memory GET cache (60s TTL) ---
 
 interface CacheEntry {
@@ -58,7 +113,13 @@ async function cachedGet<T>(url: string, options: RequestInit): Promise<T> {
     const hit = getFromCache<T>(url);
     if (hit !== null) return hit;
   }
-  const res = await fetch(url, options);
+  let res: Response;
+  try {
+    res = await fetchWithRetry(url, options);
+  } catch {
+    emitToast(NETWORK_ERROR_MSG, 'error');
+    throw new Error(NETWORK_ERROR_MSG);
+  }
   const data = await handleResponse<T>(res);
   if (!shouldSkipCache(url)) {
     setCache(url, data);
@@ -87,7 +148,7 @@ async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T>
 
   const store = urlToStore(url);
   try {
-    const res = await fetch(url, options);
+    const res = await fetchWithRetry(url, options);
     const data = await handleResponse<T>(res);
     // Write to in-memory cache
     if (!shouldSkipCache(url)) {
@@ -103,9 +164,11 @@ async function offlineAwareGet<T>(url: string, options: RequestInit): Promise<T>
     if (store) {
       const offlineCached = await getFromOffline(store);
       if (offlineCached.length > 0) {
+        emitToast(NETWORK_ERROR_MSG, 'error');
         return offlineCached as unknown as T;
       }
     }
+    emitToast(NETWORK_ERROR_MSG, 'error');
     throw err;
   }
 }
@@ -124,7 +187,13 @@ async function offlineAwareWrite<T>(url: string, options: RequestInit): Promise<
     // Return a placeholder so the UI can continue
     throw new Error('Action enregistrée hors-ligne. Elle sera synchronisée automatiquement.');
   }
-  const res = await fetch(url, options);
+  let res: Response;
+  try {
+    res = await fetch(url, options);
+  } catch {
+    emitToast(NETWORK_ERROR_MSG, 'error');
+    throw new Error(NETWORK_ERROR_MSG);
+  }
   const data = await handleResponse<T>(res);
   // Invalidate in-memory GET cache for the same resource path
   invalidateCacheByPath(url);
@@ -304,12 +373,16 @@ export async function fetchRestaurantsOverview(): Promise<RestaurantOverview> {
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 401) {
     removeToken();
+    emitToast('Votre session a expire', 'error');
     window.location.href = '/login';
-    throw new Error('Non authentifié');
+    throw new Error('Session expiree');
   }
   if (!res.ok) {
+    const friendlyMsg = STATUS_MESSAGES[res.status];
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || 'Erreur serveur');
+    const errorMsg = friendlyMsg || body.error || 'Erreur serveur';
+    emitToast(errorMsg, 'error');
+    throw new Error(errorMsg);
   }
   return res.json();
 }

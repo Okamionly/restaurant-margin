@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import Toast, { type ToastType } from '../components/Toast';
+import { onApiToast } from '../services/api';
 
 export type { ToastType };
 
@@ -32,6 +33,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
+  }, []);
+
+  // Bridge: listen to API-level toast events (from services/api.ts)
+  const showToastRef = useRef(showToast);
+  showToastRef.current = showToast;
+  useEffect(() => {
+    return onApiToast(({ message, type }) => {
+      showToastRef.current(message, type);
+    });
   }, []);
 
   const removeToast = useCallback((id: number) => {

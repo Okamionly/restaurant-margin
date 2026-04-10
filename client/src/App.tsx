@@ -622,7 +622,7 @@ function AppLayout() {
     <div className="min-h-screen flex bg-white dark:bg-black text-[#111111] dark:text-white">
       {/* Premium top gradient line */}
       <div className="fixed top-0 left-0 right-0 z-[60] premium-top-line" />
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-600 focus:font-semibold focus:text-sm">
         Aller au contenu principal
       </a>
       {/* Sidebar — always full width with labels (desktop + tablet) */}

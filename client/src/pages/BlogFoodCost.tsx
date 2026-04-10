@@ -8,7 +8,7 @@ import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Target, Trending
 
 export default function BlogFoodCost() {
   useEffect(() => {
-    document.title = '5 methodes pour reduire votre food cost de 15 % | RestauMargin';
+    document.title = '5 methodes pour reduire votre food cost de 15 % \u2014 Blog RestauMargin';
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute('content', 'Decouvrez 5 methodes eprouvees pour reduire votre food cost de 15 % sans sacrifier la qualite. Fiches techniques, negociation, gaspillage, menu engineering.');

@@ -96,7 +96,7 @@ export default function FloatingActionBubble() {
         <div className="absolute bottom-16 right-0 w-80 bg-white dark:bg-[#0A0A0A] rounded-2xl shadow-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden mb-2">
           <div className="px-4 py-3 border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
             <h3 className="text-sm font-bold text-[#111111] dark:text-white">Aide & Tutoriels</h3>
-            <button onClick={() => setShowHelp(false)} className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg">
+            <button onClick={() => setShowHelp(false)} aria-label="Fermer l'aide" className="p-1 hover:bg-[#F3F4F6] dark:hover:bg-[#171717] rounded-lg">
               <X className="w-4 h-4 text-[#9CA3AF]" />
             </button>
           </div>
@@ -195,6 +195,8 @@ export default function FloatingActionBubble() {
       {/* Main FAB button */}
       <button
         onClick={() => { setOpen(!open); if (open) { setShowHelp(false); stopListening(); } }}
+        aria-label={open ? 'Fermer les actions rapides' : 'Actions rapides'}
+        aria-expanded={open}
         className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 ${
           open
             ? 'bg-[#111111] dark:bg-white text-white dark:text-black rotate-45 scale-95'

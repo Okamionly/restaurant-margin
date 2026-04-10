@@ -63,6 +63,10 @@ body::before {
 * { scrollbar-width: thin; scrollbar-color: rgba(148,163,184,0.15) transparent; }
 *:hover { scrollbar-color: rgba(13,148,136,0.35) transparent; }
 
+/* ── Hide scrollbar utility ───────────────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* ── Selection color ───────────────────────────────────────────────────── */
 ::selection { background: rgba(13,148,136,0.3); color: white; }
 
@@ -323,6 +327,33 @@ body::before {
 }
 .dark *:focus-visible {
   outline-color: #2DD4BF;
+}
+
+/* Enhanced focus rings for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #0D9488;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.dark button:focus-visible,
+.dark a:focus-visible,
+.dark input:focus-visible,
+.dark select:focus-visible,
+.dark textarea:focus-visible,
+.dark [role="button"]:focus-visible,
+.dark [tabindex]:focus-visible {
+  outline-color: #2DD4BF;
+}
+
+/* Suppress outline on recharts (decorative SVGs) */
+.recharts-wrapper *:focus-visible {
+  outline: none !important;
 }
 
 /* Landing page hero animations */
@@ -825,11 +856,12 @@ body::before {
 .animate-kpi-2 { animation: kpi-card-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
 .animate-kpi-3 { animation: kpi-card-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.19s both; }
 
-/* ── Mobile-first: push Crisp chat widget above bottom nav ──────────── */
+/* ── Mobile-first: push Crisp chat widget above bottom nav + FAB ─────── */
 @media (max-width: 767px) {
   #crisp-chatbox .cc-1m2mf,
   #crisp-chatbox [data-chat-status],
   .crisp-client .cc-1m2mf {
-    bottom: 70px !important;
+    bottom: 160px !important;
+    right: 8px !important;
   }
 }

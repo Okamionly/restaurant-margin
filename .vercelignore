@@ -3,6 +3,10 @@ node_modules
 data
 docs/campaigns
 scripts
+electron
 client/src/pages/Dashboard.backup.tsx
+client/public/images/hero/station-demo.mp4
+client/logs
 *.output
 *.log
+*.mp4

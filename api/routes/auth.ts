@@ -86,7 +86,7 @@ router.post('/login', async (req, res) => {
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return res.status(401).json({ error: 'Email ou mot de passe incorrect' });
     const token = jwt.sign({ userId: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: TOKEN_EXPIRY });
-    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: (user as any).plan || 'pro', trialEndsAt: (user as any).trialEndsAt || null } });
+    res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role, plan: user.plan || 'basic', trialEndsAt: user.trialEndsAt || null } });
   } catch (e) { console.error(e); res.status(500).json({ error: 'Erreur connexion' }); }
 });
 

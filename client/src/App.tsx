@@ -762,7 +762,7 @@ function AppLayout() {
 
         {/* Trial expiry banner */}
         {(() => {
-          if (trialBannerDismissed || !user?.trialEndsAt) return null;
+          if (!user?.trialEndsAt) return null;
           // Skip for paying users (pro/business)
           if (user.plan === 'pro' || user.plan === 'business') return null;
           const trialEnd = new Date(user.trialEndsAt);
@@ -773,6 +773,8 @@ function AppLayout() {
           const isUrgent = diffDays > 0 && diffDays <= 3;
 
           if (!isExpired && !isUrgent) return null;
+          // Amber (urgent) banners can be dismissed; red (expired) banners cannot
+          if (!isExpired && trialBannerDismissed) return null;
 
           return (
             <div className={`border-b px-4 py-3 flex items-center justify-between text-sm font-medium ${

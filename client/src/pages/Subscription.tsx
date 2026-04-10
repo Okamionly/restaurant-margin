@@ -8,6 +8,7 @@ import {
   BarChart3, Cpu, Download, Globe, Headphones,
   SlidersHorizontal,
 } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface Plan {
@@ -201,10 +202,16 @@ export default function Subscription() {
   const [roiCouverts, setRoiCouverts] = useState(80);
   const [roiPrixMoyen, setRoiPrixMoyen] = useState(22);
 
-  // Simulated subscription state
-  const isSubscribed = true;
-  const currentPlanId = 'pro';
-  const nextBillingDate = '15 mai 2026';
+  // Real subscription state from auth
+  const { user } = useAuth();
+  const currentPlanId = user?.plan || 'basic';
+  const isSubscribed = currentPlanId === 'pro' || currentPlanId === 'business';
+
+  // Compute trial status for display
+  const trialActive = !isSubscribed && user?.trialEndsAt && new Date(user.trialEndsAt) > new Date();
+  const trialDaysLeft = user?.trialEndsAt
+    ? Math.max(0, Math.ceil((new Date(user.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   // Auto-rotate testimonials
   useEffect(() => {
@@ -277,45 +284,63 @@ export default function Subscription() {
       {/* ================================================================== */}
       {/* 7. CURRENT PLAN BANNER                                             */}
       {/* ================================================================== */}
-      {isSubscribed && currentPlan && (
+      {/* Show banner for: active subscribers OR users on trial */}
+      {(isSubscribed || trialActive) && (() => {
+        const planInfo = isSubscribed ? currentPlan : null;
+        return (
         <div className="bg-white dark:bg-black border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Top row */}
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-teal-500/10 to-indigo-500/10 border border-teal-500/20">
-                  <Crown className="w-6 h-6 text-teal-500" />
+                <div className={`p-3 rounded-2xl border ${isSubscribed ? 'bg-gradient-to-br from-teal-500/10 to-indigo-500/10 border-teal-500/20' : 'bg-amber-500/10 border-amber-500/20'}`}>
+                  <Crown className={`w-6 h-6 ${isSubscribed ? 'text-teal-500' : 'text-amber-500'}`} />
                 </div>
                 <div>
                   <div className="flex items-center gap-3">
                     <h1 className="text-xl font-bold text-[#111111] dark:text-white">
-                      Plan {currentPlan.name}
+                      {isSubscribed ? `Plan ${planInfo?.name}` : 'Essai gratuit'}
                     </h1>
-                    <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
-                      Actif
+                    <span className={`px-2.5 py-0.5 text-xs font-bold rounded-full border ${
+                      isSubscribed
+                        ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20'
+                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                    }`}>
+                      {isSubscribed ? 'Actif' : `${trialDaysLeft} jour${trialDaysLeft > 1 ? 's' : ''} restant${trialDaysLeft > 1 ? 's' : ''}`}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 mt-1 text-sm text-[#6B7280] dark:text-[#A3A3A3]">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5" />
-                      Prochain paiement : {nextBillingDate}
-                    </span>
-                    <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#D1D5DB] dark:bg-[#404040]" />
-                    <span className="hidden sm:inline">
-                      {isAnnual ? `${currentPlan.priceAnnual}\u20AC/mois (annuel)` : `${currentPlan.priceMonthly}\u20AC/mois`}
-                    </span>
+                    {isSubscribed && planInfo ? (
+                      <>
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          Abonnement actif
+                        </span>
+                        <span className="hidden sm:inline w-1 h-1 rounded-full bg-[#D1D5DB] dark:bg-[#404040]" />
+                        <span className="hidden sm:inline">
+                          {isAnnual ? `${planInfo.priceAnnual}\u20AC/mois (annuel)` : `${planInfo.priceMonthly}\u20AC/mois`}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" />
+                        Expire le {user?.trialEndsAt ? new Date(user.trialEndsAt).toLocaleDateString('fr-FR') : ''}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
               <div className="flex gap-3">
-                <button
-                  onClick={handleStripePortal}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black font-medium rounded-2xl transition-all hover:bg-[#333333] dark:hover:bg-[#E5E5E5]"
-                >
-                  <CreditCard className="w-4 h-4" />
-                  Gerer mon abonnement
-                </button>
-                {currentPlanId === 'pro' && (
+                {isSubscribed && (
+                  <button
+                    onClick={handleStripePortal}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-black font-medium rounded-2xl transition-all hover:bg-[#333333] dark:hover:bg-[#E5E5E5]"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    Gerer mon abonnement
+                  </button>
+                )}
+                {isSubscribed && currentPlanId === 'pro' && (
                   <button
                     onClick={() => handleSubscribe('business')}
                     disabled={subscribeLoading === 'business'}
@@ -325,10 +350,21 @@ export default function Subscription() {
                     {subscribeLoading === 'business' ? 'Redirection...' : 'Passer au Business'}
                   </button>
                 )}
+                {!isSubscribed && (
+                  <button
+                    onClick={() => handleSubscribe('pro')}
+                    disabled={subscribeLoading === 'pro'}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-medium rounded-2xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-wait"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    {subscribeLoading === 'pro' ? 'Redirection...' : 'Passer au Pro'}
+                  </button>
+                )}
               </div>
             </div>
 
-            {/* Usage stats bars */}
+            {/* Usage stats bars — only for paying subscribers */}
+            {isSubscribed && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
               {USAGE_STATS.map((stat) => {
                 const percentage = stat.max ? Math.min((stat.used / stat.max) * 100, 100) : 5;
@@ -357,9 +393,11 @@ export default function Subscription() {
                 );
               })}
             </div>
+            )}
           </div>
         </div>
-      )}
+        );
+      })()}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 

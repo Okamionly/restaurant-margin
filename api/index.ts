@@ -110,6 +110,36 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
         console.log(`[STRIPE WEBHOOK] Code ${code} (${plan}) envoyé à ${customerEmail}`);
       }
     }
+
+    // Handle subscription cancellation / expiry
+    if (event.type === 'customer.subscription.deleted') {
+      const subscription = event.data.object;
+      const customerId = subscription.customer;
+      // Find user by stripeCustomerId
+      const user = await prisma.user.findFirst({ where: { stripeCustomerId: customerId } });
+      if (user) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            plan: 'basic',
+            stripeSubId: null,
+          },
+        });
+        console.log(`[STRIPE WEBHOOK] Subscription cancelled for user ${user.id}, downgraded to basic`);
+      }
+    }
+
+    // Handle failed payment (subscription past_due or unpaid)
+    if (event.type === 'invoice.payment_failed') {
+      const invoice = event.data.object;
+      const customerId = invoice.customer;
+      const user = await prisma.user.findFirst({ where: { stripeCustomerId: customerId } });
+      if (user) {
+        console.log(`[STRIPE WEBHOOK] Payment failed for user ${user.id} (${user.email})`);
+        // Note: Stripe will retry. Downgrade happens on subscription.deleted.
+      }
+    }
+
     res.json({ received: true });
   } catch (e: any) {
     console.error('[STRIPE WEBHOOK ERROR]', e.message);
@@ -218,12 +248,12 @@ app.use((req, res, next) => {
 // Placeholder stubs removed — real implementations handle all /api/cron/* endpoints
 
 // ── Stripe Price IDs ──
-// Replace with real Stripe Price IDs from your dashboard
+// Set via env vars STRIPE_PRICE_PRO_MONTHLY, etc. or fall back to placeholders
 const STRIPE_PRICES = {
-  PRO_MONTHLY: 'price_pro_monthly',
-  PRO_ANNUAL: 'price_pro_annual',
-  BUSINESS_MONTHLY: 'price_business_monthly',
-  BUSINESS_ANNUAL: 'price_business_annual',
+  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_pro_monthly',
+  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_pro_annual',
+  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_business_monthly',
+  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_business_annual',
 } as const;
 
 // ── Stripe Checkout Session ──

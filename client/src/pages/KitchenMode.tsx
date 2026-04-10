@@ -551,7 +551,7 @@ function AllergenBanner({ notes }: { notes: string }) {
         <ShieldAlert className="w-6 h-6 text-[#ef4444] animate-bounce" />
         <span className="text-[#ef4444] text-lg font-black uppercase tracking-wider">ALLERGENE</span>
         {allergens.map(a => (
-          <span key={a} className="px-2.5 py-1 bg-[#ef4444] text-white rounded-lg text-base font-black">{a}</span>
+          <span key={a} className="px-3 py-1.5 bg-[#ef4444] text-white rounded-lg text-sm font-black shadow-lg shadow-red-500/30">{a}</span>
         ))}
       </div>
     </div>
@@ -821,7 +821,7 @@ function OrderCard({
       onDragStart={e => onDragStart?.(e, order.id)}
       onDragEnd={onDragEnd}
       className={`
-        rounded-2xl border-2 overflow-hidden kds-card-enter
+        group rounded-2xl border-2 overflow-hidden kds-card-enter
         ${isDragging ? 'kds-dragging' : ''}
         ${isArchiving ? 'opacity-0 scale-95 translate-y-4 transition-all duration-500' : ''}
         ${isWaitingLong ? 'kds-pulse-waiting border-[#ef4444]/70' :
@@ -838,12 +838,12 @@ function OrderCard({
       {/* ── Card Header: 72px table badge ── */}
       <div className="px-4 py-3 flex items-center justify-between bg-[#0a0a0a]">
         <div className="flex items-center gap-4">
-          {/* 72px Table Number Badge */}
+          {/* Table Number Badge */}
           <div className={`
-            w-[72px] h-[72px] rounded-2xl flex items-center justify-center font-black shrink-0
+            w-16 h-16 rounded-2xl flex items-center justify-center font-black shrink-0
             ${tableBadgeBg} ${tableBadgeText}
             ${allPretOrServed && !allServed && !isBumped ? 'animate-pulse' : ''}
-          `} style={{ fontSize: '36px', lineHeight: 1 }}>
+          `} style={{ fontSize: '32px', lineHeight: 1 }}>
             {order.tableNumber}
           </div>
           <div>
@@ -880,31 +880,34 @@ function OrderCard({
           <span className="text-[#71717a] text-lg font-mono">
             {order.dishes.filter(d => d.status === 'pret' || d.status === 'servi').length}/{order.dishes.length}
           </span>
-          {!allServed && !isBumped && onEditOrder && (
-            <button onClick={() => onEditOrder(order)} title="Modifier"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
-              <Edit3 className="w-5 h-5" />
+          {/* Secondary actions: hidden by default, visible on card hover */}
+          <div className="hidden group-hover:flex items-center gap-1.5">
+            {!allServed && !isBumped && onEditOrder && (
+              <button onClick={() => onEditOrder(order)} title="Modifier"
+                className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#14b8a6]/10 text-[#71717a] hover:text-[#14b8a6] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+                <Edit3 className="w-5 h-5" />
+              </button>
+            )}
+            {!allServed && !isBumped && onSplitOrder && order.dishes.length > 1 && (
+              <button onClick={() => onSplitOrder(order)} title="Scinder"
+                className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+                <Scissors className="w-5 h-5" />
+              </button>
+            )}
+            <button onClick={() => onPrint(order)} title="Imprimer"
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-white kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+              <Printer className="w-5 h-5" />
             </button>
-          )}
-          {!allServed && !isBumped && onSplitOrder && order.dishes.length > 1 && (
-            <button onClick={() => onSplitOrder(order)} title="Scinder"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#a78bfa]/10 text-[#71717a] hover:text-[#a78bfa] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
-              <Scissors className="w-5 h-5" />
-            </button>
-          )}
-          <button onClick={() => onPrint(order)} title="Imprimer"
-            className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#262626] text-[#71717a] hover:text-white kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
-            <Printer className="w-5 h-5" />
-          </button>
-          {!allServed && !isBumped && onDeleteOrder && (
-            <button onClick={() => { if (confirm('Supprimer cette commande ?')) onDeleteOrder(order.id); }} title="Supprimer"
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
-              <Trash2 className="w-5 h-5" />
-            </button>
-          )}
+            {!allServed && !isBumped && onDeleteOrder && (
+              <button onClick={() => { if (confirm('Supprimer cette commande ?')) onDeleteOrder(order.id); }} title="Supprimer"
+                className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#71717a] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
           {(allServed || isBumped) && (
             <button onClick={() => onRemoveOrder(order.id)}
-              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#525252] hover:text-[#ef4444] kds-transition min-w-[56px] min-h-[56px] flex items-center justify-center">
+              className="p-2 rounded-lg bg-[#1a1a1a] hover:bg-[#ef4444]/10 text-[#525252] hover:text-[#ef4444] kds-transition min-w-[48px] min-h-[48px] flex items-center justify-center">
               <Trash2 className="w-5 h-5" />
             </button>
           )}
@@ -980,8 +983,8 @@ function OrderCard({
                   </button>
 
                   <div className="flex-1 min-w-0">
-                    {/* Dish name - 24px for readability */}
-                    <div className={`text-2xl font-bold truncate ${isDone ? 'text-[#404040] line-through' : 'text-white'}`}>
+                    {/* Dish name - lg bold, 2-line clamp */}
+                    <div className={`text-lg font-bold line-clamp-2 ${isDone ? 'text-[#404040] line-through' : 'text-white'}`}>
                       {dish.quantity > 1 && <span className="text-[#fbbf24] mr-1">x{dish.quantity}</span>}
                       {dish.recipeName}
                     </div>
@@ -1029,19 +1032,21 @@ function OrderCard({
 
       {/* ── Action Buttons: BUMP / HOLD ── */}
       {!allServed && !isBumped && (
-        <div className="px-4 py-3 bg-[#0a0a0a] border-t border-[#1a1a1a] flex gap-2">
-          {/* BUMP button - big green */}
+        <div className="px-4 py-3 bg-[#0a0a0a] border-t border-[#1a1a1a] flex flex-col gap-2">
+          {/* BUMP button - full width, tall, neon glow */}
           <button onClick={() => onBump(order.id)}
-            className="flex-1 min-h-[64px] rounded-xl bg-[#059669] hover:bg-[#10b981] active:scale-[0.97] text-white text-xl font-black uppercase tracking-wider flex items-center justify-center gap-2 kds-transition">
-            <ArrowDown className="w-6 h-6" />
+            className="w-full py-4 rounded-xl bg-[#059669] hover:bg-[#10b981] active:scale-[0.97] text-white text-lg font-black uppercase tracking-wider flex items-center justify-center gap-2 kds-transition"
+            style={{ boxShadow: '0 0 20px rgba(16, 185, 129, 0.4), 0 0 40px rgba(16, 185, 129, 0.15)' }}>
+            <ArrowDown className="w-7 h-7" />
             BUMP
           </button>
           {/* HOLD button */}
           <button onClick={() => onHold(order.id)}
-            className={`min-w-[64px] min-h-[64px] rounded-xl kds-transition flex items-center justify-center
+            className={`w-full min-h-[48px] rounded-xl kds-transition flex items-center justify-center gap-2
               ${isOnHold ? 'bg-[#f59e0b]/20 text-[#f59e0b] hover:bg-[#f59e0b]/30' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-[#f59e0b]'}`}
             title={isOnHold ? 'Reprendre' : 'Mettre en pause'}>
-            {isOnHold ? <Play className="w-6 h-6" /> : <PauseCircle className="w-6 h-6" />}
+            {isOnHold ? <Play className="w-5 h-5" /> : <PauseCircle className="w-5 h-5" />}
+            <span className="text-sm font-bold">{isOnHold ? 'Reprendre' : 'Pause'}</span>
           </button>
         </div>
       )}
@@ -1054,11 +1059,11 @@ function OrderCard({
 // ══════════════════════════════════════════════════════════════════════════
 function ColumnHeader({ title, count, color, icon }: { title: string; count: number; color: string; icon: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between px-4 py-3 mb-2">
-      <div className="flex items-center gap-2">
-        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: color }} />
+    <div className="flex items-center justify-between px-5 py-4 mb-2">
+      <div className="flex items-center gap-3">
+        <div className="w-5 h-5 rounded-full" style={{ backgroundColor: color }} />
         {icon}
-        <span className="text-xl font-black text-white uppercase tracking-wider">{title}</span>
+        <span className="text-lg font-black text-white uppercase tracking-wider">{title}</span>
       </div>
       <span className="text-4xl font-black font-mono" style={{ color }}>{count}</span>
     </div>
@@ -1281,53 +1286,42 @@ function PerformanceStatsModal({ stats, orders, onClose }: { stats: DailyStats; 
 // ══════════════════════════════════════════════════════════════════════════
 // ██  STATS BAR  ██████████████████████████████████████████████████████████
 // ══════════════════════════════════════════════════════════════════════════
-function StatsBar({ orders, stats, archivedCount, onOpenStats }: { orders: Order[]; stats: DailyStats; archivedCount: number; onOpenStats: () => void }) {
+function StatsBar({ orders, stats, onOpenStats }: { orders: Order[]; stats: DailyStats; archivedCount?: number; onOpenStats: () => void }) {
   const enAttente = orders.reduce((sum, o) => sum + o.dishes.filter(d => d.status === 'attente').length, 0);
   const enPrep = orders.reduce((sum, o) => sum + o.dishes.filter(d => d.status === 'preparation').length, 0);
   const prets = orders.reduce((sum, o) => sum + o.dishes.filter(d => d.status === 'pret').length, 0);
   const avgTime = stats.totalPrepTimes.length > 0
     ? Math.round(stats.totalPrepTimes.reduce((a, b) => a + b, 0) / stats.totalPrepTimes.length) : 0;
-  const activeOrders = orders.filter(o => !o.dishes.every(d => d.status === 'servi') && !o.bumpedAt).length;
 
   return (
     <div className="bg-[#0a0a0a] border-t-2 border-[#262626] px-6 py-3 shrink-0 cursor-pointer hover:bg-[#111111] kds-transition"
       onClick={onOpenStats} title="Cliquer pour voir les stats detaillees">
-      <div className="flex items-center justify-between gap-4 max-w-full overflow-x-auto">
+      <div className="flex items-center justify-around gap-6 max-w-full">
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-[#22c55e]" />
-          <span className="text-[#a1a1aa] text-lg">Servis</span>
+          <span className="text-[#a1a1aa] text-base">Servis</span>
           <span className="text-white text-2xl font-black font-mono">{stats.platsServis}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-[#fbbf24]" />
-          <span className="text-[#a1a1aa] text-lg">En prep</span>
+          <span className="text-[#a1a1aa] text-base">En prep</span>
           <span className="text-[#fbbf24] text-2xl font-black font-mono">{enPrep}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-[#71717a]" />
-          <span className="text-[#a1a1aa] text-lg">En file</span>
+          <span className="text-[#a1a1aa] text-base">En attente</span>
           <span className="text-white text-2xl font-black font-mono">{enAttente}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-3 h-3 rounded-full bg-[#34d399]" />
-          <span className="text-[#a1a1aa] text-lg">Prets</span>
+          <span className="text-[#a1a1aa] text-base">Prets</span>
           <span className="text-[#34d399] text-2xl font-black font-mono">{prets}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <Clock className="w-5 h-5 text-[#71717a]" />
-          <span className="text-[#a1a1aa] text-lg">Moy.</span>
+          <span className="text-[#a1a1aa] text-base">Temps moy</span>
           <span className="text-white text-2xl font-black font-mono">{formatElapsed(avgTime)}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <ChefHat className="w-5 h-5 text-[#71717a]" />
-          <span className="text-[#a1a1aa] text-lg">Actives</span>
-          <span className="text-white text-2xl font-black font-mono">{activeOrders}</span>
-        </div>
-        {archivedCount > 0 && (
-          <div className="flex items-center gap-2 shrink-0">
-            <Archive className="w-5 h-5 text-[#525252]" /><span className="text-[#525252] text-lg">{archivedCount} archivees</span>
-          </div>
-        )}
         <div className="flex items-center gap-1 shrink-0">
           <BarChart3 className="w-5 h-5 text-[#14b8a6]" /><span className="text-[#14b8a6] text-sm font-bold">STATS</span>
         </div>
@@ -1824,6 +1818,7 @@ function QuickActionsBar({
   onOpenTableConfig: () => void;
 }) {
   const [confirmClear, setConfirmClear] = useState(false);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const activeOrders = orders.filter(o => !o.dishes.every(d => d.status === 'servi') && !o.bumpedAt).length;
   const occupiedTables = tableConfig.tables.filter(t => getTableStatus(t.number, orders).status !== 'libre').length;
 
@@ -1833,34 +1828,47 @@ function QuickActionsBar({
 
   return (
     <div className="bg-[#0a0a0a]/80 border-b border-[#262626] px-4 py-2 flex items-center gap-3 shrink-0 overflow-x-auto">
-      {/* Clear all */}
-      <button onClick={() => { if (confirmClear) { onClearAll(); setConfirmClear(false); } else setConfirmClear(true); }}
-        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold kds-transition shrink-0
-          ${confirmClear ? 'bg-[#ef4444] text-white animate-pulse' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#ef4444]/10 hover:text-[#ef4444]'}`}>
-        <Trash2 className="w-4 h-4" />{confirmClear ? 'Confirmer ?' : 'Vider tout'}
-      </button>
-      {/* Load demo */}
-      <button onClick={onLoadDemo}
-        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-[#1a1a1a] text-[#71717a] hover:bg-[#78350f]/30 hover:text-[#fbbf24] kds-transition shrink-0">
-        <Flame className="w-4 h-4" />Charger demo
-      </button>
       {/* Table counter */}
       <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1a1a1a] text-sm shrink-0">
         <LayoutGrid className="w-4 h-4 text-[#14b8a6]" />
         <span className="text-[#14b8a6] font-bold">{occupiedTables}/{tableConfig.tableCount}</span>
-        <span className="text-[#71717a]">tables occupees</span>
+        <span className="text-[#71717a]">tables</span>
       </div>
       {/* Order counter */}
       <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1a1a1a] text-sm shrink-0">
         <ChefHat className="w-4 h-4 text-[#fbbf24]" />
         <span className="text-[#fbbf24] font-bold">{activeOrders}</span>
-        <span className="text-[#71717a]">commandes actives</span>
+        <span className="text-[#71717a]">actives</span>
       </div>
-      {/* Settings gear */}
-      <button onClick={onOpenTableConfig}
-        className="ml-auto flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-white kds-transition shrink-0">
-        <Settings className="w-4 h-4" />Config
-      </button>
+      {/* Settings gear with dropdown menu */}
+      <div className="ml-auto relative shrink-0">
+        <button onClick={() => setShowSettingsMenu(v => !v)}
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold kds-transition
+            ${showSettingsMenu ? 'bg-[#262626] text-white' : 'bg-[#1a1a1a] text-[#71717a] hover:bg-[#262626] hover:text-white'}`}>
+          <Settings className="w-4 h-4" />
+        </button>
+        {showSettingsMenu && (
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => setShowSettingsMenu(false)} />
+            <div className="absolute right-0 top-full mt-1 z-50 bg-[#1a1a1a] border border-[#333333] rounded-xl shadow-2xl shadow-black/50 py-2 min-w-[200px]">
+              <button onClick={() => { onOpenTableConfig(); setShowSettingsMenu(false); }}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-[#a1a1aa] hover:bg-[#262626] hover:text-white kds-transition">
+                <Settings className="w-4 h-4" />Config tables
+              </button>
+              <button onClick={() => { onLoadDemo(); setShowSettingsMenu(false); }}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-[#a1a1aa] hover:bg-[#78350f]/30 hover:text-[#fbbf24] kds-transition">
+                <Flame className="w-4 h-4" />Charger demo
+              </button>
+              <div className="border-t border-[#333333] my-1" />
+              <button onClick={() => { if (confirmClear) { onClearAll(); setConfirmClear(false); setShowSettingsMenu(false); } else setConfirmClear(true); }}
+                className={`w-full flex items-center gap-2 px-4 py-3 text-sm font-bold kds-transition
+                  ${confirmClear ? 'bg-[#ef4444] text-white animate-pulse' : 'text-[#71717a] hover:bg-[#ef4444]/10 hover:text-[#ef4444]'}`}>
+                <Trash2 className="w-4 h-4" />{confirmClear ? 'Confirmer suppression ?' : 'Vider tout'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -2493,8 +2501,8 @@ export default function KitchenMode() {
   );
 
   return (
-    <div className={`fixed inset-0 z-[60] bg-black text-white flex flex-col select-none transition-opacity duration-700 ${isDimmed ? 'opacity-30' : 'opacity-100'}`}
-      style={{ fontSize: '18px' }}
+    <div className={`fixed inset-0 z-[60] bg-black text-white flex flex-col select-none overflow-hidden transition-opacity duration-700 ${isDimmed ? 'opacity-30' : 'opacity-100'}`}
+      style={{ fontSize: '18px', isolation: 'isolate' }}
       onClick={() => isDimmed && resetDimTimer()}>
 
       {/* Inject KDS styles */}
@@ -2649,18 +2657,19 @@ export default function KitchenMode() {
       {/* ── 3-COLUMN KDS BOARD ── */}
       <div className="flex-1 overflow-hidden">
         {!hasAnyOrders ? (
-          <div className="flex flex-col items-center justify-center h-full gap-6 py-20">
-            <ChefHat className="w-28 h-28 text-[#262626]" />
+          <div className="flex flex-col items-center justify-center h-full gap-8 py-20">
+            <ChefHat className="w-24 h-24 text-[#262626] animate-pulse" />
             <p className="text-3xl text-[#525252] font-black">Aucune commande en cours</p>
             <p className="text-xl text-[#404040]">Ajoutez une commande ou chargez des donnees demo</p>
             <div className="flex gap-4">
               <button onClick={() => setShowNewOrder(true)}
-                className="min-h-[64px] px-8 rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white text-xl font-bold kds-transition">
-                <Plus className="w-6 h-6 inline mr-2" />Nouvelle Commande
+                className="min-h-[72px] px-10 rounded-xl bg-[#0d9488] hover:bg-[#14b8a6] text-white text-xl font-bold kds-transition"
+                style={{ boxShadow: '0 0 20px rgba(13, 148, 136, 0.3)' }}>
+                <Plus className="w-7 h-7 inline mr-2" />Nouvelle Commande
               </button>
               <button onClick={addDemoOrders}
-                className="min-h-[64px] px-8 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] text-xl font-bold kds-transition">
-                <Flame className="w-5 h-5 inline mr-2" />Donnees demo
+                className="min-h-[72px] px-10 rounded-xl bg-[#1a1a1a] hover:bg-[#262626] text-[#a1a1aa] text-xl font-bold kds-transition border border-[#333333]">
+                <Flame className="w-6 h-6 inline mr-2" />Donnees demo
               </button>
             </div>
           </div>
@@ -2680,24 +2689,24 @@ export default function KitchenMode() {
         ) : (
           /* FULL / CHAUD / FROID: 3 columns */
           <div className="grid grid-cols-1 lg:grid-cols-3 h-full">
-            <div className="border-r-0 lg:border-r-2 border-[#1a1a1a] flex flex-col overflow-hidden">
+            <div className="border-r-0 lg:border-r-2 border-[#1a1a1a] flex flex-col overflow-hidden bg-red-950/30">
               {renderColumn(
                 'Nouvelles', filterByStation(newOrders).length, '#ef4444',
-                <Clock className="w-5 h-5 text-[#ef4444]" />,
+                <Clock className="w-6 h-6 text-[#ef4444]" />,
                 filterByStation(newOrders), 'new', 'Aucune commande en attente'
               )}
             </div>
-            <div className="border-r-0 lg:border-r-2 border-[#1a1a1a] flex flex-col overflow-hidden">
+            <div className="border-r-0 lg:border-r-2 border-[#1a1a1a] flex flex-col overflow-hidden bg-amber-950/30">
               {renderColumn(
                 'En preparation', filterByStation(preparingOrders).length, '#fbbf24',
-                <Flame className="w-5 h-5 text-[#fbbf24]" />,
+                <Flame className="w-6 h-6 text-[#fbbf24]" />,
                 filterByStation(preparingOrders), 'preparing', 'Rien en preparation'
               )}
             </div>
-            <div className="flex flex-col overflow-hidden">
+            <div className="flex flex-col overflow-hidden bg-emerald-950/30">
               {renderColumn(
                 'Prets a servir', filterByStation(readyOrders).length, '#34d399',
-                <CheckCircle2 className="w-5 h-5 text-[#34d399]" />,
+                <CheckCircle2 className="w-6 h-6 text-[#34d399]" />,
                 filterByStation(readyOrders), 'ready', 'Aucun plat pret'
               )}
             </div>

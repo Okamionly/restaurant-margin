@@ -44,7 +44,7 @@ export default function NotFound() {
       `}</style>
 
       <p className="text-2xl font-bold text-[#111111] dark:text-white mb-2 mt-2">
-        Cette page n'existe pas
+        Page introuvable
       </p>
       <p className="text-[#737373] dark:text-[#A3A3A3] mb-8 max-w-md">
         La page que vous recherchez a peut-etre ete deplacee ou n'existe plus.

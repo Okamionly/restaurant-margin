@@ -1354,8 +1354,8 @@ export default function Planning() {
                     </div>
                     {/* Labor cost badge per day */}
                     {dayCost > 0 && (
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold mt-0.5">
-                        <Euro className="w-2.5 h-2.5" /> {dayCost.toFixed(0)} EUR
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold mt-0.5" title="Cout personnel du jour">
+                        <Euro className="w-2.5 h-2.5" /> Cout: {dayCost.toFixed(0)} EUR
                       </span>
                     )}
                     {dayConflicts.length > 0 && (
@@ -1619,7 +1619,7 @@ export default function Planning() {
                           ILLEGAL &gt;48h
                         </span>
                       ) : isOver35 ? (
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
                           {t('planning.overtime')}
                         </span>
                       ) : (

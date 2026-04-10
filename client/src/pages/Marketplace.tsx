@@ -184,6 +184,30 @@ function getSeasonalLabel(value: number): string {
   }
 }
 
+// ── Seasonal badge logic ───────────────────────────────────────────────────
+
+const SEASONAL_INGREDIENTS: Record<string, string[]> = {
+  spring: ['asperge', 'fraise', 'radis', 'petit pois', 'epinard', 'artichaut'],
+  summer: ['tomate', 'peche', 'courgette', 'aubergine', 'melon', 'abricot', 'framboise', 'haricot vert'],
+  fall: ['champignon', 'potiron', 'courge', 'chataigne', 'raisin', 'figue', 'coing', 'noix'],
+  winter: ['poireau', 'endive', 'chou', 'navet', 'topinambour', 'celeri', 'mache', 'clementine'],
+};
+
+function getCurrentSeason(): string {
+  const month = new Date().getMonth(); // 0-11
+  if (month >= 2 && month <= 4) return 'spring';
+  if (month >= 5 && month <= 7) return 'summer';
+  if (month >= 8 && month <= 10) return 'fall';
+  return 'winter';
+}
+
+function isSeasonalProduct(productName: string): boolean {
+  const season = getCurrentSeason();
+  const ingredients = SEASONAL_INGREDIENTS[season] || [];
+  const lower = productName.toLowerCase();
+  return ingredients.some(ing => lower.includes(ing));
+}
+
 function computeOverallRating(r: SupplierRating): number {
   return Number(((r.price + r.quality + r.delivery + r.communication) / 4).toFixed(1));
 }
@@ -311,6 +335,12 @@ function ProductCard({ product, onAddToCart, viewMode }: {
               <span className={`px-2 py-0.5 rounded-lg text-[10px] font-medium border ${catConfig.color}`}>
                 {product.category}
               </span>
+              {isSeasonalProduct(product.name) && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-900/40">
+                  <Leaf className="w-2.5 h-2.5" />
+                  De saison
+                </span>
+              )}
             </div>
             <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5 truncate">{product.description}</p>
           </div>
@@ -376,6 +406,12 @@ function ProductCard({ product, onAddToCart, viewMode }: {
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/40">
                   <TrendingDown className="w-2.5 h-2.5" />
                   -{savings}%
+                </span>
+              )}
+              {isSeasonalProduct(product.name) && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-900/40">
+                  <Leaf className="w-2.5 h-2.5" />
+                  De saison
                 </span>
               )}
             </div>

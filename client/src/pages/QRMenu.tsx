@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useRestaurant } from '../hooks/useRestaurant';
 import { useTranslation } from '../hooks/useTranslation';
+import { useToast } from '../hooks/useToast';
 
 // ── Simple SVG QR Code Generator ──────────────────────────────────────────
 function generateQRMatrix(text: string): boolean[][] {
@@ -187,13 +188,13 @@ interface ThemeConfig {
 const THEMES: ThemeConfig[] = [
   {
     key: 'classic',
-    label: 'Classic',
+    label: 'Classique',
     description: 'Fond blanc, propre et moderne',
     preview: { bg: '#FFFFFF', text: '#111111', accent: '#000000', card: '#F5F5F5', border: '#E5E7EB', font: 'sans-serif' },
   },
   {
     key: 'dark',
-    label: 'Dark',
+    label: 'Sombre',
     description: 'Fond noir, elegance sombre',
     preview: { bg: '#0A0A0A', text: '#FFFFFF', accent: '#FFFFFF', card: '#1A1A1A', border: '#262626', font: 'sans-serif' },
   },
@@ -264,6 +265,7 @@ const DEMO_MENU: MenuItem[] = [
 export default function QRMenu() {
   const { t } = useTranslation();
   const { selectedRestaurant } = useRestaurant();
+  const { showToast } = useToast();
 
   // QR Settings
   const [showPrices, setShowPrices] = useState(true);
@@ -883,7 +885,7 @@ export default function QRMenu() {
             </div>
             <button
               onClick={() => {
-                alert(`Commande de ${totalCartItems} articles (${totalCartPrice.toFixed(2)} EUR) envoyee a la cuisine ! (Mode demo)`);
+                showToast(`Commande envoyee ! ${totalCartItems} article${totalCartItems > 1 ? 's' : ''} (${totalCartPrice.toFixed(2)} EUR) envoye${totalCartItems > 1 ? 's' : ''} a la cuisine.`, 'success');
                 setOrderCart({});
               }}
               className="px-5 py-2.5 bg-white dark:bg-black text-black dark:text-white rounded-xl text-sm font-bold hover:opacity-80 transition"

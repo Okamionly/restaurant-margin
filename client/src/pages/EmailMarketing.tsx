@@ -15,7 +15,7 @@ type TemplateId = 'welcome' | 'relance' | 'promotion' | 'newsletter' | 'annivers
 type RecipientType = 'all' | 'segment' | 'manual';
 type SegmentType = 'vip' | 'inactifs' | 'nouveaux';
 type ScheduleType = 'now' | 'scheduled';
-type CampaignStatus = 'sent' | 'scheduled' | 'draft' | 'failed';
+type CampaignStatus = 'sent' | 'scheduled' | 'draft' | 'failed' | 'finished';
 
 interface Campaign {
   id: string;
@@ -180,6 +180,16 @@ const MOCK_CAMPAIGNS: Campaign[] = [
     recipientCount: 356, status: 'scheduled', scheduledAt: '2026-04-15T10:00:00Z',
     stats: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0 },
   },
+  {
+    id: '6', name: 'Campagne Noel 2025', template: 'promotion', recipientType: 'all',
+    recipientCount: 310, status: 'finished', sentAt: '2025-12-20T09:00:00Z',
+    stats: { sent: 310, delivered: 306, opened: 248, clicked: 102, failed: 4 },
+  },
+  {
+    id: '7', name: 'Brouillon Paques 2026', template: 'promotion', recipientType: 'all',
+    recipientCount: 0, status: 'draft',
+    stats: { sent: 0, delivered: 0, opened: 0, clicked: 0, failed: 0 },
+  },
 ];
 
 const MOCK_SEQUENCES: SequenceStep[] = [
@@ -191,7 +201,7 @@ const MOCK_SEQUENCES: SequenceStep[] = [
 
 // ── Component ──────────────────────────────────────────────────────────
 export default function EmailMarketing() {
-  const { addToast } = useToast();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<TabId>('builder');
   const [campaigns, setCampaigns] = useState<Campaign[]>(MOCK_CAMPAIGNS);
   const [sequences, setSequences] = useState<SequenceStep[]>(MOCK_SEQUENCES);
@@ -227,7 +237,7 @@ export default function EmailMarketing() {
 
   // Computed analytics
   const analyticsData = useMemo(() => {
-    const sentCampaigns = campaigns.filter(c => c.status === 'sent');
+    const sentCampaigns = campaigns.filter(c => c.status === 'sent' || c.status === 'finished');
     const totalSent = sentCampaigns.reduce((s, c) => s + c.stats.sent, 0);
     const totalDelivered = sentCampaigns.reduce((s, c) => s + c.stats.delivered, 0);
     const totalOpened = sentCampaigns.reduce((s, c) => s + c.stats.opened, 0);
@@ -254,15 +264,15 @@ export default function EmailMarketing() {
   // ── Handlers ──────────────────────────────────────────────────────────
   async function handleSendCampaign() {
     if (!campaignName.trim()) {
-      addToast('Donnez un nom a votre campagne', 'error');
+      showToast('Donnez un nom a votre campagne', 'error');
       return;
     }
     if (recipientType === 'manual' && !manualEmails.trim()) {
-      addToast('Ajoutez au moins un email', 'error');
+      showToast('Ajoutez au moins un email', 'error');
       return;
     }
     if (scheduleType === 'scheduled' && !scheduledDate) {
-      addToast('Selectionnez une date d\'envoi', 'error');
+      showToast('Selectionnez une date d\'envoi', 'error');
       return;
     }
 
@@ -309,7 +319,7 @@ export default function EmailMarketing() {
       };
 
       setCampaigns(prev => [newCampaign, ...prev]);
-      addToast(
+      showToast(
         scheduleType === 'now'
           ? `Campagne envoyee a ${recipientCount} destinataires !`
           : `Campagne programmee pour le ${scheduledDate}`,
@@ -321,7 +331,7 @@ export default function EmailMarketing() {
       setManualEmails('');
       setScheduledDate('');
     } catch {
-      addToast('Erreur lors de l\'envoi. Verifiez la configuration Resend.', 'error');
+      showToast('Erreur lors de l\'envoi. Verifiez la configuration Resend.', 'error');
     } finally {
       setSending(false);
     }
@@ -330,7 +340,7 @@ export default function EmailMarketing() {
   function handleDeleteCampaign(id: string) {
     setCampaigns(prev => prev.filter(c => c.id !== id));
     if (selectedCampaign?.id === id) setSelectedCampaign(null);
-    addToast('Campagne supprimee', 'success');
+    showToast('Campagne supprimee', 'success');
   }
 
   function toggleSequenceStep(id: string) {
@@ -366,7 +376,7 @@ export default function EmailMarketing() {
   function handleCopyWidget() {
     navigator.clipboard.writeText(generateWidgetSnippet());
     setWidgetCopied(true);
-    addToast('Code HTML copie dans le presse-papiers !', 'success');
+    showToast('Code HTML copie dans le presse-papiers !', 'success');
     setTimeout(() => setWidgetCopied(false), 3000);
   }
 
@@ -406,6 +416,13 @@ export default function EmailMarketing() {
             <Users className="w-4 h-4" />
             <span>342 abonnes</span>
           </div>
+          <button
+            onClick={() => setActiveTab('builder')}
+            className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white text-sm font-semibold rounded-xl transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Nouvelle campagne
+          </button>
         </div>
       </div>
 
@@ -703,7 +720,9 @@ export default function EmailMarketing() {
                     <div className="flex items-start gap-3 min-w-0">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                         campaign.status === 'sent' ? 'bg-emerald-50 dark:bg-emerald-900/20'
+                        : campaign.status === 'finished' ? 'bg-[#F5F5F5] dark:bg-[#262626]'
                         : campaign.status === 'scheduled' ? 'bg-blue-50 dark:bg-blue-900/20'
+                        : campaign.status === 'draft' ? 'bg-amber-50 dark:bg-amber-900/20'
                         : 'bg-[#F5F5F5] dark:bg-[#262626]'
                       }`}>
                         <TIcon className={`w-5 h-5 ${meta.color}`} />
@@ -728,13 +747,14 @@ export default function EmailMarketing() {
                     <div className="flex items-center gap-3">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
                         campaign.status === 'sent' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400'
+                        : campaign.status === 'finished' ? 'bg-[#F5F5F5] dark:bg-[#262626] text-[#525252] dark:text-[#A3A3A3]'
                         : campaign.status === 'scheduled' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                         : campaign.status === 'failed' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
-                        : 'bg-[#F5F5F5] dark:bg-[#262626] text-[#737373]'
+                        : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400'
                       }`}>
-                        {campaign.status === 'sent' ? 'Envoye' : campaign.status === 'scheduled' ? 'Programme' : campaign.status === 'failed' ? 'Echoue' : 'Brouillon'}
+                        {campaign.status === 'sent' ? 'Envoyee' : campaign.status === 'finished' ? 'Terminee' : campaign.status === 'scheduled' ? 'Programmee' : campaign.status === 'failed' ? 'Echouee' : 'Brouillon'}
                       </span>
-                      {campaign.status === 'sent' && (
+                      {(campaign.status === 'sent' || campaign.status === 'finished') && (
                         <span className="text-sm font-semibold text-[#111111] dark:text-white">{openRate}%</span>
                       )}
                       <button
@@ -748,7 +768,7 @@ export default function EmailMarketing() {
                   </div>
 
                   {/* Expanded details */}
-                  {selectedCampaign?.id === campaign.id && campaign.status === 'sent' && (
+                  {selectedCampaign?.id === campaign.id && (campaign.status === 'sent' || campaign.status === 'finished') && (
                     <div className="mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A]">
                       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                         {[

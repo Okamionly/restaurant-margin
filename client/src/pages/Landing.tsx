@@ -601,16 +601,16 @@ export default function Landing() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navDemo')}</button>
-            <button onClick={() => scrollTo('features')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navFeatures')}</button>
-            <button onClick={() => scrollTo('pricing')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navPricing')}</button>
-            <button onClick={() => scrollTo('faq')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">{t('landing.navFAQ')}</button>
+            <button onClick={() => scrollTo('live-demo')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Demo</button>
+            <button onClick={() => scrollTo('features')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Fonctionnalites</button>
+            <button onClick={() => scrollTo('pricing')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">Tarifs</button>
+            <button onClick={() => scrollTo('faq')} className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer">FAQ</button>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login" className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors px-3 py-2">{t('landing.navLogin')}</Link>
+            <Link to="/login" className="text-sm text-[#6B7280] hover:text-[#111111] transition-colors px-3 py-2">Se connecter</Link>
             <Link to="/login?mode=register" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold transition-all">
-              {t('landing.navTrialFree')} <ArrowRight className="w-4 h-4" />
+              Essai gratuit <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -622,13 +622,13 @@ export default function Landing() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-[#FFFFFF] border-t border-[#E5E7EB]">
             <div className="px-4 py-4 space-y-3">
-              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navDemo')}</button>
-              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navFeatures')}</button>
-              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navPricing')}</button>
-              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navFAQ')}</button>
+              <button onClick={() => scrollTo('live-demo')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Demo</button>
+              <button onClick={() => scrollTo('features')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Fonctionnalites</button>
+              <button onClick={() => scrollTo('pricing')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">Tarifs</button>
+              <button onClick={() => scrollTo('faq')} className="block w-full text-left text-sm text-[#6B7280] hover:text-[#111111] py-2">FAQ</button>
               <hr className="border-[#E5E7EB]" />
-              <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">{t('landing.navLogin')}</Link>
-              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">{t('landing.ctaTrial')}</Link>
+              <Link to="/login" className="block text-sm text-[#6B7280] hover:text-[#111111] py-2">Se connecter</Link>
+              <Link to="/login?mode=register" className="block w-full text-center px-5 py-2.5 rounded-lg bg-[#111111] hover:bg-[#333333] text-white text-sm font-semibold">Essai gratuit 7 jours</Link>
             </div>
           </div>
         )}
@@ -650,7 +650,7 @@ export default function Landing() {
             <div className="text-center lg:text-left animate-[fadeInUp_0.6s_ease-out]">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-semibold mb-6 tracking-wide shadow-[0_0_15px_rgba(13,148,136,0.08)]">
                 <Zap className="w-3.5 h-3.5" />
-                {t('landing.badge')}
+                Nouveau 2026
               </div>
 
               <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight animate-[fadeInUp_0.8s_ease-out_0.1s_both]">
@@ -746,7 +746,7 @@ export default function Landing() {
 
                 {/* Badge */}
                 <div className="absolute -top-4 -right-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-bold z-10">
-                  {t('landing.new2026')}
+                  Nouveau 2026
                 </div>
               </div>
             </div>

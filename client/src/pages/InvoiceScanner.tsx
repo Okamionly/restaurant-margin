@@ -943,7 +943,7 @@ export default function InvoiceScanner() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-black dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-black dark:bg-white flex items-center justify-center">
               <ReceiptText className="w-5 h-5 text-white dark:text-black" />
             </div>

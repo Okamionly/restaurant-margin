@@ -1023,7 +1023,7 @@ export default function MenuEngineering() {
         {/* ── Header ───────────────────────────────────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
               <div className="p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl text-white shadow-lg">
                 <BarChart3 className="w-6 h-6" />
               </div>

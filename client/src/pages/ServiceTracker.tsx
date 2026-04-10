@@ -455,7 +455,6 @@ export default function ServiceTracker() {
     return () => clearInterval(interval);
   }, []);
 
-  // NOTE: KPI pulse effect moved after liveStats computation
 
   // ── Load recipes ───────────────────────────────────────────────────
   useEffect(() => {

@@ -1009,7 +1009,7 @@ export default function Devis() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
             <div className="p-2 bg-[#F3F4F6] dark:bg-[#0A0A0A]/40 rounded-xl">
               <FileText className="w-6 h-6 text-[#111111] dark:text-[#A3A3A3]" />
             </div>

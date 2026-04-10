@@ -536,7 +536,7 @@ export default function Messagerie() {
             <MessageSquare className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-[#111111] dark:text-white">{t('messagerie.title')}</h1>
+            <h1 className="text-xl font-bold font-satoshi text-[#111111] dark:text-white">{t('messagerie.title')}</h1>
             <p className="text-xs text-[#6B7280] dark:text-[#737373]">
               {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
               {totalUnread > 0 && (

@@ -1029,7 +1029,7 @@ export default function Comptabilite() {
             <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">CA</span>
             <ArrowUpRight className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className="text-xl font-bold text-[#111111] dark:text-white">{fmt(periodTotals.ca)}</div>
+          <div className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{fmt(periodTotals.ca)}</div>
           <DeltaArrow current={currentMonth.ca} previous={previousMonth.ca} />
         </div>
 
@@ -1039,7 +1039,7 @@ export default function Comptabilite() {
             <span className="text-xs font-medium text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Charges</span>
             <ArrowDownRight className="w-4 h-4 text-red-500" />
           </div>
-          <div className="text-xl font-bold text-[#111111] dark:text-white">{fmt(periodTotals.charges)}</div>
+          <div className="text-xl font-bold font-satoshi tabular-nums text-[#111111] dark:text-white">{fmt(periodTotals.charges)}</div>
           <DeltaArrow current={currentMonth.charges} previous={previousMonth.charges} invert />
         </div>
 

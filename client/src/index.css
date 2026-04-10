@@ -77,7 +77,7 @@ body::before {
 
 @layer components {
   .btn-primary {
-    @apply bg-mono-100 text-white px-4 py-2 rounded-lg font-medium hover:bg-mono-300 transition-all duration-300 active:scale-95 dark:bg-mono-white dark:text-mono-0 dark:hover:bg-mono-800;
+    @apply bg-mono-100 text-white px-4 py-2 min-h-[44px] rounded-xl font-medium hover:bg-mono-300 transition-all duration-300 active:scale-95 dark:bg-mono-white dark:text-mono-0 dark:hover:bg-mono-800;
     position: relative;
     overflow: hidden;
   }
@@ -99,7 +99,7 @@ body::before {
     opacity: 1;
   }
   .btn-secondary {
-    @apply bg-white text-mono-100 px-4 py-2 rounded-lg font-medium border border-mono-900 hover:bg-mono-950 transition-colors dark:bg-mono-200 dark:text-mono-white dark:border-mono-200 dark:hover:bg-mono-300;
+    @apply bg-white text-mono-100 px-4 py-2 min-h-[44px] rounded-xl font-medium border border-mono-900 hover:bg-mono-950 transition-colors dark:bg-mono-200 dark:text-mono-white dark:border-mono-200 dark:hover:bg-mono-300;
   }
   .input {
     @apply border border-mono-900 rounded-xl px-3 py-2 text-sm

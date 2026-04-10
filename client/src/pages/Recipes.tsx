@@ -2551,7 +2551,7 @@ export default function Recipes() {
                   </div>
                   <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg py-2 px-1">
                     <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{t("recipes.margin")}</div>
-                    <div className={`text-sm font-bold ${recipe.margin.marginPercent >= 70 ? 'text-green-600 dark:text-green-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
+                    <div className={`text-sm font-bold tabular-nums ${recipe.margin.marginPercent >= 70 ? 'text-emerald-600 dark:text-emerald-400' : recipe.margin.marginPercent >= 60 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>
                       {recipe.margin.marginPercent.toFixed(1)}%
                     </div>
                   </div>

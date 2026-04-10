@@ -447,8 +447,7 @@ export default function WeighStation() {
   // Current step calculation
   const currentStep = !selected && !quickMode ? 1 : tare === 0 && currentWeight <= 0 ? 2 : netWeight <= 0 ? 3 : netConverted > 0 && selected ? 5 : 4;
 
-  // filteredIngredients is kept as alias for displayIngredients for kiosk usage
-  const filteredIngredients = displayIngredients;
+  // filteredIngredients alias is set after displayIngredients useMemo below
 
   function handleTare() {
     setTare(currentWeight);
@@ -684,6 +683,9 @@ export default function WeighStation() {
       .map(id => ingredients.find(i => i.id === id))
       .filter(Boolean) as Ingredient[];
   }, [recentIngredientIds, ingredients]);
+
+  // Alias for kiosk mode usage
+  const filteredIngredients = displayIngredients;
 
   const isConnected = status === 'connected' || useSimulation;
   const weightForDisplay = quickMode || !selected

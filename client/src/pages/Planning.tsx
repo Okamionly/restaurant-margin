@@ -1135,7 +1135,7 @@ export default function Planning() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-2 print-title">
+          <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-2 print-title">
             <CalendarDays className="w-7 h-7 text-indigo-500 no-print" />
             {t('planning.title')}
           </h1>

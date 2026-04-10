@@ -530,7 +530,7 @@ export default function MenuBuilder() {
       <div className="flex-none px-4 py-3 bg-white dark:bg-black border-b border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center gap-4">
         <div className="flex items-center gap-2">
           <ChefHat className="w-6 h-6 text-teal-400" />
-          <h1 className="text-lg font-bold text-[#111111] dark:text-white tracking-tight">Compositeur de Menu</h1>
+          <h1 className="text-lg font-bold font-satoshi text-[#111111] dark:text-white tracking-tight">Compositeur de Menu</h1>
         </div>
         <div className="flex-1" />
         <div className="flex items-center gap-3">

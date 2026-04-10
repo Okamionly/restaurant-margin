@@ -1412,7 +1412,7 @@ export default function Clients() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#111111] dark:text-white flex items-center gap-3">
+            <h1 className="text-2xl font-bold font-satoshi text-[#111111] dark:text-white flex items-center gap-3">
               <Users className="w-7 h-7 text-[#111111] dark:text-[#A3A3A3]" />
               CRM Clients
             </h1>

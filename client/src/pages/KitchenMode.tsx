@@ -2493,7 +2493,7 @@ export default function KitchenMode() {
   );
 
   return (
-    <div className={`min-h-screen bg-black text-white flex flex-col select-none transition-opacity duration-700 ${isDimmed ? 'opacity-30' : 'opacity-100'}`}
+    <div className={`fixed inset-0 z-[60] bg-black text-white flex flex-col select-none transition-opacity duration-700 ${isDimmed ? 'opacity-30' : 'opacity-100'}`}
       style={{ fontSize: '18px' }}
       onClick={() => isDimmed && resetDimTimer()}>
 

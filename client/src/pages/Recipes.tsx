@@ -2630,7 +2630,39 @@ export default function Recipes() {
             </thead>
             <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
               {sortedFiltered.length === 0 ? (
-                <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">{recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}</td></tr>
+                recipes.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="p-0">
+                      <div className="py-16 px-6 flex flex-col items-center text-center">
+                        <div className="mb-4">
+                          <FoodIllustration recipeName="steak" size="lg" />
+                        </div>
+                        <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+                          Creez votre premiere fiche technique
+                        </h3>
+                        <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-md mb-4">
+                          Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
+                        </p>
+                        <div className="flex flex-wrap gap-3 justify-center">
+                          <button
+                            onClick={openNew}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                          >
+                            <Plus className="w-4 h-4" /> Creer une recette
+                          </button>
+                          <button
+                            onClick={() => setActiveTab('templates')}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-colors"
+                          >
+                            <Package className="w-4 h-4" /> Ou importez un pack
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr><td colSpan={8} className="px-4 py-8 text-center text-[#9CA3AF] dark:text-[#737373]">{t("recipes.noResults")}</td></tr>
+                )
               ) : sortedFiltered.map((recipe) => (
                 <tr key={recipe.id} className={`hover:bg-[#FAFAFA] dark:hover:bg-[#0A0A0A] transition-colors ${selectedRecipeIds.has(recipe.id) ? 'bg-[#F3F4F6] dark:bg-[#171717]' : ''}`}>
                   <td className="px-4 py-3">
@@ -2689,9 +2721,37 @@ export default function Recipes() {
       /* ── Grid View (enhanced cards) ──────────────────────────────────── */
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {gridSortedFiltered.length === 0 ? (
-          <p className="text-[#9CA3AF] dark:text-[#737373] col-span-full text-center py-8">
-            {recipes.length === 0 ? t("recipes.noRecipes") : t("recipes.noResults")}
-          </p>
+          recipes.length === 0 ? (
+            <div className="col-span-full py-16 flex flex-col items-center text-center">
+              <div className="mb-4">
+                <FoodIllustration recipeName="pizza" size="lg" />
+              </div>
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white font-satoshi mb-1">
+                Creez votre premiere fiche technique
+              </h3>
+              <p className="text-sm text-[#9CA3AF] dark:text-[#737373] max-w-md mb-4">
+                Composez vos recettes avec ingredients et prix de vente — RestauMargin calcule automatiquement vos marges, food cost et coefficient multiplicateur.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <button
+                  onClick={openNew}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-sm font-medium rounded-xl hover:bg-[#333333] dark:hover:bg-[#E5E7EB] transition-colors"
+                >
+                  <Plus className="w-4 h-4" /> Creer une recette
+                </button>
+                <button
+                  onClick={() => setActiveTab('templates')}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0A0A0A] text-[#6B7280] dark:text-[#A3A3A3] text-sm font-medium rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] hover:border-[#111111] dark:hover:border-white hover:text-[#111111] dark:hover:text-white transition-colors"
+                >
+                  <Package className="w-4 h-4" /> Ou importez un pack
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-[#9CA3AF] dark:text-[#737373] col-span-full text-center py-8">
+              {t("recipes.noResults")}
+            </p>
+          )
         ) : (
           gridSortedFiltered.map((recipe) => {
             const allergens = getRecipeAllergens(recipe);

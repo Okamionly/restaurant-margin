@@ -250,10 +250,10 @@ app.use((req, res, next) => {
 // ── Stripe Price IDs ──
 // Set via env vars STRIPE_PRICE_PRO_MONTHLY, etc. or fall back to placeholders
 const STRIPE_PRICES = {
-  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_pro_monthly',
-  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_pro_annual',
-  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_business_monthly',
-  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_business_annual',
+  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_1TGSSU3Y5IoWMA5kc6YRt86p',
+  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_1TGSSU3Y5IoWMA5kc6YRt86p', // TODO: create annual price in Stripe
+  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU',
+  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // TODO: create annual price in Stripe
 } as const;
 
 // ── Stripe Checkout Session ──

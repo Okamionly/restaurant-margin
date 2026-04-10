@@ -43,6 +43,7 @@
     "pdf-parse": "^1.1.1",
     "prisma": "^5.22.0",
     "recharts": "^3.8.0",
-    "resend": "^6.9.4"
+    "resend": "^6.9.4",
+    "stripe": "^22.0.1"
   }
 }

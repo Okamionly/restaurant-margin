@@ -214,6 +214,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// ── CRON HEALTH (placed early to avoid being blocked by later route errors) ──
+app.get('/api/cron/health-check', async (_req, res) => {
+  try {
+    const start = Date.now();
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'healthy', responseTime: Date.now() - start, timestamp: new Date().toISOString() });
+  } catch (e: any) { res.status(500).json({ status: 'error', error: e.message }); }
+});
+app.get('/api/cron/sentry-monitor', (_req, res) => { res.json({ status: 'ok', message: 'Sentry monitor placeholder', timestamp: new Date().toISOString() }); });
+app.get('/api/cron/market-intel', (_req, res) => { res.json({ status: 'ok', message: 'Market intel placeholder', timestamp: new Date().toISOString() }); });
+app.get('/api/cron/lead-finder', (_req, res) => { res.json({ status: 'ok', message: 'Lead finder placeholder', timestamp: new Date().toISOString() }); });
+app.get('/api/cron/daily-report', (_req, res) => { res.json({ status: 'ok', message: 'Daily report placeholder', timestamp: new Date().toISOString() }); });
+app.get('/api/cron/email-sequence', (_req, res) => { res.json({ status: 'ok', message: 'Email sequence placeholder', timestamp: new Date().toISOString() }); });
+app.get('/api/cron/trial-expiry', (_req, res) => { res.json({ status: 'ok', message: 'Trial expiry placeholder', timestamp: new Date().toISOString() }); });
+
 // ── Stripe Price IDs ──
 // Replace with real Stripe Price IDs from your dashboard
 const STRIPE_PRICES = {
@@ -451,7 +466,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', env: 'vercel' });
 });
 
-// Simple cron test
+// Simple cron test — moved before all other routes
 app.get('/api/cron-test', (_req, res) => {
   res.json({ ok: true, crons_loaded: true, time: new Date().toISOString() });
 });

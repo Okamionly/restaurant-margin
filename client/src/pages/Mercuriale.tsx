@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   TrendingUp, TrendingDown, Minus, Search, CalendarDays, AlertTriangle,
@@ -154,7 +155,7 @@ function PriceHistoryMiniChart({ entries, trendUp }: { entries: PriceHistoryEntr
               style={{ height: `${barHeight}%`, minHeight: '3px' }}
             />
             <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 hidden group-hover:block bg-black dark:bg-white text-white dark:text-black text-[10px] px-1.5 py-0.5 rounded whitespace-nowrap z-10">
-              {entry.week}: {entry.price.toFixed(2)} EUR
+              {entry.week}: {formatCurrency(entry.price)}
             </div>
           </div>
         );
@@ -418,7 +419,7 @@ export default function Mercuriale() {
   function generateTalkingPoints(p: MercurialePrice, avgPrice: number, marketEstimate: number): string[] {
     const points: string[] = [];
     const diff = avgPrice - marketEstimate;
-    points.push(`L'ecart de ${diff.toFixed(2)} EUR/kg represente ${((diff / avgPrice) * 100).toFixed(0)}% au-dessus du marche`);
+    points.push(`L'ecart de ${formatCurrency(diff)}/kg represente ${((diff / avgPrice) * 100).toFixed(0)}% au-dessus du marche`);
     if (p.trend === 'hausse') {
       points.push(`Ce produit est en hausse - demandez un prix fixe sur 3 mois`);
     }
@@ -770,10 +771,10 @@ export default function Mercuriale() {
                           <tr key={p.id} className="border-b border-gray-200 dark:border-gray-800/30 hover:bg-white/80 dark:hover:bg-black/30 transition-colors">
                             <td className="px-5 py-3 font-medium text-black dark:text-white">{p.ingredient_name}</td>
                             <td className="px-5 py-3 text-right font-semibold text-black dark:text-white">
-                              {Number(p.price_min).toFixed(2)} EUR
+                              {formatCurrency(Number(p.price_min))}
                             </td>
                             <td className="px-5 py-3 text-right font-semibold text-black dark:text-white">
-                              {Number(p.price_max).toFixed(2)} EUR
+                              {formatCurrency(Number(p.price_max))}
                             </td>
                             <td className="px-5 py-3 text-gray-500 dark:text-gray-400">/{p.unit}</td>
                             <td className="px-5 py-3 text-center">
@@ -883,7 +884,7 @@ export default function Mercuriale() {
                             <h4 className="font-semibold text-black dark:text-white">{ingName}</h4>
                             {savingsRange > 0 && (
                               <span className="text-xs font-medium px-2.5 py-1 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-900/50">
-                                Economie potentielle: {savingsRange.toFixed(2)} EUR/{ingPrices[0]?.unit || 'kg'}
+                                Economie potentielle: {formatCurrency(savingsRange)}/{ingPrices[0]?.unit || 'kg'}
                               </span>
                             )}
                           </div>
@@ -913,7 +914,7 @@ export default function Mercuriale() {
                                       <span className={`font-bold text-sm ${
                                         isCheapest ? 'text-emerald-600 dark:text-emerald-400' : isMostExpensive ? 'text-red-600 dark:text-red-400' : 'text-black dark:text-white'
                                       }`}>
-                                        {p.avg.toFixed(2)} EUR
+                                        {formatCurrency(p.avg)}
                                       </span>
                                       <span className="text-xs text-gray-400 ml-1">/{p.unit}</span>
                                     </div>
@@ -1040,7 +1041,7 @@ export default function Mercuriale() {
                         </span>
                       </td>
                       <td className="px-5 py-3 text-right font-semibold text-black dark:text-white">
-                        {s.avgPrice.toFixed(2)} EUR
+                        {formatCurrency(s.avgPrice)}
                       </td>
                     </tr>
                   ))}
@@ -1092,11 +1093,11 @@ export default function Mercuriale() {
                         <div className="text-right">
                           <p className="text-sm">
                             <span className="text-gray-500">Votre prix:</span>{' '}
-                            <span className="font-bold text-red-500">{item.avgPrice.toFixed(2)} EUR</span>
+                            <span className="font-bold text-red-500">{formatCurrency(item.avgPrice)}</span>
                           </p>
                           <p className="text-sm">
                             <span className="text-gray-500">Prix marche estime:</span>{' '}
-                            <span className="font-bold text-emerald-500">{item.marketEstimate.toFixed(2)} EUR</span>
+                            <span className="font-bold text-emerald-500">{formatCurrency(item.marketEstimate)}</span>
                           </p>
                         </div>
                         <div className="px-3 py-1.5 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-full text-xs font-bold">
@@ -1121,7 +1122,7 @@ export default function Mercuriale() {
                                 style={{ width: `${(item.marketEstimate / item.avgPrice) * 100}%` }}
                               />
                             </div>
-                            <span className="text-xs font-bold text-emerald-500 w-20 text-right">{item.marketEstimate.toFixed(2)} EUR</span>
+                            <span className="text-xs font-bold text-emerald-500 w-20 text-right">{formatCurrency(item.marketEstimate)}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className="text-xs text-gray-500 w-28">Votre prix</span>
@@ -1131,7 +1132,7 @@ export default function Mercuriale() {
                                 style={{ width: '100%' }}
                               />
                             </div>
-                            <span className="text-xs font-bold text-red-500 w-20 text-right">{item.avgPrice.toFixed(2)} EUR</span>
+                            <span className="text-xs font-bold text-red-500 w-20 text-right">{formatCurrency(item.avgPrice)}</span>
                           </div>
                         </div>
 
@@ -1405,8 +1406,8 @@ export default function Mercuriale() {
                           <tr key={idx} className="border-b border-gray-100 dark:border-gray-900">
                             <td className="px-3 py-2 text-black dark:text-white font-medium">{row.ingredient_name}</td>
                             <td className="px-3 py-2 text-gray-600 dark:text-gray-400">{row.supplier}</td>
-                            <td className="px-3 py-2 text-right text-black dark:text-white">{row.price_min.toFixed(2)} EUR</td>
-                            <td className="px-3 py-2 text-right text-black dark:text-white">{row.price_max.toFixed(2)} EUR</td>
+                            <td className="px-3 py-2 text-right text-black dark:text-white">{formatCurrency(row.price_min)}</td>
+                            <td className="px-3 py-2 text-right text-black dark:text-white">{formatCurrency(row.price_max)}</td>
                             <td className="px-3 py-2 text-gray-600 dark:text-gray-400">{row.unit}</td>
                             <td className="px-3 py-2 text-gray-600 dark:text-gray-400">{row.category}</td>
                           </tr>

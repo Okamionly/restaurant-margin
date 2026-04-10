@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   FileText, Search, Plus, Filter, Eye, Download, Send, ArrowRight,
@@ -234,7 +235,7 @@ function formatDate(dateStr: string): string {
 }
 
 function formatEuro(amount: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
+  return formatCurrency(amount);
 }
 
 function calcLigneTotalHT(ligne: LigneDevis): number {

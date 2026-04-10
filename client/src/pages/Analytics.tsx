@@ -17,6 +17,7 @@ import { useRestaurant } from '../hooks/useRestaurant';
 import { useToast } from '../hooks/useToast';
 import { getToken } from '../services/api';
 import { CSSBarChart, AnimatedDonut, TrendIndicator } from '../components/Charts';
+import { formatCurrency } from '../utils/currency';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
@@ -355,7 +356,7 @@ export default function Analytics() {
       insights.push({
         icon: 'flame',
         title: `Ingredient le plus couteux: ${top.name}`,
-        description: `A ${top.pricePerUnit.toFixed(2)} EUR/${top.unit}, cet ingredient represente un poste de depense majeur. Envisagez de negocier avec votre fournisseur ou de chercher des alternatives.`,
+        description: `A ${formatCurrency(top.pricePerUnit)}/${top.unit}, cet ingredient represente un poste de depense majeur. Envisagez de negocier avec votre fournisseur ou de chercher des alternatives.`,
         color: '#111111',
       });
     }
@@ -379,8 +380,8 @@ export default function Analytics() {
         icon: 'zap',
         title: `Suggestion: ajuster le prix de ${worst.name}`,
         description: priceDelta > 0
-          ? `Augmenter le prix de ${priceDelta} EUR porterait la marge de ${worst.marginPercent.toFixed(0)}% a environ 65%. Impact estime: +${(priceDelta * 30).toFixed(0)} EUR/mois.`
-          : `Revoir la composition pour reduire le food cost de ${Math.abs(priceDelta)} EUR par portion.`,
+          ? `Augmenter le prix de ${formatCurrency(priceDelta)} porterait la marge de ${worst.marginPercent.toFixed(0)}% a environ 65%. Impact estime: +${formatCurrency(priceDelta * 30)}/mois.`
+          : `Revoir la composition pour reduire le food cost de ${formatCurrency(Math.abs(priceDelta))} par portion.`,
         color: '#111111',
       });
     }
@@ -398,7 +399,7 @@ export default function Analytics() {
       if (report.wasteImpact.totalCost > 0) {
         insights.push({
           icon: 'alert',
-          title: `Gaspillage: ${report.wasteImpact.totalCost.toFixed(0)} EUR ce mois`,
+          title: `Gaspillage: ${formatCurrency(report.wasteImpact.totalCost)} ce mois`,
           description: `${report.wasteImpact.entryCount} incidents enregistres. Les perimes representent souvent 40% du gaspillage — ameliorez la rotation FIFO.`,
           color: '#6B7280',
         });
@@ -487,7 +488,7 @@ export default function Analytics() {
     // Waste insight
     if (report.wasteImpact.totalCost > 0) {
       insights.push({
-        text: `Gaspillage: ${report.wasteImpact.totalCost.toFixed(0)} EUR perdus sur ${report.wasteImpact.entryCount} incidents`,
+        text: `Gaspillage: ${formatCurrency(report.wasteImpact.totalCost)} perdus sur ${report.wasteImpact.entryCount} incidents`,
         type: 'warning',
       });
     }
@@ -524,10 +525,10 @@ export default function Analytics() {
       `Periode: ${report.periodDays} jours (${report.periodStart} → ${report.periodEnd})`,
       '',
       '── KPI PRINCIPAUX ──',
-      `  Chiffre d'affaires potentiel: ${s.totalRevenuePotential.toFixed(0)} EUR`,
-      `  Cout matieres total:          ${s.totalCostPotential.toFixed(0)} EUR`,
+      `  Chiffre d'affaires potentiel: ${formatCurrency(s.totalRevenuePotential)}`,
+      `  Cout matieres total:          ${formatCurrency(s.totalCostPotential)}`,
       `  Marge brute:                   ${localMargeBrute.toFixed(1)}%`,
-      `  Food cost moyen:               ${s.avgFoodCost.toFixed(2)} EUR/portion`,
+      `  Food cost moyen:               ${formatCurrency(s.avgFoodCost)}/portion`,
       `  Food cost %:                   ${avgFoodCostPct.toFixed(1)}%`,
       `  Nombre de recettes:            ${s.totalRecipes}`,
       `  Nombre d'ingredients:          ${s.totalIngredients}`,
@@ -535,12 +536,12 @@ export default function Analytics() {
       '',
       '── TOP 5 RECETTES LES PLUS RENTABLES ──',
       ...(report.topProfitable || []).map((r, i) =>
-        `  ${i + 1}. ${r.name} — ${r.marginPercent.toFixed(1)}% marge (${r.marginAmount.toFixed(2)} EUR profit)`
+        `  ${i + 1}. ${r.name} — ${r.marginPercent.toFixed(1)}% marge (${formatCurrency(r.marginAmount)} profit)`
       ),
       '',
       '── TOP 5 MARGES LES PLUS FAIBLES ──',
       ...(report.bottomMargin || []).map((r, i) =>
-        `  ${i + 1}. ${r.name} — ${r.marginPercent.toFixed(1)}% marge (${r.sellingPrice.toFixed(2)} EUR prix de vente)`
+        `  ${i + 1}. ${r.name} — ${r.marginPercent.toFixed(1)}% marge (${formatCurrency(r.sellingPrice)} prix de vente)`
       ),
       '',
       '── INSIGHTS ──',
@@ -548,16 +549,16 @@ export default function Analytics() {
       '',
       '── PERFORMANCE PAR CATEGORIE ──',
       ...(report.categoryPerformance || []).map(c =>
-        `  ${c.category}: ${c.recipeCount} recettes, marge moy. ${c.avgMarginPercent}%, CA ${c.totalRevenue.toFixed(0)} EUR`
+        `  ${c.category}: ${c.recipeCount} recettes, marge moy. ${c.avgMarginPercent}%, CA ${formatCurrency(c.totalRevenue)}`
       ),
       '',
     ];
 
     if (report.wasteImpact.entryCount > 0) {
       lines.push('── GASPILLAGE ──');
-      lines.push(`  Total perdu: ${report.wasteImpact.totalCost.toFixed(0)} EUR (${report.wasteImpact.entryCount} incidents)`);
+      lines.push(`  Total perdu: ${formatCurrency(report.wasteImpact.totalCost)} (${report.wasteImpact.entryCount} incidents)`);
       report.wasteImpact.byReason.forEach(r => {
-        lines.push(`  ${WASTE_LABELS[r.reason] || r.reason}: ${r.cost.toFixed(0)} EUR (${r.count}x)`);
+        lines.push(`  ${WASTE_LABELS[r.reason] || r.reason}: ${formatCurrency(r.cost)} (${r.count}x)`);
       });
       lines.push('');
     }
@@ -941,7 +942,7 @@ export default function Analytics() {
                   contentStyle={{ background: chartBg, border: `1px solid ${chartGrid}`, borderRadius: 8, fontSize: 12 }}
                   labelStyle={{ color: chartText }}
                   formatter={(value: any, name: any) => [
-                    name === 'avgMargin' ? `${value}%` : `${Number(value).toFixed(2)} EUR`,
+                    name === 'avgMargin' ? `${value}%` : formatCurrency(Number(value)),
                     name === 'avgMargin' ? 'Marge' : 'Cout moyen'
                   ]}
                 />
@@ -1066,7 +1067,7 @@ export default function Analytics() {
                       {cat.percent}%
                     </span>
                   </div>
-                  <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-20 text-right flex-shrink-0">{cat.spend.toFixed(0)} EUR</span>
+                  <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3] w-20 text-right flex-shrink-0">{formatCurrency(cat.spend)}</span>
                 </div>
               );
             })}
@@ -1095,11 +1096,11 @@ export default function Analytics() {
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{r.name}</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category} — {r.sellingPrice.toFixed(2)} EUR</p>
+                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category} — {formatCurrency(r.sellingPrice)}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-sm font-bold text-[#111111] dark:text-white">{r.marginPercent.toFixed(1)}%</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">+{r.marginAmount.toFixed(2)} EUR</p>
+                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(r.marginAmount)}</p>
                 </div>
               </div>
             ))}
@@ -1123,13 +1124,13 @@ export default function Analytics() {
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#111111] dark:text-white truncate">{r.name}</p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category} — {r.sellingPrice.toFixed(2)} EUR</p>
+                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.category} — {formatCurrency(r.sellingPrice)}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className={`text-sm font-bold ${r.marginPercent < 30 ? 'text-[#6B7280] dark:text-[#737373]' : 'text-[#111111] dark:text-white'}`}>
                     {r.marginPercent.toFixed(1)}%
                   </p>
-                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{r.marginAmount.toFixed(2)} EUR</p>
+                  <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(r.marginAmount)}</p>
                 </div>
               </div>
             ))}
@@ -1169,11 +1170,11 @@ export default function Analytics() {
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-sm font-bold text-[#111111] dark:text-white">{ing.pricePerUnit.toFixed(2)} EUR</p>
+                    <p className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(ing.pricePerUnit)}</p>
                     <p className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">/{ing.unit}</p>
                   </div>
                   <div className="text-right flex-shrink-0 hidden sm:block">
-                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">~{ing.estimatedMonthlySpend.toFixed(0)} EUR</p>
+                    <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">~{formatCurrency(ing.estimatedMonthlySpend)}</p>
                     <p className="text-[10px] text-[#9CA3AF] dark:text-[#525252]">/mois estime</p>
                   </div>
                 </div>
@@ -1239,8 +1240,8 @@ export default function Analytics() {
                     <td className="py-2.5 text-[#111111] dark:text-white font-medium">{cat.category}</td>
                     <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{cat.recipeCount}</td>
                     <td className="py-2.5 text-right font-medium text-[#111111] dark:text-white">{cat.avgMarginPercent}%</td>
-                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{cat.totalRevenue.toFixed(0)} EUR</td>
-                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{cat.totalCost.toFixed(0)} EUR</td>
+                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(cat.totalRevenue)}</td>
+                    <td className="py-2.5 text-right text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(cat.totalCost)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1264,7 +1265,7 @@ export default function Analytics() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">
-                    {tr.oldPrice.toFixed(2)} EUR &rarr; {tr.newPrice.toFixed(2)} EUR
+                    {formatCurrency(tr.oldPrice)} &rarr; {formatCurrency(tr.newPrice)}
                   </p>
                   <ChangeIndicator value={tr.changePercent} />
                 </div>
@@ -1291,11 +1292,11 @@ export default function Analytics() {
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Heures totales</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white">{laborAnalysis.totalCost.toFixed(0)} EUR</p>
+                <p className="text-2xl font-bold text-[#111111] dark:text-white">{formatCurrency(laborAnalysis.totalCost)}</p>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Cout total</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-[#111111] dark:text-white">{laborAnalysis.avgCostPerHour.toFixed(2)} EUR</p>
+                <p className="text-2xl font-bold text-[#111111] dark:text-white">{formatCurrency(laborAnalysis.avgCostPerHour)}</p>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Cout/heure</p>
               </div>
               <div>
@@ -1321,7 +1322,7 @@ export default function Analytics() {
           {wasteImpact.entryCount > 0 ? (
             <div className="space-y-4">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-[#111111] dark:text-white">{wasteImpact.totalCost.toFixed(0)} EUR</span>
+                <span className="text-2xl font-bold text-[#111111] dark:text-white">{formatCurrency(wasteImpact.totalCost)}</span>
                 <span className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">perdu sur {wasteImpact.entryCount} incidents</span>
               </div>
               {/* By reason */}
@@ -1334,7 +1335,7 @@ export default function Analytics() {
                       <div className="flex-1 h-2 bg-[#F3F4F6] dark:bg-[#171717] rounded-full overflow-hidden">
                         <div className="h-full bg-[#111111] dark:bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
                       </div>
-                      <span className="text-xs font-medium text-[#111111] dark:text-white w-16 text-right">{r.cost.toFixed(0)} EUR</span>
+                      <span className="text-xs font-medium text-[#111111] dark:text-white w-16 text-right">{formatCurrency(r.cost)}</span>
                     </div>
                   );
                 })}
@@ -1346,7 +1347,7 @@ export default function Analytics() {
                   {wasteImpact.topWastedIngredients.slice(0, 3).map(w => (
                     <div key={w.name} className="flex justify-between text-xs py-1">
                       <span className="text-[#111111] dark:text-white">{w.name}</span>
-                      <span className="text-[#6B7280] dark:text-[#A3A3A3]">{w.cost.toFixed(2)} EUR ({w.count}x)</span>
+                      <span className="text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(w.cost)} ({w.count}x)</span>
                     </div>
                   ))}
                 </div>

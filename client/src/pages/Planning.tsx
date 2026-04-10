@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useMemo, useCallback, useEffect, useRef, DragEvent, MouseEvent as ReactMouseEvent } from 'react';
 import {
   CalendarDays, Clock, Users, Euro, Plus, ChevronLeft, ChevronRight,
@@ -1233,7 +1234,7 @@ export default function Planning() {
         <StatCard
           icon={<Euro className="w-5 h-5 text-emerald-400" />}
           label="Cout estime jour"
-          value={`${todayEstCost.toFixed(0)} EUR`}
+          value={formatCurrency(todayEstCost)}
         />
         <StatCard
           icon={<Clock className="w-5 h-5 text-blue-400" />}
@@ -1243,7 +1244,7 @@ export default function Planning() {
         <StatCard
           icon={<Euro className="w-5 h-5 text-teal-400" />}
           label={t('planning.laborCost')}
-          value={`${laborCost.toFixed(0)} EUR`}
+          value={formatCurrency(laborCost)}
           alert={laborRatio > 30}
         />
         <StatCard
@@ -1355,7 +1356,7 @@ export default function Planning() {
                     {/* Labor cost badge per day */}
                     {dayCost > 0 && (
                       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-bold mt-0.5" title="Cout personnel du jour">
-                        <Euro className="w-2.5 h-2.5" /> Cout: {dayCost.toFixed(0)} EUR
+                        <Euro className="w-2.5 h-2.5" /> Cout: {formatCurrency(dayCost)}
                       </span>
                     )}
                     {dayConflicts.length > 0 && (
@@ -1603,7 +1604,7 @@ export default function Planning() {
                         {ROLE_LABELS[emp.role] || emp.role || ''}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{(emp.hourlyRate ?? 0).toFixed(2)} EUR/h</td>
+                    <td className="px-4 py-3 text-right text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(emp.hourlyRate ?? 0)}/h</td>
                     <td className="px-4 py-3 text-right">
                       <span className={`font-semibold ${isOver48 ? 'text-red-400' : isOver35 ? 'text-amber-400' : 'text-emerald-400'}`}>
                         {hours.toFixed(0)}h
@@ -1691,7 +1692,7 @@ export default function Planning() {
                       {row.total > 0 ? `${row.total}h` : '-'}
                     </td>
                     <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
-                      {row.cost > 0 ? `${row.cost.toFixed(0)} EUR` : '-'}
+                      {row.cost > 0 ? formatCurrency(row.cost) : '-'}
                     </td>
                     <td className="px-3 py-2.5 text-center">
                       {empConflicts.length > 0 ? (
@@ -1714,7 +1715,7 @@ export default function Planning() {
                   </td>
                 ))}
                 <td className="px-3 py-2.5 text-center text-indigo-400">{totalRow.total}h</td>
-                <td className="px-4 py-2.5 text-right text-indigo-400">{(totalRow.cost ?? 0).toFixed(0)} EUR</td>
+                <td className="px-4 py-2.5 text-right text-indigo-400">{formatCurrency(totalRow.cost ?? 0)}</td>
                 <td />
               </tr>
               {/* Daily cost row */}
@@ -2016,9 +2017,9 @@ export default function Planning() {
                 {detail.overtime > 0 && (
                   <>
                     <div>Heures supplementaires : {detail.overtime.toFixed(1)}h</div>
-                    {detail.overtimeAt25 > 0 && <div>- {detail.overtimeAt25.toFixed(1)}h a 125% = {(detail.overtimeAt25 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_1).toFixed(0)} EUR</div>}
-                    {detail.overtimeAt50 > 0 && <div>- {detail.overtimeAt50.toFixed(1)}h a 150% = {(detail.overtimeAt50 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_2).toFixed(0)} EUR</div>}
-                    <div className="font-semibold text-[#111111] dark:text-white">Surcout heures sup : {detail.overtimeCost.toFixed(0)} EUR</div>
+                    {detail.overtimeAt25 > 0 && <div>- {detail.overtimeAt25.toFixed(1)}h a 125% = {formatCurrency(detail.overtimeAt25 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_1)}</div>}
+                    {detail.overtimeAt50 > 0 && <div>- {detail.overtimeAt50.toFixed(1)}h a 150% = {formatCurrency(detail.overtimeAt50 * (detail.emp.hourlyRate ?? 0) * OVERTIME_RATE_2)}</div>}
+                    <div className="font-semibold text-[#111111] dark:text-white">Surcout heures sup : {formatCurrency(detail.overtimeCost)}</div>
                   </>
                 )}
                 {detail.dailyAlerts.length > 0 && (
@@ -2502,7 +2503,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
         </div>
         <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-2 sm:p-3 text-center border border-[#E5E7EB] dark:border-[#1A1A1A]">
           <div className="text-[10px] sm:text-xs text-[#9CA3AF] dark:text-[#737373]">{t('planning.dayCost')}</div>
-          <div className="text-lg sm:text-2xl font-bold text-emerald-400">{totalCost.toFixed(0)} EUR</div>
+          <div className="text-lg sm:text-2xl font-bold text-emerald-400">{formatCurrency(totalCost)}</div>
         </div>
         {dayConflicts.length > 0 && (
           <div className="bg-red-50 dark:bg-red-950/20 rounded-xl p-2 sm:p-3 text-center border border-red-200 dark:border-red-800/30">
@@ -2632,7 +2633,7 @@ function DayTimelineView({ day, shifts, employees, conflicts, onEditShift, onDel
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span className="font-mono text-[#6B7280] dark:text-[#A3A3A3]">{s.startTime} - {s.endTime}</span>
-                          <span className="text-[#9CA3AF] dark:text-[#737373]">{hours}h -- {(hours * (emp.hourlyRate ?? 0)).toFixed(0)} EUR</span>
+                          <span className="text-[#9CA3AF] dark:text-[#737373]">{hours}h -- {formatCurrency(hours * (emp.hourlyRate ?? 0))}</span>
                         </div>
                         <button
                           onClick={e => { e.stopPropagation(); onDeleteShift(s.id); }}
@@ -2973,7 +2974,7 @@ function PointageTab({
                           {emp.totalHours > 0 ? `${emp.totalHours}h` : '-'}
                         </td>
                         <td className="px-4 py-2.5 text-right font-medium text-[#6B7280] dark:text-[#A3A3A3]">
-                          {emp.totalCost > 0 ? `${emp.totalCost.toFixed(0)} EUR` : '-'}
+                          {emp.totalCost > 0 ? formatCurrency(emp.totalCost) : '-'}
                         </td>
                       </tr>
                     );
@@ -2994,7 +2995,7 @@ function PointageTab({
                       {timeclockSummary.reduce((s, e) => s + e.totalHours, 0).toFixed(1)}h
                     </td>
                     <td className="px-4 py-2.5 text-right text-[#111111] dark:text-white">
-                      {timeclockSummary.reduce((s, e) => s + e.totalCost, 0).toFixed(0)} EUR
+                      {formatCurrency(timeclockSummary.reduce((s, e) => s + e.totalCost, 0))}
                     </td>
                   </tr>
                 </>

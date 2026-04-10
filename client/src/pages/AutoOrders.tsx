@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   ShoppingCart, Truck, Package, Send, FileText, Check, Trash2,
@@ -197,7 +198,7 @@ const STATUS_CONFIG: Record<OrderStatus, {
 };
 
 function fmtEuro(n: number) {
-  return n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  return formatCurrency(n);
 }
 
 function fmtDate(iso: string) {
@@ -634,7 +635,7 @@ function BudgetTracker({ monthlySpend, budget }: { monthlySpend: number; budget:
         )}
       </div>
       <div className="flex justify-between mt-1">
-        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">0 EUR</span>
+        <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(0)}</span>
         <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{fmtEuro(budget)}</span>
       </div>
     </div>

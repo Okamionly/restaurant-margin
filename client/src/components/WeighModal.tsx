@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useCallback } from 'react';
 import { Bluetooth, BluetoothOff, Plus, Minus, RotateCcw, Check, Wifi, AlertTriangle, RefreshCw, Euro } from 'lucide-react';
 import { useScale } from '../hooks/useScale';
@@ -105,7 +106,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
             <p className="text-sm text-[#737373] dark:text-[#A3A3A3]">Ingrédient</p>
             <p className="font-semibold text-[#262626] dark:text-white">{ingredientName}</p>
             <p className="text-xs text-teal-600 dark:text-teal-400 font-medium mt-0.5">
-              Prix unitaire : {pricePerUnit.toFixed(2)} €/{unit}
+              Prix unitaire : {formatCurrency(pricePerUnit)}/{unit}
             </p>
           </div>
           <div className="text-right">
@@ -205,7 +206,7 @@ export default function WeighModal({ isOpen, onClose, ingredientName, currentSto
           <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
             <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-              Valeur estimée : {((weightInUnit / getUnitDivisor(unit)) * pricePerUnit).toFixed(2)} €
+              Valeur estimée : {formatCurrency((weightInUnit / getUnitDivisor(unit)) * pricePerUnit)}
             </span>
           </div>
         )}

@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -645,14 +646,14 @@ export default function PublicMenu() {
               <p className="text-sm font-bold">
                 {totalItems} {lang === 'en' ? 'item' : lang === 'es' ? 'articulo' : lang === 'ar' ? 'عنصر' : 'article'}{totalItems > 1 ? 's' : ''}
               </p>
-              <p className="text-xs opacity-60">{totalPrice.toFixed(2)} EUR</p>
+              <p className="text-xs opacity-60">{formatCurrency(totalPrice)}</p>
             </div>
             <button
               onClick={() => {
                 alert(
                   lang === 'en'
-                    ? `Order of ${totalItems} items (${totalPrice.toFixed(2)} EUR) sent to kitchen!`
-                    : `Commande de ${totalItems} articles (${totalPrice.toFixed(2)} EUR) envoyee en cuisine !`
+                    ? `Order of ${totalItems} items (${formatCurrency(totalPrice)}) sent to kitchen!`
+                    : `Commande de ${totalItems} articles (${formatCurrency(totalPrice)}) envoyee en cuisine !`
                 );
                 setCart({});
               }}

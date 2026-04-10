@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   ChevronLeft,
@@ -493,10 +494,10 @@ export default function MenuCalendar() {
       `Liste de courses — ${MONTH_NAMES[currentMonth]} ${currentYear} (${mealType === 'lunch' ? 'Dejeuner' : 'Diner'})`,
       '',
       ...shoppingList.map(item =>
-        `- ${item.ingredientName}: ${item.totalQuantity.toFixed(2)} ${item.unit} (~${item.estimatedCost.toFixed(2)} EUR)`
+        `- ${item.ingredientName}: ${item.totalQuantity.toFixed(2)} ${item.unit} (~${formatCurrency(item.estimatedCost)})`
       ),
       '',
-      `Total estime: ${totalShoppingCost.toFixed(2)} EUR`,
+      `Total estime: ${formatCurrency(totalShoppingCost)}`,
     ];
     const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -968,7 +969,7 @@ export default function MenuCalendar() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-[#111111] dark:text-white">
-                  {totalShoppingCost.toFixed(2)} EUR
+                  {formatCurrency(totalShoppingCost)}
                 </span>
                 <button
                   onClick={exportShoppingList}
@@ -1288,7 +1289,7 @@ export default function MenuCalendar() {
                                 · {margin.toFixed(0)}% marge
                               </span>
                             )}
-                            {' · '}{recipe.sellingPrice.toFixed(2)} EUR
+                            {' · '}{formatCurrency(recipe.sellingPrice)}
                           </div>
                         </div>
                         <Plus className="w-4 h-4 text-[#9CA3AF] opacity-0 group-hover:opacity-100 transition-opacity" />

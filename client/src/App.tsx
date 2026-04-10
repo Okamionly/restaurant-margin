@@ -4,7 +4,6 @@ import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, M
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
-import ChatbotAssistant from './components/ChatbotAssistant';
 import OnboardingWizard, { isOnboardingCompleted } from './components/OnboardingWizard';
 import FloatingActionBubble from './components/FloatingActionBubble';
 import CookieBanner from './components/CookieBanner';
@@ -15,7 +14,7 @@ import ShortcutsModal from './components/ShortcutsModal';
 import ActiveUsers, { ConnectedBadge, PageActivityDot } from './components/ActiveUsers';
 import CollaborationToast from './components/CollaborationToast';
 import WorkingIndicator from './components/WorkingIndicator';
-import { SidebarLevelBadge } from './components/Gamification';
+import Gamification, { SidebarLevelBadge } from './components/Gamification';
 import ContextualTooltips from './components/ContextualTooltips';
 import OnboardingProgress from './components/OnboardingProgress';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -108,7 +107,8 @@ const PublicFeedback = lazyRetry(() => import('./pages/PublicFeedback'));
 const PublicRecipe = lazyRetry(() => import('./pages/PublicRecipe'));
 const MenuCalendar = lazyRetry(() => import('./pages/MenuCalendar'));
 const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'));
-const GamificationPage = lazyRetry(() => import('./components/Gamification'));
+// Gamification is already statically imported (SidebarLevelBadge needs it in main bundle)
+const GamificationPage = Gamification;
 const Temoignages = lazyRetry(() => import('./pages/Temoignages'));
 const Demo = lazyRetry(() => import('./pages/Demo'));
 const BlogCoefficient = lazyRetry(() => import('./pages/BlogCoefficient'));

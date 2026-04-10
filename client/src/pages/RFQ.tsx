@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useMemo } from 'react';
 import {
   Plus, FileText, X, Euro, Clock, Send, CheckCircle, Trash2,
@@ -395,11 +396,11 @@ function QuoteComparisonTable({ rfq, onAward }: {
                     <td key={supplierName} className="py-3 px-3 text-center">
                       <div className="flex flex-col items-center gap-1">
                         <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
-                          {quote.unitPrice.toFixed(2)} EUR
+                          {formatCurrency(quote.unitPrice)}
                         </div>
                         <ScoreBadge score={score} />
                         <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] tabular-nums">
-                          Total: {(quote.unitPrice * item.quantity).toFixed(2)} EUR
+                          Total: {formatCurrency(quote.unitPrice * item.quantity)}
                         </div>
                         {!quote.selected && rfq.status === 'reponses' && (
                           <button
@@ -489,7 +490,7 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
           {saving > 0 && (
             <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-200 dark:border-emerald-800/30">
               <TrendingDown className="w-3.5 h-3.5" />
-              -{saving.toFixed(0)} EUR
+              -{formatCurrency(saving)}
             </div>
           )}
 
@@ -631,7 +632,7 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
                                     <span className={`text-sm font-bold tabular-nums ${
                                       isBest ? 'text-emerald-600 dark:text-emerald-400' : quote.selected ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'
                                     }`}>
-                                      {quote.unitPrice.toFixed(2)} EUR / {item.unit}
+                                      {formatCurrency(quote.unitPrice)} / {item.unit}
                                     </span>
                                     {isBest && (
                                       <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400">
@@ -657,7 +658,7 @@ function RFQCard({ rfq, onDelete, onStatusChange, onAward }: {
                                 <div className="text-right hidden sm:block w-24">
                                   <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Total</p>
                                   <p className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">
-                                    {(quote.unitPrice * item.quantity).toFixed(2)} EUR
+                                    {formatCurrency(quote.unitPrice * item.quantity)}
                                   </p>
                                 </div>
                               )}
@@ -755,7 +756,7 @@ function KanbanColumn({ status, rfqs, onDelete, onStatusChange, onAward }: {
                 <div className="flex items-center gap-2 flex-wrap">
                   {saving > 0 && (
                     <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400">
-                      <TrendingDown className="w-2.5 h-2.5" /> -{saving.toFixed(0)} EUR
+                      <TrendingDown className="w-2.5 h-2.5" /> -{formatCurrency(saving)}
                     </span>
                   )}
                   {rfq.dueDate && (
@@ -962,7 +963,7 @@ export default function RFQPage() {
               <TrendingDown className="w-4 h-4 text-emerald-500" />
               <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide font-bold">Economies</span>
             </div>
-            <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{stats.totalSavings.toFixed(0)} EUR</p>
+            <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">{formatCurrency(stats.totalSavings)}</p>
             <p className="text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-0.5">estimees vs. prix max</p>
           </div>
         </div>

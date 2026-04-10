@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -64,7 +65,7 @@ const SUGGESTED_ORDER: SuggestedIngredient[] = [
 // ── Helper ─────────────────────────────────────────────────────────────────
 
 function fmtEuro(n: number) {
-  return n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  return formatCurrency(n);
 }
 
 // ── Component ──────────────────────────────────────────────────────────────

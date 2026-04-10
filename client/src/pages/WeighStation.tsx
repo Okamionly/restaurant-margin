@@ -1,3 +1,4 @@
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Bluetooth, BluetoothOff, Scale, Check, RotateCcw, Search,
@@ -1595,7 +1596,7 @@ export default function WeighStation() {
                           {ing.category}
                         </span>
                         <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{ing.unit}</span>
-                        <span className="text-[10px] text-teal-400">{(ing.pricePerUnit ?? 0).toFixed(2)} EUR/{ing.unit === 'g' ? 'kg' : ing.unit === 'cl' ? 'L' : ing.unit === 'ml' ? 'L' : ing.unit}</span>
+                        <span className="text-[10px] text-teal-400">{formatCurrency(ing.pricePerUnit ?? 0)}/{ing.unit === 'g' ? 'kg' : ing.unit === 'cl' ? 'L' : ing.unit === 'ml' ? 'L' : ing.unit}</span>
                       </div>
                     </div>
                     {selected?.id === ing.id && (
@@ -1647,7 +1648,7 @@ export default function WeighStation() {
                             <p className="font-semibold text-base text-[#111111] dark:text-white">{ing.name}</p>
                             <span className={`text-xs px-2 py-0.5 rounded border ${getCategoryColor(ing.category)}`}>{ing.category}</span>
                           </div>
-                          <span className="text-teal-400 font-bold text-lg">{(ing.pricePerUnit ?? 0).toFixed(2)} EUR</span>
+                          <span className="text-teal-400 font-bold text-lg">{formatCurrency(ing.pricePerUnit ?? 0)}</span>
                         </button>
                       ))}
                     </div>
@@ -1686,7 +1687,7 @@ export default function WeighStation() {
                       {selected.category}
                     </span>
                     <span className={`text-teal-400 font-medium ${kioskMode ? 'text-sm' : 'text-xs'}`}>
-                      {(selected.pricePerUnit ?? 0).toFixed(2)} EUR/{selected.unit === 'g' ? 'kg' : selected.unit === 'cl' ? 'L' : selected.unit === 'ml' ? 'L' : selected.unit}
+                      {formatCurrency(selected.pricePerUnit ?? 0)}/{selected.unit === 'g' ? 'kg' : selected.unit === 'cl' ? 'L' : selected.unit === 'ml' ? 'L' : selected.unit}
                     </span>
                   </div>
                   <div className="mt-1.5">
@@ -1834,11 +1835,11 @@ export default function WeighStation() {
                 <span className={`font-bold text-emerald-400 tabular-nums ${kioskMode ? 'text-3xl' : 'text-2xl'}`}>
                   Valeur : {(() => {
                     const unit = selected.unit.toLowerCase();
-                    if (unit === 'g') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
-                    if (unit === 'cl') return (netConverted / 100 * selected.pricePerUnit).toFixed(2);
-                    if (unit === 'ml') return (netConverted / 1000 * selected.pricePerUnit).toFixed(2);
-                    return (netConverted * selected.pricePerUnit).toFixed(2);
-                  })()} EUR
+                    if (unit === 'g') return formatCurrency(netConverted / 1000 * selected.pricePerUnit);
+                    if (unit === 'cl') return formatCurrency(netConverted / 100 * selected.pricePerUnit);
+                    if (unit === 'ml') return formatCurrency(netConverted / 1000 * selected.pricePerUnit);
+                    return formatCurrency(netConverted * selected.pricePerUnit);
+                  })()}
                 </span>
               </div>
             )}
@@ -2160,7 +2161,7 @@ export default function WeighStation() {
                   </div>
                   <div className="text-center px-2 py-2 rounded-xl bg-white dark:bg-[#0A0A0A]/50 border border-[#E5E7EB] dark:border-[#1A1A1A]/40">
                     <p className="text-lg font-black text-amber-400 tabular-nums" style={{ fontFamily: 'ui-monospace, monospace' }}>{todayStats.totalValue}</p>
-                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">EUR</p>
+                    <p className="text-[9px] text-[#9CA3AF] dark:text-[#737373] font-medium">{getCurrencySymbol()}</p>
                   </div>
                 </div>
                 {todayStats.mostWeighedName && (
@@ -2217,7 +2218,7 @@ export default function WeighStation() {
                       <div className="flex items-center gap-3 mt-1">
                         <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{selectedRecipe.category}</span>
                         <span className="text-xs text-teal-400">{selectedRecipe.ingredients.length} ingredients</span>
-                        <span className="text-xs text-emerald-400">{selectedRecipe.sellingPrice?.toFixed(2)} EUR</span>
+                        <span className="text-xs text-emerald-400">{formatCurrency(selectedRecipe.sellingPrice ?? 0)}</span>
                       </div>
                     </div>
                     <div className="p-3 space-y-1">
@@ -2290,7 +2291,7 @@ export default function WeighStation() {
                   <div className="grid grid-cols-2 gap-2 mt-3">
                     <div className="px-3 py-2 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-lg border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
                       <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase">Cout theorique</p>
-                      <p className="text-sm font-bold text-[#111111] dark:text-white">{recipeTheoreticalCost.toFixed(2)} EUR</p>
+                      <p className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(recipeTheoreticalCost)}</p>
                     </div>
                     <div className={`px-3 py-2 rounded-lg border ${
                       recipeActualCost > recipeTheoreticalCost * 1.05 ? 'bg-red-900/20 border-red-500/30' :
@@ -2302,7 +2303,7 @@ export default function WeighStation() {
                         recipeActualCost > recipeTheoreticalCost * 1.05 ? 'text-red-400' :
                         recipeActualCost < recipeTheoreticalCost * 0.95 ? 'text-emerald-400' :
                         'text-[#111111] dark:text-white'
-                      }`}>{recipeActualCost.toFixed(2)} EUR</p>
+                      }`}>{formatCurrency(recipeActualCost)}</p>
                     </div>
                   </div>
                 </div>
@@ -2486,7 +2487,7 @@ export default function WeighStation() {
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <div className="px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A]/80 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A]/50">
                     <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Theorique</p>
-                    <p className="text-lg font-bold text-[#111111] dark:text-white">{recipeTheoreticalCost.toFixed(2)} EUR</p>
+                    <p className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(recipeTheoreticalCost)}</p>
                   </div>
                   <span className="text-[#9CA3AF] dark:text-[#737373]">&rarr;</span>
                   <div className={`px-4 py-3 rounded-xl border ${
@@ -2494,7 +2495,7 @@ export default function WeighStation() {
                   }`}>
                     <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Reel</p>
                     <p className={`text-lg font-bold ${recipeActualCost > recipeTheoreticalCost * 1.05 ? 'text-red-400' : 'text-emerald-400'}`}>
-                      {recipeActualCost.toFixed(2)} EUR
+                      {formatCurrency(recipeActualCost)}
                     </p>
                   </div>
                 </div>
@@ -2589,7 +2590,7 @@ export default function WeighStation() {
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold text-teal-400">{session.totalKg.toFixed(1)} kg</p>
-                    <p className="text-[10px] text-emerald-400">{session.totalValue.toFixed(2)} EUR</p>
+                    <p className="text-[10px] text-emerald-400">{formatCurrency(session.totalValue)}</p>
                   </div>
                 </button>
               ))}
@@ -2753,7 +2754,7 @@ export default function WeighStation() {
                   {dailyReport.discrepancies.length}
                 </p>
                 <p className="text-xs text-[#6B7280] dark:text-[#A3A3A3] mt-1">
-                  {dailyReport.totalLoss > 0 ? `${dailyReport.totalLoss} EUR de pertes` : 'Aucune perte detectee'}
+                  {dailyReport.totalLoss > 0 ? `${formatCurrency(dailyReport.totalLoss)} de pertes` : 'Aucune perte detectee'}
                 </p>
               </div>
             </div>
@@ -2819,7 +2820,7 @@ export default function WeighStation() {
                 className="w-full flex items-center justify-center gap-3 px-6 py-4 min-h-[56px] bg-amber-900/20 hover:bg-amber-900/30 border border-amber-500/30 rounded-2xl text-amber-400 font-medium transition-all active:scale-[0.98]"
               >
                 <AlertTriangle className="w-5 h-5" />
-                <span>Pertes estimees : {dailyReport.totalLoss} EUR</span>
+                <span>Pertes estimees : {formatCurrency(dailyReport.totalLoss)}</span>
                 <span className="text-xs bg-amber-600/30 px-2 py-0.5 rounded-full">Voir WasteTracker &rarr;</span>
               </button>
             )}

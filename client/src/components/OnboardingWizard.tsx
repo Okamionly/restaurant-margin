@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   ChevronLeft, ChevronRight, X, Check, Plus, Trash2, Sparkles, ChefHat, BarChart3,
@@ -738,7 +739,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                               <span className="text-xs text-[#9CA3AF] dark:text-[#737373] ml-2">{s.category}</span>
                             </div>
                             <span className="text-xs font-medium text-[#6B7280] dark:text-[#A3A3A3]">
-                              {s.pricePerUnit} EUR/{s.unit}
+                              {formatCurrency(s.pricePerUnit)}/{s.unit}
                             </span>
                           </button>
                         ))}
@@ -859,7 +860,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                 <div className="p-3 rounded-xl bg-[#F3F4F6] dark:bg-[#171717] border border-[#E5E7EB] dark:border-[#1A1A1A]">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-[#6B7280] dark:text-[#A3A3A3]">Apercu food cost</span>
-                    <span className="font-bold text-[#111111] dark:text-white">{marginData.foodCost.toFixed(2)} EUR</span>
+                    <span className="font-bold text-[#111111] dark:text-white">{formatCurrency(marginData.foodCost)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm mt-1">
                     <span className="text-[#6B7280] dark:text-[#A3A3A3]">Marge estimee</span>
@@ -919,7 +920,7 @@ export default function OnboardingWizard({ onComplete }: { onComplete: () => voi
                         <span className="text-[#111111] dark:text-white">{ing.name}</span>
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{qty} {ing.unit}</span>
-                          <span className="font-medium text-[#111111] dark:text-white">{cost.toFixed(2)} EUR</span>
+                          <span className="font-medium text-[#111111] dark:text-white">{formatCurrency(cost)}</span>
                         </div>
                       </div>
                     );

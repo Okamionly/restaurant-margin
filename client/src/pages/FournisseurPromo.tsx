@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -227,7 +228,7 @@ export default function FournisseurPromo() {
         id: i,
         type: 'urgent',
         message: days === 0 ? `Dernier jour pour ${p.name} !` : `${p.name} expire dans ${days} jour${days > 1 ? 's' : ''}`,
-        detail: `-${p.discount}% soit ${(p.normalPrice - p.promoPrice).toFixed(2)} EUR d'economie/${p.unit}`,
+        detail: `-${p.discount}% soit ${formatCurrency(p.normalPrice - p.promoPrice)} d'economie/${p.unit}`,
       });
     });
     bestDeals.forEach((p, i) => {
@@ -236,7 +237,7 @@ export default function FournisseurPromo() {
           id: 100 + i,
           type: 'deal',
           message: `Offre exceptionnelle : -${p.discount}% sur ${p.name}`,
-          detail: `${p.promoPrice.toFixed(2)} EUR au lieu de ${p.normalPrice.toFixed(2)} EUR/${p.unit}`,
+          detail: `${formatCurrency(p.promoPrice)} au lieu de ${formatCurrency(p.normalPrice)}/${p.unit}`,
         });
       }
     });
@@ -245,7 +246,7 @@ export default function FournisseurPromo() {
         id: 200 + i,
         type: 'new',
         message: `Nouveau produit : ${p.name}`,
-        detail: `${p.promoPrice.toFixed(2)} EUR/${p.unit}`,
+        detail: `${formatCurrency(p.promoPrice)}/${p.unit}`,
       });
     });
     return list;
@@ -374,7 +375,7 @@ export default function FournisseurPromo() {
         {[
           { label: 'Produits en promo', value: `${promoCount}`, icon: Tag, color: 'text-red-400', bg: 'bg-red-500/10' },
           { label: 'Reduction moyenne', value: `-${avgDiscount}%`, icon: Percent, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-          { label: 'Economies potentielles', value: `${totalPotentialSavings.toFixed(0)} EUR`, icon: TrendingDown, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+          { label: 'Economies potentielles', value: formatCurrency(totalPotentialSavings), icon: TrendingDown, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
           { label: 'Produits au catalogue', value: `${supplier.products.length}`, icon: Package, color: 'text-teal-400', bg: 'bg-teal-500/10' },
           { label: 'Fin prochaine', value: `${urgentPromos.length}`, icon: Clock, color: urgentPromos.length > 0 ? 'text-red-400' : 'text-[#9CA3AF]', bg: urgentPromos.length > 0 ? 'bg-red-500/10' : 'bg-[#F3F4F6] dark:bg-[#171717]' },
         ].map(stat => (
@@ -449,11 +450,11 @@ export default function FournisseurPromo() {
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
               <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Total commande</p>
-              <p className="text-xl font-bold text-[#111111] dark:text-white mt-1">{cartTotal.toFixed(2)} EUR</p>
+              <p className="text-xl font-bold text-[#111111] dark:text-white mt-1">{formatCurrency(cartTotal)}</p>
             </div>
             <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
               <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Vous economisez</p>
-              <p className="text-xl font-bold text-emerald-500 mt-1">-{cartSavings.toFixed(2)} EUR</p>
+              <p className="text-xl font-bold text-emerald-500 mt-1">-{formatCurrency(cartSavings)}</p>
             </div>
             <div className="bg-white dark:bg-[#0A0A0A] rounded-xl p-3 text-center border border-emerald-100 dark:border-emerald-900">
               <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Reduction moy.</p>
@@ -519,7 +520,7 @@ export default function FournisseurPromo() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-sm font-bold text-emerald-500">-{promo.savedAmount} EUR</span>
+                    <span className="text-sm font-bold text-emerald-500">-{formatCurrency(parseFloat(promo.savedAmount))}</span>
                     <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">economise</p>
                   </div>
                 </div>
@@ -535,7 +536,7 @@ export default function FournisseurPromo() {
           <div className="px-5 py-3 bg-white dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
             <span className="text-sm font-medium text-[#6B7280] dark:text-[#A3A3A3]">Total economies</span>
             <span className="text-lg font-bold text-emerald-500">
-              -{pastPromos.reduce((sum, p) => sum + parseFloat(p.savedAmount), 0).toFixed(2)} EUR
+              -{formatCurrency(pastPromos.reduce((sum, p) => sum + parseFloat(p.savedAmount), 0))}
             </span>
           </div>
         </div>
@@ -656,9 +657,9 @@ export default function FournisseurPromo() {
               {/* Bottom: prices + cart */}
               <div className="flex items-end justify-between mt-2">
                 <div>
-                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{product.normalPrice.toFixed(2)} €</span>
+                  <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{formatCurrency(product.normalPrice)}</span>
                   <p className="text-lg font-bold text-emerald-400">
-                    {product.promoPrice.toFixed(2)} €
+                    {formatCurrency(product.promoPrice)}
                     <span className="text-xs text-[#9CA3AF] dark:text-[#737373] font-normal">/{product.unit}</span>
                   </p>
                 </div>
@@ -712,9 +713,9 @@ export default function FournisseurPromo() {
             </div>
             <div>
               <p className="text-[#111111] dark:text-white font-bold">{cartCount} article{cartCount > 1 ? 's' : ''}</p>
-              <p className="text-teal-400 text-sm font-semibold">{cartTotal.toFixed(2)} € HT</p>
+              <p className="text-teal-400 text-sm font-semibold">{formatCurrency(cartTotal)} HT</p>
               {cartSavings > 0 && (
-                <p className="text-emerald-400 text-[11px]">Économie : {cartSavings.toFixed(2)} €</p>
+                <p className="text-emerald-400 text-[11px]">Économie : {formatCurrency(cartSavings)}</p>
               )}
             </div>
           </div>

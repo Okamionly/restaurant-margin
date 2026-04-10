@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   QrCode, Eye, EyeOff, Printer, Copy, Check, Globe, Smartphone, ExternalLink,
@@ -881,11 +882,11 @@ export default function QRMenu() {
             </div>
             <div className="flex-1">
               <p className="text-sm font-bold">{totalCartItems} article{totalCartItems > 1 ? 's' : ''}</p>
-              <p className="text-xs opacity-60">{totalCartPrice.toFixed(2)} EUR</p>
+              <p className="text-xs opacity-60">{formatCurrency(totalCartPrice)}</p>
             </div>
             <button
               onClick={() => {
-                showToast(`Commande envoyee ! ${totalCartItems} article${totalCartItems > 1 ? 's' : ''} (${totalCartPrice.toFixed(2)} EUR) envoye${totalCartItems > 1 ? 's' : ''} a la cuisine.`, 'success');
+                showToast(`Commande envoyee ! ${totalCartItems} article${totalCartItems > 1 ? 's' : ''} (${formatCurrency(totalCartPrice)}) envoye${totalCartItems > 1 ? 's' : ''} a la cuisine.`, 'success');
                 setOrderCart({});
               }}
               className="px-5 py-2.5 bg-white dark:bg-black text-black dark:text-white rounded-xl text-sm font-bold hover:opacity-80 transition"
@@ -954,7 +955,7 @@ function DishCard({ item, showPrices, showAllergens, showDescriptions, language,
         </h4>
         {showPrices && (
           <span className="shrink-0 text-sm font-extrabold text-black dark:text-white tabular-nums">
-            {item.price.toFixed(2).replace('.', ',')} EUR
+            {formatCurrency(item.price)}
           </span>
         )}
       </div>

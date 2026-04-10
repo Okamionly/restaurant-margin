@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, AlertTriangle, BarChart3, ShoppingBasket, ArrowRight, Lock, Eye, Percent, DollarSign, UtensilsCrossed, Truck, ClipboardList, Target, X, Sparkles } from 'lucide-react';
@@ -348,7 +349,7 @@ export default function Demo() {
                 <span className="text-xs font-semibold text-[#A3A3A3] uppercase tracking-wider">CA HT / mois</span>
                 <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
-              <p className="text-3xl font-extrabold text-[#111111]">{caAnim.value.toLocaleString('fr-FR')} EUR</p>
+              <p className="text-3xl font-extrabold text-[#111111]">{formatCurrency(caAnim.value)}</p>
               <p className="text-xs text-emerald-600 mt-1 font-semibold">+12% vs mois dernier</p>
             </div>
             <div ref={couvertsAnim.ref} className="bg-white border border-[#E5E7EB] rounded-2xl p-5">
@@ -505,11 +506,11 @@ export default function Demo() {
                     </div>
                     <div>
                       <p className="text-[10px] text-[#A3A3A3]">Marge</p>
-                      <p className="text-base font-bold text-emerald-600">{r.margin.toFixed(2)} EUR</p>
+                      <p className="text-base font-bold text-emerald-600">{formatCurrency(r.margin)}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] text-[#A3A3A3]">PV: {r.sellingPrice.toFixed(2)} EUR</p>
+                    <p className="text-[10px] text-[#A3A3A3]">PV: {formatCurrency(r.sellingPrice)}</p>
                     <span className="text-[10px] text-teal-600 font-semibold group-hover:underline">
                       Voir details
                     </span>
@@ -554,15 +555,15 @@ export default function Demo() {
                       <div className="grid grid-cols-3 gap-3">
                         <div className="bg-[#F5F5F5] rounded-xl p-3 text-center">
                           <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Prix de vente</p>
-                          <p className="text-xl font-bold text-[#111111] mt-1">{r.sellingPrice.toFixed(2)} EUR</p>
+                          <p className="text-xl font-bold text-[#111111] mt-1">{formatCurrency(r.sellingPrice)}</p>
                         </div>
                         <div className="bg-[#F5F5F5] rounded-xl p-3 text-center">
                           <p className="text-[10px] text-[#A3A3A3] uppercase tracking-wider font-semibold">Cout matiere</p>
-                          <p className="text-xl font-bold text-[#111111] mt-1">{totalCost.toFixed(2)} EUR</p>
+                          <p className="text-xl font-bold text-[#111111] mt-1">{formatCurrency(totalCost)}</p>
                         </div>
                         <div className="bg-emerald-50 rounded-xl p-3 text-center">
                           <p className="text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">Marge</p>
-                          <p className="text-xl font-bold text-emerald-600 mt-1">{r.margin.toFixed(2)} EUR</p>
+                          <p className="text-xl font-bold text-emerald-600 mt-1">{formatCurrency(r.margin)}</p>
                         </div>
                       </div>
 
@@ -606,7 +607,7 @@ export default function Demo() {
                                 <tr key={i} className="border-t border-[#E5E7EB]">
                                   <td className="px-4 py-2 font-medium text-[#111111]">{ing.name}</td>
                                   <td className="px-4 py-2 text-right text-[#737373]">{ing.qty}</td>
-                                  <td className="px-4 py-2 text-right font-semibold text-[#404040]">{ing.cost.toFixed(2)} EUR</td>
+                                  <td className="px-4 py-2 text-right font-semibold text-[#404040]">{formatCurrency(ing.cost)}</td>
                                   <td className="px-4 py-2 text-right text-[#A3A3A3]">{((ing.cost / totalCost) * 100).toFixed(0)}%</td>
                                 </tr>
                               ))}
@@ -614,7 +615,7 @@ export default function Demo() {
                             <tfoot>
                               <tr className="border-t-2 border-[#E5E7EB] bg-white">
                                 <td className="px-4 py-2 font-bold text-[#111111]" colSpan={2}>Total</td>
-                                <td className="px-4 py-2 text-right font-bold text-[#111111]">{totalCost.toFixed(2)} EUR</td>
+                                <td className="px-4 py-2 text-right font-bold text-[#111111]">{formatCurrency(totalCost)}</td>
                                 <td className="px-4 py-2 text-right font-bold text-[#111111]">100%</td>
                               </tr>
                             </tfoot>
@@ -701,7 +702,7 @@ export default function Demo() {
                   {FAKE_INGREDIENTS.map((ing) => (
                     <tr key={ing.name} className="border-t border-[#F5F5F5] hover:bg-[#FAFAFA]/50 transition-colors">
                       <td className="px-5 py-2.5 font-medium text-[#111111]">{ing.name}</td>
-                      <td className="px-5 py-2.5 text-right text-[#404040]">{ing.price.toFixed(2)} EUR</td>
+                      <td className="px-5 py-2.5 text-right text-[#404040]">{formatCurrency(ing.price)}</td>
                       <td className="px-5 py-2.5 text-right text-[#737373]">{ing.unit}</td>
                       <td className="px-5 py-2.5 text-right text-[#404040]">{ing.stock}</td>
                       <td className="px-5 py-2.5 text-center">

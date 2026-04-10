@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Calculator, TrendingUp, TrendingDown, Receipt, PieChart as PieChartIcon,
@@ -182,7 +183,7 @@ const EXPENSE_BAR_COLORS: Record<string, string> = {
 };
 
 function fmt(n: number): string {
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+  return formatCurrency(n);
 }
 
 function fmtPct(n: number): string {

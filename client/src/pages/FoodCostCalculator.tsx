@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2, RotateCcw, ArrowRight, ChefHat, ChevronDown, TrendingUp, Users, Calendar, DollarSign, Target, AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
@@ -268,7 +269,7 @@ export default function FoodCostCalculator() {
               </button>
             </div>
             <div className="text-sm text-[#666666]">
-              Cout total : <span className="font-bold text-[#000000]">{fmt(coutTotal)} EUR</span>
+              Cout total : <span className="font-bold text-[#000000]">{formatCurrency(coutTotal)}</span>
             </div>
           </div>
         </section>
@@ -303,7 +304,7 @@ export default function FoodCostCalculator() {
             <div>
               <label className="text-sm text-[#666666] font-medium mb-1.5 block">Prix suggere (30%)</label>
               <div className="w-full px-4 py-3 bg-[#f5f5f5] border border-[#e5e5e5] rounded-2xl text-sm text-[#000000] font-bold">
-                {prixVenteSuggere > 0 ? `${fmt(prixVenteSuggere)} EUR` : '--'}
+                {prixVenteSuggere > 0 ? `${formatCurrency(prixVenteSuggere)}` : '--'}
               </div>
             </div>
           </div>
@@ -346,7 +347,7 @@ export default function FoodCostCalculator() {
               <KPICard
                 icon={<DollarSign className="w-4 h-4" />}
                 label="Cout / portion"
-                value={`${fmt(coutParPortion)} EUR`}
+                value={formatCurrency(coutParPortion)}
               />
               <KPICard
                 icon={<Target className="w-4 h-4" />}
@@ -357,7 +358,7 @@ export default function FoodCostCalculator() {
               <KPICard
                 icon={<TrendingUp className="w-4 h-4" />}
                 label="Marge brute"
-                value={`${fmt(margeBrute)} EUR`}
+                value={formatCurrency(margeBrute)}
                 sub={`${fmt(margePct)} %`}
               />
               <KPICard
@@ -507,22 +508,22 @@ export default function FoodCostCalculator() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">CA / mois</div>
-              <div className="text-xl sm:text-2xl font-extrabold text-[#000000]">{fmtK(caMois)} EUR</div>
+              <div className="text-xl sm:text-2xl font-extrabold text-[#000000]">{formatCurrency(caMois)}</div>
             </div>
             <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">Profit brut / mois</div>
-              <div className="text-xl sm:text-2xl font-extrabold text-[#10b981]">{fmtK(profitBrutMois)} EUR</div>
+              <div className="text-xl sm:text-2xl font-extrabold text-[#10b981]">{formatCurrency(profitBrutMois)}</div>
             </div>
             <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">Profit net estime</div>
               <div className="text-xl sm:text-2xl font-extrabold" style={{ color: profitNetMois > 0 ? '#10b981' : '#ef4444' }}>
-                {fmtK(profitNetMois)} EUR
+                {formatCurrency(profitNetMois)}
               </div>
             </div>
             <div className="bg-[#fafafa] rounded-2xl border border-[#e5e5e5] p-4 text-center">
               <div className="text-xs text-[#999999] font-medium mb-1">Profit net / an</div>
               <div className="text-xl sm:text-2xl font-extrabold" style={{ color: profitNetMois > 0 ? '#000000' : '#ef4444' }}>
-                {fmtK(profitNetMois * 12)} EUR
+                {formatCurrency(profitNetMois * 12)}
               </div>
             </div>
           </div>

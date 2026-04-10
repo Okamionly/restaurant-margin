@@ -143,7 +143,7 @@ function printFicheTechnique(recipe: Recipe, restaurantName: string) {
       <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${qty} ${unit}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${unitPrice.toFixed(2)} / ${unit === 'g' || unit === 'mg' ? 'kg' : unit === 'cl' || unit === 'ml' || unit === 'dl' ? 'L' : unit}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:center">${waste}%</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right;font-weight:600">${costWithWaste.toFixed(2)} EUR</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #ddd;text-align:right;font-weight:600">${formatCurrency(costWithWaste)}</td>
     </tr>`;
   }).join('');
 
@@ -185,7 +185,7 @@ function printFicheTechnique(recipe: Recipe, restaurantName: string) {
 </div>
 <div class="meta">
   <div class="meta-item"><div class="meta-label">Portions</div><div class="meta-value">${recipe.nbPortions}</div></div>
-  <div class="meta-item"><div class="meta-label">Prix de vente</div><div class="meta-value">${recipe.sellingPrice.toFixed(2)} EUR</div></div>
+  <div class="meta-item"><div class="meta-label">Prix de vente</div><div class="meta-value">${formatCurrency(recipe.sellingPrice)}</div></div>
   <div class="meta-item"><div class="meta-label">Marge</div><div class="meta-value">${marginPct.toFixed(1)}%</div></div>
   ${recipe.prepTimeMinutes ? `<div class="meta-item"><div class="meta-label">Prep.</div><div class="meta-value">${recipe.prepTimeMinutes} min</div></div>` : ''}
   ${recipe.cookTimeMinutes ? `<div class="meta-item"><div class="meta-label">Cuisson</div><div class="meta-value">${recipe.cookTimeMinutes} min</div></div>` : ''}
@@ -197,10 +197,10 @@ function printFicheTechnique(recipe: Recipe, restaurantName: string) {
   <tbody>${ingredientRows}</tbody>
 </table>
 <div class="totals">
-  <div class="totals-row"><span>Cout matieres total</span><strong>${totalCost.toFixed(2)} EUR</strong></div>
-  <div class="totals-row"><span>Cout par portion</span><strong>${costPerPortion.toFixed(2)} EUR</strong></div>
-  <div class="totals-row"><span>Prix de vente</span><strong>${recipe.sellingPrice.toFixed(2)} EUR</strong></div>
-  <div class="totals-row highlight"><span>Marge par portion</span><strong>${marginPerPortion.toFixed(2)} EUR (${marginPct.toFixed(1)}%)</strong></div>
+  <div class="totals-row"><span>Cout matieres total</span><strong>${formatCurrency(totalCost)}</strong></div>
+  <div class="totals-row"><span>Cout par portion</span><strong>${formatCurrency(costPerPortion)}</strong></div>
+  <div class="totals-row"><span>Prix de vente</span><strong>${formatCurrency(recipe.sellingPrice)}</strong></div>
+  <div class="totals-row highlight"><span>Marge par portion</span><strong>${formatCurrency(marginPerPortion)} (${marginPct.toFixed(1)}%)</strong></div>
 </div>
 ${recipe.description ? `<div class="notes"><div class="notes-title">Notes du chef</div><div class="notes-text">${recipe.description}</div></div>` : ''}
 <div class="footer">Fiche technique generee par RestauMargin &mdash; ${new Date().toLocaleDateString('fr-FR')}</div>
@@ -373,66 +373,109 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
 
   const aIngs = getIngCost(a);
   const bIngs = getIngCost(b);
+  const winnerIdx = a.margin.marginPercent >= b.margin.marginPercent ? 0 : 1;
+
+  const marginColor = (m: number) => m >= 70 ? 'text-emerald-500' : m >= 50 ? 'text-amber-500' : 'text-red-500';
+  const marginBg = (m: number) => m >= 70 ? 'bg-emerald-500' : m >= 50 ? 'bg-amber-500' : 'bg-red-500';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
       <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
-          <div className="flex items-center gap-2">
-            <GitCompareArrows className="w-5 h-5 text-[#111111] dark:text-white" />
-            <h3 className="text-lg font-bold text-[#111111] dark:text-white">Comparaison de recettes</h3>
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#111111] dark:bg-white flex items-center justify-center">
+              <GitCompareArrows className="w-4.5 h-4.5 text-white dark:text-black" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#111111] dark:text-white">Comparaison de recettes</h3>
+              <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">Analyse cote a cote</p>
+            </div>
           </div>
-          <button onClick={onClose} className="p-1 text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white">
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F3F4F6] dark:hover:bg-[#171717] text-[#9CA3AF] dark:text-[#737373] hover:text-[#111111] dark:hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="grid grid-cols-2 gap-0 divide-x divide-[#E5E7EB] dark:divide-[#1A1A1A]">
-          {/* Headers */}
+          {/* Recipe headers with Gagnant badge */}
           {[a, b].map((r, i) => (
-            <div key={i} className="p-4">
-              <h4 className="font-bold text-[#111111] dark:text-white text-sm">{r.name}</h4>
-              <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">{r.category}</span>
+            <div key={i} className="p-5 pb-3">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h4 className="font-bold text-[#111111] dark:text-white text-base leading-tight">{r.name}</h4>
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3]">{r.category}</span>
+                </div>
+                {i === winnerIdx && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg shadow-amber-500/30 animate-pulse">
+                    <Trophy className="w-3 h-3" /> Gagnant
+                  </span>
+                )}
+              </div>
             </div>
           ))}
 
-          {/* Key Metrics */}
+          {/* Key Metrics with visual bars */}
           {[a, b].map((r, i) => (
-            <div key={`m-${i}`} className="px-4 pb-4 space-y-2">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Prix vente</div>
-                  <div className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.sellingPrice.toFixed(2)}{getCurrencySymbol()}</div>
+            <div key={`m-${i}`} className="px-5 pb-4 space-y-3">
+              {/* Selling Price */}
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Prix de vente</span>
+                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.sellingPrice.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
-                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Cout/portion</div>
-                  <div className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</div>
+              </div>
+
+              {/* Cost per portion */}
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Cout / portion</span>
+                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">{r.margin.costPerPortion.toFixed(2)}{getCurrencySymbol()}</span>
                 </div>
-                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Marge</div>
-                  <div className={`text-sm font-bold ${r.margin.marginPercent >= 70 ? 'text-emerald-500' : r.margin.marginPercent >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
+              </div>
+
+              {/* Margin with visual bar */}
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Marge</span>
+                  <span className={`text-base font-bold ${marginColor(r.margin.marginPercent)}`}>
                     {r.margin.marginPercent.toFixed(1)}%
-                  </div>
+                  </span>
                 </div>
-                <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-lg p-2 text-center">
-                  <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">Coefficient</div>
-                  <div className="text-sm font-bold font-mono text-[#111111] dark:text-white">x{r.margin.coefficient.toFixed(2)}</div>
+                <div className="h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all ${marginBg(r.margin.marginPercent)}`} style={{ width: `${Math.min(r.margin.marginPercent, 100)}%` }} />
+                </div>
+              </div>
+
+              {/* Ingredient count */}
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Ingredients</span>
+                  <span className="text-sm font-bold text-[#111111] dark:text-white">{r.ingredients.length}</span>
+                </div>
+              </div>
+
+              {/* Coefficient */}
+              <div className="bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-xl p-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373]">Coefficient</span>
+                  <span className="text-sm font-bold font-mono text-[#111111] dark:text-white">x{r.margin.coefficient.toFixed(2)}</span>
                 </div>
               </div>
             </div>
           ))}
 
-          {/* Ingredients */}
+          {/* Ingredients detail */}
           {[{ ings: aIngs, r: a }, { ings: bIngs, r: b }].map(({ ings, r }, i) => (
-            <div key={`ing-${i}`} className="px-4 pb-4">
-              <div className="text-[10px] font-semibold uppercase text-[#9CA3AF] dark:text-[#737373] mb-2">
-                Ingredients ({r.ingredients.length})
+            <div key={`ing-${i}`} className="px-5 pb-5">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-[#9CA3AF] dark:text-[#737373] mb-2">
+                Detail ingredients ({r.ingredients.length})
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5 max-h-[180px] overflow-y-auto">
                 {ings.map((ing, j) => (
-                  <div key={j} className="flex items-center justify-between text-xs">
-                    <span className="text-[#6B7280] dark:text-[#A3A3A3] truncate">{ing.name}</span>
-                    <span className="font-mono text-[#111111] dark:text-white">{ing.cost.toFixed(2)}{getCurrencySymbol()}</span>
+                  <div key={j} className="flex items-center justify-between text-xs py-1 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
+                    <span className="text-[#6B7280] dark:text-[#A3A3A3] truncate mr-2">{ing.name}</span>
+                    <span className="font-mono text-[#111111] dark:text-white whitespace-nowrap">{ing.cost.toFixed(2)}{getCurrencySymbol()}</span>
                   </div>
                 ))}
               </div>
@@ -440,17 +483,23 @@ function RecipeComparisonPanel({ recipes, onClose }: { recipes: [Recipe, Recipe]
           ))}
         </div>
 
-        {/* Winner */}
-        <div className="p-4 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-[#FAFAFA] dark:bg-[#0A0A0A] rounded-b-2xl">
-          <div className="flex items-center justify-center gap-2 text-sm">
-            <Trophy className="w-4 h-4 text-amber-500" />
-            <span className="text-[#6B7280] dark:text-[#A3A3A3]">Plus rentable :</span>
-            <span className="font-bold text-[#111111] dark:text-white">
-              {a.margin.marginPercent >= b.margin.marginPercent ? a.name : b.name}
-            </span>
-            <span className="text-emerald-500 font-bold">
-              ({Math.max(a.margin.marginPercent, b.margin.marginPercent).toFixed(1)}%)
-            </span>
+        {/* Winner footer */}
+        <div className="p-5 border-t border-[#E5E7EB] dark:border-[#1A1A1A] bg-gradient-to-r from-amber-50 to-emerald-50 dark:from-amber-950/20 dark:to-emerald-950/20 rounded-b-2xl">
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
+              <Trophy className="w-4 h-4 text-white" />
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] font-medium">Plus rentable</div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="font-bold text-[#111111] dark:text-white text-sm">
+                  {winnerIdx === 0 ? a.name : b.name}
+                </span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+                  {Math.max(a.margin.marginPercent, b.margin.marginPercent).toFixed(1)}%
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

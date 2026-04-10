@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   GripVertical,
@@ -431,7 +432,7 @@ export default function MenuBuilder() {
                 <span class="item-name">${r.name}</span>
                 ${r.description ? `<span class="item-desc">${r.description}</span>` : ''}
               </div>
-              <span class="item-price">${r.sellingPrice.toFixed(2)} EUR</span>
+              <span class="item-price">${formatCurrency(r.sellingPrice)}</span>
             </div>
           `).join('')}
         </div>
@@ -628,7 +629,7 @@ export default function MenuBuilder() {
                                 {(100 - recipe.margin.marginPercent).toFixed(1)}% cout
                               </span>
                               <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
-                                {recipe.sellingPrice.toFixed(2)} EUR
+                                {formatCurrency(recipe.sellingPrice)}
                               </span>
                               <span className={`text-[11px] font-semibold ${marginColor(recipe.margin.marginPercent)}`}>
                                 {recipe.margin.marginPercent.toFixed(0)}%
@@ -732,7 +733,7 @@ export default function MenuBuilder() {
                                     )}
                                   </div>
                                   <span className="text-lg font-bold text-[#111111] dark:text-white shrink-0">
-                                    {recipe.sellingPrice.toFixed(2)}<span className="text-xs font-normal ml-0.5">EUR</span>
+                                    {formatCurrency(recipe.sellingPrice)}
                                   </span>
                                 </div>
                                 {/* Allergen icons */}
@@ -863,7 +864,7 @@ export default function MenuBuilder() {
                                 </div>
                                 <div className="flex items-center gap-3 shrink-0">
                                   <span className="text-xs font-semibold text-[#111111] dark:text-white">
-                                    {recipe.sellingPrice.toFixed(2)} EUR
+                                    {formatCurrency(recipe.sellingPrice)}
                                   </span>
                                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${marginBg(recipe.margin.marginPercent)}`}>
                                     {recipe.margin.marginPercent.toFixed(0)}%
@@ -940,7 +941,7 @@ export default function MenuBuilder() {
               />
               <StatCard
                 label="CA potentiel"
-                value={`${stats.revenuePotential.toFixed(0)} EUR`}
+                value={formatCurrency(stats.revenuePotential)}
                 icon={<BarChart3 className="w-4 h-4" />}
                 color="purple"
               />

@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Target, BarChart3, Plus,
@@ -158,7 +159,7 @@ function fmt(n: number, decimals = 2) {
 }
 
 function fmtEur(n: number) {
-  return `${fmt(n, 2)} €`;
+  return formatCurrency(n);
 }
 
 // ── Allergen helpers ──────────────────────────────────────────────────────────
@@ -1246,7 +1247,7 @@ export default function MenuEngineering() {
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-20">
                               <div className="font-semibold">{recipe.name}</div>
                               <div>Marge: {recipe.marginPercent}% · Pop: {recipe.popularity}%</div>
-                              <div>Prix: {recipe.sellingPrice}€</div>
+                              <div>Prix: {formatCurrency(recipe.sellingPrice)}</div>
                             </div>
                           </div>
                         );
@@ -1347,7 +1348,7 @@ export default function MenuEngineering() {
                             <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">{item.action}</p>
                             {item.suggestedPrice && (
                               <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">
-                                Prix suggéré: {item.suggestedPrice}€
+                                Prix suggéré: {formatCurrency(item.suggestedPrice)}
                               </p>
                             )}
                           </div>
@@ -1416,8 +1417,8 @@ export default function MenuEngineering() {
                         <div key={adj.id} className="flex items-center justify-between py-1.5 border-b border-[#F5F5F5] dark:border-[#1A1A1A] last:border-0">
                           <span className="text-xs font-medium text-[#111111] dark:text-white">{adj.name}</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{adj.currentPrice}€</span>
-                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{adj.suggestedPrice}€</span>
+                            <span className="text-xs text-[#9CA3AF] dark:text-[#737373] line-through">{formatCurrency(adj.currentPrice)}</span>
+                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(adj.suggestedPrice)}</span>
                           </div>
                         </div>
                       ))}

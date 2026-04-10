@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Search, ShoppingBag, Star, Truck, Clock, Filter, ChevronDown, ChevronUp,
@@ -350,11 +351,11 @@ function ProductCard({ product, onAddToCart, viewMode }: {
             {bestPrice < Infinity ? (
               <>
                 <div className="text-sm font-bold text-[#111111] dark:text-white">
-                  {bestPrice.toFixed(2)} EUR
+                  {formatCurrency(bestPrice)}
                 </div>
                 {sortedOffers.length > 1 && (
                   <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
-                    a {worstPrice.toFixed(2)} EUR
+                    a {formatCurrency(worstPrice)}
                   </div>
                 )}
               </>
@@ -432,7 +433,7 @@ function ProductCard({ product, onAddToCart, viewMode }: {
           {bestPrice < Infinity && (
             <div className="text-right">
               <span className="text-xs text-[#9CA3AF] dark:text-[#737373]">a partir de </span>
-              <span className="text-sm font-bold text-[#111111] dark:text-white">{bestPrice.toFixed(2)} EUR</span>
+              <span className="text-sm font-bold text-[#111111] dark:text-white">{formatCurrency(bestPrice)}</span>
             </div>
           )}
         </div>
@@ -541,7 +542,7 @@ function OfferRow({ offer, supplier, isBest, productId, onAdd }: {
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className="text-right">
           <div className={`text-sm font-bold tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
-            {offer.price.toFixed(2)} EUR
+            {formatCurrency(offer.price)}
           </div>
           <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">/ {offer.unit}</div>
         </div>
@@ -607,7 +608,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
                       {supplier.logo}
                     </div>
                     <span className="text-xs font-bold text-[#111111] dark:text-white">{supplier.name}</span>
-                    <span className="ml-auto text-xs font-bold text-[#111111] dark:text-white tabular-nums">{total.toFixed(2)} EUR</span>
+                    <span className="ml-auto text-xs font-bold text-[#111111] dark:text-white tabular-nums">{formatCurrency(total)}</span>
                   </div>
                   <div className="space-y-1.5">
                     {items.map(item => {
@@ -616,7 +617,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
                         <div key={`${item.productId}-${item.supplierId}`} className="flex items-center gap-2 py-1 px-2 rounded-lg hover:bg-[#F9FAFB] dark:hover:bg-[#0A0A0A] transition-colors">
                           <div className="flex-1 min-w-0">
                             <div className="text-xs font-medium text-[#111111] dark:text-white truncate">{product?.name || item.productId}</div>
-                            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] tabular-nums">{item.price.toFixed(2)} EUR / {item.unit}</div>
+                            <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] tabular-nums">{formatCurrency(item.price)} / {item.unit}</div>
                           </div>
                           <div className="flex items-center gap-0.5 bg-[#F3F4F6] dark:bg-[#171717] rounded-lg p-0.5">
                             <button
@@ -654,7 +655,7 @@ function CartSidebar({ cart, cartBySupplier, cartTotal, submitting, onUpdateQty,
           <div className="border-t border-[#E5E7EB] dark:border-[#1A1A1A] p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-[#111111] dark:text-white">Total HT</span>
-              <span className="text-xl font-black text-[#111111] dark:text-white tabular-nums">{cartTotal.toFixed(2)} EUR</span>
+              <span className="text-xl font-black text-[#111111] dark:text-white tabular-nums">{formatCurrency(cartTotal)}</span>
             </div>
             <button
               onClick={onSubmit}
@@ -778,7 +779,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
                   {/* Price + savings */}
                   <div className="text-right flex-shrink-0">
                     <div className={`text-lg font-black tabular-nums ${isBest ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#111111] dark:text-white'}`}>
-                      {offer.price.toFixed(2)} EUR
+                      {formatCurrency(offer.price)}
                     </div>
                     <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">/ {offer.unit}</div>
                   </div>
@@ -820,7 +821,7 @@ function PriceComparisonEngine({ products }: { products: Product[] }) {
               </span>
             </div>
             <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
-              {(getWorstPrice(product.offers) - getBestPrice(product.offers)).toFixed(2)} EUR/{product.offers[0]?.unit || 'kg'}
+              {formatCurrency(getWorstPrice(product.offers) - getBestPrice(product.offers))}/{product.offers[0]?.unit || 'kg'}
             </span>
           </div>
         </div>
@@ -1069,7 +1070,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
             <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Total depense</span>
-            <p className="text-xl font-black text-[#111111] dark:text-white mt-1 tabular-nums">{supplierStats[selectedSupplier].totalSpent.toFixed(2)} EUR</p>
+            <p className="text-xl font-black text-[#111111] dark:text-white mt-1 tabular-nums">{formatCurrency(supplierStats[selectedSupplier].totalSpent)}</p>
           </div>
           <div className="bg-[#F9FAFB] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-2xl p-4">
             <span className="text-[10px] font-semibold text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wider">Commandes</span>
@@ -1108,7 +1109,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">{order.totalHT.toFixed(2)} EUR</span>
+                      <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">{formatCurrency(order.totalHT)}</span>
                       <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
                         {new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                       </span>
@@ -1118,7 +1119,7 @@ function OrderTimeline({ orders }: { orders: MarketplaceOrder[] }) {
                     {order.items.map(item => (
                       <span key={item.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-medium bg-[#F3F4F6] dark:bg-[#171717] text-[#6B7280] dark:text-[#A3A3A3] border border-[#E5E7EB] dark:border-[#262626]">
                         {item.quantity}x {item.productName}
-                        <span className="text-[#9CA3AF] dark:text-[#525252]">({(item.unitPrice * item.quantity).toFixed(2)} EUR)</span>
+                        <span className="text-[#9CA3AF] dark:text-[#525252]">({formatCurrency(item.unitPrice * item.quantity)})</span>
                       </span>
                     ))}
                   </div>
@@ -1282,7 +1283,7 @@ function PriceAlertSetup() {
                 )}
               </div>
               <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">
-                Alerter quand le prix passe sous <span className="font-bold text-[#111111] dark:text-white">{alert.threshold} EUR/{alert.unit}</span>
+                Alerter quand le prix passe sous <span className="font-bold text-[#111111] dark:text-white">{formatCurrency(alert.threshold)}/{alert.unit}</span>
               </p>
               <span className="text-[10px] text-[#D1D5DB] dark:text-[#525252]">Creee le {alert.createdAt}</span>
             </div>
@@ -2030,7 +2031,7 @@ export default function Marketplace() {
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="text-sm font-bold text-[#111111] dark:text-white tabular-nums">
-                            {order.totalHT.toFixed(2)} EUR
+                            {formatCurrency(order.totalHT)}
                           </span>
                           <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
                             {new Date(order.createdAt).toLocaleDateString('fr-FR')}

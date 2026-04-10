@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Mic, MicOff, X, Undo2, ChevronDown, ChevronUp, Check, AlertTriangle, Loader2, Package, ChefHat, ShoppingCart, BarChart3, Printer, Navigation, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -156,7 +157,7 @@ export default function VoiceCommandButton() {
           const foodCostPct = recipe.margin?.foodCost || 0;
           const marginPct = recipe.margin?.marginPercent || 0;
           return {
-            result: `${recipe.name}:\n- Cout matiere/portion: ${costPerPortion.toFixed(2)} EUR\n- Prix de vente: ${price.toFixed(2)} EUR\n- Food cost: ${foodCostPct.toFixed(1)}%\n- Marge: ${marginPct.toFixed(1)}%`,
+            result: `${recipe.name}:\n- Cout matiere/portion: ${formatCurrency(costPerPortion)}\n- Prix de vente: ${formatCurrency(price)}\n- Food cost: ${foodCostPct.toFixed(1)}%\n- Marge: ${marginPct.toFixed(1)}%`,
             success: true,
             undoable: false,
           };

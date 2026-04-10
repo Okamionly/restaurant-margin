@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Users, Search, Plus, Edit2, Trash2, Mail, Phone, Building2, Star,
@@ -279,7 +280,7 @@ const AUTOMATED_CAMPAIGNS = [
 // ── Helpers ─────────────────────────────────────────────────────────────
 
 function fmt(n: number) {
-  return n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return formatCurrency(n);
 }
 
 function fmtDate(d: string) {
@@ -2874,7 +2875,7 @@ export default function Clients() {
                   <button onClick={() => {
                     const amount = Math.round(parseFloat(addPointsAmount) || 0);
                     if (amount > 0) {
-                      addLoyaltyPoints(loyaltyClient.id, amount, `Achat de ${amount} EUR`);
+                      addLoyaltyPoints(loyaltyClient.id, amount, `Achat de ${formatCurrency(amount)}`);
                       setAddPointsAmount('');
                     }
                   }}

@@ -1185,7 +1185,7 @@ export default function RecipeDetail() {
                       {portionMultiplier !== 1 ? baseQty.toFixed(2) : ri.quantity} {ri.ingredient.unit}
                     </div>
                     <div className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">
-                      {lineTotal.toFixed(2)} EUR ({pctOfTotal.toFixed(0)}%)
+                      {formatCurrency(lineTotal)} ({pctOfTotal.toFixed(0)}%)
                     </div>
                   </div>
                   {/* Cost bar */}
@@ -1203,7 +1203,7 @@ export default function RecipeDetail() {
           </div>
           <div className="px-5 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
             <span className="text-sm font-bold text-[#111111] dark:text-white">Cout matiere total</span>
-            <span className="text-lg font-black text-[#111111] dark:text-white">{(m.foodCost * portionMultiplier).toFixed(2)} EUR</span>
+            <span className="text-lg font-black text-[#111111] dark:text-white">{formatCurrency(m.foodCost * portionMultiplier)}</span>
           </div>
         </div>
       )}
@@ -1222,7 +1222,7 @@ export default function RecipeDetail() {
             <div className="p-5">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-[#6B7280] dark:text-[#A3A3A3]">Prix de vente simule</span>
-                <span className="text-2xl font-black text-[#111111] dark:text-white">{(simPrice ?? 0).toFixed(2)} EUR</span>
+                <span className="text-2xl font-black text-[#111111] dark:text-white">{formatCurrency(simPrice ?? 0)}</span>
               </div>
               <input
                 type="range"
@@ -1234,12 +1234,12 @@ export default function RecipeDetail() {
                 className="w-full h-2 bg-[#E5E7EB] dark:bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer accent-[#111111] dark:accent-white"
               />
               <div className="flex justify-between text-[11px] text-[#9CA3AF] dark:text-[#737373] mt-1">
-                <span>Cout : {m.totalCostPerPortion.toFixed(2)} EUR</span>
-                <span>Actuel : {recipe.sellingPrice.toFixed(2)} EUR</span>
+                <span>Cout : {formatCurrency(m.totalCostPerPortion)}</span>
+                <span>Actuel : {formatCurrency(recipe.sellingPrice)}</span>
               </div>
               {simData && (
                 <div className="grid grid-cols-3 gap-3 mt-4">
-                  <SimCard label="Marge" value={`${simData.margin.toFixed(2)} EUR`} highlight={simData.margin >= m.marginAmount} />
+                  <SimCard label="Marge" value={formatCurrency(simData.margin)} highlight={simData.margin >= m.marginAmount} />
                   <SimCard label="Marge %" value={`${simData.marginPct.toFixed(1)}%`} highlight={simData.marginPct >= 70} warn={simData.marginPct < 60} />
                   <SimCard label="Coefficient" value={simData.coeff.toFixed(2)} highlight={simData.coeff >= m.coefficient} />
                 </div>
@@ -1274,7 +1274,7 @@ export default function RecipeDetail() {
                         ))}
                       </Pie>
                       <Tooltip
-                        formatter={(value: unknown) => `${Number(value).toFixed(2)} EUR`}
+                        formatter={(value: unknown) => formatCurrency(Number(value))}
                         contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '12px' }}
                       />
                     </PieChart>
@@ -1285,7 +1285,7 @@ export default function RecipeDetail() {
                     <div key={i} className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: DONUT_COLORS[i] }} />
                       <span className="text-xs text-[#6B7280] dark:text-[#737373] flex-1">{d.name}</span>
-                      <span className="text-xs font-bold text-[#111111] dark:text-white">{d.value.toFixed(2)} EUR</span>
+                      <span className="text-xs font-bold text-[#111111] dark:text-white">{formatCurrency(d.value)}</span>
                     </div>
                   ))}
                 </div>
@@ -1299,13 +1299,13 @@ export default function RecipeDetail() {
                 Indicateurs cles
               </h3>
               <div className="space-y-0.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] overflow-hidden">
-                <MetricRow label="Prix de vente" value={`${recipe.sellingPrice.toFixed(2)} EUR`} />
-                <MetricRow label="Cout matiere / portion" value={`${m.costPerPortion.toFixed(2)} EUR`} sub={`(${foodCostPct.toFixed(1)}%)`} />
+                <MetricRow label="Prix de vente" value={`${formatCurrency(recipe.sellingPrice)}`} />
+                <MetricRow label="Cout matiere / portion" value={formatCurrency(m.costPerPortion)} sub={`(${foodCostPct.toFixed(1)}%)`} />
                 {m.laborCostPerPortion > 0 && (
-                  <MetricRow label="Cout M.O. / portion" value={`${m.laborCostPerPortion.toFixed(2)} EUR`} />
+                  <MetricRow label="Cout M.O. / portion" value={formatCurrency(m.laborCostPerPortion)} />
                 )}
-                <MetricRow label="Cout total / portion" value={`${m.totalCostPerPortion.toFixed(2)} EUR`} bold />
-                <MetricRow label="Marge brute" value={`${m.marginAmount.toFixed(2)} EUR`} valueClass={marginColor} />
+                <MetricRow label="Cout total / portion" value={`${formatCurrency(m.totalCostPerPortion)}`} bold />
+                <MetricRow label="Marge brute" value={formatCurrency(m.marginAmount)} valueClass={marginColor} />
                 <MetricRow label="Marge %" value={`${m.marginPercent.toFixed(1)}%`} valueClass={marginColor} bold />
                 <MetricRow label="Coefficient" value={m.coefficient.toFixed(2)} last />
               </div>

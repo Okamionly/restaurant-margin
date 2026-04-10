@@ -158,6 +158,20 @@ function computePriceChange(prices: number[]): { direction: 'up' | 'down' | 'sta
   return { direction: pct > 0 ? 'up' : 'down', percent: Math.abs(pct) };
 }
 
+// ── Price Watch helpers (localStorage) ─────────────────────────────────
+const PRICE_WATCH_KEY = 'restaumargin_price_watch';
+
+function getWatchedIngredientIds(): Set<number> {
+  try {
+    const raw = localStorage.getItem(PRICE_WATCH_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch { return new Set(); }
+}
+
+function saveWatchedIngredientIds(ids: Set<number>) {
+  localStorage.setItem(PRICE_WATCH_KEY, JSON.stringify([...ids]));
+}
+
 const emptyForm = { name: '', unit: 'kg', pricePerUnit: '', supplier: '', supplierId: null as number | null, category: 'Légumes', allergens: [] as string[], barcode: '' };
 
 type SortKey = 'name' | 'category' | 'pricePerUnit' | 'unit' | 'supplier';
@@ -231,6 +245,9 @@ export default function Ingredients() {
     unit: '',
     allergen: [],
   });
+
+  // Price watch (tracked ingredients)
+  const [watchedIds, setWatchedIds] = useState<Set<number>>(getWatchedIngredientIds);
 
   // All-ingredient price histories for sparklines (simple simulation from updatedAt)
   const [allPriceHistories, setAllPriceHistories] = useState<Record<number, number[]>>({});
@@ -549,6 +566,22 @@ export default function Ingredients() {
     });
     return result;
   }, [ingredients, search, filterCategory, sortKey, sortDir, advancedFilters]);
+
+  function togglePriceWatch(id: number) {
+    const updated = new Set(watchedIds);
+    if (updated.has(id)) {
+      updated.delete(id);
+    } else {
+      updated.add(id);
+    }
+    setWatchedIds(updated);
+    saveWatchedIngredientIds(updated);
+  }
+
+  // Get watched ingredients list
+  const watchedIngredients = useMemo(() => {
+    return ingredients.filter(i => watchedIds.has(i.id));
+  }, [ingredients, watchedIds]);
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) {
@@ -1037,6 +1070,67 @@ export default function Ingredients() {
         </div>
       </div>
 
+      {/* ── Prix Surveilles Section ───────────────────────────────────── */}
+      {watchedIngredients.length > 0 && (
+        <div className="mb-4 sm:mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-7 h-7 rounded-lg bg-teal-600 flex items-center justify-center">
+              <Bell className="w-3.5 h-3.5 text-white" />
+            </div>
+            <h3 className="text-sm font-bold text-[#111111] dark:text-white">Prix surveilles</h3>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">
+              {watchedIngredients.length}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            {watchedIngredients.map(ing => {
+              const sparklinePrices = allPriceHistories[ing.id];
+              const change = computePriceChange(sparklinePrices);
+              const hasAlert = change && change.direction !== 'stable';
+              return (
+                <div
+                  key={ing.id}
+                  className={`relative bg-white dark:bg-[#0A0A0A] rounded-xl border p-3 flex items-center gap-3 transition-all ${hasAlert ? 'border-red-300 dark:border-red-800 shadow-sm shadow-red-100 dark:shadow-red-950/20' : 'border-[#E5E7EB] dark:border-[#1A1A1A]'}`}
+                >
+                  {hasAlert && (
+                    <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center animate-pulse">
+                      <AlertTriangle className="w-2.5 h-2.5 text-white" />
+                    </div>
+                  )}
+                  <IngredientAvatar name={ing.name} category={ing.category} size="sm" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-semibold text-[#111111] dark:text-white truncate">{ing.name}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="text-xs font-mono text-[#6B7280] dark:text-[#A3A3A3]">{ing.pricePerUnit.toFixed(2)} {getCurrencySymbol()}/{ing.unit}</span>
+                      {change && change.direction !== 'stable' && (
+                        <span className={`inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                          change.direction === 'up'
+                            ? 'text-red-600 bg-red-50 dark:bg-red-950/40 dark:text-red-400'
+                            : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400'
+                        }`}>
+                          {change.direction === 'up' ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+                          {change.percent.toFixed(1)}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {sparklinePrices && <PriceSparkline prices={sparklinePrices} />}
+                  <button
+                    onClick={() => togglePriceWatch(ing.id)}
+                    className="p-1 rounded-md text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors flex-shrink-0"
+                    title="Retirer de la surveillance"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* ── Smart Search + Advanced Filters ─────────────────────────── */}
       <div className="mb-3 space-y-2">
         <div className="flex gap-2">
@@ -1115,7 +1209,7 @@ export default function Ingredients() {
               <th className="px-4 py-3"><SortHeader label={t('ingredients.unitColumn')} field="unit" /></th>
               <th className="px-4 py-3"><SortHeader label={t('ingredients.supplierColumn')} field="supplier" /></th>
               <th className="px-3 py-3 font-medium text-xs">Statut</th>
-              <th className="px-4 py-3 font-medium w-24">{t('ingredients.actionsColumn')}</th>
+              <th className="px-4 py-3 font-medium w-32">{t('ingredients.actionsColumn')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E5E7EB] dark:divide-[#1A1A1A]">
@@ -1228,6 +1322,14 @@ export default function Ingredients() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
+                        <button
+                          onClick={() => togglePriceWatch(ing.id)}
+                          className={`p-1.5 rounded transition-colors ${watchedIds.has(ing.id) ? 'bg-teal-100 dark:bg-teal-900/30' : 'hover:bg-teal-50 dark:hover:bg-teal-900/20'}`}
+                          title={watchedIds.has(ing.id) ? 'Retirer la surveillance' : 'Surveiller le prix'}
+                          aria-label={watchedIds.has(ing.id) ? 'Ne plus surveiller' : 'Surveiller le prix'}
+                        >
+                          <Bell className={`w-4 h-4 ${watchedIds.has(ing.id) ? 'text-teal-600 dark:text-teal-400 fill-teal-600 dark:fill-teal-400' : 'text-[#9CA3AF] dark:text-[#737373]'}`} />
+                        </button>
                         <button onClick={() => openWeigh(ing)} className="p-1.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30" title={t('ingredients.weighTooltip')} aria-label="Peser l'ingredient">
                           <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         </button>

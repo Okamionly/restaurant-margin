@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   Package, AlertTriangle, Plus, RefreshCw, Pencil, Trash2, Search,
@@ -769,7 +770,7 @@ export default function Inventory() {
     if (!weighTarget) return;
     try {
       const valueStr = weighTarget.ingredient.pricePerUnit > 0
-        ? ` (${((data.weight / getUnitDivisor(weighTarget.ingredient.unit)) * weighTarget.ingredient.pricePerUnit).toFixed(2)} €)`
+        ? ` (${formatCurrency((data.weight / getUnitDivisor(weighTarget.ingredient.unit)) * weighTarget.ingredient.pricePerUnit)})`
         : '';
       if (data.mode === 'set') {
         await updateInventoryItem(weighTarget.id, { currentStock: data.weight });
@@ -1218,7 +1219,7 @@ export default function Inventory() {
                 Valeur totale du stock
               </div>
               <div className="text-3xl sm:text-4xl font-bold font-satoshi tabular-nums text-emerald-600 dark:text-emerald-400 tracking-tight">
-                {computedTotalValue.toFixed(2)} <span className="text-lg font-medium">EUR</span>
+                {formatCurrency(computedTotalValue)}
               </div>
               <div className="flex items-center gap-4 mt-3">
                 <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
@@ -1252,7 +1253,7 @@ export default function Inventory() {
                 <div
                   className="w-20 h-20 rounded-full border-2 border-white dark:border-[#1A1A1A] shadow-sm"
                   style={{ background: pieGradient }}
-                  title={categoryValues.map(c => `${c.category}: ${c.value.toFixed(2)} EUR`).join('\n')}
+                  title={categoryValues.map(c => `${c.category}: ${formatCurrency(c.value)}`).join('\n')}
                 />
               </div>
             )}
@@ -1343,7 +1344,7 @@ export default function Inventory() {
                   {reorderItems.length} ingredient{reorderItems.length > 1 ? 's' : ''} a commander
                 </h3>
                 <p className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                  {reorderBySupplier.length} fournisseur{reorderBySupplier.length > 1 ? 's' : ''} — Cout estime : {reorderItems.reduce((s, r) => s + r.estimatedCost, 0).toFixed(2)} EUR
+                  {reorderBySupplier.length} fournisseur{reorderBySupplier.length > 1 ? 's' : ''} — Cout estime : {formatCurrency(reorderItems.reduce((s, r) => s + r.estimatedCost, 0))}
                 </p>
               </div>
             </div>
@@ -1368,7 +1369,7 @@ export default function Inventory() {
                         <div>
                           <p className="font-semibold text-sm">{supplier}</p>
                           <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">
-                            {supplierItems.length} article{supplierItems.length > 1 ? 's' : ''} — {supplierItems.reduce((s, r) => s + r.estimatedCost, 0).toFixed(2)} EUR
+                            {supplierItems.length} article{supplierItems.length > 1 ? 's' : ''} — {formatCurrency(supplierItems.reduce((s, r) => s + r.estimatedCost, 0))}
                           </p>
                         </div>
                       </div>
@@ -1406,7 +1407,7 @@ export default function Inventory() {
                             <div className="flex items-center gap-3 flex-shrink-0 text-right">
                               <div>
                                 <p className="text-xs font-semibold">+{ri.suggestedQty} {ri.item.unit}</p>
-                                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">~{ri.estimatedCost.toFixed(2)} EUR</p>
+                                <p className="text-[10px] text-[#9CA3AF] dark:text-[#737373]">~{formatCurrency(ri.estimatedCost)}</p>
                               </div>
                             </div>
                           </div>
@@ -1578,7 +1579,7 @@ export default function Inventory() {
                     <span className="text-sm">{CATEGORY_EMOJIS[cat.category] || '📦'}</span>
                     <div>
                       <div className="text-sm font-medium">{cat.category}</div>
-                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{cat.value.toFixed(2)} EUR ({pct.toFixed(1)}%)</div>
+                      <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(cat.value)} ({pct.toFixed(1)}%)</div>
                     </div>
                     <div className="w-16 h-2 bg-[#E5E7EB] dark:bg-[#262626] rounded-full overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: pieColors[i % pieColors.length] }} />
@@ -1926,7 +1927,7 @@ export default function Inventory() {
                     </td>
 
                     {/* Value */}
-                    <td className="px-3 py-3 font-medium hidden sm:table-cell">{value.toFixed(2)} EUR</td>
+                    <td className="px-3 py-3 font-medium hidden sm:table-cell">{formatCurrency(value)}</td>
 
                     {/* Status */}
                     <td className="px-3 py-3">
@@ -2355,7 +2356,7 @@ export default function Inventory() {
               <div>
                 <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Total estime</span>
                 <p className="text-xl font-bold">
-                  {reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0).toFixed(2)} EUR
+                  {formatCurrency(reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0))}
                 </p>
               </div>
               <div className="text-right">
@@ -2382,7 +2383,7 @@ export default function Inventory() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold">{getGroupEstimatedCost(group).toFixed(2)} EUR</span>
+                    <span className="text-sm font-semibold">{formatCurrency(getGroupEstimatedCost(group))}</span>
                     {expandedSuppliers.has(group.supplier) ? <ChevronUp className="w-4 h-4 text-[#9CA3AF]" /> : <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />}
                   </div>
                 </button>
@@ -2427,7 +2428,7 @@ export default function Inventory() {
                                   className="w-20 text-center px-2 py-1 rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#171717] text-sm font-medium focus:ring-2 focus:ring-[#111111] dark:focus:ring-white outline-none"
                                 />
                               </td>
-                              <td className="text-right px-4 py-2.5 font-medium">{cost.toFixed(2)} EUR</td>
+                              <td className="text-right px-4 py-2.5 font-medium">{formatCurrency(cost)}</td>
                             </tr>
                           );
                         })}
@@ -2436,7 +2437,7 @@ export default function Inventory() {
 
                     {/* Per-supplier order button */}
                     <div className="px-4 py-3 bg-[#F9FAFB] dark:bg-[#0A0A0A] border-t border-[#E5E7EB] dark:border-[#1A1A1A] flex items-center justify-between">
-                      <span className="text-sm font-semibold">Sous-total : {getGroupEstimatedCost(group).toFixed(2)} EUR</span>
+                      <span className="text-sm font-semibold">Sous-total : {formatCurrency(getGroupEstimatedCost(group))}</span>
                       <button
                         onClick={() => handleConfirmReorder(group.supplier)}
                         disabled={reorderConfirming}
@@ -2459,7 +2460,7 @@ export default function Inventory() {
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#111111] dark:bg-white text-white dark:text-black text-sm font-semibold rounded-xl hover:bg-[#333] dark:hover:bg-[#E5E5E5] transition-colors disabled:opacity-50"
               >
                 {reorderConfirming ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
-                Commander tout ({reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0).toFixed(2)} EUR)
+                Commander tout ({formatCurrency(reorderGroups.reduce((sum, g) => sum + getGroupEstimatedCost(g), 0))})
               </button>
             </div>
           </div>

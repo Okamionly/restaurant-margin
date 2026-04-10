@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
@@ -873,11 +874,11 @@ export default function Landing() {
                       <div className="grid grid-cols-3 gap-3">
                         <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
                           <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold">Prix</p>
-                          <p className="text-sm font-bold text-[#111111]">{recipe.prixVente.toFixed(2)}EUR</p>
+                          <p className="text-sm font-bold text-[#111111]">{formatCurrency(recipe.prixVente)}</p>
                         </div>
                         <div className="bg-[#F9FAFB] rounded-lg p-2.5 text-center">
                           <p className="text-[10px] text-[#9CA3AF] uppercase font-semibold">Food Cost</p>
-                          <p className="text-sm font-bold text-[#111111]">{recipe.foodCost.toFixed(2)}EUR</p>
+                          <p className="text-sm font-bold text-[#111111]">{formatCurrency(recipe.foodCost)}</p>
                         </div>
                         <div className="bg-[#111111] rounded-lg p-2.5 text-center">
                           <p className="text-[10px] text-white/60 uppercase font-semibold">Marge</p>
@@ -906,7 +907,7 @@ export default function Landing() {
                               </div>
                               <div className="flex items-center gap-4">
                                 <span className="text-xs text-[#9CA3AF]">{ing.qte}</span>
-                                <span className="text-sm font-bold text-[#111111]">{ing.cout.toFixed(2)}EUR</span>
+                                <span className="text-sm font-bold text-[#111111]">{formatCurrency(ing.cout)}</span>
                               </div>
                             </div>
                           ))}
@@ -914,7 +915,7 @@ export default function Landing() {
                         <div className="mt-4 pt-4 border-t border-[#E5E7EB] flex items-center justify-between">
                           <div>
                             <span className="text-xs text-[#9CA3AF]">Cout total</span>
-                            <p className="text-lg font-bold text-[#111111]">{recipe.foodCost.toFixed(2)}EUR</p>
+                            <p className="text-lg font-bold text-[#111111]">{formatCurrency(recipe.foodCost)}</p>
                           </div>
                           <div>
                             <span className="text-xs text-[#9CA3AF]">Coefficient</span>
@@ -1776,7 +1777,7 @@ export default function Landing() {
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-4">
                       <p className="text-xs text-[#9CA3AF] uppercase font-semibold">Food Cost</p>
-                      <p className="text-2xl font-extrabold text-[#111111]">{exitCalcResult.foodCost.toFixed(2)}EUR</p>
+                      <p className="text-2xl font-extrabold text-[#111111]">{formatCurrency(exitCalcResult.foodCost)}</p>
                     </div>
                     <div className="bg-[#111111] rounded-xl p-4">
                       <p className="text-xs text-white/60 uppercase font-semibold">Marge brute</p>
@@ -2022,7 +2023,7 @@ function ROICalculator() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <label className="text-sm font-semibold text-[#111111]">Prix moyen d'un plat (EUR)</label>
-            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{prixMoyen}EUR</span>
+            <span className="text-lg font-extrabold text-[#111111] bg-[#F9FAFB] border border-[#E5E7EB] rounded-lg px-3 py-1 min-w-[60px] text-center">{formatCurrency(prixMoyen)}</span>
           </div>
           <input
             type="range"
@@ -2034,8 +2035,8 @@ function ROICalculator() {
             className="w-full h-2 bg-[#E5E7EB] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#111111] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-[#111111] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           />
           <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
-            <span>8EUR</span>
-            <span>45EUR</span>
+            <span>{formatCurrency(8)}</span>
+            <span>{formatCurrency(45)}</span>
           </div>
         </div>
 
@@ -2065,15 +2066,15 @@ function ROICalculator() {
           <div className="grid sm:grid-cols-3 gap-4">
             <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 text-center">
               <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-semibold mb-1">CA mensuel estime</p>
-              <p className="text-2xl font-extrabold text-[#111111]">{monthlyRevenue.toLocaleString('fr-FR')}EUR</p>
+              <p className="text-2xl font-extrabold text-[#111111]">{formatCurrency(monthlyRevenue)}</p>
             </div>
             <div className="bg-[#111111] rounded-xl p-5 text-center">
               <p className="text-xs text-white/60 uppercase tracking-wider font-semibold mb-1">Economies / mois</p>
-              <p className="text-3xl font-extrabold text-white">{monthlySavings.toLocaleString('fr-FR')}EUR</p>
+              <p className="text-3xl font-extrabold text-white">{formatCurrency(monthlySavings)}</p>
             </div>
             <div className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl p-5 text-center">
               <p className="text-xs text-[#9CA3AF] uppercase tracking-wider font-semibold mb-1">Economies / an</p>
-              <p className="text-2xl font-extrabold text-[#111111]">{yearlySavings.toLocaleString('fr-FR')}EUR</p>
+              <p className="text-2xl font-extrabold text-[#111111]">{formatCurrency(yearlySavings)}</p>
             </div>
           </div>
           <p className="text-xs text-[#9CA3AF] text-center mt-4">

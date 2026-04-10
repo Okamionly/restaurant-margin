@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchBar, { type SearchSuggestion } from '../components/SearchBar';
@@ -297,7 +298,7 @@ function SpendBarChart({ data, maxSpend }: { data: { name: string; spend: number
               }}
             />
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-[#374151] dark:text-[#D4D4D4]">
-              {item.spend.toFixed(0)} EUR
+              {formatCurrency(item.spend)}
             </span>
           </div>
         </div>
@@ -339,7 +340,7 @@ function OrderTimeline({ supplierId, supplierName }: { supplierId: number; suppl
               <span className="text-xs font-medium text-[#111111] dark:text-white">{order.date}</span>
               <span className="text-[10px] text-[#9CA3AF] dark:text-[#737373] ml-2">{order.items} articles</span>
             </div>
-            <span className="text-xs font-bold text-[#111111] dark:text-white">{order.amount.toFixed(0)} EUR</span>
+            <span className="text-xs font-bold text-[#111111] dark:text-white">{formatCurrency(order.amount)}</span>
           </div>
         </div>
       ))}
@@ -1422,7 +1423,7 @@ export default function Suppliers() {
                         <span className={`text-[9px] font-bold ${urgencyColor[item.urgency]} shrink-0`}>{urgencyLabel[item.urgency]}</span>
                       </div>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{item.ingredient.pricePerUnit.toFixed(2)} EUR/{item.ingredient.unit}</span>
+                        <span className="text-[10px] text-[#6B7280] dark:text-[#A3A3A3]">{formatCurrency(item.ingredient.pricePerUnit)}/{item.ingredient.unit}</span>
                         <button
                           onClick={() => {
                             const phone = item.supplier.whatsappPhone || item.supplier.phone;
@@ -1452,7 +1453,7 @@ export default function Suppliers() {
                   Depenses mensuelles par fournisseur
                 </h3>
                 <span className="text-xs font-bold text-[#111111] dark:text-white">
-                  Total: {monthlySpendData.total.toLocaleString()} EUR
+                  Total: {formatCurrency(monthlySpendData.total)}
                 </span>
               </div>
               <SpendBarChart data={monthlySpendData.items} maxSpend={monthlySpendData.maxSpend} />
@@ -1528,7 +1529,7 @@ export default function Suppliers() {
                               const isBest = entry && minPrice !== null && entry.price === minPrice && validPrices.length > 1;
                               return (
                                 <td key={s.id} className={`px-3 py-2 text-right font-medium ${isBest ? 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20' : 'text-[#6B7280] dark:text-[#737373]'}`}>
-                                  {entry ? `${entry.price.toFixed(2)} €/${entry.unit}` : <span className="text-[#6B7280] dark:text-[#A3A3A3]">--</span>}
+                                  {entry ? `${formatCurrency(entry.price)}/${entry.unit}` : <span className="text-[#6B7280] dark:text-[#A3A3A3]">--</span>}
                                 </td>
                               );
                             })}
@@ -1700,7 +1701,7 @@ export default function Suppliers() {
                                 <span className="text-[#374151] dark:text-[#D4D4D4] truncate">{p.name}</span>
                                 <span className="flex items-center gap-1 shrink-0">
                                   {isBest && <span className="text-[8px] px-1 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold">Meilleur prix</span>}
-                                  <span className="font-medium text-[#111111] dark:text-white">{p.pricePerUnit.toFixed(2)} EUR</span>
+                                  <span className="font-medium text-[#111111] dark:text-white">{formatCurrency(p.pricePerUnit)}</span>
                                 </span>
                               </div>
                             );
@@ -2295,7 +2296,7 @@ export default function Suppliers() {
                               <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Categories</div>
                             </div>
                             <div className="bg-[#F3F4F6] dark:bg-[#0F0F0F] rounded-lg px-3 py-2 text-center">
-                              <div className="text-lg font-bold text-emerald-400">{avgPrice.toFixed(2)} EUR</div>
+                              <div className="text-lg font-bold text-emerald-400">{formatCurrency(avgPrice)}</div>
                               <div className="text-[10px] text-[#9CA3AF] dark:text-[#737373] uppercase tracking-wide">Prix moyen</div>
                             </div>
                           </div>
@@ -2362,7 +2363,7 @@ export default function Suppliers() {
                                       </span>
                                     </div>
                                     <span className="text-xs font-semibold text-emerald-400">
-                                      {catTotal.toFixed(2)} EUR
+                                      {formatCurrency(catTotal)}
                                     </span>
                                   </button>
 
@@ -2388,7 +2389,7 @@ export default function Suppliers() {
                                                     {subIngs.length}
                                                   </span>
                                                 </div>
-                                                <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{subTotal.toFixed(2)} EUR</span>
+                                                <span className="text-[11px] text-[#9CA3AF] dark:text-[#737373]">{formatCurrency(subTotal)}</span>
                                               </button>
                                               <div className={`transition-all duration-150 ease-in-out overflow-hidden ${isSubExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                                 <div className="divide-y divide-[#E5E7EB]/30">
@@ -2407,7 +2408,7 @@ export default function Suppliers() {
                                                         ) : null;
                                                       })()}
                                                       <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
-                                                        {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                                                        {formatCurrency(ing.pricePerUnit)}/{ing.unit}
                                                       </span>
                                                       {priceAlerts[ing.id] && (
                                                         <span className={`text-[9px] font-bold px-1 py-0.5 rounded-full shrink-0 ${
@@ -2444,7 +2445,7 @@ export default function Suppliers() {
                                               ) : null;
                                             })()}
                                             <span className="text-xs font-medium text-[#111111] dark:text-white whitespace-nowrap">
-                                              {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                                              {formatCurrency(ing.pricePerUnit)}/{ing.unit}
                                             </span>
                                             {priceAlerts[ing.id] && (
                                               <span className={`text-[9px] font-bold px-1 py-0.5 rounded-full shrink-0 ${
@@ -2764,7 +2765,7 @@ export default function Suppliers() {
                               </td>
                               <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#A3A3A3]">{p.name}</td>
                               <td className="px-3 py-2"><span className="text-xs px-2 py-0.5 rounded bg-[#F3F4F6] dark:bg-[#171717] text-[#9CA3AF] dark:text-[#737373]">{p.category}</span></td>
-                              <td className="px-3 py-2 font-medium text-[#111111] dark:text-white">{p.prixMoy.toFixed(2)} €</td>
+                              <td className="px-3 py-2 font-medium text-[#111111] dark:text-white">{formatCurrency(p.prixMoy)}</td>
                               <td className="px-3 py-2 text-[#9CA3AF] dark:text-[#737373]">{p.unit}</td>
                               <td className="px-3 py-2">
                                 {exists ? (
@@ -2823,7 +2824,7 @@ export default function Suppliers() {
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
                 <Euro className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-                  Economie potentielle totale : {totalPotentialSavings.toFixed(2)} EUR/mois
+                  Economie potentielle totale : {formatCurrency(totalPotentialSavings)}/mois
                 </span>
               </div>
             )}
@@ -2850,7 +2851,7 @@ export default function Suppliers() {
                 <span className="text-xs sm:text-sm font-general-sans text-[#737373] dark:text-[#A3A3A3]">Economie potentielle</span>
                 <div className="p-2 rounded-xl bg-[#F3F4F6] dark:bg-[#171717]"><Euro className="w-5 h-5 text-[#111111] dark:text-white" /></div>
               </div>
-              <div className="text-2xl font-bold font-satoshi tabular-nums text-emerald-600 dark:text-emerald-400">{totalPotentialSavings.toFixed(2)} EUR</div>
+              <div className="text-2xl font-bold font-satoshi tabular-nums text-emerald-600 dark:text-emerald-400">{formatCurrency(totalPotentialSavings)}</div>
               <div className="text-xs font-general-sans text-[#737373] dark:text-[#A3A3A3]">par mois</div>
             </div>
             <div className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-[#E5E7EB] dark:border-[#1A1A1A] p-5 sm:p-6">
@@ -2913,7 +2914,7 @@ export default function Suppliers() {
                             return (
                               <td key={s.id} className={`px-4 py-3 text-center ${isCheapest ? 'bg-green-50 dark:bg-green-900/20' : ''}`}>
                                 <span className={`font-medium ${isCheapest ? 'text-green-600 dark:text-green-400' : 'text-[#6B7280] dark:text-[#737373]'}`}>
-                                  {entry.pricePerUnit.toFixed(2)} EUR/{entry.unit}
+                                  {formatCurrency(entry.pricePerUnit)}/{entry.unit}
                                 </span>
                                 {isCheapest && item.entries.length > 1 && (
                                   <div className="mt-1">
@@ -2929,7 +2930,7 @@ export default function Suppliers() {
                           <td className="px-4 py-3 text-right">
                             {item.savingsPerMonth > 0 ? (
                               <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                                {item.savingsPerMonth.toFixed(2)} EUR
+                                {formatCurrency(item.savingsPerMonth)}
                               </span>
                             ) : (
                               <span className="text-[#9CA3AF] dark:text-[#737373]">--</span>
@@ -2946,7 +2947,7 @@ export default function Suppliers() {
                         <td key={s.id} className="px-4 py-3" />
                       ))}
                       <td className="px-4 py-3 text-right text-emerald-600 dark:text-emerald-400 text-lg">
-                        {totalPotentialSavings.toFixed(2)} EUR/mois
+                        {formatCurrency(totalPotentialSavings)}/mois
                       </td>
                     </tr>
                   </tfoot>
@@ -2992,7 +2993,7 @@ export default function Suppliers() {
                           </span>
                         </div>
                         <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">
-                          Prix actuel : {ing.pricePerUnit.toFixed(2)} EUR/{ing.unit}
+                          Prix actuel : {formatCurrency(ing.pricePerUnit)}/{ing.unit}
                         </div>
                       </div>
                     );
@@ -3597,8 +3598,8 @@ export default function Suppliers() {
                               <p className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-0.5">{t.argument}</p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0 ml-3">
-                              <span className="text-xs text-[#9CA3AF] line-through">{t.currentPrice?.toFixed(2)} EUR</span>
-                              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{t.targetPrice?.toFixed(2)} EUR</span>
+                              <span className="text-xs text-[#9CA3AF] line-through">{formatCurrency(t.currentPrice ?? 0)}</span>
+                              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(t.targetPrice ?? 0)}</span>
                             </div>
                           </div>
                         ))}
@@ -3617,7 +3618,7 @@ export default function Suppliers() {
                         {briefData.alternatives.map((a: any, i: number) => (
                           <div key={i} className="flex items-center justify-between text-sm py-1.5 border-b border-[#F3F4F6] dark:border-[#1A1A1A] last:border-0">
                             <span className="text-[#374151] dark:text-[#D4D4D4]">{a.product}</span>
-                            <span className="text-xs text-[#9CA3AF]">{a.alternativeSupplier} - {a.alternativePrice?.toFixed(2)} EUR</span>
+                            <span className="text-xs text-[#9CA3AF]">{a.alternativeSupplier} - {formatCurrency(a.alternativePrice ?? 0)}</span>
                           </div>
                         ))}
                       </div>

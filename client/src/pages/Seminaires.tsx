@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   CalendarDays, Users, Euro, TrendingUp, Plus, ChevronLeft, ChevronRight,
@@ -174,7 +175,7 @@ function formatDateShort(dateStr: string): string {
 }
 
 function formatEuro(n: number): string {
-  return n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  return formatCurrency(n);
 }
 
 function getDaysInMonth(year: number, month: number): number {

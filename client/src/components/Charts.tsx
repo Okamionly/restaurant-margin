@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -559,7 +560,7 @@ export function TrendIndicator({
 
   const formatVal = (v: number) => {
     if (format === 'percent') return `${v.toFixed(1)}%`;
-    if (format === 'currency') return `${v.toFixed(2)} EUR`;
+    if (format === 'currency') return formatCurrency(v);
     return v.toFixed(1);
   };
 
@@ -684,7 +685,7 @@ export function HeatmapGrid({
 
   const defaultFormatTooltip = (date: string, value: number) => {
     const d = new Date(date);
-    return `${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}: ${value.toFixed(2)} EUR`;
+    return `${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}: ${formatCurrency(value)}`;
   };
 
   const tooltipFn = formatTooltip || defaultFormatTooltip;

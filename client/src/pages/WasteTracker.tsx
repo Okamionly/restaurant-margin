@@ -1,3 +1,4 @@
+import { formatCurrency, currencySuffix, getCurrencySymbol } from '../utils/currency';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Trash2, Plus, TrendingDown, AlertTriangle, Lightbulb,
@@ -224,7 +225,7 @@ function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): 
     const top = topIngredients[0];
     const saving10 = top[1].cost * 0.1;
     tips.push(
-      `L'IA suggere : Reduisez les portions de ${top[1].name} de 10% pour economiser ${saving10.toFixed(0)} EUR/mois`
+      `L'IA suggere : Reduisez les portions de ${top[1].name} de 10% pour economiser ${formatCurrency(saving10)}/mois`
     );
   }
   if (topIngredients.length > 1) {
@@ -249,7 +250,7 @@ function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): 
   }
   if (totalCost > 500) {
     tips.push(
-      `L'IA suggere : Votre gaspillage mensuel depasse 500 EUR. Mettez en place un "plat du jour" avec les surplus pour valoriser les excedents.`
+      `L'IA suggere : Votre gaspillage mensuel depasse 500 ${getCurrencySymbol()}. Mettez en place un "plat du jour" avec les surplus pour valoriser les excedents.`
     );
   }
 
@@ -264,7 +265,7 @@ function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): 
   const topCat = Object.entries(ingByCategory).sort((a, b) => b[1] - a[1])[0];
   if (topCat) {
     tips.push(
-      `L'IA suggere : La categorie "${topCat[0]}" represente votre plus grosse source de gaspillage (${topCat[1].toFixed(0)} EUR). Negociez des conditionnements plus petits.`
+      `L'IA suggere : La categorie "${topCat[0]}" represente votre plus grosse source de gaspillage (${formatCurrency(topCat[1])}). Negociez des conditionnements plus petits.`
     );
   }
 
@@ -281,7 +282,7 @@ function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): 
     const avgDayCost = Object.values(byDayOfWeek).reduce((a, b) => a + b, 0) / Object.keys(byDayOfWeek).length;
     if (sortedDays[0][1] > avgDayCost * 1.3) {
       tips.push(
-        `L'IA suggere : Le gaspillage augmente le ${sortedDays[0][0]} (${sortedDays[0][1].toFixed(0)} EUR vs ${avgDayCost.toFixed(0)} EUR en moyenne). Ajustez les commandes et les preparations ce jour-la.`
+        `L'IA suggere : Le gaspillage augmente le ${sortedDays[0][0]} (${formatCurrency(sortedDays[0][1])} vs ${formatCurrency(avgDayCost)} en moyenne). Ajustez les commandes et les preparations ce jour-la.`
       );
     }
   }
@@ -309,7 +310,7 @@ function generateSuggestions(entries: WasteEntry[], ingredients: Ingredient[]): 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatEuro(val: number): string {
-  return val.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  return formatCurrency(val);
 }
 
 function getWeekNumber(d: Date): number {
@@ -1041,7 +1042,7 @@ export default function WasteTracker() {
               className="text-5xl sm:text-6xl font-black tabular-nums"
               style={{ color: '#dc2626' }}
             >
-              {animatedCost.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {formatCurrency(animatedCost)}
             </span>
             {lastMonthCost > 0 && (
               <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold ${
@@ -1531,7 +1532,7 @@ export default function WasteTracker() {
                 label: item.category,
                 value: item.cost,
                 color: getCategoryColor(item.category),
-                suffix: ' EUR',
+                suffix: currencySuffix(),
               }))}
               animated={true}
               sorted={true}
@@ -1828,9 +1829,9 @@ export default function WasteTracker() {
             <BarChart data={barData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
               <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={period === 'mois' ? 4 : 0} />
-              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}EUR`} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => formatCurrency(v)} />
               <Tooltip formatter={(val: unknown) => formatEuro(Number(val))} labelStyle={{ color: '#1e293b' }} />
-              <Bar dataKey="value" fill="#dc2626" radius={[4, 4, 0, 0]} name="Pertes (EUR)" />
+              <Bar dataKey="value" fill="#dc2626" radius={[4, 4, 0, 0]} name={`Pertes (${getCurrencySymbol()})`} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useCallback } from 'react';
 import {
   Newspaper, TrendingUp, TrendingDown, AlertTriangle, Lightbulb, RefreshCw, X,
@@ -827,10 +828,10 @@ export default function Actualites() {
                         </span>
                       </td>
                       <td className="px-4 py-3 text-right font-medium text-black dark:text-white">
-                        {trend.currentPrice.toFixed(2)} EUR/{trend.unit}
+                        {formatCurrency(trend.currentPrice)}/{trend.unit}
                       </td>
                       <td className="px-4 py-3 text-right text-[#737373] dark:text-[#A3A3A3]">
-                        {trend.previousPrice.toFixed(2)} EUR/{trend.unit}
+                        {formatCurrency(trend.previousPrice)}/{trend.unit}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${

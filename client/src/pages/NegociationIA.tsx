@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Handshake, TrendingDown, DollarSign, Copy, Mail, MessageCircle,
@@ -30,7 +31,7 @@ function fmtDec(n: number, d = 2): string {
 }
 
 function fmtEur(n: number): string {
-  return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n) + ' EUR';
+  return formatCurrency(n);
 }
 
 // ── Types ──
@@ -584,10 +585,10 @@ export default function NegociationIA() {
         <div className="bg-gradient-to-br from-teal-600 to-emerald-600 rounded-2xl px-6 py-4 text-white shadow-lg">
           <div className="text-xs font-medium uppercase tracking-wider opacity-80">Potentiel d'economie</div>
           <div className="text-3xl font-bold font-satoshi mt-1">
-            {fmt(Math.round(totalPotentialSavings))} EUR<span className="text-lg font-normal opacity-80">/mois</span>
+            {formatCurrency(Math.round(totalPotentialSavings))}<span className="text-lg font-normal opacity-80">/mois</span>
           </div>
           <div className="text-xs mt-1 opacity-70">
-            {fmt(Math.round(totalPotentialSavings * 12))} EUR/an sur {opportunities.length} ingredient{opportunities.length > 1 ? 's' : ''}
+            {formatCurrency(Math.round(totalPotentialSavings * 12))}/an sur {opportunities.length} ingredient{opportunities.length > 1 ? 's' : ''}
           </div>
         </div>
       </div>
@@ -623,7 +624,7 @@ export default function NegociationIA() {
             <CircleDollarSign className="w-4 h-4" />
             Economies realisees
           </div>
-          <div className="text-2xl font-bold text-teal-600 dark:text-teal-400 font-satoshi">{fmt(Math.round(annualSavingsRealized))} EUR</div>
+          <div className="text-2xl font-bold text-teal-600 dark:text-teal-400 font-satoshi">{formatCurrency(Math.round(annualSavingsRealized))}</div>
           <div className="text-xs text-[#9CA3AF] dark:text-[#737373] mt-1">cette annee</div>
         </div>
       </div>
@@ -1036,11 +1037,11 @@ export default function NegociationIA() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-6">
               <div>
                 <div className="text-sm opacity-70">Economies realisees</div>
-                <div className="text-3xl font-bold font-satoshi mt-1">{fmt(Math.round(annualSavingsRealized))} EUR</div>
+                <div className="text-3xl font-bold font-satoshi mt-1">{formatCurrency(Math.round(annualSavingsRealized))}</div>
               </div>
               <div>
                 <div className="text-sm opacity-70">Potentiel restant</div>
-                <div className="text-3xl font-bold font-satoshi mt-1">{fmt(Math.round(totalPotentialSavings * 12))} EUR</div>
+                <div className="text-3xl font-bold font-satoshi mt-1">{formatCurrency(Math.round(totalPotentialSavings * 12))}</div>
               </div>
               <div>
                 <div className="text-sm opacity-70">ROI de RestauMargin</div>

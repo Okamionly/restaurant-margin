@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageCircle, Send, X, ChefHat, Bot, Loader2 } from 'lucide-react';
 import { fetchRecipes, fetchInventoryAlerts } from '../services/api';
@@ -109,7 +110,7 @@ async function handleBestMargin(): Promise<string> {
   const top3 = sorted.slice(0, 3);
   const lines = top3.map(
     (r, i) =>
-      `${i + 1}. ${r.name} - marge ${r.margin.marginPercent.toFixed(1)}% (cout ${r.margin.foodCost.toFixed(2)} EUR, prix ${r.sellingPrice.toFixed(2)} EUR)`
+      `${i + 1}. ${r.name} - marge ${r.margin?.marginPercent?.toFixed(1) ?? '?'}% (cout ${r.margin?.foodCost != null ? formatCurrency(r.margin.foodCost) : '?'}, prix ${r.sellingPrice != null ? formatCurrency(r.sellingPrice) : '?'})`
   );
   return `Voici vos 3 plats les plus rentables :\n${lines.join('\n')}`;
 }
@@ -140,7 +141,7 @@ async function handleSuggestIngredient(ingredient: string): Promise<string> {
   if (!matches.length) return `Aucune recette trouvee avec "${ingredient}".`;
 
   const lines = matches.slice(0, 5).map(
-    (r: Recipe) => `- ${r.name} (${r.category}, ${r.sellingPrice.toFixed(2)} EUR)`
+    (r: Recipe) => `- ${r.name} (${r.category}, ${formatCurrency(r.sellingPrice)})`
   );
   return `Recettes avec "${ingredient}" :\n${lines.join('\n')}${matches.length > 5 ? `\n... et ${matches.length - 5} autre(s)` : ''}`;
 }
@@ -151,11 +152,11 @@ async function handleAverageCost(): Promise<string> {
   if (!withMargin.length) return "Aucune recette avec des donnees de marge.";
 
   const avg =
-    withMargin.reduce((sum, r) => sum + r.margin.marginPercent, 0) / withMargin.length;
+    withMargin.reduce((sum, r) => sum + (r.margin?.marginPercent ?? 0), 0) / withMargin.length;
   const avgCost =
-    withMargin.reduce((sum, r) => sum + r.margin.foodCost, 0) / withMargin.length;
+    withMargin.reduce((sum, r) => sum + (r.margin?.foodCost ?? 0), 0) / withMargin.length;
 
-  return `Sur ${withMargin.length} recette${withMargin.length !== 1 ? 's' : ''} :\n- Cout matiere moyen : ${avgCost.toFixed(2)} EUR\n- Marge moyenne : ${avg.toFixed(1)}%`;
+  return `Sur ${withMargin.length} recette${withMargin.length !== 1 ? 's' : ''} :\n- Cout matiere moyen : ${formatCurrency(avgCost)}\n- Marge moyenne : ${avg.toFixed(1)}%`;
 }
 
 const UNKNOWN_RESPONSE =
@@ -170,7 +171,7 @@ async function getRestaurantContext(): Promise<string> {
       .filter((r: Recipe) => r.margin)
       .sort((a: Recipe, b: Recipe) => (b.margin?.marginPercent ?? 0) - (a.margin?.marginPercent ?? 0))
       .slice(0, 15)
-      .map((r: Recipe) => `- ${r.name} (${r.category}): prix ${r.sellingPrice}€, coût ${r.margin?.foodCost?.toFixed(2)}€, marge ${r.margin?.marginPercent?.toFixed(1)}%`)
+      .map((r: Recipe) => `- ${r.name} (${r.category}): prix ${formatCurrency(r.sellingPrice)}, coût ${r.margin?.foodCost != null ? formatCurrency(r.margin.foodCost) : '?'}, marge ${r.margin?.marginPercent?.toFixed(1)}%`)
       .join('\n');
     const avgMargin = recipes.filter((r: Recipe) => r.margin).reduce((s: number, r: Recipe) => s + (r.margin?.marginPercent ?? 0), 0) / (recipes.filter((r: Recipe) => r.margin).length || 1);
     return `Restaurant: ${recipes.length} recettes, marge moyenne ${avgMargin.toFixed(1)}%.\nTop recettes:\n${topRecipes}`;

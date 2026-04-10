@@ -1,3 +1,4 @@
+import { formatCurrency, getCurrencySymbol } from '../utils/currency';
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   TrendingUp, TrendingDown, DollarSign, Target, Printer,
@@ -70,9 +71,9 @@ function BreakEvenGauge({ current, target }: { current: number; target: number }
   return (
     <div className="relative w-full">
       <div className="flex justify-between text-xs text-[#9CA3AF] dark:text-[#737373] mb-1.5">
-        <span>0 EUR</span>
+        <span>{formatCurrency(0)}</span>
         <span className="font-semibold text-[#111111] dark:text-white">
-          Seuil: {fmt(target)} EUR/jour
+          Seuil: {formatCurrency(target)}/jour
         </span>
       </div>
       <div className="w-full h-4 rounded-full bg-[#F3F4F6] dark:bg-[#171717] overflow-hidden relative">
@@ -88,14 +89,14 @@ function BreakEvenGauge({ current, target }: { current: number; target: number }
       </div>
       <div className="flex justify-between items-center mt-1.5">
         <span className="text-sm font-bold" style={{ color }}>
-          {fmt(current)} EUR/jour actuel
+          {formatCurrency(current)}/jour actuel
         </span>
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
           isAbove
             ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
             : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
         }`}>
-          {isAbove ? 'Rentable' : `${fmt(target - current)} EUR manquants`}
+          {isAbove ? 'Rentable' : `${formatCurrency(target - current)} manquants`}
         </span>
       </div>
     </div>
@@ -169,7 +170,7 @@ function BCGMatrix({ dots, onDotClick }: { dots: DotData[]; onDotClick: (d: DotD
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-[#111111] dark:bg-white text-white dark:text-black text-[10px] px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium shadow-lg">
               {d.name}
               <br />
-              Marge: {fmtDec(d.margin)}% | CA: {fmt(d.revenue)} EUR
+              Marge: {fmtDec(d.margin)}% | CA: {formatCurrency(d.revenue)}
             </div>
           </button>
         );
@@ -200,7 +201,7 @@ function CashFlowChart({ data }: { data: { day: string; balance: number }[] }) {
                 style={{ height: `${Math.max(h, 2)}%` }}
               />
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-[#111111] dark:bg-white text-white dark:text-black text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
-                J{d.day}: {fmt(d.balance)} EUR
+                J{d.day}: {formatCurrency(d.balance)}
               </div>
             </div>
           );
@@ -244,7 +245,7 @@ function SeasonalChart({ data }: { data: { month: string; value: number; isCurre
                 {d.month}
               </span>
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-[#111111] dark:bg-white text-white dark:text-black text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
-                {fmt(d.value)} EUR
+                {formatCurrency(d.value)}
               </div>
             </div>
           );
@@ -414,8 +415,8 @@ export default function FinancialIntelligence() {
       const saving = Math.round(expensive.totalCost * 0.35 * 30);
       suggestions.push({
         icon: 'swap',
-        text: `Remplacez ${expensive.name} par un poisson de saison: economie estimee de ${fmt(saving)} EUR/mois`,
-        saving: `${fmt(saving)} EUR/mois`,
+        text: `Remplacez ${expensive.name} par un poisson de saison: economie estimee de ${formatCurrency(saving)}/mois`,
+        saving: `${formatCurrency(saving)}/mois`,
         impact: '+6% marge',
       });
     }
@@ -443,7 +444,7 @@ export default function FinancialIntelligence() {
       suggestions.push({
         icon: 'negotiate',
         text: `${names} representent ${pct}% de vos couts — negociez des remises volume avec vos fournisseurs`,
-        saving: `${fmt(Math.round(top3Total * 0.1 * 30))} EUR/mois potentiel`,
+        saving: `${formatCurrency(Math.round(top3Total * 0.1 * 30))}/mois potentiel`,
         impact: 'Negociation',
       });
     }
@@ -578,7 +579,7 @@ export default function FinancialIntelligence() {
                 </div>
               </div>
               <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
-                {fmt(computations.projectedMonthly)} EUR
+                {formatCurrency(computations.projectedMonthly)}
               </div>
               <div className={`flex items-center gap-1 mt-1 text-sm font-medium ${
                 computations.revenueChangePercent >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'
@@ -601,7 +602,7 @@ export default function FinancialIntelligence() {
                 </div>
               </div>
               <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
-                {fmt(computations.dailyRevenue)} EUR
+                {formatCurrency(computations.dailyRevenue)}
               </div>
               <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
                 Jour {computations.dayOfMonth}/{computations.daysInMonth}
@@ -633,7 +634,7 @@ export default function FinancialIntelligence() {
                 </div>
               </div>
               <div className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
-                {fmt(computations.fixedCosts)} EUR
+                {formatCurrency(computations.fixedCosts)}
               </div>
               <div className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
                 /mois (modifiable ci-dessous)
@@ -657,12 +658,12 @@ export default function FinancialIntelligence() {
               <div className="bg-[#F9FAFB] dark:bg-[#111111] rounded-xl p-4 mb-4">
                 <p className="text-sm text-[#6B7280] dark:text-[#999999] mb-1">A ce rythme, votre CA ce mois sera de</p>
                 <p className="text-3xl font-bold text-[#111111] dark:text-white font-satoshi">
-                  {fmt(computations.projectedMonthly)} EUR
+                  {formatCurrency(computations.projectedMonthly)}
                 </p>
                 <p className={`text-sm font-semibold mt-1 ${
                   computations.revenueChangePercent >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'
                 }`}>
-                  {fmtPct(computations.revenueChangePercent)} vs mois precedent ({fmt(computations.lastMonthRevenue)} EUR)
+                  {fmtPct(computations.revenueChangePercent)} vs mois precedent ({formatCurrency(computations.lastMonthRevenue)})
                 </p>
               </div>
 
@@ -677,11 +678,11 @@ export default function FinancialIntelligence() {
               <div className="grid grid-cols-2 gap-3 mt-4">
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
                   <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold mb-1">Realise</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{fmt(computations.revenueToDate)} EUR</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(computations.revenueToDate)}</p>
                 </div>
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3">
                   <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold mb-1">Restant estime</p>
-                  <p className="text-lg font-bold text-[#111111] dark:text-white">{fmt(computations.projectedMonthly - computations.revenueToDate)} EUR</p>
+                  <p className="text-lg font-bold text-[#111111] dark:text-white">{formatCurrency(computations.projectedMonthly - computations.revenueToDate)}</p>
                 </div>
               </div>
             </div>
@@ -705,7 +706,7 @@ export default function FinancialIntelligence() {
                 ].map(({ label, value, setter }) => (
                   <div key={label}>
                     <label className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">
-                      {label} (EUR/mois)
+                      {label} ({getCurrencySymbol()}/mois)
                     </label>
                     <input
                       type="number"
@@ -723,7 +724,7 @@ export default function FinancialIntelligence() {
                   Vous devez faire au minimum
                 </p>
                 <p className="text-2xl font-bold text-[#111111] dark:text-white font-satoshi">
-                  {fmt(computations.breakEvenDaily)} EUR / jour
+                  {formatCurrency(computations.breakEvenDaily)} / jour
                 </p>
                 <p className="text-sm text-[#9CA3AF] dark:text-[#737373] mt-1">
                   Soit <span className="font-semibold text-[#111111] dark:text-white">{computations.coversPerDay} couverts/jour</span> a{' '}
@@ -733,7 +734,7 @@ export default function FinancialIntelligence() {
                     onChange={e => setAvgTicket(Number(e.target.value) || 1)}
                     className="inline-block w-16 px-2 py-0.5 text-sm rounded-lg border border-[#E5E7EB] dark:border-[#333333] bg-white dark:bg-[#0A0A0A] text-[#111111] dark:text-white text-center"
                   />{' '}
-                  EUR de panier moyen
+                  {getCurrencySymbol()} de panier moyen
                 </p>
               </div>
 
@@ -791,13 +792,13 @@ export default function FinancialIntelligence() {
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3 text-center">
                   <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">Entrees</p>
                   <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-1">
-                    +{fmt(computations.dailyRevenue * 30)} EUR
+                    +{formatCurrency(computations.dailyRevenue * 30)}
                   </p>
                 </div>
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3 text-center">
                   <p className="text-[10px] uppercase tracking-wide text-[#9CA3AF] dark:text-[#737373] font-semibold">Sorties</p>
                   <p className="text-sm font-bold text-red-500 mt-1">
-                    -{fmt(computations.fixedCosts)} EUR
+                    -{formatCurrency(computations.fixedCosts)}
                   </p>
                 </div>
                 <div className="bg-[#F3F4F6] dark:bg-[#171717] rounded-xl p-3 text-center">
@@ -807,7 +808,7 @@ export default function FinancialIntelligence() {
                       ? 'text-emerald-600 dark:text-emerald-400'
                       : 'text-red-500'
                   }`}>
-                    {fmt(computations.cashFlowData[29]?.balance || 0)} EUR
+                    {formatCurrency(computations.cashFlowData[29]?.balance || 0)}
                   </p>
                 </div>
               </div>
@@ -958,11 +959,11 @@ export default function FinancialIntelligence() {
               </div>
               <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Prix de vente</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{fmtDec(selectedDot.sellingPrice, 2)} EUR</span>
+                <span className="text-sm font-semibold text-[#111111] dark:text-white">{formatCurrency(selectedDot.sellingPrice)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Cout par portion</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{fmtDec(selectedDot.costPerPortion, 2)} EUR</span>
+                <span className="text-sm font-semibold text-[#111111] dark:text-white">{formatCurrency(selectedDot.costPerPortion)}</span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Marge</span>
@@ -976,7 +977,7 @@ export default function FinancialIntelligence() {
               </div>
               <div className="flex justify-between items-center py-2 border-b border-[#F3F4F6] dark:border-[#1A1A1A]">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Contribution CA</span>
-                <span className="text-sm font-semibold text-[#111111] dark:text-white">{fmt(selectedDot.revenue)} EUR</span>
+                <span className="text-sm font-semibold text-[#111111] dark:text-white">{formatCurrency(selectedDot.revenue)}</span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-sm text-[#6B7280] dark:text-[#999999]">Tendance</span>

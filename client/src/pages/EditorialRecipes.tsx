@@ -1,3 +1,4 @@
+import { formatCurrency } from '../utils/currency';
 import { useState, useEffect } from 'react';
 import { ChefHat, Clock, Users, Flame, ShoppingCart, Plus, ArrowLeft, Truck, X } from 'lucide-react';
 import { useToast } from '../hooks/useToast';
@@ -205,11 +206,11 @@ export default function EditorialRecipes() {
           {/* Cost summary */}
           <div className="p-4 grid grid-cols-3 gap-4 border-b border-[#E5E7EB] dark:border-[#1A1A1A]">
             <div className="text-center">
-              <div className="text-lg font-bold text-amber-400">{parseFloat(String(r.cost_per_portion)).toFixed(2)}€</div>
+              <div className="text-lg font-bold text-amber-400">{formatCurrency(parseFloat(String(r.cost_per_portion)))}</div>
               <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Coût / portion</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-emerald-400">{parseFloat(String(r.suggested_price)).toFixed(2)}€</div>
+              <div className="text-lg font-bold text-emerald-400">{formatCurrency(parseFloat(String(r.suggested_price)))}</div>
               <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3]">Prix suggéré</div>
             </div>
             <div className="text-center">
@@ -234,11 +235,11 @@ export default function EditorialRecipes() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium text-[#111111] dark:text-white">{ing.ingredient_name}</div>
                     <div className="text-xs text-[#9CA3AF] dark:text-[#737373]">
-                      {ing.quantity} {ing.unit} · {parseFloat(String(ing.price_per_unit)).toFixed(2)}€/{ing.unit}
+                      {ing.quantity} {ing.unit} · {formatCurrency(parseFloat(String(ing.price_per_unit)))}/{ing.unit}
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-sm font-medium text-amber-400">{parseFloat(String(ing.total_cost)).toFixed(2)}€</div>
+                    <div className="text-sm font-medium text-amber-400">{formatCurrency(parseFloat(String(ing.total_cost)))}</div>
                     <div className="text-xs text-[#6B7280] dark:text-[#A3A3A3] flex items-center gap-1">
                       <Truck className="w-3 h-3" /> {ing.supplier}
                     </div>
@@ -248,7 +249,7 @@ export default function EditorialRecipes() {
             </div>
             <div className="mt-3 flex justify-between items-center bg-[#FAFAFA]/30 dark:bg-[#0A0A0A]/30 rounded-xl p-3">
               <span className="text-sm font-semibold text-[#6B7280] dark:text-[#A3A3A3]">Coût total recette</span>
-              <span className="text-lg font-bold text-amber-400">{totalCost.toFixed(2)}€</span>
+              <span className="text-lg font-bold text-amber-400">{formatCurrency(totalCost)}</span>
             </div>
           </div>
 
@@ -380,11 +381,11 @@ export default function EditorialRecipes() {
                 {/* Cost per portion */}
                 <div className="bg-[#FAFAFA]/50 dark:bg-[#0A0A0A]/50 rounded-xl p-3">
                   <div className="flex justify-between items-baseline mb-1.5">
-                    <span className="text-2xl font-bold text-amber-400">{parseFloat(String(r.cost_per_portion)).toFixed(2)}€<span className="text-sm font-normal text-[#6B7280] dark:text-[#A3A3A3]">/portion</span></span>
+                    <span className="text-2xl font-bold text-amber-400">{formatCurrency(parseFloat(String(r.cost_per_portion)))}<span className="text-sm font-normal text-[#6B7280] dark:text-[#A3A3A3]">/portion</span></span>
                   </div>
                   <MarginGauge percent={parseFloat(String(r.margin_percent))} />
                   <div className="flex justify-between items-center mt-1.5">
-                    <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Prix suggéré : <span className="text-emerald-400 font-semibold">{parseFloat(String(r.suggested_price)).toFixed(2)}€</span></span>
+                    <span className="text-sm text-[#9CA3AF] dark:text-[#737373]">Prix suggéré : <span className="text-emerald-400 font-semibold">{formatCurrency(parseFloat(String(r.suggested_price)))}</span></span>
                     <span className="text-sm font-semibold text-teal-400">marge {parseFloat(String(r.margin_percent)).toFixed(0)}%</span>
                   </div>
                 </div>

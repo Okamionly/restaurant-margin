@@ -2,7 +2,7 @@ node_modules
 .git
 /data
 docs/campaigns
-scripts
+/scripts
 electron
 client/src/pages/Dashboard.backup.tsx
 client/public/images/hero/station-demo.mp4

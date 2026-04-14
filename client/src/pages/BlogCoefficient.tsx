@@ -1,23 +1,15 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, ArrowRight, ArrowLeft, Clock, User } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — Coefficient multiplicateur restaurant
    ═══════════════════════════════════════════════════════════════ */
 
 export default function BlogCoefficient() {
-  useEffect(() => {
-    document.title = 'Comment calculer le coefficient multiplicateur de vos plats \u2014 Blog RestauMargin';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute('content', 'Apprenez a calculer le coefficient multiplicateur en restauration pour fixer vos prix de vente et maximiser vos marges. Guide complet avec exemples.');
-    }
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="Le coefficient multiplicateur en restauration : guide complet" description="Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples et erreurs a eviter." path="/blog/coefficient-multiplicateur" type="article" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">

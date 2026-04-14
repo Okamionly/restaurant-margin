@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment calculer la marge de votre restaurant en 2026"
@@ -9,20 +9,9 @@ import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight
    ═══════════════════════════════════════════════════════════════ */
 
 export default function BlogCalcMarge() {
-  useEffect(() => {
-    document.title = 'Comment calculer la marge de votre restaurant en 2026 \u2014 Blog RestauMargin';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute(
-        'content',
-        'Guide complet du calcul de marge restaurant : marge brute, marge nette, food cost. Formules, exemples chiffrés et tableau par type de restaurant.'
-      );
-    }
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="Comment calculer la marge de votre restaurant en 2026" description="Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs." path="/blog/calcul-marge-restaurant" type="article" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">

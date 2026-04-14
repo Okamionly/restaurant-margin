@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Trash2, RotateCcw, ArrowRight, ChefHat, ChevronDown, TrendingUp, Users, Calendar, DollarSign, Target, AlertTriangle, CheckCircle, HelpCircle } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
+import SEOHead from '../components/SEOHead';
 
 /* ─────────────── Types ─────────────── */
 
@@ -81,13 +82,7 @@ export default function FoodCostCalculator() {
   // FAQ open state
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  useEffect(() => {
-    document.title = 'Calculateur de Food Cost Restaurant Gratuit | RestauMargin';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute('content', 'Calculez votre food cost, marge brute et coefficient multiplicateur gratuitement. Outil en ligne pour restaurateurs, chefs et gerants. Jauge visuelle, benchmark par cuisine, simulateur de profit.');
-    }
-  }, []);
+
 
   /* ── Calculs ── */
   const coutTotal = ingredients.reduce((s, i) => s + i.quantite * i.prixUnitaire, 0);
@@ -148,6 +143,7 @@ export default function FoodCostCalculator() {
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="Calculateur de Food Cost Restaurant Gratuit" description="Calculez gratuitement le food cost de vos plats. Outil en ligne pour restaurateurs : cout matiere, prix de vente, marge brute par recette." path="/outils/calculateur-food-cost" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#e5e5e5]">

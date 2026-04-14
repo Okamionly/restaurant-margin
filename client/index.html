@@ -144,7 +144,7 @@
         document.head.appendChild(s);
       });
     </script>
-    <!-- Meta Pixel (Facebook Ads) -->
+    <!-- Meta Pixel (Facebook Ads) — disabled until real Pixel ID is configured
     <script>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -154,31 +154,53 @@
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', 'XXXXXXXXXXXXXXXXX');
+      fbq('init', 'YOUR_PIXEL_ID');
       fbq('track', 'PageView');
     </script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    -->
     <!-- Fontshare: Satoshi (display) + General Sans (body) -->
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- SSR fallback content for search engine crawlers (replaced by React on hydration) -->
+      <noscript>
+        <div style="max-width:800px;margin:0 auto;padding:40px 20px;font-family:sans-serif">
+          <h1>RestauMargin — Calculez vos marges restaurant automatiquement</h1>
+          <p>RestauMargin est la plateforme SaaS de gestion de marge pour restaurateurs. Fiches techniques, food cost, commandes fournisseurs et optimisation des marges par intelligence artificielle.</p>
+          <h2>Fonctionnalites</h2>
+          <ul>
+            <li>Calcul automatique du food cost et des marges par plat</li>
+            <li>Fiches techniques detaillees avec grammages et couts</li>
+            <li>Station de pesee connectee via balance Bluetooth</li>
+            <li>Commandes fournisseurs optimisees par l'IA</li>
+            <li>Suivi de service et KDS (Kitchen Display System)</li>
+            <li>Tableau de bord avec indicateurs en temps reel</li>
+          </ul>
+          <h2>Tarifs</h2>
+          <p>Plan Pro a 29 EUR/mois — Plan Business a 79 EUR/mois — Essai gratuit 7 jours</p>
+          <h2>Blog</h2>
+          <ul>
+            <li><a href="/blog/calcul-marge-restaurant">Comment calculer la marge de votre restaurant</a></li>
+            <li><a href="/blog/reduire-food-cost">Reduire le food cost de votre restaurant</a></li>
+            <li><a href="/blog/coefficient-multiplicateur">Le coefficient multiplicateur en restauration</a></li>
+            <li><a href="/blog/ia-restauration">L'IA en restauration</a></li>
+            <li><a href="/blog/haccp-restaurant">HACCP en restaurant</a></li>
+          </ul>
+          <h2>Outils gratuits</h2>
+          <ul>
+            <li><a href="/outils/calculateur-food-cost">Calculateur de food cost gratuit</a></li>
+            <li><a href="/outils/generateur-qr-menu">Generateur de QR code menu</a></li>
+          </ul>
+          <p>Contact : <a href="mailto:contact@restaumargin.fr">contact@restaumargin.fr</a></p>
+        </div>
+      </noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
     <script type="text/javascript">
       window.$crisp=[];window.CRISP_WEBSITE_ID="36da3045-b580-428d-a8df-9697abe29963";
       (function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();
     </script>
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-656H54T9RS"></script>
-    <script>
-      window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
-      gtag('js',new Date());gtag('config','G-656H54T9RS');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXXX&ev=PageView&noscript=1"
-    /></noscript>
   </body>
 </html>

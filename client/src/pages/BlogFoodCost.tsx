@@ -1,23 +1,15 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Target, TrendingDown, ShoppingCart, BarChart3, LineChart } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — 5 methodes pour reduire votre food cost de 15 %
    ═══════════════════════════════════════════════════════════════ */
 
 export default function BlogFoodCost() {
-  useEffect(() => {
-    document.title = '5 methodes pour reduire votre food cost de 15 % \u2014 Blog RestauMargin';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute('content', 'Decouvrez 5 methodes eprouvees pour reduire votre food cost de 15 % sans sacrifier la qualite. Fiches techniques, negociation, gaspillage, menu engineering.');
-    }
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="Reduire le food cost de votre restaurant : 10 strategies" description="Strategies concretes pour reduire le food cost de votre restaurant : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage." path="/blog/reduire-food-cost" type="article" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">

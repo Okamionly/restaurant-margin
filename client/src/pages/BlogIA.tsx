@@ -1,23 +1,15 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Scan, Mic, AlertTriangle, BarChart3, ShoppingCart, DollarSign, Heart, Sparkles, ShieldAlert } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — L'IA en restauration : gadget ou revolution ?
    ═══════════════════════════════════════════════════════════════ */
 
 export default function BlogIA() {
-  useEffect(() => {
-    document.title = "L'IA en restauration : gadget ou revolution ? \u2014 Blog RestauMargin";
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute('content', "Intelligence artificielle en restauration : decouvrez ce que l'IA peut vraiment faire pour votre restaurant et ce qu'elle ne remplacera jamais.");
-    }
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="L'intelligence artificielle en restauration : guide 2026" description="Comment l'IA transforme la restauration : gestion des marges, previsions de ventes, optimisation des menus, commandes automatisees." path="/blog/ia-restauration" type="article" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">

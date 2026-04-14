@@ -1,16 +1,43 @@
 {
   "version": 2,
-  "buildCommand": "npx prisma generate && cd client && npx vite build",
+  "buildCommand": "npx prisma generate && cd client && npx vite build && node scripts/prerender.cjs",
   "outputDirectory": "client/dist",
   "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
   "headers": [
     {
       "source": "/index.html",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "restaumargin.fr" }],
+      "destination": "https://www.restaumargin.fr/$1",
+      "permanent": true
     }
   ],
   "rewrites": [

@@ -2,6 +2,7 @@ import { formatCurrency } from '../utils/currency';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
+import SEOHead from '../components/SEOHead';
 import {
   ChefHat, ClipboardList, Truck, BarChart3,
   ArrowRight, CheckCircle2, TrendingUp, Zap, Star,
@@ -380,9 +381,7 @@ export default function Landing() {
 
   /* ---- side-effects ---- */
 
-  useEffect(() => {
-    document.title = 'RestauMargin \u2014 Calculez vos marges restaurant';
-  }, []);
+  /* document.title is set by SEOHead via react-helmet-async */
 
   useEffect(() => {
     const dismissed = localStorage.getItem('newsletterDismissed');
@@ -594,6 +593,11 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <SEOHead
+        title="RestauMargin — Calculez vos marges restaurant automatiquement"
+        description="Fiches techniques, food cost et commandes fournisseurs automatises par l'IA. La plateforme SaaS de gestion de marge pour restaurateurs. Essai gratuit 7 jours."
+        path="/"
+      />
 
       {/* ═══════════════ NAVBAR ═══════════════ */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#FFFFFF]/95 backdrop-blur-xl border-b border-[#E5E7EB]' : 'bg-transparent'}`}>

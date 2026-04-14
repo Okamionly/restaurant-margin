@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Users, Thermometer, ShieldCheck, ClipboardList, CheckCircle, Download, FileText, ListChecks } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Guide HACCP pour les restaurants : tout ce qu'il faut savoir"
@@ -9,20 +9,9 @@ import { ChefHat, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Us
    ═══════════════════════════════════════════════════════════════ */
 
 export default function BlogHACCP() {
-  useEffect(() => {
-    document.title = 'Guide HACCP pour les restaurants : tout ce qu\'il faut savoir en 2026 \u2014 Blog RestauMargin';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute(
-        'content',
-        'Guide HACCP restaurant complet : les 7 principes, tableau des temperatures, checklist telechargeable et FAQ. Mettez votre etablissement en conformite.'
-      );
-    }
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="HACCP en restaurant : guide complet des normes d'hygiene" description="Tout savoir sur la methode HACCP en restaurant : 7 principes, plan de maitrise sanitaire, temperatures, tracabilite, controles officiels." path="/blog/haccp-restaurant" type="article" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, Trash2, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Users, Leaf, TrendingDown, BarChart3, ShoppingBasket, Scale, Recycle, CheckCircle } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment reduire le gaspillage alimentaire en restaurant"
@@ -9,20 +10,9 @@ import { ChefHat, Trash2, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTria
    ═══════════════════════════════════════════════════════════════ */
 
 export default function BlogGaspillage() {
-  useEffect(() => {
-    document.title = 'Comment reduire le gaspillage alimentaire en restaurant : 5 astuces concretes \u2014 Blog RestauMargin';
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) {
-      meta.setAttribute(
-        'content',
-        'Reduisez le gaspillage alimentaire de votre restaurant de 30 %. 5 methodes concretes, calculateur de pertes et FAQ complete pour les restaurateurs.'
-      );
-    }
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <SEOHead title="Reduire le gaspillage alimentaire en restaurant" description="Solutions concretes pour reduire le gaspillage alimentaire dans votre restaurant : FIFO, portionnement, valorisation des dechets, suivi des pertes." path="/blog/gaspillage-alimentaire" type="article" />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">

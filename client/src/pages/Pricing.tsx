@@ -5,6 +5,7 @@ import {
   Calculator, SlidersHorizontal, Star, BadgePercent
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEOHead from '../components/SEOHead';
 
 interface FAQItem {
   question: string;
@@ -396,9 +397,6 @@ function ComparisonTable() {
 }
 
 export default function Pricing() {
-  useEffect(() => {
-    document.title = 'Tarifs \u2014 RestauMargin';
-  }, []);
 
   const [annual, setAnnual] = useState(false);
   const [showDevisForm, setShowDevisForm] = useState(false);
@@ -416,6 +414,11 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-white text-black">
+      <SEOHead
+        title="Tarifs — RestauMargin"
+        description="Plans Pro (29 EUR/mois) et Business (79 EUR/mois). Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans engagement."
+        path="/pricing"
+      />
       {/* Header */}
       <header className="border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">

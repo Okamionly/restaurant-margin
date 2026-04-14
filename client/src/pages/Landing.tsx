@@ -594,8 +594,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] overflow-x-hidden scroll-smooth" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <SEOHead
-        title="RestauMargin — Calculez vos marges restaurant automatiquement"
-        description="Fiches techniques, food cost et commandes fournisseurs automatises par l'IA. La plateforme SaaS de gestion de marge pour restaurateurs. Essai gratuit 7 jours."
+        title="RestauMargin — Logiciel de calcul de marge restaurant | Food cost et fiches techniques"
+        description="RestauMargin : fiches techniques, food cost et commandes fournisseurs automatises par l'IA. Logiciel de gestion de marge restaurant. Essai gratuit 7 jours."
         path="/"
       />
 

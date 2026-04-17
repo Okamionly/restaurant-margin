@@ -50,7 +50,7 @@
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "restaumargin.fr" }],
       "destination": "https://www.restaumargin.fr/$1",
-      "statusCode": 301
+      "permanent": true
     }
   ],
   "rewrites": [

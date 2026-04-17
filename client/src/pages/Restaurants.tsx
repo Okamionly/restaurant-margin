@@ -1089,7 +1089,7 @@ function StaffAllocation({ restaurants }: { restaurants: Restaurant[] }) {
       name: r.name,
       staff: Array.from({ length: 3 + (r.id * 3) % 6 }, (_, i) => ({
         id: r.id * 100 + i,
-        name: `${['Jean', 'Marie', 'Youssef', 'Fatima', 'Pierre', 'Sophie', 'Karim', 'Lucie'][i % 8]} ${String.fromCharCode(65 + (r.id + i) % 26)}.`,
+        name: `${['Jean', 'Marie', 'Hugo', 'Fatima', 'Pierre', 'Sophie', 'Karim', 'Lucie'][i % 8]} ${String.fromCharCode(65 + (r.id + i) % 26)}.`,
         role: roles[(r.id + i) % roles.length],
         isWorking: Math.random() > 0.3,
         hours: `${8 + (i % 4)}h - ${16 + (i % 4)}h`,
@@ -1574,7 +1574,7 @@ export default function Restaurants() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E5E7EB] dark:border-[#1A1A1A] bg-white dark:bg-[#171717] text-[#111111] dark:text-white focus:ring-2 focus:ring-[#111111] dark:focus:ring-white focus:border-[#111111] dark:focus:border-white outline-none"
-                placeholder="Ex: Le Bistrot de Youssef"
+                placeholder="Ex: Le Bistrot du Chef"
               />
             </div>
           </div>

@@ -7,7 +7,7 @@ import SEOHead from '../components/SEOHead';
 
 /* ═══════════════════════════════════════════════════════════════
    À propos — Page AboutPage pour E-E-A-T
-   Mot-clé : RestauMargin fondateur, équipe RestauMargin, qui sommes-nous
+   Mot-clé : équipe RestauMargin, qui sommes-nous, Montpellier
    ═══════════════════════════════════════════════════════════════ */
 
 export default function APropos() {
@@ -15,7 +15,7 @@ export default function APropos() {
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead
         title="À propos — RestauMargin"
-        description="Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Fondée par Youssef Guessous à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges."
+        description="Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Basée à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges."
         path="/a-propos"
       />
 
@@ -36,12 +36,6 @@ export default function APropos() {
               'logo': 'https://www.restaumargin.fr/icon-512.png',
               'description': "RestauMargin est la plateforme SaaS de gestion de marge pour restaurateurs. Calcul du food cost, fiches techniques, commandes fournisseurs et optimisation des marges par intelligence artificielle.",
               'foundingDate': '2025',
-              'founder': {
-                '@type': 'Person',
-                'name': 'Youssef Guessous',
-                'jobTitle': 'Fondateur',
-                'email': 'contact@restaumargin.fr',
-              },
               'location': {
                 '@type': 'Place',
                 'address': {
@@ -107,33 +101,33 @@ export default function APropos() {
         </p>
       </section>
 
-      {/* ═══ Founder ═══ */}
+      {/* ═══ Notre équipe ═══ */}
       <section className="pb-16 px-4 sm:px-6 max-w-4xl mx-auto">
         <div className="bg-gradient-to-br from-[#f8fafb] to-white border border-[#E5E7EB] rounded-3xl p-8 sm:p-12">
           <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
             <div className="flex-shrink-0">
               <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-3xl sm:text-4xl shadow-lg">
-                YG
+                RM
               </div>
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-4 h-4 text-teal-600" />
-                <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Fondateur</span>
+                <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">Notre équipe</span>
               </div>
               <h2
                 className="text-2xl sm:text-3xl font-bold text-[#111111] mb-3"
                 style={{ fontFamily: "'Satoshi', 'Inter', sans-serif" }}
               >
-                Youssef Guessous
+                L'équipe RestauMargin
               </h2>
               <p className="text-sm text-[#737373] mb-4 flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
                 Montpellier, France
               </p>
               <p className="text-base text-[#525252] leading-relaxed mb-4">
-                Passionné par la restauration et la technologie, j'ai fondé RestauMargin en 2025 avec
-                une mission simple : rendre accessibles à tous les restaurateurs les outils de gestion
+                Passionnés par la restauration et la technologie, nous avons fondé RestauMargin en 2025
+                avec une mission simple : rendre accessibles à tous les restaurateurs les outils de gestion
                 habituellement réservés aux grandes chaînes.
               </p>
               <p className="text-base text-[#525252] leading-relaxed mb-6">

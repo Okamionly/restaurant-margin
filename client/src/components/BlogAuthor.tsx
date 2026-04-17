@@ -38,9 +38,9 @@ export default function BlogAuthor({
       <div className="flex flex-wrap items-center gap-4 text-sm text-[#737373] mb-8 pb-6 border-b border-[#E5E7EB]">
         <Link to="/a-propos" className="flex items-center gap-2 hover:text-teal-600 transition-colors">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-xs">
-            YG
+            RM
           </div>
-          <span className="font-semibold text-[#111111]">Youssef Guessous</span>
+          <span className="font-semibold text-[#111111]">La rédaction RestauMargin</span>
         </Link>
         <span className="flex items-center gap-1.5">
           <Calendar className="w-4 h-4" />
@@ -62,11 +62,11 @@ export default function BlogAuthor({
     <aside
       className="mt-16 p-6 sm:p-8 bg-gradient-to-br from-[#f8fafb] to-white border border-[#E5E7EB] rounded-3xl"
       itemScope
-      itemType="https://schema.org/Person"
+      itemType="https://schema.org/Organization"
     >
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold text-xl">
-          YG
+          RM
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
@@ -74,11 +74,11 @@ export default function BlogAuthor({
             <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">À propos de l'auteur</span>
           </div>
           <h3 className="text-xl font-bold text-[#111111] mb-2" itemProp="name">
-            Youssef Guessous
+            La rédaction RestauMargin
           </h3>
           <p className="text-sm text-[#525252] leading-relaxed mb-3" itemProp="description">
-            Fondateur de <strong>RestauMargin</strong>. Passionné par la gestion de restaurant et
-            l'optimisation des marges, je développe depuis 2025 des outils pour aider les chefs et
+            L'équipe <strong>RestauMargin</strong> est passionnée par la gestion de restaurant et
+            l'optimisation des marges. Nous développons depuis 2025 des outils pour aider les chefs et
             restaurateurs à maîtriser leur food cost, leurs fiches techniques et la rentabilité de
             leurs plats grâce à l'intelligence artificielle.
           </p>
@@ -92,7 +92,6 @@ export default function BlogAuthor({
           </div>
         </div>
       </div>
-      <meta itemProp="jobTitle" content="Fondateur de RestauMargin" />
       <meta itemProp="worksFor" content="RestauMargin" />
     </aside>
   );

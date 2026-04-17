@@ -23,8 +23,8 @@ export default function BlogHACCP() {
             "datePublished": "2026-04-14",
             "dateModified": "2026-04-14",
             "author": {
-              "@type": "Person",
-              "name": "Youssef Guessous",
+              "@type": "Organization",
+              "name": "La rédaction RestauMargin",
               "url": "https://www.restaumargin.fr/a-propos"
             },
             "publisher": {

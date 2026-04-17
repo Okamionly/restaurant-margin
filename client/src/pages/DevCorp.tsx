@@ -42,7 +42,7 @@ interface Alert {
 // ── Agent definitions ──────────────────────────────────
 const AGENTS_INIT: Agent[] = [
   {
-    id: 'youssef', name: 'Youssef', role: 'Directeur', description: 'Supervise tout, rapport quotidien, sprint planning',
+    id: 'ceo', name: 'CEO', role: 'Directeur', description: 'Supervise tout, rapport quotidien, sprint planning',
     color: '#3b82f6', skinColor: '#c4956a', gridCol: 1, gridRow: 0,
     status: 'meeting', progress: 15, currentTask: 'Sprint planning', taskIndex: 0, mood: 95, energy: 90,
     tasks: ['Sprint planning', 'Priorisation', 'Review agents', 'Rapport quotidien', 'Decisions'],
@@ -195,7 +195,7 @@ export default function DevCorp() {
   const [agents, setAgents] = useState<Agent[]>(AGENTS_INIT);
   const [chat, setChat] = useState<ChatMessage[]>([
     { from: 'Systeme', text: 'Sprint du jour demarre ! 9 agents en ligne.', time: '09:00', color: '#3b82f6', isUser: false },
-    { from: 'Youssef', text: 'Equipe au complet. On attaque les objectifs du jour !', time: '09:01', color: '#3b82f6', isUser: false },
+    { from: 'CEO', text: 'Equipe au complet. On attaque les objectifs du jour !', time: '09:01', color: '#3b82f6', isUser: false },
     { from: 'Hassan', text: 'Taches distribuees. Chacun sait quoi faire.', time: '09:02', color: '#6366f1', isUser: false },
   ]);
   const [chatInput, setChatInput] = useState('');
@@ -322,9 +322,9 @@ export default function DevCorp() {
         }
       }
 
-      // If status/rapport, Youssef gives summary
+      // If status/rapport, CEO gives summary
       let responseText: string;
-      if (bestAgent.id === 'youssef' && (input.includes('status') || input.includes('rapport'))) {
+      if (bestAgent.id === 'ceo' && (input.includes('status') || input.includes('rapport'))) {
         const active = agents.filter(a => a.status !== 'done').length;
         const avg = Math.floor(agents.reduce((s, a) => s + a.progress, 0) / agents.length);
         responseText = `Rapport: ${active}/9 agents actifs. Progression sprint: ${avg}%. ` +

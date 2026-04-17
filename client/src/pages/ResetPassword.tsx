@@ -65,7 +65,7 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <ChefHat className="w-10 h-10 text-blue-400" />
+          <ChefHat className="w-10 h-10 text-teal-400" />
           <span className="text-2xl font-bold text-[#111111] dark:text-white">RestauMargin</span>
         </div>
 
@@ -79,7 +79,7 @@ export default function ResetPassword() {
               </p>
               <Link
                 to="/login"
-                className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+                className="inline-block mt-4 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
               >
                 Se connecter
               </Link>
@@ -91,7 +91,7 @@ export default function ResetPassword() {
               <p className="text-[#9CA3AF] dark:text-[#737373]">{errorMessage}</p>
               <Link
                 to="/login"
-                className="inline-block mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+                className="inline-block mt-4 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-colors"
               >
                 Retour à la connexion
               </Link>
@@ -99,7 +99,7 @@ export default function ResetPassword() {
           ) : (
             <>
               <div className="text-center mb-6">
-                <Lock className="w-12 h-12 text-blue-400 mx-auto mb-3" />
+                <Lock className="w-12 h-12 text-teal-400 mx-auto mb-3" />
                 <h2 className="text-xl font-bold text-[#111111] dark:text-white">Nouveau mot de passe</h2>
                 <p className="text-[#9CA3AF] dark:text-[#737373] text-sm mt-1">Choisissez un nouveau mot de passe pour votre compte.</p>
               </div>
@@ -128,7 +128,7 @@ export default function ResetPassword() {
                     placeholder="Min. 6 caractères"
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   />
                 </div>
 
@@ -141,14 +141,14 @@ export default function ResetPassword() {
                     placeholder="Retapez le mot de passe"
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 bg-[#FAFAFA] dark:bg-[#0A0A0A] border border-[#E5E7EB] dark:border-[#1A1A1A] rounded-lg text-[#111111] dark:text-white placeholder-[#9CA3AF] dark:placeholder-[#737373] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-teal-600 hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
                 >
                   {status === 'loading' ? (
                     <>
@@ -162,7 +162,7 @@ export default function ResetPassword() {
               </form>
 
               <div className="text-center mt-6">
-                <Link to="/login" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                <Link to="/login" className="text-sm text-teal-400 hover:text-teal-300 transition-colors">
                   Retour à la connexion
                 </Link>
               </div>

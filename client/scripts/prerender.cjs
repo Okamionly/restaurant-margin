@@ -29,6 +29,11 @@ const ROUTES = [
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',
   },
   {
+    path: '/blog',
+    title: 'Blog RestauMargin — Guides et conseils pour restaurateurs',
+    description: "Articles et guides pratiques pour restaurateurs : calcul de marge, food cost, HACCP, fiches techniques, IA en restauration. Conseils d'experts pour optimiser votre restaurant.",
+  },
+  {
     path: '/blog/calcul-marge-restaurant',
     title: 'Comment calculer la marge de votre restaurant en 2026',
     description: 'Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette.',

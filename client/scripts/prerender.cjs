@@ -26,7 +26,7 @@ const ROUTES = [
   {
     path: '/a-propos',
     title: 'À propos — RestauMargin',
-    description: "Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Fondée par Youssef Guessous à Montpellier.",
+    description: "Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Basée à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges.",
   },
   {
     path: '/demo',

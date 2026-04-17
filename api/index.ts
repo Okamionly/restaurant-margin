@@ -247,13 +247,13 @@ app.use((req, res, next) => {
 // ── CRON routes are registered below (after verifyCron helper) ──
 // Placeholder stubs removed — real implementations handle all /api/cron/* endpoints
 
-// ── Stripe Price IDs ──
-// Set via env vars STRIPE_PRICE_PRO_MONTHLY, etc. or fall back to placeholders
+// ── Stripe Price IDs (LIVE mode, account acct_1TCSG73Y5IoWMA5k) ──
+// Set via env vars STRIPE_PRICE_PRO_MONTHLY, etc. or fall back to production IDs
 const STRIPE_PRICES = {
-  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_1TGSSU3Y5IoWMA5kc6YRt86p',
-  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_1TGSSU3Y5IoWMA5kc6YRt86p', // TODO: create annual price in Stripe
-  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU',
-  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // TODO: create annual price in Stripe
+  PRO_MONTHLY: process.env.STRIPE_PRICE_PRO_MONTHLY || 'price_1TGSSU3Y5IoWMA5kc6YRt86p', // 29€/mois
+  PRO_ANNUAL: process.env.STRIPE_PRICE_PRO_ANNUAL || 'price_1TNJcy3Y5IoWMA5k7T7ZOyI9', // 278€/an (-20%)
+  BUSINESS_MONTHLY: process.env.STRIPE_PRICE_BUSINESS_MONTHLY || 'price_1TGSSV3Y5IoWMA5k8Elzb9RU', // 79€/mois
+  BUSINESS_ANNUAL: process.env.STRIPE_PRICE_BUSINESS_ANNUAL || 'price_1TNJd03Y5IoWMA5kMN2CPkNc', // 758€/an (-20%)
 } as const;
 
 // ── Stripe Checkout Session ──

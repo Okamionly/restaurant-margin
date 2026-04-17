@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, Trash2, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Users, Leaf, TrendingDown, BarChart3, ShoppingBasket, Scale, Recycle, CheckCircle } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment reduire le gaspillage alimentaire en restaurant"
@@ -13,6 +14,33 @@ export default function BlogGaspillage() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="Reduire le gaspillage alimentaire en restaurant" description="Solutions concretes pour reduire le gaspillage alimentaire dans votre restaurant : FIFO, portionnement, valorisation des dechets, suivi des pertes." path="/blog/gaspillage-alimentaire" type="article" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Réduire le gaspillage alimentaire en restaurant",
+            "datePublished": "2026-04-14",
+            "dateModified": "2026-04-14",
+            "author": {
+              "@type": "Person",
+              "name": "Youssef Guessous",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "RestauMargin",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.restaumargin.fr/icon-512.png"
+              }
+            },
+            "image": "https://www.restaumargin.fr/og-image.png",
+            "inLanguage": "fr-FR"
+          })
+        }}
+      />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
@@ -67,6 +95,8 @@ export default function BlogGaspillage() {
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="9 min" variant="header" />
 
         {/* ── Sommaire ── */}
         <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
@@ -478,6 +508,8 @@ export default function BlogGaspillage() {
             />
           </div>
         </section>
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="9 min" variant="footer" />
 
         {/* ═════════════ CTA ═════════════ */}
         <section id="cta" className="mb-16">

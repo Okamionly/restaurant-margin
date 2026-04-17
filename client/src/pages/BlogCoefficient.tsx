@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, Calculator, ArrowRight, ArrowLeft, Clock, User } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — Coefficient multiplicateur restaurant
@@ -10,6 +11,33 @@ export default function BlogCoefficient() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="Le coefficient multiplicateur en restauration : guide complet" description="Comprendre et appliquer le coefficient multiplicateur pour fixer vos prix de vente en restaurant. Formules, exemples et erreurs a eviter." path="/blog/coefficient-multiplicateur" type="article" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Le coefficient multiplicateur en restauration : guide complet",
+            "datePublished": "2026-04-14",
+            "dateModified": "2026-04-14",
+            "author": {
+              "@type": "Person",
+              "name": "Youssef Guessous",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "RestauMargin",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.restaumargin.fr/icon-512.png"
+              }
+            },
+            "image": "https://www.restaumargin.fr/og-image.png",
+            "inLanguage": "fr-FR"
+          })
+        }}
+      />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
@@ -43,6 +71,8 @@ export default function BlogCoefficient() {
 
       {/* ── Article ── */}
       <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="8 min" variant="header" />
 
         <p className="text-lg text-[#525252] leading-relaxed mb-8">
           Fixer le prix de vente de vos plats au hasard est la premiere cause de faillite en restauration. En France, un restaurant sur deux ferme dans les trois premieres annees. Le point commun de ceux qui survivent ? Ils maitrisent leur coefficient multiplicateur.
@@ -313,6 +343,7 @@ export default function BlogCoefficient() {
             </details>
           ))}
         </div>
+        <BlogAuthor publishedDate="2026-04-14" readTime="8 min" variant="footer" />
       </article>
 
       {/* ── CTA ── */}

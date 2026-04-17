@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, Calculator, ArrowRight, BookOpen, Lightbulb, AlertTriangle, Users, Thermometer, ShieldCheck, ClipboardList, CheckCircle, Download, FileText, ListChecks } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Guide HACCP pour les restaurants : tout ce qu'il faut savoir"
@@ -12,6 +13,33 @@ export default function BlogHACCP() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="HACCP en restaurant : guide complet des normes d'hygiene" description="Tout savoir sur la methode HACCP en restaurant : 7 principes, plan de maitrise sanitaire, temperatures, tracabilite, controles officiels." path="/blog/haccp-restaurant" type="article" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "HACCP en restaurant : guide complet des normes d'hygiène",
+            "datePublished": "2026-04-14",
+            "dateModified": "2026-04-14",
+            "author": {
+              "@type": "Person",
+              "name": "Youssef Guessous",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "RestauMargin",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.restaumargin.fr/icon-512.png"
+              }
+            },
+            "image": "https://www.restaumargin.fr/og-image.png",
+            "inLanguage": "fr-FR"
+          })
+        }}
+      />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
@@ -66,6 +94,8 @@ export default function BlogHACCP() {
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="14 min" variant="header" />
 
         {/* ── Sommaire ── */}
         <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
@@ -386,6 +416,8 @@ export default function BlogHACCP() {
             </p>
           </div>
         </section>
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="14 min" variant="footer" />
 
         {/* ═════════════ SECTION 6 : Digitaliser ═════════════ */}
         <section id="digitaliser" className="mb-16">

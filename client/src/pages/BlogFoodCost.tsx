@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Target, TrendingDown, ShoppingCart, BarChart3, LineChart } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — 5 methodes pour reduire votre food cost de 15 %
@@ -10,6 +11,33 @@ export default function BlogFoodCost() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="Reduire le food cost de votre restaurant : 10 strategies" description="Strategies concretes pour reduire le food cost de votre restaurant : gestion des stocks, fiches techniques, negociation fournisseurs, reduction du gaspillage." path="/blog/reduire-food-cost" type="article" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Réduire le food cost de votre restaurant : 10 stratégies",
+            "datePublished": "2026-04-14",
+            "dateModified": "2026-04-14",
+            "author": {
+              "@type": "Person",
+              "name": "Youssef Guessous",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "RestauMargin",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.restaumargin.fr/icon-512.png"
+              }
+            },
+            "image": "https://www.restaumargin.fr/og-image.png",
+            "inLanguage": "fr-FR"
+          })
+        }}
+      />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
@@ -43,6 +71,8 @@ export default function BlogFoodCost() {
 
       {/* ── Article ── */}
       <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="10 min" variant="header" />
 
         <p className="text-lg text-[#525252] leading-relaxed mb-8">
           Un food cost de 35 % au lieu de 30 % peut sembler anodin. Pourtant, pour un restaurant qui fait 500 000 EUR de chiffre d'affaires annuel, cette difference represente <strong>25 000 EUR de marge brute perdue</strong>. Chaque annee.
@@ -355,6 +385,7 @@ export default function BlogFoodCost() {
             </details>
           ))}
         </div>
+        <BlogAuthor publishedDate="2026-04-14" readTime="10 min" variant="footer" />
       </article>
 
       {/* ── CTA ── */}

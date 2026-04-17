@@ -24,6 +24,11 @@ const ROUTES = [
     description: 'Plans Pro (29 EUR/mois) et Business (79 EUR/mois). Calculez vos marges restaurant, food cost et fiches techniques. Essai gratuit 7 jours sans engagement.',
   },
   {
+    path: '/a-propos',
+    title: 'À propos — RestauMargin',
+    description: "Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Fondée par Youssef Guessous à Montpellier.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

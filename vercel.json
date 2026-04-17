@@ -5,12 +5,18 @@
   "installCommand": "npm install && cd client && npm install && cd ../server && npm install",
   "headers": [
     {
-      "source": "/index.html",
+      "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
       ]
     },
     {
@@ -30,6 +36,13 @@
         { "key": "Content-Type", "value": "text/plain" },
         { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
     }
   ],
   "redirects": [
@@ -37,7 +50,7 @@
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "restaumargin.fr" }],
       "destination": "https://www.restaumargin.fr/$1",
-      "permanent": true
+      "statusCode": 301
     }
   ],
   "rewrites": [

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, TrendingUp, Calculator, AlertTriangle, CheckCircle, ArrowRight, BarChart3, DollarSign, Percent, Target, BookOpen, Lightbulb, Users } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — "Comment calculer la marge de votre restaurant en 2026"
@@ -12,6 +13,33 @@ export default function BlogCalcMarge() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="Comment calculer la marge de votre restaurant en 2026" description="Guide complet pour calculer la marge de votre restaurant : food cost, coefficient multiplicateur, marge brute et nette. Methodes et outils pour restaurateurs." path="/blog/calcul-marge-restaurant" type="article" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Comment calculer la marge de votre restaurant en 2026",
+            "datePublished": "2026-04-14",
+            "dateModified": "2026-04-14",
+            "author": {
+              "@type": "Person",
+              "name": "Youssef Guessous",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "RestauMargin",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.restaumargin.fr/icon-512.png"
+              }
+            },
+            "image": "https://www.restaumargin.fr/og-image.png",
+            "inLanguage": "fr-FR"
+          })
+        }}
+      />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
@@ -66,6 +94,8 @@ export default function BlogCalcMarge() {
 
       {/* ── Contenu principal ── */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="12 min" variant="header" />
 
         {/* ── Table des matieres ── */}
         <nav className="my-12 bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-6 sm:p-8">
@@ -482,6 +512,8 @@ export default function BlogCalcMarge() {
             </p>
           </div>
         </section>
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="12 min" variant="footer" />
 
         {/* ═════════════ SECTION 7 : CTA ═════════════ */}
         <section id="cta" className="mb-16">

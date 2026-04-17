@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChefHat, BookOpen, ArrowRight, ArrowLeft, Clock, User, Scan, Mic, AlertTriangle, BarChart3, ShoppingCart, DollarSign, Heart, Sparkles, ShieldAlert } from 'lucide-react';
 import SEOHead from '../components/SEOHead';
+import BlogAuthor from '../components/BlogAuthor';
 
 /* ═══════════════════════════════════════════════════════════════
    Blog SEO — L'IA en restauration : gadget ou revolution ?
@@ -10,6 +11,33 @@ export default function BlogIA() {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <SEOHead title="L'intelligence artificielle en restauration : guide 2026" description="Comment l'IA transforme la restauration : gestion des marges, previsions de ventes, optimisation des menus, commandes automatisees." path="/blog/ia-restauration" type="article" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "L'intelligence artificielle en restauration : guide 2026",
+            "datePublished": "2026-04-14",
+            "dateModified": "2026-04-14",
+            "author": {
+              "@type": "Person",
+              "name": "Youssef Guessous",
+              "url": "https://www.restaumargin.fr/a-propos"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "RestauMargin",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.restaumargin.fr/icon-512.png"
+              }
+            },
+            "image": "https://www.restaumargin.fr/og-image.png",
+            "inLanguage": "fr-FR"
+          })
+        }}
+      />
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
@@ -43,6 +71,8 @@ export default function BlogIA() {
 
       {/* ── Article ── */}
       <article className="max-w-[720px] mx-auto px-4 sm:px-6 py-12 prose-article">
+
+        <BlogAuthor publishedDate="2026-04-14" readTime="15 min" variant="header" />
 
         <p className="text-lg text-[#525252] leading-relaxed mb-8">
           L'intelligence artificielle est partout. Mais dans votre cuisine ? Derriere vos fourneaux ? Cet article fait le tri entre les promesses marketing et la realite du terrain.
@@ -293,6 +323,7 @@ export default function BlogIA() {
             L'IA n'est ni un gadget ni une revolution. C'est un outil puissant quand il est bien utilise. La vraie revolution, c'est le passage d'une gestion intuitive a une gestion informee. Les restaurateurs qui reussiront ne seront pas ceux qui auront le plus de technologie, mais ceux qui utiliseront la bonne technologie pour se liberer du temps et de l'energie mentale.
           </p>
         </div>
+        <BlogAuthor publishedDate="2026-04-14" readTime="15 min" variant="footer" />
       </article>
 
       {/* ── CTA ── */}

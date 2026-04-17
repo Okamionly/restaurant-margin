@@ -97,6 +97,7 @@ const ResetPassword = lazyRetry(() => import('./pages/ResetPassword'));
 const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'));
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
+const APropos = lazyRetry(() => import('./pages/APropos'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
 const ServiceTracker = lazyRetry(() => import('./pages/ServiceTracker'));
@@ -947,6 +948,7 @@ function App() {
           <Route path="/outils/calculateur-food-cost" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><FoodCostCalculator /></Suspense>} />
           <Route path="/outils/generateur-qr-menu" element={<Suspense fallback={<div className="min-h-screen bg-[#f8fafb] flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><QRCodeGenerator /></Suspense>} />
           <Route path="/blog" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogIndex /></Suspense>} />
+          <Route path="/a-propos" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><APropos /></Suspense>} />
           <Route path="/blog/calcul-marge-restaurant" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><BlogCalcMarge /></Suspense>} />
           <Route path="/temoignages" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#111111]" /></div>}><Temoignages /></Suspense>} />
           <Route path="/demo" element={<Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><Demo /></Suspense>} />

@@ -99,6 +99,8 @@ const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
 const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
+const TrialReactivate = lazyRetry(() => import('./pages/TrialReactivate'));
+const AdminMetrics = lazyRetry(() => import('./pages/AdminMetrics'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
 const ServiceTracker = lazyRetry(() => import('./pages/ServiceTracker'));
@@ -880,6 +882,8 @@ function AppLayout() {
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/mon-score" element={<GamificationPage />} />
               <Route path="/mes-parrainages" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><MesParrainages /></Suspense>} />
+              <Route path="/reactivation" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><TrialReactivate /></Suspense>} />
+              <Route path="/admin/metrics" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><AdminMetrics /></Suspense>} />
               <Route path="/email-marketing" element={<EmailMarketing />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

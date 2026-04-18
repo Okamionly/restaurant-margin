@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { User, LoginCredentials, RegisterData } from '../types';
-import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken, setActiveRestaurantId, removeActiveRestaurantId } from '../services/api';
+import { login as apiLogin, register as apiRegister, getMe, getToken, setToken, removeToken, setActiveRestaurantId, removeActiveRestaurantId, getActiveRestaurantId } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -24,8 +24,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      const me = await getMe();
+      const me: any = await getMe();
       setUser(me);
+      // Recovery: if restaurantId missing from localStorage (cleared cache, other device),
+      // use what the server returns to avoid "X-Restaurant-Id header requis" errors
+      if (!getActiveRestaurantId() && me?.restaurantId) {
+        setActiveRestaurantId(me.restaurantId);
+      }
     } catch {
       removeToken();
       setUser(null);

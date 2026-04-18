@@ -29,6 +29,31 @@ const ROUTES = [
     description: "Découvrez RestauMargin, la plateforme SaaS française de gestion de marge pour restaurateurs. Basée à Montpellier, notre mission est d'aider les chefs à maîtriser leur food cost et leurs marges.",
   },
   {
+    path: '/guide-marge/pizzeria',
+    title: 'Calcul de marge pizzeria : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre pizzeria. Food cost, coefficient multiplicateur, rentabilité par pizza, gestion pâte, garnitures, et optimisation prix de vente.",
+  },
+  {
+    path: '/guide-marge/brasserie',
+    title: 'Calcul de marge brasserie : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre brasserie. Gestion carte, plat du jour, menu entrée-plat-dessert, boissons, et optimisation food cost.",
+  },
+  {
+    path: '/guide-marge/bistro',
+    title: 'Calcul de marge bistrot : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre bistrot. Gestion simple, ardoise du jour, rotation rapide et optimisation du food cost au quotidien.",
+  },
+  {
+    path: '/guide-marge/food-truck',
+    title: 'Calcul de marge food truck : guide complet 2026',
+    description: "Guide et outil pour calculer les marges de votre food truck. Gestion offline, fiches techniques rapides, rotation ingrédients et optimisation par site.",
+  },
+  {
+    path: '/guide-marge/restaurant-gastronomique',
+    title: 'Calcul de marge restaurant gastronomique : guide 2026',
+    description: "Guide et outil pour calculer les marges d'un restaurant gastronomique. Fiches techniques précises, produits nobles, traçabilité HACCP et gestion menu dégustation.",
+  },
+  {
     path: '/demo',
     title: 'Demo — RestauMargin',
     description: 'Testez RestauMargin gratuitement. Decouvrez la plateforme de gestion de marge pour restaurateurs avec fiches techniques, food cost et IA.',

@@ -96,6 +96,38 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Guides par type de restaurant (programmatic SEO) -->
+  <url>
+    <loc>https://www.restaumargin.fr/guide-marge/pizzeria</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/guide-marge/brasserie</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/guide-marge/bistro</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/guide-marge/food-truck</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.restaumargin.fr/guide-marge/restaurant-gastronomique</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Outils publics -->
   <url>
     <loc>https://www.restaumargin.fr/outils/calculateur-food-cost</loc>

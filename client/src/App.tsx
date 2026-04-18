@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail } from 'lucide-react';
+import { ChefHat, ShoppingBasket, ClipboardList, BarChart3, Sun, Moon, LogOut, Menu, X, Truck, BookOpen, Settings, Users, Download, Package, FileSearch, Scale, Receipt, TrendingUp, Target, ShoppingCart, CreditCard, CalendarDays, Calendar, MessageSquare, Building2, ChevronDown, Check, Store, Trash2, QrCode, Loader2, Plug, PartyPopper, FileText, Calculator, Contact, ShieldCheck, Shield, Sparkles, Newspaper, AlertTriangle, Keyboard, Search, Trophy, Handshake, Timer, Mail, Gift } from 'lucide-react';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectivityBar from './components/ConnectivityBar';
 import OfflineSyncBar from './components/OfflineSyncBar';
@@ -98,6 +98,7 @@ const FoodCostCalculator = lazyRetry(() => import('./pages/FoodCostCalculator'))
 const BlogCalcMarge = lazyRetry(() => import('./pages/BlogCalcMarge'));
 const BlogIndex = lazyRetry(() => import('./pages/BlogIndex'));
 const APropos = lazyRetry(() => import('./pages/APropos'));
+const MesParrainages = lazyRetry(() => import('./pages/MesParrainages'));
 const QRCodeGenerator = lazyRetry(() => import('./pages/QRCodeGenerator'));
 const KitchenMode = lazyRetry(() => import('./pages/KitchenMode'));
 const ServiceTracker = lazyRetry(() => import('./pages/ServiceTracker'));
@@ -415,6 +416,7 @@ function AppLayout() {
         // Integrations masqué pour l'instant
         { to: '/restaurants', icon: Building2, label: 'Restaurants' },
         { to: '/abonnement', icon: CreditCard, label: 'Mon abonnement' },
+        { to: '/mes-parrainages', icon: Gift, label: 'Parrainage' },
       ],
     },
   ];
@@ -877,6 +879,7 @@ function AppLayout() {
               <Route path="/users" element={<UserManagement />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/mon-score" element={<GamificationPage />} />
+              <Route path="/mes-parrainages" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-teal-500 animate-spin" /></div>}><MesParrainages /></Suspense>} />
               <Route path="/email-marketing" element={<EmailMarketing />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

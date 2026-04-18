@@ -1,0 +1,64 @@
+/**
+ * Vercel Edge Middleware — runs at the CDN edge before every request.
+ *
+ * Purpose:
+ * 1. Force 301 (permanent) redirect for non-www → www (better than vercel.json 307)
+ * 2. Add x-robots-tag: noindex on unknown paths (soft 404 fix)
+ *
+ * Docs: https://vercel.com/docs/functions/edge-middleware
+ */
+
+export const config = {
+  matcher: '/((?!_next|_vercel|api/|assets/|icon|favicon|sw\\.js|workbox|manifest|robots|sitemap|og-image|offline|\\.well-known).*)',
+};
+
+// Whitelist of known crawlable paths (exact or prefix)
+const CRAWLABLE_PREFIXES = [
+  '/pricing',
+  '/demo',
+  '/login',
+  '/landing',
+  '/a-propos',
+  '/temoignages',
+  '/station-produit',
+  '/menu-public',
+  '/dev-corp',
+  '/mentions-legales',
+  '/cgv',
+  '/cgu',
+  '/politique-confidentialite',
+  '/reset-password',
+  '/blog',
+  '/outils',
+  '/r/',
+  '/feedback/',
+  '/fournisseur/',
+];
+
+function isCrawlablePath(pathname: string): boolean {
+  if (pathname === '/') return true;
+  return CRAWLABLE_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(p + '/') || pathname.startsWith(p + '?')
+  );
+}
+
+export default function middleware(request: Request): Response | undefined {
+  const url = new URL(request.url);
+
+  // 1. Force 301 redirect non-www → www
+  if (url.hostname === 'restaumargin.fr') {
+    url.hostname = 'www.restaumargin.fr';
+    return Response.redirect(url.toString(), 301);
+  }
+
+  // 2. Soft 404: noindex on unknown paths (crawlers see noindex, users see SPA)
+  if (!isCrawlablePath(url.pathname)) {
+    const response = new Response(null, { status: 200 });
+    response.headers.set('x-middleware-next', '1');
+    response.headers.set('x-robots-tag', 'noindex, nofollow');
+    return response;
+  }
+
+  // Continue with default handling
+  return undefined;
+}
